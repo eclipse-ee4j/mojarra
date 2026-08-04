@@ -19,7 +19,6 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.logging.Level.FINE;
 import static org.glassfish.mojarra.RIConstants.RI_PREFIX;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.EnableThreading;
 import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.ValidateFacesConfigFiles;
 import static org.glassfish.mojarra.config.manager.Documents.getProgrammaticDocuments;
 import static org.glassfish.mojarra.config.manager.Documents.getXMLDocuments;
@@ -36,12 +35,7 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.logging.Logger;
-
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import jakarta.el.ELContext;
 import jakarta.el.ELContextEvent;
@@ -86,7 +80,6 @@ import org.glassfish.mojarra.spi.ConfigurationResourceProviderFactory;
 import org.glassfish.mojarra.spi.HighAvailabilityEnabler;
 import org.glassfish.mojarra.spi.InjectionProvider;
 import org.glassfish.mojarra.spi.InjectionProviderFactory;
-import org.glassfish.mojarra.spi.ThreadContext;
 import org.glassfish.mojarra.util.FacesLogger;
 
 /**
@@ -102,14 +95,6 @@ public class ConfigManager {
      * The initialization time FacesContext scoped key under which the InjectionProvider is stored.
      */
     public static final String INJECTION_PROVIDER_KEY = ConfigManager.class.getName() + "_INJECTION_PROVIDER_TASK";
-
-    /**
-     * <p>
-     * The <code>ConfigManager</code> will multithread the calls to the <code>ConfigurationResourceProvider</code>s as well
-     * as any calls to parse a resources into a DOM. By default, we'll use only 5 threads per web application.
-     * </p>
-     */
-    private static final int NUMBER_OF_TASK_THREADS = 5;
 
     private static final String CONFIG_MANAGER_INSTANCE_KEY = RI_PREFIX + "CONFIG_MANAGER_KEY";
 
@@ -204,18 +189,13 @@ public class ConfigManager {
 
             initializedContexts.add(servletContext);
             initializeConfigProcessors(servletContext, facesContext);
-            ExecutorService executor = null;
 
             try {
                 WebConfiguration webConfig = WebConfiguration.getInstance(servletContext);
                 boolean validating = webConfig.isOptionEnabled(ValidateFacesConfigFiles);
 
-                if (useThreads(servletContext)) {
-                    executor = createExecutorService();
-                }
-
                 // Obtain and merge the XML and Programmatic documents
-                DocumentInfo[] facesDocuments = mergeDocuments(getXMLDocuments(servletContext, getFacesConfigResourceProviders(), executor, validating),
+                DocumentInfo[] facesDocuments = mergeDocuments(getXMLDocuments(servletContext, getFacesConfigResourceProviders(), validating),
                         getProgrammaticDocuments(getConfigPopulators()));
 
                 FacesConfigInfo lastFacesConfigInfo = new FacesConfigInfo(facesDocuments[facesDocuments.length - 1]);
@@ -234,57 +214,12 @@ public class ConfigManager {
                 // This invokes a chain or processors where each processor grabs its own elements of interest
                 // from each document.
 
-                DocumentInfo[] facesDocuments2 = facesDocuments;
-                configProcessors.subList(0, 3).stream().forEach(e -> {
-                    try {
-                        e.process(servletContext, facesContext, facesDocuments2);
-                    } catch (Exception e2) {
-                        // TODO Auto-generated catch block
-                        e2.printStackTrace();
-                    }
-                });
-
-                long parentThreadId = Thread.currentThread().getId();
-                ClassLoader parentContextClassLoader = Thread.currentThread().getContextClassLoader();
-
-                ThreadContext threadContext = getThreadContext(containerConnector);
-                Object parentWebContext = threadContext != null ? threadContext.getParentWebContext() : null;
-
-                configProcessors.subList(3, configProcessors.size()).stream().forEach(e -> {
-
-                    long currentThreadId = Thread.currentThread().getId();
-
-                    InitFacesContext initFacesContext = null;
-                    if (currentThreadId != parentThreadId) {
-                        Thread.currentThread().setContextClassLoader(parentContextClassLoader);
-                        initFacesContext = InitFacesContext.getInstance(servletContext);
-                        if (parentWebContext != null) {
-                            threadContext.propagateWebContextToChild(parentWebContext);
-                        }
-
-                    } else {
-                        initFacesContext = facesContext;
-                    }
-
-                    try {
-                        e.process(servletContext, initFacesContext, facesDocuments2);
-                    } catch (Exception e1) {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
-                    } finally {
-                        if (currentThreadId != parentThreadId) {
-                            Thread.currentThread().setContextClassLoader(null);
-                            initFacesContext.releaseCurrentInstance();
-                            if (parentWebContext != null) {
-                                threadContext.clearChildContext();
-                            }
-                        }
-
-                    }
-                });
+                for (ConfigProcessor configProcessor : configProcessors) {
+                    configProcessor.process(servletContext, facesContext, facesDocuments);
+                }
 
                 faceletTaglibConfigProcessor.process(servletContext, facesContext,
-                    getXMLDocuments(servletContext, getFaceletConfigResourceProviders(), executor, validating));
+                    getXMLDocuments(servletContext, getFaceletConfigResourceProviders(), validating));
 
             } catch (Exception e) {
                 // Clear out any configured factories
@@ -296,10 +231,6 @@ public class ConfigManager {
                 }
 
                 throw (ConfigurationException) t;
-            } finally {
-                if (executor != null) {
-                    executor.shutdown();
-                }
             }
         }
 
@@ -315,10 +246,6 @@ public class ConfigManager {
     }
 
     // --------------------------------------------------------- Private Methods
-
-    private boolean useThreads(ServletContext ctx) {
-        return WebConfiguration.getInstance(ctx).isOptionEnabled(EnableThreading);
-    }
 
     private List<ConfigurationResourceProvider> getFacesConfigResourceProviders() {
         return getConfigurationResourceProviders(facesConfigProviders, FacesConfig);
@@ -344,7 +271,7 @@ public class ConfigManager {
     }
 
     private void initializeConfigProcessors(ServletContext servletContext, FacesContext facesContext) {
-        configProcessors.stream().parallel().forEach(e -> e.initializeClassMetadataMap(servletContext, facesContext));
+        configProcessors.forEach(configProcessor -> configProcessor.initializeClassMetadataMap(servletContext, facesContext));
     }
 
     private List<ApplicationConfigurationPopulator> getConfigPopulators() {
@@ -380,32 +307,6 @@ public class ConfigManager {
         }
 
         application.publishEvent(facesContext, PostConstructApplicationEvent.class, Application.class, application);
-    }
-
-    /**
-     * Create a new <code>ExecutorService</code> with {@link #NUMBER_OF_TASK_THREADS} threads.
-     */
-    private static ExecutorService createExecutorService() {
-        int tc = Runtime.getRuntime().availableProcessors();
-        if (tc > NUMBER_OF_TASK_THREADS) {
-            tc = NUMBER_OF_TASK_THREADS;
-        }
-
-        try {
-            return (ExecutorService) new InitialContext().lookup("java:comp/env/concurrent/ThreadPool");
-        } catch (NamingException e) {
-            // Ignore
-        }
-
-        return Executors.newFixedThreadPool(tc);
-    }
-
-    private ThreadContext getThreadContext(InjectionProvider containerConnector) {
-        if (containerConnector instanceof ThreadContext) {
-            return (ThreadContext) containerConnector;
-        }
-
-        return null;
     }
 
     /**

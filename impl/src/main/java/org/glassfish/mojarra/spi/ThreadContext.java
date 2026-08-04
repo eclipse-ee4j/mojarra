@@ -16,6 +16,11 @@
 
 package org.glassfish.mojarra.spi;
 
+/**
+ * @deprecated Since 5.0. Configuration processing no longer runs on an optional thread pool, so there is no foreign
+ * thread left to propagate the web context to and nothing which calls this interface.
+ */
+@Deprecated(since = "5.0", forRemoval = true)
 public interface ThreadContext {
 
     Object getParentWebContext();

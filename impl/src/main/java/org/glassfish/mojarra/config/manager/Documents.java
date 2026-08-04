@@ -25,13 +25,9 @@ import static org.glassfish.mojarra.util.Util.isEmpty;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.FutureTask;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -63,66 +59,34 @@ public class Documents {
      * @param servletContext the <code>ServletContext</code> for the application to be processed
      * @param providers <code>List</code> of <code>ConfigurationResourceProvider</code> instances that provide the URL of
      * the documents to parse.
-     * @param executor the <code>ExecutorService</code> used to dispatch parse request to
      * @param validating flag indicating whether or not the documents should be validated
      * @return an array of <code>DocumentInfo</code>s
      */
-    public static DocumentInfo[] getXMLDocuments(ServletContext servletContext, List<ConfigurationResourceProvider> providers, ExecutorService executor,
-            boolean validating) {
+    public static DocumentInfo[] getXMLDocuments(ServletContext servletContext, List<ConfigurationResourceProvider> providers, boolean validating) {
 
-        // Query all configuration providers to give us a URL to the configuration they are providing
+        try {
+            // Query all configuration providers to give us a URI to the configuration they are providing
 
-        List<FutureTask<Collection<URI>>> uriTasks = new ArrayList<>(providers.size());
+            Set<URI> uris = new LinkedHashSet<>();
 
-        for (ConfigurationResourceProvider provider : providers) {
-            FutureTask<Collection<URI>> uriTask = new FutureTask<>(new FindConfigResourceURIsTask(provider, servletContext));
-            uriTasks.add(uriTask);
-
-            if (executor != null) {
-                executor.execute(uriTask);
-            } else {
-                uriTask.run();
+            for (ConfigurationResourceProvider provider : providers) {
+                uris.addAll(new FindConfigResourceURIsTask(provider, servletContext).call());
             }
-        }
 
-        // Load and XML parse all documents to which the URLs that we collected above point to
+            // Load and XML parse all documents to which the URIs that we collected above point to
 
-        List<FutureTask<DocumentInfo>> docTasks = new ArrayList<>(providers.size() << 1);
-        Set<URI> processedUris = new HashSet<>();
+            List<DocumentInfo> documents = new ArrayList<>(uris.size());
 
-        for (FutureTask<Collection<URI>> uriTask : uriTasks) {
-            try {
-                for (URI uri : uriTask.get()) {
-                    if (processedUris.add(uri)) {
-                        FutureTask<DocumentInfo> docTask = new FutureTask<>(new ParseConfigResourceToDOMTask(servletContext, validating, uri));
-                        docTasks.add(docTask);
-                        
-                        if (executor != null) {
-                            executor.execute(docTask);
-                        } else {
-                            docTask.run();
-                        }
-                    }
-                }
-            } catch (InterruptedException ignored) {
-            } catch (Exception e) {
-                throw new ConfigurationException(e);
+            for (URI uri : uris) {
+                documents.add(new ParseConfigResourceToDOMTask(servletContext, validating, uri).call());
             }
+
+            return documents.toArray(DocumentInfo[]::new);
+        } catch (ConfigurationException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ConfigurationException(e);
         }
-
-        // Collect the results of the documents we parsed above
-
-        List<DocumentInfo> docs = new ArrayList<>(docTasks.size());
-        for (FutureTask<DocumentInfo> docTask : docTasks) {
-            try {
-                docs.add(docTask.get());
-            } catch (ExecutionException e) {
-                throw new ConfigurationException(e);
-            } catch (InterruptedException ignored) {
-            }
-        }
-
-        return docs.toArray(new DocumentInfo[docs.size()]);
     }
 
     public static List<DocumentInfo> getProgrammaticDocuments(List<ApplicationConfigurationPopulator> configPopulators) throws ParserConfigurationException {

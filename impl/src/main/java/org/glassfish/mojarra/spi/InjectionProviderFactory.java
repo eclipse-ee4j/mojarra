@@ -89,11 +89,9 @@ public class InjectionProviderFactory {
         InjectionProvider provider = getProviderInstance(providerClass, extContext);
 
         if (!NoopInjectionProvider.class.equals(provider.getClass()) && !WebContainerInjectionProvider.class.equals(provider.getClass())) {
-            if (provider instanceof AnnotationScanner) {
-                LOGGER.log(WARNING, "InjectionProvider {0} implements deprecated AnnotationScanner interface which is no longer used. "
-                        + "Annotation scanning is now handled via CDI bean discovery. Please remove the AnnotationScanner interface from the implementation.",
-                        provider.getClass().getName());
-            }
+            warnWhenDeprecatedInterfaceIsImplemented(provider, AnnotationScanner.class, "Annotation scanning is now handled via CDI bean discovery.");
+            warnWhenDeprecatedInterfaceIsImplemented(provider, ThreadContext.class, "Configuration processing no longer runs on an optional thread pool.");
+
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.log(Level.FINE, "faces.spi.injection.provider_configured", new Object[] { provider.getClass().getName() });
             }
@@ -106,6 +104,14 @@ public class InjectionProviderFactory {
             return provider;
         }
 
+    }
+
+    private static void warnWhenDeprecatedInterfaceIsImplemented(InjectionProvider provider, Class<?> deprecatedInterface, String reason) {
+        if (deprecatedInterface.isInstance(provider)) {
+            LOGGER.log(WARNING, "InjectionProvider {0} implements deprecated {1} interface which is no longer used. {2}"
+                    + " Please remove the {1} interface from the implementation.",
+                    new Object[] { provider.getClass().getName(), deprecatedInterface.getSimpleName(), reason });
+        }
     }
 
     private static InjectionProvider getProviderInstance(String className, ExternalContext extContext) {
