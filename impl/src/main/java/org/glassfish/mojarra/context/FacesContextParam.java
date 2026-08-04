@@ -137,9 +137,9 @@ public enum FacesContextParam {
     FACELETS_SKIP_COMMENTS(ViewHandler.FACELETS_SKIP_COMMENTS_PARAM_NAME, false),
 
     /**
-     * Returns {@value ViewHandler#FACELETS_SUFFIX_PARAM_NAME} as {@link String} with default of {@value ViewHandler#DEFAULT_FACELETS_SUFFIX}.
+     * Returns {@value ViewHandler#FACELETS_SUFFIX_PARAM_NAME} as {@link String} array with default of {@value ViewHandler#DEFAULT_FACELETS_SUFFIX}.
      */
-    FACELETS_SUFFIX(ViewHandler.FACELETS_SUFFIX_PARAM_NAME, ViewHandler.DEFAULT_FACELETS_SUFFIX),
+    FACELETS_SUFFIX(ViewHandler.FACELETS_SUFFIX_PARAM_NAME, new String[] { ViewHandler.DEFAULT_FACELETS_SUFFIX }, StringArray.SPACE_SEPARATED),
 
     /**
      * Returns {@value ViewHandler#FACELETS_VIEW_MAPPINGS_PARAM_NAME} as {@link String} array with default of empty string array.

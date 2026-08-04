@@ -1972,18 +1972,16 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     }
 
     private boolean isMatchedWithFaceletsSuffix(String viewId) {
-        String suffix = FacesContextParam.FACELETS_SUFFIX.getValue(FacesContext.getCurrentInstance());
-        if (viewId.endsWith(suffix)) {
-            return true;
-        }
-
-        return false;
+        return getMatchedWithFaceletsSuffix(viewId) != null;
     }
 
     private String getMatchedWithFaceletsSuffix(String viewId) {
-        String suffix = FacesContextParam.FACELETS_SUFFIX.getValue(FacesContext.getCurrentInstance());
-        if (viewId.endsWith(suffix)) {
-            return suffix;
+        String[] faceletsSuffixes = FacesContextParam.FACELETS_SUFFIX.getValue(FacesContext.getCurrentInstance());
+
+        for (String suffix : faceletsSuffixes) {
+            if (viewId.endsWith(suffix)) {
+                return suffix;
+            }
         }
 
         return null;

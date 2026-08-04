@@ -56,7 +56,7 @@ An `org.glassfish.mojarra.*` name which this page does not list is not recognize
 <tr><th colspan="5" align="left"><br/><code>jakarta.faces.FACELETS_SKIP_COMMENTS</code></th></tr>
 <tr><td><code>boolean</code></td><td><code>false</code></td><td>2.0</td><td>request</td><td>Strips XML comments from the view so that they are not delivered to the client. <code>true</code> is faster as the comments are dropped while compiling and every response is smaller for it.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>jakarta.faces.FACELETS_SUFFIX</code></th></tr>
-<tr><td><code>String</code></td><td><code>.xhtml</code></td><td>2.0</td><td>-</td><td>Space separated list of file extensions, each starting with a <code>.</code>, which a view may be physically stored under. The first extension which resolves to an existing file wins.</td></tr>
+<tr><td><code>String[]</code></td><td><code>.xhtml</code></td><td>2.0</td><td>-</td><td>Space separated list of file extensions, each starting with a <code>.</code>, which a view may be physically stored under. The first extension which resolves to an existing file wins.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>jakarta.faces.FACELETS_VIEW_MAPPINGS</code></th></tr>
 <tr><td><code>String[]</code></td><td><em>(none)</em></td><td>2.0</td><td>-</td><td>Semicolon separated list of file extensions such as <code>.xhtml</code>, or web application root relative prefixes such as <code>/user/</code>, whose resources must be interpreted as Facelets regardless of their extension.</td></tr>
 </tbody>
