@@ -115,6 +115,7 @@ public class WebConfiguration {
         initSetList(servletContext);
         processBooleanParameters(servletContext, contextName);
         processInitParameters(servletContext, contextName);
+        processDeprecatedParameters(contextName);
         if (canProcessJndiEntries()) {
             processJndiEntries(contextName);
         }
@@ -506,6 +507,61 @@ public class WebConfiguration {
     }
 
     /**
+     * <p>
+     * Warn about every deprecated context initialization parameter which was explicitly set, and carry the value of each
+     * one over to the parameter which replaces it, unless that one was explicitly set as well.
+     * </p>
+     *
+     * @param contextName the context name
+     */
+    private void processDeprecatedParameters(String contextName) {
+
+        for (WebContextInitParameter param : WebContextInitParameter.values()) {
+            if (!param.isDeprecated() || !isSet(param.getQualifiedName())) {
+                continue;
+            }
+
+            WebContextInitParameter alternate = param.getAlternate();
+            warnAboutDeprecatedParameter(contextName, param.getQualifiedName(), alternate == null ? null : alternate.getQualifiedName());
+
+            if (alternate != null && !isSet(alternate.getQualifiedName())) {
+                contextParameters.put(alternate, contextParameters.get(param));
+            }
+        }
+
+        for (BooleanWebContextInitParameter param : BooleanWebContextInitParameter.values()) {
+            if (!param.isDeprecated() || !isSet(param.getQualifiedName())) {
+                continue;
+            }
+
+            BooleanWebContextInitParameter alternate = param.getAlternate();
+            warnAboutDeprecatedParameter(contextName, param.getQualifiedName(), alternate == null ? null : alternate.getQualifiedName());
+
+            if (alternate != null && !isSet(alternate.getQualifiedName())) {
+                booleanContextParameters.put(alternate, booleanContextParameters.get(param));
+            }
+        }
+    }
+
+    /**
+     * <p>
+     * The warning is deliberately not gated on the project stage. It announces a change in the runtime rather than a
+     * mistake in the application, and an application which is going to break on the next upgrade needs to hear about that
+     * in production too.
+     * </p>
+     *
+     * @param alternateName the qualified name of the replacement, or <code>null</code> when there is no replacement.
+     */
+    private static void warnAboutDeprecatedParameter(String contextName, String qualifiedName, String alternateName) {
+
+        if (alternateName == null) {
+            LOGGER.log(Level.WARNING, "faces.config.webconfig.param.deprecated.for_removal", new Object[] { contextName, qualifiedName });
+        } else {
+            LOGGER.log(Level.WARNING, "faces.config.webconfig.param.deprecated", new Object[] { contextName, qualifiedName, alternateName });
+        }
+    }
+
+    /**
      * Adds all org.glassfish.mojarra init parameter names to a list. This allows callers to determine if a parameter was explicitly
      * set.
      *
@@ -668,6 +724,8 @@ public class WebConfiguration {
 
         private final String qualifiedName;
         private final String defaultValue;
+        private final WebContextInitParameter alternate;
+        private final boolean deprecated;
 
         public String getQualifiedName() {
             return qualifiedName;
@@ -677,9 +735,34 @@ public class WebConfiguration {
             return defaultValue;
         }
 
+        /**
+         * @return the parameter which replaces this one, or <code>null</code> when there is no replacement.
+         */
+        public WebContextInitParameter getAlternate() {
+            return alternate;
+        }
+
+        public boolean isDeprecated() {
+            return deprecated;
+        }
+
         WebContextInitParameter(String qualifiedName, String defaultValue) {
+            this(qualifiedName, defaultValue, null, false);
+        }
+
+        WebContextInitParameter(String qualifiedName, String defaultValue, WebContextInitParameter alternate) {
+            this(qualifiedName, defaultValue, alternate, true);
+        }
+
+        WebContextInitParameter(String qualifiedName, String defaultValue, boolean deprecated) {
+            this(qualifiedName, defaultValue, null, deprecated);
+        }
+
+        private WebContextInitParameter(String qualifiedName, String defaultValue, WebContextInitParameter alternate, boolean deprecated) {
             this.qualifiedName = qualifiedName;
             this.defaultValue = defaultValue;
+            this.alternate = alternate;
+            this.deprecated = deprecated;
         }
 
     }
@@ -723,6 +806,8 @@ public class WebConfiguration {
 
         private final String qualifiedName;
         private final boolean defaultValue;
+        private final BooleanWebContextInitParameter alternate;
+        private final boolean deprecated;
 
         public String getQualifiedName() {
             return qualifiedName;
@@ -732,9 +817,34 @@ public class WebConfiguration {
             return defaultValue;
         }
 
+        /**
+         * @return the parameter which replaces this one, or <code>null</code> when there is no replacement.
+         */
+        public BooleanWebContextInitParameter getAlternate() {
+            return alternate;
+        }
+
+        public boolean isDeprecated() {
+            return deprecated;
+        }
+
         BooleanWebContextInitParameter(String qualifiedName, boolean defaultValue) {
+            this(qualifiedName, defaultValue, null, false);
+        }
+
+        BooleanWebContextInitParameter(String qualifiedName, boolean defaultValue, BooleanWebContextInitParameter alternate) {
+            this(qualifiedName, defaultValue, alternate, true);
+        }
+
+        BooleanWebContextInitParameter(String qualifiedName, boolean defaultValue, boolean deprecated) {
+            this(qualifiedName, defaultValue, null, deprecated);
+        }
+
+        private BooleanWebContextInitParameter(String qualifiedName, boolean defaultValue, BooleanWebContextInitParameter alternate, boolean deprecated) {
             this.qualifiedName = qualifiedName;
             this.defaultValue = defaultValue;
+            this.alternate = alternate;
+            this.deprecated = deprecated;
         }
 
     }
