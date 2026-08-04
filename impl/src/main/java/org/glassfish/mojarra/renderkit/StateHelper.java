@@ -17,7 +17,6 @@
 package org.glassfish.mojarra.renderkit;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.AutoCompleteOffOnViewState;
 import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.CompressViewState;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.PredefinedPostbackParameter.CLIENT_WINDOW_PARAM;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.PredefinedPostbackParameter.RENDER_KIT_ID_PARAM;
@@ -69,24 +68,12 @@ public abstract class StateHelper {
     protected boolean compressViewState;
 
     /**
-     * This will be used the by the different <code>StateHelper</code> implementations when writing the start of the state
-     * field.
+     * <p>
+     * The value written as the <code>autocomplete</code> attribute of the hidden fields this helper renders, which keeps
+     * password managers and browser autofill away from them.
+     * </p>
      */
-    protected char[] stateFieldStart;
-
-    /**
-     * This will be used by the different <code>StateHelper</code> implementations when writing the middle of the state or
-     * viewId fields.
-     */
-
-    protected char[] fieldMiddle;
-
-    /**
-     * This will be used the by the different <code>StateHelper</code> implementations when writing the end of the state or
-     * viewId field. This value of this field is determined by the value of the
-     * {@link org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter#AutoCompleteOffOnViewState}
-     */
-    protected char[] fieldEnd;
+    protected final String viewStateAutocomplete;
 
     // ------------------------------------------------------------ Constructors
 
@@ -98,10 +85,21 @@ public abstract class StateHelper {
         serialProvider = SerializationProviderFactory.createInstance(ctx.getExternalContext());
         webConfig = WebConfiguration.getInstance(ctx.getExternalContext());
         compressViewState = webConfig.isOptionEnabled(CompressViewState);
+        viewStateAutocomplete = webConfig.getViewStateAutocomplete();
 
         if (serialProvider == null) {
             serialProvider = SerializationProviderFactory.createInstance(FacesContext.getCurrentInstance().getExternalContext());
         }
+    }
+
+    /**
+     * Writes the <code>autocomplete</code> attribute of a hidden field carrying view state.
+     *
+     * @param writer the writer positioned on the open element.
+     * @throws IOException when writing fails.
+     */
+    protected void writeViewStateAutocompleteAttribute(ResponseWriter writer) throws IOException {
+        writer.writeAttribute("autocomplete", viewStateAutocomplete, null);
     }
 
     public static void createAndStoreCryptographicallyStrongTokenInSession(HttpSession session) {
@@ -209,7 +207,7 @@ public abstract class StateHelper {
             writer.writeAttribute("name", CLIENT_WINDOW_PARAM.getName(context), null);
             writer.writeAttribute("id", Util.getClientWindowId(context), null);
             writer.writeAttribute("value", window.getId(), null);
-            writer.writeAttribute("autocomplete", webConfig.isOptionEnabled(AutoCompleteOffOnViewState) ? "off" : "one-time-code", null);
+            writeViewStateAutocompleteAttribute(writer);
             writer.endElement("input");
         }
     }

@@ -19,7 +19,6 @@ package org.glassfish.mojarra.renderkit;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINEST;
 import static java.util.logging.Level.WARNING;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.AutoCompleteOffOnViewState;
 import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.EnableViewStateIdRendering;
 import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.GenerateUniqueServerStateIds;
 import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.NumberOfLogicalViews;
@@ -215,7 +214,7 @@ public class ServerSideStateHelper extends StateHelper {
                 writer.writeAttribute("id", viewStateId, null);
             }
             writer.writeAttribute("value", id, null);
-            writer.writeAttribute("autocomplete", webConfig.isOptionEnabled(AutoCompleteOffOnViewState) ? "off" : "one-time-code", null);
+            writeViewStateAutocompleteAttribute(writer);
             writer.endElement("input");
 
             writeClientWindowField(ctx, writer);

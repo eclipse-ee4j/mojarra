@@ -17,7 +17,6 @@
 package org.glassfish.mojarra.renderkit;
 
 import static java.util.logging.Level.WARNING;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.AutoCompleteOffOnViewState;
 import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.EnableViewStateIdRendering;
 import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.ClientStateTimeout;
 import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.ClientStateWriteBufferSize;
@@ -160,7 +159,7 @@ public class ClientSideStateHelper extends StateHelper {
             StringBuilder stateBuilder = new StringBuilder();
             doWriteState(ctx, state, new StringBuilderWriter(stateBuilder));
             writer.writeAttribute("value", stateBuilder.toString(), null);
-            writer.writeAttribute("autocomplete", webConfig.isOptionEnabled(AutoCompleteOffOnViewState) ? "off" : "one-time-code", null);
+            writeViewStateAutocompleteAttribute(writer);
             writer.endElement("input");
 
             writeClientWindowField(ctx, writer);

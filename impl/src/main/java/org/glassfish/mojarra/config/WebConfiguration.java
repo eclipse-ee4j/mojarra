@@ -313,6 +313,31 @@ public class WebConfiguration {
         }
     }
 
+    /**
+     * <p>
+     * Returns the value to write as the <code>autocomplete</code> attribute of the hidden fields which carry the view
+     * state.
+     * </p>
+     *
+     * <p>
+     * The deprecated <code>autoCompleteOffOnViewState</code> is honored when the replacement was not set, where
+     * <code>true</code> maps to <code>off</code> and <code>false</code> to the default, which is what those two meant
+     * before the replacement existed.
+     * </p>
+     *
+     * @return the attribute value.
+     */
+    public String getViewStateAutocomplete() {
+        String value = getOptionValue(WebContextInitParameter.ViewStateAutocomplete);
+
+        if (!isSet(WebContextInitParameter.ViewStateAutocomplete.getQualifiedName())
+                && isOptionEnabled(BooleanWebContextInitParameter.AutoCompleteOffOnViewState)) {
+            value = "off";
+        }
+
+        return value;
+    }
+
     public void doPostBringupActions() {
         discoverResourceLibraryContracts();
     }
@@ -506,8 +531,9 @@ public class WebConfiguration {
                 continue;
             }
 
+            warnAboutDeprecatedParameter(contextName, param.getQualifiedName(), param.getAlternateName());
+
             BooleanWebContextInitParameter alternate = param.getAlternate();
-            warnAboutDeprecatedParameter(contextName, param.getQualifiedName(), alternate == null ? null : alternate.getQualifiedName());
 
             if (alternate != null && !isSet(alternate.getQualifiedName())) {
                 booleanContextParameters.put(alternate, booleanContextParameters.get(param));
@@ -684,6 +710,7 @@ public class WebConfiguration {
         DisableIdUniquenessCheck("org.glassfish.mojarra.disableIdUniquenessCheck", "false"), // true|false|auto; default false (always check), opt-in auto skips it in Production
         DuplicateJARPattern("org.glassfish.mojarra.duplicateJARPattern", ""),
         AllowedHttpMethods("org.glassfish.mojarra.allowedHttpMethods", ""), // white space separated, upper case; * means allow all
+        ViewStateAutocomplete("org.glassfish.mojarra.viewStateAutocomplete", "one-time-code"),
         FullStateSavingViewIds(StateManager.FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME, ""),
 
         FaceletsProcessingFileExtensionProcessAs("", ""),
@@ -758,7 +785,7 @@ public class WebConfiguration {
         PartialStateSaving(StateManager.PARTIAL_STATE_SAVING_PARAM_NAME, true),
         RefreshTransientBuildOnPSS("org.glassfish.mojarra.refreshTransientBuildOnPSS", false),
         GenerateUniqueServerStateIds("org.glassfish.mojarra.generateUniqueServerStateIds", true),
-        AutoCompleteOffOnViewState("org.glassfish.mojarra.autoCompleteOffOnViewState", false),
+        AutoCompleteOffOnViewState("org.glassfish.mojarra.autoCompleteOffOnViewState", false, WebContextInitParameter.ViewStateAutocomplete.getQualifiedName()),
         EnableThreading("org.glassfish.mojarra.enableThreading", false),
         AllowTextChildren("org.glassfish.mojarra.allowTextChildren", false, DEPRECATED),
         CacheResourceModificationTimestamp("org.glassfish.mojarra.cacheResourceModificationTimestamp", false),
@@ -775,6 +802,7 @@ public class WebConfiguration {
         private final String qualifiedName;
         private final boolean defaultValue;
         private final BooleanWebContextInitParameter alternate;
+        private final String alternateName;
         private final boolean deprecated;
 
         public String getQualifiedName() {
@@ -786,10 +814,18 @@ public class WebConfiguration {
         }
 
         /**
-         * @return the parameter which replaces this one, or <code>null</code> when there is no replacement.
+         * @return the parameter which replaces this one and inherits its value, or <code>null</code> when there is none.
          */
         public BooleanWebContextInitParameter getAlternate() {
             return alternate;
+        }
+
+        /**
+         * @return the qualified name of the replacement, which may live in another enum and then only gets named rather
+         * than handed the value, or <code>null</code> when there is no replacement.
+         */
+        public String getAlternateName() {
+            return alternateName;
         }
 
         public boolean isDeprecated() {
@@ -797,21 +833,27 @@ public class WebConfiguration {
         }
 
         BooleanWebContextInitParameter(String qualifiedName, boolean defaultValue) {
-            this(qualifiedName, defaultValue, null, false);
+            this(qualifiedName, defaultValue, null, null, false);
         }
 
         BooleanWebContextInitParameter(String qualifiedName, boolean defaultValue, BooleanWebContextInitParameter alternate) {
-            this(qualifiedName, defaultValue, alternate, true);
+            this(qualifiedName, defaultValue, alternate, alternate.getQualifiedName(), true);
+        }
+
+        BooleanWebContextInitParameter(String qualifiedName, boolean defaultValue, String alternateName) {
+            this(qualifiedName, defaultValue, null, alternateName, true);
         }
 
         BooleanWebContextInitParameter(String qualifiedName, boolean defaultValue, boolean deprecated) {
-            this(qualifiedName, defaultValue, null, deprecated);
+            this(qualifiedName, defaultValue, null, null, deprecated);
         }
 
-        private BooleanWebContextInitParameter(String qualifiedName, boolean defaultValue, BooleanWebContextInitParameter alternate, boolean deprecated) {
+        private BooleanWebContextInitParameter(String qualifiedName, boolean defaultValue, BooleanWebContextInitParameter alternate, String alternateName,
+                boolean deprecated) {
             this.qualifiedName = qualifiedName;
             this.defaultValue = defaultValue;
             this.alternate = alternate;
+            this.alternateName = alternateName;
             this.deprecated = deprecated;
         }
 

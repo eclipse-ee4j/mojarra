@@ -64,7 +64,7 @@ The *Performance* column tells where the cost of changing the parameter lands: `
 </thead>
 <tbody>
 <tr><th colspan="5" align="left"><br/><code>jakarta.faces.FULL_STATE_SAVING_VIEW_IDS</code></th></tr>
-<tr><td><code>String</code></td><td><em>(none)</em></td><td>2.0</td><td>request</td><td>Comma separated list of view IDs which must save their state in full, even when partial state saving is enabled. Every listed view falls back to the slower and much larger full state saving, so an empty list is the fastest.</td></tr>
+<tr><td><code>String[]</code></td><td><em>(none)</em></td><td>2.0</td><td>request</td><td>Comma separated list of view IDs which must save their state in full, even when partial state saving is enabled. Every listed view falls back to the slower and much larger full state saving, so an empty list is the fastest.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>jakarta.faces.PARTIAL_STATE_SAVING</code></th></tr>
 <tr><td><code>boolean</code></td><td><code>true</code></td><td>2.0</td><td>request</td><td>Saves only the state which differs from the initial state of the view, instead of the state of the entire component tree. <code>true</code> is faster and produces a fraction of the state.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>jakarta.faces.SERIALIZE_SERVER_STATE</code></th></tr>
@@ -197,6 +197,8 @@ The *Performance* column tells where the cost of changing the parameter lands: `
 <tr><td><code>boolean</code></td><td><code>false</code></td><td>1.2</td><td>startup</td><td>Validates every Faces configuration file against its schema during startup. <code>false</code> is faster, the validation only pays off while developing those files.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.verifyObjects</code></th></tr>
 <tr><td><code>boolean</code></td><td><code>false</code></td><td>1.2</td><td>startup</td><td>Checks during startup that every component, converter, validator and renderer named in the Faces configuration really exists, has a public constructor without arguments and is of the expected type. <code>false</code> is faster because the check has to load every one of those classes. It catches mistakes in the configuration, so it is only useful while developing.</td></tr>
+<tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.viewStateAutocomplete</code></th></tr>
+<tr><td><code>String</code></td><td><code>one-time-code</code></td><td>5.0</td><td>-</td><td>Value of the <code>autocomplete</code> attribute rendered on the hidden view state field, which keeps password managers and browser autofill away from it. <code>one-time-code</code> is the default because several browsers ignore <code>off</code> on a hidden input but do honor the one time code hint. Set it to <code>off</code> for the older behavior, or to any other token a browser is known to honor.</td></tr>
 </tbody>
 </table>
 
@@ -224,7 +226,7 @@ The *Performance* column tells where the cost of changing the parameter lands: `
 </thead>
 <tbody>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.autoCompleteOffOnViewState</code></th></tr>
-<tr><td><code>boolean</code></td><td><code>false</code></td><td>1.2_15</td><td>-</td><td>Renders <code>autocomplete="off"</code> on the hidden view state field instead of <code>autocomplete="one-time-code"</code>. Either way the browser is told not to restore a stale state on a back navigation; <code>one-time-code</code> is the default because several browsers ignore <code>off</code> on a hidden input but do honor the one time code hint.</td></tr>
+<tr><td><code>boolean</code></td><td><code>false</code></td><td>1.2_15</td><td>-</td><td><strong>Deprecated</strong> since 5.0, replaced by <code>org.glassfish.mojarra.viewStateAutocomplete</code>, which is honored instead when both are set. It warns at startup when set, and <code>true</code> still means <code>autocomplete="off"</code>.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.clientStateTimeout</code></th></tr>
 <tr><td><code>int</code></td><td><em>(none)</em></td><td>1.2_05</td><td>-</td><td>Amount of minutes client side saved state stays valid, after which restoring it fails with a <code>ViewExpiredException</code>. Only active when explicitly set.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.clientStateWriteBufferSize</code></th></tr>
@@ -272,7 +274,7 @@ The *Performance* column tells where the cost of changing the parameter lands: `
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.cacheResourceModificationTimestamp</code></th></tr>
 <tr><td><code>boolean</code></td><td><code>false</code></td><td>2.0.4</td><td>request</td><td>Caches the last modified timestamp of a resource instead of reading it from the file system on every request. <code>true</code> is faster and is what you want in production.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.compressableMimeTypes</code></th></tr>
-<tr><td><code>String</code></td><td><em>(none)</em></td><td>2.0.0</td><td>request</td><td>Comma separated list of mime types of resources which are GZIP compressed when served. A trailing <code>/*</code> acts as a wildcard, as in <code>text/*</code>. Compression spends CPU to save bandwidth, so list the text based types only.</td></tr>
+<tr><td><code>String[]</code></td><td><em>(none)</em></td><td>2.0.0</td><td>request</td><td>Comma separated list of mime types of resources which are GZIP compressed when served. A trailing <code>/*</code> acts as a wildcard, as in <code>text/*</code>. Compression spends CPU to save bandwidth, so list the text based types only.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.defaultResourceMaxAge</code></th></tr>
 <tr><td><code>int</code></td><td><code>604800000</code></td><td>2.0.0</td><td>request</td><td>Amount of milliseconds a resource may be cached by the client, as expressed in the <code>Expires</code> response header. A higher value means fewer resource requests reach the server.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.enableMissingResourceLibraryDetection</code></th></tr>
@@ -340,7 +342,7 @@ The *Performance* column tells where the cost of changing the parameter lands: `
 </thead>
 <tbody>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.allowedHttpMethods</code></th></tr>
-<tr><td><code>String</code></td><td><em>(none)</em></td><td>2.0.6</td><td>-</td><td>Space separated list of case sensitive HTTP method names the <code>FacesServlet</code> accepts, which when unset is every method it knows: <code>OPTIONS GET HEAD POST PUT DELETE TRACE CONNECT</code>. <code>*</code> allows every method, including ones it does not know. Any other method is rejected with <code>400</code>.</td></tr>
+<tr><td><code>String[]</code></td><td><em>(none)</em></td><td>2.0.6</td><td>-</td><td>Space separated list of case sensitive HTTP method names the <code>FacesServlet</code> accepts, which when unset is every method it knows: <code>OPTIONS GET HEAD POST PUT DELETE TRACE CONNECT</code>. <code>*</code> allows every method, including ones it does not know. Any other method is rejected with <code>400</code>.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.disableClientStateEncryption</code></th></tr>
 <tr><td><code>boolean</code></td><td><code>false</code></td><td>2.1.14</td><td>request</td><td>Disables encryption of client side saved state. It exists to make the state readable while debugging, together with <code>org.glassfish.mojarra.enableClientStateDebugging</code>, and drops the <code>ByteArrayGuard</code> which makes the state both unreadable and tamper evident, so never set it in production. Encryption is only set up at all when JNDI entries can be processed.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.disallowDoctypeDecl</code></th></tr>
