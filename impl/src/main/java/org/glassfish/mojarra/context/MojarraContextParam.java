@@ -22,10 +22,6 @@ package org.glassfish.mojarra.context;
 public enum MojarraContextParam {
 
     /**
-     * Enable distributable code.
-     */
-    EnableDistributable("org.glassfish.mojarra.enableDistributable", Boolean.class, false),
-    /**
      * Send the "X-Powered-By" header.
      */
     SendPoweredByHeader("org.glassfish.mojarra.sendPoweredByHeader", Boolean.class, false);
