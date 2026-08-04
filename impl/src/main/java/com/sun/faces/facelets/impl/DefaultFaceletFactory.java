@@ -37,6 +37,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
@@ -86,6 +87,7 @@ public class DefaultFaceletFactory {
     private ResourceManager manager;
     private URL baseUrl;
     private String baseUrlAsString;
+    private List<String> faceletsSuffixes;
     private long refreshPeriodInMillis;
     private FaceletCache<DefaultFacelet> cache;
     private ConcurrentMap<String, FaceletCache<DefaultFacelet>> cachePerContract;
@@ -111,6 +113,7 @@ public class DefaultFaceletFactory {
         this.manager = ApplicationAssociate.getInstance(externalContext).getResourceManager();
         baseUrl = resolver.resolveUrl("/");
         baseUrlAsString = baseUrl.toExternalForm();
+        faceletsSuffixes = config.getConfiguredExtensions();
         this.idMappers = config.isOptionEnabled(UseFaceletsID) ? null : new Cache<>(new IdMapperFactory());
         this.refreshPeriodInMillis = refreshPeriodInSeconds >= 0 ? refreshPeriodInSeconds * 1000 : -1;
         if (log.isLoggable(Level.FINE)) {
@@ -166,10 +169,45 @@ public class DefaultFaceletFactory {
             if (url == null) {
                 throw new FacesFileNotFoundException(path + " Not Found in ExternalContext as a Resource");
             }
+            // A top-level view is already constrained by the ViewHandler/container; an include or
+            // template (resolved against a nested facelet as source) must point at a Facelet resource,
+            // so a user-controlled src cannot disclose descriptors such as /WEB-INF/web.xml.
+            if (source != baseUrl) {
+                requireFaceletResource(url, path);
+            }
             return url;
         }
 
-        return new URL(source, path);
+        // A relative src/template must resolve to a Facelet inside this application. Reject absolute
+        // URLs (http:, file:, jar:, ...) whose scheme discards the base, "../" traversal that escapes
+        // the deployment, and any non-Facelet resource.
+        URL url = new URL(source, path);
+        requireSameOrigin(source, url, path);
+        requireWithinApplicationRoot(url, path);
+        requireFaceletResource(url, path);
+        return url;
+    }
+
+    private void requireSameOrigin(URL source, URL url, String path) throws FacesFileNotFoundException {
+        if (!url.getProtocol().equals(source.getProtocol()) || !Objects.equals(url.getAuthority(), source.getAuthority())) {
+            throw new FacesFileNotFoundException(path + " must be a relative path within the application");
+        }
+    }
+
+    private void requireWithinApplicationRoot(URL url, String path) throws FacesFileNotFoundException {
+        if (url.getProtocol().equals(baseUrl.getProtocol()) && !url.toExternalForm().startsWith(baseUrlAsString)) {
+            throw new FacesFileNotFoundException(path + " is not within the application root");
+        }
+    }
+
+    private void requireFaceletResource(URL url, String path) throws FacesFileNotFoundException {
+        String resourcePath = url.getPath();
+        for (String suffix : faceletsSuffixes) {
+            if (resourcePath.endsWith(suffix)) {
+                return;
+            }
+        }
+        throw new FacesFileNotFoundException(path + " is not a Facelet resource");
     }
 
     /**
