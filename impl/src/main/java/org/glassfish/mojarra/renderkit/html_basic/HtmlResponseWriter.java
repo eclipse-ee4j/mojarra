@@ -120,7 +120,6 @@ public class HtmlResponseWriter extends ResponseWriter {
 
     // Enables hiding of inlined script and style
     // elements from old browsers
-    private Boolean isScriptHidingEnabled;
 
     // Enables scripts to be included in attribute values
     private Boolean isScriptInAttributeValueEnabled;
@@ -198,7 +197,7 @@ public class HtmlResponseWriter extends ResponseWriter {
      * @throws jakarta.faces.FacesException the encoding is not recognized.
      */
     public HtmlResponseWriter(Writer writer, String contentType, String encoding) throws FacesException {
-        this(writer, contentType, encoding, null, null, null, false);
+        this(writer, contentType, encoding, null, null, false);
     }
 
     /**
@@ -210,18 +209,13 @@ public class HtmlResponseWriter extends ResponseWriter {
      * The argument configPrefs is a map of configurable prefs that affect this instance's behavior. Supported keys are:
      * </p>
      *
-     * <p>
-     * BooleanWebContextInitParameter.EnableJSStyleHiding: <code>true</code> if the writer should attempt to hide JS from
-     * older browsers
-     * </p>
-     *
      * @param writer the <code>ResponseWriter</code>
      * @param contentType the content type.
      * @param encoding the character encoding.
      *
      * @throws jakarta.faces.FacesException the encoding is not recognized.
      */
-    public HtmlResponseWriter(Writer writer, String contentType, String encoding, Boolean isScriptHidingEnabled, Boolean isScriptInAttributeValueEnabled,
+    public HtmlResponseWriter(Writer writer, String contentType, String encoding, Boolean isScriptInAttributeValueEnabled,
             WebConfiguration.DisableUnicodeEscaping disableUnicodeEscaping, boolean isPartial) throws FacesException {
 
         this.writer = writer;
@@ -234,12 +228,6 @@ public class HtmlResponseWriter extends ResponseWriter {
 
         // init those configuration parameters not yet initialized
         WebConfiguration webConfig = null;
-        if (isScriptHidingEnabled == null) {
-            webConfig = getWebConfiguration(webConfig);
-            isScriptHidingEnabled = null == webConfig ? BooleanWebContextInitParameter.EnableJSStyleHiding.getDefaultValue()
-                    : webConfig.isOptionEnabled(BooleanWebContextInitParameter.EnableJSStyleHiding);
-        }
-
         if (isScriptInAttributeValueEnabled == null) {
             webConfig = getWebConfiguration(webConfig);
             isScriptInAttributeValueEnabled = null == webConfig ? BooleanWebContextInitParameter.EnableScriptInAttributeValue.getDefaultValue()
@@ -258,7 +246,6 @@ public class HtmlResponseWriter extends ResponseWriter {
 
         // and store them for later use
         this.isPartial = isPartial;
-        this.isScriptHidingEnabled = isScriptHidingEnabled;
         this.isScriptInAttributeValueEnabled = isScriptInAttributeValueEnabled;
         this.disableUnicodeEscaping = disableUnicodeEscaping;
 
@@ -347,7 +334,7 @@ public class HtmlResponseWriter extends ResponseWriter {
     @Override
     public ResponseWriter cloneWithWriter(Writer writer) {
         try {
-            HtmlResponseWriter responseWriter = new HtmlResponseWriter(writer, getContentType(), getCharacterEncoding(), isScriptHidingEnabled,
+            HtmlResponseWriter responseWriter = new HtmlResponseWriter(writer, getContentType(), getCharacterEncoding(),
                     isScriptInAttributeValueEnabled, disableUnicodeEscaping, isPartial);
             responseWriter.dontEscape = dontEscape;
             responseWriter.writingCdata = writingCdata;
@@ -474,10 +461,6 @@ public class HtmlResponseWriter extends ResponseWriter {
                     } else {
                         writer.write("\n]]>\n");
                     }
-                }
-            } else {
-                if (isScriptHidingEnabled) {
-                    writer.write("\n//-->\n");
                 }
             }
         }
@@ -1038,10 +1021,6 @@ public class HtmlResponseWriter extends ResponseWriter {
                         } else {
                             writer.write("\n<![CDATA[\n");
                         }
-                    }
-                } else {
-                    if (isScriptHidingEnabled) {
-                        writer.write("\n<!--\n");
                     }
                 }
                 origWriter = writer;

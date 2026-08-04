@@ -782,7 +782,6 @@ public class WebConfiguration {
         EnableClientStateDebugging("org.glassfish.mojarra.enableClientStateDebugging", false),
         PreferXHTMLContentType("org.glassfish.mojarra.preferXHTML", false),
         CompressViewState("org.glassfish.mojarra.compressViewState", true),
-        EnableJSStyleHiding("org.glassfish.mojarra.enableJSStyleHiding", false),
         EnableScriptInAttributeValue("org.glassfish.mojarra.enableScriptsInAttributeValues", true),
         WriteStateAtFormEnd("org.glassfish.mojarra.writeStateAtFormEnd", true),
         EnableViewStateIdRendering("org.glassfish.mojarra.enableViewStateIdRendering", true),

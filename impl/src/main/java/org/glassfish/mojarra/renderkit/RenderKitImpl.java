@@ -18,7 +18,6 @@
 
 package org.glassfish.mojarra.renderkit;
 
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.EnableJSStyleHiding;
 import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.EnableScriptInAttributeValue;
 import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.PreferXHTMLContentType;
 import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.DisableUnicodeEscaping;
@@ -240,11 +239,10 @@ public class RenderKitImpl extends RenderKit {
             characterEncoding = RIConstants.CHAR_ENCODING;
         }
 
-        boolean scriptHiding = webConfig.isOptionEnabled(EnableJSStyleHiding);
         boolean scriptInAttributes = webConfig.isOptionEnabled(EnableScriptInAttributeValue);
         WebConfiguration.DisableUnicodeEscaping escaping = WebConfiguration.DisableUnicodeEscaping.getByValue(webConfig.getOptionValue(DisableUnicodeEscaping));
         boolean isPartial = context.getPartialViewContext().isPartialRequest();
-        return new HtmlResponseWriter(writer, contentType, characterEncoding, scriptHiding, scriptInAttributes, escaping, isPartial);
+        return new HtmlResponseWriter(writer, contentType, characterEncoding, scriptInAttributes, escaping, isPartial);
     }
 
     private boolean preferXhtml() {
