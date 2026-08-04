@@ -21,7 +21,6 @@ import java.nio.charset.StandardCharsets;
 
 import jakarta.faces.render.RenderKitFactory;
 
-
 /**
  * This class contains literal strings used throughout the Faces RI.
  */

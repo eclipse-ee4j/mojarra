@@ -54,8 +54,8 @@ import jakarta.faces.context.FacesContext;
 import jakarta.servlet.ServletContext;
 
 import org.glassfish.mojarra.application.ApplicationAssociate;
-import org.glassfish.mojarra.context.FacesContextParam;
 import org.glassfish.mojarra.application.view.FaceletViewHandlingStrategy;
+import org.glassfish.mojarra.context.FacesContextParam;
 import org.glassfish.mojarra.facelets.util.Classpath;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.MojarraVersion;
@@ -123,8 +123,7 @@ public class WebConfiguration {
 
     private static final String RESOURCE_CONTRACT_SUFFIX = "/" + ResourceHandler.RESOURCE_CONTRACT_XML;
 
-    // Logging level. Defaults to FINE
-    private Level loggingLevel;
+    private final Level loggingLevel;
 
     private final Map<BooleanWebContextInitParameter, Boolean> booleanContextParameters = new EnumMap<>(BooleanWebContextInitParameter.class);
 
@@ -161,12 +160,12 @@ public class WebConfiguration {
             processJndiEntries(contextName);
         }
         projectStage = resolveProjectStage(servletContext);
-        loggingLevel = resolveLoggingLevel(servletContext);
+        loggingLevel = resolveLoggingLevel(servletContext, contextName);
+        logEnvironmentEntries(contextName);
 
         processBooleanParameters(servletContext, contextName);
         processInitParameters(servletContext, contextName);
 
-        // Before the deprecated ones, so that a value carried over from a legacy name still wins over a stage default.
         processDevelopmentDefaults();
         processDeprecatedParameters(contextName);
         warnAboutUnrecognizedParameters(contextName);
@@ -228,20 +227,56 @@ public class WebConfiguration {
 
     /**
      * <p>
+     * Reports the JNDI environment entries, which have to be read before the level at which they are reported can be
+     * resolved, because one of them decides the project stage which that level derives from.
+     * </p>
+     */
+    private void logEnvironmentEntries(String contextName) {
+        if (LOGGER.isLoggable(loggingLevel)) {
+            envEntries.forEach((entry, value) -> LOGGER.log(loggingLevel, "faces.config.webconfig.enventryinfo",
+                    new Object[] { contextName, entry.getQualifiedName(), value }));
+        }
+    }
+
+    /**
+     * <p>
      * The level at which every recognized parameter is logged, which is informational outside Production so that a
      * deployment can be read back from its own log, and fine grained there so that it stays out of the way. Setting
      * <code>displayConfiguration</code> explicitly overrules that either way, which is what keeps it usable in
      * Production for a deployment whose parameters are substituted at build time.
      * </p>
      */
-    private Level resolveLoggingLevel(ServletContext servletContext) {
-        String value = servletContext.getInitParameter(WebContextInitParameter.DisplayConfiguration.getQualifiedName());
+    private Level resolveLoggingLevel(ServletContext servletContext, String contextName) {
+        Level derived = projectStage == ProjectStage.Production ? Level.FINE : Level.INFO;
+        String value = getRawInitParameter(servletContext, WebContextInitParameter.DisplayConfiguration.getQualifiedName());
 
-        if (value == null || AUTO.equalsIgnoreCase(value.trim())) {
-            return projectStage == ProjectStage.Production ? Level.FINE : Level.INFO;
+        if (value == null || AUTO.equalsIgnoreCase(value)) {
+            return derived;
         }
 
-        return Boolean.parseBoolean(value.trim()) ? Level.INFO : Level.FINE;
+        if (!ALLOWABLE_BOOLEANS.matcher(value).matches()) {
+            LOGGER.log(Level.WARNING, "faces.config.webconfig.boolconfig.invalidvalue", new Object[] { contextName, value,
+                    WebContextInitParameter.DisplayConfiguration.getQualifiedName(), "true|false|" + AUTO, AUTO });
+            return derived;
+        }
+
+        return Boolean.parseBoolean(value) ? Level.INFO : Level.FINE;
+    }
+
+    /**
+     * <p>
+     * The value as declared, under either prefix and without reporting the legacy one, which the regular pass over the
+     * parameters does later. This exists because the level at which that pass reports has to be known before it runs.
+     * </p>
+     */
+    private static String getRawInitParameter(ServletContext servletContext, String qualifiedName) {
+        String value = servletContext.getInitParameter(qualifiedName);
+
+        if (value == null) {
+            value = servletContext.getInitParameter(LEGACY_PARAM_PREFIX + qualifiedName.substring(CURRENT_PARAM_PREFIX.length()));
+        }
+
+        return value == null ? null : value.trim();
     }
 
     /**
@@ -258,7 +293,8 @@ public class WebConfiguration {
         }
 
         try {
-            return value != null ? ProjectStage.valueOf(value.trim()) : ProjectStage.Production;
+            // Via the parameter itself, whose conversion matches an enum constant regardless of case.
+            return FacesContextParam.PROJECT_STAGE.<ProjectStage>toValue(value).orElse(ProjectStage.Production);
         } catch (IllegalArgumentException e) {
             LOGGER.log(Level.WARNING, "faces.config.webconfig.boolconfig.invalidvalue", new Object[] { servletContext.getContextPath(), value,
                     ProjectStage.PROJECT_STAGE_PARAM_NAME, Arrays.toString(ProjectStage.values()), ProjectStage.Production });
@@ -487,15 +523,6 @@ public class WebConfiguration {
 
     /**
      * <p>
-     * Resolves the project stage from its JNDI environment entry, falling back to the context parameter, which is what
-     * {@link jakarta.faces.application.Application#getProjectStage()} ends up doing as well. Unlike that one this is
-     * answerable while the configuration is still being processed, when there is no <code>Application</code> yet.
-     * </p>
-     *
-     * @return the project stage.
-     */
-    /**
-     * <p>
      * Returns the value of a specification context parameter which used to be a Mojarra one, honoring the name it had
      * when the specification name is not set, and warning when it does.
      * </p>
@@ -516,7 +543,7 @@ public class WebConfiguration {
                     LOGGER.log(Level.WARNING, "faces.config.webconfig.param.deprecated",
                             new Object[] { context.getExternalContext().getContextName(), legacyName, param.getName() });
 
-                    return param.<T>toValue(value).orElseGet(() -> param.getDefaultValue(context));
+                    return param.<T>toValue(value).orElseThrow();
                 }
             }
         }
@@ -564,7 +591,7 @@ public class WebConfiguration {
         }
 
         for (BooleanWebContextInitParameter param : DEVELOPMENT_ONLY_OPTIONS) {
-            if (isSet(param.getQualifiedName()) && isOptionEnabled(param) != param.getDefaultValue()) {
+            if (isOptionEnabled(param) != param.getDefaultValue()) {
                 LOGGER.log(Level.WARNING, "faces.config.webconfig.param.development_only",
                         new Object[] { context.getExternalContext().getContextName(), param.getQualifiedName(), projectStage,
                                 param.getDefaultValue() });
@@ -779,7 +806,7 @@ public class WebConfiguration {
     private static void warnAboutDeprecatedParameter(String contextName, String qualifiedName, String alternateName) {
 
         if (alternateName == null) {
-            LOGGER.log(Level.WARNING, "faces.config.webconfig.param.deprecated.for_removal", new Object[] { contextName, qualifiedName });
+            LOGGER.log(Level.WARNING, "faces.config.webconfig.param.deprecated.no_replacement", new Object[] { contextName, qualifiedName });
         } else {
             LOGGER.log(Level.WARNING, "faces.config.webconfig.param.deprecated", new Object[] { contextName, qualifiedName, alternateName });
         }
@@ -889,11 +916,6 @@ public class WebConfiguration {
                 }
 
                 if (value != null) {
-                    if (LOGGER.isLoggable(Level.INFO)) {
-                        if (LOGGER.isLoggable(loggingLevel)) {
-                            LOGGER.log(loggingLevel, "faces.config.webconfig.enventryinfo", new Object[] { contextName, entryName, value });
-                        }
-                    }
                     envEntries.put(entry, value);
                 }
             }

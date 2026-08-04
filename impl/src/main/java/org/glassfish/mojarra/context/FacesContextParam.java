@@ -2,19 +2,12 @@ package org.glassfish.mojarra.context;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toSet;
 import static org.glassfish.mojarra.RIConstants.EMPTY_STRING_ARRAY;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Function;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ProjectStage;
@@ -238,12 +231,6 @@ public enum FacesContextParam {
     private final StringArray separated;
     private final Class<?> type;
 
-    private static final Logger LOGGER = Logger.getLogger(FacesContextParam.class.getName());
-
-    /**
-     * Maps spec context-parameter names to their legacy Mojarra-specific equivalents from 4.x.
-     * When a spec name is unset but its legacy alias is, the legacy value is used and a deprecation warning is logged.
-     */
     private <T> FacesContextParam(String name, T defaultValue) {
         this(name, defaultValue, null, null);
     }

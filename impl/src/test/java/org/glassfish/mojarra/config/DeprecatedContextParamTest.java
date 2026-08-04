@@ -42,7 +42,7 @@ import org.junit.jupiter.api.Test;
  */
 class DeprecatedContextParamTest {
 
-    private static final String FOR_REMOVAL = "faces.config.webconfig.param.deprecated.for_removal";
+    private static final String NO_REPLACEMENT = "faces.config.webconfig.param.deprecated.no_replacement";
     private static final String REPLACED = "faces.config.webconfig.param.deprecated";
 
     private final Logger logger = FacesLogger.CONFIG.getLogger();
@@ -143,7 +143,7 @@ class DeprecatedContextParamTest {
     }
 
     private List<String> warnedParameterNames() {
-        return warnedParameterNames(FOR_REMOVAL);
+        return warnedParameterNames(NO_REPLACEMENT);
     }
 
     private List<String> warnedParameterNames(String messageKey) {

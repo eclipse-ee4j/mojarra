@@ -19,17 +19,17 @@ package org.glassfish.mojarra.config.manager.tasks;
 import static java.lang.System.arraycopy;
 import static java.text.MessageFormat.format;
 import static java.util.logging.Level.WARNING;
+import static javax.xml.XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
 import static org.glassfish.mojarra.RIConstants.CHAR_ENCODING;
-import static org.glassfish.mojarra.config.manager.FacesSchema.CURRENT_NAMESPACE;
 import static org.glassfish.mojarra.config.manager.DbfFactory.FACES_ENTITY_RESOLVER;
 import static org.glassfish.mojarra.config.manager.DbfFactory.FACES_ERROR_HANDLER;
+import static org.glassfish.mojarra.config.manager.FacesSchema.CURRENT_NAMESPACE;
 import static org.glassfish.mojarra.config.manager.FacesSchema.Schemas.FACES_CONFIG_1_X_DEFAULT_NS;
 import static org.glassfish.mojarra.config.manager.FacesSchema.Schemas.JAKARTAEE_SCHEMA_DEFAULT_NS;
 import static org.glassfish.mojarra.config.manager.FacesSchema.Schemas.JAVAEE_SCHEMA_DEFAULT_NS;
 import static org.glassfish.mojarra.config.manager.FacesSchema.Schemas.JAVAEE_SCHEMA_LEGACY_DEFAULT_NS;
 import static org.glassfish.mojarra.config.processor.FacesFlowDefinitionConfigProcessor.synthesizeEmptyFlowDefinition;
 import static org.glassfish.mojarra.config.processor.FacesFlowDefinitionConfigProcessor.uriIsFlowDefinition;
-import static javax.xml.XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
 import static org.glassfish.mojarra.util.Util.createTransformerFactory;
 
 import java.io.BufferedInputStream;
@@ -62,9 +62,9 @@ import org.glassfish.mojarra.config.manager.documents.DocumentInfo;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.Timer;
 import org.w3c.dom.Attr;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
@@ -87,6 +87,7 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
 
     private static final String EMPTY_FACES_CONFIG = "org/glassfish/mojarra/empty-faces-config.xml";
     private static final String FACES_CONFIG_TAGNAME = "faces-config";
+    private static final String FACELET_TAGLIB_TAGNAME = "facelet-taglib";
 
     /**
      * The namespaces a configuration document may legitimately declare, used to recognize one which was written with the
@@ -98,7 +99,6 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
             JAVAEE_SCHEMA_DEFAULT_NS,
             JAVAEE_SCHEMA_LEGACY_DEFAULT_NS,
             FACES_CONFIG_1_X_DEFAULT_NS);
-    private static final String FACELET_TAGLIB_TAGNAME = "facelet-taglib";
 
     /**
      * Stylesheet to convert 1.0 and 1.1 based faces-config documents to our private 1.1 schema for validation.

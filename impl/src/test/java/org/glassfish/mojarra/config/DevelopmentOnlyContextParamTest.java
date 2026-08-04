@@ -120,11 +120,26 @@ class DevelopmentOnlyContextParamTest {
      */
     @Test
     void disableClientStateEncryptionStillEnablesClientStateDebugging() {
+        assertTrue(configureDeprecated(ProjectStage.Development).isOptionEnabled(EnableClientStateDebugging));
+    }
+
+    /**
+     * And it is gated exactly like the parameter it was carried into. The value arrives under a name the application
+     * never declared, so a gate which asks whether the replacement was set would let this one straight through and drop
+     * the ByteArrayGuard in a deployed application.
+     */
+    @ParameterizedTest
+    @EnumSource(value = ProjectStage.class, names = "Development", mode = Mode.EXCLUDE)
+    void disableClientStateEncryptionIsGatedLikeItsReplacement(ProjectStage projectStage) {
+        assertFalse(configureDeprecated(projectStage).isOptionEnabled(EnableClientStateDebugging));
+    }
+
+    private static WebConfiguration configureDeprecated(ProjectStage projectStage) {
         MockServletContext servletContext = new MockServletContext();
-        servletContext.addInitParameter(PROJECT_STAGE_PARAM_NAME, ProjectStage.Development.name());
+        servletContext.addInitParameter(PROJECT_STAGE_PARAM_NAME, projectStage.name());
         servletContext.addInitParameter("org.glassfish.mojarra.disableClientStateEncryption", "true");
 
-        assertEquals(true, WebConfiguration.getInstance(servletContext).isOptionEnabled(EnableClientStateDebugging));
+        return gate(servletContext);
     }
 
     private static WebConfiguration configure(ProjectStage projectStage) {
@@ -133,6 +148,10 @@ class DevelopmentOnlyContextParamTest {
         servletContext.addInitParameter(EnableClientStateDebugging.getQualifiedName(), "true");
         servletContext.addInitParameter(GenerateUniqueServerStateIds.getQualifiedName(), "false");
 
+        return gate(servletContext);
+    }
+
+    private static WebConfiguration gate(MockServletContext servletContext) {
         ExternalContext externalContext = mock(ExternalContext.class);
         when(externalContext.getContext()).thenReturn(servletContext);
         when(externalContext.getContextName()).thenReturn("/test");

@@ -28,7 +28,6 @@ import jakarta.faces.event.PostAddToViewEvent;
 
 import org.glassfish.mojarra.application.ValidateComponentNesting;
 import org.glassfish.mojarra.config.WebConfiguration;
-import org.glassfish.mojarra.context.FacesContextParam;
 import org.glassfish.mojarra.util.FacesLogger;
 
 public class Stage {

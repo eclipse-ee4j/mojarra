@@ -29,12 +29,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import jakarta.faces.context.ExternalContext;
-import jakarta.faces.context.FacesContext;
 
 /**
  * Tests for {@link UrlBuilder}.

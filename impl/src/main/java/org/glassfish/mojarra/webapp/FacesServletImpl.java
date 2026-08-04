@@ -30,9 +30,9 @@ import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINER;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Level.WARNING;
-import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.AllowedHttpMethods;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Stream.concat;
+import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.AllowedHttpMethods;
 
 import java.io.IOException;
 import java.util.ArrayList;

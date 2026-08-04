@@ -34,11 +34,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Test;
-
 import org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter;
 import org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter;
 import org.glassfish.mojarra.context.FacesContextParam;
+import org.junit.jupiter.api.Test;
 
 /**
  * Validates <code>CONTEXT-PARAMS.md</code> in the repository root against the sources, so that a context parameter

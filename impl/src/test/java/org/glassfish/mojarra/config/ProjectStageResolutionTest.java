@@ -48,6 +48,25 @@ class ProjectStageResolutionTest {
         assertEquals(stage, resolve(stage.name()));
     }
 
+    /**
+     * The stage decides startup validation, resource caching and whether the debugging parameters are honored at all,
+     * so silently reading a differently cased value as Production would be expensive.
+     */
+    @ParameterizedTest
+    @EnumSource(ProjectStage.class)
+    void readsTheContextParameterRegardlessOfCase(ProjectStage stage) {
+        assertEquals(stage, resolve(stage.name().toLowerCase()), "lower case");
+        assertEquals(stage, resolve(stage.name().toUpperCase()), "upper case");
+    }
+
+    /**
+     * And an unusable value falls back rather than failing the deployment.
+     */
+    @Test
+    void fallsBackToProductionOnNonsense() {
+        assertEquals(ProjectStage.Production, resolve("Nonsense"));
+    }
+
     private static ProjectStage resolve(String contextParameterValue) {
         MockServletContext servletContext = new MockServletContext();
 

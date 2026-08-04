@@ -16,12 +16,12 @@
 
 package org.glassfish.mojarra.context;
 
+import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -41,9 +41,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
 import org.glassfish.mojarra.config.WebConfiguration;
 import org.glassfish.mojarra.mock.MockApplication;
 import org.glassfish.mojarra.mock.MockFacesContext;
@@ -51,6 +48,8 @@ import org.glassfish.mojarra.mock.MockHttpServletRequest;
 import org.glassfish.mojarra.mock.MockHttpServletResponse;
 import org.glassfish.mojarra.mock.MockHttpSession;
 import org.glassfish.mojarra.mock.MockServletContext;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 /**
  * The JUnit tests for the ExternalContextImpl class.

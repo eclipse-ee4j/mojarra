@@ -118,9 +118,6 @@ public class HtmlResponseWriter extends ResponseWriter {
     // Keep one instance of the script buffer per Writer
     private FastStringWriter scriptBuffer;
 
-    // Enables hiding of inlined script and style
-    // elements from old browsers
-
     // Enables scripts to be included in attribute values
     private Boolean isScriptInAttributeValueEnabled;
 

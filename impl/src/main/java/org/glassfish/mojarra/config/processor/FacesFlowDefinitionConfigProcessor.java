@@ -60,10 +60,10 @@ import jakarta.faces.flow.builder.SwitchBuilder;
 import jakarta.servlet.ServletContext;
 
 import org.glassfish.mojarra.RIConstants;
-import org.glassfish.mojarra.config.manager.FacesSchema;
 import org.glassfish.mojarra.application.ApplicationAssociate;
 import org.glassfish.mojarra.application.JavaFlowLoaderHelper;
 import org.glassfish.mojarra.config.WebConfiguration;
+import org.glassfish.mojarra.config.manager.FacesSchema;
 import org.glassfish.mojarra.config.manager.documents.DocumentInfo;
 import org.glassfish.mojarra.facelets.util.ReflectionUtil;
 import org.glassfish.mojarra.flow.FlowImpl;

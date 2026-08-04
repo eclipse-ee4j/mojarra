@@ -129,8 +129,8 @@ import jakarta.servlet.http.HttpSession;
 
 import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.application.ApplicationAssociate;
-import org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter;
 import org.glassfish.mojarra.config.WebConfiguration;
+import org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter;
 import org.glassfish.mojarra.context.FacesContextParam;
 import org.glassfish.mojarra.context.StateContext;
 import org.glassfish.mojarra.facelets.compiler.FaceletDoctype;
