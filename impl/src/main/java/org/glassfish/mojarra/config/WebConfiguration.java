@@ -766,6 +766,7 @@ public class WebConfiguration {
         DisallowDoctypeDecl("org.glassfish.mojarra.disallowDoctypeDecl", false),
         UseFaceletsID("org.glassfish.mojarra.useFaceletsID", false),
         DisableOptionalELResolver("org.glassfish.mojarra.disableOptionalELResolver", false),
+        SendPoweredByHeader("org.glassfish.mojarra.sendPoweredByHeader", false),
         ;
 
         private final String qualifiedName;
