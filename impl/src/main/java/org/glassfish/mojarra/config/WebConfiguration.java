@@ -26,6 +26,7 @@ import static org.glassfish.mojarra.util.Util.split;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Enumeration;
@@ -70,6 +71,16 @@ public class WebConfiguration {
     private static final Pattern ALLOWABLE_BOOLEANS = compile("true|false", CASE_INSENSITIVE);
 
     /**
+     * The value of a tri-state parameter which leaves the decision to the project stage.
+     */
+    private static final String AUTO = "auto";
+
+    /**
+     * How often, in minutes, a changed resource is noticed while developing.
+     */
+    private static final String RESOURCE_UPDATE_CHECK_PERIOD_IN_DEVELOPMENT = "5";
+
+    /**
      * Parameters which exist to make debugging easier and would weaken a deployment if honored anywhere else, so outside
      * Development they revert to their default, which is in each case the safe value.
      */
@@ -93,7 +104,7 @@ public class WebConfiguration {
     private static final String RESOURCE_CONTRACT_SUFFIX = "/" + ResourceHandler.RESOURCE_CONTRACT_XML;
 
     // Logging level. Defaults to FINE
-    private Level loggingLevel = Level.FINE;
+    private Level loggingLevel;
 
     private final Map<BooleanWebContextInitParameter, Boolean> booleanContextParameters = new EnumMap<>(BooleanWebContextInitParameter.class);
 
@@ -109,6 +120,8 @@ public class WebConfiguration {
 
     private final ServletContext servletContext;
 
+    private final ProjectStage projectStage;
+
     private FaceletsConfiguration faceletsConfig;
 
     private boolean hasFlows;
@@ -121,13 +134,82 @@ public class WebConfiguration {
         String contextName = servletContext.getContextPath();
 
         initSetList(servletContext);
-        processBooleanParameters(servletContext, contextName);
-        processInitParameters(servletContext, contextName);
-        processDeprecatedParameters(contextName);
+
+        // Before the parameters, because displayConfiguration decides at which level they are logged, and some of the
+        // others derive their default from the stage.
         if (canProcessJndiEntries()) {
             processJndiEntries(contextName);
         }
+        projectStage = resolveProjectStage(servletContext);
+        loggingLevel = resolveLoggingLevel(servletContext);
 
+        processBooleanParameters(servletContext, contextName);
+        processInitParameters(servletContext, contextName);
+
+        // Before the deprecated ones, so that a value carried over from a legacy name still wins over a stage default.
+        processDevelopmentDefaults();
+        processDeprecatedParameters(contextName);
+    }
+
+    /**
+     * <p>
+     * Applies the values which only make sense while developing, where noticing that a resource changed matters more
+     * than what it costs to notice. The declared default of each of these is the one which is right everywhere else,
+     * so this is the exception rather than the rule, and an explicit setting beats both.
+     * </p>
+     */
+    private void processDevelopmentDefaults() {
+        if (projectStage != ProjectStage.Development) {
+            return;
+        }
+
+        if (!isSet(BooleanWebContextInitParameter.CacheResourceModificationTimestamp.getQualifiedName())) {
+            booleanContextParameters.put(BooleanWebContextInitParameter.CacheResourceModificationTimestamp, false);
+        }
+
+        if (!isSet(WebContextInitParameter.ResourceUpdateCheckPeriod.getQualifiedName())) {
+            contextParameters.put(WebContextInitParameter.ResourceUpdateCheckPeriod, RESOURCE_UPDATE_CHECK_PERIOD_IN_DEVELOPMENT);
+        }
+    }
+
+    /**
+     * <p>
+     * The level at which every recognized parameter is logged, which is informational outside Production so that a
+     * deployment can be read back from its own log, and fine grained there so that it stays out of the way. Setting
+     * <code>displayConfiguration</code> explicitly overrules that either way, which is what keeps it usable in
+     * Production for a deployment whose parameters are substituted at build time.
+     * </p>
+     */
+    private Level resolveLoggingLevel(ServletContext servletContext) {
+        String value = servletContext.getInitParameter(WebContextInitParameter.DisplayConfiguration.getQualifiedName());
+
+        if (value == null || AUTO.equalsIgnoreCase(value.trim())) {
+            return projectStage == ProjectStage.Production ? Level.FINE : Level.INFO;
+        }
+
+        return Boolean.parseBoolean(value.trim()) ? Level.INFO : Level.FINE;
+    }
+
+    /**
+     * <p>
+     * Resolves the project stage from its JNDI environment entry, falling back to the context parameter, which is what
+     * {@link jakarta.faces.application.Application#getProjectStage()} ends up doing as well.
+     * </p>
+     */
+    private ProjectStage resolveProjectStage(ServletContext servletContext) {
+        String value = getEnvironmentEntry(WebEnvironmentEntry.ProjectStage);
+
+        if (value == null) {
+            value = servletContext.getInitParameter(ProjectStage.PROJECT_STAGE_PARAM_NAME);
+        }
+
+        try {
+            return value != null ? ProjectStage.valueOf(value.trim()) : ProjectStage.Production;
+        } catch (IllegalArgumentException e) {
+            LOGGER.log(Level.WARNING, "faces.config.webconfig.boolconfig.invalidvalue", new Object[] { servletContext.getContextPath(), value,
+                    ProjectStage.PROJECT_STAGE_PARAM_NAME, Arrays.toString(ProjectStage.values()), ProjectStage.Production });
+            return ProjectStage.Production;
+        }
     }
 
     // ---------------------------------------------------------- Public Methods
@@ -356,13 +438,10 @@ public class WebConfiguration {
      * answerable while the configuration is still being processed, when there is no <code>Application</code> yet.
      * </p>
      *
-     * @param context the involved faces context.
      * @return the project stage.
      */
-    public ProjectStage getProjectStage(FacesContext context) {
-        String value = getEnvironmentEntry(WebEnvironmentEntry.ProjectStage);
-
-        return value != null ? ProjectStage.valueOf(value) : FacesContextParam.PROJECT_STAGE.getValue(context);
+    public ProjectStage getProjectStage() {
+        return projectStage;
     }
 
     public void doPostBringupActions() {
@@ -384,7 +463,7 @@ public class WebConfiguration {
      */
     void processDevelopmentOnlyParameters() {
         FacesContext context = FacesContext.getCurrentInstance();
-        ProjectStage projectStage = getProjectStage(context);
+        ProjectStage projectStage = getProjectStage();
 
         if (projectStage == ProjectStage.Development) {
             return;
@@ -544,12 +623,6 @@ public class WebConfiguration {
                 } else {
                     value = param.getDefaultValue();
                 }
-            }
-
-            // first param processed should be
-            // org.glassfish.mojarra.displayConfiguration
-            if (BooleanWebContextInitParameter.DisplayConfiguration.equals(param) && value) {
-                loggingLevel = Level.INFO;
             }
 
             if (LOGGER.isLoggable(loggingLevel)) {
@@ -765,10 +838,11 @@ public class WebConfiguration {
         ResourceBufferSize("org.glassfish.mojarra.resourceBufferSize", "2048"),
         ClientStateTimeout("org.glassfish.mojarra.clientStateTimeout", ""),
         DefaultResourceMaxAge("org.glassfish.mojarra.defaultResourceMaxAge", "604800000"), // 7 days
-        ResourceUpdateCheckPeriod("org.glassfish.mojarra.resourceUpdateCheckPeriod", "5"), // in minutes
+        ResourceUpdateCheckPeriod("org.glassfish.mojarra.resourceUpdateCheckPeriod", "-1"), // in minutes; -1 disables the check
         CompressableMimeTypes("org.glassfish.mojarra.compressableMimeTypes", ""),
         DisableUnicodeEscaping("org.glassfish.mojarra.disableUnicodeEscaping", "auto"),
-        DisableIdUniquenessCheck("org.glassfish.mojarra.disableIdUniquenessCheck", "false"), // true|false|auto; default false (always check), opt-in auto skips it in Production
+        DisableIdUniquenessCheck("org.glassfish.mojarra.disableIdUniquenessCheck", AUTO), // true|false|auto
+        DisplayConfiguration("org.glassfish.mojarra.displayConfiguration", AUTO), // true|false|auto
         DuplicateJARPattern("org.glassfish.mojarra.duplicateJARPattern", ""),
         AllowedHttpMethods("org.glassfish.mojarra.allowedHttpMethods", ""), // white space separated, upper case; * means allow all
         ViewStateAutocomplete("org.glassfish.mojarra.viewStateAutocomplete", "one-time-code"),
@@ -831,7 +905,6 @@ public class WebConfiguration {
      */
     public enum BooleanWebContextInitParameter {
 
-        DisplayConfiguration("org.glassfish.mojarra.displayConfiguration", false),
         ForceLoadFacesConfigFiles("org.glassfish.mojarra.forceLoadConfiguration", false),
         EnableClientStateDebugging("org.glassfish.mojarra.enableClientStateDebugging", false),
         DisableClientStateEncryption("org.glassfish.mojarra.disableClientStateEncryption", false, EnableClientStateDebugging),
@@ -846,7 +919,7 @@ public class WebConfiguration {
         GenerateUniqueServerStateIds("org.glassfish.mojarra.generateUniqueServerStateIds", true),
         AutoCompleteOffOnViewState("org.glassfish.mojarra.autoCompleteOffOnViewState", false, WebContextInitParameter.ViewStateAutocomplete.getQualifiedName()),
         AllowTextChildren("org.glassfish.mojarra.allowTextChildren", false, DEPRECATED),
-        CacheResourceModificationTimestamp("org.glassfish.mojarra.cacheResourceModificationTimestamp", false),
+        CacheResourceModificationTimestamp("org.glassfish.mojarra.cacheResourceModificationTimestamp", true),
         EnableDistributable("org.glassfish.mojarra.enableDistributable", false), // NOTE: this is indeed implicitly set to true when web.xml distributable is also set, see ConfigureListener.
         EnableMissingResourceLibraryDetection("org.glassfish.mojarra.enableMissingResourceLibraryDetection", false),
         EnableTransitionTimeNoOpFlash("org.glassfish.mojarra.enableTransitionTimeNoOpFlash", false),

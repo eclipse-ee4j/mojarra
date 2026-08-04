@@ -192,7 +192,7 @@ public class ConfigManager {
 
             try {
                 // Validate outside Production, so that a configuration mistake is caught before it ships.
-                boolean validating = WebConfiguration.getInstance(servletContext).getProjectStage(facesContext) != ProjectStage.Production;
+                boolean validating = WebConfiguration.getInstance(servletContext).getProjectStage() != ProjectStage.Production;
 
                 // Obtain and merge the XML and Programmatic documents
                 DocumentInfo[] facesDocuments = mergeDocuments(getXMLDocuments(servletContext, getFacesConfigResourceProviders(), validating),

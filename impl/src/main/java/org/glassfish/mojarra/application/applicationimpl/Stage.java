@@ -57,7 +57,7 @@ public class Stage {
 
     private ProjectStage fetchProjectStageFromConfig() {
         FacesContext context = FacesContext.getCurrentInstance();
-        projectStage = WebConfiguration.getInstance(context.getExternalContext()).getProjectStage(context);
+        projectStage = WebConfiguration.getInstance(context.getExternalContext()).getProjectStage();
 
         LOGGER.log(FINE, "ProjectStage is {0}", projectStage);
 

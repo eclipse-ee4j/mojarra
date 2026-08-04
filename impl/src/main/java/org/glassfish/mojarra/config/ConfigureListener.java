@@ -458,7 +458,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
     private ProjectStage getProjectStage() {
         // Ask the configuration rather than the Application, which does not exist yet at this point.
-        return webConfig.getProjectStage(FacesContext.getCurrentInstance());
+        return webConfig.getProjectStage();
     }
 
     /**

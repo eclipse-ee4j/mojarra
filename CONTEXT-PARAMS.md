@@ -182,7 +182,7 @@ The *Performance* column tells where the cost of changing the parameter lands: `
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.disableOptionalELResolver</code></th></tr>
 <tr><td><code>boolean</code></td><td><code>false</code></td><td>4.1.4</td><td>request</td><td>Drops the <code>jakarta.el.OptionalELResolver</code> from the EL resolver chain, so that <code>#{bean.optional.value}</code> no longer unwraps an <code>Optional</code> by itself. Set it when an application resolves properties on the <code>Optional</code> instance itself, or wants the older behavior back. Leaving it enabled costs one more resolver in the chain for every property resolution which reaches it.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.displayConfiguration</code></th></tr>
-<tr><td><code>boolean</code></td><td><code>false</code></td><td>1.2_01</td><td>-</td><td>Logs the value of every context parameter at <code>INFO</code> level during startup, instead of at <code>FINE</code> level.</td></tr>
+<tr><td><code>String</code></td><td><code>auto</code></td><td>1.2_01</td><td>-</td><td>Logs the value of every context parameter during startup. <code>auto</code>, the default, logs at <code>INFO</code> unless the project stage is <code>Production</code>, where it logs at <code>FINE</code>. <code>true</code> and <code>false</code> pin it to <code>INFO</code> and <code>FINE</code> respectively, which keeps it usable in <code>Production</code> for a deployment whose parameters are substituted at build time.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.duplicateJARPattern</code></th></tr>
 <tr><td><code>String</code></td><td><em>(none)</em></td><td>1.2_15</td><td>startup</td><td>Regular expression matched against JAR file names to recognize the same library packaged more than once, so that its <code>faces-config.xml</code> is loaded only once. The first capturing group is the identity of the library. Setting it speeds up startup on a classpath which ships the same library twice.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.forceLoadConfiguration</code></th></tr>
@@ -204,7 +204,7 @@ The *Performance* column tells where the cost of changing the parameter lands: `
 </thead>
 <tbody>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.disableIdUniquenessCheck</code></th></tr>
-<tr><td><code>String</code></td><td><code>false</code></td><td>2.1.9</td><td>request</td><td>Skips the walk which verifies that every component ID within a naming container is unique. <code>true</code> is the fastest as it drops a full tree walk per state save in every project stage, <code>auto</code> drops it only when the project stage is <code>Production</code>, on the assumption that a duplicate ID already surfaced during development.</td></tr>
+<tr><td><code>String</code></td><td><code>auto</code></td><td>2.1.9</td><td>request</td><td>Skips the walk which verifies that every component ID within a naming container is unique. <code>auto</code>, the default, skips it unless the project stage is <code>Development</code>, where a duplicate ID surfaces long before the application ships. <code>true</code> always skips it and <code>false</code> always walks.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.refreshTransientBuildOnPSS</code></th></tr>
 <tr><td><code>boolean</code></td><td><code>false</code></td><td>4.0.19</td><td>request</td><td>Re-applies the Facelets page to the restored component tree right before rendering. <code>false</code> is much faster, <code>true</code> costs a second full build of the view on every postback and is only needed by a view whose structure is changed by non Faces means between restoring and rendering. Fixing that change to go through Faces itself is the better solution, this parameter only papers over it.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.useFaceletsID</code></th></tr>
@@ -270,7 +270,7 @@ The *Performance* column tells where the cost of changing the parameter lands: `
 </thead>
 <tbody>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.cacheResourceModificationTimestamp</code></th></tr>
-<tr><td><code>boolean</code></td><td><code>false</code></td><td>2.0.4</td><td>request</td><td>Caches the last modified timestamp of a resource instead of reading it from the file system on every request. <code>true</code> is faster and is what you want in production.</td></tr>
+<tr><td><code>boolean</code></td><td><code>true</code></td><td>2.0.4</td><td>request</td><td>Caches the last modified timestamp of a resource instead of reading it from the file system on every request, which is what makes it the default. It defaults to <code>false</code> when the project stage is <code>Development</code>, where a resource which changed on disk has to be noticed.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.compressableMimeTypes</code></th></tr>
 <tr><td><code>String[]</code></td><td><em>(none)</em></td><td>2.0.0</td><td>request</td><td>Comma separated list of mime types of resources which are GZIP compressed when served. A trailing <code>/*</code> acts as a wildcard, as in <code>text/*</code>. Compression spends CPU to save bandwidth, so list the text based types only.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.defaultResourceMaxAge</code></th></tr>
@@ -280,7 +280,7 @@ The *Performance* column tells where the cost of changing the parameter lands: `
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.resourceBufferSize</code></th></tr>
 <tr><td><code>int</code></td><td><code>2048</code></td><td>2.0.0</td><td>request</td><td>Amount of bytes of the buffer used while streaming a resource to the client. A larger buffer reads less often while streaming a large resource, at the price of more memory per concurrent request.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.resourceUpdateCheckPeriod</code></th></tr>
-<tr><td><code>int</code></td><td><code>5</code></td><td>2.0.0</td><td>request</td><td>Amount of minutes between two checks whether a cached resource has been modified. <code>-1</code> is the fastest as it drops the check altogether.</td></tr>
+<tr><td><code>int</code></td><td><code>-1</code></td><td>2.0.0</td><td>request</td><td>Amount of minutes between two checks whether a cached resource has been modified. <code>-1</code> drops the check altogether, which is what makes it the default. It defaults to <code>5</code> when the project stage is <code>Development</code>, where a resource which changed on disk has to be noticed.</td></tr>
 </tbody>
 </table>
 

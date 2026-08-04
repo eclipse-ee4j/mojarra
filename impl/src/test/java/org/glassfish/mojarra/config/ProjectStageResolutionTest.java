@@ -63,6 +63,6 @@ class ProjectStageResolutionTest {
         FacesContext context = mock(FacesContext.class);
         when(context.getExternalContext()).thenReturn(externalContext);
 
-        return WebConfiguration.getInstance(servletContext).getProjectStage(context);
+        return WebConfiguration.getInstance(servletContext).getProjectStage();
     }
 }
