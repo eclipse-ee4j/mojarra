@@ -27,7 +27,6 @@ import static org.glassfish.mojarra.RIConstants.ERROR_PAGE_PRESENT_KEY_NAME;
 import static org.glassfish.mojarra.RIConstants.FACES_SERVLET_MAPPINGS;
 import static org.glassfish.mojarra.RIConstants.FACES_SERVLET_REGISTRATION;
 import static org.glassfish.mojarra.RIConstants.MOJARRA_VERSION;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.EnableThreading;
 import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.ForceLoadFacesConfigFiles;
 import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.WebsocketEndpointIdleTimeout;
 import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.WebsocketMaxSessionsPerChannel;
@@ -191,12 +190,15 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
             }
 
             if (!isProduction()) {
+                LOGGER.log(WARNING, "faces.config.listener.projectstage.not_production",
+                        new Object[] { servletContext.getContextPath(), getProjectStage() });
+
                 Verifier.setCurrentInstance(new Verifier());
             }
 
             configManager.initialize(servletContext, initFacesContext);
 
-            if (shouldInitConfigMonitoring()) {
+            if (isDevelopment()) {
                 initConfigMonitoring(servletContext);
             }
 
@@ -428,18 +430,6 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
 
     // --------------------------------------------------------- Private Methods
-
-    private boolean shouldInitConfigMonitoring() {
-
-        boolean development = isDevelopment();
-        boolean threadingOptionSpecified = webConfig.isSet(EnableThreading);
-
-        if (development && !threadingOptionSpecified) {
-            return true;
-        }
-
-        return development && threadingOptionSpecified && webConfig.isOptionEnabled(EnableThreading);
-    }
 
     private void initConfigMonitoring(ServletContext context) {
 
