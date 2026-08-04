@@ -29,6 +29,7 @@ import static org.glassfish.mojarra.config.manager.FacesSchema.Schemas.JAVAEE_SC
 import static org.glassfish.mojarra.config.manager.FacesSchema.Schemas.JAVAEE_SCHEMA_LEGACY_DEFAULT_NS;
 import static org.glassfish.mojarra.config.processor.FacesFlowDefinitionConfigProcessor.synthesizeEmptyFlowDefinition;
 import static org.glassfish.mojarra.config.processor.FacesFlowDefinitionConfigProcessor.uriIsFlowDefinition;
+import static javax.xml.XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
 import static org.glassfish.mojarra.util.Util.createTransformerFactory;
 
 import java.io.BufferedInputStream;
@@ -38,9 +39,11 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.MessageFormat;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
@@ -59,6 +62,7 @@ import org.glassfish.mojarra.config.manager.documents.DocumentInfo;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.Timer;
 import org.w3c.dom.Attr;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -83,6 +87,17 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
 
     private static final String EMPTY_FACES_CONFIG = "org/glassfish/mojarra/empty-faces-config.xml";
     private static final String FACES_CONFIG_TAGNAME = "faces-config";
+
+    /**
+     * The namespaces a configuration document may legitimately declare, used to recognize one which was written with the
+     * wrong scheme.
+     */
+    private static final Set<String> KNOWN_NAMESPACES = Set.of(
+            XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI,
+            JAKARTAEE_SCHEMA_DEFAULT_NS,
+            JAVAEE_SCHEMA_DEFAULT_NS,
+            JAVAEE_SCHEMA_LEGACY_DEFAULT_NS,
+            FACES_CONFIG_1_X_DEFAULT_NS);
     private static final String FACELET_TAGLIB_TAGNAME = "facelet-taglib";
 
     /**
@@ -184,6 +199,8 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
         Document returnDoc = configDocument;
 
         if (validating && documentNS != null) {
+            warnAboutNamespacesWhichDifferOnlyInScheme(configDocument);
+
             DOMSource domSource = new DOMSource(configDocument, documentURL.toExternalForm());
 
             /*
@@ -274,6 +291,46 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
     private Document validateDocument(Schema schema, DOMResult domResult) throws Exception {
         validate(schema, new DOMSource(domResult.getNode()));
         return (Document) domResult.getNode();
+    }
+
+    /**
+     * <p>
+     * A namespace is compared as an exact string and is never resolved, so writing <code>https</code> where the
+     * namespace says <code>http</code> declares an entirely different namespace. The schema then rejects everything in
+     * it, naming the attribute or element rather than the declaration which actually went wrong, which is a hard error
+     * to read. This says what happened instead.
+     * </p>
+     */
+    private void warnAboutNamespacesWhichDifferOnlyInScheme(Document document) {
+        NamedNodeMap attributes = document.getDocumentElement().getAttributes();
+
+        for (int i = 0; i < attributes.getLength(); i++) {
+            Attr attribute = (Attr) attributes.item(i);
+
+            if (!XMLNS_ATTRIBUTE_NS_URI.equals(attribute.getNamespaceURI())) {
+                continue;
+            }
+
+            String declared = attribute.getValue();
+            String withOtherScheme = withOtherScheme(declared);
+
+            if (!KNOWN_NAMESPACES.contains(declared) && KNOWN_NAMESPACES.contains(withOtherScheme)) {
+                LOGGER.log(WARNING, "faces.config.namespace.wrong_scheme",
+                        new Object[] { documentURI, attribute.getName(), declared, withOtherScheme });
+            }
+        }
+    }
+
+    private static String withOtherScheme(String namespace) {
+        if (namespace.startsWith("http://")) {
+            return "https://" + namespace.substring("http://".length());
+        }
+
+        if (namespace.startsWith("https://")) {
+            return "http://" + namespace.substring("https://".length());
+        }
+
+        return namespace;
     }
 
     /**

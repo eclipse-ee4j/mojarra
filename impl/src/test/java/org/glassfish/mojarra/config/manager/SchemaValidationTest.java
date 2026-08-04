@@ -48,6 +48,7 @@ class SchemaValidationTest {
 
     private static final String VIOLATION = "faces.config.schema.violation";
     private static final String UNKNOWN_VERSION = "faces.config.schema.unknown";
+    private static final String WRONG_SCHEME = "faces.config.namespace.wrong_scheme";
 
     @TempDir
     private Path folder;
@@ -121,6 +122,28 @@ class SchemaValidationTest {
     }
 
     /**
+     * A namespace written with the wrong scheme is the mistake behind an otherwise baffling schema violation, which
+     * blames whatever sits in that namespace rather than the declaration which is actually wrong.
+     */
+    @Test
+    void aNamespaceWrittenWithTheWrongSchemeIsNamed() throws Exception {
+        parse(facesConfigWithXsi("https://www.w3.org/2001/XMLSchema-instance"), true);
+
+        assertEquals(List.of(WRONG_SCHEME, VIOLATION), messageKeys());
+    }
+
+    /**
+     * And the same document with the namespace spelled correctly is silent, which is what makes the warning above a
+     * diagnosis rather than noise.
+     */
+    @Test
+    void theSameDocumentIsSilentWithTheCorrectScheme() throws Exception {
+        parse(facesConfigWithXsi("http://www.w3.org/2001/XMLSchema-instance"), true);
+
+        assertEquals(List.of(), messageKeys());
+    }
+
+    /**
      * And none of it happens when validation was not asked for.
      */
     @Test
@@ -128,6 +151,17 @@ class SchemaValidationTest {
         parse(facesConfig("5.0", "<bogus-element>nonsense</bogus-element>"), false);
 
         assertEquals(List.of(), messageKeys());
+    }
+
+    private String facesConfigWithXsi(String xsiNamespace) {
+        return """
+                <?xml version="1.0" encoding="UTF-8"?>
+                <faces-config xmlns="https://jakarta.ee/xml/ns/jakartaee"
+                    xmlns:xsi="%s"
+                    xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-facesconfig_5_0.xsd"
+                    version="5.0">
+                </faces-config>
+                """.formatted(xsiNamespace);
     }
 
     private String facesConfig(String version, String body) {
