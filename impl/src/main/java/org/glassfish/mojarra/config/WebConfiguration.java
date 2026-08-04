@@ -30,7 +30,6 @@ import java.util.EnumMap;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -43,20 +42,15 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.application.StateManager;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.event.PhaseListener;
-import jakarta.faces.lifecycle.Lifecycle;
-import jakarta.faces.lifecycle.LifecycleFactory;
 import jakarta.servlet.ServletContext;
 
 import org.glassfish.mojarra.application.ApplicationAssociate;
 import org.glassfish.mojarra.application.view.FaceletViewHandlingStrategy;
 import org.glassfish.mojarra.facelets.util.Classpath;
-import org.glassfish.mojarra.lifecycle.HttpMethodRestrictionsPhaseListener;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.MojarraVersion;
 import org.glassfish.mojarra.util.Util;
@@ -317,31 +311,6 @@ public class WebConfiguration {
     }
 
     public void doPostBringupActions() {
-        // Add the HttpMethodRestrictionPhaseListener if the parameter is enabled.
-        boolean enabled = isOptionEnabled(BooleanWebContextInitParameter.EnableHttpMethodRestrictionPhaseListener);
-        if (enabled) {
-            LifecycleFactory factory = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
-            PhaseListener listener = null;
-
-            for (String lifecycleId : toIterable(factory.getLifecycleIds())) {
-                Lifecycle lifecycle = factory.getLifecycle(lifecycleId);
-                boolean foundExistingListenerInstance = false;
-                for (PhaseListener curListener : lifecycle.getPhaseListeners()) {
-                    if (curListener instanceof HttpMethodRestrictionsPhaseListener) {
-                        foundExistingListenerInstance = true;
-                        break;
-                    }
-                }
-
-                if (!foundExistingListenerInstance) {
-                    if (listener == null) {
-                        listener = new HttpMethodRestrictionsPhaseListener();
-                    }
-                    lifecycle.addPhaseListener(listener);
-                }
-            }
-        }
-
         discoverResourceLibraryContracts();
     }
 
@@ -686,10 +655,6 @@ public class WebConfiguration {
         return true;
     }
 
-    public <T> Iterable<T> toIterable(Iterator<T> iterator) {
-        return () -> iterator;
-    }
-
     // ------------------------------------------------------------------- Enums
 
     /**
@@ -786,7 +751,6 @@ public class WebConfiguration {
         WriteStateAtFormEnd("org.glassfish.mojarra.writeStateAtFormEnd", true),
         EnableViewStateIdRendering("org.glassfish.mojarra.enableViewStateIdRendering", true),
         RegisterConverterPropertyEditors("org.glassfish.mojarra.registerConverterPropertyEditors", false),
-        EnableHttpMethodRestrictionPhaseListener("org.glassfish.mojarra.ENABLE_HTTP_METHOD_RESTRICTION_PHASE_LISTENER", false),
         PartialStateSaving(StateManager.PARTIAL_STATE_SAVING_PARAM_NAME, true),
         RefreshTransientBuildOnPSS("org.glassfish.mojarra.refreshTransientBuildOnPSS", false),
         GenerateUniqueServerStateIds("org.glassfish.mojarra.generateUniqueServerStateIds", true),

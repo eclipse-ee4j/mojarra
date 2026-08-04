@@ -203,6 +203,37 @@ public class FacesServletTestCase extends JUnitFacesTestCaseBase {
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());
     }
 
+    /**
+     * An OPTIONS request is answered by the servlet itself, with the methods it accepts, and never reaches the
+     * lifecycle. Rendering a view would hand the page content to a request which did not ask for it.
+     */
+    @Test
+    public void testOptionsIsAnsweredWithAllowHeaderAndEmptyBody() throws Exception {
+        FacesServlet me = new FacesServlet();
+        me.init(config);
+
+        this.sendRequest(me, "OPTIONS");
+
+        assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+        assertEquals(0, response.getContentLength());
+        assertEquals("OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT", response.getHeader("Allow"));
+    }
+
+    /**
+     * The Allow header reports what was actually configured, not the full set.
+     */
+    @Test
+    public void testOptionsAllowHeaderReflectsAllowedHttpMethods() throws Exception {
+        FacesServlet me = new FacesServlet();
+        servletContext.addInitParameter(ALLOWED_HTTP_METHODS_ATTR_COPY, "GET POST OPTIONS");
+        me.init(config);
+
+        this.sendRequest(me, "OPTIONS");
+
+        assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+        assertEquals("OPTIONS, GET, POST", response.getHeader("Allow"));
+    }
+
     private void sendRequest(FacesServlet me, String method) throws Exception {
         request.setMethod(method);
         request.setPathElements("/test", "/test", "/test", "");

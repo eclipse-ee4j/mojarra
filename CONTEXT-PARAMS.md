@@ -339,8 +339,6 @@ The *Performance* column tells where the cost of changing the parameter lands: `
 <tr><th>Type</th><th>Default</th><th>Since</th><th>Performance</th><th>Description</th></tr>
 </thead>
 <tbody>
-<tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.ENABLE_HTTP_METHOD_RESTRICTION_PHASE_LISTENER</code></th></tr>
-<tr><td><code>boolean</code></td><td><code>false</code></td><td>2.0.6</td><td>request</td><td>Registers a phase listener which completes the response during Restore View when the HTTP method is <code>OPTIONS</code>, so that the rest of the lifecycle is skipped. The listener itself runs on every request, so <code>false</code> is faster unless <code>OPTIONS</code> requests must be short circuited.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.allowedHttpMethods</code></th></tr>
 <tr><td><code>String</code></td><td><code>OPTIONS GET HEAD POST PUT DELETE TRACE CONNECT</code></td><td>2.0.6</td><td>-</td><td>Space separated list of case sensitive HTTP method names the <code>FacesServlet</code> accepts. <code>*</code> allows every method. Any other method is rejected.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.disableClientStateEncryption</code></th></tr>

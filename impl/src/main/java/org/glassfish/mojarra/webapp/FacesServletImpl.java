@@ -22,6 +22,7 @@ import static jakarta.faces.FactoryFinder.LIFECYCLE_FACTORY;
 import static jakarta.faces.lifecycle.LifecycleFactory.DEFAULT_LIFECYCLE;
 import static jakarta.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
+import static jakarta.servlet.http.HttpServletResponse.SC_OK;
 import static java.util.Collections.emptySet;
 import static java.util.EnumSet.allOf;
 import static java.util.EnumSet.range;
@@ -29,6 +30,8 @@ import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINER;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Level.WARNING;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Stream.concat;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -432,6 +435,11 @@ public final class FacesServletImpl implements Servlet {
             return;
         }
 
+        if (HttpMethod.OPTIONS.toString().equals(request.getMethod())) {
+            respondToOptions(response);
+            return;
+        }
+
         logIfThreadInterrupted();
 
         // If prefix mapped, then ensure requests for /WEB-INF are not processed.
@@ -741,6 +749,27 @@ public final class FacesServletImpl implements Servlet {
         }
 
         return result;
+    }
+
+    /**
+     * <p>
+     * Answers an <code>OPTIONS</code> request with the methods this servlet accepts, as required by RFC 9110 section
+     * 9.3.7, without running the lifecycle. A Faces view has nothing to contribute to the answer, and rendering one
+     * would hand the page content to a request which did not ask for it.
+     * </p>
+     */
+    private void respondToOptions(HttpServletResponse response) {
+        response.setStatus(SC_OK);
+        response.setHeader("Allow", getAllowedHttpMethods());
+        response.setContentLength(0);
+    }
+
+    private String getAllowedHttpMethods() {
+        if (allowAllMethods) {
+            return allHttpMethods.stream().map(HttpMethod::toString).collect(joining(", "));
+        }
+
+        return concat(allowedKnownHttpMethods.stream().map(HttpMethod::toString), allowedUnknownHttpMethods.stream()).collect(joining(", "));
     }
 
 }
