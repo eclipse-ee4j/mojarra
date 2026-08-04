@@ -276,7 +276,7 @@ An `org.glassfish.mojarra.*` name which this page does not list is not recognize
 </thead>
 <tbody>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.cacheResourceModificationTimestamp</code></th></tr>
-<tr><td><code>boolean</code></td><td><code>true</code></td><td>2.0.4</td><td>request</td><td>Caches the last modified timestamp of a resource instead of reading it from the file system on every request, which is what makes it the default. It defaults to <code>false</code> when the project stage is <code>Development</code>, where a resource which changed on disk has to be noticed.</td></tr>
+<tr><td><code>String</code></td><td><code>auto</code></td><td>2.0.4</td><td>request</td><td>Caches the last modified timestamp of a resource instead of reading it from the file system on every request. <code>auto</code>, the default, caches it unless the project stage is <code>Development</code>, where a resource which changed on disk has to be noticed. <code>true</code> always caches and <code>false</code> never does, either of which applies in every stage including <code>Development</code>.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.compressableMimeTypes</code></th></tr>
 <tr><td><code>String[]</code></td><td><em>(none)</em></td><td>2.0.0</td><td>request</td><td>Comma separated list of mime types of resources which are GZIP compressed when served. A trailing <code>/*</code> acts as a wildcard, as in <code>text/*</code>. Compression spends CPU to save bandwidth, so list the text based types only.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.defaultResourceMaxAge</code></th></tr>
@@ -286,7 +286,7 @@ An `org.glassfish.mojarra.*` name which this page does not list is not recognize
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.resourceBufferSize</code></th></tr>
 <tr><td><code>int</code></td><td><code>2048</code></td><td>2.0.0</td><td>request</td><td>Amount of bytes of the buffer used while streaming a resource to the client. A larger buffer reads less often while streaming a large resource, at the price of more memory per concurrent request.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.resourceUpdateCheckPeriod</code></th></tr>
-<tr><td><code>int</code></td><td><code>-1</code></td><td>2.0.0</td><td>request</td><td>Amount of minutes between two checks whether a cached resource has been modified. <code>-1</code> drops the check altogether, which is what makes it the default. It defaults to <code>5</code> when the project stage is <code>Development</code>, where a resource which changed on disk has to be noticed.</td></tr>
+<tr><td><code>String</code></td><td><code>auto</code></td><td>2.0.0</td><td>request</td><td>Amount of minutes between two checks whether a cached resource has been modified, where <code>-1</code> drops the check altogether. <code>auto</code>, the default, means <code>-1</code> unless the project stage is <code>Development</code>, where it means <code>5</code>. Any number applies in every stage. This expires the cached resource wholesale, where <code>org.glassfish.mojarra.cacheResourceModificationTimestamp</code> decides whether its timestamp is re-read within that lifetime, so the two act at different granularities.</td></tr>
 </tbody>
 </table>
 

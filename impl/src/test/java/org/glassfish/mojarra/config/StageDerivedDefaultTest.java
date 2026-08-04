@@ -17,7 +17,7 @@
 package org.glassfish.mojarra.config;
 
 import static jakarta.faces.application.ProjectStage.PROJECT_STAGE_PARAM_NAME;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.CacheResourceModificationTimestamp;
+import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.CacheResourceModificationTimestamp;
 import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.ResourceUpdateCheckPeriod;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -32,47 +32,89 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.EnumSource.Mode;
 
 /**
- * The resource caching parameters default to what production wants, and only Development, where a resource which
- * changed on disk has to be noticed, gets the slower values.
+ * The resource caching parameters are tri-state, where <code>auto</code> leaves the decision to the project stage:
+ * only Development, where a resource which changed on disk has to be noticed, gets the slower values.
  */
 class StageDerivedDefaultTest {
 
     @Test
-    void resourceCachingIsRelaxedInDevelopment() {
+    void autoRelaxesResourceCachingInDevelopment() {
         WebConfiguration webConfiguration = configure(ProjectStage.Development);
 
-        assertFalse(webConfiguration.isOptionEnabled(CacheResourceModificationTimestamp), "cache the modification timestamp");
-        assertEquals("5", webConfiguration.getOptionValue(ResourceUpdateCheckPeriod), "update check period");
+        assertFalse(webConfiguration.isResourceModificationTimestampCached(), "cache the modification timestamp");
+        assertEquals(5, webConfiguration.getResourceUpdateCheckPeriod(), "update check period");
     }
 
     @ParameterizedTest
     @EnumSource(value = ProjectStage.class, names = "Development", mode = Mode.EXCLUDE)
-    void resourceCachingIsFullEverywhereElse(ProjectStage projectStage) {
+    void autoCachesFullyEverywhereElse(ProjectStage projectStage) {
         WebConfiguration webConfiguration = configure(projectStage);
 
-        assertTrue(webConfiguration.isOptionEnabled(CacheResourceModificationTimestamp), "cache the modification timestamp");
-        assertEquals("-1", webConfiguration.getOptionValue(ResourceUpdateCheckPeriod), "update check period");
+        assertTrue(webConfiguration.isResourceModificationTimestampCached(), "cache the modification timestamp");
+        assertEquals(-1, webConfiguration.getResourceUpdateCheckPeriod(), "update check period");
     }
 
     /**
-     * An explicit setting beats the stage either way, which is what keeps the parameters worth having.
+     * An explicit value pins it in either direction, including in Development, which is what distinguishes it from
+     * <code>auto</code> and is why the stage is no longer also consulted where the value is used.
      */
     @Test
-    void anExplicitSettingWinsOverTheStage() {
-        MockServletContext servletContext = new MockServletContext();
-        servletContext.addInitParameter(PROJECT_STAGE_PARAM_NAME, ProjectStage.Development.name());
-        servletContext.addInitParameter(CacheResourceModificationTimestamp.getQualifiedName(), "true");
-        servletContext.addInitParameter(ResourceUpdateCheckPeriod.getQualifiedName(), "9");
+    void anExplicitValueWinsOverTheStage() {
+        WebConfiguration inDevelopment = configure(ProjectStage.Development, "true", "9");
 
-        WebConfiguration webConfiguration = WebConfiguration.getInstance(servletContext);
+        assertTrue(inDevelopment.isResourceModificationTimestampCached(), "cache the modification timestamp");
+        assertEquals(9, inDevelopment.getResourceUpdateCheckPeriod(), "update check period");
 
-        assertTrue(webConfiguration.isOptionEnabled(CacheResourceModificationTimestamp), "cache the modification timestamp");
-        assertEquals("9", webConfiguration.getOptionValue(ResourceUpdateCheckPeriod), "update check period");
+        WebConfiguration inProduction = configure(ProjectStage.Production, "false", "3");
+
+        assertFalse(inProduction.isResourceModificationTimestampCached(), "cache the modification timestamp");
+        assertEquals(3, inProduction.getResourceUpdateCheckPeriod(), "update check period");
+    }
+
+    /**
+     * An unusable value behaves as though the parameter was never set, rather than as the value a bare parse happens to
+     * produce, which for a boolean would silently be false and for the period would silently be never.
+     */
+    @Test
+    void anUnusableValueFallsBackToAuto() {
+        WebConfiguration inDevelopment = configure(ProjectStage.Development, "treu", "soon");
+
+        assertFalse(inDevelopment.isResourceModificationTimestampCached(), "cache the modification timestamp");
+        assertEquals(5, inDevelopment.getResourceUpdateCheckPeriod(), "update check period");
+
+        WebConfiguration inProduction = configure(ProjectStage.Production, "treu", "soon");
+
+        assertTrue(inProduction.isResourceModificationTimestampCached(), "cache the modification timestamp");
+        assertEquals(-1, inProduction.getResourceUpdateCheckPeriod(), "update check period");
+    }
+
+    /**
+     * And surrounding whitespace, which a container is not obliged to strip from a context parameter, does not turn a
+     * usable value into an unusable one.
+     */
+    @Test
+    void surroundingWhitespaceIsTolerated() {
+        WebConfiguration webConfiguration = configure(ProjectStage.Production, "  false  ", "  7  ");
+
+        assertFalse(webConfiguration.isResourceModificationTimestampCached(), "cache the modification timestamp");
+        assertEquals(7, webConfiguration.getResourceUpdateCheckPeriod(), "update check period");
     }
 
     private static WebConfiguration configure(ProjectStage projectStage) {
+        return configure(projectStage, null, null);
+    }
+
+    private static WebConfiguration configure(ProjectStage projectStage, String cacheTimestamp, String checkPeriod) {
         MockServletContext servletContext = new MockServletContext();
         servletContext.addInitParameter(PROJECT_STAGE_PARAM_NAME, projectStage.name());
+
+        if (cacheTimestamp != null) {
+            servletContext.addInitParameter(CacheResourceModificationTimestamp.getQualifiedName(), cacheTimestamp);
+        }
+
+        if (checkPeriod != null) {
+            servletContext.addInitParameter(ResourceUpdateCheckPeriod.getQualifiedName(), checkPeriod);
+        }
 
         return WebConfiguration.getInstance(servletContext);
     }

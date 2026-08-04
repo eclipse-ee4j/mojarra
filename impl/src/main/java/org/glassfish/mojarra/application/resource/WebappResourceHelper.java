@@ -16,7 +16,6 @@
 
 package org.glassfish.mojarra.application.resource;
 
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.CacheResourceModificationTimestamp;
 import static org.glassfish.mojarra.util.Util.ensureLeadingSlash;
 
 import java.io.IOException;
@@ -63,7 +62,7 @@ public class WebappResourceHelper extends ResourceHelper {
 
         WebConfiguration webconfig = WebConfiguration.getInstance();
         FacesContext context = FacesContext.getCurrentInstance();
-        cacheTimestamp = webconfig.isOptionEnabled(CacheResourceModificationTimestamp);
+        cacheTimestamp = webconfig.isResourceModificationTimestampCached();
         BASE_RESOURCE_PATH = ensureLeadingSlash(FacesContextParam.WEBAPP_RESOURCES_DIRECTORY.getValue(context));
         BASE_CONTRACTS_PATH = ensureLeadingSlash(FacesContextParam.WEBAPP_CONTRACTS_DIRECTORY.getValue(context));
 

@@ -98,7 +98,7 @@ public class WebConfiguration {
     /**
      * How often, in minutes, a changed resource is noticed while developing.
      */
-    private static final String RESOURCE_UPDATE_CHECK_PERIOD_IN_DEVELOPMENT = "5";
+    private static final long RESOURCE_UPDATE_CHECK_PERIOD_IN_DEVELOPMENT = 5;
 
     /**
      * Parameters which exist to make debugging easier and would weaken a deployment if honored anywhere else, so outside
@@ -166,7 +166,6 @@ public class WebConfiguration {
         processBooleanParameters(servletContext, contextName);
         processInitParameters(servletContext, contextName);
 
-        processDevelopmentDefaults();
         processDeprecatedParameters(contextName);
         warnAboutUnrecognizedParameters(contextName);
     }
@@ -206,27 +205,6 @@ public class WebConfiguration {
 
     /**
      * <p>
-     * Applies the values which only make sense while developing, where noticing that a resource changed matters more
-     * than what it costs to notice. The declared default of each of these is the one which is right everywhere else,
-     * so this is the exception rather than the rule, and an explicit setting beats both.
-     * </p>
-     */
-    private void processDevelopmentDefaults() {
-        if (projectStage != ProjectStage.Development) {
-            return;
-        }
-
-        if (!isSet(BooleanWebContextInitParameter.CacheResourceModificationTimestamp.getQualifiedName())) {
-            booleanContextParameters.put(BooleanWebContextInitParameter.CacheResourceModificationTimestamp, false);
-        }
-
-        if (!isSet(WebContextInitParameter.ResourceUpdateCheckPeriod.getQualifiedName())) {
-            contextParameters.put(WebContextInitParameter.ResourceUpdateCheckPeriod, RESOURCE_UPDATE_CHECK_PERIOD_IN_DEVELOPMENT);
-        }
-    }
-
-    /**
-     * <p>
      * Reports the JNDI environment entries, which have to be read before the level at which they are reported can be
      * resolved, because one of them decides the project stage which that level derives from.
      * </p>
@@ -244,6 +222,11 @@ public class WebConfiguration {
      * deployment can be read back from its own log, and fine grained there so that it stays out of the way. Setting
      * <code>displayConfiguration</code> explicitly overrules that either way, which is what keeps it usable in
      * Production for a deployment whose parameters are substituted at build time.
+     * </p>
+     *
+     * <p>
+     * This resolves the tri-state itself rather than through {@link #isOptionEnabled(WebContextInitParameter, boolean)},
+     * because it runs before the parameters that one reads are populated.
      * </p>
      */
     private Level resolveLoggingLevel(ServletContext servletContext, String contextName) {
@@ -559,6 +542,86 @@ public class WebConfiguration {
         return PROMOTED_PARAMETERS.values().stream()
                 .flatMap(suffix -> Stream.of(LEGACY_PARAM_PREFIX + suffix, CURRENT_PARAM_PREFIX + suffix))
                 .collect(toSet());
+    }
+
+    /**
+     * <p>
+     * Whether the last modified timestamp of a resource is remembered rather than read on every request. The stage
+     * decides it unless the parameter says otherwise, since a resource which changed on disk has to be noticed while
+     * developing and cannot change under a deployed application without a redeploy.
+     * </p>
+     *
+     * @return whether the timestamp is cached.
+     */
+    public boolean isResourceModificationTimestampCached() {
+        return isOptionEnabled(WebContextInitParameter.CacheResourceModificationTimestamp, projectStage != ProjectStage.Development);
+    }
+
+    /**
+     * <p>
+     * How many minutes apart a cached resource is checked for modification, where <code>-1</code> drops the check. The
+     * stage decides it unless the parameter says otherwise, for the same reason.
+     * </p>
+     *
+     * @return the period in minutes.
+     */
+    public long getResourceUpdateCheckPeriod() {
+        String value = getOptionValue(WebContextInitParameter.ResourceUpdateCheckPeriod);
+        long whenAuto = projectStage == ProjectStage.Development ? RESOURCE_UPDATE_CHECK_PERIOD_IN_DEVELOPMENT : -1;
+
+        if (value == null || AUTO.equalsIgnoreCase(value.trim())) {
+            return whenAuto;
+        }
+
+        try {
+            return Long.parseLong(value.trim());
+        } catch (NumberFormatException e) {
+            warnAboutUnusableValue(WebContextInitParameter.ResourceUpdateCheckPeriod, value, "a number or " + AUTO);
+            return whenAuto;
+        }
+    }
+
+    /**
+     * <p>
+     * Resolves a tri-state parameter, whose value is <code>true</code>, <code>false</code> or <code>auto</code>. An
+     * unusable value is reported and behaves as though the parameter was never set, rather than as <code>false</code>,
+     * which is what a bare {@link Boolean#parseBoolean(String)} would silently make of a typo.
+     * </p>
+     *
+     * @param param the parameter of interest.
+     * @param whenAuto what <code>auto</code> means for it.
+     * @return whether the option is enabled.
+     */
+    public boolean isOptionEnabled(WebContextInitParameter param, boolean whenAuto) {
+        String value = getTriStateValue(param);
+
+        return value == null ? whenAuto : Boolean.parseBoolean(value);
+    }
+
+    /**
+     * @return the trimmed value of a tri-state parameter, or <code>null</code> when it says <code>auto</code> or
+     * says something which cannot be used, in which case that is reported first.
+     */
+    private String getTriStateValue(WebContextInitParameter param) {
+        String value = getOptionValue(param);
+
+        if (value == null || AUTO.equalsIgnoreCase(value.trim())) {
+            return null;
+        }
+
+        value = value.trim();
+
+        if (!ALLOWABLE_BOOLEANS.matcher(value).matches()) {
+            warnAboutUnusableValue(param, value, "true|false|" + AUTO);
+            return null;
+        }
+
+        return value;
+    }
+
+    private void warnAboutUnusableValue(WebContextInitParameter param, String value, String allowed) {
+        LOGGER.log(Level.WARNING, "faces.config.webconfig.boolconfig.invalidvalue",
+                new Object[] { servletContext.getContextPath(), value, param.getQualifiedName(), allowed, AUTO });
     }
 
     public ProjectStage getProjectStage() {
@@ -954,7 +1017,8 @@ public class WebConfiguration {
         ResourceBufferSize("org.glassfish.mojarra.resourceBufferSize", "2048"),
         ClientStateTimeout("org.glassfish.mojarra.clientStateTimeout", ""),
         DefaultResourceMaxAge("org.glassfish.mojarra.defaultResourceMaxAge", "604800000"), // 7 days
-        ResourceUpdateCheckPeriod("org.glassfish.mojarra.resourceUpdateCheckPeriod", "-1"), // in minutes; -1 disables the check
+        ResourceUpdateCheckPeriod("org.glassfish.mojarra.resourceUpdateCheckPeriod", AUTO), // in minutes; -1 disables the check, auto leaves it to the stage
+        CacheResourceModificationTimestamp("org.glassfish.mojarra.cacheResourceModificationTimestamp", AUTO), // true|false|auto
         CompressableMimeTypes("org.glassfish.mojarra.compressableMimeTypes", ""),
         DisableUnicodeEscaping("org.glassfish.mojarra.disableUnicodeEscaping", "auto"),
         DisableIdUniquenessCheck("org.glassfish.mojarra.disableIdUniquenessCheck", AUTO), // true|false|auto
@@ -1035,7 +1099,6 @@ public class WebConfiguration {
         GenerateUniqueServerStateIds("org.glassfish.mojarra.generateUniqueServerStateIds", true),
         AutoCompleteOffOnViewState("org.glassfish.mojarra.autoCompleteOffOnViewState", false, WebContextInitParameter.ViewStateAutocomplete.getQualifiedName()),
         AllowTextChildren("org.glassfish.mojarra.allowTextChildren", false, DEPRECATED),
-        CacheResourceModificationTimestamp("org.glassfish.mojarra.cacheResourceModificationTimestamp", true),
         EnableDistributable("org.glassfish.mojarra.enableDistributable", false), // NOTE: this is indeed implicitly set to true when web.xml distributable is also set, see ConfigureListener.
         EnableMissingResourceLibraryDetection("org.glassfish.mojarra.enableMissingResourceLibraryDetection", false),
         EnableTransitionTimeNoOpFlash("org.glassfish.mojarra.enableTransitionTimeNoOpFlash", false),
