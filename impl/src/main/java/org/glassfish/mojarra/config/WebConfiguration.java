@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -67,6 +68,14 @@ public class WebConfiguration {
 
     // A Simple regular expression of allowable boolean values
     private static final Pattern ALLOWABLE_BOOLEANS = compile("true|false", CASE_INSENSITIVE);
+
+    /**
+     * Parameters which exist to make debugging easier and would weaken a deployment if honored anywhere else, so outside
+     * Development they revert to their default, which is in each case the safe value.
+     */
+    private static final Set<BooleanWebContextInitParameter> DEVELOPMENT_ONLY_OPTIONS = EnumSet.of(
+            BooleanWebContextInitParameter.EnableClientStateDebugging,
+            BooleanWebContextInitParameter.GenerateUniqueServerStateIds);
 
     // Reads better than a bare boolean at the deprecated parameter declarations below.
     private static final boolean DEPRECATED = true;
@@ -357,7 +366,39 @@ public class WebConfiguration {
     }
 
     public void doPostBringupActions() {
+        processDevelopmentOnlyParameters();
         discoverResourceLibraryContracts();
+    }
+
+    /**
+     * <p>
+     * Reverts every development only parameter which was explicitly set away from its default to that default, unless
+     * the project stage is Development, and says so. Silently ignoring a setting which weakens the deployment would be
+     * worse than honoring it, so the warning matters as much as the gating.
+     * </p>
+     *
+     * <p>
+     * This runs after bringup rather than during construction because it needs the project stage, and therefore a
+     * FacesContext, which does not exist yet while the parameters are being read.
+     * </p>
+     */
+    void processDevelopmentOnlyParameters() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        ProjectStage projectStage = getProjectStage(context);
+
+        if (projectStage == ProjectStage.Development) {
+            return;
+        }
+
+        for (BooleanWebContextInitParameter param : DEVELOPMENT_ONLY_OPTIONS) {
+            if (isSet(param.getQualifiedName()) && isOptionEnabled(param) != param.getDefaultValue()) {
+                LOGGER.log(Level.WARNING, "faces.config.webconfig.param.development_only",
+                        new Object[] { context.getExternalContext().getContextName(), param.getQualifiedName(), projectStage,
+                                param.getDefaultValue() });
+
+                booleanContextParameters.put(param, param.getDefaultValue());
+            }
+        }
     }
 
     private void discoverResourceLibraryContracts() {
@@ -792,8 +833,8 @@ public class WebConfiguration {
 
         DisplayConfiguration("org.glassfish.mojarra.displayConfiguration", false),
         ForceLoadFacesConfigFiles("org.glassfish.mojarra.forceLoadConfiguration", false),
-        DisableClientStateEncryption("org.glassfish.mojarra.disableClientStateEncryption", false),
         EnableClientStateDebugging("org.glassfish.mojarra.enableClientStateDebugging", false),
+        DisableClientStateEncryption("org.glassfish.mojarra.disableClientStateEncryption", false, EnableClientStateDebugging),
         PreferXHTMLContentType("org.glassfish.mojarra.preferXHTML", false),
         CompressViewState("org.glassfish.mojarra.compressViewState", true),
         EnableScriptInAttributeValue("org.glassfish.mojarra.enableScriptsInAttributeValues", true),

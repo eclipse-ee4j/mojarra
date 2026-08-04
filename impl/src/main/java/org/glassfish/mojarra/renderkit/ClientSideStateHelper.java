@@ -414,7 +414,7 @@ public class ClientSideStateHelper extends StateHelper {
      */
     protected void init() {
 
-        if (webConfig.canProcessJndiEntries() && !webConfig.isOptionEnabled(BooleanWebContextInitParameter.DisableClientStateEncryption)) {
+        if (webConfig.canProcessJndiEntries() && !webConfig.isOptionEnabled(BooleanWebContextInitParameter.EnableClientStateDebugging)) {
             guard = new ByteArrayGuard();
         } else {
             if (LOGGER.isLoggable(Level.FINE)) {
