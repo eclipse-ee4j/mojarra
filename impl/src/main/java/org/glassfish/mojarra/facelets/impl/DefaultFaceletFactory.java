@@ -64,10 +64,10 @@ import org.glassfish.mojarra.application.ApplicationAssociate;
 import org.glassfish.mojarra.application.resource.ResourceManager;
 import org.glassfish.mojarra.config.WebConfiguration;
 import org.glassfish.mojarra.context.FacesFileNotFoundException;
-import org.glassfish.mojarra.context.FacesContextParam;
 import org.glassfish.mojarra.facelets.compiler.Compiler;
 import org.glassfish.mojarra.util.Cache;
 import org.glassfish.mojarra.util.FacesLogger;
+import org.glassfish.mojarra.util.Util;
 
 /**
  * Default FaceletFactory implementation.
@@ -79,6 +79,9 @@ public class DefaultFaceletFactory {
 
     protected final static Logger log = FacesLogger.FACELETS_FACTORY.getLogger();
 
+    private static final String ARCHIVE_PROTOCOL = "jar";
+    private static final String ARCHIVE_SEPARATOR = "!/";
+
     private Compiler compiler;
 
     // We continue to use a ResourceResolver just in case someone
@@ -88,7 +91,7 @@ public class DefaultFaceletFactory {
     private ResourceManager manager;
     private URL baseUrl;
     private String baseUrlAsString;
-    private String[] faceletsSuffixes;
+    private String[] faceletResourceSuffixes;
     private long refreshPeriodInMillis;
     private FaceletCache<DefaultFacelet> cache;
     private ConcurrentMap<String, FaceletCache<DefaultFacelet>> cachePerContract;
@@ -115,7 +118,7 @@ public class DefaultFaceletFactory {
         this.manager = ApplicationAssociate.getInstance(externalContext).getResourceManager();
         baseUrl = resolver.resolveUrl("/");
         baseUrlAsString = baseUrl.toExternalForm();
-        faceletsSuffixes = FacesContextParam.FACELETS_SUFFIX.getValue(facesContext);
+        faceletResourceSuffixes = Util.getFaceletResourceSuffixes(facesContext);
         this.idMappers = config.isOptionEnabled(UseFaceletsID) ? null : new Cache<>(new IdMapperFactory());
         this.refreshPeriodInMillis = refreshPeriodInSeconds >= 0 ? refreshPeriodInSeconds * 1000 : -1;
         if (log.isLoggable(Level.FINE)) {
@@ -191,7 +194,7 @@ public class DefaultFaceletFactory {
     }
 
     private void requireSameOrigin(URL source, URL url, String path) throws FacesFileNotFoundException {
-        if (!url.getProtocol().equals(source.getProtocol()) || !Objects.equals(url.getAuthority(), source.getAuthority())) {
+        if (!url.getProtocol().equals(source.getProtocol()) || !Objects.equals(getOrigin(url), getOrigin(source))) {
             throw new FacesFileNotFoundException(path + " must be a relative path within the application");
         }
     }
@@ -202,9 +205,26 @@ public class DefaultFaceletFactory {
         }
     }
 
+    /**
+     * A nested scheme carries no authority: every {@code jar:} URL has a null one, so a remote archive would compare
+     * equal to the local archive holding the facelet. The archive a resource lives in is therefore its origin.
+     *
+     * @return the origin to compare a resolved URL against the facelet it was resolved from.
+     */
+    private static String getOrigin(URL url) {
+        if (!ARCHIVE_PROTOCOL.equals(url.getProtocol())) {
+            return url.getAuthority();
+        }
+
+        String form = url.toExternalForm();
+        int separator = form.indexOf(ARCHIVE_SEPARATOR);
+
+        return separator == -1 ? form : form.substring(0, separator + ARCHIVE_SEPARATOR.length());
+    }
+
     private void requireFaceletResource(URL url, String path) throws FacesFileNotFoundException {
         String resourcePath = url.getPath();
-        for (String suffix : faceletsSuffixes) {
+        for (String suffix : faceletResourceSuffixes) {
             if (resourcePath.endsWith(suffix)) {
                 return;
             }

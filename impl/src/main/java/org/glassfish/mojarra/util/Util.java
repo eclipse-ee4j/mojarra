@@ -21,6 +21,7 @@ package org.glassfish.mojarra.util;
 
 import static jakarta.faces.application.ViewHandler.CHARACTER_ENCODING_KEY;
 import static java.lang.Character.isDigit;
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINEST;
@@ -54,6 +55,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -114,6 +116,7 @@ import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.application.ApplicationAssociate;
 import org.glassfish.mojarra.config.WebConfiguration;
 import org.glassfish.mojarra.config.manager.FacesSchema;
+import org.glassfish.mojarra.context.FacesContextParam;
 import org.glassfish.mojarra.facelets.component.UIRepeat;
 import org.glassfish.mojarra.io.FastStringWriter;
 
@@ -827,6 +830,33 @@ public class Util {
 
         Class<?> result = loadClass(type, Void.TYPE);
         return result;
+    }
+
+    /**
+     * Returns the suffixes which identify a resource as a Facelet, being the union of
+     * {@link FacesContextParam#FACELETS_SUFFIX}, the extension entries of
+     * {@link FacesContextParam#FACELETS_VIEW_MAPPINGS}, and always
+     * {@link ViewHandler#DEFAULT_FACELETS_SUFFIX}, in that precedence order.
+     * <p>
+     * This answers <em>whether a resource is a Facelet at all</em>, which is a wider question than whether it is
+     * reachable as a view. A template or an included fragment is a Facelet without ever being requested, so the
+     * default suffix stays in this set even when the webapp declares another view suffix, and an extension declared
+     * through the view mappings joins it.
+     *
+     * @param context the <code>FacesContext</code> for the current request
+     * @return the suffixes which identify a resource as a Facelet, deduplicated and in precedence order.
+     */
+    public static String[] getFaceletResourceSuffixes(FacesContext context) {
+        Set<String> faceletResourceSuffixes = new LinkedHashSet<>(asList(FacesContextParam.FACELETS_SUFFIX.<String[]>getValue(context)));
+        faceletResourceSuffixes.add(ViewHandler.DEFAULT_FACELETS_SUFFIX);
+
+        for (String viewMapping : FacesContextParam.FACELETS_VIEW_MAPPINGS.<String[]>getValue(context)) {
+            if (viewMapping.length() > 1 && viewMapping.charAt(0) == '*') {
+                faceletResourceSuffixes.add(viewMapping.substring(1));
+            }
+        }
+
+        return faceletResourceSuffixes.toArray(String[]::new);
     }
 
     public static ViewHandler getViewHandler(FacesContext context) throws FacesException {

@@ -26,6 +26,7 @@ import static jakarta.servlet.http.HttpServletResponse.SC_OK;
 import static java.util.Collections.emptySet;
 import static java.util.EnumSet.allOf;
 import static java.util.EnumSet.range;
+import static java.util.Locale.ROOT;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINER;
 import static java.util.logging.Level.SEVERE;
@@ -670,8 +671,8 @@ public final class FacesServletImpl implements Servlet {
     private boolean notProcessWebInfIfPrefixMapped(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String pathInfo = request.getPathInfo();
         if (pathInfo != null) {
-            pathInfo = pathInfo.toUpperCase();
-            if (pathInfo.contains("/WEB-INF/") || pathInfo.contains("/WEB-INF") || pathInfo.contains("/META-INF/") || pathInfo.contains("/META-INF")) {
+            pathInfo = pathInfo.toUpperCase(ROOT);
+            if (pathInfo.contains("/WEB-INF") || pathInfo.contains("/META-INF")) {
                 response.sendError(SC_NOT_FOUND);
                 return true;
             }

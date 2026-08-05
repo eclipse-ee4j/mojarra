@@ -22,6 +22,7 @@ import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static jakarta.servlet.http.HttpServletResponse.SC_NOT_MODIFIED;
 import static jakarta.servlet.http.MappingMatch.EXTENSION;
 import static java.lang.Boolean.FALSE;
+import static java.util.Locale.ROOT;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.WARNING;
 import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.DefaultResourceMaxAge;
@@ -229,19 +230,23 @@ public class ResourceHandlerImpl extends ResourceHandler {
 
         String resourceType = getResourceType(getContentType(FacesContext.getCurrentInstance(), resourceName));
 
+        if (resourceType == null) {
+            return null;
+        }
+
         return switch (resourceType) {
             case "script" -> "jakarta.faces.resource.Script";
             case "style" -> "jakarta.faces.resource.Stylesheet";
             default -> null;
         };
     }
-    
+
     private static String getResourceType(String contentType) {
         if (contentType == null) {
             return null;
         }
 
-        return switch (contentType.toLowerCase()) {
+        return switch (contentType.toLowerCase(ROOT)) {
             case ScriptRenderer.DEFAULT_CONTENT_TYPE -> "script";
             case StylesheetRenderer.DEFAULT_CONTENT_TYPE -> "style";
             default -> null;

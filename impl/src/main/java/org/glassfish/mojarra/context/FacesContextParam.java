@@ -1,7 +1,9 @@
 package org.glassfish.mojarra.context;
 
+import static java.util.Arrays.stream;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
+import static java.util.function.Predicate.not;
 import static org.glassfish.mojarra.RIConstants.EMPTY_STRING_ARRAY;
 
 import java.util.Objects;
@@ -222,7 +224,7 @@ public enum FacesContextParam {
         }
 
         public String[] split(String value) {
-            return pattern.split(value);
+            return stream(pattern.split(value)).map(String::trim).filter(not(String::isEmpty)).toArray(String[]::new);
         }
     }
 
@@ -332,7 +334,6 @@ public enum FacesContextParam {
         return Objects.equals(getValue(context), getDefaultValue(context));
     }
 
-    @SuppressWarnings("unchecked")
     private <T> Optional<T> getContextParamValue(FacesContext context) {
         return toValue(context.getExternalContext().getInitParameter(name));
     }
@@ -347,7 +348,6 @@ public enum FacesContextParam {
      */
     @SuppressWarnings("unchecked")
     public <T> Optional<T> toValue(String value) {
-
         if (value == null) {
             return Optional.empty();
         }

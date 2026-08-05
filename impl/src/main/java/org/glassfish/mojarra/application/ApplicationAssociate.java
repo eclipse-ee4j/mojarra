@@ -18,6 +18,7 @@ package org.glassfish.mojarra.application;
 
 import static jakarta.faces.FactoryFinder.FACELET_CACHE_FACTORY;
 import static jakarta.faces.FactoryFinder.FLOW_HANDLER_FACTORY;
+import static jakarta.faces.FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY;
 import static jakarta.faces.application.ProjectStage.Development;
 import static jakarta.faces.application.ViewVisitOption.RETURN_AS_MINIMAL_IMPLICIT_OUTCOME;
 import static java.util.Collections.emptyList;
@@ -25,7 +26,6 @@ import static java.util.Collections.emptyMap;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.SEVERE;
 import static org.glassfish.mojarra.RIConstants.FACES_CONFIG_VERSION;
-import static org.glassfish.mojarra.RIConstants.RI_PREFIX;
 import static org.glassfish.mojarra.el.ELUtils.buildFacesResolver;
 import static org.glassfish.mojarra.el.FacesCompositeELResolver.ELResolverChainType.Faces;
 import static org.glassfish.mojarra.facelets.util.ReflectionUtil.forName;
@@ -64,6 +64,7 @@ import jakarta.faces.event.SystemEvent;
 import jakarta.faces.event.SystemEventListener;
 import jakarta.faces.flow.FlowHandler;
 import jakarta.faces.flow.FlowHandlerFactory;
+import jakarta.faces.view.ViewDeclarationLanguageFactory;
 import jakarta.faces.view.facelets.FaceletCache;
 import jakarta.faces.view.facelets.FaceletCacheFactory;
 import jakarta.faces.view.facelets.TagDecorator;
@@ -290,14 +291,11 @@ public class ApplicationAssociate {
                 LOGGER.log(SEVERE, null, ex);
             }
 
-            // cause the Facelet VDL to be instantiated eagerly, so it can
-            // become aware of the resource library contracts
+            // Instantiate every view declaration language eagerly, so that the Facelets one
+            // becomes aware of the resource library contracts.
+            ((ViewDeclarationLanguageFactory) FactoryFinder.getFactory(VIEW_DECLARATION_LANGUAGE_FACTORY)).getAllViewDeclarationLanguages();
 
             ViewHandler viewHandler = context.getApplication().getViewHandler();
-
-            // FindBugs: ignore the return value, this is just to get the
-            // ctor called at this time.
-            viewHandler.getViewDeclarationLanguage(context, RI_PREFIX + "xhtml");
 
             String facesConfigVersion = getFacesConfigXmlVersion(context);
             context.getExternalContext().getApplicationMap().put(FACES_CONFIG_VERSION, facesConfigVersion);

@@ -26,7 +26,6 @@ import java.util.logging.Logger;
 import jakarta.servlet.ServletContext;
 
 import org.glassfish.mojarra.config.WebConfiguration;
-import org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.MultiKeyConcurrentHashMap;
 
