@@ -17,7 +17,7 @@
 package org.glassfish.mojarra.renderkit;
 
 import static java.util.logging.Level.WARNING;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.EnableViewStateIdRendering;
+import static org.glassfish.mojarra.context.MojarraContextParam.ENABLE_VIEW_STATE_ID_RENDERING;
 import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.ClientStateTimeout;
 import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.ClientStateWriteBufferSize;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.PredefinedPostbackParameter.VIEW_STATE_PARAM;
@@ -45,7 +45,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
 import org.glassfish.mojarra.RIConstants;
-import org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter;
+import org.glassfish.mojarra.context.MojarraContextParam;
 import org.glassfish.mojarra.util.DebugObjectOutputStream;
 import org.glassfish.mojarra.util.DebugUtil;
 import org.glassfish.mojarra.util.FacesLogger;
@@ -152,7 +152,7 @@ public class ClientSideStateHelper extends StateHelper {
             writer.startElement("input", null);
             writer.writeAttribute("type", "hidden", null);
             writer.writeAttribute("name", VIEW_STATE_PARAM.getName(ctx), null);
-            if (webConfig.isOptionEnabled(EnableViewStateIdRendering)) {
+            if (webConfig.isEnabled(ENABLE_VIEW_STATE_ID_RENDERING)) {
                 String viewStateId = Util.getViewStateId(ctx);
                 writer.writeAttribute("id", viewStateId, null);
             }
@@ -414,7 +414,7 @@ public class ClientSideStateHelper extends StateHelper {
      */
     protected void init() {
 
-        if (webConfig.canProcessJndiEntries() && !webConfig.isOptionEnabled(BooleanWebContextInitParameter.EnableClientStateDebugging)) {
+        if (webConfig.canProcessJndiEntries() && !webConfig.isEnabled(MojarraContextParam.ENABLE_CLIENT_STATE_DEBUGGING)) {
             guard = new ByteArrayGuard();
         } else {
             if (LOGGER.isLoggable(Level.FINE)) {
@@ -465,7 +465,7 @@ public class ClientSideStateHelper extends StateHelper {
             csBuffSize = Integer.parseInt(defaultSize);
         }
 
-        debugSerializedState = webConfig.isOptionEnabled(BooleanWebContextInitParameter.EnableClientStateDebugging);
+        debugSerializedState = webConfig.isEnabled(MojarraContextParam.ENABLE_CLIENT_STATE_DEBUGGING);
 
     }
 

@@ -18,7 +18,7 @@ package org.glassfish.mojarra.application.view;
 
 import static java.util.logging.Level.FINEST;
 import static java.util.logging.Level.WARNING;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
+import static org.glassfish.mojarra.context.MojarraContextParam.ENABLE_DISTRIBUTABLE;
 import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.NumberOfActiveViewMaps;
 
 import java.io.IOException;
@@ -100,7 +100,7 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
         FacesContext context = FacesContext.getCurrentInstance();
         contextManager = new ViewScopeContextManager();
         WebConfiguration config = WebConfiguration.getInstance(context.getExternalContext());
-        distributable = config.isOptionEnabled(EnableDistributable);
+        distributable = config.isEnabled(ENABLE_DISTRIBUTABLE);
 
         String numberOfActiveViewMapsAsString = config.getOptionValue(NumberOfActiveViewMaps);
         if (numberOfActiveViewMapsAsString != null) {

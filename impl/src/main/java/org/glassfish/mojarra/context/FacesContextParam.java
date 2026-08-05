@@ -60,7 +60,7 @@ public enum FacesContextParam implements ContextParam {
     AUTOMATIC_EXTENSIONLESS_MAPPING(FacesServlet.AUTOMATIC_EXTENSIONLESS_MAPPING_PARAM_NAME, false),
 
     /**
-     * Returns {@value ClientWindow#CLIENT_WINDOW_MODE_PARAM_NAME} as {@link String} with default of {@code none}.
+     * Returns {@value ClientWindow#CLIENT_WINDOW_MODE_PARAM_NAME} as {@link String} with default of {@value ClientWindow#CLIENT_WINDOW_MODE_DEFAULT_VALUE}.
      */
     CLIENT_WINDOW_MODE(ClientWindow.CLIENT_WINDOW_MODE_PARAM_NAME, ClientWindow.CLIENT_WINDOW_MODE_DEFAULT_VALUE),
 
@@ -222,14 +222,6 @@ public enum FacesContextParam implements ContextParam {
     WEBSOCKET_ENDPOINT_PORT(PushContext.WEBSOCKET_ENDPOINT_PORT_PARAM_NAME, 0),
 
     ;
-
-    /**
-     * Marks a declaration as deprecated, as a type rather than a flag, because a boolean would be ambiguous with the
-     * default value of a boolean parameter.
-     */
-    private enum Deprecation {
-        DEPRECATED;
-    }
 
     private final String name;
     private final Function<ProjectStage, ?> defaultValueSupplier;

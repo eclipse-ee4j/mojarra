@@ -34,8 +34,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter;
+import org.glassfish.mojarra.context.MojarraContextParam;
 import org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter;
+import jakarta.faces.application.ProjectStage;
+
+import org.glassfish.mojarra.context.ContextParam;
 import org.glassfish.mojarra.context.FacesContextParam;
 import org.junit.jupiter.api.Test;
 
@@ -44,7 +47,7 @@ import org.junit.jupiter.api.Test;
  * cannot be added, removed, renamed or given another default value without that page being updated.
  * <p>
  * The parameters recognized by this implementation are collected from {@link WebContextInitParameter},
- * {@link BooleanWebContextInitParameter} and {@link FacesContextParam}, plus a scan of the
+ * {@link MojarraContextParam} and {@link FacesContextParam}, plus a scan of the
  * main sources for <code>getInitParameter()</code> call sites which read a parameter declared outside of those enums.
 
  * <p>
@@ -220,14 +223,9 @@ class ContextParamsMdTest {
             put(params, new Param(param.getQualifiedName(), null, param.getDefaultValue(), alternateOf(param), isDeprecated(param)));
         }
 
-        for (BooleanWebContextInitParameter param : BooleanWebContextInitParameter.values()) {
-            put(params, new Param(param.getQualifiedName(), "boolean", String.valueOf(param.getDefaultValue()), alternateOf(param),
-                    isDeprecated(param)));
-        }
-
-        for (FacesContextParam param : FacesContextParam.values()) {
+        for (ContextParam param : contextParams()) {
             put(params, new Param(param.getName(), typeOf(param.getType()), declaredDefaultOf(param), param.getAlternateName(),
-                    isDeprecated(param)));
+                    param.isDeprecated()));
         }
 
         for (String name : scanForInitParameterReads()) {
@@ -243,18 +241,23 @@ class ContextParamsMdTest {
         }
     }
 
+    private static List<ContextParam> contextParams() {
+        return Stream.concat(Stream.of(FacesContextParam.values()), Stream.of(MojarraContextParam.values())).collect(toList());
+    }
+
     /**
-     * The default of a {@link FacesContextParam} is produced by a supplier which usually ignores the context, so it can
-     * be read with a null one. The few which do consult the context to derive their default from the project stage
-     * cannot, and are left to the page.
+     * The default of a parameter which derives it from the project stage is not a single value, so the page states it
+     * in prose and this leaves that cell alone. Every other one reads the same whichever stage it is asked for.
      */
-    private static String declaredDefaultOf(FacesContextParam param) {
-        try {
-            Object defaultValue = param.getDefaultValue(null);
-            return defaultValue instanceof Object[] ? String.join(" ", (String[]) defaultValue) : String.valueOf(defaultValue);
-        } catch (RuntimeException ignored) {
-            return null;
-        }
+    private static String declaredDefaultOf(ContextParam param) {
+        String inProduction = defaultOf(param, ProjectStage.Production);
+
+        return inProduction.equals(defaultOf(param, ProjectStage.Development)) ? inProduction : null;
+    }
+
+    private static String defaultOf(ContextParam param, ProjectStage projectStage) {
+        Object defaultValue = param.getDefaultValue(projectStage);
+        return defaultValue instanceof Object[] ? String.join(" ", (String[]) defaultValue) : String.valueOf(defaultValue);
     }
 
     private static String typeOf(Class<?> type) {

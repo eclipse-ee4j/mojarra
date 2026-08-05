@@ -27,7 +27,8 @@ import static org.glassfish.mojarra.RIConstants.ERROR_PAGE_PRESENT_KEY_NAME;
 import static org.glassfish.mojarra.RIConstants.FACES_SERVLET_MAPPINGS;
 import static org.glassfish.mojarra.RIConstants.FACES_SERVLET_REGISTRATION;
 import static org.glassfish.mojarra.RIConstants.MOJARRA_VERSION;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.ForceLoadFacesConfigFiles;
+import static org.glassfish.mojarra.context.MojarraContextParam.ENABLE_DISTRIBUTABLE;
+import static org.glassfish.mojarra.context.MojarraContextParam.FORCE_LOAD_CONFIGURATION;
 import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.WebsocketEndpointIdleTimeout;
 import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.WebsocketMaxSessionsPerChannel;
 import static org.glassfish.mojarra.context.SessionMap.createMutex;
@@ -146,7 +147,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
         WebXmlProcessor webXmlProcessor = new WebXmlProcessor(servletContext);
         if (facesServletRegistration == null) {
             if (!webXmlProcessor.isFacesServletPresent()) {
-                if (!webConfig.isOptionEnabled(ForceLoadFacesConfigFiles)) {
+                if (!webConfig.isEnabled(FORCE_LOAD_CONFIGURATION)) {
                     LOGGER.log(FINE, "No FacesServlet found in deployment descriptor - bypassing configuration");
 
                     WebConfiguration.clear(servletContext);
@@ -171,11 +172,11 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
         }
 
         // Do not override if already defined
-        if (!webConfig.isSet(WebConfiguration.BooleanWebContextInitParameter.EnableDistributable)) {
-            webConfig.setOptionEnabled(WebConfiguration.BooleanWebContextInitParameter.EnableDistributable, webXmlProcessor.isDistributablePresent());
+        if (!webConfig.isSet(ENABLE_DISTRIBUTABLE)) {
+            webConfig.setValue(ENABLE_DISTRIBUTABLE, webXmlProcessor.isDistributablePresent());
         }
-        if (webConfig.isOptionEnabled(WebConfiguration.BooleanWebContextInitParameter.EnableDistributable)) {
-            servletContext.setAttribute(WebConfiguration.BooleanWebContextInitParameter.EnableDistributable.getQualifiedName(), TRUE);
+        if (webConfig.isEnabled(ENABLE_DISTRIBUTABLE)) {
+            servletContext.setAttribute(ENABLE_DISTRIBUTABLE.getName(), TRUE);
         }
 
         // Bootstrap of faces required

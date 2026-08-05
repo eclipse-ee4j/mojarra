@@ -20,7 +20,7 @@ import static java.util.Arrays.asList;
 import static org.glassfish.mojarra.application.view.ViewScopeManager.ACTIVE_VIEW_MAPS;
 import static org.glassfish.mojarra.application.view.ViewScopeManager.VIEW_SCOPE_MANAGER;
 import static org.glassfish.mojarra.cdi.clientwindow.ClientWindowScopeManager.CLIENT_WINDOW_SCOPE_MANAGER;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
+import static org.glassfish.mojarra.context.MojarraContextParam.ENABLE_DISTRIBUTABLE;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -184,7 +184,7 @@ public class WebappLifecycleListener {
     }
 
     private boolean isDistributable(ServletRequestEvent event) {
-        return WebConfiguration.getInstance(event.getServletContext()).isOptionEnabled(EnableDistributable);
+        return WebConfiguration.getInstance(event.getServletContext()).isEnabled(ENABLE_DISTRIBUTABLE);
     }
 
     private boolean isDevelopment(ApplicationAssociate associate) {

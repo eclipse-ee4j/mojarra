@@ -36,7 +36,7 @@ import jakarta.faces.render.Renderer;
 
 import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.config.WebConfiguration;
-import org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter;
+import org.glassfish.mojarra.context.MojarraContextParam;
 import org.glassfish.mojarra.io.FastStringWriter;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 import org.glassfish.mojarra.util.HtmlUtils;
@@ -228,8 +228,8 @@ public class HtmlResponseWriter extends ResponseWriter {
         WebConfiguration webConfig = null;
         if (isScriptInAttributeValueEnabled == null) {
             webConfig = getWebConfiguration(webConfig);
-            isScriptInAttributeValueEnabled = null == webConfig ? BooleanWebContextInitParameter.EnableScriptInAttributeValue.getDefaultValue()
-                    : webConfig.isOptionEnabled(BooleanWebContextInitParameter.EnableScriptInAttributeValue);
+            isScriptInAttributeValueEnabled = null == webConfig ? MojarraContextParam.ENABLE_SCRIPTS_IN_ATTRIBUTE_VALUES.getDefaultValue(null)
+                    : webConfig.isEnabled(MojarraContextParam.ENABLE_SCRIPTS_IN_ATTRIBUTE_VALUES);
         }
 
         if (disableUnicodeEscaping == null) {

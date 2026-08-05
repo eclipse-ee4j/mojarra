@@ -42,6 +42,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -57,6 +58,7 @@ import org.glassfish.mojarra.application.ApplicationAssociate;
 import org.glassfish.mojarra.application.view.FaceletViewHandlingStrategy;
 import org.glassfish.mojarra.context.ContextParam;
 import org.glassfish.mojarra.context.FacesContextParam;
+import org.glassfish.mojarra.context.MojarraContextParam;
 import org.glassfish.mojarra.facelets.util.Classpath;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.MojarraVersion;
@@ -105,9 +107,9 @@ public class WebConfiguration {
      * Parameters which exist to make debugging easier and would weaken a deployment if honored anywhere else, so outside
      * Development they revert to their default, which is in each case the safe value.
      */
-    private static final Set<BooleanWebContextInitParameter> DEVELOPMENT_ONLY_OPTIONS = EnumSet.of(
-            BooleanWebContextInitParameter.EnableClientStateDebugging,
-            BooleanWebContextInitParameter.GenerateUniqueServerStateIds);
+    private static final Set<MojarraContextParam> DEVELOPMENT_ONLY_OPTIONS = EnumSet.of(
+            MojarraContextParam.ENABLE_CLIENT_STATE_DEBUGGING,
+            MojarraContextParam.GENERATE_UNIQUE_SERVER_STATE_IDS);
 
     // Reads better than a bare boolean at the deprecated parameter declarations below.
     private static final boolean DEPRECATED = true;
@@ -125,8 +127,6 @@ public class WebConfiguration {
     private static final String RESOURCE_CONTRACT_SUFFIX = "/" + ResourceHandler.RESOURCE_CONTRACT_XML;
 
     private final Level loggingLevel;
-
-    private final Map<BooleanWebContextInitParameter, Boolean> booleanContextParameters = new EnumMap<>(BooleanWebContextInitParameter.class);
 
     private final Map<WebContextInitParameter, String> contextParameters = new EnumMap<>(WebContextInitParameter.class);
 
@@ -163,7 +163,6 @@ public class WebConfiguration {
         logEnvironmentEntries();
 
         processContextParams();
-        processBooleanParameters();
         processInitParameters();
 
         processDeprecatedParameters();
@@ -193,11 +192,11 @@ public class WebConfiguration {
             recognized.addAll(namesOf(param));
         }
 
-        for (WebContextInitParameter param : WebContextInitParameter.values()) {
-            recognized.add(param.getQualifiedName());
+        for (MojarraContextParam param : MojarraContextParam.values()) {
+            recognized.addAll(namesOf(param));
         }
 
-        for (BooleanWebContextInitParameter param : BooleanWebContextInitParameter.values()) {
+        for (WebContextInitParameter param : WebContextInitParameter.values()) {
             recognized.add(param.getQualifiedName());
         }
 
@@ -358,20 +357,6 @@ public class WebConfiguration {
     }
 
     /**
-     * Obtain the value of the specified boolean parameter
-     *
-     * @param param the parameter of interest
-     * @return the value of the specified boolean parameter
-     */
-    public boolean isOptionEnabled(BooleanWebContextInitParameter param) {
-        if (booleanContextParameters.get(param) != null) {
-            return booleanContextParameters.get(param);
-        }
-
-        return param.getDefaultValue();
-    }
-
-    /**
      * Obtain the value of the specified parameter
      *
      * @param param the parameter of interest
@@ -385,8 +370,17 @@ public class WebConfiguration {
         contextParameters.put(param, value);
     }
 
-    public void setOptionEnabled(BooleanWebContextInitParameter param, boolean value) {
-        booleanContextParameters.put(param, value);
+    /**
+     * <p>
+     * Overrides what a parameter resolved to, for the one setting which is not expressible as a context parameter:
+     * <code>web.xml</code> declaring <code>&lt;distributable/&gt;</code>, which no parameter can observe.
+     * </p>
+     *
+     * @param param the parameter of interest.
+     * @param value the value it resolves to from here on.
+     */
+    public void setValue(ContextParam param, Object value) {
+        resolvedValues.put(param, value);
     }
 
     public FaceletsConfiguration getFaceletsConfiguration() {
@@ -433,26 +427,6 @@ public class WebConfiguration {
         return isSet(param.getQualifiedName());
     }
 
-    /**
-     * @param param the init parameter of interest
-     * @return <code>true</code> if the parameter was explicitly set, otherwise, <code>false</code>
-     */
-    public boolean isSet(BooleanWebContextInitParameter param) {
-        return isSet(param.getQualifiedName());
-    }
-
-    public void overrideContextInitParameter(BooleanWebContextInitParameter param, boolean value) {
-        if (param == null) {
-            return;
-        }
-
-        boolean oldVal = Boolean.TRUE.equals(booleanContextParameters.put(param, value));
-        if (LOGGER.isLoggable(FINE) && oldVal != value) {
-            LOGGER.log(FINE, "Overriding init parameter {0}.  Changing from {1} to {2}.", new Object[] { param.getQualifiedName(), oldVal, value });
-        }
-
-    }
-
     public void overrideContextInitParameter(WebContextInitParameter param, String value) {
         if (param == null || value == null || value.length() == 0) {
             return;
@@ -483,7 +457,7 @@ public class WebConfiguration {
         String value = getOptionValue(WebContextInitParameter.ViewStateAutocomplete);
 
         if (!isSet(WebContextInitParameter.ViewStateAutocomplete.getQualifiedName())
-                && isOptionEnabled(BooleanWebContextInitParameter.AutoCompleteOffOnViewState)) {
+                && Boolean.TRUE.equals(getValue(MojarraContextParam.AUTO_COMPLETE_OFF_ON_VIEW_STATE))) {
             value = "off";
         }
 
@@ -504,6 +478,14 @@ public class WebConfiguration {
     @SuppressWarnings("unchecked")
     public <T> T getValue(ContextParam param) {
         return (T) resolvedValues.get(param);
+    }
+
+    /**
+     * @param param the boolean parameter of interest.
+     * @return whether it resolved to <code>true</code>.
+     */
+    public boolean isEnabled(ContextParam param) {
+        return Boolean.TRUE.equals(resolvedValues.get(param));
     }
 
     /**
@@ -561,6 +543,10 @@ public class WebConfiguration {
      */
     private void processContextParams() {
         for (FacesContextParam param : FacesContextParam.values()) {
+            resolvedValues.put(param, resolve(param));
+        }
+
+        for (MojarraContextParam param : MojarraContextParam.values()) {
             resolvedValues.put(param, resolve(param));
         }
 
@@ -742,12 +728,14 @@ public class WebConfiguration {
             return;
         }
 
-        for (BooleanWebContextInitParameter param : DEVELOPMENT_ONLY_OPTIONS) {
-            if (isOptionEnabled(param) != param.getDefaultValue()) {
-                LOGGER.log(Level.WARNING, "faces.config.webconfig.param.development_only",
-                        new Object[] { getContextName(), param.getQualifiedName(), projectStage, param.getDefaultValue() });
+        for (MojarraContextParam param : DEVELOPMENT_ONLY_OPTIONS) {
+            Object defaultValue = param.getDefaultValue(projectStage);
 
-                booleanContextParameters.put(param, param.getDefaultValue());
+            if (!defaultValue.equals(getValue(param))) {
+                LOGGER.log(Level.WARNING, "faces.config.webconfig.param.development_only",
+                        new Object[] { getContextName(), param.getName(), projectStage, defaultValue });
+
+                resolvedValues.put(param, defaultValue);
             }
         }
     }
@@ -858,71 +846,29 @@ public class WebConfiguration {
 
     /**
      * <p>
-     * Is the configured value valid against the default boolean pattern.
-     * </p>
-     *
-     * @param param the boolean parameter
-     * @param value the configured value
-     * @return <code>true</code> if the value is valid, otherwise <code>false</code>
-     */
-    private boolean isValueValid(BooleanWebContextInitParameter param, String value) {
-
-        if (!ALLOWABLE_BOOLEANS.matcher(value).matches()) {
-            if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.log(Level.WARNING, "faces.config.webconfig.boolconfig.invalidvalue",
-                        new Object[] { value, param.getQualifiedName(), "true|false", "true|false", param.getDefaultValue() });
-            }
-            return false;
-        }
-
-        return true;
-
-    }
-
-    /**
-     * <p>
-     * Process all boolean context initialization parameters.
-     * </p>
-     *
-     */
-    private void processBooleanParameters() {
-
-        for (BooleanWebContextInitParameter param : BooleanWebContextInitParameter.values()) {
-            String strValue = getInitParameter(param.getQualifiedName());
-            boolean value;
-
-            if (strValue == null) {
-                value = param.getDefaultValue();
-            } else {
-                if (isValueValid(param, strValue)) {
-                    value = Boolean.parseBoolean(strValue);
-                } else {
-                    value = param.getDefaultValue();
-                }
-            }
-
-            if (LOGGER.isLoggable(loggingLevel)) {
-                LOGGER.log(loggingLevel, value ? "faces.config.webconfig.boolconfiginfo.enabled" : "faces.config.webconfig.boolconfiginfo.disabled",
-                        new Object[] { getContextName(), param.getQualifiedName() });
-            }
-
-            booleanContextParameters.put(param, value);
-        }
-
-    }
-
-    /**
-     * <p>
      * Warn about every deprecated context initialization parameter which was explicitly set, and carry the value of each
      * one over to the parameter which replaces it, unless that one was explicitly set as well.
      * </p>
      *
      */
+    private static List<ContextParam> deprecatedParams() {
+        return Stream.of(Stream.of(FacesContextParam.values()), Stream.of(MojarraContextParam.values()))
+                .flatMap(params -> params.filter(ContextParam::isDeprecated))
+                .collect(toList());
+    }
+
     private void processDeprecatedParameters() {
 
-        for (FacesContextParam param : FacesContextParam.values()) {
-            if (param.isDeprecated() && isSet(param)) {
-                warnAboutDeprecatedParameter(param.getName(), param.getAlternateName());
+        for (ContextParam param : deprecatedParams()) {
+            if (!isSet(param)) {
+                continue;
+            }
+
+            warnAboutDeprecatedParameter(param.getName(), param.getAlternateName());
+            MojarraContextParam alternate = MojarraContextParam.of(param.getAlternateName());
+
+            if (alternate != null && !isSet(alternate)) {
+                resolvedValues.put(alternate, resolvedValues.get(param));
             }
         }
 
@@ -939,19 +885,6 @@ public class WebConfiguration {
             }
         }
 
-        for (BooleanWebContextInitParameter param : BooleanWebContextInitParameter.values()) {
-            if (!param.isDeprecated() || !isSet(param.getQualifiedName())) {
-                continue;
-            }
-
-            warnAboutDeprecatedParameter(param.getQualifiedName(), param.getAlternateName());
-
-            BooleanWebContextInitParameter alternate = param.getAlternate();
-
-            if (alternate != null && !isSet(alternate.getQualifiedName())) {
-                booleanContextParameters.put(alternate, booleanContextParameters.get(param));
-            }
-        }
     }
 
     /**
@@ -1165,96 +1098,6 @@ public class WebConfiguration {
             this.qualifiedName = qualifiedName;
             this.defaultValue = defaultValue;
             this.alternate = alternate;
-            this.deprecated = deprecated;
-        }
-
-    }
-
-    /**
-     * <p>
-     * An <code>enum</code> of all boolean context initalization parameters recognized by the implementation.
-     * </p>
-     */
-    public enum BooleanWebContextInitParameter {
-
-        ForceLoadFacesConfigFiles("org.glassfish.mojarra.forceLoadConfiguration", false),
-        EnableClientStateDebugging("org.glassfish.mojarra.enableClientStateDebugging", false),
-        DisableClientStateEncryption("org.glassfish.mojarra.disableClientStateEncryption", false, EnableClientStateDebugging),
-        PreferXHTMLContentType("org.glassfish.mojarra.preferXHTML", false),
-        CompressViewState("org.glassfish.mojarra.compressViewState", true),
-        EnableScriptInAttributeValue("org.glassfish.mojarra.enableScriptsInAttributeValues", true),
-        WriteStateAtFormEnd("org.glassfish.mojarra.writeStateAtFormEnd", true),
-        EnableViewStateIdRendering("org.glassfish.mojarra.enableViewStateIdRendering", true),
-        RegisterConverterPropertyEditors("org.glassfish.mojarra.registerConverterPropertyEditors", false),
-        RefreshTransientBuildOnPSS("org.glassfish.mojarra.refreshTransientBuildOnPSS", false),
-        GenerateUniqueServerStateIds("org.glassfish.mojarra.generateUniqueServerStateIds", true),
-        AutoCompleteOffOnViewState("org.glassfish.mojarra.autoCompleteOffOnViewState", false, WebContextInitParameter.ViewStateAutocomplete.getQualifiedName()),
-        AllowTextChildren("org.glassfish.mojarra.allowTextChildren", false, DEPRECATED),
-        EnableDistributable("org.glassfish.mojarra.enableDistributable", false), // NOTE: this is indeed implicitly set to true when web.xml distributable is also set, see ConfigureListener.
-        EnableMissingResourceLibraryDetection("org.glassfish.mojarra.enableMissingResourceLibraryDetection", false),
-        EnableTransitionTimeNoOpFlash("org.glassfish.mojarra.enableTransitionTimeNoOpFlash", false),
-        ForceAlwaysWriteFlashCookie("org.glassfish.mojarra.forceAlwaysWriteFlashCookie", false),
-        DisallowDoctypeDecl("org.glassfish.mojarra.disallowDoctypeDecl", false),
-        UseFaceletsID("org.glassfish.mojarra.useFaceletsID", false),
-        DisableOptionalELResolver("org.glassfish.mojarra.disableOptionalELResolver", false),
-        SendPoweredByHeader("org.glassfish.mojarra.sendPoweredByHeader", false),
-        ;
-
-        private final String qualifiedName;
-        private final boolean defaultValue;
-        private final BooleanWebContextInitParameter alternate;
-        private final String alternateName;
-        private final boolean deprecated;
-
-        public String getQualifiedName() {
-            return qualifiedName;
-        }
-
-        public boolean getDefaultValue() {
-            return defaultValue;
-        }
-
-        /**
-         * @return the parameter which replaces this one and inherits its value, or <code>null</code> when there is none.
-         */
-        public BooleanWebContextInitParameter getAlternate() {
-            return alternate;
-        }
-
-        /**
-         * @return the qualified name of the replacement, which may live in another enum and then only gets named rather
-         * than handed the value, or <code>null</code> when there is no replacement.
-         */
-        public String getAlternateName() {
-            return alternateName;
-        }
-
-        public boolean isDeprecated() {
-            return deprecated;
-        }
-
-        BooleanWebContextInitParameter(String qualifiedName, boolean defaultValue) {
-            this(qualifiedName, defaultValue, null, null, false);
-        }
-
-        BooleanWebContextInitParameter(String qualifiedName, boolean defaultValue, BooleanWebContextInitParameter alternate) {
-            this(qualifiedName, defaultValue, alternate, alternate.getQualifiedName(), true);
-        }
-
-        BooleanWebContextInitParameter(String qualifiedName, boolean defaultValue, String alternateName) {
-            this(qualifiedName, defaultValue, null, alternateName, true);
-        }
-
-        BooleanWebContextInitParameter(String qualifiedName, boolean defaultValue, boolean deprecated) {
-            this(qualifiedName, defaultValue, null, null, deprecated);
-        }
-
-        private BooleanWebContextInitParameter(String qualifiedName, boolean defaultValue, BooleanWebContextInitParameter alternate, String alternateName,
-                boolean deprecated) {
-            this.qualifiedName = qualifiedName;
-            this.defaultValue = defaultValue;
-            this.alternate = alternate;
-            this.alternateName = alternateName;
             this.deprecated = deprecated;
         }
 

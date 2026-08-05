@@ -236,7 +236,7 @@ public final class ComponentSupport {
     }
 
     private static boolean isPartialStateSaving(FacesContext context) {
-        return context.getAttributes().get(PARTIAL_STATE_SAVING) == Boolean.TRUE;
+        return PARTIAL_STATE_SAVING.getValue(context);
     }
 
     /**

@@ -93,6 +93,31 @@ public interface ContextParam {
 
     /**
      * <p>
+     * What a declaration says about being on its way out. This is a type rather than a pair of constructor arguments,
+     * because a boolean would be ambiguous with the default value of a boolean parameter and a name with that of a
+     * string one.
+     * </p>
+     *
+     * @param alternateName the name of the replacement, or <code>null</code> when there is none.
+     */
+    record Deprecation(String alternateName) {
+
+        /**
+         * Deprecated with nothing to move to, because the behaviour itself goes away.
+         */
+        public static final Deprecation DEPRECATED = new Deprecation(null);
+
+        /**
+         * @param alternateName the name of the parameter which replaces this one.
+         * @return the deprecation naming that replacement.
+         */
+        public static Deprecation replacedBy(String alternateName) {
+            return new Deprecation(alternateName);
+        }
+    }
+
+    /**
+     * <p>
      * Converts a declared parameter value to the type indicated by {@link #getType()}.
      * </p>
      *

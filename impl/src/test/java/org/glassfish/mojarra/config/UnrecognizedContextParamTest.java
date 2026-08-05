@@ -18,7 +18,7 @@ package org.glassfish.mojarra.config;
 
 import static jakarta.faces.application.ProjectStage.PROJECT_STAGE_PARAM_NAME;
 import static java.util.logging.Level.WARNING;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.CompressViewState;
+import static org.glassfish.mojarra.context.MojarraContextParam.COMPRESS_VIEW_STATE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
@@ -80,7 +80,7 @@ class UnrecognizedContextParamTest {
 
     @Test
     void aRecognizedParameterIsNotReported() {
-        configure(ProjectStage.Development, CompressViewState.getQualifiedName(), "false");
+        configure(ProjectStage.Development, COMPRESS_VIEW_STATE.getName(), "false");
 
         assertEquals(List.of(), unrecognizedParameterNames());
     }

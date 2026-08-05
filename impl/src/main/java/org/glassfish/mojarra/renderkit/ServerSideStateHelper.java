@@ -19,8 +19,8 @@ package org.glassfish.mojarra.renderkit;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINEST;
 import static java.util.logging.Level.WARNING;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.EnableViewStateIdRendering;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.GenerateUniqueServerStateIds;
+import static org.glassfish.mojarra.context.MojarraContextParam.ENABLE_VIEW_STATE_ID_RENDERING;
+import static org.glassfish.mojarra.context.MojarraContextParam.GENERATE_UNIQUE_SERVER_STATE_IDS;
 import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.NumberOfStatefulPagesPerSession;
 import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.NumberOfViewStatesPerStatefulPage;
 import static org.glassfish.mojarra.context.SessionMap.getMutex;
@@ -103,7 +103,7 @@ public class ServerSideStateHelper extends StateHelper {
         numberOfStatefulPages = getIntegerConfigValue(NumberOfStatefulPagesPerSession);
         numberOfViewStatesPerPage = getIntegerConfigValue(NumberOfViewStatesPerStatefulPage);
         WebConfiguration webConfig = WebConfiguration.getInstance();
-        generateUniqueStateIds = webConfig.isOptionEnabled(GenerateUniqueServerStateIds);
+        generateUniqueStateIds = webConfig.isEnabled(GENERATE_UNIQUE_SERVER_STATE_IDS);
         if (generateUniqueStateIds) {
             // Construct secure RNG.
             random = new SecureRandom();
@@ -210,7 +210,7 @@ public class ServerSideStateHelper extends StateHelper {
             writer.startElement("input", null);
             writer.writeAttribute("type", "hidden", null);
             writer.writeAttribute("name", VIEW_STATE_PARAM.getName(ctx), null);
-            if (webConfig.isOptionEnabled(EnableViewStateIdRendering)) {
+            if (webConfig.isEnabled(ENABLE_VIEW_STATE_ID_RENDERING)) {
                 String viewStateId = Util.getViewStateId(ctx);
                 writer.writeAttribute("id", viewStateId, null);
             }

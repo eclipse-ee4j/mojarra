@@ -16,7 +16,7 @@
  */
 package org.glassfish.mojarra.el;
 
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.DisableOptionalELResolver;
+import static org.glassfish.mojarra.context.MojarraContextParam.DISABLE_OPTIONAL_EL_RESOLVER;
 import static org.glassfish.mojarra.util.MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID;
 import static org.glassfish.mojarra.util.MessageUtils.getExceptionMessageString;
 import static org.glassfish.mojarra.util.Util.getCdiBeanManager;
@@ -137,7 +137,7 @@ public class ELUtils {
         composite.addPropertyELResolver(elRegistry.LIST_RESOLVER);
         composite.addPropertyELResolver(elRegistry.ARRAY_RESOLVER);
 
-        if (!WebConfiguration.getInstance().isOptionEnabled(DisableOptionalELResolver)) {
+        if (!WebConfiguration.getInstance().isEnabled(DISABLE_OPTIONAL_EL_RESOLVER)) {
             composite.addPropertyELResolver(elRegistry.OPTIONAL_RESOLVER);
         }
 

@@ -16,10 +16,9 @@
 
 package org.glassfish.mojarra.config.initfacescontext;
 
-import static java.lang.Boolean.parseBoolean;
 import static java.util.Collections.emptyIterator;
 import static java.util.Collections.emptyMap;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.EnableTransitionTimeNoOpFlash;
+import static org.glassfish.mojarra.context.MojarraContextParam.ENABLE_TRANSITION_TIME_NO_OP_FLASH;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,6 +34,7 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.Flash;
 import jakarta.servlet.ServletContext;
 
+import org.glassfish.mojarra.config.WebConfiguration;
 import org.glassfish.mojarra.context.ApplicationMap;
 import org.glassfish.mojarra.context.InitParameterMap;
 
@@ -43,16 +43,11 @@ public class ServletContextAdapter extends ExternalContext {
     private ServletContext servletContext;
     private ApplicationMap applicationMap;
     private InitParameterMap initMap;
-    private boolean isEnableTransitionTimeNoOpFlash = EnableTransitionTimeNoOpFlash.getDefaultValue();
+    private final boolean isEnableTransitionTimeNoOpFlash;
 
     public ServletContextAdapter(ServletContext servletContext) {
         this.servletContext = servletContext;
-
-        String paramValue = servletContext.getInitParameter(EnableTransitionTimeNoOpFlash.getQualifiedName());
-
-        if (paramValue != null) {
-            isEnableTransitionTimeNoOpFlash = parseBoolean(paramValue);
-        }
+        this.isEnableTransitionTimeNoOpFlash = WebConfiguration.getInstance(servletContext).isEnabled(ENABLE_TRANSITION_TIME_NO_OP_FLASH);
     }
 
     @Override

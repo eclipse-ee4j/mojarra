@@ -20,7 +20,7 @@ import static java.util.logging.Level.FINEST;
 import static java.util.regex.Pattern.quote;
 import static org.glassfish.mojarra.RIConstants.CHAR_ENCODING;
 import static org.glassfish.mojarra.cdi.CdiUtils.getBeanReference;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.UseFaceletsID;
+import static org.glassfish.mojarra.context.MojarraContextParam.USE_FACELETS_ID;
 import static org.glassfish.mojarra.util.Util.isEmpty;
 import static org.glassfish.mojarra.util.Util.notNull;
 import static org.glassfish.mojarra.util.Util.saveDOCTYPEToFacesContextAttributes;
@@ -119,7 +119,7 @@ public class DefaultFaceletFactory {
         baseUrl = resolver.resolveUrl("/");
         baseUrlAsString = baseUrl.toExternalForm();
         faceletResourceSuffixes = Util.getFaceletResourceSuffixes(facesContext);
-        this.idMappers = config.isOptionEnabled(UseFaceletsID) ? null : new Cache<>(new IdMapperFactory());
+        this.idMappers = config.isEnabled(USE_FACELETS_ID) ? null : new Cache<>(new IdMapperFactory());
         this.refreshPeriodInMillis = refreshPeriodInSeconds >= 0 ? refreshPeriodInSeconds * 1000 : -1;
         if (log.isLoggable(Level.FINE)) {
             log.log(Level.FINE, "Using ResourceResolver: {0}", resolver);

@@ -128,7 +128,7 @@ import jakarta.servlet.http.HttpSession;
 
 import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.application.ApplicationAssociate;
-import org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter;
+import org.glassfish.mojarra.context.MojarraContextParam;
 import org.glassfish.mojarra.context.FacesContextParam;
 import org.glassfish.mojarra.context.StateContext;
 import org.glassfish.mojarra.facelets.compiler.FaceletDoctype;
@@ -864,7 +864,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         });
 
         responseBufferSize = FacesContextParam.FACELETS_BUFFER_SIZE.getValue(FacesContext.getCurrentInstance());
-        refreshTransientBuildOnPSS = webConfig.isOptionEnabled(BooleanWebContextInitParameter.RefreshTransientBuildOnPSS);
+        refreshTransientBuildOnPSS = webConfig.isEnabled(MojarraContextParam.REFRESH_TRANSIENT_BUILD_ON_PSS);
 
         LOGGER.fine("Initialization Successful");
 

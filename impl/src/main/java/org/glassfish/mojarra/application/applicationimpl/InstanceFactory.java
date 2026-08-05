@@ -27,7 +27,7 @@ import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Level.WARNING;
 import static org.glassfish.mojarra.application.ApplicationImpl.THIS_LIBRARY;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.RegisterConverterPropertyEditors;
+import static org.glassfish.mojarra.context.MojarraContextParam.REGISTER_CONVERTER_PROPERTY_EDITORS;
 import static org.glassfish.mojarra.util.Util.isEmpty;
 import static org.glassfish.mojarra.util.Util.loadClass;
 import static org.glassfish.mojarra.util.Util.notNull;
@@ -173,7 +173,7 @@ public class InstanceFactory {
 
         FacesContext context = FacesContext.getCurrentInstance();
         WebConfiguration webConfig = WebConfiguration.getInstance(context.getExternalContext());
-        registerPropertyEditors = webConfig.isOptionEnabled(RegisterConverterPropertyEditors);
+        registerPropertyEditors = webConfig.isEnabled(REGISTER_CONVERTER_PROPERTY_EDITORS);
 
         passDefaultTimeZone = FacesContextParam.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE.getValue(context);
         if (passDefaultTimeZone) {

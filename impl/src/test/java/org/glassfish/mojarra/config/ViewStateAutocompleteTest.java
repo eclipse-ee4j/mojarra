@@ -16,7 +16,7 @@
 
 package org.glassfish.mojarra.config;
 
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.AutoCompleteOffOnViewState;
+import static org.glassfish.mojarra.context.MojarraContextParam.AUTO_COMPLETE_OFF_ON_VIEW_STATE;
 import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.ViewStateAutocomplete;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -44,8 +44,8 @@ class ViewStateAutocompleteTest {
      */
     @Test
     void deprecatedBooleanStillSelectsOff() {
-        assertEquals("off", resolve(AutoCompleteOffOnViewState.getQualifiedName(), "true"));
-        assertEquals("one-time-code", resolve(AutoCompleteOffOnViewState.getQualifiedName(), "false"));
+        assertEquals("off", resolve(AUTO_COMPLETE_OFF_ON_VIEW_STATE.getName(), "true"));
+        assertEquals("one-time-code", resolve(AUTO_COMPLETE_OFF_ON_VIEW_STATE.getName(), "false"));
     }
 
     /**
@@ -54,7 +54,7 @@ class ViewStateAutocompleteTest {
     @Test
     void replacementWinsOverDeprecatedBoolean() {
         assertEquals("on", resolve(
-                AutoCompleteOffOnViewState.getQualifiedName(), "true",
+                AUTO_COMPLETE_OFF_ON_VIEW_STATE.getName(), "true",
                 ViewStateAutocomplete.getQualifiedName(), "on"));
     }
 

@@ -17,8 +17,8 @@
 package org.glassfish.mojarra.config;
 
 import static java.util.logging.Level.WARNING;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.AllowTextChildren;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.CompressViewState;
+import static org.glassfish.mojarra.context.MojarraContextParam.ALLOW_TEXT_CHILDREN;
+import static org.glassfish.mojarra.context.MojarraContextParam.COMPRESS_VIEW_STATE;
 import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.NumberOfLogicalViewsDeprecated;
 import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.NumberOfStatefulPagesPerSession;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -80,12 +80,12 @@ class DeprecatedContextParamTest {
     @Test
     void aDeprecatedParameterWarnsWhenSet() {
         MockServletContext servletContext = new MockServletContext();
-        servletContext.addInitParameter(AllowTextChildren.getQualifiedName(), "true");
+        servletContext.addInitParameter(ALLOW_TEXT_CHILDREN.getName(), "true");
 
         WebConfiguration webConfiguration = WebConfiguration.getInstance(servletContext);
 
-        assertTrue(webConfiguration.isOptionEnabled(AllowTextChildren), "the value is still honored");
-        assertEquals(List.of(AllowTextChildren.getQualifiedName()), warnedParameterNames());
+        assertTrue(webConfiguration.isEnabled(ALLOW_TEXT_CHILDREN), "the value is still honored");
+        assertEquals(List.of(ALLOW_TEXT_CHILDREN.getName()), warnedParameterNames());
     }
 
     /**
@@ -104,7 +104,7 @@ class DeprecatedContextParamTest {
     @Test
     void aSupportedParameterIsSilentWhenSet() {
         MockServletContext servletContext = new MockServletContext();
-        servletContext.addInitParameter(CompressViewState.getQualifiedName(), "false");
+        servletContext.addInitParameter(COMPRESS_VIEW_STATE.getName(), "false");
 
         WebConfiguration.getInstance(servletContext);
 

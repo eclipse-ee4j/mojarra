@@ -18,7 +18,7 @@
 package org.glassfish.mojarra.cdi.clientwindow;
 
 import static java.util.logging.Level.FINEST;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
+import static org.glassfish.mojarra.context.MojarraContextParam.ENABLE_DISTRIBUTABLE;
 import static org.glassfish.mojarra.context.SessionMap.getMutex;
 
 import java.util.Collections;
@@ -53,7 +53,7 @@ public class ClientWindowScopeContextManager {
     public ClientWindowScopeContextManager() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         distributable = WebConfiguration.getInstance(facesContext.getExternalContext())
-                                        .isOptionEnabled(EnableDistributable);
+                                        .isEnabled(ENABLE_DISTRIBUTABLE);
     }
 
     /**

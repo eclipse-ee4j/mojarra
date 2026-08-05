@@ -18,8 +18,8 @@
 package org.glassfish.mojarra.context.flash;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.ForceAlwaysWriteFlashCookie;
+import static org.glassfish.mojarra.context.MojarraContextParam.ENABLE_DISTRIBUTABLE;
+import static org.glassfish.mojarra.context.MojarraContextParam.FORCE_ALWAYS_WRITE_FLASH_COOKIE;
 
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -223,7 +223,7 @@ public class ELFlash extends Flash {
 
         }
 
-        distributable = config.isOptionEnabled(EnableDistributable);
+        distributable = config.isEnabled(ENABLE_DISTRIBUTABLE);
 
         guard = new ByteArrayGuardAESCTR();
 
@@ -270,7 +270,7 @@ public class ELFlash extends Flash {
          * If we are in a clustered environment and a session is active, store a helper to ensure our innerMap gets successfully
          * replicated.
          */
-        if (appMap.get(EnableDistributable.getQualifiedName()) != null) {
+        if (appMap.get(ENABLE_DISTRIBUTABLE.getName()) != null) {
             synchronized (extContext.getContext()) {
                 if (extContext.getSession(false) != null) {
                     SessionHelper sessionHelper = SessionHelper.getInstance(extContext);
@@ -539,8 +539,8 @@ public class ELFlash extends Flash {
             if (isKeepMessages()) {
                 restoreAllMessages(context);
             }
-        } else if (currentPhase.equals(PhaseId.RENDER_RESPONSE) && contextMap.containsKey(ForceAlwaysWriteFlashCookie)
-                && (Boolean) contextMap.get(ForceAlwaysWriteFlashCookie)) {
+        } else if (currentPhase.equals(PhaseId.RENDER_RESPONSE)
+                && WebConfiguration.getInstance(context.getExternalContext()).isEnabled(FORCE_ALWAYS_WRITE_FLASH_COOKIE)) {
             PreviousNextFlashInfoManager flashManager = getCurrentFlashManager(contextMap, true);
             cookie = flashManager.encode();
             if (null != cookie) {

@@ -16,7 +16,7 @@
 
 package org.glassfish.mojarra.facelets.compiler;
 
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.DisallowDoctypeDecl;
+import static org.glassfish.mojarra.context.MojarraContextParam.DISALLOW_DOCTYPE_DECL;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -249,11 +249,11 @@ public final class SAXCompiler extends Compiler {
         }
 
         protected boolean isDisallowDoctypeDeclSet() {
-            return unit.getWebConfiguration().isSet(DisallowDoctypeDecl);
+            return unit.getWebConfiguration().isSet(DISALLOW_DOCTYPE_DECL);
         }
 
         protected boolean isDisallowDoctypeDecl() {
-            return unit.getWebConfiguration().isOptionEnabled(DisallowDoctypeDecl);
+            return unit.getWebConfiguration().isEnabled(DISALLOW_DOCTYPE_DECL);
         }
     }
 

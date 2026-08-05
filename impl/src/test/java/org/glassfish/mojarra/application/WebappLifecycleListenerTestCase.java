@@ -1,6 +1,6 @@
 package org.glassfish.mojarra.application;
 
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
+import static org.glassfish.mojarra.context.MojarraContextParam.ENABLE_DISTRIBUTABLE;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
@@ -47,7 +47,7 @@ public class WebappLifecycleListenerTestCase extends JUnitFacesTestCaseBase {
         WebappLifecycleListener lifecycleListener = new WebappLifecycleListener(null);
 
         WebConfiguration webConfiguration = WebConfiguration.getInstance(servletContext);
-        webConfiguration.setOptionEnabled(EnableDistributable, true);
+        webConfiguration.setValue(ENABLE_DISTRIBUTABLE, true);
 
         // Create a request event. Make it cause an exception inside the lifecycleListener.requestDestroyed(event) call.
         ServletRequestEvent event = new ServletRequestEvent(servletContext, new MockHttpServletRequest()) {

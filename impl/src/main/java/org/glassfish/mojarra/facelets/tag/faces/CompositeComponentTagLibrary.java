@@ -16,7 +16,7 @@
 
 package org.glassfish.mojarra.facelets.tag.faces;
 
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.EnableMissingResourceLibraryDetection;
+import static org.glassfish.mojarra.context.MojarraContextParam.ENABLE_MISSING_RESOURCE_LIBRARY_DETECTION;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -64,7 +64,7 @@ public class CompositeComponentTagLibrary extends LazyTagLibrary {
 
     private void init() {
         WebConfiguration webconfig = WebConfiguration.getInstance();
-        enableMissingResourceLibraryDetection = webconfig.isOptionEnabled(EnableMissingResourceLibraryDetection);
+        enableMissingResourceLibraryDetection = webconfig.isEnabled(ENABLE_MISSING_RESOURCE_LIBRARY_DETECTION);
     }
 
     private String ns = null;
@@ -129,7 +129,7 @@ public class CompositeComponentTagLibrary extends LazyTagLibrary {
             } else {
                 if (LOGGER.isLoggable(Level.FINE)) {
                     LOGGER.log(Level.FINE, "Skipping call to libraryExists().  Please set context-param {0} to true to verify if library {1} actually exists",
-                            new Object[] { EnableMissingResourceLibraryDetection.getQualifiedName(), toTest });
+                            new Object[] { ENABLE_MISSING_RESOURCE_LIBRARY_DETECTION.getName(), toTest });
                 }
                 result = true;
             }

@@ -17,7 +17,7 @@
 package org.glassfish.mojarra.renderkit;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.CompressViewState;
+import static org.glassfish.mojarra.context.MojarraContextParam.COMPRESS_VIEW_STATE;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.PredefinedPostbackParameter.CLIENT_WINDOW_PARAM;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.PredefinedPostbackParameter.RENDER_KIT_ID_PARAM;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.PredefinedPostbackParameter.VIEW_STATE_PARAM;
@@ -84,7 +84,7 @@ public abstract class StateHelper {
         FacesContext ctx = FacesContext.getCurrentInstance();
         serialProvider = SerializationProviderFactory.createInstance(ctx.getExternalContext());
         webConfig = WebConfiguration.getInstance(ctx.getExternalContext());
-        compressViewState = webConfig.isOptionEnabled(CompressViewState);
+        compressViewState = webConfig.isEnabled(COMPRESS_VIEW_STATE);
         viewStateAutocomplete = webConfig.getViewStateAutocomplete();
 
         if (serialProvider == null) {
