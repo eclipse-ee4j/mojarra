@@ -17,6 +17,7 @@
 package com.sun.faces.facelets.tag.faces;
 
 import java.util.List;
+import java.util.Locale;
 
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.application.annotation.FacesComponentUsage;
@@ -83,7 +84,7 @@ public class FacesComponentTagLibrary extends LazyTagLibrary {
                 }
             } else if (null != tagName) {
                 tagName = cur.getTarget().getSimpleName();
-                tagName = tagName.substring(0, 1).toLowerCase() + tagName.substring(1);
+                tagName = tagName.substring(0, 1).toLowerCase(Locale.ROOT) + tagName.substring(1);
                 if (localName.equals(tagName)) {
                     result = cur;
                     break;

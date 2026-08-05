@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import com.sun.faces.application.ApplicationAssociate;
@@ -88,7 +89,7 @@ public class NamedEventConfigHandler implements ConfigAnnotationHandler {
             name = name.substring(0, index);
         }
 
-        name = annotatedClass.getPackage().getName() + ("." + name.charAt(0)).toLowerCase() + name.substring(1);
+        name = annotatedClass.getPackage().getName() + ("." + name.charAt(0)).toLowerCase(Locale.ROOT) + name.substring(1);
         nem.addNamedEvent(name, (Class<? extends SystemEvent>) annotatedClass);
 
         String shortName = ((NamedEvent) annotation).shortName();
