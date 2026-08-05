@@ -356,7 +356,7 @@ public class ResourceManager {
     static boolean nameContainsForbiddenSequence(String name) {
         boolean result = false;
         if (name != null) {
-            name = name.toLowerCase();
+            name = name.toLowerCase(Locale.ROOT);
 
             result = name.startsWith(".") || name.contains("../") || name.contains("..\\") || name.startsWith("/") || name.startsWith("\\")
                     || name.endsWith("/") ||

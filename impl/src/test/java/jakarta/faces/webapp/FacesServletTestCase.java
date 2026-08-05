@@ -18,6 +18,9 @@ package jakarta.faces.webapp;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.List;
+import java.util.Locale;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -203,9 +206,41 @@ public class FacesServletTestCase extends JUnitFacesTestCaseBase {
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());
     }
 
+    /**
+     * The protected path check must not depend on the default locale of the deploying JVM. Under a Turkish or Azeri
+     * locale {@code i} uppercases to dotted capital {@code I} (U+0130), which would let the lowercase spellings of
+     * {@code /WEB-INF} and {@code /META-INF} through a guard that uppercases with the default locale.
+     */
+    @Test
+    public void testProtectedPathsAreRejectedRegardlessOfDefaultLocale() throws Exception {
+        Locale defaultLocale = Locale.getDefault();
+
+        try {
+            for (Locale locale : List.of(Locale.US, Locale.forLanguageTag("tr-TR"), Locale.forLanguageTag("az-AZ"))) {
+                Locale.setDefault(locale);
+                FacesServlet me = new FacesServlet();
+                me.init(config);
+
+                for (String protectedPath : List.of("/WEB-INF/web.xml", "/web-inf/web.xml", "/META-INF/MANIFEST.MF", "/meta-inf/MANIFEST.MF")) {
+                    this.sendRequest(me, "GET", protectedPath);
+                    assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus(), locale + " must reject " + protectedPath);
+                }
+
+                this.sendRequest(me, "GET", "/view.xhtml");
+                assertEquals(HttpServletResponse.SC_OK, response.getStatus(), locale + " must accept an ordinary view");
+            }
+        } finally {
+            Locale.setDefault(defaultLocale);
+        }
+    }
+
     private void sendRequest(FacesServlet me, String method) throws Exception {
+        this.sendRequest(me, method, "/test");
+    }
+
+    private void sendRequest(FacesServlet me, String method, String pathInfo) throws Exception {
         request.setMethod(method);
-        request.setPathElements("/test", "/test", "/test", "");
+        request.setPathElements("/test", "/test", pathInfo, "");
         me.service(request, response);
     }
 }

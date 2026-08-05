@@ -22,6 +22,7 @@ import static com.sun.faces.cdi.CdiUtils.getBeanReference;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
 import static com.sun.faces.context.SessionMap.getMutex;
 import static com.sun.faces.util.Util.getCdiBeanManager;
+import static java.util.Locale.ROOT;
 import static java.util.logging.Level.FINEST;
 import static java.util.logging.Level.WARNING;
 
@@ -310,7 +311,7 @@ public class ViewScopeContextManager {
      * @return the name.
      */
     private String getName(Object instance) {
-        String name = instance.getClass().getSimpleName().substring(0, 1).toLowerCase() + instance.getClass().getSimpleName().substring(1);
+        String name = instance.getClass().getSimpleName().substring(0, 1).toLowerCase(ROOT) + instance.getClass().getSimpleName().substring(1);
 
         Named named = instance.getClass().getAnnotation(Named.class);
         if (named != null && named.value() != null && !named.value().trim().equals("")) {
