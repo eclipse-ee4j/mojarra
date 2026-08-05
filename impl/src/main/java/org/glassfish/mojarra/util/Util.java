@@ -424,6 +424,31 @@ public class Util {
 
     /**
      * <p>
+     * Whether JNDI can be reached from this application, which it cannot on every platform: Google App Engine forbids
+     * <code>javax.naming</code> outright. Asked per call rather than remembered, because the answer belongs to the
+     * class loader of the application and this class may be shared between several.
+     * </p>
+     *
+     * @return whether JNDI is available.
+     */
+    public static boolean isJndiAvailable() {
+        ClassLoader loader = getContextClassLoader();
+
+        if (loader == null) {
+            loader = Util.class.getClassLoader();
+        }
+
+        try {
+            loader.loadClass("javax.naming.InitialContext");
+            return true;
+        } catch (Exception e) {
+            LOGGER.log(Level.FINE, "javax.naming is unavailable.", e);
+            return false;
+        }
+    }
+
+    /**
+     * <p>
      * Identify and return the class loader that is associated with the calling web application.
      * </p>
      *

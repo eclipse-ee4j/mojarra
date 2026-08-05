@@ -18,14 +18,10 @@
 package org.glassfish.mojarra.config;
 
 import static java.util.Arrays.stream;
-import static java.util.Collections.emptyMap;
 import static java.util.logging.Level.FINE;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.EnumSet;
@@ -46,20 +42,16 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import jakarta.faces.application.ProjectStage;
-import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.servlet.ServletContext;
 
 import org.glassfish.mojarra.RIConstants;
-import org.glassfish.mojarra.application.ApplicationAssociate;
-import org.glassfish.mojarra.application.view.FaceletViewHandlingStrategy;
+import org.glassfish.mojarra.application.resource.ResourceLibraryContracts;
 import org.glassfish.mojarra.context.ContextParam;
 import org.glassfish.mojarra.context.FacesContextParam;
 import org.glassfish.mojarra.context.MojarraContextParam;
-import org.glassfish.mojarra.facelets.util.Classpath;
 import org.glassfish.mojarra.util.FacesLogger;
-import org.glassfish.mojarra.util.MojarraVersion;
 import org.glassfish.mojarra.util.Util;
 
 /**
@@ -102,15 +94,9 @@ public class WebConfiguration {
     // Key under which we store our WebConfiguration instance.
     private static final String WEB_CONFIG_KEY = "org.glassfish.mojarra.config.WebConfiguration";
 
-    public static final String META_INF_CONTRACTS_DIR = "META-INF/" + ResourceHandler.WEBAPP_CONTRACTS_DIRECTORY_DEFAULT_VALUE;
-
-    private static final int META_INF_CONTRACTS_DIR_LEN = META_INF_CONTRACTS_DIR.length();
-
-    private static final String RESOURCE_CONTRACT_SUFFIX = "/" + ResourceHandler.RESOURCE_CONTRACT_XML;
-
     private final Level loggingLevel;
 
-    private final Map<String, Map<String, String>> facesConfigParameters = new HashMap<>();
+    private final Map<String, String> faceletsProcessingMappings = new ConcurrentHashMap<>(3);
 
     private final Map<WebEnvironmentEntry, String> envEntries = new EnumMap<>(WebEnvironmentEntry.class);
 
@@ -135,15 +121,15 @@ public class WebConfiguration {
 
         // Before the parameters, because displayConfiguration decides at which level they are logged, and some of the
         // others derive their default from the stage.
-        if (canProcessJndiEntries()) {
+        if (Util.isJndiAvailable()) {
             processJndiEntries();
         }
+
         projectStage = resolveProjectStage();
         loggingLevel = resolveLoggingLevel();
+
         logEnvironmentEntries();
-
         processContextParams();
-
         processDeprecatedParameters();
         warnAboutUnrecognizedParameters();
     }
@@ -308,10 +294,6 @@ public class WebConfiguration {
         this.hasFlows = hasFlows;
     }
 
-    public String getSpecificationVersion() {
-        return MojarraVersion.SPECIFICATION_VERSION;
-    }
-
     /**
      * Obtain the value of the specified parameter
      *
@@ -339,29 +321,18 @@ public class WebConfiguration {
         return faceletsConfig;
     }
 
-    public Map<String, String> getFacesConfigOptionValue(String name, boolean create) {
-        Map<String, String> result = facesConfigParameters.get(name);
-        if (result == null) {
-            if (create) {
-                result = new ConcurrentHashMap<>(3);
-                facesConfigParameters.put(name, result);
-            } else {
-                result = emptyMap();
-            }
-        }
-
-        return result;
-    }
-
-    public Map<String, String> getFacesConfigOptionValue(String name) {
-        return getFacesConfigOptionValue(name, false);
-    }
-
     /**
-     * The one <code>faces-config.xml</code> supplied mapping, which is not a context parameter and only ever needed a
-     * key.
+     * <p>
+     * How a file extension is to be processed, as supplied by the <code>facelets-processing</code> elements of
+     * <code>faces-config.xml</code> rather than by a context parameter. The map is the live one, which is how the
+     * configuration processor fills it.
+     * </p>
+     *
+     * @return the mapping of file extension to processing instruction.
      */
-    public static final String FACELETS_PROCESSING_FILE_EXTENSION_PROCESS_AS = "faceletsProcessingFileExtensionProcessAs";
+    public Map<String, String> getFaceletsProcessingMappings() {
+        return faceletsProcessingMappings;
+    }
 
     /**
      * Obtain the value of the specified env-entry
@@ -369,7 +340,7 @@ public class WebConfiguration {
      * @param entry the env-entry of interest
      * @return the value of the specified env-entry
      */
-    public String getEnvironmentEntry(WebEnvironmentEntry entry) {
+    private String getEnvironmentEntry(WebEnvironmentEntry entry) {
         return envEntries.get(entry);
     }
 
@@ -482,8 +453,17 @@ public class WebConfiguration {
         }
 
         // Resolved ahead of the others, because its JNDI environment entry outranks the parameter and the defaults of
-        // the others derive from it.
+        // the others derive from it. Reported again here under the name which decided it, because the pass above has
+        // already reported whatever the parameter alone said, which is not always what won.
         resolvedValues.put(FacesContextParam.PROJECT_STAGE, projectStage);
+
+        if (LOGGER.isLoggable(loggingLevel)) {
+            String decidedBy = getEnvironmentEntry(WebEnvironmentEntry.ProjectStage) != null
+                    ? WebEnvironmentEntry.ProjectStage.getQualifiedName()
+                    : ProjectStage.PROJECT_STAGE_PARAM_NAME;
+
+            LOGGER.log(loggingLevel, "faces.config.webconfig.configinfo", new Object[] { getContextName(), decidedBy, projectStage });
+        }
     }
 
     private Object resolve(ContextParam param) {
@@ -546,31 +526,6 @@ public class WebConfiguration {
 
     /**
      * <p>
-     * Whether the last modified timestamp of a resource is remembered rather than read on every request. The stage
-     * decides it unless the parameter says otherwise, since a resource which changed on disk has to be noticed while
-     * developing and cannot change under a deployed application without a redeploy.
-     * </p>
-     *
-     * @return whether the timestamp is cached.
-     */
-    public boolean isResourceModificationTimestampCached() {
-        return isEnabled(MojarraContextParam.CACHE_RESOURCE_MODIFICATION_TIMESTAMP);
-    }
-
-    /**
-     * <p>
-     * How many minutes apart a cached resource is checked for modification, where <code>-1</code> drops the check. The
-     * stage decides it unless the parameter says otherwise, for the same reason.
-     * </p>
-     *
-     * @return the period in minutes.
-     */
-    public long getResourceUpdateCheckPeriod() {
-        return this.<Integer>getValue(MojarraContextParam.RESOURCE_UPDATE_CHECK_PERIOD);
-    }
-
-    /**
-     * <p>
      * Resolves a tri-state parameter, whose value is <code>true</code>, <code>false</code> or <code>auto</code>. An
      * unusable value is reported and behaves as though the parameter was never set, rather than as <code>false</code>,
      * which is what a bare {@link Boolean#parseBoolean(String)} would silently make of a typo.
@@ -597,7 +552,7 @@ public class WebConfiguration {
 
     public void doPostBringupActions() {
         processDevelopmentOnlyParameters();
-        discoverResourceLibraryContracts();
+        ResourceLibraryContracts.discover();
     }
 
     /**
@@ -631,93 +586,6 @@ public class WebConfiguration {
         }
     }
 
-    private void discoverResourceLibraryContracts() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        ExternalContext extContex = context.getExternalContext();
-        Set<String> foundContracts = new HashSet<>();
-        Set<String> candidates;
-
-        // Scan for "contractMappings" in the web app root
-        ApplicationAssociate associate = ApplicationAssociate.getCurrentInstance();
-        String contractsDirName = associate.getResourceManager().getBaseContractsPath();
-        assert null != contractsDirName;
-        candidates = extContex.getResourcePaths(contractsDirName);
-        if (null != candidates) {
-            int contractsDirNameLen = contractsDirName.length();
-            int end;
-            for (String cur : candidates) {
-                end = cur.length();
-                if (cur.endsWith("/")) {
-                    end--;
-                }
-                foundContracts.add(cur.substring(contractsDirNameLen + 1, end));
-            }
-        }
-
-        // Scan for "META-INF" contractMappings in the classpath
-        try {
-            URL[] candidateURLs = Classpath.search(Util.getCurrentLoader(this), META_INF_CONTRACTS_DIR, RESOURCE_CONTRACT_SUFFIX,
-                    Classpath.SearchAdvice.AllMatches);
-            for (URL curURL : candidateURLs) {
-                String cur = curURL.toExternalForm();
-
-                int i = cur.indexOf(META_INF_CONTRACTS_DIR) + META_INF_CONTRACTS_DIR_LEN + 1;
-                int j = cur.indexOf(RESOURCE_CONTRACT_SUFFIX);
-                if (i < j) {
-                    foundContracts.add(cur.substring(i, j));
-                }
-
-            }
-        } catch (IOException ioe) {
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.log(Level.FINEST, "Unable to scan " + META_INF_CONTRACTS_DIR, ioe);
-            }
-        }
-
-        if (foundContracts.isEmpty()) {
-            return;
-        }
-
-        Map<String, List<String>> contractMappings = new HashMap<>();
-
-        Map<String, List<String>> contractsFromConfig = associate.getResourceLibraryContracts();
-        List<String> contractsToExpose;
-
-        if (null != contractsFromConfig && !contractsFromConfig.isEmpty()) {
-            List<String> contractsFromMapping;
-            for (Map.Entry<String, List<String>> cur : contractsFromConfig.entrySet()) {
-                // Verify that the contractsToExpose in this mapping actually exist
-                // in the application. If not, log a message.
-                contractsFromMapping = cur.getValue();
-                if (null == contractsFromMapping || contractsFromMapping.isEmpty()) {
-                    if (LOGGER.isLoggable(Level.CONFIG)) {
-                        LOGGER.log(Level.CONFIG, "resource library contract mapping for pattern {0} has no contracts.", cur.getKey());
-                    }
-                } else {
-                    contractsToExpose = new ArrayList<>();
-                    for (String curContractFromMapping : contractsFromMapping) {
-                        if (foundContracts.contains(curContractFromMapping)) {
-                            contractsToExpose.add(curContractFromMapping);
-                        } else {
-                            if (LOGGER.isLoggable(Level.CONFIG)) {
-                                LOGGER.log(Level.CONFIG,
-                                        "resource library contract mapping for pattern {0} exposes contract {1}, but that contract is not available to the application.",
-                                        new String[] { cur.getKey(), curContractFromMapping });
-                            }
-                        }
-                    }
-                    if (!contractsToExpose.isEmpty()) {
-                        contractMappings.put(cur.getKey(), contractsToExpose);
-                    }
-                }
-            }
-        } else {
-            contractsToExpose = new ArrayList<>(foundContracts);
-            contractMappings.put("*", contractsToExpose);
-        }
-        extContex.getApplicationMap().put(FaceletViewHandlingStrategy.RESOURCE_LIBRARY_CONTRACT_DATA_STRUCTURE_KEY, contractMappings);
-
-    }
 
     // ------------------------------------------------- Package Private Methods
 
@@ -855,16 +723,6 @@ public class WebConfiguration {
         }
     }
 
-    public boolean canProcessJndiEntries() {
-        try {
-            Util.getCurrentLoader(this).loadClass("javax.naming.InitialContext");
-        } catch (Exception e) {
-            LOGGER.fine("javax.naming is unavailable. JNDI entries related to Mojarra configuration will not be processed.");
-            return false;
-        }
-        return true;
-    }
-
     // ------------------------------------------------------------------- Enums
 
     /**
@@ -872,7 +730,7 @@ public class WebConfiguration {
      * An <code>enum</code> of all environment entries (specified in the web.xml) recognized by the implemenetation.
      * </p>
      */
-    public enum WebEnvironmentEntry {
+    private enum WebEnvironmentEntry {
 
         ProjectStage(jakarta.faces.application.ProjectStage.PROJECT_STAGE_JNDI_NAME);
 

@@ -36,6 +36,7 @@ import jakarta.faces.context.FacesContext;
 
 import org.glassfish.mojarra.config.WebConfiguration;
 import org.glassfish.mojarra.context.FacesContextParam;
+import org.glassfish.mojarra.context.MojarraContextParam;
 import org.glassfish.mojarra.util.FacesLogger;
 
 /**
@@ -62,7 +63,7 @@ public class WebappResourceHelper extends ResourceHelper {
 
         WebConfiguration webconfig = WebConfiguration.getInstance();
         FacesContext context = FacesContext.getCurrentInstance();
-        cacheTimestamp = webconfig.isResourceModificationTimestampCached();
+        cacheTimestamp = webconfig.isEnabled(MojarraContextParam.CACHE_RESOURCE_MODIFICATION_TIMESTAMP);
         BASE_RESOURCE_PATH = ensureLeadingSlash(FacesContextParam.WEBAPP_RESOURCES_DIRECTORY.getValue(context));
         BASE_CONTRACTS_PATH = ensureLeadingSlash(FacesContextParam.WEBAPP_CONTRACTS_DIRECTORY.getValue(context));
 

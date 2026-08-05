@@ -41,7 +41,7 @@ public class FaceletsConfiguration {
     private final Map<String, String> faceletsProcessingMappings;
 
     public FaceletsConfiguration(WebConfiguration config) {
-        faceletsProcessingMappings = config.getFacesConfigOptionValue(WebConfiguration.FACELETS_PROCESSING_FILE_EXTENSION_PROCESS_AS);
+        faceletsProcessingMappings = config.getFaceletsProcessingMappings();
     }
 
     public boolean isProcessCurrentDocumentAsFaceletsXhtml(String alias) {

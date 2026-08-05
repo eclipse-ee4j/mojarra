@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 import jakarta.servlet.ServletContext;
 
 import org.glassfish.mojarra.config.WebConfiguration;
+import org.glassfish.mojarra.context.MojarraContextParam;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.MultiKeyConcurrentHashMap;
 
@@ -67,7 +68,7 @@ public class ResourceCache {
     }
 
     private ResourceCache(WebConfiguration config) {
-        this(config.getResourceUpdateCheckPeriod());
+        this(config.<Integer>getValue(MojarraContextParam.RESOURCE_UPDATE_CHECK_PERIOD).longValue());
 
         if (LOGGER.isLoggable(FINE)) {
             ServletContext sc = config.getServletContext();

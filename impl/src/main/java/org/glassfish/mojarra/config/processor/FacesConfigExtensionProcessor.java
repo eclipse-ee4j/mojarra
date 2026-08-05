@@ -21,7 +21,6 @@ import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.WARNING;
 
 import java.text.MessageFormat;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import jakarta.faces.context.FacesContext;
@@ -124,9 +123,7 @@ public class FacesConfigExtensionProcessor extends AbstractConfigProcessor {
                         if (null == config) {
                             config = WebConfiguration.getInstance();
                         }
-                        Map<String, String> faceletsProcessingMappings = config
-                                .getFacesConfigOptionValue(WebConfiguration.FACELETS_PROCESSING_FILE_EXTENSION_PROCESS_AS, true);
-                        faceletsProcessingMappings.put(fileExtension, processAs);
+                        config.getFaceletsProcessingMappings().put(fileExtension, processAs);
 
                     } else {
                         if (LOGGER.isLoggable(WARNING)) {

@@ -70,6 +70,7 @@ import org.glassfish.mojarra.renderkit.html_basic.StylesheetRenderer;
 import org.glassfish.mojarra.util.CollectionsUtils;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.MessageUtils;
+import org.glassfish.mojarra.util.MojarraVersion;
 import org.glassfish.mojarra.util.TypedCollections;
 import org.glassfish.mojarra.util.Util;
 
@@ -144,7 +145,7 @@ public class ExternalContextImpl extends ExternalContext {
 
         if (webConfiguration.isEnabled(MojarraContextParam.SEND_POWERED_BY_HEADER)) {
             String poweredBy = "Faces";
-            String specificationVersion = webConfiguration.getSpecificationVersion();
+            String specificationVersion = MojarraVersion.SPECIFICATION_VERSION;
             if (specificationVersion != null) {
                 poweredBy += "/" + specificationVersion;
             }

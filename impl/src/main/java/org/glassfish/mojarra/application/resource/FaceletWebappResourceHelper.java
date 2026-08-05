@@ -21,7 +21,7 @@ import static java.util.Spliterator.DISTINCT;
 import static java.util.Spliterators.spliteratorUnknownSize;
 import static java.util.stream.StreamSupport.stream;
 import static org.glassfish.mojarra.RIConstants.FLOW_IN_JAR_PREFIX;
-import static org.glassfish.mojarra.config.WebConfiguration.META_INF_CONTRACTS_DIR;
+import static org.glassfish.mojarra.application.resource.ResourceLibraryContracts.META_INF_CONTRACTS_DIR;
 
 import java.io.IOException;
 import java.io.InputStream;

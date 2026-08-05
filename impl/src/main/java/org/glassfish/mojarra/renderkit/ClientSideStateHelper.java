@@ -410,7 +410,7 @@ public class ClientSideStateHelper extends StateHelper {
      */
     protected void init() {
 
-        if (webConfig.canProcessJndiEntries() && !webConfig.isEnabled(MojarraContextParam.ENABLE_CLIENT_STATE_DEBUGGING)) {
+        if (Util.isJndiAvailable() && !webConfig.isEnabled(MojarraContextParam.ENABLE_CLIENT_STATE_DEBUGGING)) {
             guard = new ByteArrayGuard();
         } else {
             if (LOGGER.isLoggable(Level.FINE)) {
