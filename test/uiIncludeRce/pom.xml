@@ -17,6 +17,11 @@
     <dependencies>
         <dependency>
             <groupId>org.eclipse.mojarra.test</groupId>
+            <artifactId>uiIncludeRceJar</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.mojarra.test</groupId>
             <artifactId>base</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>

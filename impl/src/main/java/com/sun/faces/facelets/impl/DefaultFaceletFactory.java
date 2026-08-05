@@ -78,6 +78,9 @@ public class DefaultFaceletFactory {
 
     protected final static Logger log = FacesLogger.FACELETS_FACTORY.getLogger();
 
+    private static final String ARCHIVE_PROTOCOL = "jar";
+    private static final String ARCHIVE_SEPARATOR = "!/";
+
     private Compiler compiler;
 
     // We continue to use a ResourceResolver just in case someone
@@ -189,7 +192,7 @@ public class DefaultFaceletFactory {
     }
 
     private void requireSameOrigin(URL source, URL url, String path) throws FacesFileNotFoundException {
-        if (!url.getProtocol().equals(source.getProtocol()) || !Objects.equals(url.getAuthority(), source.getAuthority())) {
+        if (!url.getProtocol().equals(source.getProtocol()) || !Objects.equals(getOrigin(url), getOrigin(source))) {
             throw new FacesFileNotFoundException(path + " must be a relative path within the application");
         }
     }
@@ -198,6 +201,23 @@ public class DefaultFaceletFactory {
         if (url.getProtocol().equals(baseUrl.getProtocol()) && !url.toExternalForm().startsWith(baseUrlAsString)) {
             throw new FacesFileNotFoundException(path + " is not within the application root");
         }
+    }
+
+    /**
+     * A nested scheme carries no authority: every {@code jar:} URL has a null one, so a remote archive would compare
+     * equal to the local archive holding the facelet. The archive a resource lives in is therefore its origin.
+     *
+     * @return the origin to compare a resolved URL against the facelet it was resolved from.
+     */
+    private static String getOrigin(URL url) {
+        if (!ARCHIVE_PROTOCOL.equals(url.getProtocol())) {
+            return url.getAuthority();
+        }
+
+        String form = url.toExternalForm();
+        int separator = form.indexOf(ARCHIVE_SEPARATOR);
+
+        return separator == -1 ? form : form.substring(0, separator + ARCHIVE_SEPARATOR.length());
     }
 
     private void requireFaceletResource(URL url, String path) throws FacesFileNotFoundException {
