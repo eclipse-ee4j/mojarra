@@ -498,29 +498,38 @@ public class MultiViewHandler extends ViewHandler {
      * Adjust the viewID per the requirements of {@link #renderView}.
      * </p>
      *
+     * <p>
+     * {@link ViewHandler#FACELETS_SUFFIX_PARAM_NAME} takes a space separated list, of which the first extension
+     * whose physical resource exists wins. When none exists the first configured extension is returned, so that a
+     * genuine not-found still yields a usable view ID for the error path.
+     * </p>
+     *
      * @param context current {@link jakarta.faces.context.FacesContext}
      * @param viewId incoming view ID
      * @return the view ID with an altered suffix mapping (if necessary)
      */
     protected String convertViewId(FacesContext context, String viewId) {
-
-        // if the viewId doesn't already use the above suffix,
-        // replace or append.
-        int extIdx = viewId.lastIndexOf('.');
+        int lastDot = viewId.lastIndexOf('.');
+        int extIdx = lastDot > viewId.lastIndexOf('/') ? lastDot : -1;
         int length = viewId.length();
         StringBuilder buffer = new StringBuilder(length);
+        boolean singleExtension = configuredExtensions.size() == 1;
+        String firstCandidateViewId = null;
 
-        for (String ext : configuredExtensions) {
-            if (viewId.endsWith(ext)) {
-                return viewId;
+        for (String extension : configuredExtensions) {
+            appendOrReplaceExtension(viewId, extension, length, extIdx, buffer);
+            String candidateViewId = buffer.toString();
+
+            if (singleExtension || getViewDeclarationLanguage(context, candidateViewId).viewExists(context, candidateViewId)) {
+                return candidateViewId;
             }
 
-            appendOrReplaceExtension(viewId, ext, length, extIdx, buffer);
-
-            return buffer.toString();
+            if (firstCandidateViewId == null) {
+                firstCandidateViewId = candidateViewId;
+            }
         }
 
-        return viewId;
+        return firstCandidateViewId != null ? firstCandidateViewId : viewId;
     }
 
     protected Map<String, List<String>> getFullParameterList(FacesContext ctx, String viewId, Map<String, List<String>> existingParameters) {
