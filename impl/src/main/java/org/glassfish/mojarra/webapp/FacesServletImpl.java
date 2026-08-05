@@ -19,7 +19,6 @@ package org.glassfish.mojarra.webapp;
 
 import static jakarta.faces.FactoryFinder.FACES_CONTEXT_FACTORY;
 import static jakarta.faces.FactoryFinder.LIFECYCLE_FACTORY;
-import static jakarta.faces.lifecycle.LifecycleFactory.DEFAULT_LIFECYCLE;
 import static jakarta.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static jakarta.servlet.http.HttpServletResponse.SC_OK;
@@ -50,6 +49,7 @@ import jakarta.faces.context.FacesContextFactory;
 import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.lifecycle.LifecycleFactory;
 import jakarta.servlet.Servlet;
+import jakarta.faces.webapp.FacesServlet;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -59,6 +59,7 @@ import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import org.glassfish.mojarra.context.FacesContextParam;
 import org.glassfish.mojarra.context.MojarraContextParam;
 
 /**
@@ -222,48 +223,6 @@ import org.glassfish.mojarra.context.MojarraContextParam;
  */
 @MultipartConfig
 public final class FacesServletImpl implements Servlet {
-
-    /**
-     * <p>
-     * Context initialization parameter name for a comma delimited list of context-relative resource paths (in addition to
-     * <code>/WEB-INF/faces-config.xml</code> which is loaded automatically if it exists) containing Jakarta Faces
-     * configuration information.
-     * </p>
-     */
-    public static final String CONFIG_FILES_ATTR = "jakarta.faces.CONFIG_FILES";
-
-    /**
-     * <p>
-     * Context initialization parameter name for the lifecycle identifier of the {@link Lifecycle} instance to be utilized.
-     * </p>
-     */
-    public static final String LIFECYCLE_ID_ATTR = "jakarta.faces.LIFECYCLE_ID";
-
-    /**
-     * <p class="changed_added_2_3">
-     * The <code>ServletContext</code> init parameter consulted by the runtime to tell if the automatic mapping of the
-     * {@code FacesServlet} to the extension {@code *.xhtml} should be disabled. The implementation must disable this
-     * automatic mapping if and only if the value of this parameter is equal, ignoring case, to {@code true}.
-     * </p>
-     *
-     * <p>
-     * If this parameter is not specified, this automatic mapping is enabled as specified above.
-     * </p>
-     */
-    public static final String DISABLE_FACESSERVLET_TO_XHTML_PARAM_NAME = "jakarta.faces.DISABLE_FACESSERVLET_TO_XHTML";
-
-    /**
-     * <p class="changed_added_4_0">
-     * The <code>ServletContext</code> init parameter consulted by the runtime to tell if the automatic mapping of the
-     * {@code FacesServlet} to the extensionless variant (without {@code *.xhtml}) should be enabled. The implementation
-     * must enable this automatic mapping if and only if the value of this parameter is equal, ignoring case, to {@code true}.
-     * </p>
-     *
-     * <p>
-     * If this parameter is not specified, this automatic mapping is not enabled.
-     * </p>
-     */
-    public static final String AUTOMATIC_EXTENSIONLESS_MAPPING_PARAM_NAME = "jakarta.faces.AUTOMATIC_EXTENSIONLESS_MAPPING";
 
     /**
      * The <code>Logger</code> for this class.
@@ -508,17 +467,11 @@ public final class FacesServletImpl implements Servlet {
         try {
             LifecycleFactory lifecycleFactory = (LifecycleFactory) FactoryFinder.getFactory(LIFECYCLE_FACTORY);
 
-            // First look in the Jakarta Servlet init-param set
-            String lifecycleId = servletConfig.getInitParameter(LIFECYCLE_ID_ATTR);
+            // The servlet init parameter overrides the context parameter, for this servlet only.
+            String lifecycleId = servletConfig.getInitParameter(FacesServlet.LIFECYCLE_ID_ATTR);
 
             if (lifecycleId == null) {
-                // If not found, look in the context-param set
-                lifecycleId = servletConfig.getServletContext().getInitParameter(LIFECYCLE_ID_ATTR);
-            }
-
-            if (lifecycleId == null) {
-                // If still not found, use the default
-                lifecycleId = DEFAULT_LIFECYCLE;
+                lifecycleId = FacesContextParam.LIFECYCLE_ID.getValue(servletConfig.getServletContext());
             }
 
             return lifecycleFactory.getLifecycle(lifecycleId);

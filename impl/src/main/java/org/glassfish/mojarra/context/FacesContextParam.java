@@ -23,6 +23,7 @@ import jakarta.faces.context.ExceptionHandler;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.lifecycle.ClientWindow;
+import jakarta.faces.lifecycle.LifecycleFactory;
 import jakarta.faces.push.PushContext;
 import jakarta.faces.validator.BeanValidator;
 import jakarta.faces.webapp.FacesServlet;
@@ -156,6 +157,13 @@ public enum FacesContextParam implements ContextParam {
      * Returns {@value UIInput#EMPTY_STRING_AS_NULL_PARAM_NAME} as {@link Boolean} with default of {@code false}.
      */
     INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL(UIInput.EMPTY_STRING_AS_NULL_PARAM_NAME, false),
+
+    /**
+     * Returns {@value FacesServlet#LIFECYCLE_ID_ATTR} as {@link String} with default of {@value LifecycleFactory#DEFAULT_LIFECYCLE}.
+     * Note that {@link FacesServlet} first looks for a servlet init parameter of the same name, which overrides this
+     * one for that servlet only.
+     */
+    LIFECYCLE_ID(FacesServlet.LIFECYCLE_ID_ATTR, LifecycleFactory.DEFAULT_LIFECYCLE),
 
     /**
      * Returns {@value ClientWindow#NUMBER_OF_CLIENT_WINDOWS_PARAM_NAME} as {@link Integer} with default of {@value ClientWindow#NUMBER_OF_CLIENT_WINDOWS_DEFAULT_VALUE}.
