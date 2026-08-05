@@ -593,7 +593,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
     }
 
     private void initMaxAge() {
-        maxAge = Long.parseLong(webconfig.getValue(MojarraContextParam.DEFAULT_RESOURCE_MAX_AGE));
+        maxAge = webconfig.<Integer>getValue(MojarraContextParam.DEFAULT_RESOURCE_MAX_AGE);
     }
 
     private void handleHeaders(FacesContext context, Resource resource) {
@@ -604,7 +604,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
     }
 
     private ByteBuffer allocateByteBuffer() {
-        return ByteBuffer.allocate(webconfig.getValue(MojarraContextParam.RESOURCE_BUFFER_SIZE));
+        return ByteBuffer.allocate(webconfig.<Integer>getValue(MojarraContextParam.RESOURCE_BUFFER_SIZE));
     }
 
 }
