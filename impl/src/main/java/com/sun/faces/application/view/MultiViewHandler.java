@@ -92,7 +92,7 @@ public class MultiViewHandler extends ViewHandler {
     public MultiViewHandler() {
         WebConfiguration config = WebConfiguration.getInstance();
 
-        configuredExtensions = config.getConfiguredExtensions();
+        configuredExtensions = config.getFaceletsSuffixes();
         vdlFactory = (ViewDeclarationLanguageFactory) FactoryFinder.getFactory(VIEW_DECLARATION_LANGUAGE_FACTORY);
         protectedViews = new CopyOnWriteArraySet<>();
     }

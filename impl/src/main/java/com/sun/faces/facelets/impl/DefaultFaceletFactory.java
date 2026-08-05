@@ -87,7 +87,7 @@ public class DefaultFaceletFactory {
     private ResourceManager manager;
     private URL baseUrl;
     private String baseUrlAsString;
-    private List<String> faceletsSuffixes;
+    private String[] faceletResourceSuffixes;
     private long refreshPeriodInMillis;
     private FaceletCache<DefaultFacelet> cache;
     private ConcurrentMap<String, FaceletCache<DefaultFacelet>> cachePerContract;
@@ -113,7 +113,7 @@ public class DefaultFaceletFactory {
         this.manager = ApplicationAssociate.getInstance(externalContext).getResourceManager();
         baseUrl = resolver.resolveUrl("/");
         baseUrlAsString = baseUrl.toExternalForm();
-        faceletsSuffixes = config.getConfiguredExtensions();
+        faceletResourceSuffixes = config.getFaceletResourceSuffixes();
         this.idMappers = config.isOptionEnabled(UseFaceletsID) ? null : new Cache<>(new IdMapperFactory());
         this.refreshPeriodInMillis = refreshPeriodInSeconds >= 0 ? refreshPeriodInSeconds * 1000 : -1;
         if (log.isLoggable(Level.FINE)) {
@@ -202,7 +202,7 @@ public class DefaultFaceletFactory {
 
     private void requireFaceletResource(URL url, String path) throws FacesFileNotFoundException {
         String resourcePath = url.getPath();
-        for (String suffix : faceletsSuffixes) {
+        for (String suffix : faceletResourceSuffixes) {
             if (resourcePath.endsWith(suffix)) {
                 return;
             }
