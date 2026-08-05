@@ -209,6 +209,7 @@ public class DefaultFaceletFactory {
                 return;
             }
         }
+        throw new FacesFileNotFoundException(path + " is not a Facelet resource");
     }
 
     /**
