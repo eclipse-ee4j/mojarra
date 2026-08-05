@@ -22,6 +22,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -155,5 +156,70 @@ class FaceletViewHandlingStrategyTest {
         assertTrue(viewRoot.visited, "reapplyDynamicActions did not index the view despite having a dynamic action");
         assertTrue(viewRoot.hints.contains(VisitHint.SKIP_ITERATION),
                 "reapplyDynamicActions indexed the view with a visit which iterates rows");
+    }
+
+    // --- handlesByPrefixOrSuffix ---
+
+    /**
+     * Asks whether Facelets handles the given view ID, for a strategy configured with the given Facelet resource
+     * suffixes and view mapping prefixes. The real constructor reads both from the web configuration, which is not
+     * what these tests vary, so they are planted directly.
+     */
+    private static boolean handles(String viewId, String[] faceletResourceSuffixes, String[] prefixes) throws Exception {
+        FaceletViewHandlingStrategy strategy = mock(FaceletViewHandlingStrategy.class);
+        setField(strategy, "faceletResourceSuffixes", faceletResourceSuffixes);
+        setField(strategy, "prefixesArray", prefixes);
+
+        Method handlesByPrefixOrSuffix = FaceletViewHandlingStrategy.class
+                .getDeclaredMethod("handlesByPrefixOrSuffix", String.class);
+        handlesByPrefixOrSuffix.setAccessible(true);
+
+        return (boolean) handlesByPrefixOrSuffix.invoke(strategy, viewId);
+    }
+
+    private static void setField(Object target, String name, Object value) throws Exception {
+        Field field = FaceletViewHandlingStrategy.class.getDeclaredField(name);
+        field.setAccessible(true);
+        field.set(target, value);
+    }
+
+    @Test
+    void handlesAViewIdCarryingAConfiguredSuffix() throws Exception {
+        assertTrue(handles("/foo.xhtml", new String[] { ".xhtml" }, null));
+        assertTrue(handles("/foo.page", new String[] { ".page", ".xhtml" }, null));
+    }
+
+    @Test
+    void doesNotHandleAViewIdCarryingNoConfiguredSuffix() throws Exception {
+        assertFalse(handles("/foo.jsp", new String[] { ".xhtml" }, null));
+        assertFalse(handles("/foo", new String[] { ".xhtml" }, null));
+    }
+
+    /**
+     * A view mapping prefix widens what Facelets handles, so a view ID below it is handled whatever suffix it
+     * carries.
+     */
+    @Test
+    void handlesAViewIdBelowAConfiguredPrefix() throws Exception {
+        assertTrue(handles("/faces/foo.tpl", new String[] { ".xhtml" }, new String[] { "/faces/" }));
+        assertFalse(handles("/other/foo.tpl", new String[] { ".xhtml" }, new String[] { "/faces/" }));
+    }
+
+    /**
+     * Declaring view mappings must not take the Facelet suffixes out of play: both widen the set of view IDs which
+     * Facelets handles and neither withdraws what the other admits. The runtime resolves a view ID carrying the
+     * default suffix during startup, so a strategy which stops answering for it fails the whole deployment.
+     *
+     * @see https://github.com/eclipse-ee4j/mojarra/issues/5920
+     */
+    @Test
+    void handlesAConfiguredSuffixWhenViewMappingsAreDeclaredToo() throws Exception {
+        assertTrue(handles("/foo.xhtml", new String[] { ".xhtml" }, new String[] { "/faces/" }));
+        assertTrue(handles("com.sun.faces.xhtml", new String[] { ".xhtml" }, new String[] { "/faces/" }));
+    }
+
+    @Test
+    void handlesAFlowDefinitionRegardlessOfConfiguration() throws Exception {
+        assertTrue(handles("/foo-flow.xml", new String[] { ".xhtml" }, null));
     }
 }

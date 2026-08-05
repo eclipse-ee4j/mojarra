@@ -30,6 +30,7 @@ import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static jakarta.servlet.http.HttpServletResponse.SC_NOT_MODIFIED;
 import static jakarta.servlet.http.MappingMatch.EXTENSION;
 import static java.lang.Boolean.FALSE;
+import static java.util.Locale.ROOT;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.WARNING;
 
@@ -252,7 +253,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
 
         String contentType = getContentType(FacesContext.getCurrentInstance(), resourceName);
         if (null != contentType) {
-            contentType = contentType.toLowerCase();
+            contentType = contentType.toLowerCase(ROOT);
             if (contentType.contains("javascript")) {
                 rendererType = "jakarta.faces.resource.Script";
             } else if (contentType.contains("css")) {
@@ -268,7 +269,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
             return null;
         }
 
-        final String type = contentType.toLowerCase();
+        final String type = contentType.toLowerCase(ROOT);
         if (type.equals(ScriptRenderer.DEFAULT_CONTENT_TYPE)) {
             return "script";
         } else if (type.equals(StylesheetRenderer.DEFAULT_CONTENT_TYPE)) {

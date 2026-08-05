@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import jakarta.faces.application.FacesMessage;
@@ -113,7 +114,7 @@ public class TextRenderer extends HtmlBasicInputRenderer {
                 String type = ((HtmlInputText) component).getType();
 
                 if (context.isProjectStage(ProjectStage.Development)) {
-                    String recommendedComponent = RECOMMENDED_COMPONENTS_BY_DISCOMMENDED_TYPES.get(type.trim().toLowerCase());
+                    String recommendedComponent = RECOMMENDED_COMPONENTS_BY_DISCOMMENDED_TYPES.get(type.trim().toLowerCase(Locale.ROOT));
 
                     if (recommendedComponent != null) {
                         String message = "<h:inputText type=\"" + type + "\"> is discommended, you should instead use " + recommendedComponent;

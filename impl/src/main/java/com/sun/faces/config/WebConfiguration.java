@@ -18,9 +18,12 @@
 package com.sun.faces.config;
 
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsSuffix;
+import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsViewMappings;
 import static com.sun.faces.util.Util.split;
 import static java.util.Arrays.asList;
+import static java.util.Arrays.stream;
 import static java.util.Collections.emptyMap;
+import static java.util.function.Predicate.not;
 import static java.util.logging.Level.FINE;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static java.util.regex.Pattern.compile;
@@ -282,7 +285,7 @@ public class WebConfiguration {
                 result = new String[0];
             } else {
                 Map<String, Object> appMap = FacesContext.getCurrentInstance().getExternalContext().getApplicationMap();
-                result = split(appMap, value, sep);
+                result = stream(split(appMap, value, sep)).map(String::trim).filter(not(String::isEmpty)).toArray(String[]::new);
             }
             cachedListParams.put(param, result);
         }
@@ -329,14 +332,50 @@ public class WebConfiguration {
     }
 
     /**
-     * @return the facelet suffixes.
+     * Returns exactly the configured {@link ViewHandler#FACELETS_SUFFIX_PARAM_NAME} values, deduplicated and in
+     * declaration order. When the webapp does not declare that parameter this is
+     * {@link ViewHandler#DEFAULT_FACELETS_SUFFIX} alone.
+     * <p>
+     * These are the suffixes a view ID may carry, so this answers <em>which physical resource an incoming request may
+     * resolve to</em> and is what {@code deriveViewId} builds its candidate view IDs from. It is deliberately
+     * narrower than {@link #getFaceletResourceSuffixes()}: declaring the parameter replaces the default rather than
+     * adding to it, so a webapp declaring {@code .page} makes {@code /foo.xhtml} unreachable as a view even though
+     * the file is still a Facelet.
+     *
+     * @return the configured Facelets suffixes.
      */
-    public List<String> getConfiguredExtensions() {
+    public List<String> getFaceletsSuffixes() {
         String[] faceletsSuffix = getOptionValue(FaceletsSuffix, " ");
 
         Set<String> deduplicatedFaceletsSuffixes = new LinkedHashSet<>(asList(faceletsSuffix));
 
         return new ArrayList<>(deduplicatedFaceletsSuffixes);
+    }
+
+    /**
+     * Returns the suffixes which identify a resource as a Facelet, being the union of
+     * {@link #getFaceletsSuffixes()}, the extension entries of
+     * {@link ViewHandler#FACELETS_VIEW_MAPPINGS_PARAM_NAME}, and always
+     * {@link ViewHandler#DEFAULT_FACELETS_SUFFIX}, in that precedence order.
+     * <p>
+     * This answers <em>whether a resource is a Facelet at all</em>, which is a wider question than whether it is
+     * reachable as a view. A template or an included fragment is a Facelet without ever being requested, so the
+     * default suffix stays in this set even when the webapp declares another view suffix, and an extension declared
+     * through the view mappings joins it.
+     *
+     * @return the suffixes which identify a resource as a Facelet, deduplicated and in precedence order.
+     */
+    public String[] getFaceletResourceSuffixes() {
+        Set<String> faceletResourceSuffixes = new LinkedHashSet<>(getFaceletsSuffixes());
+        faceletResourceSuffixes.add(ViewHandler.DEFAULT_FACELETS_SUFFIX);
+
+        for (String viewMapping : getOptionValue(FaceletsViewMappings, ";")) {
+            if (viewMapping.length() > 1 && viewMapping.charAt(0) == '*') {
+                faceletResourceSuffixes.add(viewMapping.substring(1));
+            }
+        }
+
+        return faceletResourceSuffixes.toArray(String[]::new);
     }
 
     public void overrideContextInitParameter(WebContextInitParameter param, String value) {

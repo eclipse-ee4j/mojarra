@@ -22,11 +22,14 @@ import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.context.ExternalContext;
@@ -131,6 +134,45 @@ public class UIViewRootTest {
         assertEquals("one", viewMap.get("one"));
 
         setFacesContext(null);
+    }
+
+    /**
+     * A locale string must resolve to the same locale on every server. Under a Turkish or Azeri default locale
+     * {@code I} lowercases to dotless {@code i} (U+0131), which would turn a language such as {@code IT} into
+     * {@code ıt}.
+     */
+    @Test
+    public void testGetLocaleFromStringIsIndependentOfDefaultLocale() {
+        FacesContext facesContext = Mockito.mock(FacesContext.class);
+        ExternalContext externalContext = Mockito.mock(ExternalContext.class);
+
+        setFacesContext(facesContext);
+        when(facesContext.getExternalContext()).thenReturn(externalContext);
+        when(externalContext.getApplicationMap()).thenReturn(null);
+
+        Locale defaultLocale = Locale.getDefault();
+
+        try {
+            for (Locale locale : List.of(Locale.US, Locale.forLanguageTag("tr-TR"), Locale.forLanguageTag("az-AZ"))) {
+                Locale.setDefault(locale);
+                assertEquals("it", localeOf(facesContext, "IT").getLanguage(), locale.toString());
+                assertEquals("fi", localeOf(facesContext, "FI").getLanguage(), locale.toString());
+                assertEquals("it", localeOf(facesContext, "it").getLanguage(), locale.toString());
+            }
+        } finally {
+            Locale.setDefault(defaultLocale);
+            setFacesContext(null);
+        }
+    }
+
+    private static Locale localeOf(FacesContext facesContext, String localeString) {
+        ValueExpression expression = Mockito.mock(ValueExpression.class);
+        when(expression.getValue(facesContext.getELContext())).thenReturn(localeString);
+
+        UIViewRoot viewRoot = new UIViewRoot();
+        viewRoot.setValueExpression("locale", expression);
+
+        return viewRoot.getLocale();
     }
 
     private void setFacesContext(FacesContext facesContext) {

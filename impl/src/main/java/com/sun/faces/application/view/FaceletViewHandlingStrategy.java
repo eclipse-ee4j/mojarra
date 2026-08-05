@@ -46,7 +46,6 @@ import static jakarta.faces.application.Resource.COMPONENT_RESOURCE_KEY;
 import static jakarta.faces.application.StateManager.IS_BUILDING_INITIAL_STATE;
 import static jakarta.faces.application.StateManager.STATE_SAVING_METHOD_CLIENT;
 import static jakarta.faces.application.ViewHandler.CHARACTER_ENCODING_KEY;
-import static jakarta.faces.application.ViewHandler.DEFAULT_FACELETS_SUFFIX;
 import static jakarta.faces.application.ViewVisitOption.RETURN_AS_MINIMAL_IMPLICIT_OUTCOME;
 import static jakarta.faces.component.UIComponent.BEANINFO_KEY;
 import static jakarta.faces.component.UIComponent.COMPOSITE_FACET_NAME;
@@ -164,8 +163,8 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
     private DefaultFaceletFactory faceletFactory;
 
-    // Array of viewId extensions that should be handled by Facelets
-    private String[] extensionsArray;
+    // Array of suffixes which identify a resource as a Facelet
+    private String[] faceletResourceSuffixes;
 
     // Array of viewId prefixes that should be handled by Facelets
     private String[] prefixesArray;
@@ -826,11 +825,11 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
     /**
      * @param viewId the view ID to check
-     * @return <code>true</code> if assuming a default configuration and the view ID's extension in {@link ViewHandler#FACELETS_SUFFIX_PARAM_NAME}
-     * Otherwise try to match the view ID based on the configured extensions and prefixes in {@link ViewHandler#FACELETS_VIEW_MAPPINGS_PARAM_NAME}
+     * @return <code>true</code> if the view ID carries one of the suffixes which identify a Facelet, or matches one of
+     * the prefixes configured in {@link ViewHandler#FACELETS_VIEW_MAPPINGS_PARAM_NAME}, or is exact mapped to the
+     * {@code FacesServlet}.
      *
-     * @see com.sun.faces.config.WebConfiguration.WebContextInitParameter#FaceletsSuffix
-     * @see com.sun.faces.config.WebConfiguration.WebContextInitParameter#FaceletsViewMappings
+     * @see com.sun.faces.config.WebConfiguration#getFaceletResourceSuffixes()
      */
     @Override
     public boolean handlesViewId(String viewId) {
@@ -903,13 +902,14 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      * Initialize mappings, during the first request.
      */
     protected void initializeMappings() {
+        faceletResourceSuffixes = webConfig.getFaceletResourceSuffixes();
+
         String viewMappings = webConfig.getOptionValue(FaceletsViewMappings);
         if (viewMappings != null && viewMappings.length() > 0) {
             Map<String, Object> appMap = FacesContext.getCurrentInstance().getExternalContext().getApplicationMap();
 
             String[] mappingsArray = split(appMap, viewMappings, ";");
 
-            List<String> extensionsList = new ArrayList<>(mappingsArray.length);
             List<String> prefixesList = new ArrayList<>(mappingsArray.length);
 
             for (String aMappingsArray : mappingsArray) {
@@ -919,15 +919,10 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                     continue;
                 }
 
-                if (mapping.charAt(0) == '*') {
-                    extensionsList.add(mapping.substring(1));
-                } else if (mapping.charAt(mappingLength - 1) == '*') {
+                if (mapping.charAt(mappingLength - 1) == '*' && mapping.charAt(0) != '*') {
                     prefixesList.add(mapping.substring(0, mappingLength - 1));
                 }
             }
-
-            extensionsArray = new String[extensionsList.size()];
-            extensionsList.toArray(extensionsArray);
 
             prefixesArray = new String[prefixesList.size()];
             prefixesList.toArray(prefixesArray);
@@ -1163,18 +1158,8 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             return true;
         }
 
-        // If there's no extensions array or prefixes array, then assume defaults.
-        // .xhtml extension is handled by the FaceletViewHandler
-        if (extensionsArray == null && prefixesArray == null) {
-            return isMatchedWithFaceletsSuffix(viewId) ? true : viewId.endsWith(DEFAULT_FACELETS_SUFFIX);
-        }
-
-        if (extensionsArray != null) {
-            for (String extension : extensionsArray) {
-                if (viewId.endsWith(extension)) {
-                    return true;
-                }
-            }
+        if (getMatchedFaceletResourceSuffix(viewId) != null) {
+            return true;
         }
 
         if (prefixesArray != null) {
@@ -1983,20 +1968,8 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         return faceletFactory;
     }
 
-    private boolean isMatchedWithFaceletsSuffix(String viewId) {
-        String[] defaultsuffixes = webConfig.getOptionValue(WebConfiguration.WebContextInitParameter.FaceletsSuffix, " ");
-        for (String suffix : defaultsuffixes) {
-            if (viewId.endsWith(suffix)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private String getMatchedWithFaceletsSuffix(String viewId) {
-        String[] defaultsuffixes = webConfig.getOptionValue(WebConfiguration.WebContextInitParameter.FaceletsSuffix, " ");
-        for (String suffix : defaultsuffixes) {
+    private String getMatchedFaceletResourceSuffix(String viewId) {
+        for (String suffix : faceletResourceSuffixes) {
             if (viewId.endsWith(suffix)) {
                 return suffix;
             }
@@ -2048,26 +2021,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                 return FLOW_DEFINITION_ID_SUFFIX;
             }
 
-            // If there's no extensions array or prefixes array, then assume defaults.
-            // .xhtml extension is handled by the FaceletViewHandler
-            if (extensionsArray == null && prefixesArray == null) {
-                String suffix = getMatchedWithFaceletsSuffix(viewId);
-                if (suffix != null) {
-                    return suffix;
-                }
-
-                if (viewId.endsWith(DEFAULT_FACELETS_SUFFIX)) {
-                    return DEFAULT_FACELETS_SUFFIX;
-                }
-            }
-
-            if (extensionsArray != null) {
-                for (String extension : extensionsArray) {
-                    if (viewId.endsWith(extension)) {
-                        return extension;
-                    }
-                }
-            }
+            return getMatchedFaceletResourceSuffix(viewId);
         }
 
         return null;
