@@ -21,7 +21,9 @@ import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.Face
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsViewMappings;
 import static com.sun.faces.util.Util.split;
 import static java.util.Arrays.asList;
+import static java.util.Arrays.stream;
 import static java.util.Collections.emptyMap;
+import static java.util.function.Predicate.not;
 import static java.util.logging.Level.FINE;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static java.util.regex.Pattern.compile;
@@ -283,7 +285,7 @@ public class WebConfiguration {
                 result = new String[0];
             } else {
                 Map<String, Object> appMap = FacesContext.getCurrentInstance().getExternalContext().getApplicationMap();
-                result = split(appMap, value, sep);
+                result = stream(split(appMap, value, sep)).map(String::trim).filter(not(String::isEmpty)).toArray(String[]::new);
             }
             cachedListParams.put(param, result);
         }
