@@ -79,12 +79,14 @@ class ContextParamsMdTest {
         private final String type;
         private final String defaultValue;
         private final String replacedBy;
+        private final boolean deprecated;
 
-        private Param(String name, String type, String defaultValue, String replacedBy) {
+        private Param(String name, String type, String defaultValue, String replacedBy, boolean deprecated) {
             this.name = name;
             this.type = type;
             this.defaultValue = defaultValue;
             this.replacedBy = replacedBy;
+            this.deprecated = deprecated;
         }
     }
 
@@ -179,6 +181,26 @@ class ContextParamsMdTest {
         assertTrue(unlinked.isEmpty(), () -> "Deprecated parameters whose description does not name their replacement in " + markdownFile() + ": " + unlinked);
     }
 
+    /**
+     * A parameter which the sources have deprecated says so on the page, so that it cannot be deprecated in one place
+     * and still read as current in the other.
+     */
+    @Test
+    void documentsEveryDeprecatedParamAsDeprecated() {
+        Map<String, Map<String, String>> rows = rows();
+        List<String> unmarked = new ArrayList<>();
+
+        for (Param param : params().values()) {
+            Map<String, String> row = rows.get(param.name);
+
+            if (param.deprecated && row != null && !text(row.get(DESCRIPTION)).contains("Deprecated")) {
+                unmarked.add(param.name);
+            }
+        }
+
+        assertTrue(unmarked.isEmpty(), () -> "Deprecated parameters not documented as such in " + markdownFile() + ": " + unmarked);
+    }
+
     private static void check(Map<String, String> wrong, String name, String column, String expected, String actual) {
         if (expected != null && !expected.equals(actual)) {
             wrong.put(name + " " + column, "expected " + expected + " but was " + actual);
@@ -195,19 +217,21 @@ class ContextParamsMdTest {
         Map<String, Param> params = new LinkedHashMap<>();
 
         for (WebContextInitParameter param : WebContextInitParameter.values()) {
-            put(params, new Param(param.getQualifiedName(), null, param.getDefaultValue(), alternateOf(param)));
+            put(params, new Param(param.getQualifiedName(), null, param.getDefaultValue(), alternateOf(param), isDeprecated(param)));
         }
 
         for (BooleanWebContextInitParameter param : BooleanWebContextInitParameter.values()) {
-            put(params, new Param(param.getQualifiedName(), "boolean", String.valueOf(param.getDefaultValue()), alternateOf(param)));
+            put(params, new Param(param.getQualifiedName(), "boolean", String.valueOf(param.getDefaultValue()), alternateOf(param),
+                    isDeprecated(param)));
         }
 
         for (FacesContextParam param : FacesContextParam.values()) {
-            put(params, new Param(param.getName(), typeOf(param.getType()), declaredDefaultOf(param), null));
+            put(params, new Param(param.getName(), typeOf(param.getType()), declaredDefaultOf(param), param.getAlternateName(),
+                    isDeprecated(param)));
         }
 
         for (String name : scanForInitParameterReads()) {
-            put(params, new Param(name, null, null, null));
+            put(params, new Param(name, null, null, null, false));
         }
 
         return params;
@@ -248,6 +272,10 @@ class ContextParamsMdTest {
         }
 
         return String.valueOf(invoke(alternate, "getQualifiedName"));
+    }
+
+    private static boolean isDeprecated(Enum<?> param) {
+        return Boolean.TRUE.equals(fieldValue(param, "deprecated"));
     }
 
     private static Object fieldValue(Enum<?> param, String name) {

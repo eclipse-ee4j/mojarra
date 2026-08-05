@@ -146,6 +146,13 @@ public enum FacesContextParam implements ContextParam {
     FACELETS_VIEW_MAPPINGS(ViewHandler.FACELETS_VIEW_MAPPINGS_PARAM_NAME, EMPTY_STRING_ARRAY, Separator.SEMICOLON),
 
     /**
+     * Returns {@value StateManager#FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME} as {@link String} array with default of empty string array.
+     * @deprecated Full state saving will be removed in favor of partial state saving in order to keep the spec simple.
+     */
+    @Deprecated(since = "4.1", forRemoval = true)
+    FULL_STATE_SAVING_VIEW_IDS(StateManager.FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME, EMPTY_STRING_ARRAY, Separator.COMMA, Deprecation.DEPRECATED),
+
+    /**
      * Returns {@value UIInput#EMPTY_STRING_AS_NULL_PARAM_NAME} as {@link Boolean} with default of {@code false}.
      */
     INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL(UIInput.EMPTY_STRING_AS_NULL_PARAM_NAME, false),
@@ -154,6 +161,13 @@ public enum FacesContextParam implements ContextParam {
      * Returns {@value ClientWindow#NUMBER_OF_CLIENT_WINDOWS_PARAM_NAME} as {@link Integer} with default of {@value ClientWindow#NUMBER_OF_CLIENT_WINDOWS_DEFAULT_VALUE}.
      */
     NUMBER_OF_CLIENT_WINDOWS(ClientWindow.NUMBER_OF_CLIENT_WINDOWS_PARAM_NAME, ClientWindow.NUMBER_OF_CLIENT_WINDOWS_DEFAULT_VALUE),
+
+    /**
+     * Returns {@value StateManager#PARTIAL_STATE_SAVING_PARAM_NAME} as {@link Boolean} with default of {@code true}.
+     * @deprecated Full state saving will be removed in favor of partial state saving in order to keep the spec simple.
+     */
+    @Deprecated(since = "4.1", forRemoval = true)
+    PARTIAL_STATE_SAVING(StateManager.PARTIAL_STATE_SAVING_PARAM_NAME, true, Deprecation.DEPRECATED),
 
     /**
      * Returns {@value ProjectStage#PROJECT_STAGE_PARAM_NAME} as {@link ProjectStage} with default of {@link ProjectStage#Production}.
@@ -209,30 +223,49 @@ public enum FacesContextParam implements ContextParam {
 
     ;
 
+    /**
+     * Marks a declaration as deprecated, as a type rather than a flag, because a boolean would be ambiguous with the
+     * default value of a boolean parameter.
+     */
+    private enum Deprecation {
+        DEPRECATED;
+    }
+
     private final String name;
     private final Function<ProjectStage, ?> defaultValueSupplier;
     private final Separator separator;
     private final Class<?> type;
+    private final boolean deprecated;
 
     private <T> FacesContextParam(String name, T defaultValue) {
-        this(name, defaultValue, null, null);
+        this(name, defaultValue, null, null, null);
+    }
+
+    private <T> FacesContextParam(String name, T defaultValue, Deprecation deprecation) {
+        this(name, defaultValue, null, null, deprecation);
     }
 
     private <T> FacesContextParam(String name, T defaultValue, Separator separator) {
-        this(name, defaultValue, null, separator);
+        this(name, defaultValue, null, separator, null);
+    }
+
+    private <T> FacesContextParam(String name, T defaultValue, Separator separator, Deprecation deprecation) {
+        this(name, defaultValue, null, separator, deprecation);
     }
 
     private <T> FacesContextParam(String name, T defaultValue, Function<ProjectStage, T> defaultValueSupplier) {
-        this(name, defaultValue, defaultValueSupplier, null);
+        this(name, defaultValue, defaultValueSupplier, null, null);
     }
 
-    private <T> FacesContextParam(String name, T defaultValue, Function<ProjectStage, T> defaultValueSupplier, Separator separator) {
+    private <T> FacesContextParam(String name, T defaultValue, Function<ProjectStage, T> defaultValueSupplier, Separator separator,
+            Deprecation deprecation) {
         requireNonNull(name, "name");
         requireNonNull(defaultValue, "defaultValue");
         this.name = name;
         this.defaultValueSupplier = ofNullable(defaultValueSupplier).orElse($ -> defaultValue);
         this.separator = separator;
         this.type = defaultValue.getClass();
+        this.deprecated = deprecation != null;
     }
 
     @Override
@@ -248,6 +281,11 @@ public enum FacesContextParam implements ContextParam {
     @Override
     public Separator getSeparator() {
         return separator;
+    }
+
+    @Override
+    public boolean isDeprecated() {
+        return deprecated;
     }
 
     @SuppressWarnings("unchecked")

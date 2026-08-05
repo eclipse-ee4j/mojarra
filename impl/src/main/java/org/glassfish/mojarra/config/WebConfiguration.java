@@ -24,7 +24,6 @@ import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
-import static org.glassfish.mojarra.util.Util.split;
 
 import java.io.IOException;
 import java.net.URL;
@@ -50,7 +49,6 @@ import javax.naming.NamingException;
 
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.ResourceHandler;
-import jakarta.faces.application.StateManager;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.servlet.ServletContext;
@@ -135,8 +133,6 @@ public class WebConfiguration {
     private final Map<WebContextInitParameter, Map<String, String>> facesConfigParameters = new EnumMap<>(WebContextInitParameter.class);
 
     private final Map<WebEnvironmentEntry, String> envEntries = new EnumMap<>(WebEnvironmentEntry.class);
-
-    private final Map<WebContextInitParameter, String[]> cachedListParams = new HashMap<>();
 
     private final Map<ContextParam, Object> resolvedValues = new HashMap<>();
 
@@ -419,23 +415,6 @@ public class WebConfiguration {
         return getFacesConfigOptionValue(param, false);
     }
 
-    public String[] getOptionValue(WebContextInitParameter param, String sep) {
-        String[] result;
-
-        if ((result = cachedListParams.get(param)) == null) {
-            String value = getOptionValue(param);
-            if (value == null) {
-                result = new String[0];
-            } else {
-                Map<String, Object> appMap = FacesContext.getCurrentInstance().getExternalContext().getApplicationMap();
-                result = split(appMap, value, sep);
-            }
-            cachedListParams.put(param, result);
-        }
-
-        return result;
-    }
-
     /**
      * Obtain the value of the specified env-entry
      *
@@ -481,7 +460,6 @@ public class WebConfiguration {
 
         value = value.trim();
         String oldVal = contextParameters.put(param, value);
-        cachedListParams.remove(param);
         if (oldVal != null && LOGGER.isLoggable(FINE) && !oldVal.equals(value)) {
             LOGGER.log(FINE, "Overriding init parameter {0}.  Changing from {1} to {2}.", new Object[] { param.getQualifiedName(), oldVal, value });
         }
@@ -942,6 +920,12 @@ public class WebConfiguration {
      */
     private void processDeprecatedParameters() {
 
+        for (FacesContextParam param : FacesContextParam.values()) {
+            if (param.isDeprecated() && isSet(param)) {
+                warnAboutDeprecatedParameter(param.getName(), param.getAlternateName());
+            }
+        }
+
         for (WebContextInitParameter param : WebContextInitParameter.values()) {
             if (!param.isDeprecated() || !isSet(param.getQualifiedName())) {
                 continue;
@@ -1135,7 +1119,6 @@ public class WebConfiguration {
         DuplicateJARPattern("org.glassfish.mojarra.duplicateJARPattern", ""),
         AllowedHttpMethods("org.glassfish.mojarra.allowedHttpMethods", ""), // white space separated, upper case; * means allow all
         ViewStateAutocomplete("org.glassfish.mojarra.viewStateAutocomplete", "one-time-code"),
-        FullStateSavingViewIds(StateManager.FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME, ""),
 
         FaceletsProcessingFileExtensionProcessAs("", ""),
         WebsocketEndpointIdleTimeout("org.glassfish.mojarra.websocketEndpointIdleTimeout", "0"), // in milliseconds; 0 means no timeout
@@ -1203,7 +1186,6 @@ public class WebConfiguration {
         WriteStateAtFormEnd("org.glassfish.mojarra.writeStateAtFormEnd", true),
         EnableViewStateIdRendering("org.glassfish.mojarra.enableViewStateIdRendering", true),
         RegisterConverterPropertyEditors("org.glassfish.mojarra.registerConverterPropertyEditors", false),
-        PartialStateSaving(StateManager.PARTIAL_STATE_SAVING_PARAM_NAME, true),
         RefreshTransientBuildOnPSS("org.glassfish.mojarra.refreshTransientBuildOnPSS", false),
         GenerateUniqueServerStateIds("org.glassfish.mojarra.generateUniqueServerStateIds", true),
         AutoCompleteOffOnViewState("org.glassfish.mojarra.autoCompleteOffOnViewState", false, WebContextInitParameter.ViewStateAutocomplete.getQualifiedName()),

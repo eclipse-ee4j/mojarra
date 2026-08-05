@@ -16,7 +16,7 @@
 
 package org.glassfish.mojarra.facelets.tag.faces;
 
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.PartialStateSaving;
+import static org.glassfish.mojarra.context.FacesContextParam.PARTIAL_STATE_SAVING;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -236,7 +236,7 @@ public final class ComponentSupport {
     }
 
     private static boolean isPartialStateSaving(FacesContext context) {
-        return context.getAttributes().get(PartialStateSaving) == Boolean.TRUE;
+        return context.getAttributes().get(PARTIAL_STATE_SAVING) == Boolean.TRUE;
     }
 
     /**

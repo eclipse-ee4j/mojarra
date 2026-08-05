@@ -17,26 +17,20 @@
 package org.glassfish.mojarra.application;
 
 import static java.util.Arrays.asList;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.PartialStateSaving;
-import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.FullStateSavingViewIds;
+import static org.glassfish.mojarra.context.FacesContextParam.FULL_STATE_SAVING_VIEW_IDS;
+import static org.glassfish.mojarra.context.FacesContextParam.PARTIAL_STATE_SAVING;
 import static org.glassfish.mojarra.util.Util.notNullViewId;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Logger;
-
-import jakarta.faces.application.StateManager;
 
 import org.glassfish.mojarra.config.WebConfiguration;
-import org.glassfish.mojarra.util.FacesLogger;
 
 /**
  * This class maintains per-application information pertaining to partail or full state saving as a whole or partial
  * state saving with some views using full state saving.
  */
 public class ApplicationStateInfo {
-
-    private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
 
     private final boolean partialStateSaving;
     private Set<String> fullStateViewIds;
@@ -46,18 +40,13 @@ public class ApplicationStateInfo {
     public ApplicationStateInfo() {
 
         WebConfiguration config = WebConfiguration.getInstance();
-        partialStateSaving = config.isOptionEnabled(PartialStateSaving);
+        partialStateSaving = config.getValue(PARTIAL_STATE_SAVING);
 
         if (partialStateSaving) {
-            String[] viewIds = config.getOptionValue(FullStateSavingViewIds, ",");
+            String[] viewIds = config.<String[]>getValue(FULL_STATE_SAVING_VIEW_IDS);
             fullStateViewIds = new HashSet<>(viewIds.length, 1.0f);
             fullStateViewIds.addAll(asList(viewIds));
         }
-        else {
-            LOGGER.warning("The configuration '" + StateManager.PARTIAL_STATE_SAVING_PARAM_NAME
-                + "' is deprecated as of Faces 4.1 and should not longer be used.");
-        }
-
     }
 
     // --------------------------------------------------------- Private Methods

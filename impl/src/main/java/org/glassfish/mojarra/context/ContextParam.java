@@ -77,6 +77,21 @@ public interface ContextParam {
     <T> T getDefaultValue(ProjectStage projectStage);
 
     /**
+     * @return whether the parameter is on its way out, so that an application still declaring it is told so.
+     */
+    default boolean isDeprecated() {
+        return false;
+    }
+
+    /**
+     * @return the name of the parameter which replaces this one, or <code>null</code> when it has no replacement,
+     * which is the case for one whose behaviour goes away rather than moving elsewhere.
+     */
+    default String getAlternateName() {
+        return null;
+    }
+
+    /**
      * <p>
      * Converts a declared parameter value to the type indicated by {@link #getType()}.
      * </p>
@@ -135,9 +150,9 @@ public interface ContextParam {
      */
     enum Separator {
 
-        SPACE("\\s+"),
+        COMMA("\\s*,\\s*"),
         SEMICOLON("\\s*;\\s*"),
-        COMMA("\\s*,\\s*");
+        SPACE("\\s+");
 
         private final Pattern pattern;
 

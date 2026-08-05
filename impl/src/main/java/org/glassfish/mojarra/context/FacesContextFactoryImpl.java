@@ -17,7 +17,7 @@
 package org.glassfish.mojarra.context;
 
 import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.ForceAlwaysWriteFlashCookie;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.PartialStateSaving;
+import static org.glassfish.mojarra.context.FacesContextParam.PARTIAL_STATE_SAVING;
 
 import java.util.Map;
 
@@ -78,7 +78,7 @@ public class FacesContextFactoryImpl extends FacesContextFactory {
         Map<String, Object> appMap = extContext.getApplicationMap();
         Map<Object, Object> attrs = context.getAttributes();
         attrs.put(FacesContextParam.ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE.getName(), FacesContextParam.ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE.getValue(context));
-        attrs.put(PartialStateSaving, webConfig.isOptionEnabled(PartialStateSaving) ? Boolean.TRUE : Boolean.FALSE);
+        attrs.put(PARTIAL_STATE_SAVING, webConfig.getValue(PARTIAL_STATE_SAVING));
         attrs.put(ForceAlwaysWriteFlashCookie, webConfig.isOptionEnabled(ForceAlwaysWriteFlashCookie) ? Boolean.TRUE : Boolean.FALSE);
         attrs.put(FacesContextParam.VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS.getName(), FacesContextParam.VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS.getValue(context));
         attrs.put(FacesContextParam.ENABLE_VALIDATE_WHOLE_BEAN.getName(), FacesContextParam.ENABLE_VALIDATE_WHOLE_BEAN.getValue(context));
