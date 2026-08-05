@@ -444,7 +444,7 @@ public class DefaultFaceletFactory {
             String contractsKey = builder.toString();
             FaceletCache<DefaultFacelet> faceletCache = cachePerContract.get(contractsKey);
             if (faceletCache == null) {
-                // PENDING(FCAPUTO) we don't support org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter#FaceletCache for
+                // PENDING(FCAPUTO) we don't support org.glassfish.mojarra.context.MojarraContextParam#FaceletCache for
                 // contracts
                 faceletCache = initCache(null);
                 cachePerContract.putIfAbsent(contractsKey, faceletCache);

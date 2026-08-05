@@ -125,7 +125,7 @@ public class FacesConfigExtensionProcessor extends AbstractConfigProcessor {
                             config = WebConfiguration.getInstance();
                         }
                         Map<String, String> faceletsProcessingMappings = config
-                                .getFacesConfigOptionValue(WebConfiguration.WebContextInitParameter.FaceletsProcessingFileExtensionProcessAs, true);
+                                .getFacesConfigOptionValue(WebConfiguration.FACELETS_PROCESSING_FILE_EXTENSION_PROCESS_AS, true);
                         faceletsProcessingMappings.put(fileExtension, processAs);
 
                     } else {

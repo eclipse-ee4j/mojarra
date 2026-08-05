@@ -89,7 +89,6 @@ import jakarta.enterprise.inject.spi.CDI;
 import jakarta.enterprise.inject.spi.el.ELAwareBeanManager;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Application;
-import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.StateManager;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.Doctype;
@@ -114,9 +113,9 @@ import jakarta.servlet.http.MappingMatch;
 
 import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.application.ApplicationAssociate;
-import org.glassfish.mojarra.config.WebConfiguration;
 import org.glassfish.mojarra.config.manager.FacesSchema;
 import org.glassfish.mojarra.context.FacesContextParam;
+import org.glassfish.mojarra.context.MojarraContextParam;
 import org.glassfish.mojarra.facelets.component.UIRepeat;
 import org.glassfish.mojarra.io.FastStringWriter;
 
@@ -1240,8 +1239,7 @@ public class Util {
     }
 
     private static boolean isIdUniquenessCheckDisabled(FacesContext context) {
-        return WebConfiguration.getInstance(context.getExternalContext()).isOptionEnabled(
-                WebConfiguration.WebContextInitParameter.DisableIdUniquenessCheck, !context.isProjectStage(ProjectStage.Development));
+        return MojarraContextParam.DISABLE_ID_UNIQUENESS_CHECK.isEnabled(context);
     }
 
     private static void doCheckIdUniqueness(FacesContext context, UIComponent component, Set<String> componentIds) {

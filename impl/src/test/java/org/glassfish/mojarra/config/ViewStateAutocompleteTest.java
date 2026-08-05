@@ -17,7 +17,7 @@
 package org.glassfish.mojarra.config;
 
 import static org.glassfish.mojarra.context.MojarraContextParam.AUTO_COMPLETE_OFF_ON_VIEW_STATE;
-import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.ViewStateAutocomplete;
+import static org.glassfish.mojarra.context.MojarraContextParam.VIEW_STATE_AUTOCOMPLETE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.glassfish.mojarra.mock.MockServletContext;
@@ -36,7 +36,7 @@ class ViewStateAutocompleteTest {
 
     @Test
     void isWrittenVerbatim() {
-        assertEquals("off", resolve(ViewStateAutocomplete.getQualifiedName(), "off"));
+        assertEquals("off", resolve(VIEW_STATE_AUTOCOMPLETE.getName(), "off"));
     }
 
     /**
@@ -55,7 +55,7 @@ class ViewStateAutocompleteTest {
     void replacementWinsOverDeprecatedBoolean() {
         assertEquals("on", resolve(
                 AUTO_COMPLETE_OFF_ON_VIEW_STATE.getName(), "true",
-                ViewStateAutocomplete.getQualifiedName(), "on"));
+                VIEW_STATE_AUTOCOMPLETE.getName(), "on"));
     }
 
     private static String resolve(String... initParameterNamesAndValues) {

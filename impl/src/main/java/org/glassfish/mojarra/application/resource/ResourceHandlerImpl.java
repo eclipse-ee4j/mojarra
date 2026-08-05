@@ -25,8 +25,8 @@ import static java.lang.Boolean.FALSE;
 import static java.util.Locale.ROOT;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.WARNING;
-import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.DefaultResourceMaxAge;
-import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.ResourceBufferSize;
+import static org.glassfish.mojarra.context.MojarraContextParam.DEFAULT_RESOURCE_MAX_AGE;
+import static org.glassfish.mojarra.context.MojarraContextParam.RESOURCE_BUFFER_SIZE;
 import static org.glassfish.mojarra.util.RequestStateManager.RESOURCE_REQUEST;
 import static org.glassfish.mojarra.util.Util.getFacesMapping;
 import static org.glassfish.mojarra.util.Util.notNegative;
@@ -594,7 +594,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
     }
 
     private void initMaxAge() {
-        maxAge = Long.parseLong(webconfig.getOptionValue(DefaultResourceMaxAge));
+        maxAge = Long.parseLong(webconfig.getValue(DEFAULT_RESOURCE_MAX_AGE));
     }
 
     private void handleHeaders(FacesContext context, Resource resource) {
@@ -605,18 +605,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
     }
 
     private ByteBuffer allocateByteBuffer() {
-        int size;
-        try {
-            size = Integer.parseInt(webconfig.getOptionValue(ResourceBufferSize));
-        } catch (NumberFormatException nfe) {
-            if (LOGGER.isLoggable(WARNING)) {
-                LOGGER.log(WARNING, "faces.application.resource.invalid_resource_buffer_size", new Object[] { webconfig.getOptionValue(ResourceBufferSize),
-                        ResourceBufferSize.getQualifiedName(), ResourceBufferSize.getDefaultValue() });
-            }
-            size = Integer.parseInt(ResourceBufferSize.getDefaultValue());
-        }
-
-        return ByteBuffer.allocate(size);
+        return ByteBuffer.allocate(webconfig.getValue(RESOURCE_BUFFER_SIZE));
     }
 
 }

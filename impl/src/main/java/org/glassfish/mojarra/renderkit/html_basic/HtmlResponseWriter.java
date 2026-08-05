@@ -36,6 +36,7 @@ import jakarta.faces.render.Renderer;
 
 import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.config.WebConfiguration;
+import org.glassfish.mojarra.context.ContextParam.Tristate;
 import org.glassfish.mojarra.context.MojarraContextParam;
 import org.glassfish.mojarra.io.FastStringWriter;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
@@ -68,7 +69,7 @@ public class HtmlResponseWriter extends ResponseWriter {
 
     // Configuration flag regarding disableUnicodeEscaping
     //
-    private WebConfiguration.DisableUnicodeEscaping disableUnicodeEscaping;
+    private Tristate disableUnicodeEscaping;
 
     // Flag to escape Unicode
     //
@@ -214,7 +215,7 @@ public class HtmlResponseWriter extends ResponseWriter {
      * @throws jakarta.faces.FacesException the encoding is not recognized.
      */
     public HtmlResponseWriter(Writer writer, String contentType, String encoding, Boolean isScriptInAttributeValueEnabled,
-            WebConfiguration.DisableUnicodeEscaping disableUnicodeEscaping, boolean isPartial) throws FacesException {
+            Tristate disableUnicodeEscaping, boolean isPartial) throws FacesException {
 
         this.writer = writer;
 
@@ -234,12 +235,8 @@ public class HtmlResponseWriter extends ResponseWriter {
 
         if (disableUnicodeEscaping == null) {
             webConfig = getWebConfiguration(webConfig);
-            disableUnicodeEscaping = WebConfiguration.DisableUnicodeEscaping
-                    .getByValue(null == webConfig ? WebConfiguration.WebContextInitParameter.DisableUnicodeEscaping.getDefaultValue()
-                            : webConfig.getOptionValue(WebConfiguration.WebContextInitParameter.DisableUnicodeEscaping));
-            if (disableUnicodeEscaping == null) {
-                disableUnicodeEscaping = WebConfiguration.DisableUnicodeEscaping.False;
-            }
+            disableUnicodeEscaping = null == webConfig ? MojarraContextParam.DISABLE_UNICODE_ESCAPING.getDefaultValue(null)
+                    : webConfig.getValue(MojarraContextParam.DISABLE_UNICODE_ESCAPING);
         }
 
         // and store them for later use
@@ -255,17 +252,17 @@ public class HtmlResponseWriter extends ResponseWriter {
         String charsetName = encoding.toUpperCase(Locale.ROOT);
 
         switch (disableUnicodeEscaping) {
-        case True:
+        case TRUE:
             // html escape noting (except the dangerous characters like "<>'" etc
             escapeUnicode = false;
             escapeIso = false;
             break;
-        case False:
+        case FALSE:
             // html escape any non-ascii character
             escapeUnicode = true;
             escapeIso = true;
             break;
-        case Auto:
+        case AUTO:
             // is stream capable of rendering unicode, do not escape
             escapeUnicode = !HtmlUtils.isUTFencoding(charsetName);
             // is stream capable of rendering unicode or iso-8859-1, do not escape

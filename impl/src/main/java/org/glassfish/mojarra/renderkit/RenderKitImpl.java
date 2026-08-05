@@ -18,9 +18,9 @@
 
 package org.glassfish.mojarra.renderkit;
 
+import static org.glassfish.mojarra.context.MojarraContextParam.DISABLE_UNICODE_ESCAPING;
 import static org.glassfish.mojarra.context.MojarraContextParam.ENABLE_SCRIPTS_IN_ATTRIBUTE_VALUES;
 import static org.glassfish.mojarra.context.MojarraContextParam.PREFER_XHTML;
-import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.DisableUnicodeEscaping;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -45,6 +45,7 @@ import jakarta.faces.render.ResponseStateManager;
 
 import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.config.WebConfiguration;
+import org.glassfish.mojarra.context.ContextParam.Tristate;
 import org.glassfish.mojarra.renderkit.html_basic.HtmlResponseWriter;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.MessageUtils;
@@ -240,7 +241,7 @@ public class RenderKitImpl extends RenderKit {
         }
 
         boolean scriptInAttributes = webConfig.isEnabled(ENABLE_SCRIPTS_IN_ATTRIBUTE_VALUES);
-        WebConfiguration.DisableUnicodeEscaping escaping = WebConfiguration.DisableUnicodeEscaping.getByValue(webConfig.getOptionValue(DisableUnicodeEscaping));
+        Tristate escaping = webConfig.<Tristate>getValue(DISABLE_UNICODE_ESCAPING);
         boolean isPartial = context.getPartialViewContext().isPartialRequest();
         return new HtmlResponseWriter(writer, contentType, characterEncoding, scriptInAttributes, escaping, isPartial);
     }

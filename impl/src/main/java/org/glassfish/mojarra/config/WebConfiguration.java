@@ -20,8 +20,6 @@ package org.glassfish.mojarra.config;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyMap;
 import static java.util.logging.Level.FINE;
-import static java.util.regex.Pattern.CASE_INSENSITIVE;
-import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
@@ -41,7 +39,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import javax.naming.Context;
@@ -54,6 +51,7 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.servlet.ServletContext;
 
+import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.application.ApplicationAssociate;
 import org.glassfish.mojarra.application.view.FaceletViewHandlingStrategy;
 import org.glassfish.mojarra.context.ContextParam;
@@ -71,9 +69,6 @@ public class WebConfiguration {
 
     // Log instance for this class
     private static final Logger LOGGER = FacesLogger.CONFIG.getLogger();
-
-    // A Simple regular expression of allowable boolean values
-    private static final Pattern ALLOWABLE_BOOLEANS = compile("true|false", CASE_INSENSITIVE);
 
     /**
      * <p>
@@ -94,16 +89,6 @@ public class WebConfiguration {
             FacesContextParam.EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING, "exceptionTypesToIgnoreInLogging");
 
     /**
-     * The value of a tri-state parameter which leaves the decision to the project stage.
-     */
-    private static final String AUTO = "auto";
-
-    /**
-     * How often, in minutes, a changed resource is noticed while developing.
-     */
-    private static final long RESOURCE_UPDATE_CHECK_PERIOD_IN_DEVELOPMENT = 5;
-
-    /**
      * Parameters which exist to make debugging easier and would weaken a deployment if honored anywhere else, so outside
      * Development they revert to their default, which is in each case the safe value.
      */
@@ -115,7 +100,7 @@ public class WebConfiguration {
     private static final boolean DEPRECATED = true;
 
     private static final String LEGACY_PARAM_PREFIX = "com.sun.faces.";
-    private static final String CURRENT_PARAM_PREFIX = "org.glassfish.mojarra.";
+    private static final String CURRENT_PARAM_PREFIX = RIConstants.RI_PREFIX;
 
     // Key under which we store our WebConfiguration instance.
     private static final String WEB_CONFIG_KEY = "org.glassfish.mojarra.config.WebConfiguration";
@@ -128,9 +113,7 @@ public class WebConfiguration {
 
     private final Level loggingLevel;
 
-    private final Map<WebContextInitParameter, String> contextParameters = new EnumMap<>(WebContextInitParameter.class);
-
-    private final Map<WebContextInitParameter, Map<String, String>> facesConfigParameters = new EnumMap<>(WebContextInitParameter.class);
+    private final Map<String, Map<String, String>> facesConfigParameters = new HashMap<>();
 
     private final Map<WebEnvironmentEntry, String> envEntries = new EnumMap<>(WebEnvironmentEntry.class);
 
@@ -163,7 +146,6 @@ public class WebConfiguration {
         logEnvironmentEntries();
 
         processContextParams();
-        processInitParameters();
 
         processDeprecatedParameters();
         warnAboutUnrecognizedParameters();
@@ -196,10 +178,6 @@ public class WebConfiguration {
             recognized.addAll(namesOf(param));
         }
 
-        for (WebContextInitParameter param : WebContextInitParameter.values()) {
-            recognized.add(param.getQualifiedName());
-        }
-
         setParams.stream()
                  .filter(name -> name.startsWith(CURRENT_PARAM_PREFIX) && !recognized.contains(name))
                  .sorted()
@@ -228,25 +206,10 @@ public class WebConfiguration {
      * </p>
      *
      * <p>
-     * This resolves the tri-state itself rather than through {@link #isOptionEnabled(WebContextInitParameter, boolean)},
-     * because it runs before the parameters that one reads are populated.
      * </p>
      */
     private Level resolveLoggingLevel() {
-        Level derived = projectStage == ProjectStage.Production ? Level.FINE : Level.INFO;
-        String value = getRawInitParameter(WebContextInitParameter.DisplayConfiguration.getQualifiedName());
-
-        if (value == null || AUTO.equalsIgnoreCase(value)) {
-            return derived;
-        }
-
-        if (!ALLOWABLE_BOOLEANS.matcher(value).matches()) {
-            LOGGER.log(Level.WARNING, "faces.config.webconfig.boolconfig.invalidvalue", new Object[] { getContextName(), value,
-                    WebContextInitParameter.DisplayConfiguration.getQualifiedName(), "true|false|" + AUTO, AUTO });
-            return derived;
-        }
-
-        return Boolean.parseBoolean(value) ? Level.INFO : Level.FINE;
+        return resolve(MojarraContextParam.DISPLAY_CONFIGURATION) == Boolean.TRUE ? Level.INFO : Level.FINE;
     }
 
     /**
@@ -255,16 +218,6 @@ public class WebConfiguration {
      * parameters does later. This exists because the level at which that pass reports has to be known before it runs.
      * </p>
      */
-    private String getRawInitParameter(String qualifiedName) {
-        String value = servletContext.getInitParameter(qualifiedName);
-
-        if (value == null) {
-            value = servletContext.getInitParameter(LEGACY_PARAM_PREFIX + qualifiedName.substring(CURRENT_PARAM_PREFIX.length()));
-        }
-
-        return value == null ? null : value.trim();
-    }
-
     /**
      * <p>
      * Resolves the project stage from its JNDI environment entry, falling back to the context parameter, which is what
@@ -362,14 +315,6 @@ public class WebConfiguration {
      * @param param the parameter of interest
      * @return the value of the specified parameter
      */
-    public String getOptionValue(WebContextInitParameter param) {
-        return contextParameters.get(param);
-    }
-
-    public void setOptionValue(WebContextInitParameter param, String value) {
-        contextParameters.put(param, value);
-    }
-
     /**
      * <p>
      * Overrides what a parameter resolved to, for the one setting which is not expressible as a context parameter:
@@ -391,12 +336,12 @@ public class WebConfiguration {
         return faceletsConfig;
     }
 
-    public Map<String, String> getFacesConfigOptionValue(WebContextInitParameter param, boolean create) {
-        Map<String, String> result = facesConfigParameters.get(param);
+    public Map<String, String> getFacesConfigOptionValue(String name, boolean create) {
+        Map<String, String> result = facesConfigParameters.get(name);
         if (result == null) {
             if (create) {
                 result = new ConcurrentHashMap<>(3);
-                facesConfigParameters.put(param, result);
+                facesConfigParameters.put(name, result);
             } else {
                 result = emptyMap();
             }
@@ -405,9 +350,15 @@ public class WebConfiguration {
         return result;
     }
 
-    public Map<String, String> getFacesConfigOptionValue(WebContextInitParameter param) {
-        return getFacesConfigOptionValue(param, false);
+    public Map<String, String> getFacesConfigOptionValue(String name) {
+        return getFacesConfigOptionValue(name, false);
     }
+
+    /**
+     * The one <code>faces-config.xml</code> supplied mapping, which is not a context parameter and only ever needed a
+     * key.
+     */
+    public static final String FACELETS_PROCESSING_FILE_EXTENSION_PROCESS_AS = "faceletsProcessingFileExtensionProcessAs";
 
     /**
      * Obtain the value of the specified env-entry
@@ -417,26 +368,6 @@ public class WebConfiguration {
      */
     public String getEnvironmentEntry(WebEnvironmentEntry entry) {
         return envEntries.get(entry);
-    }
-
-    /**
-     * @param param the init parameter of interest
-     * @return <code>true</code> if the parameter was explicitly set, otherwise, <code>false</code>
-     */
-    public boolean isSet(WebContextInitParameter param) {
-        return isSet(param.getQualifiedName());
-    }
-
-    public void overrideContextInitParameter(WebContextInitParameter param, String value) {
-        if (param == null || value == null || value.length() == 0) {
-            return;
-        }
-
-        value = value.trim();
-        String oldVal = contextParameters.put(param, value);
-        if (oldVal != null && LOGGER.isLoggable(FINE) && !oldVal.equals(value)) {
-            LOGGER.log(FINE, "Overriding init parameter {0}.  Changing from {1} to {2}.", new Object[] { param.getQualifiedName(), oldVal, value });
-        }
     }
 
     /**
@@ -454,14 +385,11 @@ public class WebConfiguration {
      * @return the attribute value.
      */
     public String getViewStateAutocomplete() {
-        String value = getOptionValue(WebContextInitParameter.ViewStateAutocomplete);
-
-        if (!isSet(WebContextInitParameter.ViewStateAutocomplete.getQualifiedName())
-                && Boolean.TRUE.equals(getValue(MojarraContextParam.AUTO_COMPLETE_OFF_ON_VIEW_STATE))) {
-            value = "off";
+        if (!isSet(MojarraContextParam.VIEW_STATE_AUTOCOMPLETE) && isEnabled(MojarraContextParam.AUTO_COMPLETE_OFF_ON_VIEW_STATE)) {
+            return "off";
         }
 
-        return value;
+        return getValue(MojarraContextParam.VIEW_STATE_AUTOCOMPLETE);
     }
 
     /**
@@ -623,7 +551,7 @@ public class WebConfiguration {
      * @return whether the timestamp is cached.
      */
     public boolean isResourceModificationTimestampCached() {
-        return isOptionEnabled(WebContextInitParameter.CacheResourceModificationTimestamp, projectStage != ProjectStage.Development);
+        return isEnabled(MojarraContextParam.CACHE_RESOURCE_MODIFICATION_TIMESTAMP);
     }
 
     /**
@@ -635,19 +563,7 @@ public class WebConfiguration {
      * @return the period in minutes.
      */
     public long getResourceUpdateCheckPeriod() {
-        String value = getOptionValue(WebContextInitParameter.ResourceUpdateCheckPeriod);
-        long whenAuto = projectStage == ProjectStage.Development ? RESOURCE_UPDATE_CHECK_PERIOD_IN_DEVELOPMENT : -1;
-
-        if (value == null || AUTO.equalsIgnoreCase(value.trim())) {
-            return whenAuto;
-        }
-
-        try {
-            return Long.parseLong(value.trim());
-        } catch (NumberFormatException e) {
-            warnAboutUnusableValue(WebContextInitParameter.ResourceUpdateCheckPeriod, value, "a number or " + AUTO);
-            return whenAuto;
-        }
+        return this.<Integer>getValue(MojarraContextParam.RESOURCE_UPDATE_CHECK_PERIOD);
     }
 
     /**
@@ -661,38 +577,10 @@ public class WebConfiguration {
      * @param whenAuto what <code>auto</code> means for it.
      * @return whether the option is enabled.
      */
-    public boolean isOptionEnabled(WebContextInitParameter param, boolean whenAuto) {
-        String value = getTriStateValue(param);
-
-        return value == null ? whenAuto : Boolean.parseBoolean(value);
-    }
-
     /**
      * @return the trimmed value of a tri-state parameter, or <code>null</code> when it says <code>auto</code> or
      * says something which cannot be used, in which case that is reported first.
      */
-    private String getTriStateValue(WebContextInitParameter param) {
-        String value = getOptionValue(param);
-
-        if (value == null || AUTO.equalsIgnoreCase(value.trim())) {
-            return null;
-        }
-
-        value = value.trim();
-
-        if (!ALLOWABLE_BOOLEANS.matcher(value).matches()) {
-            warnAboutUnusableValue(param, value, "true|false|" + AUTO);
-            return null;
-        }
-
-        return value;
-    }
-
-    private void warnAboutUnusableValue(WebContextInitParameter param, String value, String allowed) {
-        LOGGER.log(Level.WARNING, "faces.config.webconfig.boolconfig.invalidvalue",
-                new Object[] { getContextName(), value, param.getQualifiedName(), allowed, AUTO });
-    }
-
     /**
      * @return the name every message about this configuration reports the application under.
      */
@@ -867,23 +755,11 @@ public class WebConfiguration {
             warnAboutDeprecatedParameter(param.getName(), param.getAlternateName());
             MojarraContextParam alternate = MojarraContextParam.of(param.getAlternateName());
 
-            if (alternate != null && !isSet(alternate)) {
+            if (alternate != null && alternate.getType() == param.getType() && !isSet(alternate)) {
                 resolvedValues.put(alternate, resolvedValues.get(param));
             }
         }
 
-        for (WebContextInitParameter param : WebContextInitParameter.values()) {
-            if (!param.isDeprecated() || !isSet(param.getQualifiedName())) {
-                continue;
-            }
-
-            WebContextInitParameter alternate = param.getAlternate();
-            warnAboutDeprecatedParameter(param.getQualifiedName(), alternate == null ? null : alternate.getQualifiedName());
-
-            if (alternate != null && !isSet(alternate.getQualifiedName())) {
-                contextParameters.put(alternate, contextParameters.get(param));
-            }
-        }
 
     }
 
@@ -925,21 +801,6 @@ public class WebConfiguration {
      * Returns the init parameter value for the given qualified name, falling back to the legacy {@code com.sun.faces.*} equivalent
      * if the current {@code org.glassfish.mojarra.*} name is not set. Logs a deprecation warning when the legacy name is used.
      */
-    private String getInitParameter(String qualifiedName) {
-        String value = servletContext.getInitParameter(qualifiedName);
-
-        if (value == null && qualifiedName.startsWith(CURRENT_PARAM_PREFIX)) {
-            String legacyName = LEGACY_PARAM_PREFIX + qualifiedName.substring(CURRENT_PARAM_PREFIX.length());
-            value = servletContext.getInitParameter(legacyName);
-
-            if (value != null && LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.log(Level.WARNING, "faces.config.webconfig.param.deprecated", new Object[] { getContextName(), legacyName, qualifiedName });
-            }
-        }
-
-        return value;
-    }
-
     /**
      * @param name the param name
      * @return <code>true</code> if the name was explicitly specified
@@ -954,26 +815,6 @@ public class WebConfiguration {
      * </p>
      *
      */
-    private void processInitParameters() {
-
-        for (WebContextInitParameter param : WebContextInitParameter.values()) {
-            String value = getInitParameter(param.getQualifiedName());
-
-            if (value == null || value.isEmpty()) {
-                value = param.getDefaultValue();
-            }
-            if (value == null || value.isEmpty()) {
-                continue;
-            }
-
-            if (LOGGER.isLoggable(loggingLevel)) {
-                LOGGER.log(loggingLevel, "faces.config.webconfig.configinfo", new Object[] { getContextName(), param.getQualifiedName(), value });
-            }
-            contextParameters.put(param, value);
-        }
-
-    }
-
     /**
      * <p>
      * Process all JNDI entries.
@@ -1025,86 +866,6 @@ public class WebConfiguration {
 
     /**
      * <p>
-     * An <code>enum</code> of all non-boolean context initalization parameters recognized by the implementation.
-     * </p>
-     */
-    public enum WebContextInitParameter {
-
-        NumberOfStatefulPagesPerSession("org.glassfish.mojarra.numberOfStatefulPagesPerSession", "15"),
-        NumberOfViewStatesPerStatefulPage("org.glassfish.mojarra.numberOfViewStatesPerStatefulPage", "15"),
-        NumberOfLogicalViewsDeprecated("org.glassfish.mojarra.numberOfLogicalViews", "15", NumberOfStatefulPagesPerSession),
-        NumberOfViewsInSessionDeprecated("org.glassfish.mojarra.numberOfViewsInSession", "15", NumberOfViewStatesPerStatefulPage),
-        NumberOfActiveViewMaps("org.glassfish.mojarra.numberOfActiveViewMaps", "25"),
-        NumberOfConcurrentFlashUsers("org.glassfish.mojarra.numberOfConcurrentFlashUsers", "5000"),
-        NumberOfFlashesBetweenFlashReapings("org.glassfish.mojarra.numberOfFlashesBetweenFlashReapings", "5000"),
-        InjectionProviderClass("org.glassfish.mojarra.injectionProvider", ""),
-        SerializationProviderClass("org.glassfish.mojarra.serializationProvider", ""),
-        ClientStateWriteBufferSize("org.glassfish.mojarra.clientStateWriteBufferSize", "8192"),
-        ResourceBufferSize("org.glassfish.mojarra.resourceBufferSize", "2048"),
-        ClientStateTimeout("org.glassfish.mojarra.clientStateTimeout", ""),
-        DefaultResourceMaxAge("org.glassfish.mojarra.defaultResourceMaxAge", "604800000"), // 7 days
-        ResourceUpdateCheckPeriod("org.glassfish.mojarra.resourceUpdateCheckPeriod", AUTO), // in minutes; -1 disables the check, auto leaves it to the stage
-        CacheResourceModificationTimestamp("org.glassfish.mojarra.cacheResourceModificationTimestamp", AUTO), // true|false|auto
-        CompressableMimeTypes("org.glassfish.mojarra.compressableMimeTypes", ""),
-        DisableUnicodeEscaping("org.glassfish.mojarra.disableUnicodeEscaping", "auto"),
-        DisableIdUniquenessCheck("org.glassfish.mojarra.disableIdUniquenessCheck", AUTO), // true|false|auto
-        DisplayConfiguration("org.glassfish.mojarra.displayConfiguration", AUTO), // true|false|auto
-        DuplicateJARPattern("org.glassfish.mojarra.duplicateJARPattern", ""),
-        AllowedHttpMethods("org.glassfish.mojarra.allowedHttpMethods", ""), // white space separated, upper case; * means allow all
-        ViewStateAutocomplete("org.glassfish.mojarra.viewStateAutocomplete", "one-time-code"),
-
-        FaceletsProcessingFileExtensionProcessAs("", ""),
-        WebsocketEndpointIdleTimeout("org.glassfish.mojarra.websocketEndpointIdleTimeout", "0"), // in milliseconds; 0 means no timeout
-        WebsocketMaxSessionsPerChannel("org.glassfish.mojarra.websocketMaxSessionsPerChannel", ""), // empty means unbounded
-        ;
-
-        private final String qualifiedName;
-        private final String defaultValue;
-        private final WebContextInitParameter alternate;
-        private final boolean deprecated;
-
-        public String getQualifiedName() {
-            return qualifiedName;
-        }
-
-        public String getDefaultValue() {
-            return defaultValue;
-        }
-
-        /**
-         * @return the parameter which replaces this one, or <code>null</code> when there is no replacement.
-         */
-        public WebContextInitParameter getAlternate() {
-            return alternate;
-        }
-
-        public boolean isDeprecated() {
-            return deprecated;
-        }
-
-        WebContextInitParameter(String qualifiedName, String defaultValue) {
-            this(qualifiedName, defaultValue, null, false);
-        }
-
-        WebContextInitParameter(String qualifiedName, String defaultValue, WebContextInitParameter alternate) {
-            this(qualifiedName, defaultValue, alternate, true);
-        }
-
-        WebContextInitParameter(String qualifiedName, String defaultValue, boolean deprecated) {
-            this(qualifiedName, defaultValue, null, deprecated);
-        }
-
-        private WebContextInitParameter(String qualifiedName, String defaultValue, WebContextInitParameter alternate, boolean deprecated) {
-            this.qualifiedName = qualifiedName;
-            this.defaultValue = defaultValue;
-            this.alternate = alternate;
-            this.deprecated = deprecated;
-        }
-
-    }
-
-    /**
-     * <p>
      * An <code>enum</code> of all environment entries (specified in the web.xml) recognized by the implemenetation.
      * </p>
      */
@@ -1135,31 +896,6 @@ public class WebConfiguration {
 
         }
 
-    }
-
-    /**
-     * <p>
-     * An <code>enum</code> of all possible values for the <code>disableUnicodeEscaping</code> configuration parameter.
-     * </p>
-     */
-    public enum DisableUnicodeEscaping {
-        True("true"), False("false"), Auto("auto");
-
-        private final String value;
-
-        DisableUnicodeEscaping(String value) {
-            this.value = value;
-        }
-
-        public static DisableUnicodeEscaping getByValue(String value) {
-            for (DisableUnicodeEscaping disableUnicodeEscaping : DisableUnicodeEscaping.values()) {
-                if (disableUnicodeEscaping.value.equals(value)) {
-                    return disableUnicodeEscaping;
-                }
-            }
-
-            return null;
-        }
     }
 
 } // END WebConfiguration

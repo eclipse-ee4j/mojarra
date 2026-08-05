@@ -28,7 +28,7 @@ import jakarta.faces.context.ExternalContext;
 
 import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.config.WebConfiguration;
-import org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter;
+import org.glassfish.mojarra.context.MojarraContextParam;
 import org.glassfish.mojarra.renderkit.ApplicationObjectInputStream;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.Util;
@@ -128,7 +128,7 @@ public class SerializationProviderFactory {
 
         WebConfiguration webConfig = WebConfiguration.getInstance(extContext);
 
-        String provider = webConfig.getOptionValue(WebContextInitParameter.SerializationProviderClass);
+        String provider = webConfig.getValue(MojarraContextParam.SERIALIZATION_PROVIDER);
 
         if (provider != null) {
             return provider;

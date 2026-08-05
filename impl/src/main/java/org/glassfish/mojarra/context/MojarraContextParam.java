@@ -18,12 +18,15 @@ package org.glassfish.mojarra.context;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
+import static org.glassfish.mojarra.RIConstants.EMPTY_STRING_ARRAY;
 
+import java.util.Optional;
 import java.util.function.Function;
 
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.context.FacesContext;
 
+import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.config.WebConfiguration;
 
 /**
@@ -56,7 +59,29 @@ public enum MojarraContextParam implements ContextParam {
     @Deprecated(since = "5.0", forRemoval = true)
     AUTO_COMPLETE_OFF_ON_VIEW_STATE("autoCompleteOffOnViewState", false, Deprecation.replacedBy("viewStateAutocomplete")),
 
+    ALLOWED_HTTP_METHODS("allowedHttpMethods", EMPTY_STRING_ARRAY, Separator.SPACE),
+
+    /**
+     * Whether the last modified timestamp of a resource is remembered rather than read on every request, which only
+     * Development has a reason not to do.
+     */
+    CACHE_RESOURCE_MODIFICATION_TIMESTAMP("cacheResourceModificationTimestamp", true, projectStage -> projectStage != ProjectStage.Development),
+
+    /**
+     * How long a client side view stays valid, in seconds, where a negative value means it never expires.
+     */
+    CLIENT_STATE_TIMEOUT("clientStateTimeout", -1),
+
+    CLIENT_STATE_WRITE_BUFFER_SIZE("clientStateWriteBufferSize", 8192),
+
+    COMPRESSABLE_MIME_TYPES("compressableMimeTypes", EMPTY_STRING_ARRAY, Separator.COMMA),
+
     COMPRESS_VIEW_STATE("compressViewState", true),
+
+    /**
+     * How long a resource may be cached by the client, in milliseconds.
+     */
+    DEFAULT_RESOURCE_MAX_AGE("defaultResourceMaxAge", 604800000),
 
     /**
      * @deprecated Replaced by {@link #ENABLE_CLIENT_STATE_DEBUGGING}, which is what it was ever used for.
@@ -64,9 +89,23 @@ public enum MojarraContextParam implements ContextParam {
     @Deprecated(since = "5.0", forRemoval = true)
     DISABLE_CLIENT_STATE_ENCRYPTION("disableClientStateEncryption", false, Deprecation.replacedBy("enableClientStateDebugging")),
 
+    /**
+     * Whether the duplicate component id check is skipped, which only Development has a reason to pay for.
+     */
+    DISABLE_ID_UNIQUENESS_CHECK("disableIdUniquenessCheck", true, projectStage -> projectStage != ProjectStage.Development),
+
     DISABLE_OPTIONAL_EL_RESOLVER("disableOptionalELResolver", false),
 
+    DISABLE_UNICODE_ESCAPING("disableUnicodeEscaping", Tristate.AUTO),
+
     DISALLOW_DOCTYPE_DECL("disallowDoctypeDecl", false),
+
+    /**
+     * Whether every recognized parameter is reported at startup, which outside Production is worth the log lines.
+     */
+    DISPLAY_CONFIGURATION("displayConfiguration", false, projectStage -> projectStage != ProjectStage.Production),
+
+    DUPLICATE_JAR_PATTERN("duplicateJARPattern", ""),
 
     ENABLE_CLIENT_STATE_DEBUGGING("enableClientStateDebugging", false),
 
@@ -91,21 +130,67 @@ public enum MojarraContextParam implements ContextParam {
 
     GENERATE_UNIQUE_SERVER_STATE_IDS("generateUniqueServerStateIds", true),
 
+    INJECTION_PROVIDER("injectionProvider", ""),
+
+    NUMBER_OF_ACTIVE_VIEW_MAPS("numberOfActiveViewMaps", 25),
+
+    NUMBER_OF_CONCURRENT_FLASH_USERS("numberOfConcurrentFlashUsers", 5000),
+
+    NUMBER_OF_FLASHES_BETWEEN_FLASH_REAPINGS("numberOfFlashesBetweenFlashReapings", 5000),
+
+    /**
+     * @deprecated Renamed to {@code org.glassfish.mojarra.numberOfStatefulPagesPerSession}, since the old name said
+     * the opposite of what it sized.
+     */
+    @Deprecated(since = "5.0", forRemoval = true)
+    NUMBER_OF_LOGICAL_VIEWS("numberOfLogicalViews", 15, Deprecation.replacedBy("numberOfStatefulPagesPerSession")),
+
+    NUMBER_OF_STATEFUL_PAGES_PER_SESSION("numberOfStatefulPagesPerSession", 15),
+
+    NUMBER_OF_VIEW_STATES_PER_STATEFUL_PAGE("numberOfViewStatesPerStatefulPage", 15),
+
+    /**
+     * @deprecated Renamed to {@code org.glassfish.mojarra.numberOfViewStatesPerStatefulPage}, since the old name said
+     * the opposite of what it sized.
+     */
+    @Deprecated(since = "5.0", forRemoval = true)
+    NUMBER_OF_VIEWS_IN_SESSION("numberOfViewsInSession", 15, Deprecation.replacedBy("numberOfViewStatesPerStatefulPage")),
+
     PREFER_XHTML("preferXHTML", false),
 
     REFRESH_TRANSIENT_BUILD_ON_PSS("refreshTransientBuildOnPSS", false),
 
     REGISTER_CONVERTER_PROPERTY_EDITORS("registerConverterPropertyEditors", false),
 
+    RESOURCE_BUFFER_SIZE("resourceBufferSize", 2048),
+
+    /**
+     * How many minutes apart a cached resource is checked for modification, where a negative value drops the check.
+     * Only Development has a reason to check at all.
+     */
+    RESOURCE_UPDATE_CHECK_PERIOD("resourceUpdateCheckPeriod", -1, projectStage -> projectStage == ProjectStage.Development ? 5 : -1),
+
     SEND_POWERED_BY_HEADER("sendPoweredByHeader", false),
 
+    SERIALIZATION_PROVIDER("serializationProvider", ""),
+
     USE_FACELETS_ID("useFaceletsID", false),
+
+    VIEW_STATE_AUTOCOMPLETE("viewStateAutocomplete", "one-time-code"),
+
+    /**
+     * How long a websocket may stay idle before it is closed, in milliseconds, where zero means it never is.
+     */
+    WEBSOCKET_ENDPOINT_IDLE_TIMEOUT("websocketEndpointIdleTimeout", 0),
+
+    /**
+     * How many sessions a websocket channel accepts, where {@link Integer#MAX_VALUE} means it is unbounded.
+     */
+    WEBSOCKET_MAX_SESSIONS_PER_CHANNEL("websocketMaxSessionsPerChannel", Integer.MAX_VALUE),
 
     WRITE_STATE_AT_FORM_END("writeStateAtFormEnd", true),
 
     ;
-
-    private static final String PREFIX = "org.glassfish.mojarra.";
 
     private final String name;
     private final Function<ProjectStage, ?> defaultValueSupplier;
@@ -113,6 +198,7 @@ public enum MojarraContextParam implements ContextParam {
     private final Class<?> type;
     private final boolean deprecated;
     private final String alternateName;
+    private final boolean stageDerived;
 
     private <T> MojarraContextParam(String name, T defaultValue) {
         this(name, defaultValue, null, null, null);
@@ -140,13 +226,29 @@ public enum MojarraContextParam implements ContextParam {
         this.type = defaultValue.getClass();
         this.deprecated = deprecation != null;
         this.alternateName = deprecation == null || deprecation.alternateName() == null ? null : qualify(deprecation.alternateName());
+        this.stageDerived = defaultValueSupplier != null;
+    }
+
+    /**
+     * <p>
+     * A parameter whose default is derived from the project stage also accepts {@link Tristate#AUTO}, which asks for that
+     * default rather than pinning a value, and is what such a parameter reads as when it is left alone.
+     * </p>
+     */
+    @Override
+    public <T> Optional<T> toValue(String value) {
+        if (stageDerived && Tristate.AUTO.name().equalsIgnoreCase(value)) {
+            return Optional.empty();
+        }
+
+        return ContextParam.super.toValue(value);
     }
 
     /**
      * Declared unqualified, because the prefix is the same for every one of them and repeating it only invites a typo.
      */
     private static String qualify(String name) {
-        return PREFIX + name;
+        return RIConstants.RI_PREFIX + name;
     }
 
     @Override

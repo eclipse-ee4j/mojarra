@@ -19,8 +19,8 @@ package org.glassfish.mojarra.config;
 import static java.util.logging.Level.WARNING;
 import static org.glassfish.mojarra.context.MojarraContextParam.ALLOW_TEXT_CHILDREN;
 import static org.glassfish.mojarra.context.MojarraContextParam.COMPRESS_VIEW_STATE;
-import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.NumberOfLogicalViewsDeprecated;
-import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.NumberOfStatefulPagesPerSession;
+import static org.glassfish.mojarra.context.MojarraContextParam.NUMBER_OF_LOGICAL_VIEWS;
+import static org.glassfish.mojarra.context.MojarraContextParam.NUMBER_OF_STATEFUL_PAGES_PER_SESSION;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -30,6 +30,7 @@ import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import org.glassfish.mojarra.context.MojarraContextParam;
 import org.glassfish.mojarra.mock.MockServletContext;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.junit.jupiter.api.AfterEach;
@@ -77,6 +78,23 @@ class DeprecatedContextParamTest {
      * The warning is not gated on the project stage, because it announces a change in the runtime rather than a mistake
      * in the application.
      */
+    /**
+     * A replacement is named rather than pointed at, because an enum constant may not refer to one declared after it
+     * and the constants are in alphabetical order, so this is what a compiler would otherwise have caught.
+     */
+    @Test
+    void everyReplacementNamesADeclaredParameter() {
+        List<String> dangling = new ArrayList<>();
+
+        for (MojarraContextParam param : MojarraContextParam.values()) {
+            if (param.getAlternateName() != null && MojarraContextParam.of(param.getAlternateName()) == null) {
+                dangling.add(param.getName() + " names " + param.getAlternateName());
+            }
+        }
+
+        assertTrue(dangling.isEmpty(), () -> "Replacements which are not declared parameters: " + dangling);
+    }
+
     @Test
     void aDeprecatedParameterWarnsWhenSet() {
         MockServletContext servletContext = new MockServletContext();
@@ -118,12 +136,12 @@ class DeprecatedContextParamTest {
     @Test
     void aRenamedParameterHandsItsValueToItsReplacement() {
         MockServletContext servletContext = new MockServletContext();
-        servletContext.addInitParameter(NumberOfLogicalViewsDeprecated.getQualifiedName(), "3");
+        servletContext.addInitParameter(NUMBER_OF_LOGICAL_VIEWS.getName(), "3");
 
         WebConfiguration webConfiguration = WebConfiguration.getInstance(servletContext);
 
-        assertEquals("3", webConfiguration.getOptionValue(NumberOfStatefulPagesPerSession));
-        assertEquals(List.of(NumberOfLogicalViewsDeprecated.getQualifiedName()), replacedParameterNames());
+        assertEquals(3, (int) webConfiguration.getValue(NUMBER_OF_STATEFUL_PAGES_PER_SESSION));
+        assertEquals(List.of(NUMBER_OF_LOGICAL_VIEWS.getName()), replacedParameterNames());
     }
 
     /**
@@ -132,10 +150,10 @@ class DeprecatedContextParamTest {
     @Test
     void theReplacementWinsWhenBothAreSet() {
         MockServletContext servletContext = new MockServletContext();
-        servletContext.addInitParameter(NumberOfLogicalViewsDeprecated.getQualifiedName(), "3");
-        servletContext.addInitParameter(NumberOfStatefulPagesPerSession.getQualifiedName(), "7");
+        servletContext.addInitParameter(NUMBER_OF_LOGICAL_VIEWS.getName(), "3");
+        servletContext.addInitParameter(NUMBER_OF_STATEFUL_PAGES_PER_SESSION.getName(), "7");
 
-        assertEquals("7", WebConfiguration.getInstance(servletContext).getOptionValue(NumberOfStatefulPagesPerSession));
+        assertEquals(7, (int) WebConfiguration.getInstance(servletContext).getValue(NUMBER_OF_STATEFUL_PAGES_PER_SESSION));
     }
 
     private List<String> replacedParameterNames() {

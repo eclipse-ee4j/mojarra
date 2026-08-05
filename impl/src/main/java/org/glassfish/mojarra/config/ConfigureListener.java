@@ -29,8 +29,8 @@ import static org.glassfish.mojarra.RIConstants.FACES_SERVLET_REGISTRATION;
 import static org.glassfish.mojarra.RIConstants.MOJARRA_VERSION;
 import static org.glassfish.mojarra.context.MojarraContextParam.ENABLE_DISTRIBUTABLE;
 import static org.glassfish.mojarra.context.MojarraContextParam.FORCE_LOAD_CONFIGURATION;
-import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.WebsocketEndpointIdleTimeout;
-import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.WebsocketMaxSessionsPerChannel;
+import static org.glassfish.mojarra.context.MojarraContextParam.WEBSOCKET_ENDPOINT_IDLE_TIMEOUT;
+import static org.glassfish.mojarra.context.MojarraContextParam.WEBSOCKET_MAX_SESSIONS_PER_CHANNEL;
 import static org.glassfish.mojarra.context.SessionMap.createMutex;
 import static org.glassfish.mojarra.context.SessionMap.removeMutex;
 import static org.glassfish.mojarra.push.WebsocketEndpoint.URI_TEMPLATE;
@@ -280,18 +280,18 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
     }
 
     private static long getWebsocketEndpointIdleTimeout(WebConfiguration webConfig) {
-        String value = webConfig.getOptionValue(WebsocketEndpointIdleTimeout);
+        String value = webConfig.getValue(WEBSOCKET_ENDPOINT_IDLE_TIMEOUT);
         long idleTimeout = toLong(value, -1); // A non-numeric value maps to -1 because 0 is a valid value meaning no timeout.
 
         if (idleTimeout < 0) {
-            throw new IllegalArgumentException(format(ERROR_INVALID_WEBSOCKET_ENDPOINT_IDLE_TIMEOUT, WebsocketEndpointIdleTimeout.getQualifiedName(), value));
+            throw new IllegalArgumentException(format(ERROR_INVALID_WEBSOCKET_ENDPOINT_IDLE_TIMEOUT, WEBSOCKET_ENDPOINT_IDLE_TIMEOUT.getName(), value));
         }
 
         return idleTimeout;
     }
 
     private static int getWebsocketMaxSessionsPerChannel(WebConfiguration webConfig) {
-        String value = webConfig.getOptionValue(WebsocketMaxSessionsPerChannel);
+        String value = webConfig.getValue(WEBSOCKET_MAX_SESSIONS_PER_CHANNEL);
 
         if (value == null || value.isEmpty()) {
             return Integer.MAX_VALUE;
@@ -300,7 +300,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
         long maxSessionsPerChannel = toLong(value, 0);
 
         if (maxSessionsPerChannel < 1 || maxSessionsPerChannel > Integer.MAX_VALUE) {
-            throw new IllegalArgumentException(format(ERROR_INVALID_WEBSOCKET_MAX_SESSIONS_PER_CHANNEL, WebsocketMaxSessionsPerChannel.getQualifiedName(), value));
+            throw new IllegalArgumentException(format(ERROR_INVALID_WEBSOCKET_MAX_SESSIONS_PER_CHANNEL, WEBSOCKET_MAX_SESSIONS_PER_CHANNEL.getName(), value));
         }
 
         return (int) maxSessionsPerChannel;

@@ -170,6 +170,20 @@ public interface ContextParam {
 
     /**
      * <p>
+     * A three valued switch, for a parameter where {@link #AUTO} is a behaviour of its own rather than a request for
+     * the default. A parameter whose <code>auto</code> only asks for a stage derived default is plain
+     * {@link Boolean} and says so through its default instead.
+     * </p>
+     */
+    enum Tristate {
+
+        AUTO,
+        FALSE,
+        TRUE;
+    }
+
+    /**
+     * <p>
      * What separates the entries of a {@link String}{@code []} valued parameter.
      * </p>
      */

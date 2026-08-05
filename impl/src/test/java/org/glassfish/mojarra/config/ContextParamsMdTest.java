@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -34,21 +33,20 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import org.glassfish.mojarra.context.MojarraContextParam;
-import org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter;
 import jakarta.faces.application.ProjectStage;
 
 import org.glassfish.mojarra.context.ContextParam;
 import org.glassfish.mojarra.context.FacesContextParam;
+import org.glassfish.mojarra.context.MojarraContextParam;
 import org.junit.jupiter.api.Test;
 
 /**
  * Validates <code>CONTEXT-PARAMS.md</code> in the repository root against the sources, so that a context parameter
  * cannot be added, removed, renamed or given another default value without that page being updated.
  * <p>
- * The parameters recognized by this implementation are collected from {@link WebContextInitParameter},
- * {@link MojarraContextParam} and {@link FacesContextParam}, plus a scan of the
- * main sources for <code>getInitParameter()</code> call sites which read a parameter declared outside of those enums.
+ * The parameters recognized by this implementation are collected from {@link FacesContextParam} and
+ * {@link MojarraContextParam}, plus a scan of the main sources for <code>getInitParameter()</code> call sites which
+ * read a parameter declared outside of those enums.
 
  * <p>
  * This test only verifies, it never writes the page. When it fails, edit the page by hand.
@@ -72,9 +70,8 @@ class ContextParamsMdTest {
     private static final Pattern IDENTIFIER = Pattern.compile("(?:\\w+\\.)*(\\w+)");
 
     /**
-     * A context parameter as declared by the sources. A <code>null</code> type or default value means the source
-     * declares none, in which case the documented cell is not validated. The type of a {@link WebContextInitParameter}
-     * is always <code>String</code> and therefore says nothing about the shape of the value it accepts.
+     * A context parameter as declared by the sources. A <code>null</code> default value means the source derives it
+     * from the project stage, in which case the documented cell is not validated.
      */
     private static final class Param {
 
@@ -219,10 +216,6 @@ class ContextParamsMdTest {
     private static Map<String, Param> params() {
         Map<String, Param> params = new LinkedHashMap<>();
 
-        for (WebContextInitParameter param : WebContextInitParameter.values()) {
-            put(params, new Param(param.getQualifiedName(), null, param.getDefaultValue(), alternateOf(param), isDeprecated(param)));
-        }
-
         for (ContextParam param : contextParams()) {
             put(params, new Param(param.getName(), typeOf(param.getType()), declaredDefaultOf(param), param.getAlternateName(),
                     param.isDeprecated()));
@@ -262,43 +255,6 @@ class ContextParamsMdTest {
 
     private static String typeOf(Class<?> type) {
         return type == Boolean.class ? "boolean" : type == Integer.class ? "int" : type.getSimpleName();
-    }
-
-    /**
-     * The deprecation bookkeeping is optional, an enum which does not declare it simply has no deprecated entries.
-     */
-    private static String alternateOf(Enum<?> param) {
-        Object alternate = fieldValue(param, "alternate");
-
-        if (alternate == null || !Boolean.TRUE.equals(fieldValue(param, "deprecated"))) {
-            return null;
-        }
-
-        return String.valueOf(invoke(alternate, "getQualifiedName"));
-    }
-
-    private static boolean isDeprecated(Enum<?> param) {
-        return Boolean.TRUE.equals(fieldValue(param, "deprecated"));
-    }
-
-    private static Object fieldValue(Enum<?> param, String name) {
-        try {
-            Field field = param.getDeclaringClass().getDeclaredField(name);
-            field.setAccessible(true);
-            return field.get(param);
-        } catch (NoSuchFieldException e) {
-            return null;
-        } catch (ReflectiveOperationException e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
-    private static Object invoke(Object param, String methodName) {
-        try {
-            return ((Enum<?>) param).getDeclaringClass().getMethod(methodName).invoke(param);
-        } catch (ReflectiveOperationException e) {
-            throw new IllegalStateException(e);
-        }
     }
 
     /**

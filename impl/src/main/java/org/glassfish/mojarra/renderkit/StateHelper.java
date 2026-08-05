@@ -47,7 +47,7 @@ public abstract class StateHelper {
     /**
      * <p>
      * Factory for serialization streams. These are pluggable via the
-     * WebConfiguration.WebContextInitParameter#SerializationProviderClass.
+     * MojarraContextParam#SERIALIZATION_PROVIDER.
      * </p>
      */
     protected SerializationProvider serialProvider;

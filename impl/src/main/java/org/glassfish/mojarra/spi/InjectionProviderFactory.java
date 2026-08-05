@@ -39,7 +39,7 @@ import jakarta.servlet.ServletContext;
 
 import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.config.WebConfiguration;
-import org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter;
+import org.glassfish.mojarra.context.MojarraContextParam;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.Util;
 import org.glassfish.mojarra.vendor.WebContainerInjectionProvider;
@@ -219,7 +219,7 @@ public class InjectionProviderFactory {
     private static String findProviderClass(ExternalContext extContext) {
 
         WebConfiguration webConfig = WebConfiguration.getInstance(extContext);
-        String provider = webConfig.getOptionValue(WebContextInitParameter.InjectionProviderClass);
+        String provider = webConfig.getValue(MojarraContextParam.INJECTION_PROVIDER);
 
         if (provider != null) {
             return provider;

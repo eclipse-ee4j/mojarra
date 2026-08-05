@@ -33,7 +33,7 @@ import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Level.WARNING;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Stream.concat;
-import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.AllowedHttpMethods;
+import static org.glassfish.mojarra.context.MojarraContextParam.ALLOWED_HTTP_METHODS;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -560,10 +560,8 @@ public final class FacesServletImpl implements Servlet {
         allowedUnknownHttpMethods = emptySet();
         allowedKnownHttpMethods = defaultAllowedHttpMethods;
 
-        String allowedHttpMethodsString = WebConfiguration.getInstance(servletConfig.getServletContext()).getOptionValue(AllowedHttpMethods);
-        if (allowedHttpMethodsString != null && !allowedHttpMethodsString.isEmpty()) {
-            String[] methods = allowedHttpMethodsString.split("\\s+");
-
+        String[] methods = WebConfiguration.getInstance(servletConfig.getServletContext()).getValue(ALLOWED_HTTP_METHODS);
+        if (methods.length > 0) {
             allowedUnknownHttpMethods = new HashSet<>(methods.length);
             List<String> allowedKnownHttpMethodsStringList = new ArrayList<>();
 

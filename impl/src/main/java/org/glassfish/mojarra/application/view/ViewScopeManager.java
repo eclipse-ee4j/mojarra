@@ -19,7 +19,7 @@ package org.glassfish.mojarra.application.view;
 import static java.util.logging.Level.FINEST;
 import static java.util.logging.Level.WARNING;
 import static org.glassfish.mojarra.context.MojarraContextParam.ENABLE_DISTRIBUTABLE;
-import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.NumberOfActiveViewMaps;
+import static org.glassfish.mojarra.context.MojarraContextParam.NUMBER_OF_ACTIVE_VIEW_MAPS;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -102,14 +102,14 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
         WebConfiguration config = WebConfiguration.getInstance(context.getExternalContext());
         distributable = config.isEnabled(ENABLE_DISTRIBUTABLE);
 
-        String numberOfActiveViewMapsAsString = config.getOptionValue(NumberOfActiveViewMaps);
+        String numberOfActiveViewMapsAsString = config.getValue(NUMBER_OF_ACTIVE_VIEW_MAPS);
         if (numberOfActiveViewMapsAsString != null) {
             try {
                 numberOfActiveViewMapsInWebXml = Integer.parseInt(numberOfActiveViewMapsAsString);
             }
             catch (NumberFormatException e) {
                 if (LOGGER.isLoggable(WARNING)) {
-                    LOGGER.log(WARNING, "Cannot parse " + NumberOfActiveViewMaps.getQualifiedName(), e);
+                    LOGGER.log(WARNING, "Cannot parse " + NUMBER_OF_ACTIVE_VIEW_MAPS.getName(), e);
                 }
             }
         }
@@ -311,7 +311,7 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
             size = numberOfActiveViewMapsInWebXml;
 
             if (size == null) {
-                size = Integer.parseInt(NumberOfActiveViewMaps.getDefaultValue());
+                size = NUMBER_OF_ACTIVE_VIEW_MAPS.getValue(facesContext);
             }
         }
 

@@ -96,6 +96,7 @@ class IdUniquenessCheckTest {
         when(servletContext.getContextPath()).thenReturn("/test");
         when(servletContext.getInitParameterNames()).thenAnswer(invocation -> enumeration(List.of(DISABLE_ID_UNIQUENESS_CHECK)));
         when(servletContext.getInitParameter(DISABLE_ID_UNIQUENESS_CHECK)).thenReturn("auto");
+        when(servletContext.getInitParameter(ProjectStage.PROJECT_STAGE_PARAM_NAME)).thenReturn(stage.name());
         when(servletContext.getAttribute(any())).thenAnswer(invocation -> attributes.get(invocation.<String>getArgument(0)));
         doAnswer(invocation -> attributes.put(invocation.getArgument(0), invocation.getArgument(1)))
                 .when(servletContext).setAttribute(any(), any());

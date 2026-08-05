@@ -21,7 +21,6 @@ import static org.glassfish.mojarra.util.Util.ensureLeadingSlash;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -41,6 +40,7 @@ import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 
 import org.glassfish.mojarra.config.WebConfiguration;
+import org.glassfish.mojarra.context.MojarraContextParam;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.Util;
 
@@ -98,8 +98,7 @@ public class ResourceManager {
 
     public ResourceManager(ResourceCache cache) {
         this.cache = cache;
-        Map<String, Object> throwAwayMap = new HashMap<>();
-        initCompressableTypes(throwAwayMap);
+        initCompressableTypes();
     }
 
     /**
@@ -110,7 +109,7 @@ public class ResourceManager {
      */
     public ResourceManager(Map<String, Object> appMap, ResourceCache cache) {
         this.cache = cache;
-        initCompressableTypes(appMap);
+        initCompressableTypes();
     }
 
     // ------------------------------------------------------ Public Methods
@@ -606,37 +605,32 @@ public class ResourceManager {
     /**
      * Init <code>compressableTypes</code> from the configuration.
      */
-    private void initCompressableTypes(Map<String, Object> appMap) {
+    private void initCompressableTypes() {
 
-        WebConfiguration config = WebConfiguration.getInstance();
-        String value = config.getOptionValue(WebConfiguration.WebContextInitParameter.CompressableMimeTypes);
-        if (value != null && value.length() > 0) {
-            String[] values = Util.split(appMap, value, ",");
-            if (values != null) {
-                for (String s : values) {
-                    String pattern = s.trim();
-                    if (!isPatternValid(pattern)) {
-                        continue;
-                    }
-                    if (pattern.endsWith("/*")) {
-                        pattern = pattern.substring(0, pattern.indexOf("/*"));
-                        pattern += "/[a-z0-9.-]*";
-                    }
-                    if (compressableTypes == null) {
-                        compressableTypes = new ArrayList<>(values.length);
-                    }
-                    try {
-                        compressableTypes.add(Pattern.compile(pattern));
-                    } catch (PatternSyntaxException pse) {
-                        if (LOGGER.isLoggable(Level.WARNING)) {
-                            // PENDING i18n
-                            LOGGER.log(Level.WARNING, "faces.resource.mime.type.configration.invalid", new Object[] { pattern, pse.getPattern() });
-                        }
-                    }
+        String[] values = WebConfiguration.getInstance().getValue(MojarraContextParam.COMPRESSABLE_MIME_TYPES);
+
+        for (String value : values) {
+            String pattern = value;
+
+            if (!isPatternValid(pattern)) {
+                continue;
+            }
+            if (pattern.endsWith("/*")) {
+                pattern = pattern.substring(0, pattern.indexOf("/*"));
+                pattern += "/[a-z0-9.-]*";
+            }
+            if (compressableTypes == null) {
+                compressableTypes = new ArrayList<>(values.length);
+            }
+            try {
+                compressableTypes.add(Pattern.compile(pattern));
+            } catch (PatternSyntaxException pse) {
+                if (LOGGER.isLoggable(Level.WARNING)) {
+                    // PENDING i18n
+                    LOGGER.log(Level.WARNING, "faces.resource.mime.type.configration.invalid", new Object[] { pattern, pse.getPattern() });
                 }
             }
         }
-
     }
 
     /**
