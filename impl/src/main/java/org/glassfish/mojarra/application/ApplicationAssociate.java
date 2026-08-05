@@ -300,7 +300,7 @@ public class ApplicationAssociate {
             String facesConfigVersion = getFacesConfigXmlVersion(context);
             context.getExternalContext().getApplicationMap().put(FACES_CONFIG_VERSION, facesConfigVersion);
 
-            if (FacesContextParam.AUTOMATIC_EXTENSIONLESS_MAPPING.isSet(context)) {
+            if (FacesContextParam.AUTOMATIC_EXTENSIONLESS_MAPPING.isEnabled(context)) {
                 getFacesServletRegistration(context)
                     .ifPresent(registration ->
                         viewHandler.getViews(context, "/", RETURN_AS_MINIMAL_IMPLICIT_OUTCOME)
@@ -641,7 +641,7 @@ public class ApplicationAssociate {
         loadDecorators(context, newCompiler);
 
         // Skip params?
-        newCompiler.setTrimmingComments(FacesContextParam.FACELETS_SKIP_COMMENTS.isSet(context));
+        newCompiler.setTrimmingComments(FacesContextParam.FACELETS_SKIP_COMMENTS.isEnabled(context));
 
         addTagLibraries(newCompiler);
 

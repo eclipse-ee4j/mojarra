@@ -205,7 +205,7 @@ public class FacesInitializer implements ServletContainerInitializer {
             return;
         }
 
-        if (!FacesContextParam.ENABLE_WEBSOCKET_ENDPOINT.isSet(facesContext)) {
+        if (!FacesContextParam.ENABLE_WEBSOCKET_ENDPOINT.isEnabled(facesContext)) {
             // Register websocket endpoint is not enabled
             return;
         }

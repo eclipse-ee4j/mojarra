@@ -24,21 +24,19 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import jakarta.faces.application.ProjectStage;
-import jakarta.faces.context.FacesContext;
 
 import org.glassfish.mojarra.RIConstants;
-import org.glassfish.mojarra.config.WebConfiguration;
 
 /**
  * <p class="changed_added_5_0">
  * Enumeration of all available {@code org.glassfish.mojarra.*} context parameters, which is every parameter this
  * implementation recognizes beyond the {@code jakarta.faces.*} ones declared by {@link FacesContextParam}.
- * {@link #getValue(FacesContext)} obtains the value of one.
+ * {@link #getValue(jakarta.faces.context.FacesContext)} obtains the value of one.
  * </p>
  *
  * <p>
  * Each one also answers to the {@code com.sun.faces.*} prefix it carried before 5.0, which
- * {@link WebConfiguration} resolves and reports. What each parameter does, and since when, is documented in
+ * {@link org.glassfish.mojarra.config.WebConfiguration} resolves and reports. What each parameter does, and since when, is documented in
  * {@code CONTEXT-PARAMS.md} in the repository root, which {@code ContextParamsMdTest} holds against this enum.
  * </p>
  *
@@ -280,32 +278,6 @@ public enum MojarraContextParam implements ContextParam {
     @Override
     public <T> T getDefaultValue(ProjectStage projectStage) {
         return (T) defaultValueSupplier.apply(projectStage);
-    }
-
-    /**
-     * @param <T> the expected return type.
-     * @param context the involved faces context.
-     * @return the value of the context parameter, in the type indicated by {@link #getType()}, which is its default
-     * when it was not declared.
-     */
-    public <T> T getValue(FacesContext context) {
-        return WebConfiguration.getInstance(context.getExternalContext()).getValue(this);
-    }
-
-    /**
-     * @param context the involved faces context.
-     * @return whether a boolean context parameter resolved to <code>true</code>.
-     */
-    public boolean isEnabled(FacesContext context) {
-        return WebConfiguration.getInstance(context.getExternalContext()).isEnabled(this);
-    }
-
-    /**
-     * @param context the involved faces context.
-     * @return whether the context parameter was explicitly declared, under any of the names it answers to.
-     */
-    public boolean isSet(FacesContext context) {
-        return WebConfiguration.getInstance(context.getExternalContext()).isSet(this);
     }
 
     /**

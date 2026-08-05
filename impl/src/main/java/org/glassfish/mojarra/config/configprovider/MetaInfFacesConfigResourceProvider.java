@@ -72,8 +72,7 @@ public class MetaInfFacesConfigResourceProvider implements ConfigurationResource
     @Override
     public Collection<URI> getResources(ServletContext context) {
 
-        WebConfiguration webConfig = WebConfiguration.getInstance(context);
-        String duplicateJarPattern = webConfig.getValue(MojarraContextParam.DUPLICATE_JAR_PATTERN);
+        String duplicateJarPattern = MojarraContextParam.DUPLICATE_JAR_PATTERN.getValue(context);
         Pattern duplicatePattern = null;
         if (!duplicateJarPattern.isEmpty()) {
             duplicatePattern = Pattern.compile(duplicateJarPattern);

@@ -184,7 +184,7 @@ public class WebappLifecycleListener {
     }
 
     private boolean isDistributable(ServletRequestEvent event) {
-        return WebConfiguration.getInstance(event.getServletContext()).isEnabled(ENABLE_DISTRIBUTABLE);
+        return ENABLE_DISTRIBUTABLE.isEnabled(event.getServletContext());
     }
 
     private boolean isDevelopment(ApplicationAssociate associate) {

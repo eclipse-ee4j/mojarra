@@ -340,7 +340,7 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
         if (defaultValidatorIds == null) {
             defaultValidatorIds = new LinkedHashSet<>();
             if (isBeanValidatorAvailable(facesContext)) {
-                if (!FacesContextParam.DISABLE_DEFAULT_BEAN_VALIDATOR.isSet(facesContext)) {
+                if (!FacesContextParam.DISABLE_DEFAULT_BEAN_VALIDATOR.isEnabled(facesContext)) {
                     defaultValidatorIds.add(BeanValidator.VALIDATOR_ID);
                 }
             }

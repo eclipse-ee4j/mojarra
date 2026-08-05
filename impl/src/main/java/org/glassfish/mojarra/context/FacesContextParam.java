@@ -288,29 +288,6 @@ public enum FacesContextParam implements ContextParam {
 
     /**
      * <p>
-     * Returns the value of the context parameter, converted to the expected type as indicated by {@link #getType()}.
-     * This method never returns {@code null}. When the context parameter is not set, a default value is returned.
-     * @param <T> The expected return type.
-     * @param context The involved faces context.
-     * @return The value of the context parameter, converted to the expected type as indicated by {@link #getType()}.
-     * @throws ClassCastException When inferred {@code T} is of wrong type. See {@link #getType()} for the correct type.
-     */
-    public <T> T getValue(FacesContext context) {
-        return WebConfiguration.getInstance(context.getExternalContext()).getValue(this);
-    }
-
-    /**
-     * <p>
-     * Returns {@code true} in case a boolean context parameter is {@code true}, or a non-boolean context parameter is explicitly set with a non-{@code null} value.
-     * @param context The involved faces context.
-     * @return {@code true} in case a boolean context parameter is {@code true}, or a non-boolean context parameter is explicitly set with a non-{@code null} value.
-     */
-    public boolean isSet(FacesContext context) {
-        return (getType() == Boolean.class) ? (boolean) getValue(context) : WebConfiguration.getInstance(context.getExternalContext()).isSet(this);
-    }
-
-    /**
-     * <p>
      * Returns {@code true} when the value of the context parameter equals to the default value, irrespective of whether it is explicitly set.
      * @param context The involved faces context.
      * @return {@code true} when the value of the context parameter equals to the default value, irrespective of whether it is explicitly set.

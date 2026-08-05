@@ -522,7 +522,7 @@ public class ELFlash extends Flash {
                 restoreAllMessages(context);
             }
         } else if (currentPhase.equals(PhaseId.RENDER_RESPONSE)
-                && WebConfiguration.getInstance(context.getExternalContext()).isEnabled(FORCE_ALWAYS_WRITE_FLASH_COOKIE)) {
+                && FORCE_ALWAYS_WRITE_FLASH_COOKIE.isEnabled(context)) {
             PreviousNextFlashInfoManager flashManager = getCurrentFlashManager(contextMap, true);
             cookie = flashManager.encode();
             if (null != cookie) {

@@ -147,7 +147,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
         WebXmlProcessor webXmlProcessor = new WebXmlProcessor(servletContext);
         if (facesServletRegistration == null) {
             if (!webXmlProcessor.isFacesServletPresent()) {
-                if (!webConfig.isEnabled(FORCE_LOAD_CONFIGURATION)) {
+                if (!FORCE_LOAD_CONFIGURATION.isEnabled(servletContext)) {
                     LOGGER.log(FINE, "No FacesServlet found in deployment descriptor - bypassing configuration");
 
                     WebConfiguration.clear(servletContext);
@@ -161,7 +161,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
                 LOGGER.log(FINE, "FacesServlet found in deployment descriptor - processing configuration.");
             }
         } else if (servletContext.getAttribute(FACES_SERVLET_MAPPINGS) != null) { // If automatic mapping needs to be handled.
-            if (FacesContextParam.DISABLE_FACESSERVLET_TO_XHTML.isSet(initFacesContext)) {
+            if (FacesContextParam.DISABLE_FACESSERVLET_TO_XHTML.isEnabled(initFacesContext)) {
                 facesServletRegistration.addMapping(FACES_SERVLET_MAPPINGS_WITHOUT_XHTML);
             }
             else {
@@ -172,10 +172,10 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
         }
 
         // Do not override if already defined
-        if (!webConfig.isSet(ENABLE_DISTRIBUTABLE)) {
+        if (!ENABLE_DISTRIBUTABLE.isSet(servletContext)) {
             webConfig.setValue(ENABLE_DISTRIBUTABLE, webXmlProcessor.isDistributablePresent());
         }
-        if (webConfig.isEnabled(ENABLE_DISTRIBUTABLE)) {
+        if (ENABLE_DISTRIBUTABLE.isEnabled(servletContext)) {
             servletContext.setAttribute(ENABLE_DISTRIBUTABLE.getName(), TRUE);
         }
 
@@ -232,7 +232,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
             // Register websocket endpoint if explicitly enabled.
             // Note: websocket channel filter is registered in FacesInitializer.
-            if (FacesContextParam.ENABLE_WEBSOCKET_ENDPOINT.isSet(initFacesContext)) {
+            if (FacesContextParam.ENABLE_WEBSOCKET_ENDPOINT.isEnabled(initFacesContext)) {
                 ServerContainer serverContainer = (ServerContainer) servletContext.getAttribute(ServerContainer.class.getName());
 
                 if (serverContainer == null) {
@@ -244,8 +244,8 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
                 ServerEndpointConfig endpointConfig = ServerEndpointConfig.Builder.create(WebsocketEndpoint.class, URI_TEMPLATE)
                         .configurator(new WebsocketEndpoint.Configurator())
                         .build();
-                endpointConfig.getUserProperties().put(USER_PROPERTY_IDLE_TIMEOUT, getWebsocketEndpointIdleTimeout(webConfig));
-                endpointConfig.getUserProperties().put(USER_PROPERTY_MAX_SESSIONS_PER_CHANNEL, getWebsocketMaxSessionsPerChannel(webConfig));
+                endpointConfig.getUserProperties().put(USER_PROPERTY_IDLE_TIMEOUT, getWebsocketEndpointIdleTimeout(servletContext));
+                endpointConfig.getUserProperties().put(USER_PROPERTY_MAX_SESSIONS_PER_CHANNEL, getWebsocketMaxSessionsPerChannel(servletContext));
                 serverContainer.addEndpoint(endpointConfig);
             }
 
@@ -279,43 +279,25 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
         }
     }
 
-    private static long getWebsocketEndpointIdleTimeout(WebConfiguration webConfig) {
-        String value = webConfig.getValue(WEBSOCKET_ENDPOINT_IDLE_TIMEOUT);
-        long idleTimeout = toLong(value, -1); // A non-numeric value maps to -1 because 0 is a valid value meaning no timeout.
+    private static int getWebsocketEndpointIdleTimeout(ServletContext servletContext) {
+        int idleTimeout = WEBSOCKET_ENDPOINT_IDLE_TIMEOUT.getValue(servletContext);
 
         if (idleTimeout < 0) {
-            throw new IllegalArgumentException(format(ERROR_INVALID_WEBSOCKET_ENDPOINT_IDLE_TIMEOUT, WEBSOCKET_ENDPOINT_IDLE_TIMEOUT.getName(), value));
+            throw new IllegalArgumentException(format(ERROR_INVALID_WEBSOCKET_ENDPOINT_IDLE_TIMEOUT, WEBSOCKET_ENDPOINT_IDLE_TIMEOUT.getName(), idleTimeout));
         }
 
         return idleTimeout;
     }
 
-    private static int getWebsocketMaxSessionsPerChannel(WebConfiguration webConfig) {
-        String value = webConfig.getValue(WEBSOCKET_MAX_SESSIONS_PER_CHANNEL);
+    private static int getWebsocketMaxSessionsPerChannel(ServletContext servletContext) {
+        int maxSessionsPerChannel = WEBSOCKET_MAX_SESSIONS_PER_CHANNEL.getValue(servletContext);
 
-        if (value == null || value.isEmpty()) {
-            return Integer.MAX_VALUE;
+        if (maxSessionsPerChannel < 1) {
+            throw new IllegalArgumentException(
+                    format(ERROR_INVALID_WEBSOCKET_MAX_SESSIONS_PER_CHANNEL, WEBSOCKET_MAX_SESSIONS_PER_CHANNEL.getName(), maxSessionsPerChannel));
         }
 
-        long maxSessionsPerChannel = toLong(value, 0);
-
-        if (maxSessionsPerChannel < 1 || maxSessionsPerChannel > Integer.MAX_VALUE) {
-            throw new IllegalArgumentException(format(ERROR_INVALID_WEBSOCKET_MAX_SESSIONS_PER_CHANNEL, WEBSOCKET_MAX_SESSIONS_PER_CHANNEL.getName(), value));
-        }
-
-        return (int) maxSessionsPerChannel;
-    }
-
-    private static long toLong(String value, long fallback) {
-        if (value == null) {
-            return fallback;
-        }
-
-        try {
-            return Long.parseLong(value.trim());
-        } catch (NumberFormatException e) {
-            return fallback;
-        }
+        return maxSessionsPerChannel;
     }
 
     @Override

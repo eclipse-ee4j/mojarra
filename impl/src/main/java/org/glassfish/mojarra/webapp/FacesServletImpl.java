@@ -560,7 +560,7 @@ public final class FacesServletImpl implements Servlet {
         allowedUnknownHttpMethods = emptySet();
         allowedKnownHttpMethods = defaultAllowedHttpMethods;
 
-        String[] methods = WebConfiguration.getInstance(servletConfig.getServletContext()).getValue(ALLOWED_HTTP_METHODS);
+        String[] methods = ALLOWED_HTTP_METHODS.getValue(servletConfig.getServletContext());
         if (methods.length > 0) {
             allowedUnknownHttpMethods = new HashSet<>(methods.length);
             List<String> allowedKnownHttpMethodsStringList = new ArrayList<>();

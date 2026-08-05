@@ -607,7 +607,7 @@ public class ResourceManager {
      */
     private void initCompressableTypes() {
 
-        String[] values = WebConfiguration.getInstance().getValue(MojarraContextParam.COMPRESSABLE_MIME_TYPES);
+        String[] values = MojarraContextParam.COMPRESSABLE_MIME_TYPES.getValue(FacesContext.getCurrentInstance());
 
         for (String value : values) {
             String pattern = value;

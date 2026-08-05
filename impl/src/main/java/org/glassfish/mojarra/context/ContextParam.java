@@ -23,6 +23,10 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 import jakarta.faces.application.ProjectStage;
+import jakarta.faces.context.FacesContext;
+import jakarta.servlet.ServletContext;
+
+import org.glassfish.mojarra.config.WebConfiguration;
 
 /**
  * <p class="changed_added_5_0">
@@ -114,6 +118,60 @@ public interface ContextParam {
         public static Deprecation replacedBy(String alternateName) {
             return new Deprecation(alternateName);
         }
+    }
+
+    /**
+     * @param <T> the expected return type.
+     * @param context the involved faces context.
+     * @return the value of the parameter, in the type indicated by {@link #getType()}, which is its default when it
+     * was not declared.
+     */
+    default <T> T getValue(FacesContext context) {
+        return WebConfiguration.getInstance(context.getExternalContext()).getValue(this);
+    }
+
+    /**
+     * The same as {@link #getValue(FacesContext)}, for a reader which runs before there is a faces context.
+     *
+     * @param <T> the expected return type.
+     * @param servletContext the involved servlet context.
+     * @return the value of the parameter.
+     */
+    default <T> T getValue(ServletContext servletContext) {
+        return WebConfiguration.getInstance(servletContext).getValue(this);
+    }
+
+    /**
+     * @param context the involved faces context.
+     * @return whether a boolean parameter resolved to <code>true</code>.
+     */
+    default boolean isEnabled(FacesContext context) {
+        return WebConfiguration.getInstance(context.getExternalContext()).isEnabled(this);
+    }
+
+    /**
+     * @param servletContext the involved servlet context.
+     * @return whether a boolean parameter resolved to <code>true</code>.
+     */
+    default boolean isEnabled(ServletContext servletContext) {
+        return WebConfiguration.getInstance(servletContext).isEnabled(this);
+    }
+
+    /**
+     * @param context the involved faces context.
+     * @return whether the parameter was explicitly declared, under any of the names it answers to, which is a
+     * different question from what it resolved to.
+     */
+    default boolean isSet(FacesContext context) {
+        return WebConfiguration.getInstance(context.getExternalContext()).isSet(this);
+    }
+
+    /**
+     * @param servletContext the involved servlet context.
+     * @return whether the parameter was explicitly declared, under any of the names it answers to.
+     */
+    default boolean isSet(ServletContext servletContext) {
+        return WebConfiguration.getInstance(servletContext).isSet(this);
     }
 
     /**

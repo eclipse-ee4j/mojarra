@@ -423,23 +423,8 @@ public class ClientSideStateHelper extends StateHelper {
 
         }
 
-        stateTimeoutEnabled = webConfig.isSet(CLIENT_STATE_TIMEOUT);
-        if (stateTimeoutEnabled) {
-            String timeout = webConfig.getValue(CLIENT_STATE_TIMEOUT);
-            try {
-                stateTimeout = Long.parseLong(timeout);
-
-                if (stateTimeout < 0) {
-                    stateTimeoutEnabled = false;
-                }
-            } catch (NumberFormatException nfe) {
-                if (LOGGER.isLoggable(WARNING)) {
-                    LOGGER.log(WARNING, CLIENT_STATE_TIMEOUT.getName() + " context param value of '" + timeout + "' is not parseable as Long, it will be ignored");
-                }
-
-                stateTimeoutEnabled = false;
-            }
-        }
+        stateTimeout = webConfig.<Integer>getValue(CLIENT_STATE_TIMEOUT);
+        stateTimeoutEnabled = stateTimeout >= 0;
 
         int size = webConfig.getValue(CLIENT_STATE_WRITE_BUFFER_SIZE);
 

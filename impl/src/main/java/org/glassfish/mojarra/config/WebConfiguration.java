@@ -96,9 +96,6 @@ public class WebConfiguration {
             MojarraContextParam.ENABLE_CLIENT_STATE_DEBUGGING,
             MojarraContextParam.GENERATE_UNIQUE_SERVER_STATE_IDS);
 
-    // Reads better than a bare boolean at the deprecated parameter declarations below.
-    private static final boolean DEPRECATED = true;
-
     private static final String LEGACY_PARAM_PREFIX = "com.sun.faces.";
     private static final String CURRENT_PARAM_PREFIX = RIConstants.RI_PREFIX;
 
@@ -261,12 +258,7 @@ public class WebConfiguration {
      * @return the WebConfiguration for this application
      */
     public static WebConfiguration getInstance(ExternalContext extContext) {
-        WebConfiguration config = (WebConfiguration) extContext.getApplicationMap().get(WEB_CONFIG_KEY);
-        if (config == null) {
-            return getInstance((ServletContext) extContext.getContext());
-        }
-
-        return config;
+        return getInstance((ServletContext) extContext.getContext());
     }
 
     /**

@@ -47,7 +47,7 @@ public class ServletContextAdapter extends ExternalContext {
 
     public ServletContextAdapter(ServletContext servletContext) {
         this.servletContext = servletContext;
-        this.isEnableTransitionTimeNoOpFlash = WebConfiguration.getInstance(servletContext).isEnabled(ENABLE_TRANSITION_TIME_NO_OP_FLASH);
+        this.isEnableTransitionTimeNoOpFlash = ENABLE_TRANSITION_TIME_NO_OP_FLASH.isEnabled(servletContext);
     }
 
     @Override

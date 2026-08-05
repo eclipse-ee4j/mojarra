@@ -299,7 +299,7 @@ public class ServerSideStateHelper extends StateHelper {
      * @return If option <code>SerializeServerState</code> is <code>true</code>, serialize and return the state, otherwise, return <code>state</code> unchanged.
      */
     protected Object handleSaveState(Object state) {
-        if (!FacesContextParam.SERIALIZE_SERVER_STATE.isSet(FacesContext.getCurrentInstance())) {
+        if (!FacesContextParam.SERIALIZE_SERVER_STATE.isEnabled(FacesContext.getCurrentInstance())) {
             return state;
         }
 
@@ -330,7 +330,7 @@ public class ServerSideStateHelper extends StateHelper {
      * de-serialize the state prior to returning it, otherwise return <code>state</code> as is.
      */
     protected Object handleRestoreState(Object state) {
-        if (!FacesContextParam.SERIALIZE_SERVER_STATE.isSet(FacesContext.getCurrentInstance())) {
+        if (!FacesContextParam.SERIALIZE_SERVER_STATE.isEnabled(FacesContext.getCurrentInstance())) {
             return state;
         }
 

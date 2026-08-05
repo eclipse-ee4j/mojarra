@@ -116,7 +116,7 @@ public class ELUtils {
         addELResolvers(composite, associate.getELResolversFromFacesConfig());
         composite.add(associate.getApplicationELResolvers());
 
-        if (FacesContextParam.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL.isSet(FacesContext.getCurrentInstance())) {
+        if (FacesContextParam.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL.isEnabled(FacesContext.getCurrentInstance())) {
             composite.addPropertyELResolver(elRegistry.EMPTY_STRING_TO_NULL_RESOLVER);
         }
 
@@ -137,7 +137,7 @@ public class ELUtils {
         composite.addPropertyELResolver(elRegistry.LIST_RESOLVER);
         composite.addPropertyELResolver(elRegistry.ARRAY_RESOLVER);
 
-        if (!WebConfiguration.getInstance().isEnabled(DISABLE_OPTIONAL_EL_RESOLVER)) {
+        if (!DISABLE_OPTIONAL_EL_RESOLVER.isEnabled(FacesContext.getCurrentInstance())) {
             composite.addPropertyELResolver(elRegistry.OPTIONAL_RESOLVER);
         }
 

@@ -102,17 +102,7 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
         WebConfiguration config = WebConfiguration.getInstance(context.getExternalContext());
         distributable = config.isEnabled(ENABLE_DISTRIBUTABLE);
 
-        String numberOfActiveViewMapsAsString = config.getValue(NUMBER_OF_ACTIVE_VIEW_MAPS);
-        if (numberOfActiveViewMapsAsString != null) {
-            try {
-                numberOfActiveViewMapsInWebXml = Integer.parseInt(numberOfActiveViewMapsAsString);
-            }
-            catch (NumberFormatException e) {
-                if (LOGGER.isLoggable(WARNING)) {
-                    LOGGER.log(WARNING, "Cannot parse " + NUMBER_OF_ACTIVE_VIEW_MAPS.getName(), e);
-                }
-            }
-        }
+        numberOfActiveViewMapsInWebXml = config.getValue(NUMBER_OF_ACTIVE_VIEW_MAPS);
     }
     
     /**

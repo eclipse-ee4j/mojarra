@@ -75,7 +75,7 @@ public class TextRenderer extends HtmlBasicInputRenderer {
     // ------------------------------------------------------------ Constructors
 
     public TextRenderer() {
-        allowTextChildren = WebConfiguration.getInstance().isEnabled(MojarraContextParam.ALLOW_TEXT_CHILDREN);
+        allowTextChildren = MojarraContextParam.ALLOW_TEXT_CHILDREN.isEnabled(FacesContext.getCurrentInstance());
     }
 
     // ---------------------------------------------------------- Public Methods
