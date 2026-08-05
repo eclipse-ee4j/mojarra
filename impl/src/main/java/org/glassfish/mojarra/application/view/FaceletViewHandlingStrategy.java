@@ -128,7 +128,6 @@ import jakarta.servlet.http.HttpSession;
 
 import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.application.ApplicationAssociate;
-import org.glassfish.mojarra.config.WebConfiguration;
 import org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter;
 import org.glassfish.mojarra.context.FacesContextParam;
 import org.glassfish.mojarra.context.StateContext;
@@ -2060,7 +2059,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
     private String evaluateCspHeader(FacesContext context, String nonce) {
         if (cspHeader == null) {
-            cspHeader = WebConfiguration.getValue(FacesContextParam.CSP_POLICY, context);
+            cspHeader = FacesContextParam.CSP_POLICY.getValue(context);
 
             if (!cspHeader.contains(NONCE_EXPRESSION)) {
                 throw new IllegalArgumentException("The context parameter " + FacesContextParam.CSP_POLICY.getName() + " must include the expression '" + NONCE_EXPRESSION + "'");

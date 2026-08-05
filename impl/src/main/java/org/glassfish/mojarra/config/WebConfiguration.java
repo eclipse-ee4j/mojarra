@@ -17,11 +17,13 @@
 
 package org.glassfish.mojarra.config;
 
+import static java.util.Arrays.stream;
 import static java.util.Collections.emptyMap;
 import static java.util.logging.Level.FINE;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static java.util.regex.Pattern.compile;
-import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 import static org.glassfish.mojarra.util.Util.split;
 
 import java.io.IOException;
@@ -35,12 +37,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -55,6 +57,7 @@ import jakarta.servlet.ServletContext;
 
 import org.glassfish.mojarra.application.ApplicationAssociate;
 import org.glassfish.mojarra.application.view.FaceletViewHandlingStrategy;
+import org.glassfish.mojarra.context.ContextParam;
 import org.glassfish.mojarra.context.FacesContextParam;
 import org.glassfish.mojarra.facelets.util.Classpath;
 import org.glassfish.mojarra.util.FacesLogger;
@@ -135,6 +138,8 @@ public class WebConfiguration {
 
     private final Map<WebContextInitParameter, String[]> cachedListParams = new HashMap<>();
 
+    private final Map<ContextParam, Object> resolvedValues = new HashMap<>();
+
     private final Set<String> setParams = new HashSet<>();
 
     private final ServletContext servletContext;
@@ -150,24 +155,23 @@ public class WebConfiguration {
     private WebConfiguration(ServletContext servletContext) {
         this.servletContext = servletContext;
 
-        String contextName = servletContext.getContextPath();
-
-        initSetList(servletContext);
+        initSetList();
 
         // Before the parameters, because displayConfiguration decides at which level they are logged, and some of the
         // others derive their default from the stage.
         if (canProcessJndiEntries()) {
-            processJndiEntries(contextName);
+            processJndiEntries();
         }
-        projectStage = resolveProjectStage(servletContext);
-        loggingLevel = resolveLoggingLevel(servletContext, contextName);
-        logEnvironmentEntries(contextName);
+        projectStage = resolveProjectStage();
+        loggingLevel = resolveLoggingLevel();
+        logEnvironmentEntries();
 
-        processBooleanParameters(servletContext, contextName);
-        processInitParameters(servletContext, contextName);
+        processContextParams();
+        processBooleanParameters();
+        processInitParameters();
 
-        processDeprecatedParameters(contextName);
-        warnAboutUnrecognizedParameters(contextName);
+        processDeprecatedParameters();
+        warnAboutUnrecognizedParameters();
     }
 
     /**
@@ -182,12 +186,16 @@ public class WebConfiguration {
      * it. This does not run in Production, where nothing can be done about it any more anyway.
      * </p>
      */
-    private void warnAboutUnrecognizedParameters(String contextName) {
+    private void warnAboutUnrecognizedParameters() {
         if (projectStage == ProjectStage.Production) {
             return;
         }
 
-        Set<String> recognized = new HashSet<>(getPromotedParameterAliases());
+        Set<String> recognized = new HashSet<>();
+
+        for (FacesContextParam param : FacesContextParam.values()) {
+            recognized.addAll(namesOf(param));
+        }
 
         for (WebContextInitParameter param : WebContextInitParameter.values()) {
             recognized.add(param.getQualifiedName());
@@ -200,7 +208,7 @@ public class WebConfiguration {
         setParams.stream()
                  .filter(name -> name.startsWith(CURRENT_PARAM_PREFIX) && !recognized.contains(name))
                  .sorted()
-                 .forEach(name -> LOGGER.log(Level.WARNING, "faces.config.webconfig.param.unrecognized", new Object[] { contextName, name }));
+                 .forEach(name -> LOGGER.log(Level.WARNING, "faces.config.webconfig.param.unrecognized", new Object[] { getContextName(), name }));
     }
 
     /**
@@ -209,10 +217,10 @@ public class WebConfiguration {
      * resolved, because one of them decides the project stage which that level derives from.
      * </p>
      */
-    private void logEnvironmentEntries(String contextName) {
+    private void logEnvironmentEntries() {
         if (LOGGER.isLoggable(loggingLevel)) {
             envEntries.forEach((entry, value) -> LOGGER.log(loggingLevel, "faces.config.webconfig.enventryinfo",
-                    new Object[] { contextName, entry.getQualifiedName(), value }));
+                    new Object[] { getContextName(), entry.getQualifiedName(), value }));
         }
     }
 
@@ -229,16 +237,16 @@ public class WebConfiguration {
      * because it runs before the parameters that one reads are populated.
      * </p>
      */
-    private Level resolveLoggingLevel(ServletContext servletContext, String contextName) {
+    private Level resolveLoggingLevel() {
         Level derived = projectStage == ProjectStage.Production ? Level.FINE : Level.INFO;
-        String value = getRawInitParameter(servletContext, WebContextInitParameter.DisplayConfiguration.getQualifiedName());
+        String value = getRawInitParameter(WebContextInitParameter.DisplayConfiguration.getQualifiedName());
 
         if (value == null || AUTO.equalsIgnoreCase(value)) {
             return derived;
         }
 
         if (!ALLOWABLE_BOOLEANS.matcher(value).matches()) {
-            LOGGER.log(Level.WARNING, "faces.config.webconfig.boolconfig.invalidvalue", new Object[] { contextName, value,
+            LOGGER.log(Level.WARNING, "faces.config.webconfig.boolconfig.invalidvalue", new Object[] { getContextName(), value,
                     WebContextInitParameter.DisplayConfiguration.getQualifiedName(), "true|false|" + AUTO, AUTO });
             return derived;
         }
@@ -252,7 +260,7 @@ public class WebConfiguration {
      * parameters does later. This exists because the level at which that pass reports has to be known before it runs.
      * </p>
      */
-    private static String getRawInitParameter(ServletContext servletContext, String qualifiedName) {
+    private String getRawInitParameter(String qualifiedName) {
         String value = servletContext.getInitParameter(qualifiedName);
 
         if (value == null) {
@@ -268,7 +276,7 @@ public class WebConfiguration {
      * {@link jakarta.faces.application.Application#getProjectStage()} ends up doing as well.
      * </p>
      */
-    private ProjectStage resolveProjectStage(ServletContext servletContext) {
+    private ProjectStage resolveProjectStage() {
         String value = getEnvironmentEntry(WebEnvironmentEntry.ProjectStage);
 
         if (value == null) {
@@ -279,7 +287,7 @@ public class WebConfiguration {
             // Via the parameter itself, whose conversion matches an enum constant regardless of case.
             return FacesContextParam.PROJECT_STAGE.<ProjectStage>toValue(value).orElse(ProjectStage.Production);
         } catch (IllegalArgumentException e) {
-            LOGGER.log(Level.WARNING, "faces.config.webconfig.boolconfig.invalidvalue", new Object[] { servletContext.getContextPath(), value,
+            LOGGER.log(Level.WARNING, "faces.config.webconfig.boolconfig.invalidvalue", new Object[] { getContextName(), value,
                     ProjectStage.PROJECT_STAGE_PARAM_NAME, Arrays.toString(ProjectStage.values()), ProjectStage.Production });
             return ProjectStage.Production;
         }
@@ -506,42 +514,139 @@ public class WebConfiguration {
 
     /**
      * <p>
-     * Returns the value of a specification context parameter which used to be a Mojarra one, honoring the name it had
-     * when the specification name is not set, and warning when it does.
+     * Returns the value a context parameter resolved to for this application, in the type it declares. The resolution
+     * happens once, while this configuration is being read, so that a parameter costs a lookup rather than a parse
+     * wherever it is consulted.
      * </p>
      *
      * @param <T> the expected type of the value.
      * @param param the parameter of interest.
-     * @param context the involved faces context.
-     * @return the value of the parameter.
+     * @return the value of the parameter, which is its default when it was not declared.
      */
-    public static <T> T getValue(FacesContextParam param, FacesContext context) {
-        String suffix = PROMOTED_PARAMETERS.get(param);
-
-        if (suffix != null && context.getExternalContext().getInitParameter(param.getName()) == null) {
-            for (String legacyName : List.of(LEGACY_PARAM_PREFIX + suffix, CURRENT_PARAM_PREFIX + suffix)) {
-                String value = context.getExternalContext().getInitParameter(legacyName);
-
-                if (value != null) {
-                    LOGGER.log(Level.WARNING, "faces.config.webconfig.param.deprecated",
-                            new Object[] { context.getExternalContext().getContextName(), legacyName, param.getName() });
-
-                    return param.<T>toValue(value).orElseThrow();
-                }
-            }
-        }
-
-        return param.getValue(context);
+    @SuppressWarnings("unchecked")
+    public <T> T getValue(ContextParam param) {
+        return (T) resolvedValues.get(param);
     }
 
     /**
-     * @return every name a promoted parameter may still be spelled as, which the unrecognized parameter check has to
-     * treat as known.
+     * @param param the parameter of interest.
+     * @return <code>true</code> when the parameter was explicitly declared, under any of the names it answers to.
      */
-    private static Set<String> getPromotedParameterAliases() {
-        return PROMOTED_PARAMETERS.values().stream()
-                .flatMap(suffix -> Stream.of(LEGACY_PARAM_PREFIX + suffix, CURRENT_PARAM_PREFIX + suffix))
-                .collect(toSet());
+    public boolean isSet(ContextParam param) {
+        return namesOf(param).stream().anyMatch(this::isSet);
+    }
+
+    /**
+     * <p>
+     * Every name a parameter answers to as an application may spell it, most preferred first: the one it declares,
+     * followed by the ones it only still answers to for compatibility. A Mojarra parameter accepts the
+     * <code>com.sun.faces</code> prefix it carried before 5.0. A specification parameter which used to be a Mojarra one
+     * accepts the unqualified name it had then, under both prefixes: the one it actually carried, and the one the 5.0
+     * rename produces for anybody replacing <code>com.sun.faces</code> with <code>org.glassfish.mojarra</code>
+     * throughout, which is a name it never had, but is the single most likely wrong spelling in this release.
+     * </p>
+     */
+    private static List<String> declaredNamesOf(ContextParam param) {
+        String name = param.getName();
+        String promoted = PROMOTED_PARAMETERS.get(param);
+
+        if (promoted != null) {
+            return List.of(name, LEGACY_PARAM_PREFIX + promoted, CURRENT_PARAM_PREFIX + promoted);
+        }
+
+        if (name.startsWith(CURRENT_PARAM_PREFIX)) {
+            return List.of(name, LEGACY_PARAM_PREFIX + name.substring(CURRENT_PARAM_PREFIX.length()));
+        }
+
+        return List.of(name);
+    }
+
+    /**
+     * @return the same names as {@link #declaredNamesOf(ContextParam)}, in the spelling
+     * {@link #initSetList(ServletContext)} records them under and {@link #isSet(String)} therefore answers to.
+     */
+    private static List<String> namesOf(ContextParam param) {
+        return declaredNamesOf(param).stream().map(WebConfiguration::normalize).distinct().collect(toList());
+    }
+
+    private static String normalize(String name) {
+        return name.startsWith(LEGACY_PARAM_PREFIX) ? CURRENT_PARAM_PREFIX + name.substring(LEGACY_PARAM_PREFIX.length()) : name;
+    }
+
+    /**
+     * <p>
+     * Resolves every context parameter to the value this application will see, once, so that consulting one costs a
+     * lookup rather than a parse. A value which cannot be converted to the type the parameter declares is reported and
+     * behaves as though the parameter was never declared, rather than as whatever a lenient parse happens to make of
+     * it, which for a boolean would silently be <code>false</code>.
+     * </p>
+     */
+    private void processContextParams() {
+        for (FacesContextParam param : FacesContextParam.values()) {
+            resolvedValues.put(param, resolve(param));
+        }
+
+        // Resolved ahead of the others, because its JNDI environment entry outranks the parameter and the defaults of
+        // the others derive from it.
+        resolvedValues.put(FacesContextParam.PROJECT_STAGE, projectStage);
+    }
+
+    private Object resolve(ContextParam param) {
+        String value = getDeclaredValue(param);
+
+        try {
+            Optional<?> resolved = param.toValue(value);
+
+            if (resolved.isPresent()) {
+                if (LOGGER.isLoggable(loggingLevel)) {
+                    LOGGER.log(loggingLevel, "faces.config.webconfig.configinfo", new Object[] { getContextName(), param.getName(), value });
+                }
+
+                return resolved.get();
+            }
+        } catch (IllegalArgumentException e) {
+            LOGGER.log(Level.WARNING, "faces.config.webconfig.boolconfig.invalidvalue",
+                    new Object[] { getContextName(), value, param.getName(), allowedValuesOf(param), param.getDefaultValue(projectStage) });
+        }
+
+        return param.getDefaultValue(projectStage);
+    }
+
+    /**
+     * @return the value the application declared for the parameter, under whichever of its names it used, reporting the
+     * ones which only exist for compatibility.
+     */
+    private String getDeclaredValue(ContextParam param) {
+        for (String name : declaredNamesOf(param)) {
+            String value = servletContext.getInitParameter(name);
+
+            if (value != null) {
+                if (!name.equals(param.getName())) {
+                    LOGGER.log(Level.WARNING, "faces.config.webconfig.param.deprecated", new Object[] { getContextName(), name, param.getName() });
+                }
+
+                return value.trim();
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @return what the parameter accepts, for the benefit of whoever has to correct the value which was rejected.
+     */
+    private static String allowedValuesOf(ContextParam param) {
+        Class<?> type = param.getType();
+
+        if (type == Boolean.class) {
+            return "true|false";
+        }
+
+        if (type.isEnum()) {
+            return stream(type.getEnumConstants()).map(Object::toString).collect(joining("|"));
+        }
+
+        return type.getSimpleName();
     }
 
     /**
@@ -621,7 +726,14 @@ public class WebConfiguration {
 
     private void warnAboutUnusableValue(WebContextInitParameter param, String value, String allowed) {
         LOGGER.log(Level.WARNING, "faces.config.webconfig.boolconfig.invalidvalue",
-                new Object[] { servletContext.getContextPath(), value, param.getQualifiedName(), allowed, AUTO });
+                new Object[] { getContextName(), value, param.getQualifiedName(), allowed, AUTO });
+    }
+
+    /**
+     * @return the name every message about this configuration reports the application under.
+     */
+    private String getContextName() {
+        return servletContext.getContextPath();
     }
 
     public ProjectStage getProjectStage() {
@@ -646,7 +758,6 @@ public class WebConfiguration {
      * </p>
      */
     void processDevelopmentOnlyParameters() {
-        FacesContext context = FacesContext.getCurrentInstance();
         ProjectStage projectStage = getProjectStage();
 
         if (projectStage == ProjectStage.Development) {
@@ -656,8 +767,7 @@ public class WebConfiguration {
         for (BooleanWebContextInitParameter param : DEVELOPMENT_ONLY_OPTIONS) {
             if (isOptionEnabled(param) != param.getDefaultValue()) {
                 LOGGER.log(Level.WARNING, "faces.config.webconfig.param.development_only",
-                        new Object[] { context.getExternalContext().getContextName(), param.getQualifiedName(), projectStage,
-                                param.getDefaultValue() });
+                        new Object[] { getContextName(), param.getQualifiedName(), projectStage, param.getDefaultValue() });
 
                 booleanContextParameters.put(param, param.getDefaultValue());
             }
@@ -754,10 +864,16 @@ public class WebConfiguration {
 
     // ------------------------------------------------- Package Private Methods
 
-    static void clear(ServletContext servletContext) {
-
+    /**
+     * <p>
+     * Discards the configuration read for the given context, so that the next reader reads it afresh. A container fixes
+     * its context parameters before anything can read them, so this exists for the two moments which are not that:
+     * bringup, which reads a provisional configuration before the application is known, and a test which declares a
+     * parameter on a context it has already handed out.
+     * </p>
+     */
+    public static void clear(ServletContext servletContext) {
         servletContext.removeAttribute(WEB_CONFIG_KEY);
-
     }
 
     // --------------------------------------------------------- Private Methods
@@ -790,13 +906,11 @@ public class WebConfiguration {
      * Process all boolean context initialization parameters.
      * </p>
      *
-     * @param servletContext the ServletContext of interest
-     * @param contextName the context name
      */
-    private void processBooleanParameters(ServletContext servletContext, String contextName) {
+    private void processBooleanParameters() {
 
         for (BooleanWebContextInitParameter param : BooleanWebContextInitParameter.values()) {
-            String strValue = getInitParameter(servletContext, contextName, param.getQualifiedName());
+            String strValue = getInitParameter(param.getQualifiedName());
             boolean value;
 
             if (strValue == null) {
@@ -811,7 +925,7 @@ public class WebConfiguration {
 
             if (LOGGER.isLoggable(loggingLevel)) {
                 LOGGER.log(loggingLevel, value ? "faces.config.webconfig.boolconfiginfo.enabled" : "faces.config.webconfig.boolconfiginfo.disabled",
-                        new Object[] { contextName, param.getQualifiedName() });
+                        new Object[] { getContextName(), param.getQualifiedName() });
             }
 
             booleanContextParameters.put(param, value);
@@ -825,9 +939,8 @@ public class WebConfiguration {
      * one over to the parameter which replaces it, unless that one was explicitly set as well.
      * </p>
      *
-     * @param contextName the context name
      */
-    private void processDeprecatedParameters(String contextName) {
+    private void processDeprecatedParameters() {
 
         for (WebContextInitParameter param : WebContextInitParameter.values()) {
             if (!param.isDeprecated() || !isSet(param.getQualifiedName())) {
@@ -835,7 +948,7 @@ public class WebConfiguration {
             }
 
             WebContextInitParameter alternate = param.getAlternate();
-            warnAboutDeprecatedParameter(contextName, param.getQualifiedName(), alternate == null ? null : alternate.getQualifiedName());
+            warnAboutDeprecatedParameter(param.getQualifiedName(), alternate == null ? null : alternate.getQualifiedName());
 
             if (alternate != null && !isSet(alternate.getQualifiedName())) {
                 contextParameters.put(alternate, contextParameters.get(param));
@@ -847,7 +960,7 @@ public class WebConfiguration {
                 continue;
             }
 
-            warnAboutDeprecatedParameter(contextName, param.getQualifiedName(), param.getAlternateName());
+            warnAboutDeprecatedParameter(param.getQualifiedName(), param.getAlternateName());
 
             BooleanWebContextInitParameter alternate = param.getAlternate();
 
@@ -866,12 +979,12 @@ public class WebConfiguration {
      *
      * @param alternateName the qualified name of the replacement, or <code>null</code> when there is no replacement.
      */
-    private static void warnAboutDeprecatedParameter(String contextName, String qualifiedName, String alternateName) {
+    private void warnAboutDeprecatedParameter(String qualifiedName, String alternateName) {
 
         if (alternateName == null) {
-            LOGGER.log(Level.WARNING, "faces.config.webconfig.param.deprecated.no_replacement", new Object[] { contextName, qualifiedName });
+            LOGGER.log(Level.WARNING, "faces.config.webconfig.param.deprecated.no_replacement", new Object[] { getContextName(), qualifiedName });
         } else {
-            LOGGER.log(Level.WARNING, "faces.config.webconfig.param.deprecated", new Object[] { contextName, qualifiedName, alternateName });
+            LOGGER.log(Level.WARNING, "faces.config.webconfig.param.deprecated", new Object[] { getContextName(), qualifiedName, alternateName });
         }
     }
 
@@ -879,9 +992,8 @@ public class WebConfiguration {
      * Adds all org.glassfish.mojarra init parameter names to a list. This allows callers to determine if a parameter was explicitly
      * set.
      *
-     * @param servletContext the ServletContext of interest
      */
-    private void initSetList(ServletContext servletContext) {
+    private void initSetList() {
         for (Enumeration<String> e = servletContext.getInitParameterNames(); e.hasMoreElements();) {
             String name = e.nextElement();
             if (name.startsWith(CURRENT_PARAM_PREFIX) || name.startsWith("jakarta.faces")) {
@@ -896,7 +1008,7 @@ public class WebConfiguration {
      * Returns the init parameter value for the given qualified name, falling back to the legacy {@code com.sun.faces.*} equivalent
      * if the current {@code org.glassfish.mojarra.*} name is not set. Logs a deprecation warning when the legacy name is used.
      */
-    private String getInitParameter(ServletContext servletContext, String contextName, String qualifiedName) {
+    private String getInitParameter(String qualifiedName) {
         String value = servletContext.getInitParameter(qualifiedName);
 
         if (value == null && qualifiedName.startsWith(CURRENT_PARAM_PREFIX)) {
@@ -904,7 +1016,7 @@ public class WebConfiguration {
             value = servletContext.getInitParameter(legacyName);
 
             if (value != null && LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.log(Level.WARNING, "faces.config.webconfig.param.deprecated", new Object[] { contextName, legacyName, qualifiedName });
+                LOGGER.log(Level.WARNING, "faces.config.webconfig.param.deprecated", new Object[] { getContextName(), legacyName, qualifiedName });
             }
         }
 
@@ -924,13 +1036,11 @@ public class WebConfiguration {
      * Process all non-boolean context initialization parameters.
      * </p>
      *
-     * @param servletContext the ServletContext of interest
-     * @param contextName the context name
      */
-    private void processInitParameters(ServletContext servletContext, String contextName) {
+    private void processInitParameters() {
 
         for (WebContextInitParameter param : WebContextInitParameter.values()) {
-            String value = getInitParameter(servletContext, contextName, param.getQualifiedName());
+            String value = getInitParameter(param.getQualifiedName());
 
             if (value == null || value.isEmpty()) {
                 value = param.getDefaultValue();
@@ -940,7 +1050,7 @@ public class WebConfiguration {
             }
 
             if (LOGGER.isLoggable(loggingLevel)) {
-                LOGGER.log(loggingLevel, "faces.config.webconfig.configinfo", new Object[] { contextName, param.getQualifiedName(), value });
+                LOGGER.log(loggingLevel, "faces.config.webconfig.configinfo", new Object[] { getContextName(), param.getQualifiedName(), value });
             }
             contextParameters.put(param, value);
         }
@@ -952,9 +1062,8 @@ public class WebConfiguration {
      * Process all JNDI entries.
      * </p>
      *
-     * @param contextName the context name
      */
-    private void processJndiEntries(String contextName) {
+    private void processJndiEntries() {
         Context initialContext = null;
 
         try {

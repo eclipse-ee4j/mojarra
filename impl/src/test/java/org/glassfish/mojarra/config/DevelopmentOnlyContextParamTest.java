@@ -23,9 +23,6 @@ import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextIni
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +31,6 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import jakarta.faces.application.ProjectStage;
-import jakarta.faces.context.ExternalContext;
-import jakarta.faces.context.FacesContext;
 
 import org.glassfish.mojarra.mock.MockServletContext;
 import org.glassfish.mojarra.util.FacesLogger;
@@ -81,15 +76,6 @@ class DevelopmentOnlyContextParamTest {
     @AfterEach
     void stopCapturingLogging() {
         logger.removeHandler(handler);
-    }
-
-    @AfterEach
-    void releaseFacesContext() {
-        FacesContext context = FacesContext.getCurrentInstance();
-
-        if (context != null) {
-            context.release();
-        }
     }
 
     @Test
@@ -152,16 +138,6 @@ class DevelopmentOnlyContextParamTest {
     }
 
     private static WebConfiguration gate(MockServletContext servletContext) {
-        ExternalContext externalContext = mock(ExternalContext.class);
-        when(externalContext.getContext()).thenReturn(servletContext);
-        when(externalContext.getContextName()).thenReturn("/test");
-        when(externalContext.getInitParameter(any())).thenAnswer(
-                invocation -> servletContext.getInitParameter(invocation.getArgument(0)));
-
-        FacesContext context = mock(FacesContext.class);
-        when(context.getExternalContext()).thenReturn(externalContext);
-        setCurrentInstance(context);
-
         WebConfiguration webConfiguration = WebConfiguration.getInstance(servletContext);
         webConfiguration.processDevelopmentOnlyParameters();
 
@@ -173,15 +149,5 @@ class DevelopmentOnlyContextParamTest {
                 .filter(record -> record.getLevel() == WARNING && DEVELOPMENT_ONLY.equals(record.getMessage()))
                 .map(record -> String.valueOf(record.getParameters()[1]))
                 .toList();
-    }
-
-    private static void setCurrentInstance(FacesContext context) {
-        try {
-            var method = FacesContext.class.getDeclaredMethod("setCurrentInstance", FacesContext.class);
-            method.setAccessible(true);
-            method.invoke(null, context);
-        } catch (ReflectiveOperationException e) {
-            throw new IllegalStateException(e);
-        }
     }
 }

@@ -91,7 +91,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
         manager = ApplicationAssociate.getInstance(extContext).getResourceManager();
         initExclusions(context);
         initMaxAge();
-        cspEnabled = WebConfiguration.getValue(FacesContextParam.ENABLE_CSP_NONCE, context);
+        cspEnabled = FacesContextParam.ENABLE_CSP_NONCE.getValue(context);
         if (cspEnabled) {
             secureRandom = new SecureRandom();
             secureRandom.nextBytes(new byte[1]);

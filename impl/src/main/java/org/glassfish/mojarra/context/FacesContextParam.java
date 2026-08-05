@@ -1,15 +1,11 @@
 package org.glassfish.mojarra.context;
 
-import static java.util.Arrays.stream;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
-import static java.util.function.Predicate.not;
 import static org.glassfish.mojarra.RIConstants.EMPTY_STRING_ARRAY;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Function;
-import java.util.regex.Pattern;
 
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ProjectStage;
@@ -24,13 +20,14 @@ import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.component.html.HtmlEvents;
 import jakarta.faces.context.ExceptionHandler;
-import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.lifecycle.ClientWindow;
 import jakarta.faces.push.PushContext;
 import jakarta.faces.validator.BeanValidator;
 import jakarta.faces.webapp.FacesServlet;
+
+import org.glassfish.mojarra.config.WebConfiguration;
 
 /**
  * <p class="changed_added_5_0">
@@ -45,12 +42,12 @@ import jakarta.faces.webapp.FacesServlet;
  * 
  * @since 5.0
  */
-public enum FacesContextParam {
+public enum FacesContextParam implements ContextParam {
 
     /**
      * Returns {@value HtmlEvents#ADDITIONAL_HTML_EVENT_NAMES_PARAM_NAME} as {@link String} array with default of empty string array.
      */
-    ADDITIONAL_HTML_EVENT_NAMES(HtmlEvents.ADDITIONAL_HTML_EVENT_NAMES_PARAM_NAME, EMPTY_STRING_ARRAY, StringArray.SPACE_SEPARATED),
+    ADDITIONAL_HTML_EVENT_NAMES(HtmlEvents.ADDITIONAL_HTML_EVENT_NAMES_PARAM_NAME, EMPTY_STRING_ARRAY, Separator.SPACE),
 
     /**
      * Returns {@value UIInput#ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE} as {@link Boolean} with default of {@code false}.
@@ -70,7 +67,7 @@ public enum FacesContextParam {
     /**
      * Returns {@value FacesServlet#CONFIG_FILES_ATTR} as {@link String} array with default of empty string array.
      */
-    CONFIG_FILES(FacesServlet.CONFIG_FILES_ATTR, EMPTY_STRING_ARRAY, StringArray.COMMA_SEPARATED),
+    CONFIG_FILES(FacesServlet.CONFIG_FILES_ATTR, EMPTY_STRING_ARRAY, Separator.COMMA),
 
     /**
      * Returns {@value ResourceHandler#CSP_POLICY_PARAM_NAME} as {@link String} with default of {@value ResourceHandler#DEFAULT_CSP_POLICY}.
@@ -110,7 +107,7 @@ public enum FacesContextParam {
     /**
      * Returns {@value ExceptionHandler#EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING_PARAM_NAME} as {@link String} array with default of empty string array.
      */
-    EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING(ExceptionHandler.EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING_PARAM_NAME, EMPTY_STRING_ARRAY, StringArray.COMMA_SEPARATED),
+    EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING(ExceptionHandler.EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING_PARAM_NAME, EMPTY_STRING_ARRAY, Separator.COMMA),
 
     /**
      * Returns {@value ViewHandler#FACELETS_BUFFER_SIZE_PARAM_NAME} as {@link Integer} with default of {@value ViewHandler#FACELETS_BUFFER_SIZE_DEFAULT_VALUE}.
@@ -120,18 +117,18 @@ public enum FacesContextParam {
     /**
      * Returns {@value ViewHandler#FACELETS_DECORATORS_PARAM_NAME} as {@link String} array with default of empty string array.
      */
-    FACELETS_DECORATORS(ViewHandler.FACELETS_DECORATORS_PARAM_NAME, EMPTY_STRING_ARRAY, StringArray.SEMICOLON_SEPARATED),
+    FACELETS_DECORATORS(ViewHandler.FACELETS_DECORATORS_PARAM_NAME, EMPTY_STRING_ARRAY, Separator.SEMICOLON),
 
     /**
      * Returns {@value ViewHandler#FACELETS_LIBRARIES_PARAM_NAME} as {@link String} array with default of empty string array.
      */
-    FACELETS_LIBRARIES(ViewHandler.FACELETS_LIBRARIES_PARAM_NAME, EMPTY_STRING_ARRAY, StringArray.SEMICOLON_SEPARATED),
+    FACELETS_LIBRARIES(ViewHandler.FACELETS_LIBRARIES_PARAM_NAME, EMPTY_STRING_ARRAY, Separator.SEMICOLON),
 
     /**
      * Returns {@value ViewHandler#FACELETS_REFRESH_PERIOD_PARAM_NAME} as {@link Integer} with default of {@code -1} when
      * {@link Application#getProjectStage()} is {@link ProjectStage#Production} else default of {@code 0}.
      */
-    FACELETS_REFRESH_PERIOD(ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME, Integer.MIN_VALUE, (Function<FacesContext, Integer>) context -> context.getApplication().getProjectStage() == ProjectStage.Production ? -1 : 0),
+    FACELETS_REFRESH_PERIOD(ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME, Integer.MIN_VALUE, (Function<ProjectStage, Integer>) projectStage -> projectStage == ProjectStage.Production ? -1 : 0),
 
     /**
      * Returns {@value ViewHandler#FACELETS_SKIP_COMMENTS_PARAM_NAME} as {@link Boolean} with default of {@code false}.
@@ -141,12 +138,12 @@ public enum FacesContextParam {
     /**
      * Returns {@value ViewHandler#FACELETS_SUFFIX_PARAM_NAME} as {@link String} array with default of {@value ViewHandler#DEFAULT_FACELETS_SUFFIX}.
      */
-    FACELETS_SUFFIX(ViewHandler.FACELETS_SUFFIX_PARAM_NAME, new String[] { ViewHandler.DEFAULT_FACELETS_SUFFIX }, StringArray.SPACE_SEPARATED),
+    FACELETS_SUFFIX(ViewHandler.FACELETS_SUFFIX_PARAM_NAME, new String[] { ViewHandler.DEFAULT_FACELETS_SUFFIX }, Separator.SPACE),
 
     /**
      * Returns {@value ViewHandler#FACELETS_VIEW_MAPPINGS_PARAM_NAME} as {@link String} array with default of empty string array.
      */
-    FACELETS_VIEW_MAPPINGS(ViewHandler.FACELETS_VIEW_MAPPINGS_PARAM_NAME, EMPTY_STRING_ARRAY, StringArray.SEMICOLON_SEPARATED),
+    FACELETS_VIEW_MAPPINGS(ViewHandler.FACELETS_VIEW_MAPPINGS_PARAM_NAME, EMPTY_STRING_ARRAY, Separator.SEMICOLON),
 
     /**
      * Returns {@value UIInput#EMPTY_STRING_AS_NULL_PARAM_NAME} as {@link Boolean} with default of {@code false}.
@@ -167,7 +164,7 @@ public enum FacesContextParam {
     /**
      * Returns {@value ResourceHandler#RESOURCE_EXCLUDES_PARAM_NAME} as {@link String} array with default of {@value ResourceHandler#RESOURCE_EXCLUDES_DEFAULT_VALUE}.
      */
-    RESOURCE_EXCLUDES(ResourceHandler.RESOURCE_EXCLUDES_PARAM_NAME, ResourceHandler.RESOURCE_EXCLUDES_DEFAULT_VALUE.split(" "), StringArray.SPACE_SEPARATED),
+    RESOURCE_EXCLUDES(ResourceHandler.RESOURCE_EXCLUDES_PARAM_NAME, ResourceHandler.RESOURCE_EXCLUDES_DEFAULT_VALUE.split(" "), Separator.SPACE),
 
     /**
      * Returns {@value StateManager#SERIALIZE_SERVER_STATE_PARAM_NAME} as {@link Boolean} with default of {@code false}.
@@ -212,91 +209,64 @@ public enum FacesContextParam {
 
     ;
 
-    private enum StringArray {
-        SPACE_SEPARATED("\\s+"),
-        SEMICOLON_SEPARATED("\\s*;\\s*"),
-        COMMA_SEPARATED("\\s*,\\s*");
-
-        private Pattern pattern;
-
-        private StringArray(String pattern) {
-            this.pattern = Pattern.compile(pattern);
-        }
-
-        public String[] split(String value) {
-            return stream(pattern.split(value)).map(String::trim).filter(not(String::isEmpty)).toArray(String[]::new);
-        }
-    }
-
     private final String name;
-    private final Function<FacesContext, ?> defaultValueSupplier;
-    private final StringArray separated;
+    private final Function<ProjectStage, ?> defaultValueSupplier;
+    private final Separator separator;
     private final Class<?> type;
 
     private <T> FacesContextParam(String name, T defaultValue) {
         this(name, defaultValue, null, null);
     }
 
-    private <T> FacesContextParam(String name, T defaultValue, StringArray separated) {
-        this(name, defaultValue, null, separated);
+    private <T> FacesContextParam(String name, T defaultValue, Separator separator) {
+        this(name, defaultValue, null, separator);
     }
 
-    private <T> FacesContextParam(String name, T defaultValue, Function<FacesContext, T> defaultValueSupplier) {
+    private <T> FacesContextParam(String name, T defaultValue, Function<ProjectStage, T> defaultValueSupplier) {
         this(name, defaultValue, defaultValueSupplier, null);
     }
 
-    private <T> FacesContextParam(String name, T defaultValue, Function<FacesContext, T> defaultValueSupplier, StringArray separated) {
+    private <T> FacesContextParam(String name, T defaultValue, Function<ProjectStage, T> defaultValueSupplier, Separator separator) {
         requireNonNull(name, "name");
         requireNonNull(defaultValue, "defaultValue");
         this.name = name;
         this.defaultValueSupplier = ofNullable(defaultValueSupplier).orElse($ -> defaultValue);
-        this.separated = separated;
+        this.separator = separator;
         this.type = defaultValue.getClass();
     }
 
-    /**
-     * <p>
-     * Returns the name of the context parameter.
-     * @return The name of the context parameter.
-     */
+    @Override
     public String getName() {
         return name;
     }
 
-    /**
-     * <p>
-     * Returns the expected type of the context parameter value.
-     * Supported values are:
-     * <ul>
-     * <li>{@link String}
-     * <li>{@link String}{@code []}
-     * <li>{@link Character}
-     * <li>{@link Boolean}
-     * <li>{@link Integer}
-     * <li>{@link Enum}
-     * </ul>
-     * @return The expected type of the context parameter value.
-     */
+    @Override
     public Class<?> getType() {
         return type;
+    }
+
+    @Override
+    public Separator getSeparator() {
+        return separator;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T getDefaultValue(ProjectStage projectStage) {
+        return (T) defaultValueSupplier.apply(projectStage);
     }
 
     /**
      * <p>
      * Returns the value of the context parameter, converted to the expected type as indicated by {@link #getType()}.
      * This method never returns {@code null}. When the context parameter is not set, a default value is returned.
-     * <p>
-     * The implementation must first look for {@link ExternalContext#getInitParameter(String)}. If it is non-{@code null}, then return it.
-     * Else return the default value.
      * @param <T> The expected return type.
      * @param context The involved faces context.
      * @return The value of the context parameter, converted to the expected type as indicated by {@link #getType()}.
      * @throws ClassCastException When inferred {@code T} is of wrong type. See {@link #getType()} for the correct type.
-     * @throws IllegalArgumentException When the value of the context parameter cannot be converted to the expected type as indicated by {@link #getType()}.
      */
-    @SuppressWarnings("unchecked")
     public <T> T getValue(FacesContext context) {
-        return (T) getContextParamValue(context).orElseGet(() -> getDefaultValue(context));
+        return WebConfiguration.getInstance(context.getExternalContext()).getValue(this);
     }
 
     /**
@@ -304,23 +274,9 @@ public enum FacesContextParam {
      * Returns {@code true} in case a boolean context parameter is {@code true}, or a non-boolean context parameter is explicitly set with a non-{@code null} value.
      * @param context The involved faces context.
      * @return {@code true} in case a boolean context parameter is {@code true}, or a non-boolean context parameter is explicitly set with a non-{@code null} value.
-     * @throws IllegalArgumentException When the value of the context parameter cannot be converted to the expected type as indicated by {@link #getType()}.
      */
     public boolean isSet(FacesContext context) {
-        return (getType() == Boolean.class) ? (boolean) getValue(context) : context.getExternalContext().getInitParameter(name) != null;
-    }
-
-    /**
-     * <p>
-     * Returns the default value of the context parameter, converted to the expected type as indicated by {@link #getType()}.
-     * @param <T> The expected return type.
-     * @param context The involved faces context.
-     * @return The default value of the context parameter, converted to the expected type as indicated by {@link #getType()}.
-     * @throws ClassCastException When inferred {@code T} is of wrong type. See {@link #getType()} for the correct type.
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T getDefaultValue(FacesContext context) {
-        return (T) defaultValueSupplier.apply(context);
+        return (getType() == Boolean.class) ? (boolean) getValue(context) : WebConfiguration.getInstance(context.getExternalContext()).isSet(this);
     }
 
     /**
@@ -328,59 +284,9 @@ public enum FacesContextParam {
      * Returns {@code true} when the value of the context parameter equals to the default value, irrespective of whether it is explicitly set.
      * @param context The involved faces context.
      * @return {@code true} when the value of the context parameter equals to the default value, irrespective of whether it is explicitly set.
-     * @throws IllegalArgumentException When the value of the context parameter cannot be converted to the expected type as indicated by {@link #getType()}.
      */
     public boolean isDefault(FacesContext context) {
-        return Objects.equals(getValue(context), getDefaultValue(context));
-    }
-
-    private <T> Optional<T> getContextParamValue(FacesContext context) {
-        return toValue(context.getExternalContext().getInitParameter(name));
-    }
-
-    /**
-     * <p>
-     * Converts a raw context parameter value to the expected type as indicated by {@link #getType()}.
-     * @param <T> The expected return type.
-     * @param value The raw value, which may be {@code null}.
-     * @return The converted value, or empty when there was none.
-     * @throws IllegalArgumentException When the value cannot be converted to the expected type.
-     */
-    @SuppressWarnings("unchecked")
-    public <T> Optional<T> toValue(String value) {
-        if (value == null) {
-            return Optional.empty();
-        }
-        else if (type == String.class) {
-            return Optional.of((T) value);
-        }
-        else if (type == String[].class) {
-            return Optional.of((T) separated.split(value));
-        }
-        else if (type == Character.class) {
-            if (value.length() == 1) {
-                return Optional.of((T) Character.valueOf(value.charAt(0)));
-            }
-        }
-        else if (type == Boolean.class) {
-            return Optional.of((T) Boolean.valueOf(value));
-        }
-        else if (type == Integer.class) {
-            try {
-                return Optional.of((T) Integer.valueOf(value));
-            }
-            catch (NumberFormatException e) {
-                throw new IllegalArgumentException(getName() + ": invalid value: " + value, e);
-            }
-        }
-        else if (type.isEnum()) {
-            for (Object constant : type.getEnumConstants()) {
-                if (constant.toString().equalsIgnoreCase(value)) {
-                    return Optional.of((T) constant);
-                }
-            }
-        }
-
-        throw new IllegalArgumentException(getName() + ": invalid value: " + value);
+        WebConfiguration webConfiguration = WebConfiguration.getInstance(context.getExternalContext());
+        return Objects.deepEquals(webConfiguration.getValue(this), getDefaultValue(webConfiguration.getProjectStage()));
     }
 }
