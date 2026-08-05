@@ -871,10 +871,10 @@ public class Util {
      * @return the suffixes which identify a resource as a Facelet, deduplicated and in precedence order.
      */
     public static String[] getFaceletResourceSuffixes(FacesContext context) {
-        Set<String> faceletResourceSuffixes = new LinkedHashSet<>(asList(FacesContextParam.FACELETS_SUFFIX.<String[]>getValue(context)));
+        Set<String> faceletResourceSuffixes = new LinkedHashSet<>(asList(FacesContextParam.FACELETS_SUFFIX.getStringArray(context)));
         faceletResourceSuffixes.add(ViewHandler.DEFAULT_FACELETS_SUFFIX);
 
-        for (String viewMapping : FacesContextParam.FACELETS_VIEW_MAPPINGS.<String[]>getValue(context)) {
+        for (String viewMapping : FacesContextParam.FACELETS_VIEW_MAPPINGS.getStringArray(context)) {
             if (viewMapping.length() > 1 && viewMapping.charAt(0) == '*') {
                 faceletResourceSuffixes.add(viewMapping.substring(1));
             }

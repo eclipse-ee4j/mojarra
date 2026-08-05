@@ -621,7 +621,7 @@ public class ApplicationAssociate {
     protected DefaultFaceletFactory createFaceletFactory(FacesContext context, Compiler compiler) {
 
         // refresh period
-        int refreshPeriodInSeconds = FacesContextParam.FACELETS_REFRESH_PERIOD.getValue(context);
+        int refreshPeriodInSeconds = FacesContextParam.FACELETS_REFRESH_PERIOD.getInt(context);
 
         // resource resolver
         DefaultResourceResolver resolver = new DefaultResourceResolver(applicationImpl.getResourceHandler());
@@ -649,7 +649,7 @@ public class ApplicationAssociate {
     }
 
     protected void loadDecorators(FacesContext context, Compiler newCompiler) {
-        String[] decorators = FacesContextParam.FACELETS_DECORATORS.getValue(context);
+        String[] decorators = FacesContextParam.FACELETS_DECORATORS.getStringArray(context);
 
         for (String decorator : decorators) {
             try {

@@ -55,7 +55,7 @@ public class FaceletWebappResourceHelper extends ResourceHelper {
     public FaceletWebappResourceHelper(WebappResourceHelper webappResourceHelper) {
         this.webappResourceHelper = webappResourceHelper;
         FacesContext context = FacesContext.getCurrentInstance();
-        configuredExtensions = FacesContextParam.FACELETS_SUFFIX.getValue(context);
+        configuredExtensions = FacesContextParam.FACELETS_SUFFIX.getStringArray(context);
     }
 
     @Override

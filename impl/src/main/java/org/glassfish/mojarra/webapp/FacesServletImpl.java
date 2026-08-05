@@ -471,7 +471,7 @@ public final class FacesServletImpl implements Servlet {
             String lifecycleId = servletConfig.getInitParameter(FacesServlet.LIFECYCLE_ID_ATTR);
 
             if (lifecycleId == null) {
-                lifecycleId = FacesContextParam.LIFECYCLE_ID.getValue(servletConfig.getServletContext());
+                lifecycleId = FacesContextParam.LIFECYCLE_ID.getString(servletConfig.getServletContext());
             }
 
             return lifecycleFactory.getLifecycle(lifecycleId);
@@ -512,7 +512,7 @@ public final class FacesServletImpl implements Servlet {
         allowedUnknownHttpMethods = emptySet();
         allowedKnownHttpMethods = defaultAllowedHttpMethods;
 
-        String[] methods = MojarraContextParam.ALLOWED_HTTP_METHODS.getValue(servletConfig.getServletContext());
+        String[] methods = MojarraContextParam.ALLOWED_HTTP_METHODS.getStringArray(servletConfig.getServletContext());
         if (methods.length > 0) {
             allowedUnknownHttpMethods = new HashSet<>(methods.length);
             List<String> allowedKnownHttpMethodsStringList = new ArrayList<>();

@@ -277,7 +277,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
     }
 
     private static int getWebsocketEndpointIdleTimeout(ServletContext servletContext) {
-        int idleTimeout = MojarraContextParam.WEBSOCKET_ENDPOINT_IDLE_TIMEOUT.getValue(servletContext);
+        int idleTimeout = MojarraContextParam.WEBSOCKET_ENDPOINT_IDLE_TIMEOUT.getInt(servletContext);
 
         if (idleTimeout < 0) {
             throw new IllegalArgumentException(format(ERROR_INVALID_WEBSOCKET_ENDPOINT_IDLE_TIMEOUT, MojarraContextParam.WEBSOCKET_ENDPOINT_IDLE_TIMEOUT.getName(), idleTimeout));
@@ -287,7 +287,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
     }
 
     private static int getWebsocketMaxSessionsPerChannel(ServletContext servletContext) {
-        int maxSessionsPerChannel = MojarraContextParam.WEBSOCKET_MAX_SESSIONS_PER_CHANNEL.getValue(servletContext);
+        int maxSessionsPerChannel = MojarraContextParam.WEBSOCKET_MAX_SESSIONS_PER_CHANNEL.getInt(servletContext);
 
         if (maxSessionsPerChannel < 1) {
             throw new IllegalArgumentException(

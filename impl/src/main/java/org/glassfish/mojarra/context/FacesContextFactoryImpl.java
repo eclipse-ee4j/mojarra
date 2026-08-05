@@ -89,7 +89,7 @@ public class FacesContextFactoryImpl extends FacesContextFactory {
         Map<Object, Object> attrs = context.getAttributes();
 
         for (FacesContextParam param : API_READS_FROM_THE_CONTEXT) {
-            attrs.put(param.getName(), param.getValue(context));
+            attrs.put(param.getName(), param.isEnabled(context));
         }
     }
 

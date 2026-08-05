@@ -863,7 +863,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             return FaceletViewHandlingStrategy.this.createComponentMetadata(context, ccResource);
         });
 
-        responseBufferSize = FacesContextParam.FACELETS_BUFFER_SIZE.getValue(FacesContext.getCurrentInstance());
+        responseBufferSize = FacesContextParam.FACELETS_BUFFER_SIZE.getInt(FacesContext.getCurrentInstance());
         refreshTransientBuildOnPSS = webConfig.isEnabled(MojarraContextParam.REFRESH_TRANSIENT_BUILD_ON_PSS);
 
         LOGGER.fine("Initialization Successful");
@@ -894,7 +894,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         FacesContext context = FacesContext.getCurrentInstance();
         faceletResourceSuffixes = Util.getFaceletResourceSuffixes(context);
 
-        String[] mappingsArray = FacesContextParam.FACELETS_VIEW_MAPPINGS.getValue(context);
+        String[] mappingsArray = FacesContextParam.FACELETS_VIEW_MAPPINGS.getStringArray(context);
         if (mappingsArray.length > 0) {
             List<String> prefixesList = new ArrayList<>(mappingsArray.length);
 
@@ -1902,7 +1902,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      * @return true if we are, false otherwise.
      */
     private boolean isServerStateSaving() {
-        if (StateSavingMethod.SERVER == FacesContextParam.STATE_SAVING_METHOD.getValue(FacesContext.getCurrentInstance())) {
+        if (StateSavingMethod.SERVER == FacesContextParam.STATE_SAVING_METHOD.getEnum(StateSavingMethod.class, FacesContext.getCurrentInstance())) {
             return true;
         }
 
@@ -2059,7 +2059,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
     private String evaluateCspHeader(FacesContext context, String nonce) {
         if (cspHeader == null) {
-            cspHeader = FacesContextParam.CSP_POLICY.getValue(context);
+            cspHeader = FacesContextParam.CSP_POLICY.getString(context);
 
             if (!cspHeader.contains(NONCE_EXPRESSION)) {
                 throw new IllegalArgumentException("The context parameter " + FacesContextParam.CSP_POLICY.getName() + " must include the expression '" + NONCE_EXPRESSION + "'");

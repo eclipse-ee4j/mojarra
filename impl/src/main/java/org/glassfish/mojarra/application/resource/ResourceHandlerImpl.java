@@ -90,7 +90,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
         manager = ApplicationAssociate.getInstance(extContext).getResourceManager();
         initExclusions(context);
         initMaxAge();
-        cspEnabled = FacesContextParam.ENABLE_CSP_NONCE.getValue(context);
+        cspEnabled = FacesContextParam.ENABLE_CSP_NONCE.isEnabled(context);
         if (cspEnabled) {
             secureRandom = new SecureRandom();
             secureRandom.nextBytes(new byte[1]);
@@ -581,7 +581,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
      * {@link ResourceHandler#RESOURCE_EXCLUDES_DEFAULT_VALUE} will be used.
      */
     private void initExclusions(FacesContext context) {
-        excludedExtensions = parseExcludedExtensions(FacesContextParam.RESOURCE_EXCLUDES.getValue(context));
+        excludedExtensions = parseExcludedExtensions(FacesContextParam.RESOURCE_EXCLUDES.getStringArray(context));
     }
 
     /**
@@ -593,7 +593,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
     }
 
     private void initMaxAge() {
-        maxAge = webconfig.<Integer>getValue(MojarraContextParam.DEFAULT_RESOURCE_MAX_AGE);
+        maxAge = webconfig.getInt(MojarraContextParam.DEFAULT_RESOURCE_MAX_AGE);
     }
 
     private void handleHeaders(FacesContext context, Resource resource) {
@@ -604,7 +604,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
     }
 
     private ByteBuffer allocateByteBuffer() {
-        return ByteBuffer.allocate(webconfig.<Integer>getValue(MojarraContextParam.RESOURCE_BUFFER_SIZE));
+        return ByteBuffer.allocate(webconfig.getInt(MojarraContextParam.RESOURCE_BUFFER_SIZE));
     }
 
 }

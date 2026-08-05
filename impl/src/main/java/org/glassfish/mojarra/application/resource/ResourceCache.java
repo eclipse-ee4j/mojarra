@@ -68,7 +68,7 @@ public class ResourceCache {
     }
 
     private ResourceCache(WebConfiguration config) {
-        this(config.<Integer>getValue(MojarraContextParam.RESOURCE_UPDATE_CHECK_PERIOD).longValue());
+        this(config.getInt(MojarraContextParam.RESOURCE_UPDATE_CHECK_PERIOD));
 
         if (LOGGER.isLoggable(FINE)) {
             ServletContext sc = config.getServletContext();

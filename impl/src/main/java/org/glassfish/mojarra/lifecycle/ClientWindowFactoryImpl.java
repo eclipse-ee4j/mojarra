@@ -59,7 +59,7 @@ public class ClientWindowFactoryImpl extends ClientWindowFactory {
 
     private void postConstructApplicationInitialization() {
         FacesContext context = FacesContext.getCurrentInstance();
-        String optionValue = FacesContextParam.CLIENT_WINDOW_MODE.getValue(context);
+        String optionValue = FacesContextParam.CLIENT_WINDOW_MODE.getString(context);
         isClientWindowEnabled = "url".equals(optionValue) || JavaFlowLoaderHelper.isClientWindowModeForciblyEnabled(context);
     }
 

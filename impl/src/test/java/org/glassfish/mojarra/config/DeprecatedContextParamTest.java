@@ -136,7 +136,7 @@ class DeprecatedContextParamTest {
 
         WebConfiguration webConfiguration = WebConfiguration.getInstance(servletContext);
 
-        assertEquals(3, (int) webConfiguration.getValue(MojarraContextParam.NUMBER_OF_STATEFUL_PAGES_PER_SESSION));
+        assertEquals(3, (int) webConfiguration.getInt(MojarraContextParam.NUMBER_OF_STATEFUL_PAGES_PER_SESSION));
         assertEquals(List.of(MojarraContextParam.NUMBER_OF_LOGICAL_VIEWS.getName()), replacedParameterNames());
     }
 

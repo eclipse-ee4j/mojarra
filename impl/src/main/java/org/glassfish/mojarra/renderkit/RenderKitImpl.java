@@ -239,7 +239,7 @@ public class RenderKitImpl extends RenderKit {
         }
 
         boolean scriptInAttributes = webConfig.isEnabled(MojarraContextParam.ENABLE_SCRIPTS_IN_ATTRIBUTE_VALUES);
-        Tristate escaping = webConfig.<Tristate>getValue(MojarraContextParam.DISABLE_UNICODE_ESCAPING);
+        Tristate escaping = webConfig.getEnum(Tristate.class, MojarraContextParam.DISABLE_UNICODE_ESCAPING);
         boolean isPartial = context.getPartialViewContext().isPartialRequest();
         return new HtmlResponseWriter(writer, contentType, characterEncoding, scriptInAttributes, escaping, isPartial);
     }

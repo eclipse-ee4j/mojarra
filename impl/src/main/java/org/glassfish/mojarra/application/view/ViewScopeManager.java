@@ -101,7 +101,7 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
         WebConfiguration config = WebConfiguration.getInstance(context);
         distributable = config.isEnabled(MojarraContextParam.ENABLE_DISTRIBUTABLE);
 
-        numberOfActiveViewMapsInWebXml = config.getValue(MojarraContextParam.NUMBER_OF_ACTIVE_VIEW_MAPS);
+        numberOfActiveViewMapsInWebXml = config.getInt(MojarraContextParam.NUMBER_OF_ACTIVE_VIEW_MAPS);
     }
     
     /**
@@ -300,7 +300,7 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
             size = numberOfActiveViewMapsInWebXml;
 
             if (size == null) {
-                size = MojarraContextParam.NUMBER_OF_ACTIVE_VIEW_MAPS.getValue(facesContext);
+                size = MojarraContextParam.NUMBER_OF_ACTIVE_VIEW_MAPS.getInt(facesContext);
             }
         }
 

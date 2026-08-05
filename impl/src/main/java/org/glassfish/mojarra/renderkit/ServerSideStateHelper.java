@@ -95,8 +95,8 @@ public class ServerSideStateHelper extends StateHelper {
      * Construct a new <code>ServerSideStateHelper</code> instance.
      */
     public ServerSideStateHelper() {
-        numberOfStatefulPages = webConfig.<Integer>getValue(MojarraContextParam.NUMBER_OF_STATEFUL_PAGES_PER_SESSION);
-        numberOfViewStatesPerPage = webConfig.<Integer>getValue(MojarraContextParam.NUMBER_OF_VIEW_STATES_PER_STATEFUL_PAGE);
+        numberOfStatefulPages = webConfig.getInt(MojarraContextParam.NUMBER_OF_STATEFUL_PAGES_PER_SESSION);
+        numberOfViewStatesPerPage = webConfig.getInt(MojarraContextParam.NUMBER_OF_VIEW_STATES_PER_STATEFUL_PAGE);
         WebConfiguration webConfig = WebConfiguration.getInstance();
         generateUniqueStateIds = webConfig.isEnabled(MojarraContextParam.GENERATE_UNIQUE_SERVER_STATE_IDS);
         if (generateUniqueStateIds) {

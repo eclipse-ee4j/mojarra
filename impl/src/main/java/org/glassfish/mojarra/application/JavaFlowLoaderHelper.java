@@ -71,7 +71,7 @@ public class JavaFlowLoaderHelper {
     }
 
     public static void enableClientWindowModeIfNecessary(FacesContext context) {
-        String optionValue = FacesContextParam.CLIENT_WINDOW_MODE.getValue(context);
+        String optionValue = FacesContextParam.CLIENT_WINDOW_MODE.getString(context);
 
         boolean clientWindowNeedsEnabling = false;
         if ("none".equals(optionValue)) {

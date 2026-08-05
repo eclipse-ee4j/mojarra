@@ -383,11 +383,76 @@ public class WebConfiguration {
     }
 
     /**
+     * @param param the parameter of interest.
+     * @return the value of a {@link String} parameter.
+     * @throws IllegalStateException when the parameter does not declare that type.
+     */
+    public String getString(ContextParam param) {
+        return valueOfType(String.class, param);
+    }
+
+    /**
+     * @param param the parameter of interest.
+     * @return the value of a {@link String}{@code []} parameter.
+     * @throws IllegalStateException when the parameter does not declare that type.
+     */
+    public String[] getStringArray(ContextParam param) {
+        return valueOfType(String[].class, param);
+    }
+
+    /**
+     * @param param the parameter of interest.
+     * @return the value of an {@link Integer} parameter.
+     * @throws IllegalStateException when the parameter does not declare that type.
+     */
+    public int getInt(ContextParam param) {
+        return this.<Integer>valueOfType(Integer.class, param);
+    }
+
+    /**
+     * @param param the parameter of interest.
+     * @return the value of a {@link Character} parameter.
+     * @throws IllegalStateException when the parameter does not declare that type.
+     */
+    public char getChar(ContextParam param) {
+        return this.<Character>valueOfType(Character.class, param);
+    }
+
+    /**
+     * @param <E> the enum type.
+     * @param type the enum the parameter declares.
+     * @param param the parameter of interest.
+     * @return the value of an {@link Enum} parameter.
+     * @throws IllegalStateException when the parameter does not declare that type.
+     */
+    public <E extends Enum<E>> E getEnum(Class<E> type, ContextParam param) {
+        return valueOfType(type, param);
+    }
+
+    /**
      * @param param the boolean parameter of interest.
      * @return whether it resolved to <code>true</code>.
+     * @throws IllegalStateException when the parameter does not declare that type.
      */
     public boolean isEnabled(ContextParam param) {
-        return Boolean.TRUE.equals(resolvedValues.get(param));
+        return this.<Boolean>valueOfType(Boolean.class, param);
+    }
+
+    /**
+     * <p>
+     * The resolved value, refusing to hand it back through an accessor for another type. The accessor is what names
+     * the type at the call site, and a generic one would let it name the wrong one, which no compiler would catch and
+     * which would surface as a cast failure on whichever path first read the parameter.
+     * </p>
+     */
+    @SuppressWarnings("unchecked")
+    private <T> T valueOfType(Class<?> expected, ContextParam param) {
+        if (param.getType() != expected) {
+            throw new IllegalStateException(
+                    param.getName() + " is declared as " + param.getType().getSimpleName() + ", so it cannot be read as " + expected.getSimpleName());
+        }
+
+        return (T) resolvedValues.get(param);
     }
 
     /**

@@ -200,8 +200,8 @@ public class ELFlash extends Flash {
     ELFlash(ExternalContext extContext) {
         flashInnerMap = new ConcurrentHashMap<>();
         WebConfiguration config = WebConfiguration.getInstance(extContext);
-        numberOfConcurentFlashUsers = config.getValue(MojarraContextParam.NUMBER_OF_CONCURRENT_FLASH_USERS);
-        numberOfFlashesBetweenFlashReapings = config.<Integer>getValue(MojarraContextParam.NUMBER_OF_FLASHES_BETWEEN_FLASH_REAPINGS);
+        numberOfConcurentFlashUsers = config.getInt(MojarraContextParam.NUMBER_OF_CONCURRENT_FLASH_USERS);
+        numberOfFlashesBetweenFlashReapings = config.getInt(MojarraContextParam.NUMBER_OF_FLASHES_BETWEEN_FLASH_REAPINGS);
 
         distributable = config.isEnabled(MojarraContextParam.ENABLE_DISTRIBUTABLE);
 

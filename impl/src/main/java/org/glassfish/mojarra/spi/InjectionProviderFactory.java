@@ -219,7 +219,7 @@ public class InjectionProviderFactory {
     private static String findProviderClass(ExternalContext extContext) {
 
         WebConfiguration webConfig = WebConfiguration.getInstance(extContext);
-        String provider = webConfig.getValue(MojarraContextParam.INJECTION_PROVIDER);
+        String provider = webConfig.getString(MojarraContextParam.INJECTION_PROVIDER);
 
         if (provider != null) {
             return provider;

@@ -121,29 +121,83 @@ public interface ContextParam {
     }
 
     /**
-     * @param <T> the expected return type.
      * @param context the involved faces context.
-     * @return the value of the parameter, in the type indicated by {@link #getType()}, which is its default when it
-     * was not declared.
+     * @return the value of a {@link String} parameter.
+     * @throws IllegalStateException when the parameter does not declare that type.
      */
-    default <T> T getValue(FacesContext context) {
-        return WebConfiguration.getInstance(context).getValue(this);
+    default String getString(FacesContext context) {
+        return WebConfiguration.getInstance(context).getString(this);
     }
 
     /**
-     * The same as {@link #getValue(FacesContext)}, for a reader which runs before there is a faces context.
-     *
-     * @param <T> the expected return type.
      * @param servletContext the involved servlet context.
-     * @return the value of the parameter.
+     * @return the value of a {@link String} parameter.
+     * @throws IllegalStateException when the parameter does not declare that type.
      */
-    default <T> T getValue(ServletContext servletContext) {
-        return WebConfiguration.getInstance(servletContext).getValue(this);
+    default String getString(ServletContext servletContext) {
+        return WebConfiguration.getInstance(servletContext).getString(this);
     }
 
     /**
      * @param context the involved faces context.
-     * @return whether a boolean parameter resolved to <code>true</code>.
+     * @return the value of a {@link String}{@code []} parameter.
+     * @throws IllegalStateException when the parameter does not declare that type.
+     */
+    default String[] getStringArray(FacesContext context) {
+        return WebConfiguration.getInstance(context).getStringArray(this);
+    }
+
+    /**
+     * @param servletContext the involved servlet context.
+     * @return the value of a {@link String}{@code []} parameter.
+     * @throws IllegalStateException when the parameter does not declare that type.
+     */
+    default String[] getStringArray(ServletContext servletContext) {
+        return WebConfiguration.getInstance(servletContext).getStringArray(this);
+    }
+
+    /**
+     * @param context the involved faces context.
+     * @return the value of an {@link Integer} parameter.
+     * @throws IllegalStateException when the parameter does not declare that type.
+     */
+    default int getInt(FacesContext context) {
+        return WebConfiguration.getInstance(context).getInt(this);
+    }
+
+    /**
+     * @param servletContext the involved servlet context.
+     * @return the value of an {@link Integer} parameter.
+     * @throws IllegalStateException when the parameter does not declare that type.
+     */
+    default int getInt(ServletContext servletContext) {
+        return WebConfiguration.getInstance(servletContext).getInt(this);
+    }
+
+    /**
+     * @param context the involved faces context.
+     * @return the value of a {@link Character} parameter.
+     * @throws IllegalStateException when the parameter does not declare that type.
+     */
+    default char getChar(FacesContext context) {
+        return WebConfiguration.getInstance(context).getChar(this);
+    }
+
+    /**
+     * @param <E> the enum type.
+     * @param type the enum the parameter declares.
+     * @param context the involved faces context.
+     * @return the value of an {@link Enum} parameter.
+     * @throws IllegalStateException when the parameter does not declare that type.
+     */
+    default <E extends Enum<E>> E getEnum(Class<E> type, FacesContext context) {
+        return WebConfiguration.getInstance(context).getEnum(type, this);
+    }
+
+    /**
+     * @param context the involved faces context.
+     * @return whether a {@link Boolean} parameter resolved to <code>true</code>.
+     * @throws IllegalStateException when the parameter does not declare that type.
      */
     default boolean isEnabled(FacesContext context) {
         return WebConfiguration.getInstance(context).isEnabled(this);
@@ -151,7 +205,8 @@ public interface ContextParam {
 
     /**
      * @param servletContext the involved servlet context.
-     * @return whether a boolean parameter resolved to <code>true</code>.
+     * @return whether a {@link Boolean} parameter resolved to <code>true</code>.
+     * @throws IllegalStateException when the parameter does not declare that type.
      */
     default boolean isEnabled(ServletContext servletContext) {
         return WebConfiguration.getInstance(servletContext).isEnabled(this);
@@ -173,6 +228,7 @@ public interface ContextParam {
     default boolean isSet(ServletContext servletContext) {
         return WebConfiguration.getInstance(servletContext).isSet(this);
     }
+
 
     /**
      * <p>

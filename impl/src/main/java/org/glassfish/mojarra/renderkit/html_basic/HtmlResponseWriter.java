@@ -235,7 +235,7 @@ public class HtmlResponseWriter extends ResponseWriter {
         if (disableUnicodeEscaping == null) {
             webConfig = getWebConfiguration(webConfig);
             disableUnicodeEscaping = null == webConfig ? MojarraContextParam.DISABLE_UNICODE_ESCAPING.getDefaultValue(null)
-                    : webConfig.getValue(MojarraContextParam.DISABLE_UNICODE_ESCAPING);
+                    : webConfig.getEnum(Tristate.class, MojarraContextParam.DISABLE_UNICODE_ESCAPING);
         }
 
         // and store them for later use

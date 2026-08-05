@@ -419,10 +419,10 @@ public class ClientSideStateHelper extends StateHelper {
 
         }
 
-        stateTimeout = webConfig.<Integer>getValue(MojarraContextParam.CLIENT_STATE_TIMEOUT);
+        stateTimeout = webConfig.getInt(MojarraContextParam.CLIENT_STATE_TIMEOUT);
         stateTimeoutEnabled = stateTimeout >= 0;
 
-        int size = webConfig.getValue(MojarraContextParam.CLIENT_STATE_WRITE_BUFFER_SIZE);
+        int size = webConfig.getInt(MojarraContextParam.CLIENT_STATE_WRITE_BUFFER_SIZE);
 
         if (size % 2 != 0) {
             if (LOGGER.isLoggable(Level.WARNING)) {

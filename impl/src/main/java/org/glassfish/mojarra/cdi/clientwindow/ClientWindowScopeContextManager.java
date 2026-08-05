@@ -143,7 +143,7 @@ public class ClientWindowScopeContextManager {
                 String clientWindowId = getCurrentClientWindowId(facesContext);
 
                 if (clientWindowScopeContexts == null && create) {
-                    int numberOfClientWindows = FacesContextParam.NUMBER_OF_CLIENT_WINDOWS.getValue(facesContext);
+                    int numberOfClientWindows = FacesContextParam.NUMBER_OF_CLIENT_WINDOWS.getInt(facesContext);
 
                     synchronized (getMutex(session)) {
                         sessionMap.put(CLIENT_WINDOW_CONTEXTS, Collections.synchronizedMap(new LRUMap<>(numberOfClientWindows)));

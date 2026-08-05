@@ -175,7 +175,7 @@ public class InstanceFactory {
         WebConfiguration webConfig = WebConfiguration.getInstance(context);
         registerPropertyEditors = webConfig.isEnabled(MojarraContextParam.REGISTER_CONVERTER_PROPERTY_EDITORS);
 
-        passDefaultTimeZone = FacesContextParam.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE.getValue(context);
+        passDefaultTimeZone = FacesContextParam.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE.isEnabled(context);
         if (passDefaultTimeZone) {
             systemTimeZone = TimeZone.getDefault();
         }

@@ -48,7 +48,7 @@ public abstract class BaseWebConfigResourceProvider implements ConfigurationReso
     @Override
     public Collection<URI> getResources(ServletContext context) {
 
-        String[] paths = getParameter().getValue(FacesContext.getCurrentInstance());
+        String[] paths = getParameter().getStringArray(FacesContext.getCurrentInstance());
         Set<URI> urls = new LinkedHashSet<>(6);
 
         for (String path : paths) {

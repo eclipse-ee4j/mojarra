@@ -606,7 +606,7 @@ public class ResourceManager {
      */
     private void initCompressableTypes() {
 
-        String[] values = MojarraContextParam.COMPRESSABLE_MIME_TYPES.getValue(FacesContext.getCurrentInstance());
+        String[] values = MojarraContextParam.COMPRESSABLE_MIME_TYPES.getStringArray(FacesContext.getCurrentInstance());
 
         for (String value : values) {
             String pattern = value;

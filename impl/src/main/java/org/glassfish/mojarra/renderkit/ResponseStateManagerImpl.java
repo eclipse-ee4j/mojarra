@@ -39,7 +39,7 @@ public class ResponseStateManagerImpl extends ResponseStateManager {
 
     public ResponseStateManagerImpl() {
         FacesContext context = FacesContext.getCurrentInstance();
-        helper = FacesContextParam.STATE_SAVING_METHOD.getValue(context) == StateSavingMethod.CLIENT ? new ClientSideStateHelper() : new ServerSideStateHelper();
+        helper = FacesContextParam.STATE_SAVING_METHOD.getEnum(StateSavingMethod.class, context) == StateSavingMethod.CLIENT ? new ClientSideStateHelper() : new ServerSideStateHelper();
     }
 
     // --------------------------------------- Methods from ResponseStateManager

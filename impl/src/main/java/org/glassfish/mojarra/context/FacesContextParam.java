@@ -33,7 +33,7 @@ import org.glassfish.mojarra.config.WebConfiguration;
 /**
  * <p class="changed_added_5_0">
  * Enumeration of all available {@code jakarta.faces.*} context parameters.
- * The {@link FacesContextParam#getValue(FacesContext)} can be used to obtain the value of the context parameter.
+ * A typed accessor such as {@link ContextParam#getString(FacesContext)} obtains the value of one.
  * </p>
  * <p>
  * Historical note: this was originally part of FacesConfig.Context param as per https://github.com/jakartaee/faces/issues/1416

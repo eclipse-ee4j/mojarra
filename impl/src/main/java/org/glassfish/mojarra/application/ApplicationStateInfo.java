@@ -39,10 +39,10 @@ public class ApplicationStateInfo {
     public ApplicationStateInfo() {
 
         WebConfiguration config = WebConfiguration.getInstance();
-        partialStateSaving = config.getValue(FacesContextParam.PARTIAL_STATE_SAVING);
+        partialStateSaving = config.isEnabled(FacesContextParam.PARTIAL_STATE_SAVING);
 
         if (partialStateSaving) {
-            String[] viewIds = config.<String[]>getValue(FacesContextParam.FULL_STATE_SAVING_VIEW_IDS);
+            String[] viewIds = config.getStringArray(FacesContextParam.FULL_STATE_SAVING_VIEW_IDS);
             fullStateViewIds = new HashSet<>(viewIds.length, 1.0f);
             fullStateViewIds.addAll(asList(viewIds));
         }

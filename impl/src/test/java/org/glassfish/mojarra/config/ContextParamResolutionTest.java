@@ -19,8 +19,10 @@ package org.glassfish.mojarra.config;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.ResourceHandler;
 
 import org.glassfish.mojarra.context.FacesContextParam;
@@ -50,7 +52,7 @@ class ContextParamResolutionTest {
         for (String legacyName : new String[] { "com.sun.faces.cspPolicy", "org.glassfish.mojarra.cspPolicy" }) {
             WebConfiguration webConfiguration = configure(legacyName, CSP_POLICY);
 
-            assertEquals(CSP_POLICY, webConfiguration.getValue(FacesContextParam.CSP_POLICY), legacyName);
+            assertEquals(CSP_POLICY, webConfiguration.getString(FacesContextParam.CSP_POLICY), legacyName);
             assertTrue(webConfiguration.isSet(FacesContextParam.CSP_POLICY), legacyName);
         }
     }
@@ -90,7 +92,25 @@ class ContextParamResolutionTest {
     void aListValuedParameterIsSplitOnItsOwnSeparator() {
         WebConfiguration webConfiguration = configure(ResourceHandler.RESOURCE_EXCLUDES_PARAM_NAME, " .class   .jsp ");
 
-        assertArrayEquals(new String[] { ".class", ".jsp" }, webConfiguration.getValue(FacesContextParam.RESOURCE_EXCLUDES));
+        assertArrayEquals(new String[] { ".class", ".jsp" }, webConfiguration.getStringArray(FacesContextParam.RESOURCE_EXCLUDES));
+    }
+
+    /**
+     * A parameter read through an accessor for another type says so, rather than handing the value over to a cast
+     * which fails on whichever path first reads it. The accessor is what names the type at the call site, and no
+     * compiler checks that against the declaration.
+     */
+    @Test
+    void readingAParameterAsTheWrongTypeIsRejected() {
+        WebConfiguration webConfiguration = configure(null, null);
+
+        assertThrows(IllegalStateException.class, () -> webConfiguration.getString(FacesContextParam.FACELETS_BUFFER_SIZE));
+        assertThrows(IllegalStateException.class, () -> webConfiguration.getInt(FacesContextParam.CSP_POLICY));
+        assertThrows(IllegalStateException.class, () -> webConfiguration.isEnabled(FacesContextParam.CSP_POLICY));
+        assertThrows(IllegalStateException.class, () -> webConfiguration.getStringArray(FacesContextParam.CSP_POLICY));
+        assertThrows(IllegalStateException.class, () -> webConfiguration.getEnum(ProjectStage.class, FacesContextParam.CSP_POLICY));
+
+        assertEquals(ResourceHandler.DEFAULT_CSP_POLICY, webConfiguration.getString(FacesContextParam.CSP_POLICY));
     }
 
     private static void assertResolvesToItsDefault(FacesContextParam param, String value) {

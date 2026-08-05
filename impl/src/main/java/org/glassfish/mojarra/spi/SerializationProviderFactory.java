@@ -128,7 +128,7 @@ public class SerializationProviderFactory {
 
         WebConfiguration webConfig = WebConfiguration.getInstance(extContext);
 
-        String provider = webConfig.getValue(MojarraContextParam.SERIALIZATION_PROVIDER);
+        String provider = webConfig.getString(MojarraContextParam.SERIALIZATION_PROVIDER);
 
         if (provider != null) {
             return provider;

@@ -31,7 +31,7 @@ import org.glassfish.mojarra.RIConstants;
  * <p class="changed_added_5_0">
  * Enumeration of all available {@code org.glassfish.mojarra.*} context parameters, which is every parameter this
  * implementation recognizes beyond the {@code jakarta.faces.*} ones declared by {@link FacesContextParam}.
- * {@link #getValue(jakarta.faces.context.FacesContext)} obtains the value of one.
+ * A typed accessor such as {@link ContextParam#getString(jakarta.faces.context.FacesContext)} obtains the value of one.
  * </p>
  *
  * <p>
