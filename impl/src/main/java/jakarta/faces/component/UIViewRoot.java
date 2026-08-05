@@ -1457,7 +1457,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
             if (2 != localeStr.length()) {
                 throw new IllegalArgumentException("Illegal locale String: " + localeStr);
             }
-            lang = localeStr.toLowerCase();
+            lang = localeStr;
         }
 
         // we have a separator, it must be either '-' or '_'
