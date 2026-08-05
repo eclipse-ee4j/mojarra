@@ -21,6 +21,7 @@ import java.io.Writer;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -260,7 +261,7 @@ public class HtmlResponseWriter extends ResponseWriter {
             throw new IllegalArgumentException(MessageUtils.getExceptionMessageString(MessageUtils.ENCODING_ERROR_MESSAGE_ID));
         }
 
-        String charsetName = encoding.toUpperCase();
+        String charsetName = encoding.toUpperCase(Locale.ROOT);
 
         switch (disableUnicodeEscaping) {
         case True:
