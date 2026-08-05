@@ -18,7 +18,6 @@ package org.glassfish.mojarra.config.initfacescontext;
 
 import static java.util.Collections.emptyIterator;
 import static java.util.Collections.emptyMap;
-import static org.glassfish.mojarra.context.MojarraContextParam.ENABLE_TRANSITION_TIME_NO_OP_FLASH;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,9 +33,9 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.Flash;
 import jakarta.servlet.ServletContext;
 
-import org.glassfish.mojarra.config.WebConfiguration;
 import org.glassfish.mojarra.context.ApplicationMap;
 import org.glassfish.mojarra.context.InitParameterMap;
+import org.glassfish.mojarra.context.MojarraContextParam;
 
 public class ServletContextAdapter extends ExternalContext {
 
@@ -47,7 +46,7 @@ public class ServletContextAdapter extends ExternalContext {
 
     public ServletContextAdapter(ServletContext servletContext) {
         this.servletContext = servletContext;
-        this.isEnableTransitionTimeNoOpFlash = ENABLE_TRANSITION_TIME_NO_OP_FLASH.isEnabled(servletContext);
+        this.isEnableTransitionTimeNoOpFlash = MojarraContextParam.ENABLE_TRANSITION_TIME_NO_OP_FLASH.isEnabled(servletContext);
     }
 
     @Override

@@ -329,7 +329,7 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
         ProjectStage projectStage = (ProjectStage) sc.getAttribute(projectStageKey);
 
         if (projectStage == null) {
-            WebConfiguration webConfig = WebConfiguration.getInstance(facesContext.getExternalContext());
+            WebConfiguration webConfig = WebConfiguration.getInstance(facesContext);
             String value = webConfig.getEnvironmentEntry(WebConfiguration.WebEnvironmentEntry.ProjectStage);
 
             if (value != null) {

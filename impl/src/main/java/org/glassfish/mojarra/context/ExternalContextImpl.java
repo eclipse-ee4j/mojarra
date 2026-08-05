@@ -18,8 +18,6 @@
 package org.glassfish.mojarra.context;
 
 import static org.glassfish.mojarra.RIConstants.PUSH_RESOURCE_URLS_KEY_NAME;
-import static org.glassfish.mojarra.context.MojarraContextParam.ENABLE_DISTRIBUTABLE;
-import static org.glassfish.mojarra.context.MojarraContextParam.SEND_POWERED_BY_HEADER;
 import static org.glassfish.mojarra.context.UrlBuilder.PROTOCOL_SEPARATOR;
 import static org.glassfish.mojarra.context.UrlBuilder.WEBSOCKET_PROTOCOL;
 import static org.glassfish.mojarra.util.Util.isEmpty;
@@ -144,7 +142,7 @@ public class ExternalContextImpl extends ExternalContext {
 
         WebConfiguration webConfiguration = WebConfiguration.getInstance(servletContext);
 
-        if (webConfiguration.isEnabled(SEND_POWERED_BY_HEADER)) {
+        if (webConfiguration.isEnabled(MojarraContextParam.SEND_POWERED_BY_HEADER)) {
             String poweredBy = "Faces";
             String specificationVersion = webConfiguration.getSpecificationVersion();
             if (specificationVersion != null) {
@@ -153,7 +151,7 @@ public class ExternalContextImpl extends ExternalContext {
             ((HttpServletResponse) response).addHeader("X-Powered-By", poweredBy);
         }
 
-        distributable = webConfiguration.isEnabled(ENABLE_DISTRIBUTABLE);
+        distributable = webConfiguration.isEnabled(MojarraContextParam.ENABLE_DISTRIBUTABLE);
 
     }
 

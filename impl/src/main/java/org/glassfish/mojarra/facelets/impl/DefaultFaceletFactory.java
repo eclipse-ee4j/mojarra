@@ -20,7 +20,6 @@ import static java.util.logging.Level.FINEST;
 import static java.util.regex.Pattern.quote;
 import static org.glassfish.mojarra.RIConstants.CHAR_ENCODING;
 import static org.glassfish.mojarra.cdi.CdiUtils.getBeanReference;
-import static org.glassfish.mojarra.context.MojarraContextParam.USE_FACELETS_ID;
 import static org.glassfish.mojarra.util.Util.isEmpty;
 import static org.glassfish.mojarra.util.Util.notNull;
 import static org.glassfish.mojarra.util.Util.saveDOCTYPEToFacesContextAttributes;
@@ -64,6 +63,7 @@ import org.glassfish.mojarra.application.ApplicationAssociate;
 import org.glassfish.mojarra.application.resource.ResourceManager;
 import org.glassfish.mojarra.config.WebConfiguration;
 import org.glassfish.mojarra.context.FacesFileNotFoundException;
+import org.glassfish.mojarra.context.MojarraContextParam;
 import org.glassfish.mojarra.facelets.compiler.Compiler;
 import org.glassfish.mojarra.util.Cache;
 import org.glassfish.mojarra.util.FacesLogger;
@@ -109,17 +109,16 @@ public class DefaultFaceletFactory {
         notNull("compiler", compiler);
         notNull("resolver", resolver);
 
-        ExternalContext externalContext = facesContext.getExternalContext();
-        WebConfiguration config = WebConfiguration.getInstance(externalContext);
+        WebConfiguration config = WebConfiguration.getInstance(facesContext);
 
         this.compiler = compiler;
         cachePerContract = new ConcurrentHashMap<>();
         this.resolver = resolver;
-        this.manager = ApplicationAssociate.getInstance(externalContext).getResourceManager();
+        this.manager = ApplicationAssociate.getInstance(facesContext.getExternalContext()).getResourceManager();
         baseUrl = resolver.resolveUrl("/");
         baseUrlAsString = baseUrl.toExternalForm();
         faceletResourceSuffixes = Util.getFaceletResourceSuffixes(facesContext);
-        this.idMappers = config.isEnabled(USE_FACELETS_ID) ? null : new Cache<>(new IdMapperFactory());
+        this.idMappers = config.isEnabled(MojarraContextParam.USE_FACELETS_ID) ? null : new Cache<>(new IdMapperFactory());
         this.refreshPeriodInMillis = refreshPeriodInSeconds >= 0 ? refreshPeriodInSeconds * 1000 : -1;
         if (log.isLoggable(Level.FINE)) {
             log.log(Level.FINE, "Using ResourceResolver: {0}", resolver);

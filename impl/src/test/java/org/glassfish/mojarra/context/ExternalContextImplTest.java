@@ -16,7 +16,6 @@
 
 package org.glassfish.mojarra.context;
 
-import static org.glassfish.mojarra.context.MojarraContextParam.ENABLE_DISTRIBUTABLE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -64,7 +63,7 @@ public class ExternalContextImplTest {
     @Test
     public void testSessionMapReplicatesWhenWebXmlDeclaresDistributable() {
         MockServletContext servletContext = new MockServletContext();
-        WebConfiguration.getInstance(servletContext).setValue(ENABLE_DISTRIBUTABLE, true);
+        WebConfiguration.getInstance(servletContext).setValue(MojarraContextParam.ENABLE_DISTRIBUTABLE, true);
 
         ExternalContextImpl externalContext = new ExternalContextImpl(servletContext, new MockHttpServletRequest(new MockHttpSession()),
                 new MockHttpServletResponse());

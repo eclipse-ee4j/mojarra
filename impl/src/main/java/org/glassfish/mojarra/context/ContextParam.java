@@ -127,7 +127,7 @@ public interface ContextParam {
      * was not declared.
      */
     default <T> T getValue(FacesContext context) {
-        return WebConfiguration.getInstance(context.getExternalContext()).getValue(this);
+        return WebConfiguration.getInstance(context).getValue(this);
     }
 
     /**
@@ -146,7 +146,7 @@ public interface ContextParam {
      * @return whether a boolean parameter resolved to <code>true</code>.
      */
     default boolean isEnabled(FacesContext context) {
-        return WebConfiguration.getInstance(context.getExternalContext()).isEnabled(this);
+        return WebConfiguration.getInstance(context).isEnabled(this);
     }
 
     /**
@@ -163,7 +163,7 @@ public interface ContextParam {
      * different question from what it resolved to.
      */
     default boolean isSet(FacesContext context) {
-        return WebConfiguration.getInstance(context.getExternalContext()).isSet(this);
+        return WebConfiguration.getInstance(context).isSet(this);
     }
 
     /**

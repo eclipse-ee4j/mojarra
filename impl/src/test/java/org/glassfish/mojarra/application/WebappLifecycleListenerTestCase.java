@@ -1,6 +1,5 @@
 package org.glassfish.mojarra.application;
 
-import static org.glassfish.mojarra.context.MojarraContextParam.ENABLE_DISTRIBUTABLE;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
@@ -10,6 +9,7 @@ import jakarta.servlet.ServletRequestEvent;
 
 import org.glassfish.mojarra.config.InitFacesContext;
 import org.glassfish.mojarra.config.WebConfiguration;
+import org.glassfish.mojarra.context.MojarraContextParam;
 import org.glassfish.mojarra.junit.JUnitFacesTestCaseBase;
 import org.glassfish.mojarra.mock.MockHttpServletRequest;
 import org.junit.jupiter.api.AfterEach;
@@ -47,7 +47,7 @@ public class WebappLifecycleListenerTestCase extends JUnitFacesTestCaseBase {
         WebappLifecycleListener lifecycleListener = new WebappLifecycleListener(null);
 
         WebConfiguration webConfiguration = WebConfiguration.getInstance(servletContext);
-        webConfiguration.setValue(ENABLE_DISTRIBUTABLE, true);
+        webConfiguration.setValue(MojarraContextParam.ENABLE_DISTRIBUTABLE, true);
 
         // Create a request event. Make it cause an exception inside the lifecycleListener.requestDestroyed(event) call.
         ServletRequestEvent event = new ServletRequestEvent(servletContext, new MockHttpServletRequest()) {

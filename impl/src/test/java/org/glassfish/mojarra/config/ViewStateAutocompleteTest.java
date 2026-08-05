@@ -16,10 +16,9 @@
 
 package org.glassfish.mojarra.config;
 
-import static org.glassfish.mojarra.context.MojarraContextParam.AUTO_COMPLETE_OFF_ON_VIEW_STATE;
-import static org.glassfish.mojarra.context.MojarraContextParam.VIEW_STATE_AUTOCOMPLETE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.glassfish.mojarra.context.MojarraContextParam;
 import org.glassfish.mojarra.mock.MockServletContext;
 import org.junit.jupiter.api.Test;
 
@@ -36,7 +35,7 @@ class ViewStateAutocompleteTest {
 
     @Test
     void isWrittenVerbatim() {
-        assertEquals("off", resolve(VIEW_STATE_AUTOCOMPLETE.getName(), "off"));
+        assertEquals("off", resolve(MojarraContextParam.VIEW_STATE_AUTOCOMPLETE.getName(), "off"));
     }
 
     /**
@@ -44,8 +43,8 @@ class ViewStateAutocompleteTest {
      */
     @Test
     void deprecatedBooleanStillSelectsOff() {
-        assertEquals("off", resolve(AUTO_COMPLETE_OFF_ON_VIEW_STATE.getName(), "true"));
-        assertEquals("one-time-code", resolve(AUTO_COMPLETE_OFF_ON_VIEW_STATE.getName(), "false"));
+        assertEquals("off", resolve(MojarraContextParam.AUTO_COMPLETE_OFF_ON_VIEW_STATE.getName(), "true"));
+        assertEquals("one-time-code", resolve(MojarraContextParam.AUTO_COMPLETE_OFF_ON_VIEW_STATE.getName(), "false"));
     }
 
     /**
@@ -54,8 +53,8 @@ class ViewStateAutocompleteTest {
     @Test
     void replacementWinsOverDeprecatedBoolean() {
         assertEquals("on", resolve(
-                AUTO_COMPLETE_OFF_ON_VIEW_STATE.getName(), "true",
-                VIEW_STATE_AUTOCOMPLETE.getName(), "on"));
+                MojarraContextParam.AUTO_COMPLETE_OFF_ON_VIEW_STATE.getName(), "true",
+                MojarraContextParam.VIEW_STATE_AUTOCOMPLETE.getName(), "on"));
     }
 
     private static String resolve(String... initParameterNamesAndValues) {

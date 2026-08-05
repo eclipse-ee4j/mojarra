@@ -16,7 +16,6 @@
 
 package org.glassfish.mojarra.facelets.tag.faces;
 
-import static org.glassfish.mojarra.context.FacesContextParam.PARTIAL_STATE_SAVING;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,6 +43,7 @@ import jakarta.faces.view.facelets.Tag;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagAttributeException;
 
+import org.glassfish.mojarra.context.FacesContextParam;
 import org.glassfish.mojarra.context.StateContext;
 import org.glassfish.mojarra.facelets.tag.faces.core.FacetHandler;
 import org.glassfish.mojarra.util.Util;
@@ -236,7 +236,7 @@ public final class ComponentSupport {
     }
 
     private static boolean isPartialStateSaving(FacesContext context) {
-        return PARTIAL_STATE_SAVING.getValue(context);
+        return FacesContextParam.PARTIAL_STATE_SAVING.getValue(context);
     }
 
     /**

@@ -27,10 +27,6 @@ import static org.glassfish.mojarra.RIConstants.ERROR_PAGE_PRESENT_KEY_NAME;
 import static org.glassfish.mojarra.RIConstants.FACES_SERVLET_MAPPINGS;
 import static org.glassfish.mojarra.RIConstants.FACES_SERVLET_REGISTRATION;
 import static org.glassfish.mojarra.RIConstants.MOJARRA_VERSION;
-import static org.glassfish.mojarra.context.MojarraContextParam.ENABLE_DISTRIBUTABLE;
-import static org.glassfish.mojarra.context.MojarraContextParam.FORCE_LOAD_CONFIGURATION;
-import static org.glassfish.mojarra.context.MojarraContextParam.WEBSOCKET_ENDPOINT_IDLE_TIMEOUT;
-import static org.glassfish.mojarra.context.MojarraContextParam.WEBSOCKET_MAX_SESSIONS_PER_CHANNEL;
 import static org.glassfish.mojarra.context.SessionMap.createMutex;
 import static org.glassfish.mojarra.context.SessionMap.removeMutex;
 import static org.glassfish.mojarra.push.WebsocketEndpoint.URI_TEMPLATE;
@@ -77,6 +73,7 @@ import jakarta.websocket.server.ServerEndpointConfig;
 import org.glassfish.mojarra.application.ApplicationAssociate;
 import org.glassfish.mojarra.application.WebappLifecycleListener;
 import org.glassfish.mojarra.context.FacesContextParam;
+import org.glassfish.mojarra.context.MojarraContextParam;
 import org.glassfish.mojarra.el.ELContextImpl;
 import org.glassfish.mojarra.push.WebsocketEndpoint;
 import org.glassfish.mojarra.util.FacesLogger;
@@ -147,7 +144,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
         WebXmlProcessor webXmlProcessor = new WebXmlProcessor(servletContext);
         if (facesServletRegistration == null) {
             if (!webXmlProcessor.isFacesServletPresent()) {
-                if (!FORCE_LOAD_CONFIGURATION.isEnabled(servletContext)) {
+                if (!MojarraContextParam.FORCE_LOAD_CONFIGURATION.isEnabled(servletContext)) {
                     LOGGER.log(FINE, "No FacesServlet found in deployment descriptor - bypassing configuration");
 
                     WebConfiguration.clear(servletContext);
@@ -172,11 +169,11 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
         }
 
         // Do not override if already defined
-        if (!ENABLE_DISTRIBUTABLE.isSet(servletContext)) {
-            webConfig.setValue(ENABLE_DISTRIBUTABLE, webXmlProcessor.isDistributablePresent());
+        if (!MojarraContextParam.ENABLE_DISTRIBUTABLE.isSet(servletContext)) {
+            webConfig.setValue(MojarraContextParam.ENABLE_DISTRIBUTABLE, webXmlProcessor.isDistributablePresent());
         }
-        if (ENABLE_DISTRIBUTABLE.isEnabled(servletContext)) {
-            servletContext.setAttribute(ENABLE_DISTRIBUTABLE.getName(), TRUE);
+        if (MojarraContextParam.ENABLE_DISTRIBUTABLE.isEnabled(servletContext)) {
+            servletContext.setAttribute(MojarraContextParam.ENABLE_DISTRIBUTABLE.getName(), TRUE);
         }
 
         // Bootstrap of faces required
@@ -280,21 +277,21 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
     }
 
     private static int getWebsocketEndpointIdleTimeout(ServletContext servletContext) {
-        int idleTimeout = WEBSOCKET_ENDPOINT_IDLE_TIMEOUT.getValue(servletContext);
+        int idleTimeout = MojarraContextParam.WEBSOCKET_ENDPOINT_IDLE_TIMEOUT.getValue(servletContext);
 
         if (idleTimeout < 0) {
-            throw new IllegalArgumentException(format(ERROR_INVALID_WEBSOCKET_ENDPOINT_IDLE_TIMEOUT, WEBSOCKET_ENDPOINT_IDLE_TIMEOUT.getName(), idleTimeout));
+            throw new IllegalArgumentException(format(ERROR_INVALID_WEBSOCKET_ENDPOINT_IDLE_TIMEOUT, MojarraContextParam.WEBSOCKET_ENDPOINT_IDLE_TIMEOUT.getName(), idleTimeout));
         }
 
         return idleTimeout;
     }
 
     private static int getWebsocketMaxSessionsPerChannel(ServletContext servletContext) {
-        int maxSessionsPerChannel = WEBSOCKET_MAX_SESSIONS_PER_CHANNEL.getValue(servletContext);
+        int maxSessionsPerChannel = MojarraContextParam.WEBSOCKET_MAX_SESSIONS_PER_CHANNEL.getValue(servletContext);
 
         if (maxSessionsPerChannel < 1) {
             throw new IllegalArgumentException(
-                    format(ERROR_INVALID_WEBSOCKET_MAX_SESSIONS_PER_CHANNEL, WEBSOCKET_MAX_SESSIONS_PER_CHANNEL.getName(), maxSessionsPerChannel));
+                    format(ERROR_INVALID_WEBSOCKET_MAX_SESSIONS_PER_CHANNEL, MojarraContextParam.WEBSOCKET_MAX_SESSIONS_PER_CHANNEL.getName(), maxSessionsPerChannel));
         }
 
         return maxSessionsPerChannel;

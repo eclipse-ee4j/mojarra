@@ -132,7 +132,7 @@ public class FaceletsConfiguration {
         Map<Object, Object> attrs = context.getAttributes();
         result = (FaceletsConfiguration) attrs.get(FaceletsConfiguration.FACELETS_CONFIGURATION_ATTRIBUTE_NAME);
         if (null == result) {
-            WebConfiguration config = WebConfiguration.getInstance(context.getExternalContext());
+            WebConfiguration config = WebConfiguration.getInstance(context);
             result = config.getFaceletsConfiguration();
             attrs.put(FaceletsConfiguration.FACELETS_CONFIGURATION_ATTRIBUTE_NAME, result);
         }

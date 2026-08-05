@@ -293,7 +293,7 @@ public enum FacesContextParam implements ContextParam {
      * @return {@code true} when the value of the context parameter equals to the default value, irrespective of whether it is explicitly set.
      */
     public boolean isDefault(FacesContext context) {
-        WebConfiguration webConfiguration = WebConfiguration.getInstance(context.getExternalContext());
+        WebConfiguration webConfiguration = WebConfiguration.getInstance(context);
         return Objects.deepEquals(webConfiguration.getValue(this), getDefaultValue(webConfiguration.getProjectStage()));
     }
 }

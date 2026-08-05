@@ -18,9 +18,6 @@
 
 package org.glassfish.mojarra.renderkit;
 
-import static org.glassfish.mojarra.context.MojarraContextParam.DISABLE_UNICODE_ESCAPING;
-import static org.glassfish.mojarra.context.MojarraContextParam.ENABLE_SCRIPTS_IN_ATTRIBUTE_VALUES;
-import static org.glassfish.mojarra.context.MojarraContextParam.PREFER_XHTML;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -46,6 +43,7 @@ import jakarta.faces.render.ResponseStateManager;
 import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.config.WebConfiguration;
 import org.glassfish.mojarra.context.ContextParam.Tristate;
+import org.glassfish.mojarra.context.MojarraContextParam;
 import org.glassfish.mojarra.renderkit.html_basic.HtmlResponseWriter;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.MessageUtils;
@@ -86,7 +84,7 @@ public class RenderKitImpl extends RenderKit {
     public RenderKitImpl() {
 
         FacesContext context = FacesContext.getCurrentInstance();
-        webConfig = WebConfiguration.getInstance(context.getExternalContext());
+        webConfig = WebConfiguration.getInstance(context);
 
     }
 
@@ -240,15 +238,15 @@ public class RenderKitImpl extends RenderKit {
             characterEncoding = RIConstants.CHAR_ENCODING;
         }
 
-        boolean scriptInAttributes = webConfig.isEnabled(ENABLE_SCRIPTS_IN_ATTRIBUTE_VALUES);
-        Tristate escaping = webConfig.<Tristate>getValue(DISABLE_UNICODE_ESCAPING);
+        boolean scriptInAttributes = webConfig.isEnabled(MojarraContextParam.ENABLE_SCRIPTS_IN_ATTRIBUTE_VALUES);
+        Tristate escaping = webConfig.<Tristate>getValue(MojarraContextParam.DISABLE_UNICODE_ESCAPING);
         boolean isPartial = context.getPartialViewContext().isPartialRequest();
         return new HtmlResponseWriter(writer, contentType, characterEncoding, scriptInAttributes, escaping, isPartial);
     }
 
     private boolean preferXhtml() {
 
-        return webConfig.isEnabled(PREFER_XHTML);
+        return webConfig.isEnabled(MojarraContextParam.PREFER_XHTML);
 
     }
 

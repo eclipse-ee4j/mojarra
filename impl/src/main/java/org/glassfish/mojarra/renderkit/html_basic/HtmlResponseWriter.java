@@ -29,7 +29,6 @@ import java.util.regex.Pattern;
 import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
-import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.render.Renderer;
@@ -278,10 +277,7 @@ public class HtmlResponseWriter extends ResponseWriter {
 
         FacesContext context = FacesContext.getCurrentInstance();
         if (null != context) {
-            ExternalContext extContext = context.getExternalContext();
-            if (null != extContext) {
-                webConfig = WebConfiguration.getInstance(extContext);
-            }
+            webConfig = WebConfiguration.getInstance(context);
         }
         return webConfig;
     }

@@ -18,8 +18,6 @@ package org.glassfish.mojarra.config;
 
 import static jakarta.faces.application.ProjectStage.PROJECT_STAGE_PARAM_NAME;
 import static java.util.logging.Level.WARNING;
-import static org.glassfish.mojarra.context.MojarraContextParam.ENABLE_CLIENT_STATE_DEBUGGING;
-import static org.glassfish.mojarra.context.MojarraContextParam.GENERATE_UNIQUE_SERVER_STATE_IDS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -32,6 +30,7 @@ import java.util.logging.Logger;
 
 import jakarta.faces.application.ProjectStage;
 
+import org.glassfish.mojarra.context.MojarraContextParam;
 import org.glassfish.mojarra.mock.MockServletContext;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.junit.jupiter.api.AfterEach;
@@ -82,8 +81,8 @@ class DevelopmentOnlyContextParamTest {
     void areHonoredInDevelopment() {
         WebConfiguration webConfiguration = configure(ProjectStage.Development);
 
-        assertTrue(webConfiguration.isEnabled(ENABLE_CLIENT_STATE_DEBUGGING), "client state debugging");
-        assertFalse(webConfiguration.isEnabled(GENERATE_UNIQUE_SERVER_STATE_IDS), "unique server state ids");
+        assertTrue(webConfiguration.isEnabled(MojarraContextParam.ENABLE_CLIENT_STATE_DEBUGGING), "client state debugging");
+        assertFalse(webConfiguration.isEnabled(MojarraContextParam.GENERATE_UNIQUE_SERVER_STATE_IDS), "unique server state ids");
         assertEquals(List.of(), revertedParameterNames(), "nothing is reverted, so nothing is reported");
     }
 
@@ -92,10 +91,10 @@ class DevelopmentOnlyContextParamTest {
     void revertToTheirDefaultElsewhere(ProjectStage projectStage) {
         WebConfiguration webConfiguration = configure(projectStage);
 
-        assertFalse(webConfiguration.isEnabled(ENABLE_CLIENT_STATE_DEBUGGING), "client state debugging");
-        assertTrue(webConfiguration.isEnabled(GENERATE_UNIQUE_SERVER_STATE_IDS), "unique server state ids");
+        assertFalse(webConfiguration.isEnabled(MojarraContextParam.ENABLE_CLIENT_STATE_DEBUGGING), "client state debugging");
+        assertTrue(webConfiguration.isEnabled(MojarraContextParam.GENERATE_UNIQUE_SERVER_STATE_IDS), "unique server state ids");
         assertEquals(
-                List.of(ENABLE_CLIENT_STATE_DEBUGGING.getName(), GENERATE_UNIQUE_SERVER_STATE_IDS.getName()),
+                List.of(MojarraContextParam.ENABLE_CLIENT_STATE_DEBUGGING.getName(), MojarraContextParam.GENERATE_UNIQUE_SERVER_STATE_IDS.getName()),
                 revertedParameterNames().stream().sorted().toList(),
                 "silently dropping a setting which weakens the deployment would be worse than honoring it");
     }
@@ -106,7 +105,7 @@ class DevelopmentOnlyContextParamTest {
      */
     @Test
     void disableClientStateEncryptionStillEnablesClientStateDebugging() {
-        assertTrue(configureDeprecated(ProjectStage.Development).isEnabled(ENABLE_CLIENT_STATE_DEBUGGING));
+        assertTrue(configureDeprecated(ProjectStage.Development).isEnabled(MojarraContextParam.ENABLE_CLIENT_STATE_DEBUGGING));
     }
 
     /**
@@ -117,7 +116,7 @@ class DevelopmentOnlyContextParamTest {
     @ParameterizedTest
     @EnumSource(value = ProjectStage.class, names = "Development", mode = Mode.EXCLUDE)
     void disableClientStateEncryptionIsGatedLikeItsReplacement(ProjectStage projectStage) {
-        assertFalse(configureDeprecated(projectStage).isEnabled(ENABLE_CLIENT_STATE_DEBUGGING));
+        assertFalse(configureDeprecated(projectStage).isEnabled(MojarraContextParam.ENABLE_CLIENT_STATE_DEBUGGING));
     }
 
     private static WebConfiguration configureDeprecated(ProjectStage projectStage) {
@@ -131,8 +130,8 @@ class DevelopmentOnlyContextParamTest {
     private static WebConfiguration configure(ProjectStage projectStage) {
         MockServletContext servletContext = new MockServletContext();
         servletContext.addInitParameter(PROJECT_STAGE_PARAM_NAME, projectStage.name());
-        servletContext.addInitParameter(ENABLE_CLIENT_STATE_DEBUGGING.getName(), "true");
-        servletContext.addInitParameter(GENERATE_UNIQUE_SERVER_STATE_IDS.getName(), "false");
+        servletContext.addInitParameter(MojarraContextParam.ENABLE_CLIENT_STATE_DEBUGGING.getName(), "true");
+        servletContext.addInitParameter(MojarraContextParam.GENERATE_UNIQUE_SERVER_STATE_IDS.getName(), "false");
 
         return gate(servletContext);
     }

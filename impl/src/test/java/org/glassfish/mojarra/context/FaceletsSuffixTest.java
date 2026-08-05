@@ -16,7 +16,6 @@
 
 package org.glassfish.mojarra.context;
 
-import static org.glassfish.mojarra.context.FacesContextParam.FACELETS_SUFFIX;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import java.util.Optional;
@@ -32,14 +31,14 @@ class FaceletsSuffixTest {
 
     @Test
     void everyDeclaredSuffixIsResolved() {
-        Optional<String[]> suffixes = FACELETS_SUFFIX.toValue(".xhtml .html .jsf");
+        Optional<String[]> suffixes = FacesContextParam.FACELETS_SUFFIX.toValue(".xhtml .html .jsf");
 
         assertArrayEquals(new String[] { ".xhtml", ".html", ".jsf" }, suffixes.orElseThrow());
     }
 
     @Test
     void aSingleSuffixResolvesToOne() {
-        Optional<String[]> suffixes = FACELETS_SUFFIX.toValue(".html");
+        Optional<String[]> suffixes = FacesContextParam.FACELETS_SUFFIX.toValue(".html");
 
         assertArrayEquals(new String[] { ".html" }, suffixes.orElseThrow());
     }
@@ -50,7 +49,7 @@ class FaceletsSuffixTest {
      */
     @Test
     void theDefaultIsTheOneSuffixTheSpecificationNames() {
-        String[] suffixes = FACELETS_SUFFIX.getDefaultValue(null);
+        String[] suffixes = FacesContextParam.FACELETS_SUFFIX.getDefaultValue(null);
 
         assertArrayEquals(new String[] { ".xhtml" }, suffixes);
     }

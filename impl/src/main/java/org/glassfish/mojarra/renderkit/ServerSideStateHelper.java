@@ -18,10 +18,6 @@ package org.glassfish.mojarra.renderkit;
 
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINEST;
-import static org.glassfish.mojarra.context.MojarraContextParam.ENABLE_VIEW_STATE_ID_RENDERING;
-import static org.glassfish.mojarra.context.MojarraContextParam.GENERATE_UNIQUE_SERVER_STATE_IDS;
-import static org.glassfish.mojarra.context.MojarraContextParam.NUMBER_OF_STATEFUL_PAGES_PER_SESSION;
-import static org.glassfish.mojarra.context.MojarraContextParam.NUMBER_OF_VIEW_STATES_PER_STATEFUL_PAGE;
 import static org.glassfish.mojarra.context.SessionMap.getMutex;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.PredefinedPostbackParameter.VIEW_STATE_PARAM;
 import static org.glassfish.mojarra.util.Util.notNull;
@@ -47,6 +43,7 @@ import jakarta.faces.context.ResponseWriter;
 
 import org.glassfish.mojarra.config.WebConfiguration;
 import org.glassfish.mojarra.context.FacesContextParam;
+import org.glassfish.mojarra.context.MojarraContextParam;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.LRUMap;
 import org.glassfish.mojarra.util.RequestStateManager;
@@ -98,10 +95,10 @@ public class ServerSideStateHelper extends StateHelper {
      * Construct a new <code>ServerSideStateHelper</code> instance.
      */
     public ServerSideStateHelper() {
-        numberOfStatefulPages = webConfig.<Integer>getValue(NUMBER_OF_STATEFUL_PAGES_PER_SESSION);
-        numberOfViewStatesPerPage = webConfig.<Integer>getValue(NUMBER_OF_VIEW_STATES_PER_STATEFUL_PAGE);
+        numberOfStatefulPages = webConfig.<Integer>getValue(MojarraContextParam.NUMBER_OF_STATEFUL_PAGES_PER_SESSION);
+        numberOfViewStatesPerPage = webConfig.<Integer>getValue(MojarraContextParam.NUMBER_OF_VIEW_STATES_PER_STATEFUL_PAGE);
         WebConfiguration webConfig = WebConfiguration.getInstance();
-        generateUniqueStateIds = webConfig.isEnabled(GENERATE_UNIQUE_SERVER_STATE_IDS);
+        generateUniqueStateIds = webConfig.isEnabled(MojarraContextParam.GENERATE_UNIQUE_SERVER_STATE_IDS);
         if (generateUniqueStateIds) {
             // Construct secure RNG.
             random = new SecureRandom();
@@ -208,7 +205,7 @@ public class ServerSideStateHelper extends StateHelper {
             writer.startElement("input", null);
             writer.writeAttribute("type", "hidden", null);
             writer.writeAttribute("name", VIEW_STATE_PARAM.getName(ctx), null);
-            if (webConfig.isEnabled(ENABLE_VIEW_STATE_ID_RENDERING)) {
+            if (webConfig.isEnabled(MojarraContextParam.ENABLE_VIEW_STATE_ID_RENDERING)) {
                 String viewStateId = Util.getViewStateId(ctx);
                 writer.writeAttribute("id", viewStateId, null);
             }

@@ -17,10 +17,6 @@
 package org.glassfish.mojarra.config;
 
 import static java.util.logging.Level.WARNING;
-import static org.glassfish.mojarra.context.MojarraContextParam.ALLOW_TEXT_CHILDREN;
-import static org.glassfish.mojarra.context.MojarraContextParam.COMPRESS_VIEW_STATE;
-import static org.glassfish.mojarra.context.MojarraContextParam.NUMBER_OF_LOGICAL_VIEWS;
-import static org.glassfish.mojarra.context.MojarraContextParam.NUMBER_OF_STATEFUL_PAGES_PER_SESSION;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -98,12 +94,12 @@ class DeprecatedContextParamTest {
     @Test
     void aDeprecatedParameterWarnsWhenSet() {
         MockServletContext servletContext = new MockServletContext();
-        servletContext.addInitParameter(ALLOW_TEXT_CHILDREN.getName(), "true");
+        servletContext.addInitParameter(MojarraContextParam.ALLOW_TEXT_CHILDREN.getName(), "true");
 
         WebConfiguration webConfiguration = WebConfiguration.getInstance(servletContext);
 
-        assertTrue(webConfiguration.isEnabled(ALLOW_TEXT_CHILDREN), "the value is still honored");
-        assertEquals(List.of(ALLOW_TEXT_CHILDREN.getName()), warnedParameterNames());
+        assertTrue(webConfiguration.isEnabled(MojarraContextParam.ALLOW_TEXT_CHILDREN), "the value is still honored");
+        assertEquals(List.of(MojarraContextParam.ALLOW_TEXT_CHILDREN.getName()), warnedParameterNames());
     }
 
     /**
@@ -122,7 +118,7 @@ class DeprecatedContextParamTest {
     @Test
     void aSupportedParameterIsSilentWhenSet() {
         MockServletContext servletContext = new MockServletContext();
-        servletContext.addInitParameter(COMPRESS_VIEW_STATE.getName(), "false");
+        servletContext.addInitParameter(MojarraContextParam.COMPRESS_VIEW_STATE.getName(), "false");
 
         WebConfiguration.getInstance(servletContext);
 
@@ -136,12 +132,12 @@ class DeprecatedContextParamTest {
     @Test
     void aRenamedParameterHandsItsValueToItsReplacement() {
         MockServletContext servletContext = new MockServletContext();
-        servletContext.addInitParameter(NUMBER_OF_LOGICAL_VIEWS.getName(), "3");
+        servletContext.addInitParameter(MojarraContextParam.NUMBER_OF_LOGICAL_VIEWS.getName(), "3");
 
         WebConfiguration webConfiguration = WebConfiguration.getInstance(servletContext);
 
-        assertEquals(3, (int) webConfiguration.getValue(NUMBER_OF_STATEFUL_PAGES_PER_SESSION));
-        assertEquals(List.of(NUMBER_OF_LOGICAL_VIEWS.getName()), replacedParameterNames());
+        assertEquals(3, (int) webConfiguration.getValue(MojarraContextParam.NUMBER_OF_STATEFUL_PAGES_PER_SESSION));
+        assertEquals(List.of(MojarraContextParam.NUMBER_OF_LOGICAL_VIEWS.getName()), replacedParameterNames());
     }
 
     /**
@@ -150,10 +146,10 @@ class DeprecatedContextParamTest {
     @Test
     void theReplacementWinsWhenBothAreSet() {
         MockServletContext servletContext = new MockServletContext();
-        servletContext.addInitParameter(NUMBER_OF_LOGICAL_VIEWS.getName(), "3");
-        servletContext.addInitParameter(NUMBER_OF_STATEFUL_PAGES_PER_SESSION.getName(), "7");
+        servletContext.addInitParameter(MojarraContextParam.NUMBER_OF_LOGICAL_VIEWS.getName(), "3");
+        servletContext.addInitParameter(MojarraContextParam.NUMBER_OF_STATEFUL_PAGES_PER_SESSION.getName(), "7");
 
-        assertEquals(7, (int) WebConfiguration.getInstance(servletContext).getValue(NUMBER_OF_STATEFUL_PAGES_PER_SESSION));
+        assertEquals(7, (int) WebConfiguration.getInstance(servletContext).getValue(MojarraContextParam.NUMBER_OF_STATEFUL_PAGES_PER_SESSION));
     }
 
     private List<String> replacedParameterNames() {

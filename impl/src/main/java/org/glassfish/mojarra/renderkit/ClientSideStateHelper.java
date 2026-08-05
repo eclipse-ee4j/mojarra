@@ -16,10 +16,6 @@
 
 package org.glassfish.mojarra.renderkit;
 
-import static java.util.logging.Level.WARNING;
-import static org.glassfish.mojarra.context.MojarraContextParam.CLIENT_STATE_TIMEOUT;
-import static org.glassfish.mojarra.context.MojarraContextParam.CLIENT_STATE_WRITE_BUFFER_SIZE;
-import static org.glassfish.mojarra.context.MojarraContextParam.ENABLE_VIEW_STATE_ID_RENDERING;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.PredefinedPostbackParameter.VIEW_STATE_PARAM;
 
 import java.io.BufferedOutputStream;
@@ -80,7 +76,7 @@ public class ClientSideStateHelper extends StateHelper {
      * <code>WebConfiguration</code> and is disabled by default.
      * </p>
      *
-     * @see {@link org.glassfish.mojarra.context.MojarraContextParam#CLIENT_STATE_TIMEOUT}
+     * @see {@link org.glassfish.mojarra.context.MojarraContextParam#MojarraContextParam.CLIENT_STATE_TIMEOUT}
      */
     private boolean stateTimeoutEnabled;
 
@@ -90,7 +86,7 @@ public class ClientSideStateHelper extends StateHelper {
      * particular client view state is valid for.
      * </p>
      *
-     * @see {@link org.glassfish.mojarra.context.MojarraContextParam#CLIENT_STATE_TIMEOUT}
+     * @see {@link org.glassfish.mojarra.context.MojarraContextParam#MojarraContextParam.CLIENT_STATE_TIMEOUT}
      */
     private long stateTimeout;
 
@@ -105,7 +101,7 @@ public class ClientSideStateHelper extends StateHelper {
      * state is written). By default, the buffer size is 8192 (per request).
      * </p>
      *
-     * @see {@link org.glassfish.mojarra.context.MojarraContextParam#CLIENT_STATE_WRITE_BUFFER_SIZE}
+     * @see {@link org.glassfish.mojarra.context.MojarraContextParam#MojarraContextParam.CLIENT_STATE_WRITE_BUFFER_SIZE}
      */
     private int csBuffSize;
 
@@ -152,7 +148,7 @@ public class ClientSideStateHelper extends StateHelper {
             writer.startElement("input", null);
             writer.writeAttribute("type", "hidden", null);
             writer.writeAttribute("name", VIEW_STATE_PARAM.getName(ctx), null);
-            if (webConfig.isEnabled(ENABLE_VIEW_STATE_ID_RENDERING)) {
+            if (webConfig.isEnabled(MojarraContextParam.ENABLE_VIEW_STATE_ID_RENDERING)) {
                 String viewStateId = Util.getViewStateId(ctx);
                 writer.writeAttribute("id", viewStateId, null);
             }
@@ -388,7 +384,7 @@ public class ClientSideStateHelper extends StateHelper {
 
     /**
      * <p>
-     * If the {@link org.glassfish.mojarra.context.MojarraContextParam#CLIENT_STATE_TIMEOUT} init parameter is
+     * If the {@link org.glassfish.mojarra.context.MojarraContextParam#MojarraContextParam.CLIENT_STATE_TIMEOUT} init parameter is
      * set, calculate the elapsed time between the time the client state was written and the time this method was invoked
      * during restore. If the client state has expired, return <code>true</code>. If the client state hasn't expired, or the
      * init parameter wasn't set, return <code>false</code>.
@@ -423,18 +419,18 @@ public class ClientSideStateHelper extends StateHelper {
 
         }
 
-        stateTimeout = webConfig.<Integer>getValue(CLIENT_STATE_TIMEOUT);
+        stateTimeout = webConfig.<Integer>getValue(MojarraContextParam.CLIENT_STATE_TIMEOUT);
         stateTimeoutEnabled = stateTimeout >= 0;
 
-        int size = webConfig.getValue(CLIENT_STATE_WRITE_BUFFER_SIZE);
+        int size = webConfig.getValue(MojarraContextParam.CLIENT_STATE_WRITE_BUFFER_SIZE);
 
         if (size % 2 != 0) {
             if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.log(Level.WARNING, "faces.renderkit.resstatemgr.clientbuf_div_two", new Object[] { CLIENT_STATE_WRITE_BUFFER_SIZE.getName(),
-                        size, CLIENT_STATE_WRITE_BUFFER_SIZE.getDefaultValue(null) });
+                LOGGER.log(Level.WARNING, "faces.renderkit.resstatemgr.clientbuf_div_two", new Object[] { MojarraContextParam.CLIENT_STATE_WRITE_BUFFER_SIZE.getName(),
+                        size, MojarraContextParam.CLIENT_STATE_WRITE_BUFFER_SIZE.getDefaultValue(null) });
             }
 
-            csBuffSize = CLIENT_STATE_WRITE_BUFFER_SIZE.<Integer>getDefaultValue(null);
+            csBuffSize = MojarraContextParam.CLIENT_STATE_WRITE_BUFFER_SIZE.<Integer>getDefaultValue(null);
         } else {
             csBuffSize = size / 2;
 

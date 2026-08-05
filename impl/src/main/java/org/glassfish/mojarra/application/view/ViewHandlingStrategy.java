@@ -53,7 +53,7 @@ public abstract class ViewHandlingStrategy extends ViewDeclarationLanguage {
 
     public ViewHandlingStrategy() {
         FacesContext ctx = FacesContext.getCurrentInstance();
-        webConfig = WebConfiguration.getInstance(ctx.getExternalContext());
+        webConfig = WebConfiguration.getInstance(ctx);
         associate = ApplicationAssociate.getInstance(ctx.getExternalContext());
     }
 

@@ -18,8 +18,6 @@ package org.glassfish.mojarra.application.view;
 
 import static java.util.logging.Level.FINEST;
 import static java.util.logging.Level.WARNING;
-import static org.glassfish.mojarra.context.MojarraContextParam.ENABLE_DISTRIBUTABLE;
-import static org.glassfish.mojarra.context.MojarraContextParam.NUMBER_OF_ACTIVE_VIEW_MAPS;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -49,6 +47,7 @@ import jakarta.servlet.http.HttpSessionListener;
 
 import org.glassfish.mojarra.application.ApplicationAssociate;
 import org.glassfish.mojarra.config.WebConfiguration;
+import org.glassfish.mojarra.context.MojarraContextParam;
 import org.glassfish.mojarra.util.LRUMap;
 
 /**
@@ -99,10 +98,10 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
     public ViewScopeManager() {
         FacesContext context = FacesContext.getCurrentInstance();
         contextManager = new ViewScopeContextManager();
-        WebConfiguration config = WebConfiguration.getInstance(context.getExternalContext());
-        distributable = config.isEnabled(ENABLE_DISTRIBUTABLE);
+        WebConfiguration config = WebConfiguration.getInstance(context);
+        distributable = config.isEnabled(MojarraContextParam.ENABLE_DISTRIBUTABLE);
 
-        numberOfActiveViewMapsInWebXml = config.getValue(NUMBER_OF_ACTIVE_VIEW_MAPS);
+        numberOfActiveViewMapsInWebXml = config.getValue(MojarraContextParam.NUMBER_OF_ACTIVE_VIEW_MAPS);
     }
     
     /**
@@ -301,7 +300,7 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
             size = numberOfActiveViewMapsInWebXml;
 
             if (size == null) {
-                size = NUMBER_OF_ACTIVE_VIEW_MAPS.getValue(facesContext);
+                size = MojarraContextParam.NUMBER_OF_ACTIVE_VIEW_MAPS.getValue(facesContext);
             }
         }
 

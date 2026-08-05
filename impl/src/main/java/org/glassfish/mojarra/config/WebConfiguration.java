@@ -248,11 +248,22 @@ public class WebConfiguration {
      * @return the WebConfiguration for this application or <code>null</code> if no FacesContext is available.
      */
     public static WebConfiguration getInstance() {
-        return getInstance(FacesContext.getCurrentInstance().getExternalContext());
+        return getInstance(FacesContext.getCurrentInstance());
     }
 
     /**
      * Return the WebConfiguration instance for this application.
+     *
+     * @param context the FacesContext for this request
+     * @return the WebConfiguration for this application
+     */
+    public static WebConfiguration getInstance(FacesContext context) {
+        return getInstance(context.getExternalContext());
+    }
+
+    /**
+     * Return the WebConfiguration instance for this application, for a caller which has no FacesContext, and owns the
+     * one place this implementation assumes the context behind an ExternalContext is a ServletContext.
      *
      * @param extContext the ExternalContext for this request
      * @return the WebConfiguration for this application

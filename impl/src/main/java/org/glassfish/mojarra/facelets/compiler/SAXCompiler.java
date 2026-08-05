@@ -16,7 +16,6 @@
 
 package org.glassfish.mojarra.facelets.compiler;
 
-import static org.glassfish.mojarra.context.MojarraContextParam.DISALLOW_DOCTYPE_DECL;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -41,6 +40,7 @@ import jakarta.faces.view.facelets.TagAttributes;
 import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.config.FaceletsConfiguration;
 import org.glassfish.mojarra.config.WebConfiguration;
+import org.glassfish.mojarra.context.MojarraContextParam;
 import org.glassfish.mojarra.facelets.tag.TagAttributeImpl;
 import org.glassfish.mojarra.facelets.tag.TagAttributesImpl;
 import org.glassfish.mojarra.facelets.tag.faces.core.CoreLibrary;
@@ -249,11 +249,11 @@ public final class SAXCompiler extends Compiler {
         }
 
         protected boolean isDisallowDoctypeDeclSet() {
-            return unit.getWebConfiguration().isSet(DISALLOW_DOCTYPE_DECL);
+            return unit.getWebConfiguration().isSet(MojarraContextParam.DISALLOW_DOCTYPE_DECL);
         }
 
         protected boolean isDisallowDoctypeDecl() {
-            return unit.getWebConfiguration().isEnabled(DISALLOW_DOCTYPE_DECL);
+            return unit.getWebConfiguration().isEnabled(MojarraContextParam.DISALLOW_DOCTYPE_DECL);
         }
     }
 

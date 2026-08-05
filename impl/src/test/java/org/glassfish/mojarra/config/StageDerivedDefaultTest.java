@@ -17,14 +17,13 @@
 package org.glassfish.mojarra.config;
 
 import static jakarta.faces.application.ProjectStage.PROJECT_STAGE_PARAM_NAME;
-import static org.glassfish.mojarra.context.MojarraContextParam.CACHE_RESOURCE_MODIFICATION_TIMESTAMP;
-import static org.glassfish.mojarra.context.MojarraContextParam.RESOURCE_UPDATE_CHECK_PERIOD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import jakarta.faces.application.ProjectStage;
 
+import org.glassfish.mojarra.context.MojarraContextParam;
 import org.glassfish.mojarra.mock.MockServletContext;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -109,11 +108,11 @@ class StageDerivedDefaultTest {
         servletContext.addInitParameter(PROJECT_STAGE_PARAM_NAME, projectStage.name());
 
         if (cacheTimestamp != null) {
-            servletContext.addInitParameter(CACHE_RESOURCE_MODIFICATION_TIMESTAMP.getName(), cacheTimestamp);
+            servletContext.addInitParameter(MojarraContextParam.CACHE_RESOURCE_MODIFICATION_TIMESTAMP.getName(), cacheTimestamp);
         }
 
         if (checkPeriod != null) {
-            servletContext.addInitParameter(RESOURCE_UPDATE_CHECK_PERIOD.getName(), checkPeriod);
+            servletContext.addInitParameter(MojarraContextParam.RESOURCE_UPDATE_CHECK_PERIOD.getName(), checkPeriod);
         }
 
         return WebConfiguration.getInstance(servletContext);

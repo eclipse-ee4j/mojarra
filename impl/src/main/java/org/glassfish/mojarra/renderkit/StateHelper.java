@@ -17,7 +17,6 @@
 package org.glassfish.mojarra.renderkit;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.glassfish.mojarra.context.MojarraContextParam.COMPRESS_VIEW_STATE;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.PredefinedPostbackParameter.CLIENT_WINDOW_PARAM;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.PredefinedPostbackParameter.RENDER_KIT_ID_PARAM;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.PredefinedPostbackParameter.VIEW_STATE_PARAM;
@@ -34,6 +33,7 @@ import jakarta.servlet.http.HttpSession;
 
 import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.config.WebConfiguration;
+import org.glassfish.mojarra.context.MojarraContextParam;
 import org.glassfish.mojarra.spi.SerializationProvider;
 import org.glassfish.mojarra.spi.SerializationProviderFactory;
 import org.glassfish.mojarra.util.ByteArrayGuardAESCTR;
@@ -83,8 +83,8 @@ public abstract class StateHelper {
     public StateHelper() {
         FacesContext ctx = FacesContext.getCurrentInstance();
         serialProvider = SerializationProviderFactory.createInstance(ctx.getExternalContext());
-        webConfig = WebConfiguration.getInstance(ctx.getExternalContext());
-        compressViewState = webConfig.isEnabled(COMPRESS_VIEW_STATE);
+        webConfig = WebConfiguration.getInstance(ctx);
+        compressViewState = webConfig.isEnabled(MojarraContextParam.COMPRESS_VIEW_STATE);
         viewStateAutocomplete = webConfig.getViewStateAutocomplete();
 
         if (serialProvider == null) {
