@@ -76,7 +76,7 @@ public class ClientSideStateHelper extends StateHelper {
      * <code>WebConfiguration</code> and is disabled by default.
      * </p>
      *
-     * @see {@link org.glassfish.mojarra.context.MojarraContextParam#MojarraContextParam.CLIENT_STATE_TIMEOUT}
+     * @see {@link org.glassfish.mojarra.context.MojarraContextParam#CLIENT_STATE_TIMEOUT}
      */
     private boolean stateTimeoutEnabled;
 
@@ -86,7 +86,7 @@ public class ClientSideStateHelper extends StateHelper {
      * particular client view state is valid for.
      * </p>
      *
-     * @see {@link org.glassfish.mojarra.context.MojarraContextParam#MojarraContextParam.CLIENT_STATE_TIMEOUT}
+     * @see {@link org.glassfish.mojarra.context.MojarraContextParam#CLIENT_STATE_TIMEOUT}
      */
     private long stateTimeout;
 
@@ -101,7 +101,7 @@ public class ClientSideStateHelper extends StateHelper {
      * state is written). By default, the buffer size is 8192 (per request).
      * </p>
      *
-     * @see {@link org.glassfish.mojarra.context.MojarraContextParam#MojarraContextParam.CLIENT_STATE_WRITE_BUFFER_SIZE}
+     * @see {@link org.glassfish.mojarra.context.MojarraContextParam#CLIENT_STATE_WRITE_BUFFER_SIZE}
      */
     private int csBuffSize;
 
@@ -384,7 +384,7 @@ public class ClientSideStateHelper extends StateHelper {
 
     /**
      * <p>
-     * If the {@link org.glassfish.mojarra.context.MojarraContextParam#MojarraContextParam.CLIENT_STATE_TIMEOUT} init parameter is
+     * If the {@link org.glassfish.mojarra.context.MojarraContextParam#CLIENT_STATE_TIMEOUT} init parameter is
      * set, calculate the elapsed time between the time the client state was written and the time this method was invoked
      * during restore. If the client state has expired, return <code>true</code>. If the client state hasn't expired, or the
      * init parameter wasn't set, return <code>false</code>.

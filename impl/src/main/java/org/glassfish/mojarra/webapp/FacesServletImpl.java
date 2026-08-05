@@ -168,7 +168,7 @@ import org.glassfish.mojarra.context.MojarraContextParam;
  *
  * <p class="changed_added_2_3">
  * Note that the automatic mapping to {@code *.xhtml} can be disabled with the context param
- * {@link #DISABLE_FACESSERVLET_TO_XHTML_PARAM_NAME}.
+ * {@link FacesServlet#DISABLE_FACESSERVLET_TO_XHTML_PARAM_NAME}.
  * </p>
  *
  * <div class="changed_added_2_2">
