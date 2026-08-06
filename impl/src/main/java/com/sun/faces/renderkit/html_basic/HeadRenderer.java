@@ -18,7 +18,7 @@ package com.sun.faces.renderkit.html_basic;
 
 import java.io.IOException;
 
-import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.Attributes;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
 
@@ -37,7 +37,7 @@ import jakarta.faces.render.Renderer;
  */
 public class HeadRenderer extends Renderer {
 
-    private static final Attribute[] HEAD_ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.OUTPUTHEAD);
+    private static final Attributes HEAD_ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.OUTPUTHEAD);
 
     @Override
     public void decode(FacesContext context, UIComponent component) {

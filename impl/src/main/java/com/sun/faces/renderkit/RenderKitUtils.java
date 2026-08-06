@@ -293,10 +293,10 @@ public class RenderKitUtils {
      * @param context the FacesContext for this request
      * @param writer writer the {@link jakarta.faces.context.ResponseWriter} to be used when writing the attributes
      * @param component the component
-     * @param attributes an array of attributes to be processed
+     * @param attributes the pass-through attributes to be processed
      * @throws IOException if an error occurs writing the attributes
      */
-    public static void renderPassThruAttributes(FacesContext context, ResponseWriter writer, UIComponent component, Attribute[] attributes) throws IOException {
+    public static void renderPassThruAttributes(FacesContext context, ResponseWriter writer, UIComponent component, Attributes attributes) throws IOException {
 
         assert null != component;
 
@@ -339,13 +339,13 @@ public class RenderKitUtils {
      * @param component the component
      * @param clientId the client id to be associated with any behaviors
      * @param incExec whether to include incExec parameter
-     * @param attributes an array of attributes to be processed
+     * @param attributes the pass-through attributes to be processed
      * @param defaultDomEvent the name of the default dom-level event of this component (e.g. "click", "change")
      * @param defaultComponentEvent the name of the default component-level event of this component (e.g. "action", "valueChange")
      * @throws IOException if an error occurs writing the attributes
      */
     public static void renderPassThruAttributes(FacesContext context, ResponseWriter writer, UIComponent component, String clientId, boolean incExec,
-            Attribute[] attributes, String defaultDomEvent, String defaultComponentEvent) throws IOException {
+            Attributes attributes, String defaultDomEvent, String defaultComponentEvent) throws IOException {
 
         Map<String, List<ClientBehavior>> behaviors = null;
         boolean hasValueChangeBehavior = false;
@@ -379,7 +379,7 @@ public class RenderKitUtils {
     }
 
     private static void renderPassThruAttributesInternal(FacesContext context, ResponseWriter writer, UIComponent component,
-            Attribute[] attributes, Map<String, List<ClientBehavior>> behaviors, String defaultDomEvent) throws IOException {
+            Attributes attributes, Map<String, List<ClientBehavior>> behaviors, String defaultDomEvent) throws IOException {
 
         assert null != writer;
         assert null != component;
@@ -680,18 +680,18 @@ public class RenderKitUtils {
 
     /**
      * <p>
-     * For each attribute in <code>setAttributes</code>, perform a binary search against the array of
-     * <code>knownAttributes</code> If a match is found and the value is not <code>null</code>, render the attribute.
+     * For each attribute in <code>setAttributes</code>, look it up among <code>knownAttributes</code>. If it is one of
+     * them and the value is not <code>null</code>, render the attribute.
      *
      * @param context the {@link FacesContext} of the current request
      * @param writer the current writer
      * @param component the component whose attributes we're rendering
-     * @param knownAttributes an array of pass-through attributes supported by this component
+     * @param knownAttributes the pass-through attributes supported by this component
      * @param setAttributes a <code>List</code> of attributes that have been set on the provided component
      * @param behaviors the non-null behaviors map for this request.
      * @throws IOException if an error occurs during the write
      */
-    private static void renderPassThruAttributesOptimized(FacesContext context, ResponseWriter writer, UIComponent component, Attribute[] knownAttributes,
+    private static void renderPassThruAttributesOptimized(FacesContext context, ResponseWriter writer, UIComponent component, Attributes knownAttributes,
             List<String> setAttributes, Map<String, List<ClientBehavior>> behaviors, String excludedEventAttribute) throws IOException {
 
         // We should only come in here if we've got zero or one behavior event
@@ -707,17 +707,12 @@ public class RenderKitUtils {
                 continue;
             }
 
-            // Note that this search can be optimized by switching from
-            // an array to a Map<String, Attribute>. This would change
-            // the search time from O(log n) to O(1).
-            int index = Arrays.binarySearch(knownAttributes, Attribute.attr(name));
-            if (index >= 0) {
+            Attribute knownAttribute = knownAttributes.get(name);
+            if (knownAttribute != null) {
                 Object value = attrMap.get(name);
                 if (value != null && shouldRenderAttribute(value)) {
 
-                    Attribute attr = knownAttributes[index];
-
-                    if (isBehaviorEventAttribute(attr, behaviorEventName)) {
+                    if (isBehaviorEventAttribute(knownAttribute, behaviorEventName)) {
                         addBehaviorEventListener(context, component, null, null, name, value, behaviorEventName, behaviorEventName, null, false, false,
                                 ResourceHandlerImpl.resolveCurrentNonce(context) != null, false);
 
@@ -780,12 +775,12 @@ public class RenderKitUtils {
      * @param context the {@link FacesContext} of the current request
      * @param writer the current writer
      * @param component the component whose attributes we're rendering
-     * @param knownAttributes an array of pass-through attributes supported by this component
+     * @param knownAttributes the pass-through attributes supported by this component
      * @param setAttributes a <code>List</code> of attributes that have been set on the provided component
      * @param behaviors the non-null behaviors map for this request.
      * @throws IOException if an error occurs during the write
      */
-    private static void renderPassThruAttributesUnoptimized(FacesContext context, ResponseWriter writer, UIComponent component, Attribute[] knownAttributes,
+    private static void renderPassThruAttributesUnoptimized(FacesContext context, ResponseWriter writer, UIComponent component, Attributes knownAttributes,
             List<String> setAttributes, Map<String, List<ClientBehavior>> behaviors, String excludedEventAttribute) throws IOException {
 
         boolean isXhtml = RIConstants.XHTML_CONTENT_TYPE.equals(writer.getContentType());

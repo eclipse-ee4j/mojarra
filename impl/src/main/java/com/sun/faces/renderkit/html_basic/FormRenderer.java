@@ -27,7 +27,7 @@ import java.util.logging.Level;
 
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter;
-import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.Attributes;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
 
@@ -44,7 +44,7 @@ import jakarta.faces.context.ResponseWriter;
  * */
 public class FormRenderer extends HtmlBasicRenderer {
 
-    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.FORMFORM);
+    private static final Attributes ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.FORMFORM);
 
     private boolean writeStateAtEnd;
 

@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.Attributes;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.MessageUtils;
@@ -35,7 +35,7 @@ import jakarta.faces.context.ResponseWriter;
 
 public class OutcomeTargetLinkRenderer extends OutcomeTargetRenderer {
 
-    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.OUTCOMETARGETLINK);
+    private static final Attributes ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.OUTCOMETARGETLINK);
 
     private static final String NO_NAV_CASE = OutcomeTargetLinkRenderer.class.getName() + "_NO_NAV_CASE";
 

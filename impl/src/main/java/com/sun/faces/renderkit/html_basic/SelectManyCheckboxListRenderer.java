@@ -34,7 +34,7 @@ import jakarta.faces.convert.Converter;
 import jakarta.faces.model.SelectItem;
 import jakarta.faces.model.SelectItemGroup;
 
-import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.Attributes;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.RequestStateManager;
@@ -46,7 +46,7 @@ import com.sun.faces.util.RequestStateManager;
 
 public class SelectManyCheckboxListRenderer extends MenuRenderer {
 
-    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.SELECTMANYCHECKBOX);
+    private static final Attributes ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.SELECTMANYCHECKBOX);
 
     // ---------------------------------------------------------- Public Methods
 
