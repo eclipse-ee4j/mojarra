@@ -17,7 +17,6 @@
 package com.sun.faces.facelets.component;
 
 import static com.sun.faces.cdi.CdiUtils.createDataModel;
-import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.BEHAVIOR_SOURCE_PARAM;
 import static com.sun.faces.util.Util.isNestedInIterator;
 
 import java.io.IOException;
@@ -762,16 +761,11 @@ public class UIRepeat extends UINamingContainer {
         return false;
     }
 
+    // SKIP_ITERATION is honored unconditionally, as UIData does. A visit that asks for it wants the
+    // row-less clientIds: full state saving keys the saved component state by them, so iterating anyway
+    // makes the restore look up repeat:N:foo for state filed under repeat:foo and restore nothing.
     private boolean requiresRowIteration(VisitContext ctx) {
-        boolean shouldIterate = !ctx.getHints().contains(VisitHint.SKIP_ITERATION);
-        if (!shouldIterate) {
-            FacesContext faces = ctx.getFacesContext();
-            String sourceId = BEHAVIOR_SOURCE_PARAM.getValue(faces);
-            boolean containsSource = sourceId != null ? sourceId.startsWith(super.getClientId(faces) + getSeparatorChar(faces)) : false;
-            return containsSource;
-        } else {
-            return shouldIterate;
-        }
+        return !ctx.getHints().contains(VisitHint.SKIP_ITERATION);
     }
 
     // Tests whether we need to visit our children as part of
