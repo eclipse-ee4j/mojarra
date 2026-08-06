@@ -62,8 +62,6 @@ import jakarta.faces.render.RenderKitFactory;
 
 public class FacesContextImpl extends FacesContext {
 
-    private static final String POST_BACK_MARKER = FacesContextImpl.class.getName() + "_POST_BACK";
-
     // Queried by InjectionFacesContextFactory
     private static final ThreadLocal<FacesContext> DEFAULT_FACES_CONTEXT = new ThreadLocal<>();
 
@@ -87,6 +85,7 @@ public class FacesContextImpl extends FacesContext {
     private boolean renderResponse = false;
     private boolean responseComplete = false;
     private boolean validationFailed = false;
+    private Boolean postback;
     private Map<Object, Object> attributes;
     private List<String> resourceLibraryContracts;
     private PhaseId currentPhaseId;
@@ -182,7 +181,6 @@ public class FacesContextImpl extends FacesContext {
     public boolean isPostback() {
 
         assertNotReleased();
-        Boolean postback = (Boolean) getAttributes().get(POST_BACK_MARKER);
         if (postback == null) {
             RenderKit rk = getRenderKit();
             if (rk != null) {
@@ -193,7 +191,6 @@ public class FacesContextImpl extends FacesContext {
                 String rkId = vh.calculateRenderKitId(this);
                 postback = RenderKitUtils.getResponseStateManager(this, rkId).isPostback(this);
             }
-            getAttributes().put(POST_BACK_MARKER, postback);
         }
 
         return postback;
@@ -526,6 +523,7 @@ public class FacesContextImpl extends FacesContext {
         renderResponse = false;
         responseComplete = false;
         validationFailed = false;
+        postback = null;
         viewRoot = null;
         maxSeverity = null;
         application = null;
