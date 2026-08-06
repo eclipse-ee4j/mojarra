@@ -16,6 +16,7 @@
 
 package org.glassfish.mojarra.facelets.tag.faces;
 
+import static java.util.Arrays.asList;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,8 +43,10 @@ import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.Tag;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagAttributeException;
+import jakarta.faces.view.facelets.TagAttributes;
 
 import org.glassfish.mojarra.context.StateContext;
+import org.glassfish.mojarra.facelets.tag.TagAttributesImpl;
 import org.glassfish.mojarra.facelets.tag.faces.core.FacetHandler;
 import org.glassfish.mojarra.util.Util;
 
@@ -686,17 +689,36 @@ public final class ComponentSupport {
             return;
         }
 
-        for (String namespace : PassThroughAttributeLibrary.NAMESPACES) {
-            TagAttribute[] passthroughAttrs = t.getAttributes().getAll(namespace);
-            if (null != passthroughAttrs && 0 < passthroughAttrs.length) {
-                Map<String, Object> componentPassthroughAttrs = c.getPassThroughAttributes(true);
-                Object attrValue = null;
-                for (TagAttribute cur : passthroughAttrs) {
-                    attrValue = cur.isLiteral() ? cur.getValue(ctx) : cur.getValueExpression(ctx, Object.class);
-                    componentPassthroughAttrs.put(cur.getLocalName(), attrValue);
-                }
-            }
+        TagAttribute[] passthroughAttrs = passthroughAttributes(t.getAttributes());
+
+        if (0 == passthroughAttrs.length) {
+            return;
         }
+
+        Map<String, Object> componentPassthroughAttrs = c.getPassThroughAttributes(true);
+        for (TagAttribute cur : passthroughAttrs) {
+            Object attrValue = cur.isLiteral() ? cur.getValue(ctx) : cur.getValueExpression(ctx, Object.class);
+            componentPassthroughAttrs.put(cur.getLocalName(), attrValue);
+        }
+    }
+
+    /**
+     * Returns the attributes of the given tag that are in a pass-through namespace: from the field the standard
+     * implementation singles them out into when the tag is compiled, and by searching each pass-through namespace for
+     * any other implementation.
+     */
+    private static TagAttribute[] passthroughAttributes(TagAttributes attributes) {
+
+        if (attributes instanceof TagAttributesImpl) {
+            return ((TagAttributesImpl) attributes).getPassthroughAttributes();
+        }
+
+        List<TagAttribute> passthrough = new ArrayList<>();
+        for (String namespace : PassThroughAttributeLibrary.NAMESPACES) {
+            passthrough.addAll(asList(attributes.getAll(namespace)));
+        }
+
+        return passthrough.toArray(new TagAttribute[passthrough.size()]);
     }
 
     public static Collection<Object[]> saveDescendantInitialComponentStates(FacesContext facesContext, Iterator<UIComponent> childIterator, boolean saveChildFacets) {

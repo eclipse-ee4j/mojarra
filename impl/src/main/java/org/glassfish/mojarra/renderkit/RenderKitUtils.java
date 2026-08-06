@@ -406,7 +406,9 @@ public class RenderKitUtils {
     /**
      * Returns the names of the attributes that have been explicitly set on the given component, either as a literal value
      * or as a value expression, or an empty list when none have been set. This is the same list that
-     * {@link #renderPassThruAttributes} consults to skip reflective reads of attributes that were never set.
+     * {@link #renderPassThruAttributes} consults to skip reflective reads of attributes that were never set. Its writer,
+     * {@code HtmlComponentUtils.handleAttribute}, keeps it in natural order, which is therefore the order in which the
+     * attributes are emitted.
      */
     @SuppressWarnings("unchecked")
     public static List<String> getAttributesThatAreSet(UIComponent component) {
@@ -685,7 +687,6 @@ public class RenderKitUtils {
         String behaviorEventName = getSingleBehaviorEventName(behaviors);
         boolean renderedBehavior = false;
 
-        Collections.sort(setAttributes);
         boolean isXhtml = RIConstants.XHTML_CONTENT_TYPE.equals(writer.getContentType());
         Map<String, Object> attrMap = component.getAttributes();
         for (String name : setAttributes) {

@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -131,6 +131,10 @@ public class HtmlResponseWriter extends ResponseWriter {
     private final static int cdataTextBufferSize = 128;
     private char[] cdataTextBuffer;
 
+    /**
+     * The pass-through attributes of the element currently being started. This aliases the component's own map, so it
+     * must never be mutated here; {@link #pushElementName} takes a copy for the one case that needs to drop a key.
+     */
     private Map<String, Object> passthroughAttributes;
 
     // Component associated with the most-recently-opened element, captured from startElement(name,
@@ -1012,13 +1016,13 @@ public class HtmlResponseWriter extends ResponseWriter {
 
     }
 
-    private void considerPassThroughAttributes(Map<String, Object> toCopy) {
-        assert null != toCopy && !toCopy.isEmpty();
+    private void considerPassThroughAttributes(Map<String, Object> attributes) {
+        assert null != attributes && !attributes.isEmpty();
 
         if (null != passthroughAttributes) {
             throw new IllegalStateException("Error, this method should only be called once per instance.");
         }
-        passthroughAttributes = new HashMap<>(toCopy);
+        passthroughAttributes = attributes;
     }
 
     private boolean containsPassThroughAttribute(String attrName) {
@@ -1030,10 +1034,7 @@ public class HtmlResponseWriter extends ResponseWriter {
     }
 
     private void clearPassthroughAttributes() {
-        if (passthroughAttributes != null) {
-            passthroughAttributes.clear();
-            passthroughAttributes = null;
-        }
+        passthroughAttributes = null;
     }
 
     /**
@@ -1093,10 +1094,12 @@ public class HtmlResponseWriter extends ResponseWriter {
 
         String name = getElementName(original);
 
-        if (passthroughAttributes != null) {
-            passthroughAttributes.remove(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY);
-            if (passthroughAttributes.isEmpty()) {
+        if (containsPassThroughAttribute(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY)) {
+            if (passthroughAttributes.size() == 1) {
                 passthroughAttributes = null;
+            } else {
+                passthroughAttributes = new LinkedHashMap<>(passthroughAttributes);
+                passthroughAttributes.remove(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY);
             }
         }
 
