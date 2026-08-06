@@ -33,6 +33,9 @@ class HtmlComponentUtils {
      * {@code AttributeManager}, because it must be emitted as the HTML {@code class} attribute (a name rename the generic
      * pass-through loop cannot perform) and is therefore rendered inline by each renderer instead.
      * <p>
+     * Attributes are recorded in natural order, which is the order in which they are emitted; the render side walks the
+     * list as it finds it.
+     * <p>
      * Only standard components (those in the {@code jakarta.faces.component} package, i.e. the generated {@code Html*}
      * classes) maintain the list; for any other component type it is never created and the optimization is simply
      * skipped. A {@code null} {@code value} clears the tracking unless a {@link ValueExpression} is bound to {@code name},
@@ -62,10 +65,35 @@ class HtmlComponentUtils {
                 if (ve == null) {
                     setAttributes.remove(name);
                 }
-            } else if (!setAttributes.contains(name)) {
-                setAttributes.add(name);
+            } else {
+                int index = insertionPoint(setAttributes, name);
+                if (index >= 0) {
+                    setAttributes.add(index, name);
+                }
             }
         }
+    }
+
+    /**
+     * Returns the index at which {@code name} belongs for the recorded attributes to stay in natural order, or -1 when
+     * it is recorded already. The list is scanned end to end rather than binary-searched because
+     * {@code UIComponentBase.AttributesMap} appends the attributes that have no component property to the tail of this
+     * same list, so it cannot be assumed ordered.
+     */
+    private static int insertionPoint(List<String> setAttributes, String name) {
+        int index = setAttributes.size();
+
+        for (int i = 0; i < setAttributes.size(); i++) {
+            int order = setAttributes.get(i).compareTo(name);
+            if (order == 0) {
+                return -1;
+            }
+            if (order > 0 && i < index) {
+                index = i;
+            }
+        }
+
+        return index;
     }
 
 }

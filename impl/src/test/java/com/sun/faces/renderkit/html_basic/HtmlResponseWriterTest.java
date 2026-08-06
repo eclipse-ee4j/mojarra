@@ -24,6 +24,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,7 @@ import org.junit.jupiter.api.Test;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIOutput;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.render.Renderer;
 
 public class HtmlResponseWriterTest {
 
@@ -279,6 +281,88 @@ public class HtmlResponseWriterTest {
         writer.flush();
 
         assertEquals("<input type=\"text\" data-flag=\"yes\" />", sw.toString());
+        writer.close();
+    }
+
+    /**
+     * Pass-through attributes are emitted in the order they were set on the component, so a view renders
+     * byte-identically across requests and JVMs rather than in a hash order.
+     */
+    @Test
+    public void testPassThroughAttributesAreEmittedInTheOrderTheyWereSet() throws Exception {
+        UIComponent component = new UIOutput();
+        Map<String, Object> passThroughAttributes = component.getPassThroughAttributes(true);
+        passThroughAttributes.put("data-zulu", "1");
+        passThroughAttributes.put("data-alpha", "2");
+        passThroughAttributes.put("data-mike", "3");
+
+        StringWriter sw = new StringWriter();
+        HtmlResponseWriter writer = new HtmlResponseWriter(sw, "text/html", "UTF-8");
+        writer.startElement("div", component);
+        writer.endElement("div");
+        writer.flush();
+
+        assertEquals("<div data-zulu=\"1\" data-alpha=\"2\" data-mike=\"3\"></div>", sw.toString());
+        writer.close();
+    }
+
+    /**
+     * Rendering must not mutate the component's own pass-through attribute map: the writer reads it in place, and a
+     * component renders more than once (ajax re-render, a second view of the same tree).
+     */
+    @Test
+    public void testRenderingLeavesTheComponentPassThroughAttributesIntact() throws Exception {
+        UIComponent component = new UIOutput();
+        component.getPassThroughAttributes(true).put("data-x", "1");
+        component.getPassThroughAttributes(true).put(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY, "section");
+
+        StringWriter sw = new StringWriter();
+        HtmlResponseWriter writer = new HtmlResponseWriter(sw, "text/html", "UTF-8");
+        writer.startElement("div", component);
+        writer.endElement("div");
+        writer.flush();
+        writer.close();
+
+        assertEquals(2, component.getPassThroughAttributes(false).size());
+        assertEquals("section", component.getPassThroughAttributes(false).get(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY));
+    }
+
+    /**
+     * The {@code elementName} pass-through attribute renames the element and is itself never emitted as an attribute,
+     * whichever other pass-through attributes accompany it.
+     */
+    @Test
+    public void testElementNameRenamesTheElementAndIsNotEmitted() throws Exception {
+        UIComponent component = new UIOutput();
+        component.getPassThroughAttributes(true).put(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY, "section");
+        component.getPassThroughAttributes(true).put("data-x", "1");
+
+        StringWriter sw = new StringWriter();
+        HtmlResponseWriter writer = new HtmlResponseWriter(sw, "text/html", "UTF-8");
+        writer.startElement("div", component);
+        writer.endElement("div");
+        writer.flush();
+
+        assertEquals("<section data-x=\"1\"></section>", sw.toString());
+        writer.close();
+    }
+
+    /**
+     * An {@code elementName} that is the only pass-through attribute renames the element and leaves nothing to emit.
+     */
+    @Test
+    public void testLoneElementNameRenamesTheElement() throws Exception {
+        UIComponent component = new UIOutput();
+        component.getPassThroughAttributes(true).put(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY, "section");
+
+        StringWriter sw = new StringWriter();
+        HtmlResponseWriter writer = new HtmlResponseWriter(sw, "text/html", "UTF-8");
+        writer.startElement("div", component);
+        writer.writeAttribute("id", "regular", null);
+        writer.endElement("div");
+        writer.flush();
+
+        assertEquals("<section id=\"regular\"></section>", sw.toString());
         writer.close();
     }
 
