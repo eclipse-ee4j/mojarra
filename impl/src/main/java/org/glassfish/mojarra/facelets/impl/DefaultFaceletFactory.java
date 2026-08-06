@@ -20,7 +20,6 @@ import static java.util.logging.Level.FINEST;
 import static java.util.regex.Pattern.quote;
 import static org.glassfish.mojarra.RIConstants.CHAR_ENCODING;
 import static org.glassfish.mojarra.cdi.CdiUtils.getBeanReference;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.UseFaceletsID;
 import static org.glassfish.mojarra.util.Util.isEmpty;
 import static org.glassfish.mojarra.util.Util.notNull;
 import static org.glassfish.mojarra.util.Util.saveDOCTYPEToFacesContextAttributes;
@@ -62,7 +61,7 @@ import jakarta.faces.view.facelets.FaceletHandler;
 import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.application.ApplicationAssociate;
 import org.glassfish.mojarra.application.resource.ResourceManager;
-import org.glassfish.mojarra.config.WebConfiguration;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.context.FacesFileNotFoundException;
 import org.glassfish.mojarra.facelets.compiler.Compiler;
 import org.glassfish.mojarra.util.Cache;
@@ -109,17 +108,14 @@ public class DefaultFaceletFactory {
         notNull("compiler", compiler);
         notNull("resolver", resolver);
 
-        ExternalContext externalContext = facesContext.getExternalContext();
-        WebConfiguration config = WebConfiguration.getInstance(externalContext);
-
         this.compiler = compiler;
         cachePerContract = new ConcurrentHashMap<>();
         this.resolver = resolver;
-        this.manager = ApplicationAssociate.getInstance(externalContext).getResourceManager();
+        this.manager = ApplicationAssociate.getInstance(facesContext.getExternalContext()).getResourceManager();
         baseUrl = resolver.resolveUrl("/");
         baseUrlAsString = baseUrl.toExternalForm();
         faceletResourceSuffixes = Util.getFaceletResourceSuffixes(facesContext);
-        this.idMappers = config.isOptionEnabled(UseFaceletsID) ? null : new Cache<>(new IdMapperFactory());
+        this.idMappers = MojarraContextParam.USE_FACELETS_ID.isEnabled(facesContext) ? null : new Cache<>(new IdMapperFactory());
         this.refreshPeriodInMillis = refreshPeriodInSeconds >= 0 ? refreshPeriodInSeconds * 1000 : -1;
         if (log.isLoggable(Level.FINE)) {
             log.log(Level.FINE, "Using ResourceResolver: {0}", resolver);
@@ -444,7 +440,7 @@ public class DefaultFaceletFactory {
             String contractsKey = builder.toString();
             FaceletCache<DefaultFacelet> faceletCache = cachePerContract.get(contractsKey);
             if (faceletCache == null) {
-                // PENDING(FCAPUTO) we don't support org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter#FaceletCache for
+                // PENDING(FCAPUTO) we don't support org.glassfish.mojarra.context.MojarraContextParam#FaceletCache for
                 // contracts
                 faceletCache = initCache(null);
                 cachePerContract.putIfAbsent(contractsKey, faceletCache);

@@ -77,7 +77,7 @@ import org.glassfish.mojarra.application.resource.ResourceCache;
 import org.glassfish.mojarra.application.resource.ResourceManager;
 import org.glassfish.mojarra.component.search.SearchExpressionHandlerImpl;
 import org.glassfish.mojarra.config.ConfigManager;
-import org.glassfish.mojarra.context.FacesContextParam;
+import org.glassfish.mojarra.config.FacesContextParam;
 import org.glassfish.mojarra.el.DemuxCompositeELResolver;
 import org.glassfish.mojarra.facelets.compiler.Compiler;
 import org.glassfish.mojarra.facelets.compiler.SAXCompiler;
@@ -300,7 +300,7 @@ public class ApplicationAssociate {
             String facesConfigVersion = getFacesConfigXmlVersion(context);
             context.getExternalContext().getApplicationMap().put(FACES_CONFIG_VERSION, facesConfigVersion);
 
-            if (FacesContextParam.AUTOMATIC_EXTENSIONLESS_MAPPING.isSet(context)) {
+            if (FacesContextParam.AUTOMATIC_EXTENSIONLESS_MAPPING.isEnabled(context)) {
                 getFacesServletRegistration(context)
                     .ifPresent(registration ->
                         viewHandler.getViews(context, "/", RETURN_AS_MINIMAL_IMPLICIT_OUTCOME)
@@ -621,7 +621,7 @@ public class ApplicationAssociate {
     protected DefaultFaceletFactory createFaceletFactory(FacesContext context, Compiler compiler) {
 
         // refresh period
-        int refreshPeriodInSeconds = FacesContextParam.FACELETS_REFRESH_PERIOD.getValue(context);
+        int refreshPeriodInSeconds = FacesContextParam.FACELETS_REFRESH_PERIOD.getInt(context);
 
         // resource resolver
         DefaultResourceResolver resolver = new DefaultResourceResolver(applicationImpl.getResourceHandler());
@@ -641,7 +641,7 @@ public class ApplicationAssociate {
         loadDecorators(context, newCompiler);
 
         // Skip params?
-        newCompiler.setTrimmingComments(FacesContextParam.FACELETS_SKIP_COMMENTS.isSet(context));
+        newCompiler.setTrimmingComments(FacesContextParam.FACELETS_SKIP_COMMENTS.isEnabled(context));
 
         addTagLibraries(newCompiler);
 
@@ -649,7 +649,7 @@ public class ApplicationAssociate {
     }
 
     protected void loadDecorators(FacesContext context, Compiler newCompiler) {
-        String[] decorators = FacesContextParam.FACELETS_DECORATORS.getValue(context);
+        String[] decorators = FacesContextParam.FACELETS_DECORATORS.getStringArray(context);
 
         for (String decorator : decorators) {
             try {

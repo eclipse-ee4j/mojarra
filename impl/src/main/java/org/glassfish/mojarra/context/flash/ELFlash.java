@@ -18,8 +18,6 @@
 package org.glassfish.mojarra.context.flash;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.ForceAlwaysWriteFlashCookie;
 
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -48,11 +46,11 @@ import jakarta.faces.event.PostKeepFlashValueEvent;
 import jakarta.faces.event.PostPutFlashValueEvent;
 import jakarta.faces.event.PreClearFlashEvent;
 import jakarta.faces.event.PreRemoveFlashValueEvent;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
-import org.glassfish.mojarra.config.WebConfiguration;
-import org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.facelets.tag.ui.UIDebug;
 import org.glassfish.mojarra.util.ByteArrayGuardAESCTR;
 import org.glassfish.mojarra.util.FacesLogger;
@@ -111,11 +109,13 @@ public class ELFlash extends Flash {
 
     private final AtomicLong sequenceNumber = new AtomicLong(0);
 
-    private int numberOfConcurentFlashUsers = Integer.parseInt(WebContextInitParameter.NumberOfConcurrentFlashUsers.getDefaultValue());
+    private int numberOfConcurentFlashUsers;
 
-    private long numberOfFlashesBetweenFlashReapings = Long.parseLong(WebContextInitParameter.NumberOfFlashesBetweenFlashReapings.getDefaultValue());
+    private long numberOfFlashesBetweenFlashReapings;
 
     private final boolean distributable;
+
+    private final boolean forceAlwaysWriteFlashCookie;
 
     private final ByteArrayGuardAESCTR guard;
 
@@ -201,29 +201,11 @@ public class ELFlash extends Flash {
     /** Creates a new instance of ELFlash */
     ELFlash(ExternalContext extContext) {
         flashInnerMap = new ConcurrentHashMap<>();
-        WebConfiguration config = WebConfiguration.getInstance(extContext);
-        String value;
-        try {
-            value = config.getOptionValue(WebContextInitParameter.NumberOfConcurrentFlashUsers);
-            numberOfConcurentFlashUsers = Integer.parseInt(value);
-        } catch (NumberFormatException nfe) {
-            if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.log(Level.WARNING, "Unable to set number of concurrent flash users.  Defaulting to {0}", numberOfConcurentFlashUsers);
-            }
-
-        }
-
-        try {
-            value = config.getOptionValue(WebContextInitParameter.NumberOfFlashesBetweenFlashReapings);
-            numberOfFlashesBetweenFlashReapings = Long.parseLong(value);
-        } catch (NumberFormatException nfe) {
-            if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.log(Level.WARNING, "Unable to set number flashes between flash repaings.  Defaulting to {0}", numberOfFlashesBetweenFlashReapings);
-            }
-
-        }
-
-        distributable = config.isOptionEnabled(EnableDistributable);
+        ServletContext servletContext = (ServletContext) extContext.getContext();
+        numberOfConcurentFlashUsers = MojarraContextParam.NUMBER_OF_CONCURRENT_FLASH_USERS.getInt(servletContext);
+        numberOfFlashesBetweenFlashReapings = MojarraContextParam.NUMBER_OF_FLASHES_BETWEEN_FLASH_REAPINGS.getInt(servletContext);
+        distributable = MojarraContextParam.ENABLE_DISTRIBUTABLE.isEnabled(servletContext);
+        forceAlwaysWriteFlashCookie = MojarraContextParam.FORCE_ALWAYS_WRITE_FLASH_COOKIE.isEnabled(servletContext);
 
         guard = new ByteArrayGuardAESCTR();
 
@@ -270,7 +252,7 @@ public class ELFlash extends Flash {
          * If we are in a clustered environment and a session is active, store a helper to ensure our innerMap gets successfully
          * replicated.
          */
-        if (appMap.get(EnableDistributable.getQualifiedName()) != null) {
+        if (appMap.get(MojarraContextParam.ENABLE_DISTRIBUTABLE.getName()) != null) {
             synchronized (extContext.getContext()) {
                 if (extContext.getSession(false) != null) {
                     SessionHelper sessionHelper = SessionHelper.getInstance(extContext);
@@ -539,8 +521,7 @@ public class ELFlash extends Flash {
             if (isKeepMessages()) {
                 restoreAllMessages(context);
             }
-        } else if (currentPhase.equals(PhaseId.RENDER_RESPONSE) && contextMap.containsKey(ForceAlwaysWriteFlashCookie)
-                && (Boolean) contextMap.get(ForceAlwaysWriteFlashCookie)) {
+        } else if (currentPhase.equals(PhaseId.RENDER_RESPONSE) && forceAlwaysWriteFlashCookie) {
             PreviousNextFlashInfoManager flashManager = getCurrentFlashManager(contextMap, true);
             cookie = flashManager.encode();
             if (null != cookie) {

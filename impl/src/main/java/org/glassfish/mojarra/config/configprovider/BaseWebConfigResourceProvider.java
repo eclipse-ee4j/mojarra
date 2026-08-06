@@ -32,7 +32,7 @@ import jakarta.faces.FacesException;
 import jakarta.faces.context.FacesContext;
 import jakarta.servlet.ServletContext;
 
-import org.glassfish.mojarra.context.FacesContextParam;
+import org.glassfish.mojarra.config.FacesContextParam;
 import org.glassfish.mojarra.spi.ConfigurationResourceProvider;
 import org.glassfish.mojarra.util.FacesLogger;
 
@@ -48,7 +48,7 @@ public abstract class BaseWebConfigResourceProvider implements ConfigurationReso
     @Override
     public Collection<URI> getResources(ServletContext context) {
 
-        String[] paths = getParameter().getValue(FacesContext.getCurrentInstance());
+        String[] paths = getParameter().getStringArray(FacesContext.getCurrentInstance());
         Set<URI> urls = new LinkedHashSet<>(6);
 
         for (String path : paths) {

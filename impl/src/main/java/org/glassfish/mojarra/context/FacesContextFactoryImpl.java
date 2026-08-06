@@ -16,27 +16,40 @@
 
 package org.glassfish.mojarra.context;
 
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.ForceAlwaysWriteFlashCookie;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.PartialStateSaving;
 
+import java.util.List;
 import java.util.Map;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.context.ExceptionHandlerFactory;
-import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.ExternalContextFactory;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.FacesContextFactory;
 import jakarta.faces.lifecycle.Lifecycle;
 
-import org.glassfish.mojarra.RIConstants;
-import org.glassfish.mojarra.config.WebConfiguration;
+import org.glassfish.mojarra.config.FacesContextParam;
 import org.glassfish.mojarra.util.Util;
 
 public class FacesContextFactoryImpl extends FacesContextFactory {
 
     private final ExceptionHandlerFactory exceptionHandlerFactory;
+
+    /**
+     * The parameters which have to be published into the FacesContext attribute map under their own name, because the
+     * API reads them there rather than from the configuration they are resolved in, which it cannot reach. This is an
+     * arrangement between the API and an implementation rather than anything the specification states, and it is
+     * visible only from private members of UIInput, UIViewRoot and MultiFieldValidationUtils.
+     *
+     * Only UIInput falls back to reading the parameter itself when the attribute is absent. Dropping either of the
+     * other two silently disables the behaviour it guards, so a parameter leaves this list only once the API stops
+     * reading it there. A parameter this implementation reads itself never belonged here to begin with.
+     */
+    private static final List<FacesContextParam> API_READS_FROM_THE_CONTEXT = List.of(
+            FacesContextParam.ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE,
+            FacesContextParam.ENABLE_VALIDATE_WHOLE_BEAN,
+            FacesContextParam.VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS);
+
     private final ExternalContextFactory externalContextFactory;
 
     // ------------------------------------------------------------ Constructors
@@ -58,33 +71,27 @@ public class FacesContextFactoryImpl extends FacesContextFactory {
         Util.notNull("request", request);
         Util.notNull("response", response);
         Util.notNull("lifecycle", lifecycle);
-        ExternalContext extContext;
 
-        FacesContext ctx = new FacesContextImpl(extContext = externalContextFactory.getExternalContext(sc, request, response), lifecycle);
+        FacesContext ctx = new FacesContextImpl(externalContextFactory.getExternalContext(sc, request, response), lifecycle);
 
         ctx.setExceptionHandler(exceptionHandlerFactory.getExceptionHandler());
-        WebConfiguration webConfig = WebConfiguration.getInstance(extContext);
 
-        savePerRequestInitParams(ctx, webConfig);
+        savePerRequestInitParams(ctx);
         return ctx;
 
     }
 
     /*
-     * Copy the value of any init params that must be checked during this request to our FacesContext attribute map.
+     * Copies the parameters which the API reads back out of the FacesContext attribute map, keyed by the name of the
+     * parameter, because it cannot reach the configuration these are resolved in. A parameter this implementation
+     * reads itself does not belong here, it consults that configuration directly.
      */
-    private void savePerRequestInitParams(FacesContext context, WebConfiguration webConfig) {
-        ExternalContext extContext = context.getExternalContext();
-        Map<String, Object> appMap = extContext.getApplicationMap();
+    private void savePerRequestInitParams(FacesContext context) {
         Map<Object, Object> attrs = context.getAttributes();
-        attrs.put(FacesContextParam.ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE.getName(), FacesContextParam.ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE.getValue(context));
-        attrs.put(PartialStateSaving, webConfig.isOptionEnabled(PartialStateSaving) ? Boolean.TRUE : Boolean.FALSE);
-        attrs.put(ForceAlwaysWriteFlashCookie, webConfig.isOptionEnabled(ForceAlwaysWriteFlashCookie) ? Boolean.TRUE : Boolean.FALSE);
-        attrs.put(FacesContextParam.VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS.getName(), FacesContextParam.VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS.getValue(context));
-        attrs.put(FacesContextParam.ENABLE_VALIDATE_WHOLE_BEAN.getName(), FacesContextParam.ENABLE_VALIDATE_WHOLE_BEAN.getValue(context));
 
-        String facesConfigVersion = String.valueOf(appMap.get(RIConstants.FACES_CONFIG_VERSION));
-        attrs.put(RIConstants.FACES_CONFIG_VERSION, facesConfigVersion);
+        for (FacesContextParam param : API_READS_FROM_THE_CONTEXT) {
+            attrs.put(param.getName(), param.isEnabled(context));
+        }
     }
 
     // The testcase for this class is TestSerlvetFacesContextFactory.java

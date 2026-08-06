@@ -27,7 +27,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PostAddToViewEvent;
 
 import org.glassfish.mojarra.application.ValidateComponentNesting;
-import org.glassfish.mojarra.config.WebConfiguration;
+import org.glassfish.mojarra.config.FacesContextParam;
 import org.glassfish.mojarra.util.FacesLogger;
 
 public class Stage {
@@ -56,7 +56,7 @@ public class Stage {
 
     private ProjectStage fetchProjectStageFromConfig() {
         FacesContext context = FacesContext.getCurrentInstance();
-        projectStage = WebConfiguration.getInstance(context.getExternalContext()).getProjectStage();
+        projectStage = FacesContextParam.PROJECT_STAGE.getEnum(context);
 
         LOGGER.log(FINE, "ProjectStage is {0}", projectStage);
 

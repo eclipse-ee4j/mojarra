@@ -25,8 +25,6 @@ import static java.lang.Boolean.FALSE;
 import static java.util.Locale.ROOT;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.WARNING;
-import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.DefaultResourceMaxAge;
-import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.ResourceBufferSize;
 import static org.glassfish.mojarra.util.RequestStateManager.RESOURCE_REQUEST;
 import static org.glassfish.mojarra.util.Util.getFacesMapping;
 import static org.glassfish.mojarra.util.Util.notNegative;
@@ -52,8 +50,8 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 
 import org.glassfish.mojarra.application.ApplicationAssociate;
-import org.glassfish.mojarra.config.WebConfiguration;
-import org.glassfish.mojarra.context.FacesContextParam;
+import org.glassfish.mojarra.config.FacesContextParam;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.renderkit.html_basic.ScriptRenderer;
 import org.glassfish.mojarra.renderkit.html_basic.StylesheetRenderer;
 import org.glassfish.mojarra.util.FacesLogger;
@@ -76,7 +74,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
     private long maxAge;
     private boolean cspEnabled;
     private SecureRandom secureRandom;
-    private final WebConfiguration webconfig;
+    private final int resourceBufferSize;
 
     // ------------------------------------------------------------ Constructors
 
@@ -85,13 +83,13 @@ public class ResourceHandlerImpl extends ResourceHandler {
      */
     public ResourceHandlerImpl() {
         creationTime = System.currentTimeMillis();
-        webconfig = WebConfiguration.getInstance();
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext extContext = context.getExternalContext();
         manager = ApplicationAssociate.getInstance(extContext).getResourceManager();
         initExclusions(context);
-        initMaxAge();
-        cspEnabled = WebConfiguration.getValue(FacesContextParam.ENABLE_CSP_NONCE, context);
+        maxAge = MojarraContextParam.DEFAULT_RESOURCE_MAX_AGE.getLong(context);
+        resourceBufferSize = MojarraContextParam.RESOURCE_BUFFER_SIZE.getInt(context);
+        cspEnabled = FacesContextParam.ENABLE_CSP_NONCE.isEnabled(context);
         if (cspEnabled) {
             secureRandom = new SecureRandom();
             secureRandom.nextBytes(new byte[1]);
@@ -453,15 +451,6 @@ public class ResourceHandlerImpl extends ResourceHandler {
         this.creationTime = creationTime;
     }
 
-    /**
-     * Utility method leveraged by ResourceImpl to reduce the cost of looking up the WebConfiguration per-instance.
-     *
-     * @return the {@link WebConfiguration} for this application
-     */
-    WebConfiguration getWebConfig() {
-        return webconfig;
-    }
-
     // --------------------------------------------------------- Private Methods
 
     /**
@@ -582,7 +571,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
      * {@link ResourceHandler#RESOURCE_EXCLUDES_DEFAULT_VALUE} will be used.
      */
     private void initExclusions(FacesContext context) {
-        excludedExtensions = parseExcludedExtensions(FacesContextParam.RESOURCE_EXCLUDES.getValue(context));
+        excludedExtensions = parseExcludedExtensions(FacesContextParam.RESOURCE_EXCLUDES.getStringArray(context));
     }
 
     /**
@@ -593,10 +582,6 @@ public class ResourceHandlerImpl extends ResourceHandler {
         return Stream.of(extensions).filter(extension -> !extension.isEmpty()).toArray(String[]::new);
     }
 
-    private void initMaxAge() {
-        maxAge = Long.parseLong(webconfig.getOptionValue(DefaultResourceMaxAge));
-    }
-
     private void handleHeaders(FacesContext context, Resource resource) {
         ExternalContext extContext = context.getExternalContext();
         for (Map.Entry<String, String> cur : resource.getResponseHeaders().entrySet()) {
@@ -605,18 +590,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
     }
 
     private ByteBuffer allocateByteBuffer() {
-        int size;
-        try {
-            size = Integer.parseInt(webconfig.getOptionValue(ResourceBufferSize));
-        } catch (NumberFormatException nfe) {
-            if (LOGGER.isLoggable(WARNING)) {
-                LOGGER.log(WARNING, "faces.application.resource.invalid_resource_buffer_size", new Object[] { webconfig.getOptionValue(ResourceBufferSize),
-                        ResourceBufferSize.getQualifiedName(), ResourceBufferSize.getDefaultValue() });
-            }
-            size = Integer.parseInt(ResourceBufferSize.getDefaultValue());
-        }
-
-        return ByteBuffer.allocate(size);
+        return ByteBuffer.allocate(resourceBufferSize);
     }
 
 }

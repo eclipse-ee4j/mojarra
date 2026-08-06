@@ -17,144 +17,138 @@
 package org.glassfish.mojarra.config;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import jakarta.faces.context.FacesContext;
+import jakarta.servlet.ServletContext;
 
-/*
- * This read-only singleton class is vended by the WebConfiguration.
- * It is queried from any point in the program that needs to take action based
- * on configuration options pertaining to facelets.
+/**
+ * <p>
+ * How a facelet is processed, per file extension, as declared by the <code>facelets-processing</code> elements of
+ * <code>faces-config.xml</code>. This is configuration which is not expressible as a context parameter, which is why
+ * it is held here rather than by {@link WebConfiguration}.
+ * </p>
  *
+ * <p>
+ * The mappings are registered while the configuration is read and only queried afterwards, so a facelet compiled at any
+ * later point sees all of them.
+ * </p>
  */
 public class FaceletsConfiguration {
 
-    public static final String FACELETS_CONFIGURATION_ATTRIBUTE_NAME = "org.glassfish.mojarra.config.FaceletsConfiguration";
+    private static final String FACELETS_CONFIGURATION_ATTRIBUTE_NAME = "org.glassfish.mojarra.config.FaceletsConfiguration";
 
     private static final String ESCAPE_INLINE_TEXT_ATTRIBUTE_NAME = "org.glassfish.mojarra.config.EscapeInlineText";
 
-//    private static final String CONSUME_COMMENTS_ATTRIBUTE_NAME = "org.glassfish.mojarra.config.ConsumeComments";
-
     private static final Pattern EXTENSION_PATTERN = Pattern.compile("\\.[^/]+$");
 
-    private final Map<String, String> faceletsProcessingMappings;
+    private static final String DEFAULT_EXTENSION = "xhtml";
 
-    public FaceletsConfiguration(WebConfiguration config) {
-        faceletsProcessingMappings = config.getFacesConfigOptionValue(WebConfiguration.WebContextInitParameter.FaceletsProcessingFileExtensionProcessAs);
+    private final Map<String, String> processingMappings = new ConcurrentHashMap<>(3);
+
+    /**
+     * @param servletContext the involved servlet context.
+     * @return the instance for this application.
+     */
+    public static FaceletsConfiguration getInstance(ServletContext servletContext) {
+        FaceletsConfiguration faceletsConfig = (FaceletsConfiguration) servletContext.getAttribute(FACELETS_CONFIGURATION_ATTRIBUTE_NAME);
+
+        if (faceletsConfig == null) {
+            faceletsConfig = new FaceletsConfiguration();
+            servletContext.setAttribute(FACELETS_CONFIGURATION_ATTRIBUTE_NAME, faceletsConfig);
+        }
+
+        return faceletsConfig;
+    }
+
+    /**
+     * @param context the involved faces context.
+     * @return the instance for this application, remembered on the context, because a facelet is queried about while it
+     * renders and every one of those queries would otherwise walk out to the servlet context.
+     */
+    public static FaceletsConfiguration getInstance(FacesContext context) {
+        Map<Object, Object> attributes = context.getAttributes();
+        FaceletsConfiguration faceletsConfig = (FaceletsConfiguration) attributes.get(FACELETS_CONFIGURATION_ATTRIBUTE_NAME);
+
+        if (faceletsConfig == null) {
+            faceletsConfig = getInstance((ServletContext) context.getExternalContext().getContext());
+            attributes.put(FACELETS_CONFIGURATION_ATTRIBUTE_NAME, faceletsConfig);
+        }
+
+        return faceletsConfig;
+    }
+
+    /**
+     * Registers how a file extension is processed, as declared by a <code>facelets-processing</code> element.
+     *
+     * @param fileExtension the file extension, including the leading dot.
+     * @param processAs what a facelet carrying that extension is processed as.
+     */
+    public void addProcessingMapping(String fileExtension, String processAs) {
+        processingMappings.put(fileExtension, processAs);
     }
 
     public boolean isProcessCurrentDocumentAsFaceletsXhtml(String alias) {
-        // We want to write the XML declaration if and only if
-        // The SuppressXmlDeclaration context-param is NOT enabled
-        // and the file extension for the current file has a mapping
-        // with the value of XHTML
-        boolean currentModeIsXhtml = true;
-
-        String extension = getExtension(alias);
-
-        assert null != faceletsProcessingMappings;
-        if (faceletsProcessingMappings.containsKey(extension)) {
-            String value = faceletsProcessingMappings.get(extension);
-            currentModeIsXhtml = value.equals("xhtml");
-        }
-
-        return currentModeIsXhtml;
+        return isProcessedAs(alias, true, "xhtml");
     }
 
     public boolean isOutputHtml5Doctype(String alias) {
-        boolean currentModeIsHtml5 = true;
-
-        String extension = getExtension(alias);
-
-        assert null != faceletsProcessingMappings;
-        if (faceletsProcessingMappings.containsKey(extension)) {
-            String value = faceletsProcessingMappings.get(extension);
-            currentModeIsHtml5 = value.equals("html5");
-        }
-
-        return currentModeIsHtml5;
+        return isProcessedAs(alias, true, "html5");
     }
 
     public boolean isConsumeComments(String alias) {
-        boolean consumeComments = false;
-
-        String extension = getExtension(alias);
-
-        assert null != faceletsProcessingMappings;
-        if (faceletsProcessingMappings.containsKey(extension)) {
-            String value = faceletsProcessingMappings.get(extension);
-            consumeComments = value.equals("xml") || value.equals("jspx");
-        }
-
-        return consumeComments;
-
+        return isProcessedAs(alias, false, "xml", "jspx");
     }
 
     public boolean isConsumeCDATA(String alias) {
-        boolean consumeCDATA = false;
-
-        String extension = getExtension(alias);
-
-        assert null != faceletsProcessingMappings;
-        if (faceletsProcessingMappings.containsKey(extension)) {
-            String value = faceletsProcessingMappings.get(extension);
-            consumeCDATA = value.equals("jspx") || value.equals("xml");
-        }
-
-        return consumeCDATA;
-
+        return isProcessedAs(alias, false, "xml", "jspx");
     }
 
     public boolean isEscapeInlineText(FacesContext context) {
-        Boolean result = Boolean.TRUE;
+        Boolean escapeInlineText = (Boolean) context.getAttributes().get(ESCAPE_INLINE_TEXT_ATTRIBUTE_NAME);
 
-        result = (Boolean) context.getAttributes().get(ESCAPE_INLINE_TEXT_ATTRIBUTE_NAME);
-        if (null == result) {
+        if (escapeInlineText == null) {
+            escapeInlineText = isProcessedAs(context.getViewRoot().getViewId(), true, "xml", "xhtml");
+            context.getAttributes().put(ESCAPE_INLINE_TEXT_ATTRIBUTE_NAME, escapeInlineText);
+        }
 
-            String extension = getExtension(context.getViewRoot().getViewId());
+        return escapeInlineText;
+    }
 
-            assert null != faceletsProcessingMappings;
-            if (faceletsProcessingMappings.containsKey(extension)) {
-                String value = faceletsProcessingMappings.get(extension);
-                result = value.equals("xml") || value.equals("xhtml");
-            } else {
-                result = Boolean.TRUE;
+    /**
+     * @param alias the facelet whose file extension decides this.
+     * @param whenUnmapped what applies when its extension carries no declaration at all.
+     * @param processAs the declarations which answer to this question.
+     * @return whether the facelet is processed as any of the given ones.
+     */
+    private boolean isProcessedAs(String alias, boolean whenUnmapped, String... processAs) {
+        String value = processingMappings.get(getExtension(alias));
+
+        if (value == null) {
+            return whenUnmapped;
+        }
+
+        for (String candidate : processAs) {
+            if (value.equals(candidate)) {
+                return true;
             }
-            context.getAttributes().put(ESCAPE_INLINE_TEXT_ATTRIBUTE_NAME, result);
         }
 
-        return result;
-    }
-
-    public static FaceletsConfiguration getInstance(FacesContext context) {
-        FaceletsConfiguration result = null;
-        Map<Object, Object> attrs = context.getAttributes();
-        result = (FaceletsConfiguration) attrs.get(FaceletsConfiguration.FACELETS_CONFIGURATION_ATTRIBUTE_NAME);
-        if (null == result) {
-            WebConfiguration config = WebConfiguration.getInstance(context.getExternalContext());
-            result = config.getFaceletsConfiguration();
-            attrs.put(FaceletsConfiguration.FACELETS_CONFIGURATION_ATTRIBUTE_NAME, result);
-        }
-        return result;
-    }
-
-    public static FaceletsConfiguration getInstance() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        return FaceletsConfiguration.getInstance(context);
+        return false;
     }
 
     private static String getExtension(String alias) {
-        String ext = null;
-
         if (alias != null) {
             Matcher matcher = EXTENSION_PATTERN.matcher(alias);
+
             if (matcher.find()) {
-                ext = alias.substring(matcher.start(), matcher.end());
+                return alias.substring(matcher.start(), matcher.end());
             }
         }
 
-        return ext == null ? "xhtml" : ext;
+        return DEFAULT_EXTENSION;
     }
 
 }

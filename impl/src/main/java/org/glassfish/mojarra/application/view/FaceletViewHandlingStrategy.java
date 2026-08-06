@@ -128,9 +128,8 @@ import jakarta.servlet.http.HttpSession;
 
 import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.application.ApplicationAssociate;
-import org.glassfish.mojarra.config.WebConfiguration;
-import org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter;
-import org.glassfish.mojarra.context.FacesContextParam;
+import org.glassfish.mojarra.config.FacesContextParam;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.context.StateContext;
 import org.glassfish.mojarra.facelets.compiler.FaceletDoctype;
 import org.glassfish.mojarra.facelets.el.ContextualCompositeMethodExpression;
@@ -175,6 +174,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
     private int responseBufferSize;
     private boolean refreshTransientBuildOnPSS;
+    private StateSavingMethod stateSavingMethod;
 
     private Cache<Resource, BeanInfo> metadataCache;
     private Map<String, List<String>> contractMappings;
@@ -864,14 +864,15 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             return FaceletViewHandlingStrategy.this.createComponentMetadata(context, ccResource);
         });
 
-        responseBufferSize = FacesContextParam.FACELETS_BUFFER_SIZE.getValue(FacesContext.getCurrentInstance());
-        refreshTransientBuildOnPSS = webConfig.isOptionEnabled(BooleanWebContextInitParameter.RefreshTransientBuildOnPSS);
+        FacesContext context = FacesContext.getCurrentInstance();
+        responseBufferSize = FacesContextParam.FACELETS_BUFFER_SIZE.getInt(context);
+        refreshTransientBuildOnPSS = MojarraContextParam.REFRESH_TRANSIENT_BUILD_ON_PSS.isEnabled(context);
+        stateSavingMethod = FacesContextParam.STATE_SAVING_METHOD.getEnum(context);
 
         LOGGER.fine("Initialization Successful");
 
         vdlFactory = (ViewDeclarationLanguageFactory) FactoryFinder.getFactory(VIEW_DECLARATION_LANGUAGE_FACTORY);
 
-        FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext extContext = context.getExternalContext();
         Map<String, Object> appMap = extContext.getApplicationMap();
 
@@ -895,7 +896,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         FacesContext context = FacesContext.getCurrentInstance();
         faceletResourceSuffixes = Util.getFaceletResourceSuffixes(context);
 
-        String[] mappingsArray = FacesContextParam.FACELETS_VIEW_MAPPINGS.getValue(context);
+        String[] mappingsArray = FacesContextParam.FACELETS_VIEW_MAPPINGS.getStringArray(context);
         if (mappingsArray.length > 0) {
             List<String> prefixesList = new ArrayList<>(mappingsArray.length);
 
@@ -1903,11 +1904,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      * @return true if we are, false otherwise.
      */
     private boolean isServerStateSaving() {
-        if (StateSavingMethod.SERVER == FacesContextParam.STATE_SAVING_METHOD.getValue(FacesContext.getCurrentInstance())) {
-            return true;
-        }
-
-        return false;
+        return stateSavingMethod == StateSavingMethod.SERVER;
     }
 
     /**
@@ -2060,7 +2057,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
     private String evaluateCspHeader(FacesContext context, String nonce) {
         if (cspHeader == null) {
-            cspHeader = WebConfiguration.getValue(FacesContextParam.CSP_POLICY, context);
+            cspHeader = FacesContextParam.CSP_POLICY.getString(context);
 
             if (!cspHeader.contains(NONCE_EXPRESSION)) {
                 throw new IllegalArgumentException("The context parameter " + FacesContextParam.CSP_POLICY.getName() + " must include the expression '" + NONCE_EXPRESSION + "'");

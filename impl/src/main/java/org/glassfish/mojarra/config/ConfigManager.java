@@ -202,7 +202,7 @@ public class ConfigManager {
 
                 facesDocuments = sortDocuments(facesDocuments, lastFacesConfigInfo);
 
-                InjectionProvider containerConnector = InjectionProviderFactory.createInstance(facesContext.getExternalContext());
+                InjectionProvider containerConnector = InjectionProviderFactory.createInstance(facesContext);
                 facesContext.getAttributes().put(INJECTION_PROVIDER_KEY, containerConnector);
 
                 // See if the app is running in a HA enabled env

@@ -21,7 +21,7 @@ import static java.util.Spliterator.DISTINCT;
 import static java.util.Spliterators.spliteratorUnknownSize;
 import static java.util.stream.StreamSupport.stream;
 import static org.glassfish.mojarra.RIConstants.FLOW_IN_JAR_PREFIX;
-import static org.glassfish.mojarra.config.WebConfiguration.META_INF_CONTRACTS_DIR;
+import static org.glassfish.mojarra.application.resource.ResourceLibraryContracts.META_INF_CONTRACTS_DIR;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,7 +42,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.flow.Flow;
 
 import org.glassfish.mojarra.application.ApplicationAssociate;
-import org.glassfish.mojarra.context.FacesContextParam;
+import org.glassfish.mojarra.config.FacesContextParam;
 import org.glassfish.mojarra.util.Util;
 
 public class FaceletWebappResourceHelper extends ResourceHelper {
@@ -55,7 +55,7 @@ public class FaceletWebappResourceHelper extends ResourceHelper {
     public FaceletWebappResourceHelper(WebappResourceHelper webappResourceHelper) {
         this.webappResourceHelper = webappResourceHelper;
         FacesContext context = FacesContext.getCurrentInstance();
-        configuredExtensions = FacesContextParam.FACELETS_SUFFIX.getValue(context);
+        configuredExtensions = FacesContextParam.FACELETS_SUFFIX.getStringArray(context);
     }
 
     @Override

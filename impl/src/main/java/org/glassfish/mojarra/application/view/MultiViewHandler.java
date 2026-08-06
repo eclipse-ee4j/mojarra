@@ -71,7 +71,7 @@ import jakarta.faces.view.ViewMetadata;
 import jakarta.servlet.http.HttpServletMapping;
 import jakarta.servlet.http.HttpServletResponse;
 
-import org.glassfish.mojarra.context.FacesContextParam;
+import org.glassfish.mojarra.config.FacesContextParam;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.Util;
 
@@ -91,7 +91,7 @@ public class MultiViewHandler extends ViewHandler {
     // ------------------------------------------------------------ Constructors
 
     public MultiViewHandler() {
-        String[] faceletsSuffixes = FacesContextParam.FACELETS_SUFFIX.getValue(FacesContext.getCurrentInstance());
+        String[] faceletsSuffixes = FacesContextParam.FACELETS_SUFFIX.getStringArray(FacesContext.getCurrentInstance());
         configuredExtensions = asList(faceletsSuffixes);
         vdlFactory = (ViewDeclarationLanguageFactory) FactoryFinder.getFactory(VIEW_DECLARATION_LANGUAGE_FACTORY);
         protectedViews = new CopyOnWriteArraySet<>();

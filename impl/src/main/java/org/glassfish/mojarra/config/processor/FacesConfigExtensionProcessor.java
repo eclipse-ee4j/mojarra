@@ -21,13 +21,12 @@ import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.WARNING;
 
 import java.text.MessageFormat;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import jakarta.faces.context.FacesContext;
 import jakarta.servlet.ServletContext;
 
-import org.glassfish.mojarra.config.WebConfiguration;
+import org.glassfish.mojarra.config.FaceletsConfiguration;
 import org.glassfish.mojarra.config.manager.documents.DocumentInfo;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.w3c.dom.Document;
@@ -84,7 +83,7 @@ public class FacesConfigExtensionProcessor extends AbstractConfigProcessor {
             NodeList facesConfigExtensions = document.getDocumentElement().getElementsByTagNameNS(namespace, FACES_CONFIG_EXTENSION);
 
             if (facesConfigExtensions != null && facesConfigExtensions.getLength() > 0) {
-                processFacesConfigExtensions(facesConfigExtensions, namespace, documentInfo);
+                processFacesConfigExtensions(sc, facesConfigExtensions, namespace, documentInfo);
             }
         }
 
@@ -92,8 +91,8 @@ public class FacesConfigExtensionProcessor extends AbstractConfigProcessor {
 
     // --------------------------------------------------------- Private Methods
 
-    private void processFacesConfigExtensions(NodeList facesConfigExtensions, String namespace, DocumentInfo info) {
-        WebConfiguration config = null;
+    private void processFacesConfigExtensions(ServletContext servletContext, NodeList facesConfigExtensions, String namespace, DocumentInfo info) {
+        FaceletsConfiguration faceletsConfig = null;
 
         for (int i = 0, size = facesConfigExtensions.getLength(); i < size; i++) {
             Node facesConfigExtension = facesConfigExtensions.item(i);
@@ -121,12 +120,10 @@ public class FacesConfigExtensionProcessor extends AbstractConfigProcessor {
                     }
 
                     if (null != fileExtension && null != processAs) {
-                        if (null == config) {
-                            config = WebConfiguration.getInstance();
+                        if (null == faceletsConfig) {
+                            faceletsConfig = FaceletsConfiguration.getInstance(servletContext);
                         }
-                        Map<String, String> faceletsProcessingMappings = config
-                                .getFacesConfigOptionValue(WebConfiguration.WebContextInitParameter.FaceletsProcessingFileExtensionProcessAs, true);
-                        faceletsProcessingMappings.put(fileExtension, processAs);
+                        faceletsConfig.addProcessingMapping(fileExtension, processAs);
 
                     } else {
                         if (LOGGER.isLoggable(WARNING)) {

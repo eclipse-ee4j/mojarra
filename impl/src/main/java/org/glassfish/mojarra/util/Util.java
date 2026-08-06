@@ -89,7 +89,6 @@ import jakarta.enterprise.inject.spi.CDI;
 import jakarta.enterprise.inject.spi.el.ELAwareBeanManager;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Application;
-import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.StateManager;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.Doctype;
@@ -114,9 +113,8 @@ import jakarta.servlet.http.MappingMatch;
 
 import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.application.ApplicationAssociate;
-import org.glassfish.mojarra.config.WebConfiguration;
+import org.glassfish.mojarra.config.FacesContextParam;
 import org.glassfish.mojarra.config.manager.FacesSchema;
-import org.glassfish.mojarra.context.FacesContextParam;
 import org.glassfish.mojarra.facelets.component.UIRepeat;
 import org.glassfish.mojarra.io.FastStringWriter;
 
@@ -421,6 +419,31 @@ public class Util {
 
     private static ClassLoader getContextClassLoader() {
         return Thread.currentThread().getContextClassLoader();
+    }
+
+    /**
+     * <p>
+     * Whether JNDI can be reached from this application, which it cannot on every platform: Google App Engine forbids
+     * <code>javax.naming</code> outright. Asked per call rather than remembered, because the answer belongs to the
+     * class loader of the application and this class may be shared between several.
+     * </p>
+     *
+     * @return whether JNDI is available.
+     */
+    public static boolean isJndiAvailable() {
+        ClassLoader loader = getContextClassLoader();
+
+        if (loader == null) {
+            loader = Util.class.getClassLoader();
+        }
+
+        try {
+            loader.loadClass("javax.naming.InitialContext");
+            return true;
+        } catch (Exception e) {
+            LOGGER.log(Level.FINE, "javax.naming is unavailable.", e);
+            return false;
+        }
     }
 
     /**
@@ -847,10 +870,10 @@ public class Util {
      * @return the suffixes which identify a resource as a Facelet, deduplicated and in precedence order.
      */
     public static String[] getFaceletResourceSuffixes(FacesContext context) {
-        Set<String> faceletResourceSuffixes = new LinkedHashSet<>(asList(FacesContextParam.FACELETS_SUFFIX.<String[]>getValue(context)));
+        Set<String> faceletResourceSuffixes = new LinkedHashSet<>(asList(FacesContextParam.FACELETS_SUFFIX.getStringArray(context)));
         faceletResourceSuffixes.add(ViewHandler.DEFAULT_FACELETS_SUFFIX);
 
-        for (String viewMapping : FacesContextParam.FACELETS_VIEW_MAPPINGS.<String[]>getValue(context)) {
+        for (String viewMapping : FacesContextParam.FACELETS_VIEW_MAPPINGS.getStringArray(context)) {
             if (viewMapping.length() > 1 && viewMapping.charAt(0) == '*') {
                 faceletResourceSuffixes.add(viewMapping.substring(1));
             }
@@ -1231,20 +1254,10 @@ public class Util {
     }
 
     /**
-     * Utility method to validate ID uniqueness for the tree represented by <code>component</code>.
+     * Utility method to validate ID uniqueness for the tree represented by <code>component</code>. Whether it runs at
+     * all is up to the caller, which is the one holding the answer for the view it is about to save.
      */
     public static void checkIdUniqueness(FacesContext context, UIComponent component, Set<String> componentIds) {
-        if (!isIdUniquenessCheckDisabled(context)) {
-            doCheckIdUniqueness(context, component, componentIds);
-        }
-    }
-
-    private static boolean isIdUniquenessCheckDisabled(FacesContext context) {
-        return WebConfiguration.getInstance(context.getExternalContext()).isOptionEnabled(
-                WebConfiguration.WebContextInitParameter.DisableIdUniquenessCheck, !context.isProjectStage(ProjectStage.Development));
-    }
-
-    private static void doCheckIdUniqueness(FacesContext context, UIComponent component, Set<String> componentIds) {
         // deal with children/facets that are marked transient.
         for (Iterator<UIComponent> kids = component.getFacetsAndChildren(); kids.hasNext();) {
 
@@ -1260,7 +1273,7 @@ public class Util {
             // check for id uniqueness
             String id = kid.getClientId(context);
             if (componentIds.add(id)) {
-                doCheckIdUniqueness(context, kid, componentIds);
+                checkIdUniqueness(context, kid, componentIds);
             } else {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE, "faces.duplicate_component_id_error", id);

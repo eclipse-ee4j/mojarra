@@ -16,10 +16,6 @@
 
 package org.glassfish.mojarra.renderkit;
 
-import static java.util.logging.Level.WARNING;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.EnableViewStateIdRendering;
-import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.ClientStateTimeout;
-import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.ClientStateWriteBufferSize;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.PredefinedPostbackParameter.VIEW_STATE_PARAM;
 
 import java.io.BufferedOutputStream;
@@ -45,7 +41,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
 import org.glassfish.mojarra.RIConstants;
-import org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.util.DebugObjectOutputStream;
 import org.glassfish.mojarra.util.DebugUtil;
 import org.glassfish.mojarra.util.FacesLogger;
@@ -76,11 +72,11 @@ public class ClientSideStateHelper extends StateHelper {
      * </p>
      *
      * <p>
-     * This flag is configured via the <code>WebContextInitParameter.ClientStateTimeout</code> configuration option of
-     * <code>WebConfiguration</code> and is disabled by default.
+     * This flag is configured via the <code>MojarraContextParam.CLIENT_STATE_TIMEOUT</code> configuration option and is
+     * disabled by default.
      * </p>
      *
-     * @see {@link org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter#ClientStateTimeout}
+     * @see {@link org.glassfish.mojarra.config.MojarraContextParam#CLIENT_STATE_TIMEOUT}
      */
     private boolean stateTimeoutEnabled;
 
@@ -90,7 +86,7 @@ public class ClientSideStateHelper extends StateHelper {
      * particular client view state is valid for.
      * </p>
      *
-     * @see {@link org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter#ClientStateTimeout}
+     * @see {@link org.glassfish.mojarra.config.MojarraContextParam#CLIENT_STATE_TIMEOUT}
      */
     private long stateTimeout;
 
@@ -105,11 +101,12 @@ public class ClientSideStateHelper extends StateHelper {
      * state is written). By default, the buffer size is 8192 (per request).
      * </p>
      *
-     * @see {@link org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter#ClientStateWriteBufferSize}
+     * @see {@link org.glassfish.mojarra.config.MojarraContextParam#CLIENT_STATE_WRITE_BUFFER_SIZE}
      */
     private int csBuffSize;
 
     private boolean debugSerializedState;
+    private boolean enableViewStateIdRendering;
 
     // ------------------------------------------------------------ Constructors
 
@@ -152,7 +149,7 @@ public class ClientSideStateHelper extends StateHelper {
             writer.startElement("input", null);
             writer.writeAttribute("type", "hidden", null);
             writer.writeAttribute("name", VIEW_STATE_PARAM.getName(ctx), null);
-            if (webConfig.isOptionEnabled(EnableViewStateIdRendering)) {
+            if (enableViewStateIdRendering) {
                 String viewStateId = Util.getViewStateId(ctx);
                 writer.writeAttribute("id", viewStateId, null);
             }
@@ -388,7 +385,7 @@ public class ClientSideStateHelper extends StateHelper {
 
     /**
      * <p>
-     * If the {@link org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter#ClientStateTimeout} init parameter is
+     * If the {@link org.glassfish.mojarra.config.MojarraContextParam#CLIENT_STATE_TIMEOUT} init parameter is
      * set, calculate the elapsed time between the time the client state was written and the time this method was invoked
      * during restore. If the client state has expired, return <code>true</code>. If the client state hasn't expired, or the
      * init parameter wasn't set, return <code>false</code>.
@@ -413,8 +410,9 @@ public class ClientSideStateHelper extends StateHelper {
      * </p>
      */
     protected void init() {
+    	FacesContext context = FacesContext.getCurrentInstance();
 
-        if (webConfig.canProcessJndiEntries() && !webConfig.isOptionEnabled(BooleanWebContextInitParameter.EnableClientStateDebugging)) {
+        if (Util.isJndiAvailable() && !MojarraContextParam.ENABLE_CLIENT_STATE_DEBUGGING.isEnabled(context)) {
             guard = new ByteArrayGuard();
         } else {
             if (LOGGER.isLoggable(Level.FINE)) {
@@ -423,50 +421,28 @@ public class ClientSideStateHelper extends StateHelper {
 
         }
 
-        stateTimeoutEnabled = webConfig.isSet(ClientStateTimeout);
-        if (stateTimeoutEnabled) {
-            String timeout = webConfig.getOptionValue(ClientStateTimeout);
-            try {
-                stateTimeout = Long.parseLong(timeout);
+        stateTimeout = MojarraContextParam.CLIENT_STATE_TIMEOUT.getInt(context);
+        stateTimeoutEnabled = stateTimeout >= 0;
 
-                if (stateTimeout < 0) {
-                    stateTimeoutEnabled = false;
-                }
-            } catch (NumberFormatException nfe) {
-                if (LOGGER.isLoggable(WARNING)) {
-                    LOGGER.log(WARNING, ClientStateTimeout.getQualifiedName() + " context param value of '" + timeout + "' is not parseable as Long, it will be ignored");
-                }
+        int size = MojarraContextParam.CLIENT_STATE_WRITE_BUFFER_SIZE.getInt(context);
 
-                stateTimeoutEnabled = false;
-            }
-        }
-
-        String size = webConfig.getOptionValue(ClientStateWriteBufferSize);
-        String defaultSize = ClientStateWriteBufferSize.getDefaultValue();
-        try {
-            csBuffSize = Integer.parseInt(size);
-            if (csBuffSize % 2 != 0) {
-                if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.log(Level.WARNING, "faces.renderkit.resstatemgr.clientbuf_div_two",
-                            new Object[] { ClientStateWriteBufferSize.getQualifiedName(), size, defaultSize });
-                }
-                csBuffSize = Integer.parseInt(defaultSize);
-            } else {
-                csBuffSize /= 2;
-                if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.fine("Using client state buffer size of " + csBuffSize);
-                }
-            }
-        } catch (NumberFormatException nfe) {
+        if (size % 2 != 0) {
             if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.log(Level.WARNING, "faces.renderkit.resstatemgr.clientbuf_not_integer",
-                        new Object[] { ClientStateWriteBufferSize.getQualifiedName(), size, defaultSize });
+                LOGGER.log(Level.WARNING, "faces.renderkit.resstatemgr.clientbuf_div_two", new Object[] { MojarraContextParam.CLIENT_STATE_WRITE_BUFFER_SIZE.getName(),
+                        size, MojarraContextParam.CLIENT_STATE_WRITE_BUFFER_SIZE.getDefaultValue(null) });
             }
-            csBuffSize = Integer.parseInt(defaultSize);
+
+            csBuffSize = MojarraContextParam.CLIENT_STATE_WRITE_BUFFER_SIZE.<Integer>getDefaultValue(null);
+        } else {
+            csBuffSize = size / 2;
+
+            if (LOGGER.isLoggable(Level.FINE)) {
+                LOGGER.fine("Using client state buffer size of " + csBuffSize);
+            }
         }
 
-        debugSerializedState = webConfig.isOptionEnabled(BooleanWebContextInitParameter.EnableClientStateDebugging);
-
+        debugSerializedState = MojarraContextParam.ENABLE_CLIENT_STATE_DEBUGGING.isEnabled(context);
+        enableViewStateIdRendering = MojarraContextParam.ENABLE_VIEW_STATE_ID_RENDERING.isEnabled(context);
     }
 
     /**

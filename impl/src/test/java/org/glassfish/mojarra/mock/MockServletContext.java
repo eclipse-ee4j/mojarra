@@ -37,6 +37,8 @@ import jakarta.servlet.SessionCookieConfig;
 import jakarta.servlet.SessionTrackingMode;
 import jakarta.servlet.descriptor.JspConfigDescriptor;
 
+import org.glassfish.mojarra.config.WebConfiguration;
+
 // Mock Object for ServletContext (Version 4.0)
 public class MockServletContext implements ServletContext {
 
@@ -46,6 +48,10 @@ public class MockServletContext implements ServletContext {
     // --------------------------------------------------------- Public Methods
     public void addInitParameter(String name, String value) {
         parameters.put(name, value);
+
+        // A container fixes its parameters before anything reads them; a test declares them on a context it has
+        // already handed out, so whatever was resolved from the previous set has to go.
+        attributes.values().removeIf(WebConfiguration.class::isInstance);
     }
 
     // ------------------------------------------------- ServletContext Methods

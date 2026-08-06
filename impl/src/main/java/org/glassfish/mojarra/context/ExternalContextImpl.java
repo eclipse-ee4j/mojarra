@@ -18,8 +18,6 @@
 package org.glassfish.mojarra.context;
 
 import static org.glassfish.mojarra.RIConstants.PUSH_RESOURCE_URLS_KEY_NAME;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.SendPoweredByHeader;
 import static org.glassfish.mojarra.context.UrlBuilder.PROTOCOL_SEPARATOR;
 import static org.glassfish.mojarra.context.UrlBuilder.WEBSOCKET_PROTOCOL;
 import static org.glassfish.mojarra.util.Util.isEmpty;
@@ -65,13 +63,15 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.PushBuilder;
 
 import org.glassfish.mojarra.RIConstants;
-import org.glassfish.mojarra.config.WebConfiguration;
+import org.glassfish.mojarra.config.FacesContextParam;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.context.flash.ELFlash;
 import org.glassfish.mojarra.renderkit.html_basic.ScriptRenderer;
 import org.glassfish.mojarra.renderkit.html_basic.StylesheetRenderer;
 import org.glassfish.mojarra.util.CollectionsUtils;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.MessageUtils;
+import org.glassfish.mojarra.util.MojarraVersion;
 import org.glassfish.mojarra.util.TypedCollections;
 import org.glassfish.mojarra.util.Util;
 
@@ -142,18 +142,16 @@ public class ExternalContextImpl extends ExternalContext {
         this.request = request;
         this.response = response;
 
-        WebConfiguration webConfiguration = WebConfiguration.getInstance(servletContext);
-
-        if (webConfiguration.isOptionEnabled(SendPoweredByHeader)) {
+        if (MojarraContextParam.SEND_POWERED_BY_HEADER.isEnabled(servletContext)) {
             String poweredBy = "Faces";
-            String specificationVersion = webConfiguration.getSpecificationVersion();
+            String specificationVersion = MojarraVersion.SPECIFICATION_VERSION;
             if (specificationVersion != null) {
                 poweredBy += "/" + specificationVersion;
             }
             ((HttpServletResponse) response).addHeader("X-Powered-By", poweredBy);
         }
 
-        distributable = webConfiguration.isOptionEnabled(EnableDistributable);
+        distributable = MojarraContextParam.ENABLE_DISTRIBUTABLE.isEnabled(servletContext);
 
     }
 
@@ -589,7 +587,7 @@ public class ExternalContextImpl extends ExternalContext {
         Util.notNull("url", url);
 
         HttpServletRequest request = (HttpServletRequest) getRequest();
-        int port = FacesContextParam.WEBSOCKET_ENDPOINT_PORT.getValue(FacesContext.getCurrentInstance());
+        int port = FacesContextParam.WEBSOCKET_ENDPOINT_PORT.getInt(FacesContext.getCurrentInstance());
 
         try {
             final URL requestURL = new URL(request.getRequestURL().toString());

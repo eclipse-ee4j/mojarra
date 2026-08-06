@@ -38,7 +38,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
 
-import org.glassfish.mojarra.config.WebConfiguration;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.renderkit.Attribute;
 import org.glassfish.mojarra.renderkit.AttributeManager;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
@@ -74,7 +74,7 @@ public class TextRenderer extends HtmlBasicInputRenderer {
     // ------------------------------------------------------------ Constructors
 
     public TextRenderer() {
-        allowTextChildren = WebConfiguration.getInstance().isOptionEnabled(WebConfiguration.BooleanWebContextInitParameter.AllowTextChildren);
+        allowTextChildren = MojarraContextParam.ALLOW_TEXT_CHILDREN.isEnabled(FacesContext.getCurrentInstance());
     }
 
     // ---------------------------------------------------------- Public Methods

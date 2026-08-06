@@ -16,7 +16,6 @@
 
 package org.glassfish.mojarra.facelets.tag.faces;
 
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.PartialStateSaving;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -227,16 +226,12 @@ public final class ComponentSupport {
     // never be in the tree at this point, so we can return null and skip iterating.
 
     public static UIComponent findUIInstructionChildByTagId(FacesContext context, UIComponent parent, String id) {
-        if (isBuildingNewComponentTree(context) || !isPartialStateSaving(context)) {
+        if (isBuildingNewComponentTree(context) || !StateContext.getStateContext(context).isPartialStateSaving(context, null)) {
             return null;
         }
         // The existing UIInstructions is a direct child of the parent it was applied under, so the bounded
         // direct scan locates it by its MARK_CREATED tag id without a descendant cache.
         return findChildByTagIdFullStateSaving(context, parent, id);
-    }
-
-    private static boolean isPartialStateSaving(FacesContext context) {
-        return context.getAttributes().get(PartialStateSaving) == Boolean.TRUE;
     }
 
     /**

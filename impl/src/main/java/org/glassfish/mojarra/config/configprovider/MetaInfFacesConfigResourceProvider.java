@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
 import jakarta.faces.FacesException;
 import jakarta.servlet.ServletContext;
 
-import org.glassfish.mojarra.config.WebConfiguration;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.facelets.util.Classpath;
 import org.glassfish.mojarra.spi.ConfigurationResourceProvider;
 import org.glassfish.mojarra.util.Util;
@@ -71,10 +71,9 @@ public class MetaInfFacesConfigResourceProvider implements ConfigurationResource
     @Override
     public Collection<URI> getResources(ServletContext context) {
 
-        WebConfiguration webConfig = WebConfiguration.getInstance(context);
-        String duplicateJarPattern = webConfig.getOptionValue(WebConfiguration.WebContextInitParameter.DuplicateJARPattern);
+        String duplicateJarPattern = MojarraContextParam.DUPLICATE_JAR_PATTERN.getString(context);
         Pattern duplicatePattern = null;
-        if (duplicateJarPattern != null) {
+        if (!duplicateJarPattern.isEmpty()) {
             duplicatePattern = Pattern.compile(duplicateJarPattern);
         }
         SortedMap<String, Set<URI>> sortedJarMap = new TreeMap<>();

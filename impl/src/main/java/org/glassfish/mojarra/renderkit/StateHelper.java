@@ -17,7 +17,6 @@
 package org.glassfish.mojarra.renderkit;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.CompressViewState;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.PredefinedPostbackParameter.CLIENT_WINDOW_PARAM;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.PredefinedPostbackParameter.RENDER_KIT_ID_PARAM;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.PredefinedPostbackParameter.VIEW_STATE_PARAM;
@@ -33,7 +32,7 @@ import jakarta.faces.render.ResponseStateManager;
 import jakarta.servlet.http.HttpSession;
 
 import org.glassfish.mojarra.RIConstants;
-import org.glassfish.mojarra.config.WebConfiguration;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.spi.SerializationProvider;
 import org.glassfish.mojarra.spi.SerializationProviderFactory;
 import org.glassfish.mojarra.util.ByteArrayGuardAESCTR;
@@ -47,17 +46,10 @@ public abstract class StateHelper {
     /**
      * <p>
      * Factory for serialization streams. These are pluggable via the
-     * WebConfiguration.WebContextInitParameter#SerializationProviderClass.
+     * MojarraContextParam#SERIALIZATION_PROVIDER.
      * </p>
      */
     protected SerializationProvider serialProvider;
-
-    /**
-     * <p>
-     * Access to the context init parameters that configure this application.
-     * </p>
-     */
-    protected WebConfiguration webConfig;
 
     /**
      * <p>
@@ -83,13 +75,34 @@ public abstract class StateHelper {
     public StateHelper() {
         FacesContext ctx = FacesContext.getCurrentInstance();
         serialProvider = SerializationProviderFactory.createInstance(ctx.getExternalContext());
-        webConfig = WebConfiguration.getInstance(ctx.getExternalContext());
-        compressViewState = webConfig.isOptionEnabled(CompressViewState);
-        viewStateAutocomplete = webConfig.getViewStateAutocomplete();
+        compressViewState = MojarraContextParam.COMPRESS_VIEW_STATE.isEnabled(ctx);
+        viewStateAutocomplete = getViewStateAutocomplete(ctx);
 
         if (serialProvider == null) {
             serialProvider = SerializationProviderFactory.createInstance(FacesContext.getCurrentInstance().getExternalContext());
         }
+    }
+
+    /**
+     * <p>
+     * Returns the value to write as the <code>autocomplete</code> attribute of the hidden fields which carry the view
+     * state.
+     * </p>
+     *
+     * <p>
+     * The deprecated <code>autoCompleteOffOnViewState</code> is honored when the replacement was not set, where
+     * <code>true</code> maps to <code>off</code> and <code>false</code> to the default, which is what those two meant
+     * before the replacement existed.
+     * </p>
+     *
+     * @return the attribute value.
+     */
+    static String getViewStateAutocomplete(FacesContext context) {
+        if (!MojarraContextParam.VIEW_STATE_AUTOCOMPLETE.isSet(context) && MojarraContextParam.AUTO_COMPLETE_OFF_ON_VIEW_STATE.isEnabled(context)) {
+            return "off";
+        }
+
+        return MojarraContextParam.VIEW_STATE_AUTOCOMPLETE.getString(context);
     }
 
     /**

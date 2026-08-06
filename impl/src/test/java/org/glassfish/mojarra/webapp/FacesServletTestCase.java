@@ -16,7 +16,6 @@
 
 package org.glassfish.mojarra.webapp;
 
-import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.AllowedHttpMethods;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
@@ -29,6 +28,7 @@ import jakarta.faces.render.RenderKitFactory;
 import jakarta.faces.webapp.FacesServlet;
 import jakarta.servlet.http.HttpServletResponse;
 
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.junit.JUnitFacesTestCaseBase;
 import org.glassfish.mojarra.mock.MockRenderKit;
 import org.junit.jupiter.api.BeforeEach;
@@ -83,7 +83,7 @@ public class FacesServletTestCase extends JUnitFacesTestCaseBase {
     @Test
     public void testPositiveInitWithContextParamsOfKnownHttpMethods() throws Exception {
         FacesServlet me = new FacesServlet();
-        servletContext.addInitParameter(AllowedHttpMethods.getQualifiedName(), "GET   POST");
+        servletContext.addInitParameter(MojarraContextParam.ALLOWED_HTTP_METHODS.getName(), "GET   POST");
         me.init(config);
         this.sendRequest(me, "OPTIONS");
         assertEquals(HttpServletResponse.SC_BAD_REQUEST, response.getStatus());
@@ -106,7 +106,7 @@ public class FacesServletTestCase extends JUnitFacesTestCaseBase {
     @Test
     public void testNegativeInitWithContextParamsOfKnownHttpMethods() throws Exception {
         FacesServlet me = new FacesServlet();
-        servletContext.addInitParameter(AllowedHttpMethods.getQualifiedName(), "GET   POST GET  POST");
+        servletContext.addInitParameter(MojarraContextParam.ALLOWED_HTTP_METHODS.getName(), "GET   POST GET  POST");
         me.init(config);
         this.sendRequest(me, "OPTIONS");
         assertEquals(HttpServletResponse.SC_BAD_REQUEST, response.getStatus());
@@ -129,7 +129,7 @@ public class FacesServletTestCase extends JUnitFacesTestCaseBase {
     @Test
     public void testPositiveInitWithContextParamsOfWildcardHttpMethods() throws Exception {
         FacesServlet me = new FacesServlet();
-        servletContext.addInitParameter(AllowedHttpMethods.getQualifiedName(), "*");
+        servletContext.addInitParameter(MojarraContextParam.ALLOWED_HTTP_METHODS.getName(), "*");
         me.init(config);
         this.sendRequest(me, "OPTIONS");
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());
@@ -154,7 +154,7 @@ public class FacesServletTestCase extends JUnitFacesTestCaseBase {
     @Test
     public void testNegativeInitWithContextParamsOfWildcardHttpMethods() throws Exception {
         FacesServlet me = new FacesServlet();
-        servletContext.addInitParameter(AllowedHttpMethods.getQualifiedName(), "* * * *");
+        servletContext.addInitParameter(MojarraContextParam.ALLOWED_HTTP_METHODS.getName(), "* * * *");
         me.init(config);
         this.sendRequest(me, "OPTIONS");
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());
@@ -179,7 +179,7 @@ public class FacesServletTestCase extends JUnitFacesTestCaseBase {
     @Test
     public void testPositiveInitWithContextParamsOfUnknownAndKnownHttpMethods() throws Exception {
         FacesServlet me = new FacesServlet();
-        servletContext.addInitParameter(AllowedHttpMethods.getQualifiedName(), "GET\tPOST\tGETAAAAA");
+        servletContext.addInitParameter(MojarraContextParam.ALLOWED_HTTP_METHODS.getName(), "GET\tPOST\tGETAAAAA");
         me.init(config);
         this.sendRequest(me, "OPTIONS");
         assertEquals(HttpServletResponse.SC_BAD_REQUEST, response.getStatus());
@@ -241,7 +241,7 @@ public class FacesServletTestCase extends JUnitFacesTestCaseBase {
     @Test
     public void testOptionsAllowHeaderReflectsAllowedHttpMethods() throws Exception {
         FacesServlet me = new FacesServlet();
-        servletContext.addInitParameter(AllowedHttpMethods.getQualifiedName(), "GET POST OPTIONS");
+        servletContext.addInitParameter(MojarraContextParam.ALLOWED_HTTP_METHODS.getName(), "GET POST OPTIONS");
         me.init(config);
 
         this.sendRequest(me, "OPTIONS");

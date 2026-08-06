@@ -23,9 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import jakarta.servlet.ServletContext;
+import jakarta.faces.context.FacesContext;
 
-import org.glassfish.mojarra.config.WebConfiguration;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.MultiKeyConcurrentHashMap;
 
@@ -63,16 +63,11 @@ public class ResourceCache {
      * Constructs a new ResourceCache.
      */
     public ResourceCache() {
-        this(WebConfiguration.getInstance());
-    }
-
-    private ResourceCache(WebConfiguration config) {
-        this(config.getResourceUpdateCheckPeriod());
+        this(MojarraContextParam.RESOURCE_UPDATE_CHECK_PERIOD.getInt(FacesContext.getCurrentInstance()));
 
         if (LOGGER.isLoggable(FINE)) {
-            ServletContext sc = config.getServletContext();
             LOGGER.log(FINE, "ResourceCache constructed for {0}.  Check period is {1} minutes.",
-                    new Object[] { getServletContextIdentifier(sc), checkPeriod });
+                    new Object[] { getServletContextIdentifier(), checkPeriod });
         }
     }
 
@@ -135,8 +130,8 @@ public class ResourceCache {
 
     // --------------------------------------------------------- Private Methods
 
-    private static String getServletContextIdentifier(ServletContext context) {
-        return context.getContextPath();
+    private static String getServletContextIdentifier() {
+        return FacesContext.getCurrentInstance().getExternalContext().getApplicationContextPath();
     }
 
     // ---------------------------------------------------------- Nested Classes

@@ -35,8 +35,7 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
-import org.glassfish.mojarra.config.WebConfiguration;
-import org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.renderkit.Attribute;
 import org.glassfish.mojarra.renderkit.AttributeManager;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
@@ -56,8 +55,7 @@ public class FormRenderer extends HtmlBasicRenderer {
     // ------------------------------------------------------------ Constructors
 
     public FormRenderer() {
-        WebConfiguration webConfig = WebConfiguration.getInstance();
-        writeStateAtEnd = webConfig.isOptionEnabled(BooleanWebContextInitParameter.WriteStateAtFormEnd);
+        writeStateAtEnd = MojarraContextParam.WRITE_STATE_AT_FORM_END.isEnabled(FacesContext.getCurrentInstance());
     }
 
     // ---------------------------------------------------------- Public Methods

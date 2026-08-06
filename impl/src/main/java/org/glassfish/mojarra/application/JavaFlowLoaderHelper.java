@@ -32,8 +32,7 @@ import jakarta.faces.flow.FlowHandler;
 import jakarta.faces.flow.builder.FlowDefinition;
 
 import org.glassfish.mojarra.cdi.CdiUtils;
-import org.glassfish.mojarra.config.WebConfiguration;
-import org.glassfish.mojarra.context.FacesContextParam;
+import org.glassfish.mojarra.config.FacesContextParam;
 import org.glassfish.mojarra.flow.FlowDiscoveryCDIExtension;
 import org.glassfish.mojarra.util.FacesLogger;
 
@@ -58,20 +57,18 @@ public class JavaFlowLoaderHelper {
             enableClientWindowModeIfNecessary(context);
         }
 
-        WebConfiguration config = WebConfiguration.getInstance();
         for (Producer<Flow> flowProducer : flowProducers) {
             Flow toAdd = flowProducer.produce(beanManager.<Flow>createCreationalContext(null));
             if (toAdd == null) {
                 LOGGER.log(SEVERE, "Flow producer method {0}() returned null.  Ignoring.", flowProducer.toString());
             } else {
                 flowHandler.addFlow(context, toAdd);
-                config.setHasFlows(true);
             }
         }
     }
 
     public static void enableClientWindowModeIfNecessary(FacesContext context) {
-        String optionValue = FacesContextParam.CLIENT_WINDOW_MODE.getValue(context);
+        String optionValue = FacesContextParam.CLIENT_WINDOW_MODE.getString(context);
 
         boolean clientWindowNeedsEnabling = false;
         if ("none".equals(optionValue)) {

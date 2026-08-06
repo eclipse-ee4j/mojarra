@@ -47,6 +47,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.render.ResponseStateManager;
 import jakarta.faces.view.StateManagementStrategy;
 
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.context.StateContext;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 import org.glassfish.mojarra.util.ComponentStruct;
@@ -76,6 +77,8 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
      */
     private static final Set<VisitHint> SKIP_ITERATION_AND_EXECUTE_LIFECYCLE_HINTS = EnumSet.of(VisitHint.SKIP_ITERATION, VisitHint.EXECUTE_LIFECYCLE);
 
+    private final boolean disableIdUniquenessCheck;
+    
     /**
      * Constructor.
      */
@@ -89,6 +92,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
      * @param context the Faces context.
      */
     public FaceletPartialStateManagementStrategy(FacesContext context) {
+        disableIdUniquenessCheck = MojarraContextParam.DISABLE_ID_UNIQUENESS_CHECK.isEnabled(context);
     }
 
     /**
@@ -479,7 +483,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
         // Skip the whole-tree duplicate-id walk when the render-time build skipped the facelet re-apply: the tree is
         // then identical to the one already validated when it was first built (see VIEW_REBUILT_AT_RENDER). A rebuilt
         // or freshly-built (GET / navigation / JSTL) tree, or an unset flag, still runs the check.
-        if (!Boolean.FALSE.equals(context.getAttributes().get(VIEW_REBUILT_AT_RENDER))) {
+        if (!Boolean.FALSE.equals(context.getAttributes().get(VIEW_REBUILT_AT_RENDER)) && !disableIdUniquenessCheck) {
             Util.checkIdUniqueness(context, viewRoot, new HashSet<>(64));
         }
 

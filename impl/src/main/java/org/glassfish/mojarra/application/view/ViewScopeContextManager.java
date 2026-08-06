@@ -22,7 +22,6 @@ import static java.util.logging.Level.FINEST;
 import static java.util.logging.Level.WARNING;
 import static org.glassfish.mojarra.application.view.ViewScopeManager.VIEW_MAP_ID;
 import static org.glassfish.mojarra.cdi.CdiUtils.getBeanReference;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
 import static org.glassfish.mojarra.context.SessionMap.getMutex;
 import static org.glassfish.mojarra.util.Util.getCdiBeanManager;
 
@@ -43,7 +42,7 @@ import jakarta.inject.Named;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpSessionEvent;
 
-import org.glassfish.mojarra.config.WebConfiguration;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.util.FacesLogger;
 
 /**
@@ -64,8 +63,7 @@ public class ViewScopeContextManager {
     public ViewScopeContextManager() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         beanManager = getCdiBeanManager(facesContext);
-        distributable = WebConfiguration.getInstance(facesContext.getExternalContext())
-                                        .isOptionEnabled(EnableDistributable);
+        distributable = MojarraContextParam.ENABLE_DISTRIBUTABLE.isEnabled(facesContext);
     }
 
     /**

@@ -22,7 +22,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
@@ -49,7 +48,6 @@ public class MockExternalContext extends ExternalContext {
     private ServletContext context = null;
     private ServletRequest request = null;
     private ServletResponse response = null;
-    private Map<String,String> initParams;
 
     @Override
     public Object getSession(boolean create) {
@@ -227,14 +225,11 @@ public class MockExternalContext extends ExternalContext {
         if (name.equals(jakarta.faces.webapp.FacesServlet.LIFECYCLE_ID_ATTR)) {
             return null;
         }
-        return ((initParams == null) ? null : initParams.get(name));
+        return context.getInitParameter(name);
     }
 
     public void addInitParameter(String name, String value) {
-        if (initParams == null) {
-            initParams = new HashMap<>();
-        }
-        initParams.put(name, value);
+        ((MockServletContext) context).addInitParameter(name, value);
     }
 
     @Override

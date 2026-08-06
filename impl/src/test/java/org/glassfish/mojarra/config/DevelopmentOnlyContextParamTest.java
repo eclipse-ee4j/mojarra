@@ -17,30 +17,16 @@
 package org.glassfish.mojarra.config;
 
 import static jakarta.faces.application.ProjectStage.PROJECT_STAGE_PARAM_NAME;
-import static java.util.logging.Level.WARNING;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.EnableClientStateDebugging;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.GenerateUniqueServerStateIds;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
 
 import jakarta.faces.application.ProjectStage;
-import jakarta.faces.context.ExternalContext;
-import jakarta.faces.context.FacesContext;
+import jakarta.servlet.ServletContext;
 
 import org.glassfish.mojarra.mock.MockServletContext;
-import org.glassfish.mojarra.util.FacesLogger;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -51,65 +37,28 @@ import org.junit.jupiter.params.provider.EnumSource.Mode;
  * alone. Note the two covered here have opposite polarity, which is why reverting to the default is the rule rather
  * than forcing a particular value.
  */
-class DevelopmentOnlyContextParamTest {
+class DevelopmentOnlyContextParamTest extends ConfigurationLoggingTestBase {
 
     private static final String DEVELOPMENT_ONLY = "faces.config.webconfig.param.development_only";
 
-    private final Logger logger = FacesLogger.CONFIG.getLogger();
-    private final List<LogRecord> records = new ArrayList<>();
-    private final Handler handler = new Handler() {
-
-        @Override
-        public void publish(LogRecord record) {
-            records.add(record);
-        }
-
-        @Override
-        public void flush() {
-        }
-
-        @Override
-        public void close() {
-        }
-    };
-
-    @BeforeEach
-    void captureLogging() {
-        logger.addHandler(handler);
-    }
-
-    @AfterEach
-    void stopCapturingLogging() {
-        logger.removeHandler(handler);
-    }
-
-    @AfterEach
-    void releaseFacesContext() {
-        FacesContext context = FacesContext.getCurrentInstance();
-
-        if (context != null) {
-            context.release();
-        }
-    }
-
     @Test
     void areHonoredInDevelopment() {
-        WebConfiguration webConfiguration = configure(ProjectStage.Development);
+        ServletContext servletContext = configure(ProjectStage.Development);
 
-        assertTrue(webConfiguration.isOptionEnabled(EnableClientStateDebugging), "client state debugging");
-        assertFalse(webConfiguration.isOptionEnabled(GenerateUniqueServerStateIds), "unique server state ids");
+        assertTrue(MojarraContextParam.ENABLE_CLIENT_STATE_DEBUGGING.isEnabled(servletContext), "client state debugging");
+        assertFalse(MojarraContextParam.GENERATE_UNIQUE_SERVER_STATE_IDS.isEnabled(servletContext), "unique server state ids");
         assertEquals(List.of(), revertedParameterNames(), "nothing is reverted, so nothing is reported");
     }
 
     @ParameterizedTest
     @EnumSource(value = ProjectStage.class, names = "Development", mode = Mode.EXCLUDE)
     void revertToTheirDefaultElsewhere(ProjectStage projectStage) {
-        WebConfiguration webConfiguration = configure(projectStage);
+        ServletContext servletContext = configure(projectStage);
 
-        assertFalse(webConfiguration.isOptionEnabled(EnableClientStateDebugging), "client state debugging");
-        assertTrue(webConfiguration.isOptionEnabled(GenerateUniqueServerStateIds), "unique server state ids");
+        assertFalse(MojarraContextParam.ENABLE_CLIENT_STATE_DEBUGGING.isEnabled(servletContext), "client state debugging");
+        assertTrue(MojarraContextParam.GENERATE_UNIQUE_SERVER_STATE_IDS.isEnabled(servletContext), "unique server state ids");
         assertEquals(
-                List.of(EnableClientStateDebugging.getQualifiedName(), GenerateUniqueServerStateIds.getQualifiedName()),
+                List.of(MojarraContextParam.ENABLE_CLIENT_STATE_DEBUGGING.getName(), MojarraContextParam.GENERATE_UNIQUE_SERVER_STATE_IDS.getName()),
                 revertedParameterNames().stream().sorted().toList(),
                 "silently dropping a setting which weakens the deployment would be worse than honoring it");
     }
@@ -120,7 +69,7 @@ class DevelopmentOnlyContextParamTest {
      */
     @Test
     void disableClientStateEncryptionStillEnablesClientStateDebugging() {
-        assertTrue(configureDeprecated(ProjectStage.Development).isOptionEnabled(EnableClientStateDebugging));
+        assertTrue(MojarraContextParam.ENABLE_CLIENT_STATE_DEBUGGING.isEnabled(configureDeprecated(ProjectStage.Development)));
     }
 
     /**
@@ -131,10 +80,10 @@ class DevelopmentOnlyContextParamTest {
     @ParameterizedTest
     @EnumSource(value = ProjectStage.class, names = "Development", mode = Mode.EXCLUDE)
     void disableClientStateEncryptionIsGatedLikeItsReplacement(ProjectStage projectStage) {
-        assertFalse(configureDeprecated(projectStage).isOptionEnabled(EnableClientStateDebugging));
+        assertFalse(MojarraContextParam.ENABLE_CLIENT_STATE_DEBUGGING.isEnabled(configureDeprecated(projectStage)));
     }
 
-    private static WebConfiguration configureDeprecated(ProjectStage projectStage) {
+    private static ServletContext configureDeprecated(ProjectStage projectStage) {
         MockServletContext servletContext = new MockServletContext();
         servletContext.addInitParameter(PROJECT_STAGE_PARAM_NAME, projectStage.name());
         servletContext.addInitParameter("org.glassfish.mojarra.disableClientStateEncryption", "true");
@@ -142,46 +91,22 @@ class DevelopmentOnlyContextParamTest {
         return gate(servletContext);
     }
 
-    private static WebConfiguration configure(ProjectStage projectStage) {
+    private static ServletContext configure(ProjectStage projectStage) {
         MockServletContext servletContext = new MockServletContext();
         servletContext.addInitParameter(PROJECT_STAGE_PARAM_NAME, projectStage.name());
-        servletContext.addInitParameter(EnableClientStateDebugging.getQualifiedName(), "true");
-        servletContext.addInitParameter(GenerateUniqueServerStateIds.getQualifiedName(), "false");
+        servletContext.addInitParameter(MojarraContextParam.ENABLE_CLIENT_STATE_DEBUGGING.getName(), "true");
+        servletContext.addInitParameter(MojarraContextParam.GENERATE_UNIQUE_SERVER_STATE_IDS.getName(), "false");
 
         return gate(servletContext);
     }
 
-    private static WebConfiguration gate(MockServletContext servletContext) {
-        ExternalContext externalContext = mock(ExternalContext.class);
-        when(externalContext.getContext()).thenReturn(servletContext);
-        when(externalContext.getContextName()).thenReturn("/test");
-        when(externalContext.getInitParameter(any())).thenAnswer(
-                invocation -> servletContext.getInitParameter(invocation.getArgument(0)));
+    private static ServletContext gate(MockServletContext servletContext) {
+        WebConfiguration.getInstance(servletContext).processDevelopmentOnlyParameters();
 
-        FacesContext context = mock(FacesContext.class);
-        when(context.getExternalContext()).thenReturn(externalContext);
-        setCurrentInstance(context);
-
-        WebConfiguration webConfiguration = WebConfiguration.getInstance(servletContext);
-        webConfiguration.processDevelopmentOnlyParameters();
-
-        return webConfiguration;
+        return servletContext;
     }
 
     private List<String> revertedParameterNames() {
-        return records.stream()
-                .filter(record -> record.getLevel() == WARNING && DEVELOPMENT_ONLY.equals(record.getMessage()))
-                .map(record -> String.valueOf(record.getParameters()[1]))
-                .toList();
-    }
-
-    private static void setCurrentInstance(FacesContext context) {
-        try {
-            var method = FacesContext.class.getDeclaredMethod("setCurrentInstance", FacesContext.class);
-            method.setAccessible(true);
-            method.invoke(null, context);
-        } catch (ReflectiveOperationException e) {
-            throw new IllegalStateException(e);
-        }
+        return loggedArguments(DEVELOPMENT_ONLY, 1);
     }
 }

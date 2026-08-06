@@ -16,7 +16,6 @@
 
 package org.glassfish.mojarra.facelets.compiler;
 
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.DisallowDoctypeDecl;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -30,7 +29,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.Location;
 import jakarta.faces.view.facelets.FaceletException;
@@ -40,7 +38,7 @@ import jakarta.faces.view.facelets.TagAttributes;
 
 import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.config.FaceletsConfiguration;
-import org.glassfish.mojarra.config.WebConfiguration;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.facelets.tag.TagAttributeImpl;
 import org.glassfish.mojarra.facelets.tag.TagAttributesImpl;
 import org.glassfish.mojarra.facelets.tag.faces.core.CoreLibrary;
@@ -90,7 +88,7 @@ public final class SAXCompiler extends Compiler {
         @Override
         public void comment(char[] ch, int start, int length) throws SAXException {
             if (inDocument) {
-                if (!unit.getWebConfiguration().getFaceletsConfiguration().isConsumeComments(alias)) {
+                if (!unit.getFaceletsConfiguration().isConsumeComments(alias)) {
                     unit.writeComment(new String(ch, start, length));
                 }
             }
@@ -120,7 +118,7 @@ public final class SAXCompiler extends Compiler {
         @Override
         public void endCDATA() throws SAXException {
             if (inDocument) {
-                if (!unit.getWebConfiguration().getFaceletsConfiguration().isConsumeCDATA(alias)) {
+                if (!unit.getFaceletsConfiguration().isConsumeCDATA(alias)) {
                     unit.writeInstruction("]]>");
                 }
             }
@@ -186,7 +184,7 @@ public final class SAXCompiler extends Compiler {
         @Override
         public void startCDATA() throws SAXException {
             if (inDocument) {
-                if (!unit.getWebConfiguration().getFaceletsConfiguration().isConsumeCDATA(alias)) {
+                if (!unit.getFaceletsConfiguration().isConsumeCDATA(alias)) {
                     unit.writeInstruction("<![CDATA[");
                 }
             }
@@ -201,7 +199,7 @@ public final class SAXCompiler extends Compiler {
         public void startDTD(String name, String publicId, String systemId) throws SAXException {
             // If there is a process-as value for the extension, only allow
             // the PI to be written if its value is xhtml
-            FaceletsConfiguration facelets = unit.getWebConfiguration().getFaceletsConfiguration();
+            FaceletsConfiguration facelets = unit.getFaceletsConfiguration();
             boolean processAsXhtml = facelets.isProcessCurrentDocumentAsFaceletsXhtml(alias);
             boolean outputAsHtml5 = facelets.isOutputHtml5Doctype(alias);
 
@@ -240,7 +238,7 @@ public final class SAXCompiler extends Compiler {
 
                 // If there is a process-as value for the extension, only allow
                 // the PI to be written if its value is xhtml
-                boolean processAsXhtml = unit.getWebConfiguration().getFaceletsConfiguration().isProcessCurrentDocumentAsFaceletsXhtml(alias);
+                boolean processAsXhtml = unit.getFaceletsConfiguration().isProcessCurrentDocumentAsFaceletsXhtml(alias);
 
                 if (processAsXhtml) {
                     unit.writeInstruction("<?" + target + ' ' + data + "?>\n");
@@ -248,13 +246,6 @@ public final class SAXCompiler extends Compiler {
             }
         }
 
-        protected boolean isDisallowDoctypeDeclSet() {
-            return unit.getWebConfiguration().isSet(DisallowDoctypeDecl);
-        }
-
-        protected boolean isDisallowDoctypeDecl() {
-            return unit.getWebConfiguration().isOptionEnabled(DisallowDoctypeDecl);
-        }
     }
 
     private static class MetadataCompilationHandler extends CompilationHandler {
@@ -383,11 +374,12 @@ public final class SAXCompiler extends Compiler {
 
     protected FaceletHandler doCompile(CompilationManager mngr, CompilationHandler handler, URL src, String alias) throws IOException {
 
-        String encoding = getEncoding();
+        FacesContext context = FacesContext.getCurrentInstance();
+        String encoding = getEncoding(context);
         try (InputStream is = new BufferedInputStream(src.openStream(), 1024);) {
 
             writeXmlDecl(is, encoding, mngr);
-            SAXParser parser = createSAXParser(handler);
+            SAXParser parser = createSAXParser(handler, context);
             parser.parse(is, handler);
         } catch (SAXException e) {
             throw new FaceletException("Error Parsing " + alias + ": " + e.getMessage(), e.getCause());
@@ -403,17 +395,14 @@ public final class SAXCompiler extends Compiler {
 
     }
 
-    private String getEncoding() {
-        String result;
+    private String getEncoding(FacesContext context) {
         String encodingFromRequest = null;
-        FacesContext context = FacesContext.getCurrentInstance();
-        if (null != context) {
-            ExternalContext extContext = context.getExternalContext();
-            encodingFromRequest = extContext.getRequestCharacterEncoding();
-        }
-        result = null != encodingFromRequest ? encodingFromRequest : RIConstants.CHAR_ENCODING;
 
-        return result;
+        if (context != null) {
+            encodingFromRequest = context.getExternalContext().getRequestCharacterEncoding();
+        }
+
+        return encodingFromRequest != null ? encodingFromRequest : RIConstants.CHAR_ENCODING;
     }
 
     protected static void writeXmlDecl(InputStream is, String encoding, CompilationManager mngr) throws IOException {
@@ -424,8 +413,7 @@ public final class SAXCompiler extends Compiler {
                 String r = new String(b, encoding);
                 Matcher m = XmlDeclaration.matcher(r);
                 if (m.find()) {
-                    WebConfiguration config = mngr.getWebConfiguration();
-                    FaceletsConfiguration faceletsConfig = config.getFaceletsConfiguration();
+                    FaceletsConfiguration faceletsConfig = mngr.getFaceletsConfiguration();
                     boolean currentModeIsXhtml = faceletsConfig.isProcessCurrentDocumentAsFaceletsXhtml(mngr.getAlias());
 
                     // We want to write the XML declaration if and only if
@@ -441,14 +429,14 @@ public final class SAXCompiler extends Compiler {
         }
     }
 
-    private SAXParser createSAXParser(CompilationHandler handler) throws SAXException, ParserConfigurationException {
+    private SAXParser createSAXParser(CompilationHandler handler, FacesContext context) throws SAXException, ParserConfigurationException {
         SAXParserFactory factory = Util.createSAXParserFactory();
         factory.setNamespaceAware(true);
         factory.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
         factory.setFeature("http://xml.org/sax/features/validation", isValidating());
         factory.setValidating(isValidating());
-        if (handler.isDisallowDoctypeDeclSet()) {
-            factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", handler.isDisallowDoctypeDecl());
+        if (MojarraContextParam.DISALLOW_DOCTYPE_DECL.isSet(context)) {
+            factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", MojarraContextParam.DISALLOW_DOCTYPE_DECL.isEnabled(context));
         }
         SAXParser parser = factory.newSAXParser();
         XMLReader reader = parser.getXMLReader();

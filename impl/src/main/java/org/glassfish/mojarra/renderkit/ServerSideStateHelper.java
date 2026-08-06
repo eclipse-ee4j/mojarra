@@ -18,11 +18,6 @@ package org.glassfish.mojarra.renderkit;
 
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINEST;
-import static java.util.logging.Level.WARNING;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.EnableViewStateIdRendering;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.GenerateUniqueServerStateIds;
-import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.NumberOfStatefulPagesPerSession;
-import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.NumberOfViewStatesPerStatefulPage;
 import static org.glassfish.mojarra.context.SessionMap.getMutex;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.PredefinedPostbackParameter.VIEW_STATE_PARAM;
 import static org.glassfish.mojarra.util.Util.notNull;
@@ -46,9 +41,8 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
-import org.glassfish.mojarra.config.WebConfiguration;
-import org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter;
-import org.glassfish.mojarra.context.FacesContextParam;
+import org.glassfish.mojarra.config.FacesContextParam;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.LRUMap;
 import org.glassfish.mojarra.util.RequestStateManager;
@@ -90,6 +84,16 @@ public class ServerSideStateHelper extends StateHelper {
     protected boolean generateUniqueStateIds;
 
     /**
+     * Flag determining if view state hidden input needs ID.
+     */
+    protected boolean enableViewStateIdRendering;
+
+    /**
+     * Flag determining whether the state is serialized before it is stored in the session.
+     */
+    protected final boolean serializeServerState;
+
+    /**
      * Used to generate unique server state IDs.
      */
     protected final SecureRandom random;
@@ -100,10 +104,12 @@ public class ServerSideStateHelper extends StateHelper {
      * Construct a new <code>ServerSideStateHelper</code> instance.
      */
     public ServerSideStateHelper() {
-        numberOfStatefulPages = getIntegerConfigValue(NumberOfStatefulPagesPerSession);
-        numberOfViewStatesPerPage = getIntegerConfigValue(NumberOfViewStatesPerStatefulPage);
-        WebConfiguration webConfig = WebConfiguration.getInstance();
-        generateUniqueStateIds = webConfig.isOptionEnabled(GenerateUniqueServerStateIds);
+    	FacesContext context = FacesContext.getCurrentInstance();
+        numberOfStatefulPages = MojarraContextParam.NUMBER_OF_STATEFUL_PAGES_PER_SESSION.getInt(context);
+        numberOfViewStatesPerPage = MojarraContextParam.NUMBER_OF_VIEW_STATES_PER_STATEFUL_PAGE.getInt(context);
+        generateUniqueStateIds = MojarraContextParam.GENERATE_UNIQUE_SERVER_STATE_IDS.isEnabled(context);
+        enableViewStateIdRendering = MojarraContextParam.ENABLE_VIEW_STATE_ID_RENDERING.isEnabled(context);
+        serializeServerState = FacesContextParam.SERIALIZE_SERVER_STATE.isEnabled(context);
         if (generateUniqueStateIds) {
             // Construct secure RNG.
             random = new SecureRandom();
@@ -210,7 +216,7 @@ public class ServerSideStateHelper extends StateHelper {
             writer.startElement("input", null);
             writer.writeAttribute("type", "hidden", null);
             writer.writeAttribute("name", VIEW_STATE_PARAM.getName(ctx), null);
-            if (webConfig.isOptionEnabled(EnableViewStateIdRendering)) {
+            if (enableViewStateIdRendering) {
                 String viewStateId = Util.getViewStateId(ctx);
                 writer.writeAttribute("id", viewStateId, null);
             }
@@ -295,40 +301,13 @@ public class ServerSideStateHelper extends StateHelper {
 
     // ------------------------------------------------------- Protected Methods
 
-    /**
-     * <p>
-     * Utility method for obtaining the <code>Integer</code> based configuration values used to change the behavior of the
-     * <code>ServerSideStateHelper</code>.
-     *
-     * @param param the paramter to parse
-     * @return the Integer representation of the parameter value
-     */
-    protected Integer getIntegerConfigValue(WebContextInitParameter param) {
-        String noOfViewsStr = webConfig.getOptionValue(param);
-        Integer value = null;
-        try {
-            value = Integer.valueOf(noOfViewsStr);
-        } catch (NumberFormatException nfe) {
-            String defaultValue = param.getDefaultValue();
-            if (LOGGER.isLoggable(WARNING)) {
-                LOGGER.log(WARNING, "faces.state.server.cannot.parse.int.option", new Object[] { param.getQualifiedName(), defaultValue });
-            }
-            try {
-                value = Integer.valueOf(defaultValue);
-            } catch (NumberFormatException ne) {
-                LOGGER.log(FINEST, "Unable to convert number", ne);
-            }
-        }
-
-        return value;
-    }
 
     /**
      * @param state the object returned from <code>UIView.processSaveState</code>
      * @return If option <code>SerializeServerState</code> is <code>true</code>, serialize and return the state, otherwise, return <code>state</code> unchanged.
      */
     protected Object handleSaveState(Object state) {
-        if (!FacesContextParam.SERIALIZE_SERVER_STATE.isSet(FacesContext.getCurrentInstance())) {
+        if (!serializeServerState) {
             return state;
         }
 
@@ -359,7 +338,7 @@ public class ServerSideStateHelper extends StateHelper {
      * de-serialize the state prior to returning it, otherwise return <code>state</code> as is.
      */
     protected Object handleRestoreState(Object state) {
-        if (!FacesContextParam.SERIALIZE_SERVER_STATE.isSet(FacesContext.getCurrentInstance())) {
+        if (!serializeServerState) {
             return state;
         }
 

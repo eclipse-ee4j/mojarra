@@ -29,14 +29,13 @@ import java.util.regex.Pattern;
 import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
-import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.render.Renderer;
 
 import org.glassfish.mojarra.RIConstants;
-import org.glassfish.mojarra.config.WebConfiguration;
-import org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter;
+import org.glassfish.mojarra.config.ContextParam.Tristate;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.io.FastStringWriter;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 import org.glassfish.mojarra.util.HtmlUtils;
@@ -68,7 +67,7 @@ public class HtmlResponseWriter extends ResponseWriter {
 
     // Configuration flag regarding disableUnicodeEscaping
     //
-    private WebConfiguration.DisableUnicodeEscaping disableUnicodeEscaping;
+    private Tristate disableUnicodeEscaping;
 
     // Flag to escape Unicode
     //
@@ -214,7 +213,7 @@ public class HtmlResponseWriter extends ResponseWriter {
      * @throws jakarta.faces.FacesException the encoding is not recognized.
      */
     public HtmlResponseWriter(Writer writer, String contentType, String encoding, Boolean isScriptInAttributeValueEnabled,
-            WebConfiguration.DisableUnicodeEscaping disableUnicodeEscaping, boolean isPartial) throws FacesException {
+            Tristate disableUnicodeEscaping, boolean isPartial) throws FacesException {
 
         this.writer = writer;
 
@@ -223,23 +222,17 @@ public class HtmlResponseWriter extends ResponseWriter {
         }
 
         this.encoding = encoding;
+        FacesContext context = FacesContext.getCurrentInstance();
 
         // init those configuration parameters not yet initialized
-        WebConfiguration webConfig = null;
         if (isScriptInAttributeValueEnabled == null) {
-            webConfig = getWebConfiguration(webConfig);
-            isScriptInAttributeValueEnabled = null == webConfig ? BooleanWebContextInitParameter.EnableScriptInAttributeValue.getDefaultValue()
-                    : webConfig.isOptionEnabled(BooleanWebContextInitParameter.EnableScriptInAttributeValue);
+            isScriptInAttributeValueEnabled = null == context ? MojarraContextParam.ENABLE_SCRIPTS_IN_ATTRIBUTE_VALUES.getDefaultValue(null)
+                    : MojarraContextParam.ENABLE_SCRIPTS_IN_ATTRIBUTE_VALUES.isEnabled(context);
         }
 
         if (disableUnicodeEscaping == null) {
-            webConfig = getWebConfiguration(webConfig);
-            disableUnicodeEscaping = WebConfiguration.DisableUnicodeEscaping
-                    .getByValue(null == webConfig ? WebConfiguration.WebContextInitParameter.DisableUnicodeEscaping.getDefaultValue()
-                            : webConfig.getOptionValue(WebConfiguration.WebContextInitParameter.DisableUnicodeEscaping));
-            if (disableUnicodeEscaping == null) {
-                disableUnicodeEscaping = WebConfiguration.DisableUnicodeEscaping.False;
-            }
+            disableUnicodeEscaping = null == context ? MojarraContextParam.DISABLE_UNICODE_ESCAPING.getDefaultValue(null)
+                    : MojarraContextParam.DISABLE_UNICODE_ESCAPING.getEnum(context);
         }
 
         // and store them for later use
@@ -255,38 +248,23 @@ public class HtmlResponseWriter extends ResponseWriter {
         String charsetName = encoding.toUpperCase(Locale.ROOT);
 
         switch (disableUnicodeEscaping) {
-        case True:
+        case TRUE:
             // html escape noting (except the dangerous characters like "<>'" etc
             escapeUnicode = false;
             escapeIso = false;
             break;
-        case False:
+        case FALSE:
             // html escape any non-ascii character
             escapeUnicode = true;
             escapeIso = true;
             break;
-        case Auto:
+        case AUTO:
             // is stream capable of rendering unicode, do not escape
             escapeUnicode = !HtmlUtils.isUTFencoding(charsetName);
             // is stream capable of rendering unicode or iso-8859-1, do not escape
             escapeIso = !HtmlUtils.isISO8859_1encoding(charsetName) && !HtmlUtils.isUTFencoding(charsetName);
             break;
         }
-    }
-
-    private WebConfiguration getWebConfiguration(WebConfiguration webConfig) {
-        if (webConfig != null) {
-            return webConfig;
-        }
-
-        FacesContext context = FacesContext.getCurrentInstance();
-        if (null != context) {
-            ExternalContext extContext = context.getExternalContext();
-            if (null != extContext) {
-                webConfig = WebConfiguration.getInstance(extContext);
-            }
-        }
-        return webConfig;
     }
 
     // -------------------------------------------------- Methods From Closeable

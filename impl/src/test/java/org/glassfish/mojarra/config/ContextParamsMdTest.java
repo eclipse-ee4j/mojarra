@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -34,18 +33,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter;
-import org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter;
-import org.glassfish.mojarra.context.FacesContextParam;
+import jakarta.faces.application.ProjectStage;
+
 import org.junit.jupiter.api.Test;
 
 /**
  * Validates <code>CONTEXT-PARAMS.md</code> in the repository root against the sources, so that a context parameter
  * cannot be added, removed, renamed or given another default value without that page being updated.
  * <p>
- * The parameters recognized by this implementation are collected from {@link WebContextInitParameter},
- * {@link BooleanWebContextInitParameter} and {@link FacesContextParam}, plus a scan of the
- * main sources for <code>getInitParameter()</code> call sites which read a parameter declared outside of those enums.
+ * The parameters recognized by this implementation are collected from {@link FacesContextParam} and
+ * {@link MojarraContextParam}, plus a scan of the main sources for <code>getInitParameter()</code> call sites which
+ * read a parameter declared outside of those enums.
 
  * <p>
  * This test only verifies, it never writes the page. When it fails, edit the page by hand.
@@ -69,9 +67,8 @@ class ContextParamsMdTest {
     private static final Pattern IDENTIFIER = Pattern.compile("(?:\\w+\\.)*(\\w+)");
 
     /**
-     * A context parameter as declared by the sources. A <code>null</code> type or default value means the source
-     * declares none, in which case the documented cell is not validated. The type of a {@link WebContextInitParameter}
-     * is always <code>String</code> and therefore says nothing about the shape of the value it accepts.
+     * A context parameter as declared by the sources. A <code>null</code> default value means the source derives it
+     * from the project stage, in which case the documented cell is not validated.
      */
     private static final class Param {
 
@@ -79,12 +76,14 @@ class ContextParamsMdTest {
         private final String type;
         private final String defaultValue;
         private final String replacedBy;
+        private final boolean deprecated;
 
-        private Param(String name, String type, String defaultValue, String replacedBy) {
+        private Param(String name, String type, String defaultValue, String replacedBy, boolean deprecated) {
             this.name = name;
             this.type = type;
             this.defaultValue = defaultValue;
             this.replacedBy = replacedBy;
+            this.deprecated = deprecated;
         }
     }
 
@@ -179,6 +178,26 @@ class ContextParamsMdTest {
         assertTrue(unlinked.isEmpty(), () -> "Deprecated parameters whose description does not name their replacement in " + markdownFile() + ": " + unlinked);
     }
 
+    /**
+     * A parameter which the sources have deprecated says so on the page, so that it cannot be deprecated in one place
+     * and still read as current in the other.
+     */
+    @Test
+    void documentsEveryDeprecatedParamAsDeprecated() {
+        Map<String, Map<String, String>> rows = rows();
+        List<String> unmarked = new ArrayList<>();
+
+        for (Param param : params().values()) {
+            Map<String, String> row = rows.get(param.name);
+
+            if (param.deprecated && row != null && !text(row.get(DESCRIPTION)).contains("Deprecated")) {
+                unmarked.add(param.name);
+            }
+        }
+
+        assertTrue(unmarked.isEmpty(), () -> "Deprecated parameters not documented as such in " + markdownFile() + ": " + unmarked);
+    }
+
     private static void check(Map<String, String> wrong, String name, String column, String expected, String actual) {
         if (expected != null && !expected.equals(actual)) {
             wrong.put(name + " " + column, "expected " + expected + " but was " + actual);
@@ -194,20 +213,13 @@ class ContextParamsMdTest {
     private static Map<String, Param> params() {
         Map<String, Param> params = new LinkedHashMap<>();
 
-        for (WebContextInitParameter param : WebContextInitParameter.values()) {
-            put(params, new Param(param.getQualifiedName(), null, param.getDefaultValue(), alternateOf(param)));
-        }
-
-        for (BooleanWebContextInitParameter param : BooleanWebContextInitParameter.values()) {
-            put(params, new Param(param.getQualifiedName(), "boolean", String.valueOf(param.getDefaultValue()), alternateOf(param)));
-        }
-
-        for (FacesContextParam param : FacesContextParam.values()) {
-            put(params, new Param(param.getName(), typeOf(param.getType()), declaredDefaultOf(param), null));
+        for (ContextParam param : contextParams()) {
+            put(params, new Param(param.getName(), typeOf(param.getType()), declaredDefaultOf(param), param.getAlternateName(),
+                    param.isDeprecated()));
         }
 
         for (String name : scanForInitParameterReads()) {
-            put(params, new Param(name, null, null, null));
+            put(params, new Param(name, null, null, null, false));
         }
 
         return params;
@@ -219,55 +231,36 @@ class ContextParamsMdTest {
         }
     }
 
+    private static List<ContextParam> contextParams() {
+        return Stream.concat(Stream.of(FacesContextParam.values()), Stream.of(MojarraContextParam.values())).collect(toList());
+    }
+
     /**
-     * The default of a {@link FacesContextParam} is produced by a supplier which usually ignores the context, so it can
-     * be read with a null one. The few which do consult the context to derive their default from the project stage
-     * cannot, and are left to the page.
+     * The default of a parameter which derives it from the project stage is not a single value, so the page states it
+     * in prose and this leaves that cell alone. Every other one reads the same whichever stage it is asked for.
      */
-    private static String declaredDefaultOf(FacesContextParam param) {
-        try {
-            Object defaultValue = param.getDefaultValue(null);
-            return defaultValue instanceof Object[] ? String.join(" ", (String[]) defaultValue) : String.valueOf(defaultValue);
-        } catch (RuntimeException ignored) {
-            return null;
-        }
+    private static String declaredDefaultOf(ContextParam param) {
+        String inProduction = defaultOf(param, ProjectStage.Production);
+
+        return inProduction.equals(defaultOf(param, ProjectStage.Development)) ? inProduction : null;
+    }
+
+    private static String defaultOf(ContextParam param, ProjectStage projectStage) {
+        Object defaultValue = param.getDefaultValue(projectStage);
+        return defaultValue instanceof Object[] ? String.join(" ", (String[]) defaultValue) : String.valueOf(defaultValue);
     }
 
     private static String typeOf(Class<?> type) {
-        return type == Boolean.class ? "boolean" : type == Integer.class ? "int" : type.getSimpleName();
-    }
-
-    /**
-     * The deprecation bookkeeping is optional, an enum which does not declare it simply has no deprecated entries.
-     */
-    private static String alternateOf(Enum<?> param) {
-        Object alternate = fieldValue(param, "alternate");
-
-        if (alternate == null || !Boolean.TRUE.equals(fieldValue(param, "deprecated"))) {
-            return null;
+        if (type == Boolean.class) {
+            return "boolean";
         }
-
-        return String.valueOf(invoke(alternate, "getQualifiedName"));
-    }
-
-    private static Object fieldValue(Enum<?> param, String name) {
-        try {
-            Field field = param.getDeclaringClass().getDeclaredField(name);
-            field.setAccessible(true);
-            return field.get(param);
-        } catch (NoSuchFieldException e) {
-            return null;
-        } catch (ReflectiveOperationException e) {
-            throw new IllegalStateException(e);
+        if (type == Integer.class) {
+            return "int";
         }
-    }
-
-    private static Object invoke(Object param, String methodName) {
-        try {
-            return ((Enum<?>) param).getDeclaringClass().getMethod(methodName).invoke(param);
-        } catch (ReflectiveOperationException e) {
-            throw new IllegalStateException(e);
+        if (type == Long.class) {
+            return "long";
         }
+        return type.getSimpleName();
     }
 
     /**

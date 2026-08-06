@@ -14,12 +14,16 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package org.glassfish.mojarra.config;
+package org.glassfish.mojarra.renderkit;
 
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.AutoCompleteOffOnViewState;
-import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.ViewStateAutocomplete;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.glassfish.mojarra.config.MojarraContextParam;
+import org.glassfish.mojarra.context.ExternalContextImpl;
+import org.glassfish.mojarra.mock.MockFacesContext;
+import org.glassfish.mojarra.mock.MockHttpServletRequest;
+import org.glassfish.mojarra.mock.MockHttpServletResponse;
+import org.glassfish.mojarra.mock.MockHttpSession;
 import org.glassfish.mojarra.mock.MockServletContext;
 import org.junit.jupiter.api.Test;
 
@@ -36,7 +40,7 @@ class ViewStateAutocompleteTest {
 
     @Test
     void isWrittenVerbatim() {
-        assertEquals("off", resolve(ViewStateAutocomplete.getQualifiedName(), "off"));
+        assertEquals("off", resolve(MojarraContextParam.VIEW_STATE_AUTOCOMPLETE.getName(), "off"));
     }
 
     /**
@@ -44,8 +48,8 @@ class ViewStateAutocompleteTest {
      */
     @Test
     void deprecatedBooleanStillSelectsOff() {
-        assertEquals("off", resolve(AutoCompleteOffOnViewState.getQualifiedName(), "true"));
-        assertEquals("one-time-code", resolve(AutoCompleteOffOnViewState.getQualifiedName(), "false"));
+        assertEquals("off", resolve(MojarraContextParam.AUTO_COMPLETE_OFF_ON_VIEW_STATE.getName(), "true"));
+        assertEquals("one-time-code", resolve(MojarraContextParam.AUTO_COMPLETE_OFF_ON_VIEW_STATE.getName(), "false"));
     }
 
     /**
@@ -54,8 +58,8 @@ class ViewStateAutocompleteTest {
     @Test
     void replacementWinsOverDeprecatedBoolean() {
         assertEquals("on", resolve(
-                AutoCompleteOffOnViewState.getQualifiedName(), "true",
-                ViewStateAutocomplete.getQualifiedName(), "on"));
+                MojarraContextParam.AUTO_COMPLETE_OFF_ON_VIEW_STATE.getName(), "true",
+                MojarraContextParam.VIEW_STATE_AUTOCOMPLETE.getName(), "on"));
     }
 
     private static String resolve(String... initParameterNamesAndValues) {
@@ -65,6 +69,9 @@ class ViewStateAutocompleteTest {
             servletContext.addInitParameter(initParameterNamesAndValues[i], initParameterNamesAndValues[i + 1]);
         }
 
-        return WebConfiguration.getInstance(servletContext).getViewStateAutocomplete();
+        ExternalContextImpl externalContext = new ExternalContextImpl(servletContext, new MockHttpServletRequest(new MockHttpSession()),
+                new MockHttpServletResponse());
+
+        return StateHelper.getViewStateAutocomplete(new MockFacesContext(externalContext));
     }
 }

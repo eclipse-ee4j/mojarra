@@ -21,7 +21,7 @@ import java.util.Collection;
 
 import jakarta.servlet.ServletContext;
 
-import org.glassfish.mojarra.context.FacesContextParam;
+import org.glassfish.mojarra.config.FacesContextParam;
 
 /**
  *
