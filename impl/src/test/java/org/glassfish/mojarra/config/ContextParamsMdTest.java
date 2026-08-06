@@ -35,9 +35,6 @@ import java.util.stream.Stream;
 
 import jakarta.faces.application.ProjectStage;
 
-import org.glassfish.mojarra.context.ContextParam;
-import org.glassfish.mojarra.context.FacesContextParam;
-import org.glassfish.mojarra.context.MojarraContextParam;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -254,7 +251,16 @@ class ContextParamsMdTest {
     }
 
     private static String typeOf(Class<?> type) {
-        return type == Boolean.class ? "boolean" : type == Integer.class ? "int" : type.getSimpleName();
+        if (type == Boolean.class) {
+            return "boolean";
+        }
+        if (type == Integer.class) {
+            return "int";
+        }
+        if (type == Long.class) {
+            return "long";
+        }
+        return type.getSimpleName();
     }
 
     /**

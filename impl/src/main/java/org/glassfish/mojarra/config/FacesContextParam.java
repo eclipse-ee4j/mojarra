@@ -1,4 +1,4 @@
-package org.glassfish.mojarra.context;
+package org.glassfish.mojarra.config;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
@@ -27,8 +27,6 @@ import jakarta.faces.lifecycle.LifecycleFactory;
 import jakarta.faces.push.PushContext;
 import jakarta.faces.validator.BeanValidator;
 import jakarta.faces.webapp.FacesServlet;
-
-import org.glassfish.mojarra.config.WebConfiguration;
 
 /**
  * <p class="changed_added_5_0">

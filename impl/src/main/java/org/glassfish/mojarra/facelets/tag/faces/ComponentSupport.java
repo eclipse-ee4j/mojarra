@@ -43,7 +43,6 @@ import jakarta.faces.view.facelets.Tag;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagAttributeException;
 
-import org.glassfish.mojarra.context.FacesContextParam;
 import org.glassfish.mojarra.context.StateContext;
 import org.glassfish.mojarra.facelets.tag.faces.core.FacetHandler;
 import org.glassfish.mojarra.util.Util;
@@ -227,16 +226,12 @@ public final class ComponentSupport {
     // never be in the tree at this point, so we can return null and skip iterating.
 
     public static UIComponent findUIInstructionChildByTagId(FacesContext context, UIComponent parent, String id) {
-        if (isBuildingNewComponentTree(context) || !isPartialStateSaving(context)) {
+        if (isBuildingNewComponentTree(context) || !StateContext.getStateContext(context).isPartialStateSaving(context, null)) {
             return null;
         }
         // The existing UIInstructions is a direct child of the parent it was applied under, so the bounded
         // direct scan locates it by its MARK_CREATED tag id without a descendant cache.
         return findChildByTagIdFullStateSaving(context, parent, id);
-    }
-
-    private static boolean isPartialStateSaving(FacesContext context) {
-        return FacesContextParam.PARTIAL_STATE_SAVING.isEnabled(context);
     }
 
     /**

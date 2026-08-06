@@ -77,7 +77,7 @@ import org.glassfish.mojarra.application.resource.ResourceCache;
 import org.glassfish.mojarra.application.resource.ResourceManager;
 import org.glassfish.mojarra.component.search.SearchExpressionHandlerImpl;
 import org.glassfish.mojarra.config.ConfigManager;
-import org.glassfish.mojarra.context.FacesContextParam;
+import org.glassfish.mojarra.config.FacesContextParam;
 import org.glassfish.mojarra.el.DemuxCompositeELResolver;
 import org.glassfish.mojarra.facelets.compiler.Compiler;
 import org.glassfish.mojarra.facelets.compiler.SAXCompiler;

@@ -39,7 +39,7 @@ import jakarta.faces.application.ResourceVisitOption;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 
-import org.glassfish.mojarra.context.MojarraContextParam;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.Util;
 

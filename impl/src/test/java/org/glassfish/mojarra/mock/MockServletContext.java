@@ -48,7 +48,10 @@ public class MockServletContext implements ServletContext {
     // --------------------------------------------------------- Public Methods
     public void addInitParameter(String name, String value) {
         parameters.put(name, value);
-        WebConfiguration.clear(this);
+
+        // A container fixes its parameters before anything reads them; a test declares them on a context it has
+        // already handed out, so whatever was resolved from the previous set has to go.
+        attributes.values().removeIf(WebConfiguration.class::isInstance);
     }
 
     // ------------------------------------------------- ServletContext Methods

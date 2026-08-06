@@ -128,8 +128,8 @@ import jakarta.servlet.http.HttpSession;
 
 import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.application.ApplicationAssociate;
-import org.glassfish.mojarra.context.FacesContextParam;
-import org.glassfish.mojarra.context.MojarraContextParam;
+import org.glassfish.mojarra.config.FacesContextParam;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.context.StateContext;
 import org.glassfish.mojarra.facelets.compiler.FaceletDoctype;
 import org.glassfish.mojarra.facelets.el.ContextualCompositeMethodExpression;
@@ -174,6 +174,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
     private int responseBufferSize;
     private boolean refreshTransientBuildOnPSS;
+    private StateSavingMethod stateSavingMethod;
 
     private Cache<Resource, BeanInfo> metadataCache;
     private Map<String, List<String>> contractMappings;
@@ -863,14 +864,15 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             return FaceletViewHandlingStrategy.this.createComponentMetadata(context, ccResource);
         });
 
-        responseBufferSize = FacesContextParam.FACELETS_BUFFER_SIZE.getInt(FacesContext.getCurrentInstance());
-        refreshTransientBuildOnPSS = webConfig.isEnabled(MojarraContextParam.REFRESH_TRANSIENT_BUILD_ON_PSS);
+        FacesContext context = FacesContext.getCurrentInstance();
+        responseBufferSize = FacesContextParam.FACELETS_BUFFER_SIZE.getInt(context);
+        refreshTransientBuildOnPSS = MojarraContextParam.REFRESH_TRANSIENT_BUILD_ON_PSS.isEnabled(context);
+        stateSavingMethod = FacesContextParam.STATE_SAVING_METHOD.getEnum(context);
 
         LOGGER.fine("Initialization Successful");
 
         vdlFactory = (ViewDeclarationLanguageFactory) FactoryFinder.getFactory(VIEW_DECLARATION_LANGUAGE_FACTORY);
 
-        FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext extContext = context.getExternalContext();
         Map<String, Object> appMap = extContext.getApplicationMap();
 
@@ -1902,11 +1904,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      * @return true if we are, false otherwise.
      */
     private boolean isServerStateSaving() {
-        if (StateSavingMethod.SERVER == FacesContextParam.STATE_SAVING_METHOD.getEnum(StateSavingMethod.class, FacesContext.getCurrentInstance())) {
-            return true;
-        }
-
-        return false;
+        return stateSavingMethod == StateSavingMethod.SERVER;
     }
 
     /**

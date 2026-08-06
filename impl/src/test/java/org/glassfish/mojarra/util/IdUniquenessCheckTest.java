@@ -18,10 +18,11 @@ package org.glassfish.mojarra.util;
 
 import static java.util.Collections.emptyIterator;
 import static java.util.Collections.enumeration;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -36,11 +37,13 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.servlet.ServletContext;
 
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.junit.jupiter.api.Test;
 
 /**
  * Covers the <code>auto</code> value of <code>org.glassfish.mojarra.disableIdUniquenessCheck</code>, which skips the
- * whole-tree duplicate id walk outside {@link ProjectStage#Development}.
+ * whole-tree duplicate id walk outside {@link ProjectStage#Development}. The parameter is what the callers of the walk
+ * gate on, so it is asserted here rather than through {@link Util#checkIdUniqueness}, which walks whatever it is given.
  */
 class IdUniquenessCheckTest {
 
@@ -48,30 +51,34 @@ class IdUniquenessCheckTest {
     private static final String CLIENT_ID = "id";
 
     /**
-     * The walk is the per-request cost the parameter exists to avoid, so <code>auto</code> skips it in every stage which
-     * is not <code>Development</code>, including the test stages.
+     * The walk is the per-request cost the parameter exists to avoid, so <code>auto</code> disables it in every stage
+     * which is not <code>Development</code>, including the test stages.
      */
     @Test
-    void autoSkipsTheWalkOutsideDevelopment() {
+    void autoDisablesTheCheckOutsideDevelopment() {
         for (ProjectStage stage : List.of(ProjectStage.Production, ProjectStage.SystemTest, ProjectStage.UnitTest)) {
-            UIComponent child = componentWithClientId();
-            UIComponent root = rootOf(child);
-
-            Util.checkIdUniqueness(contextFor(stage), root, new HashSet<>());
-
-            verify(child, never()).getClientId(any());
+            assertTrue(MojarraContextParam.DISABLE_ID_UNIQUENESS_CHECK.isEnabled(contextFor(stage)), stage.name());
         }
     }
 
     /**
-     * And it runs while developing, which is what makes skipping it elsewhere acceptable.
+     * And it leaves it on while developing, which is what makes disabling it elsewhere acceptable.
      */
     @Test
-    void autoRunsTheWalkInDevelopment() {
+    void autoLeavesTheCheckOnInDevelopment() {
+        assertFalse(MojarraContextParam.DISABLE_ID_UNIQUENESS_CHECK.isEnabled(contextFor(ProjectStage.Development)));
+    }
+
+    /**
+     * And the walk itself no longer asks: it visits every component it is handed, because the caller has already
+     * decided whether the view it is about to save is worth walking.
+     */
+    @Test
+    void theWalkVisitsWhateverItIsGiven() {
         UIComponent child = componentWithClientId();
         UIComponent root = rootOf(child);
 
-        Util.checkIdUniqueness(contextFor(ProjectStage.Development), root, new HashSet<>());
+        Util.checkIdUniqueness(contextFor(ProjectStage.Production), root, new HashSet<>());
 
         verify(child).getClientId(any());
     }

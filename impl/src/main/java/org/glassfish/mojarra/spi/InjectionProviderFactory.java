@@ -35,11 +35,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 import jakarta.servlet.ServletContext;
 
 import org.glassfish.mojarra.RIConstants;
-import org.glassfish.mojarra.config.WebConfiguration;
-import org.glassfish.mojarra.context.MojarraContextParam;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.Util;
 import org.glassfish.mojarra.vendor.WebContainerInjectionProvider;
@@ -79,14 +79,14 @@ public class InjectionProviderFactory {
      * Creates a new instance of the class specified by the <code>org.glassfish.mojarra.InjectionProvider</code> system property. If
      * this propery is not defined, then a default, no-op, <code>InjectionProvider</code> will be returned.
      *
-     * @param extContext ExteranlContext for the current request
+     * @param context FacesContext for the current request
      *
      * @return an implementation of the <code>InjectionProvider</code> interfaces
      */
-    public static InjectionProvider createInstance(ExternalContext extContext) {
+    public static InjectionProvider createInstance(FacesContext context) {
 
-        String providerClass = findProviderClass(extContext);
-        InjectionProvider provider = getProviderInstance(providerClass, extContext);
+        String providerClass = findProviderClass(context);
+        InjectionProvider provider = getProviderInstance(providerClass, context.getExternalContext());
 
         if (!NoopInjectionProvider.class.equals(provider.getClass()) && !WebContainerInjectionProvider.class.equals(provider.getClass())) {
             warnWhenDeprecatedInterfaceIsImplemented(provider, AnnotationScanner.class, "Annotation scanning is now handled via CDI bean discovery.");
@@ -213,15 +213,14 @@ public class InjectionProviderFactory {
      * context parameter. If not present it tries to find it as a System property. If still not found returns null.
      * <ul>
      *
-     * @param extContext The ExternalContext for this request
+     * @param context FacesContext for the current request
      * @return The provider class name specified in the container configuration, or <code>null</code> if not found.
      */
-    private static String findProviderClass(ExternalContext extContext) {
+    private static String findProviderClass(FacesContext context) {
 
-        WebConfiguration webConfig = WebConfiguration.getInstance(extContext);
-        String provider = webConfig.getString(MojarraContextParam.INJECTION_PROVIDER);
+        String provider = MojarraContextParam.INJECTION_PROVIDER.getString(context);
 
-        if (provider != null) {
+        if (!provider.isEmpty()) {
             return provider;
         } else {
             provider = System.getProperty(INJECTION_PROVIDER_PROPERTY);
@@ -233,7 +232,7 @@ public class InjectionProviderFactory {
             String[] serviceEntries = getServiceEntries();
             if (serviceEntries.length > 0) {
                 for (int i = 0; i < serviceEntries.length; i++) {
-                    provider = getProviderFromEntry(extContext.getApplicationMap(), serviceEntries[i]);
+                    provider = getProviderFromEntry(context.getExternalContext().getApplicationMap(), serviceEntries[i]);
                     if (provider != null) {
                         break;
                     }

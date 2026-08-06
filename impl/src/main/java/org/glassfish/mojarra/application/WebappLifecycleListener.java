@@ -38,7 +38,7 @@ import jakarta.servlet.http.HttpSessionEvent;
 import jakarta.servlet.http.HttpSessionListener;
 
 import org.glassfish.mojarra.config.InitFacesContext;
-import org.glassfish.mojarra.context.MojarraContextParam;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.flow.FlowCDIContext;
 import org.glassfish.mojarra.renderkit.StateHelper;
 

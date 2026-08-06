@@ -25,10 +25,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jakarta.faces.context.ExternalContext;
+import jakarta.servlet.ServletContext;
 
 import org.glassfish.mojarra.RIConstants;
-import org.glassfish.mojarra.config.WebConfiguration;
-import org.glassfish.mojarra.context.MojarraContextParam;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.renderkit.ApplicationObjectInputStream;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.Util;
@@ -126,11 +126,9 @@ public class SerializationProviderFactory {
      */
     private static String findProviderClass(ExternalContext extContext) {
 
-        WebConfiguration webConfig = WebConfiguration.getInstance(extContext);
+        String provider = MojarraContextParam.SERIALIZATION_PROVIDER.getString((ServletContext) extContext.getContext());
 
-        String provider = webConfig.getString(MojarraContextParam.SERIALIZATION_PROVIDER);
-
-        if (provider != null) {
+        if (!provider.isEmpty()) {
             return provider;
         } else {
             return System.getProperty(SERIALIZATION_PROVIDER_PROPERTY);

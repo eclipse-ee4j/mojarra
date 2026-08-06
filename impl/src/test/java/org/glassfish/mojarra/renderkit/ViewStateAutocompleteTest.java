@@ -14,11 +14,16 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package org.glassfish.mojarra.config;
+package org.glassfish.mojarra.renderkit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.glassfish.mojarra.context.MojarraContextParam;
+import org.glassfish.mojarra.config.MojarraContextParam;
+import org.glassfish.mojarra.context.ExternalContextImpl;
+import org.glassfish.mojarra.mock.MockFacesContext;
+import org.glassfish.mojarra.mock.MockHttpServletRequest;
+import org.glassfish.mojarra.mock.MockHttpServletResponse;
+import org.glassfish.mojarra.mock.MockHttpSession;
 import org.glassfish.mojarra.mock.MockServletContext;
 import org.junit.jupiter.api.Test;
 
@@ -64,6 +69,9 @@ class ViewStateAutocompleteTest {
             servletContext.addInitParameter(initParameterNamesAndValues[i], initParameterNamesAndValues[i + 1]);
         }
 
-        return WebConfiguration.getInstance(servletContext).getViewStateAutocomplete();
+        ExternalContextImpl externalContext = new ExternalContextImpl(servletContext, new MockHttpServletRequest(new MockHttpSession()),
+                new MockHttpServletResponse());
+
+        return StateHelper.getViewStateAutocomplete(new MockFacesContext(externalContext));
     }
 }

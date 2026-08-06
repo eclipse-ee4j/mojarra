@@ -34,9 +34,8 @@ import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.render.Renderer;
 
 import org.glassfish.mojarra.RIConstants;
-import org.glassfish.mojarra.config.WebConfiguration;
-import org.glassfish.mojarra.context.ContextParam.Tristate;
-import org.glassfish.mojarra.context.MojarraContextParam;
+import org.glassfish.mojarra.config.ContextParam.Tristate;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.io.FastStringWriter;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 import org.glassfish.mojarra.util.HtmlUtils;
@@ -223,19 +222,17 @@ public class HtmlResponseWriter extends ResponseWriter {
         }
 
         this.encoding = encoding;
+        FacesContext context = FacesContext.getCurrentInstance();
 
         // init those configuration parameters not yet initialized
-        WebConfiguration webConfig = null;
         if (isScriptInAttributeValueEnabled == null) {
-            webConfig = getWebConfiguration(webConfig);
-            isScriptInAttributeValueEnabled = null == webConfig ? MojarraContextParam.ENABLE_SCRIPTS_IN_ATTRIBUTE_VALUES.getDefaultValue(null)
-                    : webConfig.isEnabled(MojarraContextParam.ENABLE_SCRIPTS_IN_ATTRIBUTE_VALUES);
+            isScriptInAttributeValueEnabled = null == context ? MojarraContextParam.ENABLE_SCRIPTS_IN_ATTRIBUTE_VALUES.getDefaultValue(null)
+                    : MojarraContextParam.ENABLE_SCRIPTS_IN_ATTRIBUTE_VALUES.isEnabled(context);
         }
 
         if (disableUnicodeEscaping == null) {
-            webConfig = getWebConfiguration(webConfig);
-            disableUnicodeEscaping = null == webConfig ? MojarraContextParam.DISABLE_UNICODE_ESCAPING.getDefaultValue(null)
-                    : webConfig.getEnum(Tristate.class, MojarraContextParam.DISABLE_UNICODE_ESCAPING);
+            disableUnicodeEscaping = null == context ? MojarraContextParam.DISABLE_UNICODE_ESCAPING.getDefaultValue(null)
+                    : MojarraContextParam.DISABLE_UNICODE_ESCAPING.getEnum(context);
         }
 
         // and store them for later use
@@ -268,18 +265,6 @@ public class HtmlResponseWriter extends ResponseWriter {
             escapeIso = !HtmlUtils.isISO8859_1encoding(charsetName) && !HtmlUtils.isUTFencoding(charsetName);
             break;
         }
-    }
-
-    private WebConfiguration getWebConfiguration(WebConfiguration webConfig) {
-        if (webConfig != null) {
-            return webConfig;
-        }
-
-        FacesContext context = FacesContext.getCurrentInstance();
-        if (null != context) {
-            webConfig = WebConfiguration.getInstance(context);
-        }
-        return webConfig;
     }
 
     // -------------------------------------------------- Methods From Closeable

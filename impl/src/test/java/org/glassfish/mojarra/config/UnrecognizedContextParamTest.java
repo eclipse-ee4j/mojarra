@@ -17,59 +17,22 @@
 package org.glassfish.mojarra.config;
 
 import static jakarta.faces.application.ProjectStage.PROJECT_STAGE_PARAM_NAME;
-import static java.util.logging.Level.WARNING;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
 
 import jakarta.faces.application.ProjectStage;
 
-import org.glassfish.mojarra.context.MojarraContextParam;
 import org.glassfish.mojarra.mock.MockServletContext;
-import org.glassfish.mojarra.util.FacesLogger;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
  * Nothing used to validate the names an application declares, so a typo or a parameter which no longer exists was
  * silently ignored, with no way to tell from the outside.
  */
-class UnrecognizedContextParamTest {
+class UnrecognizedContextParamTest extends ConfigurationLoggingTestBase {
 
     private static final String UNRECOGNIZED = "faces.config.webconfig.param.unrecognized";
-
-    private final Logger logger = FacesLogger.CONFIG.getLogger();
-    private final List<LogRecord> records = new ArrayList<>();
-    private final Handler handler = new Handler() {
-
-        @Override
-        public void publish(LogRecord record) {
-            records.add(record);
-        }
-
-        @Override
-        public void flush() {
-        }
-
-        @Override
-        public void close() {
-        }
-    };
-
-    @BeforeEach
-    void captureLogging() {
-        logger.addHandler(handler);
-    }
-
-    @AfterEach
-    void stopCapturingLogging() {
-        logger.removeHandler(handler);
-    }
 
     @Test
     void aTypoIsReported() {
@@ -126,9 +89,6 @@ class UnrecognizedContextParamTest {
     }
 
     private List<String> unrecognizedParameterNames() {
-        return records.stream()
-                .filter(record -> record.getLevel() == WARNING && UNRECOGNIZED.equals(record.getMessage()))
-                .map(record -> String.valueOf(record.getParameters()[1]))
-                .toList();
+        return loggedArguments(UNRECOGNIZED, 1);
     }
 }

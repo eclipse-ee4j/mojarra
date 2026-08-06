@@ -16,7 +16,7 @@
 
 package org.glassfish.mojarra.config.configprovider;
 
-import org.glassfish.mojarra.context.FacesContextParam;
+import org.glassfish.mojarra.config.FacesContextParam;
 
 /**
  *

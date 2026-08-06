@@ -42,6 +42,7 @@ import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ApplicationFactory;
+import jakarta.faces.application.ProjectStage;
 import jakarta.faces.context.FacesContext;
 import jakarta.servlet.ServletContext;
 
@@ -50,7 +51,7 @@ import org.glassfish.mojarra.application.ApplicationInstanceFactoryMetadataMap;
 import org.glassfish.mojarra.application.ApplicationResourceBundle;
 import org.glassfish.mojarra.config.ConfigManager;
 import org.glassfish.mojarra.config.ConfigurationException;
-import org.glassfish.mojarra.config.WebConfiguration;
+import org.glassfish.mojarra.config.FacesContextParam;
 import org.glassfish.mojarra.spi.InjectionProvider;
 import org.glassfish.mojarra.spi.InjectionProviderException;
 import org.glassfish.mojarra.util.FacesLogger;
@@ -316,7 +317,8 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
     }
 
     private static boolean isDevelopment(FacesContext facesContext) {
-        return WebConfiguration.getInstance(facesContext).getProjectStage() == Development;
+    	ProjectStage projectStage = FacesContextParam.PROJECT_STAGE.getEnum(facesContext);
+        return projectStage == Development;
     }
 
 

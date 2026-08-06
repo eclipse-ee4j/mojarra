@@ -30,8 +30,7 @@ import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 
-import org.glassfish.mojarra.config.WebConfiguration;
-import org.glassfish.mojarra.context.MojarraContextParam;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.util.Util;
 
 /**
@@ -52,10 +51,9 @@ public class ClasspathResourceHelper extends ResourceHelper {
     // ------------------------------------------------------------ Constructors
 
     public ClasspathResourceHelper() {
-        WebConfiguration webconfig = WebConfiguration.getInstance();
-        cacheTimestamp = webconfig.isEnabled(MojarraContextParam.CACHE_RESOURCE_MODIFICATION_TIMESTAMP);
-        enableMissingResourceLibraryDetection = webconfig.isEnabled(MojarraContextParam.ENABLE_MISSING_RESOURCE_LIBRARY_DETECTION);
-
+        FacesContext context = FacesContext.getCurrentInstance();
+        cacheTimestamp = MojarraContextParam.CACHE_RESOURCE_MODIFICATION_TIMESTAMP.isEnabled(context);
+        enableMissingResourceLibraryDetection = MojarraContextParam.ENABLE_MISSING_RESOURCE_LIBRARY_DETECTION.isEnabled(context);
     }
 
     @Override

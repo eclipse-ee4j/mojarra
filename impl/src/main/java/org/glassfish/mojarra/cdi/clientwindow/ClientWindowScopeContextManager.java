@@ -33,9 +33,8 @@ import jakarta.faces.context.FacesContext;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpSessionEvent;
 
-import org.glassfish.mojarra.config.WebConfiguration;
-import org.glassfish.mojarra.context.FacesContextParam;
-import org.glassfish.mojarra.context.MojarraContextParam;
+import org.glassfish.mojarra.config.FacesContextParam;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.LRUMap;
 
@@ -52,8 +51,7 @@ public class ClientWindowScopeContextManager {
 
     public ClientWindowScopeContextManager() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        distributable = WebConfiguration.getInstance(facesContext)
-                                        .isEnabled(MojarraContextParam.ENABLE_DISTRIBUTABLE);
+        distributable = MojarraContextParam.ENABLE_DISTRIBUTABLE.isEnabled(facesContext);
     }
 
     /**

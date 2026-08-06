@@ -89,9 +89,8 @@ import org.glassfish.mojarra.application.ApplicationAssociate;
 import org.glassfish.mojarra.application.ConverterPropertyEditorFactory;
 import org.glassfish.mojarra.application.ViewMemberInstanceFactoryMetadataMap;
 import org.glassfish.mojarra.cdi.CdiUtils;
-import org.glassfish.mojarra.config.WebConfiguration;
-import org.glassfish.mojarra.context.FacesContextParam;
-import org.glassfish.mojarra.context.MojarraContextParam;
+import org.glassfish.mojarra.config.FacesContextParam;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.MessageUtils;
 import org.glassfish.mojarra.util.ReflectionUtils;
@@ -172,8 +171,7 @@ public class InstanceFactory {
         constructorCache = new ConcurrentHashMap<>();
 
         FacesContext context = FacesContext.getCurrentInstance();
-        WebConfiguration webConfig = WebConfiguration.getInstance(context);
-        registerPropertyEditors = webConfig.isEnabled(MojarraContextParam.REGISTER_CONVERTER_PROPERTY_EDITORS);
+        registerPropertyEditors = MojarraContextParam.REGISTER_CONVERTER_PROPERTY_EDITORS.isEnabled(context);
 
         passDefaultTimeZone = FacesContextParam.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE.isEnabled(context);
         if (passDefaultTimeZone) {

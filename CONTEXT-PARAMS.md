@@ -278,7 +278,7 @@ An `org.glassfish.mojarra.*` name which this page does not list is not recognize
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.compressableMimeTypes</code></th></tr>
 <tr><td><code>String[]</code></td><td><em>(none)</em></td><td>2.0.0</td><td>request</td><td>Comma separated list of mime types of resources which are GZIP compressed when served. A trailing <code>/*</code> acts as a wildcard, as in <code>text/*</code>. Compression spends CPU to save bandwidth, so list the text based types only.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.defaultResourceMaxAge</code></th></tr>
-<tr><td><code>int</code></td><td><code>604800000</code></td><td>2.0.0</td><td>request</td><td>Amount of milliseconds a resource may be cached by the client, as expressed in the <code>Expires</code> response header. A higher value means fewer resource requests reach the server.</td></tr>
+<tr><td><code>long</code></td><td><code>604800000</code></td><td>2.0.0</td><td>request</td><td>Amount of milliseconds a resource may be cached by the client, as expressed in the <code>Expires</code> response header. A higher value means fewer resource requests reach the server.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.enableMissingResourceLibraryDetection</code></th></tr>
 <tr><td><code>boolean</code></td><td><code>false</code></td><td>2.0.5</td><td>request</td><td>Fails the view when a composite component refers to a resource library which does not exist, instead of rendering the tag as unresolved markup. <code>false</code> is faster as the check resolves the library on every composite component tag.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.resourceBufferSize</code></th></tr>
@@ -330,7 +330,7 @@ An `org.glassfish.mojarra.*` name which this page does not list is not recognize
 </thead>
 <tbody>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.websocketEndpointIdleTimeout</code></th></tr>
-<tr><td><code>int</code></td><td><code>0</code></td><td>4.0.21</td><td>memory</td><td>Amount of milliseconds after which an idle web socket session is closed. <code>0</code> never closes one, which lets idle sessions accumulate on a busy application.</td></tr>
+<tr><td><code>long</code></td><td><code>0</code></td><td>4.0.21</td><td>memory</td><td>Amount of milliseconds after which an idle web socket session is closed. <code>0</code> never closes one, which lets idle sessions accumulate on a busy application.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.websocketMaxSessionsPerChannel</code></th></tr>
 <tr><td><code>int</code></td><td><code>2147483647</code></td><td>4.0.21</td><td>memory</td><td>Maximum amount of concurrent web socket sessions per channel. Empty means unbounded, which lets a channel grow without limit.</td></tr>
 </tbody>

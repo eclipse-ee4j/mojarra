@@ -42,7 +42,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.flow.Flow;
 
 import org.glassfish.mojarra.application.ApplicationAssociate;
-import org.glassfish.mojarra.context.FacesContextParam;
+import org.glassfish.mojarra.config.FacesContextParam;
 import org.glassfish.mojarra.util.Util;
 
 public class FaceletWebappResourceHelper extends ResourceHelper {

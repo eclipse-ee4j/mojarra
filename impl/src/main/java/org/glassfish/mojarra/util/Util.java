@@ -113,9 +113,8 @@ import jakarta.servlet.http.MappingMatch;
 
 import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.application.ApplicationAssociate;
+import org.glassfish.mojarra.config.FacesContextParam;
 import org.glassfish.mojarra.config.manager.FacesSchema;
-import org.glassfish.mojarra.context.FacesContextParam;
-import org.glassfish.mojarra.context.MojarraContextParam;
 import org.glassfish.mojarra.facelets.component.UIRepeat;
 import org.glassfish.mojarra.io.FastStringWriter;
 
@@ -1255,19 +1254,10 @@ public class Util {
     }
 
     /**
-     * Utility method to validate ID uniqueness for the tree represented by <code>component</code>.
+     * Utility method to validate ID uniqueness for the tree represented by <code>component</code>. Whether it runs at
+     * all is up to the caller, which is the one holding the answer for the view it is about to save.
      */
     public static void checkIdUniqueness(FacesContext context, UIComponent component, Set<String> componentIds) {
-        if (!isIdUniquenessCheckDisabled(context)) {
-            doCheckIdUniqueness(context, component, componentIds);
-        }
-    }
-
-    private static boolean isIdUniquenessCheckDisabled(FacesContext context) {
-        return MojarraContextParam.DISABLE_ID_UNIQUENESS_CHECK.isEnabled(context);
-    }
-
-    private static void doCheckIdUniqueness(FacesContext context, UIComponent component, Set<String> componentIds) {
         // deal with children/facets that are marked transient.
         for (Iterator<UIComponent> kids = component.getFacetsAndChildren(); kids.hasNext();) {
 
@@ -1283,7 +1273,7 @@ public class Util {
             // check for id uniqueness
             String id = kid.getClientId(context);
             if (componentIds.add(id)) {
-                doCheckIdUniqueness(context, kid, componentIds);
+                checkIdUniqueness(context, kid, componentIds);
             } else {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE, "faces.duplicate_component_id_error", id);

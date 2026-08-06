@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package org.glassfish.mojarra.context;
+package org.glassfish.mojarra.config;
 
 import static java.util.Arrays.stream;
 import static java.util.function.Predicate.not;
@@ -25,8 +25,6 @@ import java.util.regex.Pattern;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.context.FacesContext;
 import jakarta.servlet.ServletContext;
-
-import org.glassfish.mojarra.config.WebConfiguration;
 
 /**
  * <p class="changed_added_5_0">
@@ -60,6 +58,7 @@ public interface ContextParam {
      * <li>{@link Character}
      * <li>{@link Boolean}
      * <li>{@link Integer}
+     * <li>{@link Long}
      * <li>{@link Enum}
      * </ul>
      *
@@ -123,93 +122,129 @@ public interface ContextParam {
     /**
      * @param context the involved faces context.
      * @return the value of a {@link String} parameter.
-     * @throws IllegalStateException when the parameter does not declare that type.
+     * @throws ClassCastException when the parameter does not declare that type.
      */
     default String getString(FacesContext context) {
-        return WebConfiguration.getInstance(context).getString(this);
+        return WebConfiguration.getInstance(context).getValue(this);
     }
 
     /**
      * @param servletContext the involved servlet context.
      * @return the value of a {@link String} parameter.
-     * @throws IllegalStateException when the parameter does not declare that type.
+     * @throws ClassCastException when the parameter does not declare that type.
      */
     default String getString(ServletContext servletContext) {
-        return WebConfiguration.getInstance(servletContext).getString(this);
+        return WebConfiguration.getInstance(servletContext).getValue(this);
     }
 
     /**
      * @param context the involved faces context.
      * @return the value of a {@link String}{@code []} parameter.
-     * @throws IllegalStateException when the parameter does not declare that type.
+     * @throws ClassCastException when the parameter does not declare that type.
      */
     default String[] getStringArray(FacesContext context) {
-        return WebConfiguration.getInstance(context).getStringArray(this);
+        return WebConfiguration.getInstance(context).getValue(this);
     }
 
     /**
      * @param servletContext the involved servlet context.
      * @return the value of a {@link String}{@code []} parameter.
-     * @throws IllegalStateException when the parameter does not declare that type.
+     * @throws ClassCastException when the parameter does not declare that type.
      */
     default String[] getStringArray(ServletContext servletContext) {
-        return WebConfiguration.getInstance(servletContext).getStringArray(this);
+        return WebConfiguration.getInstance(servletContext).getValue(this);
     }
 
     /**
      * @param context the involved faces context.
      * @return the value of an {@link Integer} parameter.
-     * @throws IllegalStateException when the parameter does not declare that type.
+     * @throws ClassCastException when the parameter does not declare that type.
      */
     default int getInt(FacesContext context) {
-        return WebConfiguration.getInstance(context).getInt(this);
+        return WebConfiguration.getInstance(context).getValue(this);
     }
 
     /**
      * @param servletContext the involved servlet context.
      * @return the value of an {@link Integer} parameter.
-     * @throws IllegalStateException when the parameter does not declare that type.
+     * @throws ClassCastException when the parameter does not declare that type.
      */
     default int getInt(ServletContext servletContext) {
-        return WebConfiguration.getInstance(servletContext).getInt(this);
+        return WebConfiguration.getInstance(servletContext).getValue(this);
+    }
+
+    /**
+     * @param context the involved faces context.
+     * @return the value of a {@link Long} parameter.
+     * @throws ClassCastException when the parameter does not declare that type.
+     */
+    default long getLong(FacesContext context) {
+        return WebConfiguration.getInstance(context).getValue(this);
+    }
+
+    /**
+     * @param servletContext the involved servlet context.
+     * @return the value of a {@link Long} parameter.
+     * @throws ClassCastException when the parameter does not declare that type.
+     */
+    default long getLong(ServletContext servletContext) {
+        return WebConfiguration.getInstance(servletContext).getValue(this);
     }
 
     /**
      * @param context the involved faces context.
      * @return the value of a {@link Character} parameter.
-     * @throws IllegalStateException when the parameter does not declare that type.
+     * @throws ClassCastException when the parameter does not declare that type.
      */
     default char getChar(FacesContext context) {
-        return WebConfiguration.getInstance(context).getChar(this);
+        return WebConfiguration.getInstance(context).getValue(this);
+    }
+
+    /**
+     * @param servletContext the involved servlet context.
+     * @return the value of a {@link Character} parameter.
+     * @throws ClassCastException when the parameter does not declare that type.
+     */
+    default char getChar(ServletContext servletContext) {
+        return WebConfiguration.getInstance(servletContext).getValue(this);
     }
 
     /**
      * @param <E> the enum type.
-     * @param type the enum the parameter declares.
      * @param context the involved faces context.
      * @return the value of an {@link Enum} parameter.
-     * @throws IllegalStateException when the parameter does not declare that type.
+     * @throws ClassCastException when the parameter does not declare that type.
      */
-    default <E extends Enum<E>> E getEnum(Class<E> type, FacesContext context) {
-        return WebConfiguration.getInstance(context).getEnum(type, this);
+    default <E extends Enum<E>> E getEnum(FacesContext context) {
+        return WebConfiguration.getInstance(context).getValue(this);
+    }
+
+    /**
+     * @param <E> the enum type.
+     * @param servletContext the involved servlet context.
+     * @return the value of an {@link Enum} parameter.
+     * @throws ClassCastException when the parameter does not declare that type.
+     */
+    default <E extends Enum<E>> E getEnum(ServletContext servletContext) {
+        return WebConfiguration.getInstance(servletContext).getValue(this);
     }
 
     /**
      * @param context the involved faces context.
      * @return whether a {@link Boolean} parameter resolved to <code>true</code>.
-     * @throws IllegalStateException when the parameter does not declare that type.
+     * @throws ClassCastException when the parameter does not declare that type.
      */
     default boolean isEnabled(FacesContext context) {
-        return WebConfiguration.getInstance(context).isEnabled(this);
+        return WebConfiguration.getInstance(context).getValue(this);
     }
 
     /**
      * @param servletContext the involved servlet context.
      * @return whether a {@link Boolean} parameter resolved to <code>true</code>.
-     * @throws IllegalStateException when the parameter does not declare that type.
+     * @throws ClassCastException when the parameter does not declare that type.
      */
     default boolean isEnabled(ServletContext servletContext) {
-        return WebConfiguration.getInstance(servletContext).isEnabled(this);
+        return WebConfiguration.getInstance(servletContext).getValue(this);
     }
 
     /**
@@ -228,7 +263,6 @@ public interface ContextParam {
     default boolean isSet(ServletContext servletContext) {
         return WebConfiguration.getInstance(servletContext).isSet(this);
     }
-
 
     /**
      * <p>
@@ -266,6 +300,14 @@ public interface ContextParam {
         else if (type == Integer.class) {
             try {
                 return Optional.of((T) Integer.valueOf(value));
+            }
+            catch (NumberFormatException e) {
+                throw new IllegalArgumentException(getName() + ": invalid value: " + value, e);
+            }
+        }
+        else if (type == Long.class) {
+            try {
+                return Optional.of((T) Long.valueOf(value));
             }
             catch (NumberFormatException e) {
                 throw new IllegalArgumentException(getName() + ": invalid value: " + value, e);

@@ -63,7 +63,8 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.PushBuilder;
 
 import org.glassfish.mojarra.RIConstants;
-import org.glassfish.mojarra.config.WebConfiguration;
+import org.glassfish.mojarra.config.FacesContextParam;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.context.flash.ELFlash;
 import org.glassfish.mojarra.renderkit.html_basic.ScriptRenderer;
 import org.glassfish.mojarra.renderkit.html_basic.StylesheetRenderer;
@@ -141,9 +142,7 @@ public class ExternalContextImpl extends ExternalContext {
         this.request = request;
         this.response = response;
 
-        WebConfiguration webConfiguration = WebConfiguration.getInstance(servletContext);
-
-        if (webConfiguration.isEnabled(MojarraContextParam.SEND_POWERED_BY_HEADER)) {
+        if (MojarraContextParam.SEND_POWERED_BY_HEADER.isEnabled(servletContext)) {
             String poweredBy = "Faces";
             String specificationVersion = MojarraVersion.SPECIFICATION_VERSION;
             if (specificationVersion != null) {
@@ -152,7 +151,7 @@ public class ExternalContextImpl extends ExternalContext {
             ((HttpServletResponse) response).addHeader("X-Powered-By", poweredBy);
         }
 
-        distributable = webConfiguration.isEnabled(MojarraContextParam.ENABLE_DISTRIBUTABLE);
+        distributable = MojarraContextParam.ENABLE_DISTRIBUTABLE.isEnabled(servletContext);
 
     }
 

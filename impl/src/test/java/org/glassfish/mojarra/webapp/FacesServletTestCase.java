@@ -28,7 +28,7 @@ import jakarta.faces.render.RenderKitFactory;
 import jakarta.faces.webapp.FacesServlet;
 import jakarta.servlet.http.HttpServletResponse;
 
-import org.glassfish.mojarra.context.MojarraContextParam;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.junit.JUnitFacesTestCaseBase;
 import org.glassfish.mojarra.mock.MockRenderKit;
 import org.junit.jupiter.api.BeforeEach;

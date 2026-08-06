@@ -62,7 +62,6 @@ import jakarta.servlet.ServletContext;
 import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.application.ApplicationAssociate;
 import org.glassfish.mojarra.application.JavaFlowLoaderHelper;
-import org.glassfish.mojarra.config.WebConfiguration;
 import org.glassfish.mojarra.config.manager.FacesSchema;
 import org.glassfish.mojarra.config.manager.documents.DocumentInfo;
 import org.glassfish.mojarra.facelets.util.ReflectionUtil;
@@ -160,7 +159,7 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
     @Override
     public void process(ServletContext sc, FacesContext facesContext, DocumentInfo[] documentInfos) throws Exception {
 
-        WebConfiguration config = WebConfiguration.getInstance(sc);
+        boolean hasFlows = false;
 
         for (DocumentInfo documentInfo : documentInfos) {
             URI definingDocumentURI = documentInfo.getSourceURI();
@@ -171,13 +170,12 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
             String namespace = document.getDocumentElement().getNamespaceURI();
             NodeList flowDefinitions = document.getDocumentElement().getElementsByTagNameNS(namespace, FACES_FLOW_DEFINITION);
             if (flowDefinitions != null && flowDefinitions.getLength() > 0) {
-                config.setHasFlows(true);
-
+                hasFlows = true;
                 saveFlowDefinition(facesContext, definingDocumentURI, document);
             }
         }
 
-        if (config.isHasFlows()) {
+        if (hasFlows) {
             JavaFlowLoaderHelper.enableClientWindowModeIfNecessary(facesContext);
             facesContext.getApplication().subscribeToEvent(PostConstructApplicationEvent.class, Application.class, new PerformDeferredFlowProcessing());
         }

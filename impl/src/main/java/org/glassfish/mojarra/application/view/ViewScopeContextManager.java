@@ -42,8 +42,7 @@ import jakarta.inject.Named;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpSessionEvent;
 
-import org.glassfish.mojarra.config.WebConfiguration;
-import org.glassfish.mojarra.context.MojarraContextParam;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.util.FacesLogger;
 
 /**
@@ -64,8 +63,7 @@ public class ViewScopeContextManager {
     public ViewScopeContextManager() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         beanManager = getCdiBeanManager(facesContext);
-        distributable = WebConfiguration.getInstance(facesContext)
-                                        .isEnabled(MojarraContextParam.ENABLE_DISTRIBUTABLE);
+        distributable = MojarraContextParam.ENABLE_DISTRIBUTABLE.isEnabled(facesContext);
     }
 
     /**

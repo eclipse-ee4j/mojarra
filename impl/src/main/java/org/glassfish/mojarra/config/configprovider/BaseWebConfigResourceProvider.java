@@ -32,7 +32,7 @@ import jakarta.faces.FacesException;
 import jakarta.faces.context.FacesContext;
 import jakarta.servlet.ServletContext;
 
-import org.glassfish.mojarra.context.FacesContextParam;
+import org.glassfish.mojarra.config.FacesContextParam;
 import org.glassfish.mojarra.spi.ConfigurationResourceProvider;
 import org.glassfish.mojarra.util.FacesLogger;
 

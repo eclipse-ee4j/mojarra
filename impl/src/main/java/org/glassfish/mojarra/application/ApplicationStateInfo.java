@@ -22,8 +22,9 @@ import static org.glassfish.mojarra.util.Util.notNullViewId;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.glassfish.mojarra.config.WebConfiguration;
-import org.glassfish.mojarra.context.FacesContextParam;
+import jakarta.faces.context.FacesContext;
+
+import org.glassfish.mojarra.config.FacesContextParam;
 
 /**
  * This class maintains per-application information pertaining to partail or full state saving as a whole or partial
@@ -37,12 +38,11 @@ public class ApplicationStateInfo {
     // ------------------------------------------------------------ Constructors
 
     public ApplicationStateInfo() {
-
-        WebConfiguration config = WebConfiguration.getInstance();
-        partialStateSaving = config.isEnabled(FacesContextParam.PARTIAL_STATE_SAVING);
+    	FacesContext context = FacesContext.getCurrentInstance();
+        partialStateSaving = FacesContextParam.PARTIAL_STATE_SAVING.isEnabled(context);
 
         if (partialStateSaving) {
-            String[] viewIds = config.getStringArray(FacesContextParam.FULL_STATE_SAVING_VIEW_IDS);
+            String[] viewIds = FacesContextParam.FULL_STATE_SAVING_VIEW_IDS.getStringArray(context);
             fullStateViewIds = new HashSet<>(viewIds.length, 1.0f);
             fullStateViewIds.addAll(asList(viewIds));
         }

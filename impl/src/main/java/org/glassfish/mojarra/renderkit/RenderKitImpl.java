@@ -41,9 +41,8 @@ import jakarta.faces.render.Renderer;
 import jakarta.faces.render.ResponseStateManager;
 
 import org.glassfish.mojarra.RIConstants;
-import org.glassfish.mojarra.config.WebConfiguration;
-import org.glassfish.mojarra.context.ContextParam.Tristate;
-import org.glassfish.mojarra.context.MojarraContextParam;
+import org.glassfish.mojarra.config.ContextParam.Tristate;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.renderkit.html_basic.HtmlResponseWriter;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.MessageUtils;
@@ -79,12 +78,16 @@ public class RenderKitImpl extends RenderKit {
 
     private ResponseStateManager responseStateManager = new ResponseStateManagerImpl();
 
-    private WebConfiguration webConfig;
+    private final boolean scriptInAttributes;
+    private final Tristate escaping;
+    private final boolean preferXhtml;
 
     public RenderKitImpl() {
 
         FacesContext context = FacesContext.getCurrentInstance();
-        webConfig = WebConfiguration.getInstance(context);
+        scriptInAttributes = MojarraContextParam.ENABLE_SCRIPTS_IN_ATTRIBUTE_VALUES.isEnabled(context);
+        escaping = MojarraContextParam.DISABLE_UNICODE_ESCAPING.getEnum(context);
+        preferXhtml = MojarraContextParam.PREFER_XHTML.isEnabled(context);
 
     }
 
@@ -209,7 +212,7 @@ public class RenderKitImpl extends RenderKit {
 
             if (null != desiredContentTypeList) {
                 desiredContentTypeList = RenderKitUtils.determineContentType(desiredContentTypeList, SUPPORTED_CONTENT_TYPES,
-                        preferXhtml() ? RIConstants.XHTML_CONTENT_TYPE : null);
+                		preferXhtml ? RIConstants.XHTML_CONTENT_TYPE : null);
                 if (null != desiredContentTypeList) {
                     contentType = findMatch(desiredContentTypeList, SUPPORTED_CONTENT_TYPES_ARRAY);
                 }
@@ -238,21 +241,13 @@ public class RenderKitImpl extends RenderKit {
             characterEncoding = RIConstants.CHAR_ENCODING;
         }
 
-        boolean scriptInAttributes = webConfig.isEnabled(MojarraContextParam.ENABLE_SCRIPTS_IN_ATTRIBUTE_VALUES);
-        Tristate escaping = webConfig.getEnum(Tristate.class, MojarraContextParam.DISABLE_UNICODE_ESCAPING);
         boolean isPartial = context.getPartialViewContext().isPartialRequest();
         return new HtmlResponseWriter(writer, contentType, characterEncoding, scriptInAttributes, escaping, isPartial);
     }
 
-    private boolean preferXhtml() {
-
-        return webConfig.isEnabled(MojarraContextParam.PREFER_XHTML);
-
-    }
-
     private String getDefaultContentType() {
 
-        return preferXhtml() ? RIConstants.XHTML_CONTENT_TYPE : RIConstants.HTML_CONTENT_TYPE;
+        return preferXhtml ? RIConstants.XHTML_CONTENT_TYPE : RIConstants.HTML_CONTENT_TYPE;
 
     }
 

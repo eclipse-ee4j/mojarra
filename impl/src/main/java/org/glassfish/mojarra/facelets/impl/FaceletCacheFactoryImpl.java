@@ -20,7 +20,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.facelets.FaceletCache;
 import jakarta.faces.view.facelets.FaceletCacheFactory;
 
-import org.glassfish.mojarra.context.FacesContextParam;
+import org.glassfish.mojarra.config.FacesContextParam;
 
 /**
  * Default implementation of {@link FaceletCacheFactory}.

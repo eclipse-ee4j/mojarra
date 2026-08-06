@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package org.glassfish.mojarra.context;
+package org.glassfish.mojarra.config;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
@@ -79,7 +79,7 @@ public enum MojarraContextParam implements ContextParam {
     /**
      * How long a resource may be cached by the client, in milliseconds.
      */
-    DEFAULT_RESOURCE_MAX_AGE("defaultResourceMaxAge", 604800000),
+    DEFAULT_RESOURCE_MAX_AGE("defaultResourceMaxAge", 604800000L),
 
     /**
      * @deprecated Replaced by {@link #ENABLE_CLIENT_STATE_DEBUGGING}, which is what it was ever used for.
@@ -179,7 +179,7 @@ public enum MojarraContextParam implements ContextParam {
     /**
      * How long a websocket may stay idle before it is closed, in milliseconds, where zero means it never is.
      */
-    WEBSOCKET_ENDPOINT_IDLE_TIMEOUT("websocketEndpointIdleTimeout", 0),
+    WEBSOCKET_ENDPOINT_IDLE_TIMEOUT("websocketEndpointIdleTimeout", 0L),
 
     /**
      * How many sessions a websocket channel accepts, where {@link Integer#MAX_VALUE} means it is unbounded.

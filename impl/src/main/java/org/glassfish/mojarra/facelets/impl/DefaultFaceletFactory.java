@@ -61,9 +61,8 @@ import jakarta.faces.view.facelets.FaceletHandler;
 import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.application.ApplicationAssociate;
 import org.glassfish.mojarra.application.resource.ResourceManager;
-import org.glassfish.mojarra.config.WebConfiguration;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.context.FacesFileNotFoundException;
-import org.glassfish.mojarra.context.MojarraContextParam;
 import org.glassfish.mojarra.facelets.compiler.Compiler;
 import org.glassfish.mojarra.util.Cache;
 import org.glassfish.mojarra.util.FacesLogger;
@@ -109,8 +108,6 @@ public class DefaultFaceletFactory {
         notNull("compiler", compiler);
         notNull("resolver", resolver);
 
-        WebConfiguration config = WebConfiguration.getInstance(facesContext);
-
         this.compiler = compiler;
         cachePerContract = new ConcurrentHashMap<>();
         this.resolver = resolver;
@@ -118,7 +115,7 @@ public class DefaultFaceletFactory {
         baseUrl = resolver.resolveUrl("/");
         baseUrlAsString = baseUrl.toExternalForm();
         faceletResourceSuffixes = Util.getFaceletResourceSuffixes(facesContext);
-        this.idMappers = config.isEnabled(MojarraContextParam.USE_FACELETS_ID) ? null : new Cache<>(new IdMapperFactory());
+        this.idMappers = MojarraContextParam.USE_FACELETS_ID.isEnabled(facesContext) ? null : new Cache<>(new IdMapperFactory());
         this.refreshPeriodInMillis = refreshPeriodInSeconds >= 0 ? refreshPeriodInSeconds * 1000 : -1;
         if (log.isLoggable(Level.FINE)) {
             log.log(Level.FINE, "Using ResourceResolver: {0}", resolver);

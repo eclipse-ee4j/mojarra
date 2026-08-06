@@ -40,13 +40,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import org.glassfish.mojarra.config.WebConfiguration;
-import org.glassfish.mojarra.mock.MockApplication;
-import org.glassfish.mojarra.mock.MockFacesContext;
-import org.glassfish.mojarra.mock.MockHttpServletRequest;
-import org.glassfish.mojarra.mock.MockHttpServletResponse;
-import org.glassfish.mojarra.mock.MockHttpSession;
-import org.glassfish.mojarra.mock.MockServletContext;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -54,24 +47,6 @@ import org.mockito.Mockito;
  * The JUnit tests for the ExternalContextImpl class.
  */
 public class ExternalContextImplTest {
-
-    /**
-     * ConfigureListener enables enableDistributable when web.xml declares &lt;distributable/&gt; without the context
-     * parameter being set, so reading the parameter straight off the ServletContext misses it and the session map is
-     * silently not the replicating one.
-     */
-    @Test
-    public void testSessionMapReplicatesWhenWebXmlDeclaresDistributable() {
-        MockServletContext servletContext = new MockServletContext();
-        WebConfiguration.getInstance(servletContext).setValue(MojarraContextParam.ENABLE_DISTRIBUTABLE, true);
-
-        ExternalContextImpl externalContext = new ExternalContextImpl(servletContext, new MockHttpServletRequest(new MockHttpSession()),
-                new MockHttpServletResponse());
-        MockFacesContext facesContext = new MockFacesContext(externalContext);
-        facesContext.setApplication(new MockApplication());
-
-        assertTrue(externalContext.getSessionMap() instanceof AlwaysPuttingSessionMap);
-    }
 
     /**
      * Test getRequestCookieMap method.

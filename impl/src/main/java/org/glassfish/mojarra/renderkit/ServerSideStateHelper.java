@@ -41,9 +41,8 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
-import org.glassfish.mojarra.config.WebConfiguration;
-import org.glassfish.mojarra.context.FacesContextParam;
-import org.glassfish.mojarra.context.MojarraContextParam;
+import org.glassfish.mojarra.config.FacesContextParam;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.LRUMap;
 import org.glassfish.mojarra.util.RequestStateManager;
@@ -85,6 +84,16 @@ public class ServerSideStateHelper extends StateHelper {
     protected boolean generateUniqueStateIds;
 
     /**
+     * Flag determining if view state hidden input needs ID.
+     */
+    protected boolean enableViewStateIdRendering;
+
+    /**
+     * Flag determining whether the state is serialized before it is stored in the session.
+     */
+    protected final boolean serializeServerState;
+
+    /**
      * Used to generate unique server state IDs.
      */
     protected final SecureRandom random;
@@ -95,10 +104,12 @@ public class ServerSideStateHelper extends StateHelper {
      * Construct a new <code>ServerSideStateHelper</code> instance.
      */
     public ServerSideStateHelper() {
-        numberOfStatefulPages = webConfig.getInt(MojarraContextParam.NUMBER_OF_STATEFUL_PAGES_PER_SESSION);
-        numberOfViewStatesPerPage = webConfig.getInt(MojarraContextParam.NUMBER_OF_VIEW_STATES_PER_STATEFUL_PAGE);
-        WebConfiguration webConfig = WebConfiguration.getInstance();
-        generateUniqueStateIds = webConfig.isEnabled(MojarraContextParam.GENERATE_UNIQUE_SERVER_STATE_IDS);
+    	FacesContext context = FacesContext.getCurrentInstance();
+        numberOfStatefulPages = MojarraContextParam.NUMBER_OF_STATEFUL_PAGES_PER_SESSION.getInt(context);
+        numberOfViewStatesPerPage = MojarraContextParam.NUMBER_OF_VIEW_STATES_PER_STATEFUL_PAGE.getInt(context);
+        generateUniqueStateIds = MojarraContextParam.GENERATE_UNIQUE_SERVER_STATE_IDS.isEnabled(context);
+        enableViewStateIdRendering = MojarraContextParam.ENABLE_VIEW_STATE_ID_RENDERING.isEnabled(context);
+        serializeServerState = FacesContextParam.SERIALIZE_SERVER_STATE.isEnabled(context);
         if (generateUniqueStateIds) {
             // Construct secure RNG.
             random = new SecureRandom();
@@ -205,7 +216,7 @@ public class ServerSideStateHelper extends StateHelper {
             writer.startElement("input", null);
             writer.writeAttribute("type", "hidden", null);
             writer.writeAttribute("name", VIEW_STATE_PARAM.getName(ctx), null);
-            if (webConfig.isEnabled(MojarraContextParam.ENABLE_VIEW_STATE_ID_RENDERING)) {
+            if (enableViewStateIdRendering) {
                 String viewStateId = Util.getViewStateId(ctx);
                 writer.writeAttribute("id", viewStateId, null);
             }
@@ -296,7 +307,7 @@ public class ServerSideStateHelper extends StateHelper {
      * @return If option <code>SerializeServerState</code> is <code>true</code>, serialize and return the state, otherwise, return <code>state</code> unchanged.
      */
     protected Object handleSaveState(Object state) {
-        if (!FacesContextParam.SERIALIZE_SERVER_STATE.isEnabled(FacesContext.getCurrentInstance())) {
+        if (!serializeServerState) {
             return state;
         }
 
@@ -327,7 +338,7 @@ public class ServerSideStateHelper extends StateHelper {
      * de-serialize the state prior to returning it, otherwise return <code>state</code> as is.
      */
     protected Object handleRestoreState(Object state) {
-        if (!FacesContextParam.SERIALIZE_SERVER_STATE.isEnabled(FacesContext.getCurrentInstance())) {
+        if (!serializeServerState) {
             return state;
         }
 

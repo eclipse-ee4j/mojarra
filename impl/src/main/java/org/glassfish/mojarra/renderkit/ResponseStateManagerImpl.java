@@ -25,7 +25,7 @@ import jakarta.faces.application.StateManager.StateSavingMethod;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.render.ResponseStateManager;
 
-import org.glassfish.mojarra.context.FacesContextParam;
+import org.glassfish.mojarra.config.FacesContextParam;
 import org.glassfish.mojarra.renderkit.RenderKitUtils.PredefinedPostbackParameter;
 import org.glassfish.mojarra.util.RequestStateManager;
 
@@ -39,7 +39,8 @@ public class ResponseStateManagerImpl extends ResponseStateManager {
 
     public ResponseStateManagerImpl() {
         FacesContext context = FacesContext.getCurrentInstance();
-        helper = FacesContextParam.STATE_SAVING_METHOD.getEnum(StateSavingMethod.class, context) == StateSavingMethod.CLIENT ? new ClientSideStateHelper() : new ServerSideStateHelper();
+        StateSavingMethod stateSavingMethod = FacesContextParam.STATE_SAVING_METHOD.getEnum(context);
+        helper = stateSavingMethod == StateSavingMethod.CLIENT ? new ClientSideStateHelper() : new ServerSideStateHelper();
     }
 
     // --------------------------------------- Methods from ResponseStateManager

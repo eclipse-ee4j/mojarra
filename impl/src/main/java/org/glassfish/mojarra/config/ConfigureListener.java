@@ -72,8 +72,6 @@ import jakarta.websocket.server.ServerEndpointConfig;
 
 import org.glassfish.mojarra.application.ApplicationAssociate;
 import org.glassfish.mojarra.application.WebappLifecycleListener;
-import org.glassfish.mojarra.context.FacesContextParam;
-import org.glassfish.mojarra.context.MojarraContextParam;
 import org.glassfish.mojarra.el.ELContextImpl;
 import org.glassfish.mojarra.push.WebsocketEndpoint;
 import org.glassfish.mojarra.util.FacesLogger;
@@ -170,7 +168,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
         // Do not override if already defined
         if (!MojarraContextParam.ENABLE_DISTRIBUTABLE.isSet(servletContext)) {
-            webConfig.setValue(MojarraContextParam.ENABLE_DISTRIBUTABLE, webXmlProcessor.isDistributablePresent());
+            webConfig.overrideValue(MojarraContextParam.ENABLE_DISTRIBUTABLE, webXmlProcessor.isDistributablePresent());
         }
         if (MojarraContextParam.ENABLE_DISTRIBUTABLE.isEnabled(servletContext)) {
             servletContext.setAttribute(MojarraContextParam.ENABLE_DISTRIBUTABLE.getName(), TRUE);
@@ -276,8 +274,8 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
         }
     }
 
-    private static int getWebsocketEndpointIdleTimeout(ServletContext servletContext) {
-        int idleTimeout = MojarraContextParam.WEBSOCKET_ENDPOINT_IDLE_TIMEOUT.getInt(servletContext);
+    private static long getWebsocketEndpointIdleTimeout(ServletContext servletContext) {
+        long idleTimeout = MojarraContextParam.WEBSOCKET_ENDPOINT_IDLE_TIMEOUT.getLong(servletContext);
 
         if (idleTimeout < 0) {
             throw new IllegalArgumentException(format(ERROR_INVALID_WEBSOCKET_ENDPOINT_IDLE_TIMEOUT, MojarraContextParam.WEBSOCKET_ENDPOINT_IDLE_TIMEOUT.getName(), idleTimeout));

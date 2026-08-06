@@ -16,59 +16,24 @@
 
 package org.glassfish.mojarra.config;
 
-import static java.util.logging.Level.WARNING;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
 
-import org.glassfish.mojarra.context.MojarraContextParam;
 import org.glassfish.mojarra.mock.MockServletContext;
-import org.glassfish.mojarra.util.FacesLogger;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
  * Covers the deprecation support of {@link WebConfiguration}, both for a parameter which has a replacement and for one
  * which has none.
  */
-class DeprecatedContextParamTest {
+class DeprecatedContextParamTest extends ConfigurationLoggingTestBase {
 
     private static final String NO_REPLACEMENT = "faces.config.webconfig.param.deprecated.no_replacement";
     private static final String REPLACED = "faces.config.webconfig.param.deprecated";
-
-    private final Logger logger = FacesLogger.CONFIG.getLogger();
-    private final List<LogRecord> records = new ArrayList<>();
-    private final Handler handler = new Handler() {
-
-        @Override
-        public void publish(LogRecord record) {
-            records.add(record);
-        }
-
-        @Override
-        public void flush() {
-        }
-
-        @Override
-        public void close() {
-        }
-    };
-
-    @BeforeEach
-    void captureLogging() {
-        logger.addHandler(handler);
-    }
-
-    @AfterEach
-    void stopCapturingLogging() {
-        logger.removeHandler(handler);
-    }
+    private static final String CONFIG_INFO = "faces.config.webconfig.configinfo";
 
     /**
      * The warning is not gated on the project stage, because it announces a change in the runtime rather than a mistake
@@ -96,9 +61,7 @@ class DeprecatedContextParamTest {
         MockServletContext servletContext = new MockServletContext();
         servletContext.addInitParameter(MojarraContextParam.ALLOW_TEXT_CHILDREN.getName(), "true");
 
-        WebConfiguration webConfiguration = WebConfiguration.getInstance(servletContext);
-
-        assertTrue(webConfiguration.isEnabled(MojarraContextParam.ALLOW_TEXT_CHILDREN), "the value is still honored");
+        assertTrue(MojarraContextParam.ALLOW_TEXT_CHILDREN.isEnabled(servletContext), "the value is still honored");
         assertEquals(List.of(MojarraContextParam.ALLOW_TEXT_CHILDREN.getName()), warnedParameterNames());
     }
 
@@ -134,10 +97,25 @@ class DeprecatedContextParamTest {
         MockServletContext servletContext = new MockServletContext();
         servletContext.addInitParameter(MojarraContextParam.NUMBER_OF_LOGICAL_VIEWS.getName(), "3");
 
-        WebConfiguration webConfiguration = WebConfiguration.getInstance(servletContext);
-
-        assertEquals(3, (int) webConfiguration.getInt(MojarraContextParam.NUMBER_OF_STATEFUL_PAGES_PER_SESSION));
+        assertEquals(3, MojarraContextParam.NUMBER_OF_STATEFUL_PAGES_PER_SESSION.getInt(servletContext));
         assertEquals(List.of(MojarraContextParam.NUMBER_OF_LOGICAL_VIEWS.getName()), replacedParameterNames());
+    }
+
+    /**
+     * And it is reported under the name it moved to, and only under that one, because that is the one governing the
+     * behaviour from here on. Reporting it under the name it was declared with would leave the log naming a parameter
+     * which decides nothing, and the replacement appearing nowhere at all.
+     */
+    @Test
+    void aCarriedOverValueIsReportedUnderItsNewName() {
+        MockServletContext servletContext = new MockServletContext();
+        servletContext.addInitParameter(MojarraContextParam.DISPLAY_CONFIGURATION.getName(), "true");
+        servletContext.addInitParameter(MojarraContextParam.NUMBER_OF_LOGICAL_VIEWS.getName(), "3");
+
+        WebConfiguration.getInstance(servletContext);
+
+        assertEquals(List.of("3"), reportedValuesOf(MojarraContextParam.NUMBER_OF_STATEFUL_PAGES_PER_SESSION), "the name it moved to");
+        assertEquals(List.of(), reportedValuesOf(MojarraContextParam.NUMBER_OF_LOGICAL_VIEWS), "the name it was declared with");
     }
 
     /**
@@ -149,7 +127,7 @@ class DeprecatedContextParamTest {
         servletContext.addInitParameter(MojarraContextParam.NUMBER_OF_LOGICAL_VIEWS.getName(), "3");
         servletContext.addInitParameter(MojarraContextParam.NUMBER_OF_STATEFUL_PAGES_PER_SESSION.getName(), "7");
 
-        assertEquals(7, (int) WebConfiguration.getInstance(servletContext).getValue(MojarraContextParam.NUMBER_OF_STATEFUL_PAGES_PER_SESSION));
+        assertEquals(7, MojarraContextParam.NUMBER_OF_STATEFUL_PAGES_PER_SESSION.getInt(servletContext));
     }
 
     private List<String> replacedParameterNames() {
@@ -160,10 +138,14 @@ class DeprecatedContextParamTest {
         return warnedParameterNames(NO_REPLACEMENT);
     }
 
-    private List<String> warnedParameterNames(String messageKey) {
+    private List<String> reportedValuesOf(ContextParam param) {
         return records.stream()
-                .filter(record -> record.getLevel() == WARNING && messageKey.equals(record.getMessage()))
-                .map(record -> String.valueOf(record.getParameters()[1]))
+                .filter(record -> CONFIG_INFO.equals(record.getMessage()) && param.getName().equals(record.getParameters()[1]))
+                .map(record -> String.valueOf(record.getParameters()[2]))
                 .toList();
+    }
+
+    private List<String> warnedParameterNames(String messageKey) {
+        return loggedArguments(messageKey, 1);
     }
 }

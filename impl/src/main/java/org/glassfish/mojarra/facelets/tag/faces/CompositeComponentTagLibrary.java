@@ -30,8 +30,7 @@ import jakarta.faces.view.facelets.ComponentConfig;
 import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagHandler;
 
-import org.glassfish.mojarra.config.WebConfiguration;
-import org.glassfish.mojarra.context.MojarraContextParam;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.facelets.tag.composite.CompositeLibrary;
 import org.glassfish.mojarra.util.FacesLogger;
 
@@ -63,8 +62,7 @@ public class CompositeComponentTagLibrary extends LazyTagLibrary {
     }
 
     private void init() {
-        WebConfiguration webconfig = WebConfiguration.getInstance();
-        enableMissingResourceLibraryDetection = webconfig.isEnabled(MojarraContextParam.ENABLE_MISSING_RESOURCE_LIBRARY_DETECTION);
+        enableMissingResourceLibraryDetection = MojarraContextParam.ENABLE_MISSING_RESOURCE_LIBRARY_DETECTION.isEnabled(FacesContext.getCurrentInstance());
     }
 
     private String ns = null;

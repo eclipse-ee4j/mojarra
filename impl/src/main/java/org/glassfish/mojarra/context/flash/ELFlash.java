@@ -46,11 +46,11 @@ import jakarta.faces.event.PostKeepFlashValueEvent;
 import jakarta.faces.event.PostPutFlashValueEvent;
 import jakarta.faces.event.PreClearFlashEvent;
 import jakarta.faces.event.PreRemoveFlashValueEvent;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
-import org.glassfish.mojarra.config.WebConfiguration;
-import org.glassfish.mojarra.context.MojarraContextParam;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.facelets.tag.ui.UIDebug;
 import org.glassfish.mojarra.util.ByteArrayGuardAESCTR;
 import org.glassfish.mojarra.util.FacesLogger;
@@ -114,6 +114,8 @@ public class ELFlash extends Flash {
     private long numberOfFlashesBetweenFlashReapings;
 
     private final boolean distributable;
+
+    private final boolean forceAlwaysWriteFlashCookie;
 
     private final ByteArrayGuardAESCTR guard;
 
@@ -199,11 +201,11 @@ public class ELFlash extends Flash {
     /** Creates a new instance of ELFlash */
     ELFlash(ExternalContext extContext) {
         flashInnerMap = new ConcurrentHashMap<>();
-        WebConfiguration config = WebConfiguration.getInstance(extContext);
-        numberOfConcurentFlashUsers = config.getInt(MojarraContextParam.NUMBER_OF_CONCURRENT_FLASH_USERS);
-        numberOfFlashesBetweenFlashReapings = config.getInt(MojarraContextParam.NUMBER_OF_FLASHES_BETWEEN_FLASH_REAPINGS);
-
-        distributable = config.isEnabled(MojarraContextParam.ENABLE_DISTRIBUTABLE);
+        ServletContext servletContext = (ServletContext) extContext.getContext();
+        numberOfConcurentFlashUsers = MojarraContextParam.NUMBER_OF_CONCURRENT_FLASH_USERS.getInt(servletContext);
+        numberOfFlashesBetweenFlashReapings = MojarraContextParam.NUMBER_OF_FLASHES_BETWEEN_FLASH_REAPINGS.getInt(servletContext);
+        distributable = MojarraContextParam.ENABLE_DISTRIBUTABLE.isEnabled(servletContext);
+        forceAlwaysWriteFlashCookie = MojarraContextParam.FORCE_ALWAYS_WRITE_FLASH_COOKIE.isEnabled(servletContext);
 
         guard = new ByteArrayGuardAESCTR();
 
@@ -519,8 +521,7 @@ public class ELFlash extends Flash {
             if (isKeepMessages()) {
                 restoreAllMessages(context);
             }
-        } else if (currentPhase.equals(PhaseId.RENDER_RESPONSE)
-                && MojarraContextParam.FORCE_ALWAYS_WRITE_FLASH_COOKIE.isEnabled(context)) {
+        } else if (currentPhase.equals(PhaseId.RENDER_RESPONSE) && forceAlwaysWriteFlashCookie) {
             PreviousNextFlashInfoManager flashManager = getCurrentFlashManager(contextMap, true);
             cookie = flashManager.encode();
             if (null != cookie) {

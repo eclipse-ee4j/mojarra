@@ -148,7 +148,7 @@ public class ClientResourceInfo extends ResourceInfo {
 
     /**
      * Returns the time this resource was last modified. When
-     * {@link org.glassfish.mojarra.context.MojarraContextParam#CACHE_RESOURCE_MODIFICATION_TIMESTAMP} says so, the value
+     * {@link org.glassfish.mojarra.config.MojarraContextParam#CACHE_RESOURCE_MODIFICATION_TIMESTAMP} says so, the value
      * is read once and kept for the lifetime of this <code>ClientResourceInfo</code> instance.
      *
      * @param ctx the {@link FacesContext} for the current request

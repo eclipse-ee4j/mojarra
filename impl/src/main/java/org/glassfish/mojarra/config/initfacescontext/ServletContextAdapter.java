@@ -33,9 +33,9 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.Flash;
 import jakarta.servlet.ServletContext;
 
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.context.ApplicationMap;
 import org.glassfish.mojarra.context.InitParameterMap;
-import org.glassfish.mojarra.context.MojarraContextParam;
 
 public class ServletContextAdapter extends ExternalContext {
 

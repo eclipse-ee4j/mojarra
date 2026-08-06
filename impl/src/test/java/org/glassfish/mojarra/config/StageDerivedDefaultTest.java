@@ -22,8 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import jakarta.faces.application.ProjectStage;
+import jakarta.servlet.ServletContext;
 
-import org.glassfish.mojarra.context.MojarraContextParam;
 import org.glassfish.mojarra.mock.MockServletContext;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -38,19 +38,19 @@ class StageDerivedDefaultTest {
 
     @Test
     void autoRelaxesResourceCachingInDevelopment() {
-        WebConfiguration webConfiguration = configure(ProjectStage.Development);
+        ServletContext servletContext = configure(ProjectStage.Development);
 
-        assertFalse(webConfiguration.isEnabled(MojarraContextParam.CACHE_RESOURCE_MODIFICATION_TIMESTAMP), "cache the modification timestamp");
-        assertEquals(5, (int) webConfiguration.getInt(MojarraContextParam.RESOURCE_UPDATE_CHECK_PERIOD), "update check period");
+        assertFalse(MojarraContextParam.CACHE_RESOURCE_MODIFICATION_TIMESTAMP.isEnabled(servletContext), "cache the modification timestamp");
+        assertEquals(5, MojarraContextParam.RESOURCE_UPDATE_CHECK_PERIOD.getInt(servletContext), "update check period");
     }
 
     @ParameterizedTest
     @EnumSource(value = ProjectStage.class, names = "Development", mode = Mode.EXCLUDE)
     void autoCachesFullyEverywhereElse(ProjectStage projectStage) {
-        WebConfiguration webConfiguration = configure(projectStage);
+        ServletContext servletContext = configure(projectStage);
 
-        assertTrue(webConfiguration.isEnabled(MojarraContextParam.CACHE_RESOURCE_MODIFICATION_TIMESTAMP), "cache the modification timestamp");
-        assertEquals(-1, (int) webConfiguration.getInt(MojarraContextParam.RESOURCE_UPDATE_CHECK_PERIOD), "update check period");
+        assertTrue(MojarraContextParam.CACHE_RESOURCE_MODIFICATION_TIMESTAMP.isEnabled(servletContext), "cache the modification timestamp");
+        assertEquals(-1, MojarraContextParam.RESOURCE_UPDATE_CHECK_PERIOD.getInt(servletContext), "update check period");
     }
 
     /**
@@ -59,15 +59,15 @@ class StageDerivedDefaultTest {
      */
     @Test
     void anExplicitValueWinsOverTheStage() {
-        WebConfiguration inDevelopment = configure(ProjectStage.Development, "true", "9");
+        ServletContext inDevelopment = configure(ProjectStage.Development, "true", "9");
 
-        assertTrue(inDevelopment.isEnabled(MojarraContextParam.CACHE_RESOURCE_MODIFICATION_TIMESTAMP), "cache the modification timestamp");
-        assertEquals(9, (int) inDevelopment.getInt(MojarraContextParam.RESOURCE_UPDATE_CHECK_PERIOD), "update check period");
+        assertTrue(MojarraContextParam.CACHE_RESOURCE_MODIFICATION_TIMESTAMP.isEnabled(inDevelopment), "cache the modification timestamp");
+        assertEquals(9, MojarraContextParam.RESOURCE_UPDATE_CHECK_PERIOD.getInt(inDevelopment), "update check period");
 
-        WebConfiguration inProduction = configure(ProjectStage.Production, "false", "3");
+        ServletContext inProduction = configure(ProjectStage.Production, "false", "3");
 
-        assertFalse(inProduction.isEnabled(MojarraContextParam.CACHE_RESOURCE_MODIFICATION_TIMESTAMP), "cache the modification timestamp");
-        assertEquals(3, (int) inProduction.getInt(MojarraContextParam.RESOURCE_UPDATE_CHECK_PERIOD), "update check period");
+        assertFalse(MojarraContextParam.CACHE_RESOURCE_MODIFICATION_TIMESTAMP.isEnabled(inProduction), "cache the modification timestamp");
+        assertEquals(3, MojarraContextParam.RESOURCE_UPDATE_CHECK_PERIOD.getInt(inProduction), "update check period");
     }
 
     /**
@@ -76,15 +76,15 @@ class StageDerivedDefaultTest {
      */
     @Test
     void anUnusableValueFallsBackToAuto() {
-        WebConfiguration inDevelopment = configure(ProjectStage.Development, "treu", "soon");
+        ServletContext inDevelopment = configure(ProjectStage.Development, "treu", "soon");
 
-        assertFalse(inDevelopment.isEnabled(MojarraContextParam.CACHE_RESOURCE_MODIFICATION_TIMESTAMP), "cache the modification timestamp");
-        assertEquals(5, (int) inDevelopment.getInt(MojarraContextParam.RESOURCE_UPDATE_CHECK_PERIOD), "update check period");
+        assertFalse(MojarraContextParam.CACHE_RESOURCE_MODIFICATION_TIMESTAMP.isEnabled(inDevelopment), "cache the modification timestamp");
+        assertEquals(5, MojarraContextParam.RESOURCE_UPDATE_CHECK_PERIOD.getInt(inDevelopment), "update check period");
 
-        WebConfiguration inProduction = configure(ProjectStage.Production, "treu", "soon");
+        ServletContext inProduction = configure(ProjectStage.Production, "treu", "soon");
 
-        assertTrue(inProduction.isEnabled(MojarraContextParam.CACHE_RESOURCE_MODIFICATION_TIMESTAMP), "cache the modification timestamp");
-        assertEquals(-1, (int) inProduction.getInt(MojarraContextParam.RESOURCE_UPDATE_CHECK_PERIOD), "update check period");
+        assertTrue(MojarraContextParam.CACHE_RESOURCE_MODIFICATION_TIMESTAMP.isEnabled(inProduction), "cache the modification timestamp");
+        assertEquals(-1, MojarraContextParam.RESOURCE_UPDATE_CHECK_PERIOD.getInt(inProduction), "update check period");
     }
 
     /**
@@ -93,17 +93,17 @@ class StageDerivedDefaultTest {
      */
     @Test
     void surroundingWhitespaceIsTolerated() {
-        WebConfiguration webConfiguration = configure(ProjectStage.Production, "  false  ", "  7  ");
+        ServletContext servletContext = configure(ProjectStage.Production, "  false  ", "  7  ");
 
-        assertFalse(webConfiguration.isEnabled(MojarraContextParam.CACHE_RESOURCE_MODIFICATION_TIMESTAMP), "cache the modification timestamp");
-        assertEquals(7, (int) webConfiguration.getInt(MojarraContextParam.RESOURCE_UPDATE_CHECK_PERIOD), "update check period");
+        assertFalse(MojarraContextParam.CACHE_RESOURCE_MODIFICATION_TIMESTAMP.isEnabled(servletContext), "cache the modification timestamp");
+        assertEquals(7, MojarraContextParam.RESOURCE_UPDATE_CHECK_PERIOD.getInt(servletContext), "update check period");
     }
 
-    private static WebConfiguration configure(ProjectStage projectStage) {
+    private static ServletContext configure(ProjectStage projectStage) {
         return configure(projectStage, null, null);
     }
 
-    private static WebConfiguration configure(ProjectStage projectStage, String cacheTimestamp, String checkPeriod) {
+    private static ServletContext configure(ProjectStage projectStage, String cacheTimestamp, String checkPeriod) {
         MockServletContext servletContext = new MockServletContext();
         servletContext.addInitParameter(PROJECT_STAGE_PARAM_NAME, projectStage.name());
 
@@ -115,6 +115,6 @@ class StageDerivedDefaultTest {
             servletContext.addInitParameter(MojarraContextParam.RESOURCE_UPDATE_CHECK_PERIOD.getName(), checkPeriod);
         }
 
-        return WebConfiguration.getInstance(servletContext);
+        return servletContext;
     }
 }

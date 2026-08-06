@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -42,15 +41,11 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import jakarta.faces.application.ProjectStage;
-import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.servlet.ServletContext;
 
 import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.application.resource.ResourceLibraryContracts;
-import org.glassfish.mojarra.context.ContextParam;
-import org.glassfish.mojarra.context.FacesContextParam;
-import org.glassfish.mojarra.context.MojarraContextParam;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.Util;
 
@@ -96,8 +91,6 @@ public class WebConfiguration {
 
     private final Level loggingLevel;
 
-    private final Map<String, String> faceletsProcessingMappings = new ConcurrentHashMap<>(3);
-
     private final Map<WebEnvironmentEntry, String> envEntries = new EnumMap<>(WebEnvironmentEntry.class);
 
     private final Map<ContextParam, Object> resolvedValues = new HashMap<>();
@@ -107,10 +100,6 @@ public class WebConfiguration {
     private final ServletContext servletContext;
 
     private final ProjectStage projectStage;
-
-    private FaceletsConfiguration faceletsConfig;
-
-    private boolean hasFlows;
 
     // ------------------------------------------------------------ Constructors
 
@@ -142,7 +131,7 @@ public class WebConfiguration {
      *
      * <p>
      * Only Mojarra's own namespace is checked, because it is the only one this release is authoritative about. It also
-     * covers the legacy <code>com.sun.faces</code> spelling, which {@link #initSetList(ServletContext)} normalizes into
+     * covers the legacy <code>com.sun.faces</code> spelling, which {@link #initSetList()} normalizes into
      * it. This does not run in Production, where nothing can be done about it any more anyway.
      * </p>
      */
@@ -187,12 +176,9 @@ public class WebConfiguration {
      * <code>displayConfiguration</code> explicitly overrules that either way, which is what keeps it usable in
      * Production for a deployment whose parameters are substituted at build time.
      * </p>
-     *
-     * <p>
-     * </p>
      */
     private Level resolveLoggingLevel() {
-        return resolve(MojarraContextParam.DISPLAY_CONFIGURATION) == Boolean.TRUE ? Level.INFO : Level.FINE;
+        return Boolean.TRUE.equals(resolveUnreported(MojarraContextParam.DISPLAY_CONFIGURATION)) ? Level.INFO : Level.FINE;
     }
 
     /**
@@ -219,7 +205,7 @@ public class WebConfiguration {
             return FacesContextParam.PROJECT_STAGE.<ProjectStage>toValue(value).orElse(ProjectStage.Production);
         } catch (IllegalArgumentException e) {
             LOGGER.log(Level.WARNING, "faces.config.webconfig.boolconfig.invalidvalue", new Object[] { getContextName(), value,
-                    ProjectStage.PROJECT_STAGE_PARAM_NAME, Arrays.toString(ProjectStage.values()), ProjectStage.Production });
+                    ProjectStage.PROJECT_STAGE_PARAM_NAME, Arrays.toString(ProjectStage.values()), asText(ProjectStage.Production) });
             return ProjectStage.Production;
         }
     }
@@ -227,9 +213,8 @@ public class WebConfiguration {
     // ---------------------------------------------------------- Public Methods
 
     /**
-     * Return the WebConfiguration instance for this application passing the result of
-     * FacesContext.getCurrentInstance().getExternalContext() to
-     * {@link #getInstance(jakarta.faces.context.ExternalContext)}.
+     * Returns the WebConfiguration instance for this application, by passing the current faces context to
+     * {@link #getInstance(FacesContext)}.
      *
      * @return the WebConfiguration for this application or <code>null</code> if no FacesContext is available.
      */
@@ -244,18 +229,7 @@ public class WebConfiguration {
      * @return the WebConfiguration for this application
      */
     public static WebConfiguration getInstance(FacesContext context) {
-        return getInstance(context.getExternalContext());
-    }
-
-    /**
-     * Return the WebConfiguration instance for this application, for a caller which has no FacesContext, and owns the
-     * one place this implementation assumes the context behind an ExternalContext is a ServletContext.
-     *
-     * @param extContext the ExternalContext for this request
-     * @return the WebConfiguration for this application
-     */
-    public static WebConfiguration getInstance(ExternalContext extContext) {
-        return getInstance((ServletContext) extContext.getContext());
+        return getInstance((ServletContext) context.getExternalContext().getContext());
     }
 
     /**
@@ -286,20 +260,6 @@ public class WebConfiguration {
         return servletContext;
     }
 
-    public boolean isHasFlows() {
-        return hasFlows;
-    }
-
-    public void setHasFlows(boolean hasFlows) {
-        this.hasFlows = hasFlows;
-    }
-
-    /**
-     * Obtain the value of the specified parameter
-     *
-     * @param param the parameter of interest
-     * @return the value of the specified parameter
-     */
     /**
      * <p>
      * Overrides what a parameter resolved to, for the one setting which is not expressible as a context parameter:
@@ -309,29 +269,8 @@ public class WebConfiguration {
      * @param param the parameter of interest.
      * @param value the value it resolves to from here on.
      */
-    public void setValue(ContextParam param, Object value) {
+    void overrideValue(ContextParam param, Object value) {
         resolvedValues.put(param, value);
-    }
-
-    public FaceletsConfiguration getFaceletsConfiguration() {
-        if (faceletsConfig == null) {
-            faceletsConfig = new FaceletsConfiguration(this);
-        }
-
-        return faceletsConfig;
-    }
-
-    /**
-     * <p>
-     * How a file extension is to be processed, as supplied by the <code>facelets-processing</code> elements of
-     * <code>faces-config.xml</code> rather than by a context parameter. The map is the live one, which is how the
-     * configuration processor fills it.
-     * </p>
-     *
-     * @return the mapping of file extension to processing instruction.
-     */
-    public Map<String, String> getFaceletsProcessingMappings() {
-        return faceletsProcessingMappings;
     }
 
     /**
@@ -346,28 +285,6 @@ public class WebConfiguration {
 
     /**
      * <p>
-     * Returns the value to write as the <code>autocomplete</code> attribute of the hidden fields which carry the view
-     * state.
-     * </p>
-     *
-     * <p>
-     * The deprecated <code>autoCompleteOffOnViewState</code> is honored when the replacement was not set, where
-     * <code>true</code> maps to <code>off</code> and <code>false</code> to the default, which is what those two meant
-     * before the replacement existed.
-     * </p>
-     *
-     * @return the attribute value.
-     */
-    public String getViewStateAutocomplete() {
-        if (!isSet(MojarraContextParam.VIEW_STATE_AUTOCOMPLETE) && isEnabled(MojarraContextParam.AUTO_COMPLETE_OFF_ON_VIEW_STATE)) {
-            return "off";
-        }
-
-        return getValue(MojarraContextParam.VIEW_STATE_AUTOCOMPLETE);
-    }
-
-    /**
-     * <p>
      * Returns the value a context parameter resolved to for this application, in the type it declares. The resolution
      * happens once, while this configuration is being read, so that a parameter costs a lookup rather than a parse
      * wherever it is consulted.
@@ -376,82 +293,10 @@ public class WebConfiguration {
      * @param <T> the expected type of the value.
      * @param param the parameter of interest.
      * @return the value of the parameter, which is its default when it was not declared.
+     * @throws ClassCastException when the parameter does not declare that type.
      */
     @SuppressWarnings("unchecked")
-    public <T> T getValue(ContextParam param) {
-        return (T) resolvedValues.get(param);
-    }
-
-    /**
-     * @param param the parameter of interest.
-     * @return the value of a {@link String} parameter.
-     * @throws IllegalStateException when the parameter does not declare that type.
-     */
-    public String getString(ContextParam param) {
-        return valueOfType(String.class, param);
-    }
-
-    /**
-     * @param param the parameter of interest.
-     * @return the value of a {@link String}{@code []} parameter.
-     * @throws IllegalStateException when the parameter does not declare that type.
-     */
-    public String[] getStringArray(ContextParam param) {
-        return valueOfType(String[].class, param);
-    }
-
-    /**
-     * @param param the parameter of interest.
-     * @return the value of an {@link Integer} parameter.
-     * @throws IllegalStateException when the parameter does not declare that type.
-     */
-    public int getInt(ContextParam param) {
-        return this.<Integer>valueOfType(Integer.class, param);
-    }
-
-    /**
-     * @param param the parameter of interest.
-     * @return the value of a {@link Character} parameter.
-     * @throws IllegalStateException when the parameter does not declare that type.
-     */
-    public char getChar(ContextParam param) {
-        return this.<Character>valueOfType(Character.class, param);
-    }
-
-    /**
-     * @param <E> the enum type.
-     * @param type the enum the parameter declares.
-     * @param param the parameter of interest.
-     * @return the value of an {@link Enum} parameter.
-     * @throws IllegalStateException when the parameter does not declare that type.
-     */
-    public <E extends Enum<E>> E getEnum(Class<E> type, ContextParam param) {
-        return valueOfType(type, param);
-    }
-
-    /**
-     * @param param the boolean parameter of interest.
-     * @return whether it resolved to <code>true</code>.
-     * @throws IllegalStateException when the parameter does not declare that type.
-     */
-    public boolean isEnabled(ContextParam param) {
-        return this.<Boolean>valueOfType(Boolean.class, param);
-    }
-
-    /**
-     * <p>
-     * The resolved value, refusing to hand it back through an accessor for another type. The accessor is what names
-     * the type at the call site, and a generic one would let it name the wrong one, which no compiler would catch and
-     * which would surface as a cast failure on whichever path first read the parameter.
-     * </p>
-     */
-    @SuppressWarnings("unchecked")
-    private <T> T valueOfType(Class<?> expected, ContextParam param) {
-        if (param.getType() != expected) {
-            throw new IllegalStateException(
-                    param.getName() + " is declared as " + param.getType().getSimpleName() + ", so it cannot be read as " + expected.getSimpleName());
-        }
-
+    <T> T getValue(ContextParam param) {
         return (T) resolvedValues.get(param);
     }
 
@@ -459,7 +304,7 @@ public class WebConfiguration {
      * @param param the parameter of interest.
      * @return <code>true</code> when the parameter was explicitly declared, under any of the names it answers to.
      */
-    public boolean isSet(ContextParam param) {
+    boolean isSet(ContextParam param) {
         return namesOf(param).stream().anyMatch(this::isSet);
     }
 
@@ -490,7 +335,7 @@ public class WebConfiguration {
 
     /**
      * @return the same names as {@link #declaredNamesOf(ContextParam)}, in the spelling
-     * {@link #initSetList(ServletContext)} records them under and {@link #isSet(String)} therefore answers to.
+     * {@link #initSetList()} records them under and {@link #isSet(String)} therefore answers to.
      */
     private static List<String> namesOf(ContextParam param) {
         return declaredNamesOf(param).stream().map(WebConfiguration::normalize).distinct().collect(toList());
@@ -510,25 +355,25 @@ public class WebConfiguration {
      */
     private void processContextParams() {
         for (FacesContextParam param : FacesContextParam.values()) {
-            resolvedValues.put(param, resolve(param));
+            if (param != FacesContextParam.PROJECT_STAGE) {
+                resolvedValues.put(param, resolve(param));
+            }
         }
 
         for (MojarraContextParam param : MojarraContextParam.values()) {
             resolvedValues.put(param, resolve(param));
         }
 
-        // Resolved ahead of the others, because its JNDI environment entry outranks the parameter and the defaults of
-        // the others derive from it. Reported again here under the name which decided it, because the pass above has
-        // already reported whatever the parameter alone said, which is not always what won.
+        // Skipped by the pass above, because it was resolved ahead of the others: its JNDI environment entry outranks
+        // the parameter, and the defaults of the others derive from it. Reported here under whichever of the two
+        // decided it.
         resolvedValues.put(FacesContextParam.PROJECT_STAGE, projectStage);
 
-        if (LOGGER.isLoggable(loggingLevel)) {
-            String decidedBy = getEnvironmentEntry(WebEnvironmentEntry.ProjectStage) != null
-                    ? WebEnvironmentEntry.ProjectStage.getQualifiedName()
-                    : ProjectStage.PROJECT_STAGE_PARAM_NAME;
+        String decidedBy = getEnvironmentEntry(WebEnvironmentEntry.ProjectStage) != null
+                ? WebEnvironmentEntry.ProjectStage.getQualifiedName()
+                : ProjectStage.PROJECT_STAGE_PARAM_NAME;
 
-            LOGGER.log(loggingLevel, "faces.config.webconfig.configinfo", new Object[] { getContextName(), decidedBy, projectStage });
-        }
+        report(decidedBy, projectStage);
     }
 
     private Object resolve(ContextParam param) {
@@ -538,18 +383,33 @@ public class WebConfiguration {
             Optional<?> resolved = param.toValue(value);
 
             if (resolved.isPresent()) {
-                if (LOGGER.isLoggable(loggingLevel)) {
-                    LOGGER.log(loggingLevel, "faces.config.webconfig.configinfo", new Object[] { getContextName(), param.getName(), value });
+                if (!isCarriedOver(param)) {
+                    report(param.getName(), value);
                 }
 
                 return resolved.get();
             }
         } catch (IllegalArgumentException e) {
             LOGGER.log(Level.WARNING, "faces.config.webconfig.boolconfig.invalidvalue",
-                    new Object[] { getContextName(), value, param.getName(), allowedValuesOf(param), param.getDefaultValue(projectStage) });
+                    new Object[] { getContextName(), value, param.getName(), allowedValuesOf(param), asText(param.getDefaultValue(projectStage)) });
         }
 
         return param.getDefaultValue(projectStage);
+    }
+
+    /**
+     * <p>
+     * What a parameter resolves to, without reporting it, for the one parameter which has to be resolved before the
+     * level at which parameters are reported is known. {@link #processContextParams()} resolves it again along with all
+     * others, which is where it does get reported, and where an unusable value gets warned about.
+     * </p>
+     */
+    private Object resolveUnreported(ContextParam param) {
+        try {
+            return param.toValue(getDeclaredValue(param)).orElseGet(() -> param.getDefaultValue(projectStage));
+        } catch (IllegalArgumentException e) {
+            return param.getDefaultValue(projectStage);
+        }
     }
 
     /**
@@ -611,7 +471,7 @@ public class WebConfiguration {
         return servletContext.getContextPath();
     }
 
-    public ProjectStage getProjectStage() {
+    ProjectStage getProjectStage() {
         return projectStage;
     }
 
@@ -644,7 +504,7 @@ public class WebConfiguration {
 
             if (!defaultValue.equals(getValue(param))) {
                 LOGGER.log(Level.WARNING, "faces.config.webconfig.param.development_only",
-                        new Object[] { getContextName(), param.getName(), projectStage, defaultValue });
+                        new Object[] { getContextName(), param.getName(), projectStage, asText(defaultValue) });
 
                 resolvedValues.put(param, defaultValue);
             }
@@ -657,46 +517,47 @@ public class WebConfiguration {
     /**
      * <p>
      * Discards the configuration read for the given context, so that the next reader reads it afresh. A container fixes
-     * its context parameters before anything can read them, so this exists for the two moments which are not that:
-     * bringup, which reads a provisional configuration before the application is known, and a test which declares a
-     * parameter on a context it has already handed out.
+     * its context parameters before anything can read them, so this exists for the one moment which is not that:
+     * bringup, which reads a provisional configuration before the application is known.
      * </p>
      */
-    public static void clear(ServletContext servletContext) {
+    static void clear(ServletContext servletContext) {
         servletContext.removeAttribute(WEB_CONFIG_KEY);
     }
 
     // --------------------------------------------------------- Private Methods
 
-    /**
-     * <p>
-     * Warn about every deprecated context initialization parameter which was explicitly set, and carry the value of each
-     * one over to the parameter which replaces it, unless that one was explicitly set as well.
-     * </p>
-     *
-     */
     private static List<ContextParam> deprecatedParams() {
         return Stream.of(Stream.of(FacesContextParam.values()), Stream.of(MojarraContextParam.values()))
                 .flatMap(params -> params.filter(ContextParam::isDeprecated))
                 .collect(toList());
     }
 
+    /**
+     * <p>
+     * Warns about every deprecated context initialization parameter which was explicitly set, and carries the value of
+     * each one over to the parameter which replaces it, unless that one was explicitly set as well.
+     * </p>
+     *
+     * <p>
+     * A carried over value is reported under the name it moved to, because that is the parameter which governs the
+     * behaviour from here on, and the pass which reports the others has already run by then.
+     * </p>
+     */
     private void processDeprecatedParameters() {
-
         for (ContextParam param : deprecatedParams()) {
             if (!isSet(param)) {
                 continue;
             }
 
             warnAboutDeprecatedParameter(param.getName(), param.getAlternateName());
-            MojarraContextParam alternate = MojarraContextParam.of(param.getAlternateName());
 
-            if (alternate != null && alternate.getType() == param.getType() && !isSet(alternate)) {
-                resolvedValues.put(alternate, resolvedValues.get(param));
+            if (isCarriedOver(param)) {
+                Object value = resolvedValues.get(param);
+                resolvedValues.put(alternateOf(param), value);
+                report(alternateOf(param).getName(), value);
             }
         }
-
-
     }
 
     /**
@@ -708,6 +569,46 @@ public class WebConfiguration {
      *
      * @param alternateName the qualified name of the replacement, or <code>null</code> when there is no replacement.
      */
+    /**
+     * @return the parameter which replaces this one and which can hold its value, or <code>null</code> when there is
+     * none. A replacement of another type cannot take the value over, which is what tells a rename apart from a
+     * successor which happens to cover the same ground.
+     */
+    private static MojarraContextParam alternateOf(ContextParam param) {
+        MojarraContextParam alternate = MojarraContextParam.of(param.getAlternateName());
+
+        return alternate != null && alternate.getType() == param.getType() ? alternate : null;
+    }
+
+    /**
+     * @return whether what this parameter resolves to ends up under the name of its replacement, which is the case
+     * when it has one of its type and the application did not declare that one itself.
+     */
+    private boolean isCarriedOver(ContextParam param) {
+        MojarraContextParam alternate = alternateOf(param);
+
+        return alternate != null && !isSet(alternate);
+    }
+
+    /**
+     * Reports what a parameter resolved to, under the name which decided it, so that a deployment can be read back
+     * from its own log.
+     */
+    private void report(String name, Object value) {
+        if (LOGGER.isLoggable(loggingLevel)) {
+            LOGGER.log(loggingLevel, "faces.config.webconfig.configinfo", new Object[] { getContextName(), name, asText(value) });
+        }
+    }
+
+    /**
+     * @return the value as it would be written in <code>web.xml</code>. A log message is a format pattern, which would
+     * otherwise render a number the way the reader's locale groups it, and a value which cannot be pasted back into a
+     * deployment descriptor is worse than no value at all.
+     */
+    private static String asText(Object value) {
+        return value instanceof String[] values ? String.join(" ", values) : String.valueOf(value);
+    }
+
     private void warnAboutDeprecatedParameter(String qualifiedName, String alternateName) {
 
         if (alternateName == null) {

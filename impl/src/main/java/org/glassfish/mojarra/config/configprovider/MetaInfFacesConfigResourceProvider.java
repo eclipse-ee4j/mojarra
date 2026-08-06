@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
 import jakarta.faces.FacesException;
 import jakarta.servlet.ServletContext;
 
-import org.glassfish.mojarra.context.MojarraContextParam;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.facelets.util.Classpath;
 import org.glassfish.mojarra.spi.ConfigurationResourceProvider;
 import org.glassfish.mojarra.util.Util;

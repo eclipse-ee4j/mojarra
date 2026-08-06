@@ -26,7 +26,7 @@ import jakarta.faces.lifecycle.ClientWindow;
 import jakarta.faces.lifecycle.ClientWindowFactory;
 
 import org.glassfish.mojarra.application.JavaFlowLoaderHelper;
-import org.glassfish.mojarra.context.FacesContextParam;
+import org.glassfish.mojarra.config.FacesContextParam;
 
 public class ClientWindowFactoryImpl extends ClientWindowFactory {
 

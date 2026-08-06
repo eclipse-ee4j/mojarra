@@ -62,6 +62,7 @@ import jakarta.faces.render.ResponseStateManager;
 import jakarta.faces.view.StateManagementStrategy;
 import jakarta.faces.view.ViewDeclarationLanguage;
 
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.context.StateContext;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 import org.glassfish.mojarra.util.ComponentStruct;
@@ -88,12 +89,14 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
     /**
      * Stores the class map.
      */
-    private Map<String, Class<?>> classMap;
+    private final Map<String, Class<?>> classMap;
 
     /**
      * Are we in development mode.
      */
-    private boolean isDevelopmentMode;
+    private final boolean isDevelopmentMode;
+
+    private final boolean disableIdUniquenessCheck;
 
     /**
      * Constructor.
@@ -110,6 +113,7 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
     public FaceletFullStateManagementStrategy(FacesContext context) {
         isDevelopmentMode = context.isProjectStage(Development);
         classMap = new ConcurrentHashMap<>(32);
+        disableIdUniquenessCheck = MojarraContextParam.DISABLE_ID_UNIQUENESS_CHECK.isEnabled(context);
     }
 
     /**
@@ -650,10 +654,9 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
         Object[] result;
         UIViewRoot viewRoot = context.getViewRoot();
 
-        /*
-         * Check uniqueness.
-         */
-        Util.checkIdUniqueness(context, viewRoot, new HashSet<>(64));
+        if (!disableIdUniquenessCheck) {
+            Util.checkIdUniqueness(context, viewRoot, new HashSet<>(64));
+        }
 
         /**
          * Save the dynamic actions.

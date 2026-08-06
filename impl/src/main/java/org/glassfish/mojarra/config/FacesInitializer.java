@@ -50,7 +50,6 @@ import jakarta.servlet.ServletRegistration;
 import jakarta.servlet.annotation.HandlesTypes;
 import jakarta.websocket.server.ServerContainer;
 
-import org.glassfish.mojarra.context.FacesContextParam;
 import org.glassfish.mojarra.util.FacesLogger;
 
 /**

@@ -28,6 +28,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.FacesContextFactory;
 import jakarta.faces.lifecycle.Lifecycle;
 
+import org.glassfish.mojarra.config.FacesContextParam;
 import org.glassfish.mojarra.util.Util;
 
 public class FacesContextFactoryImpl extends FacesContextFactory {

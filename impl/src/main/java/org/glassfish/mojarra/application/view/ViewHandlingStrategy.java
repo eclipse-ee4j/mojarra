@@ -34,7 +34,6 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewDeclarationLanguage;
 
 import org.glassfish.mojarra.application.ApplicationAssociate;
-import org.glassfish.mojarra.config.WebConfiguration;
 import org.glassfish.mojarra.util.FacesLogger;
 
 /**
@@ -47,13 +46,11 @@ public abstract class ViewHandlingStrategy extends ViewDeclarationLanguage {
     private static final Logger logger = FacesLogger.APPLICATION.getLogger();
 
     protected ApplicationAssociate associate;
-    protected WebConfiguration webConfig;
 
     // ------------------------------------------------------------ Constructors
 
     public ViewHandlingStrategy() {
         FacesContext ctx = FacesContext.getCurrentInstance();
-        webConfig = WebConfiguration.getInstance(ctx);
         associate = ApplicationAssociate.getInstance(ctx.getExternalContext());
     }
 

@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.facelets.FaceletHandler;
 import jakarta.faces.view.facelets.Tag;
 import jakarta.faces.view.facelets.TagAttribute;
@@ -28,7 +29,7 @@ import jakarta.faces.view.facelets.TagAttributeException;
 import jakarta.faces.view.facelets.TagDecorator;
 import jakarta.faces.view.facelets.TagException;
 
-import org.glassfish.mojarra.config.WebConfiguration;
+import org.glassfish.mojarra.config.FaceletsConfiguration;
 import org.glassfish.mojarra.facelets.tag.TagAttributesImpl;
 import org.glassfish.mojarra.facelets.tag.TagLibrary;
 import org.glassfish.mojarra.facelets.tag.composite.CompositeLibrary;
@@ -69,7 +70,7 @@ final class CompilationManager {
 
     private CompilationMessageHolder messageHolder = null;
 
-    private WebConfiguration config;
+    private final FaceletsConfiguration faceletsConfig;
 
     public CompilationManager(String alias, Compiler compiler) {
 
@@ -94,7 +95,7 @@ final class CompilationManager {
         units = new ArrayList<>();
         units.add(new CompilationUnit());
 
-        config = WebConfiguration.getInstance();
+        faceletsConfig = FaceletsConfiguration.getInstance(FacesContext.getCurrentInstance());
 
     }
 
@@ -115,8 +116,8 @@ final class CompilationManager {
         return alias;
     }
 
-    public WebConfiguration getWebConfiguration() {
-        return config;
+    public FaceletsConfiguration getFaceletsConfiguration() {
+        return faceletsConfig;
     }
 
     public void setCompilationMessageHolder(CompilationMessageHolder messageHolder) {
