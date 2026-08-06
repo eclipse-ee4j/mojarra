@@ -489,7 +489,11 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * @throws IllegalArgumentException if <code>rowIndex</code> is less than -1
      */
     public void setRowIndex(int rowIndex) {
-        if (isRowStatePreserved()) {
+        // Preserving the full per-row state needs the initial descendant state that markInitialState()
+        // captures; without it that path can neither save nor restore a row, and in particular never
+        // resets the descendant clientIds, so every row would render row 0's ids. Fall back to the
+        // per-row submitted-value state, which keeps the ids correct.
+        if (isRowStatePreserved() && _initialDescendantFullComponentState != null) {
             setRowIndexRowStatePreserved(rowIndex);
         } else {
             setRowIndexWithoutRowStatePreserved(rowIndex);

@@ -22,6 +22,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.sun.faces.facelets.tag.faces.PassThroughAttributeLibrary;
+
 import jakarta.faces.view.facelets.Tag;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagAttributes;
@@ -42,6 +44,8 @@ public final class TagAttributesImpl extends TagAttributes {
 
     private final List nsattrs;
 
+    private final TagAttribute[] passthroughAttrs;
+
     private Tag tag;
 
     /**
@@ -49,6 +53,7 @@ public final class TagAttributesImpl extends TagAttributes {
      */
     public TagAttributesImpl(TagAttribute[] attrs) {
         this.attrs = attrs;
+        passthroughAttrs = collectPassthrough(attrs);
 
         // grab namespaces
         int i = 0;
@@ -75,6 +80,21 @@ public final class TagAttributesImpl extends TagAttributes {
         }
     }
 
+    private static TagAttribute[] collectPassthrough(TagAttribute[] attrs) {
+        List<TagAttribute> passthrough = null;
+
+        for (TagAttribute attr : attrs) {
+            if (PassThroughAttributeLibrary.NAMESPACES.contains(attr.getNamespace())) {
+                if (passthrough == null) {
+                    passthrough = new ArrayList<>(attrs.length);
+                }
+                passthrough.add(attr);
+            }
+        }
+
+        return passthrough == null ? EMPTY : passthrough.toArray(new TagAttribute[passthrough.size()]);
+    }
+
     /**
      * Return an array of all TagAttributesImpl in this set
      *
@@ -83,6 +103,17 @@ public final class TagAttributesImpl extends TagAttributes {
     @Override
     public TagAttribute[] getAll() {
         return attrs;
+    }
+
+    /**
+     * Return the attributes that are in a pass-through namespace, in the order the tag declares them. Every applied
+     * component tag is asked for these and almost none has any, so they are singled out once here, when the tag is
+     * compiled, rather than searched per namespace on every apply.
+     *
+     * @return a non-null array of TagAttribute
+     */
+    public TagAttribute[] getPassthroughAttributes() {
+        return passthroughAttrs;
     }
 
     /**

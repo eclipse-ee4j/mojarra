@@ -55,6 +55,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -62,7 +63,6 @@ import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -282,12 +282,20 @@ public abstract class UIComponentBase extends UIComponent {
 
     @Override
     public Map<String, Object> getPassThroughAttributes(boolean create) {
+        // A component without a state helper cannot hold pass-through attributes in first place, so asking for the helper
+        // without creating one keeps the read side effect free -- every rendered element consults this.
+        StateHelper stateHelper = getStateHelper(create);
+
+        if (stateHelper == null) {
+            return null;
+        }
+
         @SuppressWarnings("unchecked")
-        Map<String, Object> passThroughAttributes = (Map<String, Object>) this.getStateHelper().get(PropertyKeys.passThroughAttributes);
+        Map<String, Object> passThroughAttributes = (Map<String, Object>) stateHelper.get(PropertyKeys.passThroughAttributes);
 
         if (passThroughAttributes == null && create) {
             passThroughAttributes = new PassThroughAttributesMap<>();
-            getStateHelper().put(PropertyKeys.passThroughAttributes, passThroughAttributes);
+            stateHelper.put(PropertyKeys.passThroughAttributes, passThroughAttributes);
         }
 
         return passThroughAttributes;
@@ -3511,7 +3519,12 @@ public abstract class UIComponentBase extends UIComponent {
         }
     }
 
-    private static class PassThroughAttributesMap<K, V> extends ConcurrentHashMap<String, Object> implements Serializable {
+    /**
+     * The map behind {@link UIComponentBase#getPassThroughAttributes(boolean)}. Insertion-ordered, so a component
+     * renders its pass-through attributes in the order the view declared them; the renderer writes them straight from
+     * this map, so the iteration order is the wire order.
+     */
+    private static class PassThroughAttributesMap<K, V> extends LinkedHashMap<String, Object> implements Serializable {
 
         private static final long serialVersionUID = 4230540513272170861L;
 
@@ -3531,6 +3544,11 @@ public abstract class UIComponentBase extends UIComponent {
             }
             validateKey(key);
             return super.putIfAbsent(key, value);
+        }
+
+        @Override
+        public void putAll(Map<? extends String, ? extends Object> map) {
+            map.forEach(this::put);
         }
 
         private void validateKey(Object key) {
