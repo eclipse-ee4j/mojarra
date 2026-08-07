@@ -21,7 +21,7 @@ package com.sun.faces.renderkit;
  * @author asmirnov@exadel.com
  *
  */
-public class Attribute implements Comparable<Attribute> {
+public class Attribute {
 
     private final String name;
 
@@ -59,12 +59,6 @@ public class Attribute implements Comparable<Attribute> {
      */
     public String[] getEvents() {
         return events;
-    }
-
-    @Override
-    public int compareTo(Attribute o) {
-        // Compare attributes by name for a fast search in the RenderKitUtils methods.
-        return getName().compareTo(o.getName());
     }
 
 }

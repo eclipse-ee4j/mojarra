@@ -24,7 +24,7 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
-import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.Attributes;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
 
@@ -34,7 +34,7 @@ import com.sun.faces.renderkit.RenderKitUtils;
 
 public class TextareaRenderer extends HtmlBasicInputRenderer {
 
-    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.INPUTTEXTAREA);
+    private static final Attributes ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.INPUTTEXTAREA);
 
     // ---------------------------------------------------------- Public Methods
 

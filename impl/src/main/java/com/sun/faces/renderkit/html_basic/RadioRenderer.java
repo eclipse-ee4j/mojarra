@@ -49,7 +49,7 @@ import jakarta.faces.event.PostAddToViewEvent;
 import jakarta.faces.model.SelectItem;
 
 import com.sun.faces.RIConstants;
-import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.Attributes;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.renderkit.SelectItemsIterator;
@@ -63,7 +63,7 @@ import com.sun.faces.util.Util;
 @ListenerFor(systemEventClass = PostAddToViewEvent.class)
 public class RadioRenderer extends SelectManyCheckboxListRenderer implements ComponentSystemEventListener {
 
-    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.SELECTONERADIO);
+    private static final Attributes ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.SELECTONERADIO);
 
     // -------------------------------------------------------------------------------------------------- Public Methods
 

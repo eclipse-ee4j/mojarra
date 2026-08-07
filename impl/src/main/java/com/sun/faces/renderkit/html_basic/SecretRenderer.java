@@ -25,7 +25,7 @@ import jakarta.faces.component.html.HtmlInputSecret;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
-import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.Attributes;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
 
@@ -35,7 +35,7 @@ import com.sun.faces.renderkit.RenderKitUtils;
 
 public class SecretRenderer extends HtmlBasicInputRenderer {
 
-    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.INPUTSECRET);
+    private static final Attributes ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.INPUTSECRET);
 
     // ---------------------------------------------------------- Public Methods
 
