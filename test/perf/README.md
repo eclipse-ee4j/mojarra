@@ -257,7 +257,6 @@ Five component families each span up to six variants. The family fixes the *stru
 | family | iterator | readonly (GET) | inputs | nested | build | inputs-ajax | nested-ajax |
 |---|---|:-:|:-:|:-:|:-:|:-:|:-:|
 | **table** | `h:dataTable` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| **table** (wide) | `h:dataTable`, 200 columns | ✓ | - | - | - | - | - |
 | **repeat** | `ui:repeat` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | **composite** | composite components | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | **foreach** | `c:forEach items` (build-time unrolled) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
