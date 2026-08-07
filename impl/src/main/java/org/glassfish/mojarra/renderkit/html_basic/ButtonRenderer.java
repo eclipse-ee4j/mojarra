@@ -35,8 +35,8 @@ import jakarta.faces.event.ActionEvent;
 import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
 
 import org.glassfish.mojarra.RIConstants;
-import org.glassfish.mojarra.renderkit.Attribute;
 import org.glassfish.mojarra.renderkit.AttributeManager;
+import org.glassfish.mojarra.renderkit.Attributes;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 
 /**
@@ -45,7 +45,7 @@ import org.glassfish.mojarra.renderkit.RenderKitUtils;
 
 public class ButtonRenderer extends HtmlBasicRenderer {
 
-    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.COMMANDBUTTON);
+    private static final Attributes ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.COMMANDBUTTON);
 
     // ---------------------------------------------------------- Public Methods
 

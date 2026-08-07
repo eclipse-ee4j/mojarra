@@ -51,8 +51,8 @@ import jakarta.faces.event.PostAddToViewEvent;
 import jakarta.faces.model.SelectItem;
 
 import org.glassfish.mojarra.RIConstants;
-import org.glassfish.mojarra.renderkit.Attribute;
 import org.glassfish.mojarra.renderkit.AttributeManager;
+import org.glassfish.mojarra.renderkit.Attributes;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 import org.glassfish.mojarra.renderkit.SelectItemsIterator;
 import org.glassfish.mojarra.util.RequestStateManager;
@@ -65,7 +65,7 @@ import org.glassfish.mojarra.util.Util;
 @ListenerFor(systemEventClass = PostAddToViewEvent.class)
 public class RadioRenderer extends SelectManyCheckboxListRenderer implements ComponentSystemEventListener {
 
-    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.SELECTONERADIO);
+    private static final Attributes ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.SELECTONERADIO);
 
     // -------------------------------------------------------------------------------------------------- Public Methods
 

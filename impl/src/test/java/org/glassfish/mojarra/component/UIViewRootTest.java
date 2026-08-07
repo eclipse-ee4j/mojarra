@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +33,7 @@ import jakarta.faces.event.PostConstructViewMapEvent;
 import jakarta.faces.event.PreDestroyViewMapEvent;
 
 import org.glassfish.mojarra.application.view.ViewScopeManager;
+import org.glassfish.mojarra.junit.CurrentFacesContext;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -48,7 +48,7 @@ public class UIViewRootTest {
         Application application = Mockito.mock(Application.class);
         ExternalContext externalContext = Mockito.mock(ExternalContext.class);
 
-        setFacesContext(facesContext);
+        CurrentFacesContext.set(facesContext);
 
         when(facesContext.getExternalContext()).thenReturn(externalContext);
         when(externalContext.getApplicationMap()).thenReturn(null);
@@ -60,7 +60,7 @@ public class UIViewRootTest {
         Map<String, Object> viewMap = viewRoot.getViewMap();
         assertNotNull(viewMap);
 
-        setFacesContext(null);
+        CurrentFacesContext.set(null);
     }
 
     @Test
@@ -69,7 +69,7 @@ public class UIViewRootTest {
         Application application = Mockito.mock(Application.class);
         ExternalContext externalContext = Mockito.mock(ExternalContext.class);
 
-        setFacesContext(facesContext);
+        CurrentFacesContext.set(facesContext);
 
         when(facesContext.getExternalContext()).thenReturn(externalContext);
         when(externalContext.getApplicationMap()).thenReturn(null);
@@ -90,7 +90,7 @@ public class UIViewRootTest {
         viewRoot.getViewMap().clear();
 
 
-        setFacesContext(null);
+        CurrentFacesContext.set(null);
     }
 
     @Test
@@ -101,7 +101,7 @@ public class UIViewRootTest {
         HashMap<Object, Object> attributes = new HashMap<>();
         HashMap<String, Object> sessionMap = new HashMap<>();
 
-        setFacesContext(facesContext);
+        CurrentFacesContext.set(facesContext);
 
         when(facesContext.getExternalContext()).thenReturn(externalContext);
         when(externalContext.getApplicationMap()).thenReturn(null);
@@ -132,7 +132,7 @@ public class UIViewRootTest {
         viewMap = viewRoot2.getViewMap();
         assertEquals("one", viewMap.get("one"));
 
-        setFacesContext(null);
+        CurrentFacesContext.set(null);
     }
 
     @Test
@@ -143,7 +143,7 @@ public class UIViewRootTest {
         HashMap<Object, Object> attributes = new HashMap<>();
         HashMap<String, Object> sessionMap = new HashMap<>();
 
-        setFacesContext(facesContext);
+        CurrentFacesContext.set(facesContext);
 
         when(facesContext.getAttributes()).thenReturn(attributes);
         when(facesContext.getApplication()).thenReturn(application);
@@ -168,7 +168,7 @@ public class UIViewRootTest {
         assertEquals("one", viewRoot2.getViewMap().get("one"));
         assertNull(viewRoot2.getRenderKitId());
 
-        setFacesContext(null);
+        CurrentFacesContext.set(null);
     }
 
     @Test
@@ -179,7 +179,7 @@ public class UIViewRootTest {
         HashMap<Object, Object> attributes = new HashMap<>();
         HashMap<String, Object> sessionMap = new HashMap<>();
 
-        setFacesContext(facesContext);
+        CurrentFacesContext.set(facesContext);
 
         when(facesContext.getAttributes()).thenReturn(attributes);
         when(facesContext.getApplication()).thenReturn(application);
@@ -215,16 +215,6 @@ public class UIViewRootTest {
         assertEquals(REPLACEMENT_VIEW_MAP_ID, viewRoot2.getTransientStateHelper().getTransient(ViewScopeManager.VIEW_MAP_ID));
         assertEquals("two", viewRoot2.getViewMap().get("two"));
 
-        setFacesContext(null);
-    }
-
-    private void setFacesContext(FacesContext facesContext) {
-        try {
-            Method method = FacesContext.class.getDeclaredMethod("setCurrentInstance", FacesContext.class);
-            method.setAccessible(true);
-            method.invoke(null, facesContext);
-        } catch (Exception exception) {
-            exception.printStackTrace(System.err);
-        }
+        CurrentFacesContext.set(null);
     }
 }

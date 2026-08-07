@@ -83,8 +83,8 @@ import jakarta.faces.model.SelectItemGroup;
 
 import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.io.FastStringWriter;
-import org.glassfish.mojarra.renderkit.Attribute;
 import org.glassfish.mojarra.renderkit.AttributeManager;
+import org.glassfish.mojarra.renderkit.Attributes;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 import org.glassfish.mojarra.renderkit.SelectItemsIterator;
 import org.glassfish.mojarra.util.RequestStateManager;
@@ -98,7 +98,7 @@ import org.glassfish.mojarra.util.Util;
  */
 public class MenuRenderer extends HtmlBasicInputRenderer {
 
-    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.SELECTMANYMENU);
+    private static final Attributes ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.SELECTMANYMENU);
 
     // ---------------------------------------------------------- Public Methods
 

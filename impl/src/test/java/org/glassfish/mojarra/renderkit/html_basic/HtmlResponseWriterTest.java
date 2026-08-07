@@ -23,24 +23,21 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.Map;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIOutput;
-import jakarta.faces.context.FacesContext;
 import jakarta.faces.render.Renderer;
 
+import org.glassfish.mojarra.junit.CurrentFacesContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class HtmlResponseWriterTest {
 
     @BeforeEach
-    public void clearFacesContext() throws Exception {
-        Method setCurrent = FacesContext.class.getDeclaredMethod("setCurrentInstance", FacesContext.class);
-        setCurrent.setAccessible(true);
-        setCurrent.invoke(null, new Object[] { null });
+    public void clearFacesContext() {
+        CurrentFacesContext.set(null);
     }
 
     /**

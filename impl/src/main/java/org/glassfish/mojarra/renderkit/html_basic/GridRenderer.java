@@ -24,8 +24,8 @@ import jakarta.faces.component.html.HtmlPanelGrid;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
-import org.glassfish.mojarra.renderkit.Attribute;
 import org.glassfish.mojarra.renderkit.AttributeManager;
+import org.glassfish.mojarra.renderkit.Attributes;
 
 /**
  * <B>GridRenderer</B> is a class that renders <code>UIPanel</code> component as a "Grid".
@@ -33,7 +33,7 @@ import org.glassfish.mojarra.renderkit.AttributeManager;
 
 public class GridRenderer extends BaseTableRenderer {
 
-    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.PANELGRID);
+    private static final Attributes ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.PANELGRID);
 
     // ---------------------------------------------------------- Public Methods
 

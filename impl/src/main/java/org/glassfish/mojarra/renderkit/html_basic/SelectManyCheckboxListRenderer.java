@@ -36,8 +36,8 @@ import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
 import jakarta.faces.model.SelectItem;
 import jakarta.faces.model.SelectItemGroup;
 
-import org.glassfish.mojarra.renderkit.Attribute;
 import org.glassfish.mojarra.renderkit.AttributeManager;
+import org.glassfish.mojarra.renderkit.Attributes;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 import org.glassfish.mojarra.util.RequestStateManager;
 
@@ -48,7 +48,7 @@ import org.glassfish.mojarra.util.RequestStateManager;
 
 public class SelectManyCheckboxListRenderer extends MenuRenderer {
 
-    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.SELECTMANYCHECKBOX);
+    private static final Attributes ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.SELECTMANYCHECKBOX);
 
     // ---------------------------------------------------------- Public Methods
 

@@ -32,6 +32,7 @@ import java.util.function.Consumer;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 
+import org.glassfish.mojarra.junit.CurrentFacesContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -301,16 +302,5 @@ class UrlBuilderTest {
         Map<String, List<String>> parameters = new LinkedHashMap<>();
         parameters.put(name, singletonList(value));
         return parameters;
-    }
-
-    /**
-     * Gives access to the protected {@code FacesContext#setCurrentInstance}, which is otherwise unreachable from a test
-     * in another package.
-     */
-    private abstract static class CurrentFacesContext extends FacesContext {
-
-        static void set(FacesContext facesContext) {
-            setCurrentInstance(facesContext);
-        }
     }
 }

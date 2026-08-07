@@ -24,8 +24,8 @@ import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
-import org.glassfish.mojarra.renderkit.Attribute;
 import org.glassfish.mojarra.renderkit.AttributeManager;
+import org.glassfish.mojarra.renderkit.Attributes;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 
 /**
@@ -36,7 +36,7 @@ import org.glassfish.mojarra.renderkit.RenderKitUtils;
  */
 public class BodyRenderer extends HtmlBasicRenderer {
 
-    private static final Attribute[] BODY_ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.OUTPUTBODY);
+    private static final Attributes BODY_ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.OUTPUTBODY);
 
     @Override
     public void decode(FacesContext context, UIComponent component) {

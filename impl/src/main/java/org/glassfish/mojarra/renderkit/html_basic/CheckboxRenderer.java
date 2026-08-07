@@ -30,8 +30,8 @@ import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.convert.ConverterException;
 import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
 
-import org.glassfish.mojarra.renderkit.Attribute;
 import org.glassfish.mojarra.renderkit.AttributeManager;
+import org.glassfish.mojarra.renderkit.Attributes;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 
 /**
@@ -40,7 +40,7 @@ import org.glassfish.mojarra.renderkit.RenderKitUtils;
 
 public class CheckboxRenderer extends HtmlBasicInputRenderer {
 
-    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.SELECTBOOLEANCHECKBOX);
+    private static final Attributes ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.SELECTBOOLEANCHECKBOX);
 
     // ---------------------------------------------------------- Public Methods
 

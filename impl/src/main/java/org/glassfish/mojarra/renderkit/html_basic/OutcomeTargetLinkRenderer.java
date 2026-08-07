@@ -27,15 +27,15 @@ import jakarta.faces.component.html.HtmlOutcomeTargetLink;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
-import org.glassfish.mojarra.renderkit.Attribute;
 import org.glassfish.mojarra.renderkit.AttributeManager;
+import org.glassfish.mojarra.renderkit.Attributes;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 import org.glassfish.mojarra.util.MessageUtils;
 import org.glassfish.mojarra.util.Util;
 
 public class OutcomeTargetLinkRenderer extends OutcomeTargetRenderer {
 
-    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.OUTCOMETARGETLINK);
+    private static final Attributes ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.OUTCOMETARGETLINK);
 
     private static final String NO_NAV_CASE = OutcomeTargetLinkRenderer.class.getName() + "_NO_NAV_CASE";
 

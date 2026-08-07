@@ -31,8 +31,8 @@ import jakarta.faces.component.html.HtmlDataTable;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
-import org.glassfish.mojarra.renderkit.Attribute;
 import org.glassfish.mojarra.renderkit.AttributeManager;
+import org.glassfish.mojarra.renderkit.Attributes;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 import org.glassfish.mojarra.util.Util;
 
@@ -44,7 +44,7 @@ import org.glassfish.mojarra.util.Util;
 
 public class TableRenderer extends BaseTableRenderer {
 
-    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.DATATABLE);
+    private static final Attributes ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.DATATABLE);
 
     // ---------------------------------------------------------- Public Methods
 

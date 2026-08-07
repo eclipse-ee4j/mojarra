@@ -19,7 +19,6 @@ package org.glassfish.mojarra.config;
 import static org.glassfish.mojarra.util.Util.createLocalDocumentBuilderFactory;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -28,10 +27,9 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import jakarta.faces.context.FacesContext;
-
 import org.glassfish.mojarra.config.manager.documents.DocumentInfo;
 import org.glassfish.mojarra.config.manager.documents.DocumentOrderingWrapper;
+import org.glassfish.mojarra.junit.CurrentFacesContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
@@ -43,11 +41,7 @@ public class FacesConfigOrderingTestCase {
 	// Set up instance variables required by this test case.
 	@BeforeEach
 	public void setUp() throws Exception {
-		Method method = FacesContext.class.getDeclaredMethod(
-				"setCurrentInstance", FacesContext.class);
-		method.setAccessible(true);
-		method.invoke(null, new Object[] { null });
-
+		CurrentFacesContext.set(null);
 	}
 
 	// ------------------------------------------------- Individual Test Methods

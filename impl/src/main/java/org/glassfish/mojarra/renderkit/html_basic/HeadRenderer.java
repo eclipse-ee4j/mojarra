@@ -23,8 +23,8 @@ import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
-import org.glassfish.mojarra.renderkit.Attribute;
 import org.glassfish.mojarra.renderkit.AttributeManager;
+import org.glassfish.mojarra.renderkit.Attributes;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 
 /**
@@ -36,7 +36,7 @@ import org.glassfish.mojarra.renderkit.RenderKitUtils;
  */
 public class HeadRenderer extends HtmlBasicRenderer {
 
-    private static final Attribute[] HEAD_ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.OUTPUTHEAD);
+    private static final Attributes HEAD_ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.OUTPUTHEAD);
 
     @Override
     public void decode(FacesContext context, UIComponent component) {

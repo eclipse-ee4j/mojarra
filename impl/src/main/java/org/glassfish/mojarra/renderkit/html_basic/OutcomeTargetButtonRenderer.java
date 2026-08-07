@@ -26,15 +26,15 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
 import org.glassfish.mojarra.RIConstants;
-import org.glassfish.mojarra.renderkit.Attribute;
 import org.glassfish.mojarra.renderkit.AttributeManager;
+import org.glassfish.mojarra.renderkit.Attributes;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 import org.glassfish.mojarra.util.MessageUtils;
 import org.glassfish.mojarra.util.Util;
 
 public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
 
-    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.OUTCOMETARGETBUTTON);
+    private static final Attributes ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.OUTCOMETARGETBUTTON);
 
     // --------------------------------------------------- Methods from Renderer
 
