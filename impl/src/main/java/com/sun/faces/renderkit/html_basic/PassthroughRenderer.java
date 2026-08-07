@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.Attributes;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
 
@@ -34,7 +34,7 @@ public class PassthroughRenderer extends HtmlBasicRenderer {
 
 // We are purposely piggy backing off the PANELGROUP attributes since they are
 // identical for this renderer.
-    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.PANELGROUP);
+    private static final Attributes ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.PANELGROUP);
 
     @Override
     public void encodeBegin(FacesContext context, UIComponent component) throws IOException {

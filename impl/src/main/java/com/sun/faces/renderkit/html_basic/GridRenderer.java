@@ -19,7 +19,7 @@ package com.sun.faces.renderkit.html_basic;
 import java.io.IOException;
 import java.util.Iterator;
 
-import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.Attributes;
 import com.sun.faces.renderkit.AttributeManager;
 
 import jakarta.faces.component.UIComponent;
@@ -33,7 +33,7 @@ import jakarta.faces.context.ResponseWriter;
 
 public class GridRenderer extends BaseTableRenderer {
 
-    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.PANELGRID);
+    private static final Attributes ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.PANELGRID);
 
     // ---------------------------------------------------------- Public Methods
 

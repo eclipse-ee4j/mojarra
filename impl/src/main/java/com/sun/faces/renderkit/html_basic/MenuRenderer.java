@@ -82,7 +82,7 @@ import jakarta.faces.model.SelectItemGroup;
 
 import com.sun.faces.RIConstants;
 import com.sun.faces.io.FastStringWriter;
-import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.Attributes;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.renderkit.SelectItemsIterator;
@@ -97,7 +97,7 @@ import com.sun.faces.util.Util;
  */
 public class MenuRenderer extends HtmlBasicInputRenderer {
 
-    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.SELECTMANYMENU);
+    private static final Attributes ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.SELECTMANYMENU);
 
     // ---------------------------------------------------------- Public Methods
 

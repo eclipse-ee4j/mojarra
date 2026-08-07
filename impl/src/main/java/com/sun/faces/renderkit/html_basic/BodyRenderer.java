@@ -19,7 +19,7 @@ package com.sun.faces.renderkit.html_basic;
 import java.io.IOException;
 import java.util.ListIterator;
 
-import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.Attributes;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
 
@@ -36,7 +36,7 @@ import jakarta.faces.context.ResponseWriter;
  */
 public class BodyRenderer extends HtmlBasicRenderer {
 
-    private static final Attribute[] BODY_ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.OUTPUTBODY);
+    private static final Attributes BODY_ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.OUTPUTBODY);
 
     @Override
     public void decode(FacesContext context, UIComponent component) {

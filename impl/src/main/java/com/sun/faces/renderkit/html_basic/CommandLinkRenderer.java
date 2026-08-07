@@ -33,7 +33,7 @@ import jakarta.faces.event.ActionEvent;
 
 import static com.sun.faces.util.Util.componentIsDisabled;
 import com.sun.faces.application.resource.ResourceHandlerImpl;
-import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.Attributes;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
 
@@ -44,7 +44,7 @@ import com.sun.faces.renderkit.RenderKitUtils;
 
 public class CommandLinkRenderer extends LinkRenderer {
 
-    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.COMMANDLINK);
+    private static final Attributes ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.COMMANDLINK);
 
     // ---------------------------------------------------------- Public Methods
 

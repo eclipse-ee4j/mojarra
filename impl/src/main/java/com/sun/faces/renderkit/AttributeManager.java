@@ -19,7 +19,6 @@
 package com.sun.faces.renderkit;
 
 import static com.sun.faces.renderkit.Attribute.attr;
-import static com.sun.faces.util.CollectionsUtils.ar;
 
 import java.util.Map;
 
@@ -37,10 +36,14 @@ public class AttributeManager {
         OUTPUTLABEL, OUTPUTLINK, OUTPUTTEXT, PANELGRID, PANELGROUP,
         SELECTBOOLEANCHECKBOX, SELECTMANYCHECKBOX, SELECTMANYLISTBOX,
         SELECTMANYMENU, SELECTONELISTBOX, SELECTONEMENU, SELECTONERADIO,
-        OUTPUTBODY, OUTPUTDOCTYPE, OUTPUTHEAD;
+        OUTPUTBODY, OUTPUTHEAD;
     }
 
-    private static final Map<Key, Attribute[]> ATTRIBUTE_LOOKUP = CollectionsUtils.<Key, Attribute[]>map()
+    private static Attributes ar(Attribute... attributes) {
+        return new Attributes(attributes);
+    }
+
+    private static final Map<Key, Attributes> ATTRIBUTE_LOOKUP = CollectionsUtils.<Key, Attributes>map()
             .add(Key.COMMANDBUTTON,
                     ar(attr("accesskey"), attr("dir"), attr("lang"), attr("onblur", "blur"), attr("onchange", "change"), attr("ondblclick", "dblclick"),
                         attr("onfocus", "focus"), attr("onkeydown", "keydown"), attr("onkeypress", "keypress"), attr("onkeyup", "keyup"),
@@ -97,7 +100,7 @@ public class AttributeManager {
             .add(Key.MESSAGESMESSAGES,
                     ar(attr("dir"), attr("lang"), attr("role"), attr("style"), attr("title")))
             .add(Key.OUTCOMETARGETBUTTON,
-                    ar(attr("accesskey"), attr("dir"), attr("lang"), attr("onblur", "blur"), attr("onclick", "click"),
+                    ar(attr("accesskey"), attr("dir"), attr("lang"), attr("onblur", "blur"),
                             attr("ondblclick", "dblclick"), attr("onfocus", "focus"), attr("onkeydown", "keydown"), attr("onkeypress", "keypress"),
                             attr("onkeyup", "keyup"), attr("onmousedown", "mousedown"), attr("onmousemove", "mousemove"), attr("onmouseout", "mouseout"),
                             attr("onmouseover", "mouseover"), attr("onmouseup", "mouseup"), attr("role"), attr("style"), attr("tabindex"), attr("title")))
@@ -173,13 +176,11 @@ public class AttributeManager {
                             attr("onkeypress", "keypress"), attr("onkeyup", "keyup"), attr("onload", "load"), attr("onmousedown", "mousedown"),
                             attr("onmousemove", "mousemove"), attr("onmouseout", "mouseout"), attr("onmouseover", "mouseover"), attr("onmouseup", "mouseup"),
                             attr("onunload", "unload"), attr("role"), attr("style"), attr("title"), attr("xmlns")))
-            .add(Key.OUTPUTDOCTYPE,
-                    ar(attr("public"), attr("rootElement"), attr("system")))
             .add(Key.OUTPUTHEAD,
                     ar(attr("dir"), attr("lang"), attr("xmlns")))
             .fix();
 
-    public static Attribute[] getAttributes(Key key) {
+    public static Attributes getAttributes(Key key) {
         return ATTRIBUTE_LOOKUP.get(key);
     }
 }

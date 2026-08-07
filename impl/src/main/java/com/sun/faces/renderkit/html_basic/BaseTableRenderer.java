@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.Attributes;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.Util;
 
@@ -82,7 +82,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
      * @param attributes pass-through attributes that the component supports
      * @throws IOException if content cannot be written
      */
-    protected void renderTableStart(FacesContext context, UIComponent table, ResponseWriter writer, Attribute[] attributes) throws IOException {
+    protected void renderTableStart(FacesContext context, UIComponent table, ResponseWriter writer, Attributes attributes) throws IOException {
 
         writer.startElement("table", table);
         writeIdAttributeIfNecessary(context, writer, table);

@@ -23,7 +23,7 @@ import java.util.EnumSet;
 import java.util.Set;
 import java.util.logging.Level;
 
-import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.Attributes;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
 
@@ -44,7 +44,7 @@ import jakarta.faces.context.ResponseWriter;
  */
 public class LabelRenderer extends HtmlBasicInputRenderer {
 
-    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.OUTPUTLABEL);
+    private static final Attributes ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.OUTPUTLABEL);
 
     private static final String RENDER_END_ELEMENT = "com.sun.faces.RENDER_END_ELEMENT";
 

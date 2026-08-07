@@ -62,7 +62,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -113,24 +112,22 @@ public abstract class UIComponentBase extends UIComponent {
     private static final int CHILD_STATE = 1;
 
     /**
-     * This class's <code>PropertyDescriptor</code>s (keyed by property name) within the application-scoped descriptors
-     * cache &mdash; the {@code Map<Class, Map<String, PropertyDescriptor>>} kept in the application map (see
-     * {@link #populateDescriptorsMapIfNecessary}).
+     * This class's <code>PropertyDescriptor</code>s (keyed by property name), held per class in the
+     * {@link #COMPONENT_METADATA} cache.
      */
     private Map<String, PropertyDescriptor> propertyDescriptorMap;
 
     /**
-     * This class's read methods (keyed by property name) within the application-scoped read-methods cache &mdash; the
-     * {@code Map<Class, Map<String, Method>>} kept in the application map alongside the descriptors cache (see
-     * {@link #populateDescriptorsMapIfNecessary}). It holds the access-suppressed read {@link Method}s strongly, which
-     * keeps the suppression durable (a {@link PropertyDescriptor}'s read method is handed back via a soft reference that
+     * This class's access-suppressed read methods (keyed by property name), held strongly per class in the
+     * {@link #COMPONENT_METADATA} cache. Holding the suppressed read {@link Method}s strongly keeps the suppression
+     * durable (a {@link PropertyDescriptor}'s read method is handed back via a soft reference that
      * can be regenerated) and lets the hot attribute-read path skip re-suppressing and re-caching it per component.
      */
     private Map<String, Method> readMethodMap;
 
     /**
      * This class's write methods (keyed by property name), the write-side counterpart of {@link #readMethodMap} kept in
-     * its own application-scoped cache (see {@link #populateDescriptorsMapIfNecessary}). Holds the access-suppressed
+     * the same {@link #COMPONENT_METADATA} cache. Holds the access-suppressed
      * setter {@link Method}s strongly so the {@code getAttributes().put} property-write path (Facelets applying a
      * literal-text {@code ValueExpression} or a non-property literal during buildView) skips the per-put access check
      * and the soft-reference setter rediscovery.
@@ -3559,12 +3556,10 @@ public abstract class UIComponentBase extends UIComponent {
 
     }
 
-    private static final String COMPONENT_METADATA_MAP_KEY = "com.sun.faces.component.COMPONENT_METADATA_MAP";
-
     /**
-     * Application-scoped per-class reflective metadata, composed into a single value so the per-construction
-     * {@link #populateDescriptorsMapIfNecessary} does one application-map lookup and one per-class lookup rather than
-     * three of each. The three maps are always produced and cached together, so bundling them is behaviour-equivalent.
+     * Per-class reflective metadata, composed into a single value so the per-construction
+     * {@link #populateDescriptorsMapIfNecessary} resolves all three maps in one lookup rather than three. The three
+     * maps are always produced and cached together, so bundling them is behaviour-equivalent.
      */
     private static final class ComponentMetadata {
         private final Map<String, PropertyDescriptor> propertyDescriptors;
@@ -3578,77 +3573,76 @@ public abstract class UIComponentBase extends UIComponent {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private void populateDescriptorsMapIfNecessary() {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        Class<?> clazz = getClass();
-        Map<Class<?>, ComponentMetadata> metadataByClass = null;
-
-        /*
-         * If we can find a valid FacesContext we are going to use it to get access to the metadata cache.
-         */
-        if (facesContext != null && facesContext.getExternalContext() != null && facesContext.getExternalContext().getApplicationMap() != null) {
-
-            Map<String, Object> applicationMap = facesContext.getExternalContext().getApplicationMap();
-
-            metadataByClass = (Map<Class<?>, ComponentMetadata>) applicationMap.computeIfAbsent(
-                    COMPONENT_METADATA_MAP_KEY, k -> new ConcurrentHashMap<>());
-
-            ComponentMetadata metadata = metadataByClass.get(clazz);
-            if (metadata != null) {
-                propertyDescriptorMap = metadata.propertyDescriptors;
-                readMethodMap = metadata.readMethods;
-                writeMethodMap = metadata.writeMethods;
-                return;
-            }
+    /**
+     * The reflective metadata of every component class constructed so far. A {@link ClassValue} attaches each entry to
+     * the {@link Class} it describes, so an entry -- which strongly holds that class's accessor {@link Method}s -- stays
+     * reachable exactly as long as the class does, and resolving one costs neither a {@link FacesContext} nor a lookup
+     * in a map keyed by class. Every component construction resolves it, so nothing here may depend on request state.
+     */
+    private static final ClassValue<ComponentMetadata> COMPONENT_METADATA = new ClassValue<>() {
+        @Override
+        protected ComponentMetadata computeValue(Class<?> componentClass) {
+            return createComponentMetadata(componentClass);
         }
+    };
 
-        // We did not find the metadata for this class so we are now going to load it.
-
-        PropertyDescriptor propertyDescriptors[] = getPropertyDescriptors();
-        if (propertyDescriptors != null) {
-            propertyDescriptorMap = new HashMap<>(propertyDescriptors.length, 1.0f);
-            readMethodMap = new HashMap<>(propertyDescriptors.length, 1.0f);
-            writeMethodMap = new HashMap<>(propertyDescriptors.length, 1.0f);
-            for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
-                // Suppress the access check once, here, and strongly cache the accessor per class so the
-                // suppression stays durable (PropertyDescriptor.getReadMethod/getWriteMethod hand it back via a soft
-                // reference that can be regenerated) and the hot attribute-read/write paths never re-suppress or
-                // re-cache it.
-                Method readMethod = propertyDescriptor.getReadMethod();
-                if (readMethod != null) {
-                    AttributesMap.suppressAccessCheck(readMethod);
-                    readMethodMap.put(propertyDescriptor.getName(), readMethod);
-                }
-                Method writeMethod = propertyDescriptor.getWriteMethod();
-                if (writeMethod != null) {
-                    AttributesMap.suppressAccessCheck(writeMethod);
-                    writeMethodMap.put(propertyDescriptor.getName(), writeMethod);
-                }
-                propertyDescriptorMap.put(propertyDescriptor.getName(), propertyDescriptor);
-            }
-
-            if (LOGGER.isLoggable(FINE)) {
-                LOGGER.log(FINE, "fine.component.populating_descriptor_map", new Object[] { clazz, currentThread().getName() });
-            }
-
-            if (metadataByClass != null) {
-                metadataByClass.putIfAbsent(clazz, new ComponentMetadata(propertyDescriptorMap, readMethodMap, writeMethodMap));
-            }
+    private void populateDescriptorsMapIfNecessary() {
+        ComponentMetadata metadata = COMPONENT_METADATA.get(getClass());
+        if (metadata != null) {
+            propertyDescriptorMap = metadata.propertyDescriptors;
+            readMethodMap = metadata.readMethods;
+            writeMethodMap = metadata.writeMethods;
         }
     }
 
     /**
+     * Introspects {@code componentClass} into its {@link ComponentMetadata}, or {@code null} when it exposes no
+     * property descriptors at all.
+     */
+    private static ComponentMetadata createComponentMetadata(Class<?> componentClass) {
+        PropertyDescriptor[] propertyDescriptors = getPropertyDescriptors(componentClass);
+        if (propertyDescriptors == null) {
+            return null;
+        }
+
+        Map<String, PropertyDescriptor> propertyDescriptorMap = new HashMap<>(propertyDescriptors.length, 1.0f);
+        Map<String, Method> readMethodMap = new HashMap<>(propertyDescriptors.length, 1.0f);
+        Map<String, Method> writeMethodMap = new HashMap<>(propertyDescriptors.length, 1.0f);
+        for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
+            // Suppress the access check once, here, and strongly cache the accessor per class so the
+            // suppression stays durable (PropertyDescriptor.getReadMethod/getWriteMethod hand it back via a soft
+            // reference that can be regenerated) and the hot attribute-read/write paths never re-suppress or
+            // re-cache it.
+            Method readMethod = propertyDescriptor.getReadMethod();
+            if (readMethod != null) {
+                AttributesMap.suppressAccessCheck(readMethod);
+                readMethodMap.put(propertyDescriptor.getName(), readMethod);
+            }
+            Method writeMethod = propertyDescriptor.getWriteMethod();
+            if (writeMethod != null) {
+                AttributesMap.suppressAccessCheck(writeMethod);
+                writeMethodMap.put(propertyDescriptor.getName(), writeMethod);
+            }
+            propertyDescriptorMap.put(propertyDescriptor.getName(), propertyDescriptor);
+        }
+
+        if (LOGGER.isLoggable(FINE)) {
+            LOGGER.log(FINE, "fine.component.populating_descriptor_map", new Object[] { componentClass, currentThread().getName() });
+        }
+
+        return new ComponentMetadata(propertyDescriptorMap, readMethodMap, writeMethodMap);
+    }
+    /**
      * <p>
-     * Return an array of <code>PropertyDescriptors</code> for this {@link UIComponent}'s implementation class. If no
+     * Return an array of <code>PropertyDescriptors</code> for the given {@link UIComponent} implementation class. If no
      * descriptors can be identified, a zero-length array will be returned.
      * </p>
      *
      * @throws FacesException if an introspection exception occurs
      */
-    private PropertyDescriptor[] getPropertyDescriptors() {
+    private static PropertyDescriptor[] getPropertyDescriptors(Class<?> componentClass) {
         try {
-            return getBeanInfo(getClass()).getPropertyDescriptors();
+            return getBeanInfo(componentClass).getPropertyDescriptors();
         } catch (IntrospectionException e) {
             throw new FacesException(e);
         }

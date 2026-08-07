@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 
 import com.sun.faces.RIConstants;
-import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.Attributes;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
 
@@ -37,7 +37,7 @@ import jakarta.faces.context.ResponseWriter;
 
 public class ImageRenderer extends HtmlBasicRenderer {
 
-    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.GRAPHICIMAGE);
+    private static final Attributes ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.GRAPHICIMAGE);
 
     // ---------------------------------------------------------- Public Methods
 

@@ -34,7 +34,7 @@ import jakarta.faces.event.ActionEvent;
 
 import com.sun.faces.RIConstants;
 import com.sun.faces.application.resource.ResourceHandlerImpl;
-import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.Attributes;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
 
@@ -44,7 +44,7 @@ import com.sun.faces.renderkit.RenderKitUtils;
 
 public class ButtonRenderer extends HtmlBasicRenderer {
 
-    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.COMMANDBUTTON);
+    private static final Attributes ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.COMMANDBUTTON);
 
     // ---------------------------------------------------------- Public Methods
 
