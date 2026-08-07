@@ -31,6 +31,7 @@ import org.glassfish.mojarra.mock.MockHttpServletRequest;
 import org.glassfish.mojarra.mock.MockHttpServletResponse;
 import org.glassfish.mojarra.mock.MockRenderKit;
 import org.glassfish.mojarra.mock.MockServletContext;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -47,6 +48,8 @@ class FacesContextImplPostbackTest {
     @BeforeEach
     void setUp() {
         CDI.setCDIProvider(new MockCDIProvider());
+        // The factories are process-wide, and setFactory is silently ignored once one has been obtained.
+        FactoryFinder.releaseFactories();
         FactoryFinder.setFactory(FactoryFinder.RENDER_KIT_FACTORY, "org.glassfish.mojarra.mock.MockRenderKitFactory");
         request = new MockHttpServletRequest();
         facesContext = new FacesContextImpl(
@@ -54,15 +57,16 @@ class FacesContextImplPostbackTest {
                 new LifecycleImpl());
 
         RenderKitFactory renderKitFactory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
-        try {
-            renderKitFactory.addRenderKit(RenderKitFactory.HTML_BASIC_RENDER_KIT, new MockRenderKit());
-        } catch (IllegalArgumentException alreadyRegistered) {
-            // The factory outlives a single test and rejects a second registration under the same id.
-        }
+        renderKitFactory.addRenderKit(RenderKitFactory.HTML_BASIC_RENDER_KIT, new MockRenderKit());
 
         UIViewRoot viewRoot = new UIViewRoot();
         viewRoot.setRenderKitId(RenderKitFactory.HTML_BASIC_RENDER_KIT);
         facesContext.setViewRoot(viewRoot);
+    }
+
+    @AfterEach
+    void tearDown() {
+        FactoryFinder.releaseFactories();
     }
 
     @Test

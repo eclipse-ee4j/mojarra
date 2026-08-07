@@ -37,6 +37,7 @@ import jakarta.faces.view.facelets.Tag;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagException;
 
+import org.glassfish.mojarra.facelets.tag.faces.PassThroughAttributeLibrary;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.Util;
 
@@ -70,6 +71,9 @@ public class MetaRulesetImpl extends MetaRuleset {
         // setup attributes
         TagAttribute[] attrs = this.tag.getAttributes().getAll();
         for (int i = 0; i < attrs.length; i++) {
+            if (PassThroughAttributeLibrary.NAMESPACES.contains(attrs[i].getNamespace())) {
+                continue;
+            }
             if (attrs[i].getLocalName().equals("class")) {
                 attributes.put("styleClass", attrs[i]);
             } else {
