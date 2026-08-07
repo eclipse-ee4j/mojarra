@@ -128,7 +128,8 @@ class PerfBenchIT extends BaseIT {
             Map.entry("foreach-readonly", "foreach-readonly.xhtml"),
             Map.entry("flat-readonly", "flat-readonly.xhtml"),
             Map.entry("flat-passthru", "flat-passthru.xhtml"),
-            Map.entry("flat-wide", "flat-wide.xhtml"),
+            Map.entry("flat-nopassthru", "flat-nopassthru.xhtml"),
+            Map.entry("flat-allattrs", "flat-allattrs.xhtml"),
             Map.entry("flat-text", "flat-text.xhtml"),
             Map.entry("viewparam-get", "viewparam-get.xhtml?id=42")));
 
