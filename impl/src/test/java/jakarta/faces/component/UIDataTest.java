@@ -56,15 +56,30 @@ public class UIDataTest {
     }
 
     /**
-     * Test partial state saving with rowIndex.
+     * Partial state saving returns null only when nothing changed, so a property that did change still has to come
+     * back as state.
      */
     @Test
     public void testSaveState3() {
         FacesContext context = mock(FacesContext.class);
         UIData data = new UIData();
         data.markInitialState();
-        data.setRowIndex(4);
+        data.setFirst(4);
         assertNotNull(data.saveState(context));
+    }
+
+    /**
+     * The row index is not component state. Every phase leaves it at -1 before state is saved and no page can set it,
+     * so holding it on a field rather than in the state helper is what lets each {@code getClientId} under this table
+     * read it without a map lookup.
+     */
+    @Test
+    public void theRowIndexIsNotSavedState() {
+        FacesContext context = mock(FacesContext.class);
+        UIData data = new UIData();
+        data.markInitialState();
+        data.setRowIndex(4);
+        assertNull(data.saveState(context));
     }
 
     @Test

@@ -375,12 +375,12 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
      * generated HTML components setter methods.
      */
     private void handleAttribute(String name, Object value) {
-        List<String> setAttributes = (List<String>) component.getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet");
+        List<String> setAttributes = (List<String>) component.getAttributes().get(UIComponentBase.ATTRIBUTES_THAT_ARE_SET);
         if (setAttributes == null) {
-            String className = getClass().getName();
-            if (className.startsWith("jakarta.faces.component.")) {
+            String className = component.getClass().getName();
+            if (className.startsWith(UIComponentBase.STANDARD_COMPONENT_PACKAGE)) {
                 setAttributes = new ArrayList<>(6);
-                component.getAttributes().put("jakarta.faces.component.UIComponentBase.attributesThatAreSet", setAttributes);
+                component.getAttributes().put(UIComponentBase.ATTRIBUTES_THAT_ARE_SET, setAttributes);
             }
         }
 

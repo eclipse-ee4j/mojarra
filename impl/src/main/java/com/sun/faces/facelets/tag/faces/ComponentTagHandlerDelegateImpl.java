@@ -33,8 +33,8 @@ import com.sun.faces.component.CompositeComponentStackManager;
 import com.sun.faces.component.behavior.AjaxBehaviors;
 import com.sun.faces.component.validator.ComponentValidators;
 import com.sun.faces.context.StateContext;
+import com.sun.faces.facelets.UniqueIdSlot;
 import com.sun.faces.facelets.impl.IdMapper;
-import com.sun.faces.facelets.FaceletContextImplBase;
 import com.sun.faces.facelets.tag.MetaRulesetImpl;
 import com.sun.faces.facelets.tag.faces.core.FacetHandler;
 import com.sun.faces.util.FacesLogger;
@@ -86,18 +86,7 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
      * the one this tag was compiled in, because a {@code ui:define} body applies under the template it is inserted
      * into; a tag that alternates between templates simply rebinds.
      */
-    private static final class IdSlot {
-
-        private final Facelet owner;
-        private final int slot;
-
-        private IdSlot(Facelet owner, int slot) {
-            this.owner = owner;
-            this.slot = slot;
-        }
-    }
-
-    private volatile IdSlot idSlot;
+    private final UniqueIdSlot idSlot = new UniqueIdSlot();
 
     public ComponentTagHandlerDelegateImpl(ComponentHandler owner) {
         this.owner = owner;
@@ -470,26 +459,7 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
      * public {@link FaceletContext} API otherwise, which a wrapping context or a foreign implementation may supply.
      */
     private String generateUniqueId(FaceletContext ctx) {
-
-        if (!(ctx instanceof FaceletContextImplBase)) {
-            return ctx.generateUniqueId(owner.getTagId());
-        }
-
-        FaceletContextImplBase context = (FaceletContextImplBase) ctx;
-        Facelet slotOwner = context.getUniqueIdSlotOwner();
-
-        if (slotOwner == null) {
-            return ctx.generateUniqueId(owner.getTagId());
-        }
-
-        IdSlot slot = idSlot;
-
-        if (slot == null || slot.owner != slotOwner) {
-            slot = new IdSlot(slotOwner, context.getUniqueIdSlot(owner.getTagId()));
-            idSlot = slot;
-        }
-
-        return context.generateUniqueId(owner.getTagId(), slot.owner, slot.slot);
+        return idSlot.generateUniqueId(ctx, owner.getTagId());
     }
 
     protected void doNewComponentActions(FaceletContext ctx, String id, UIComponent c) {

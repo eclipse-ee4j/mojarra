@@ -189,12 +189,6 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
         rendered, attributes, bindings, rendererType, systemEventListeners, behaviors, passThroughAttributes
     }
 
-    /**
-     * List of attributes that have been set on the component (this may be from setValueExpression, the attributes map, or
-     * setters from the concrete HTML components. This allows for faster rendering of attributes as this list is
-     * authoritative on what has been set.
-     */
-    List<String> attributesThatAreSet;
     ComponentStateHelper stateHelper;
     UIComponent compositeParent;
     private boolean isInView;

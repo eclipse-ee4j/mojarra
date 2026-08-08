@@ -19,6 +19,7 @@ package com.sun.faces.facelets.compiler;
 import java.io.IOException;
 import java.io.Writer;
 
+import com.sun.faces.facelets.UniqueIdSlot;
 import com.sun.faces.facelets.el.ELText;
 import com.sun.faces.facelets.impl.IdMapper;
 import com.sun.faces.facelets.tag.faces.ComponentSupport;
@@ -48,6 +49,8 @@ final class UIInstructionHandler extends AbstractUIHandler {
 
     private final boolean literal;
 
+    private final UniqueIdSlot idSlot = new UniqueIdSlot();
+
     public UIInstructionHandler(String alias, String id, Instruction[] instructions, ELText txt) {
         this.alias = alias;
         this.id = id;
@@ -73,7 +76,7 @@ final class UIInstructionHandler extends AbstractUIHandler {
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         if (parent != null) {
             // our id
-            String id = ctx.generateUniqueId(this.id);
+            String id = idSlot.generateUniqueId(ctx, this.id);
             FacesContext context = ctx.getFacesContext();
 
             // grab our component

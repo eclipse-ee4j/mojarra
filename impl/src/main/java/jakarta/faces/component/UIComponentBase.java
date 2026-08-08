@@ -112,6 +112,17 @@ public abstract class UIComponentBase extends UIComponent {
     private static final int CHILD_STATE = 1;
 
     /**
+     * The attributes map key under which the implementation reads the list of attributes that have been explicitly set
+     * on a component, and the package whose components maintain that list. Package private so that
+     * {@link ComponentStateHelper} reads the same constants this class writes; the copies in
+     * {@code jakarta.faces.component.html.HtmlComponentUtils} and in the implementation's {@code RenderKitUtils} and
+     * {@code PassthroughElement} are in packages that cannot see these and must be kept in sync by hand. Literals, so
+     * that all of them are the same interned instance.
+     */
+    static final String ATTRIBUTES_THAT_ARE_SET = "jakarta.faces.component.UIComponentBase.attributesThatAreSet";
+    static final String STANDARD_COMPONENT_PACKAGE = "jakarta.faces.component.";
+
+    /**
      * This class's <code>PropertyDescriptor</code>s (keyed by property name), held per class in the
      * {@link #COMPONENT_METADATA} cache.
      */
@@ -2251,10 +2262,6 @@ public abstract class UIComponentBase extends UIComponent {
     // private 'attributes' map directly to the state saving process.
     private static class AttributesMap implements Map<String, Object>, Serializable {
 
-        // this KEY is special to the AttributesMap - this allows the implementation
-        // to access the the List containing the attributes that have been set
-        private static final String ATTRIBUTES_THAT_ARE_SET_KEY = UIComponentBase.class.getName() + ".attributesThatAreSet";
-
         // private Map<String, Object> attributes;
         private transient Map<String, PropertyDescriptor> pdMap;
         // Per-class, application-scoped cache of access-suppressed read methods (see UIComponentBase.readMethodMap);
@@ -2277,11 +2284,14 @@ public abstract class UIComponentBase extends UIComponent {
 
         @Override
         public boolean containsKey(Object keyObj) {
+            if (keyObj == ATTRIBUTES_THAT_ARE_SET) {
+                return true;
+            }
             Object marker = component.markerGet(keyObj);
             if (marker != NOT_MARKER) {
                 return marker != null;
             }
-            if (ATTRIBUTES_THAT_ARE_SET_KEY.equals(keyObj)) {
+            if (ATTRIBUTES_THAT_ARE_SET.equals(keyObj)) {
                 return true;
             }
             String key = (String) keyObj;
@@ -2305,11 +2315,18 @@ public abstract class UIComponentBase extends UIComponent {
             if (key == null) {
                 throw new NullPointerException();
             }
-            Object marker = component.markerGet(key);
-            if (marker != NOT_MARKER) {
-                return marker;
+            // Identity, not equals: this is by a wide margin the most frequently read key of this map and every
+            // caller in the implementation passes the interned constant, so it is answered ahead of the marker keys
+            // without adding a comparison to their path. A foreign equal-but-distinct key still resolves below.
+            boolean attributesThatAreSet = key == ATTRIBUTES_THAT_ARE_SET;
+            if (!attributesThatAreSet) {
+                Object marker = component.markerGet(key);
+                if (marker != NOT_MARKER) {
+                    return marker;
+                }
+                attributesThatAreSet = ATTRIBUTES_THAT_ARE_SET.equals(key);
             }
-            if (ATTRIBUTES_THAT_ARE_SET_KEY.equals(key)) {
+            if (attributesThatAreSet) {
                 result = component.getStateHelper().get(UIComponent.PropertyKeysPrivate.attributesThatAreSet);
             }
             // Resolved lazily: the property-backed fast path below never needs it.
@@ -2400,11 +2417,9 @@ public abstract class UIComponentBase extends UIComponent {
                 return null;
             }
 
-            if (ATTRIBUTES_THAT_ARE_SET_KEY.equals(keyValue)) {
-                if (component.attributesThatAreSet == null) {
-                    if (value instanceof List) {
-                        component.getStateHelper().put(UIComponent.PropertyKeysPrivate.attributesThatAreSet, value);
-                    }
+            if (ATTRIBUTES_THAT_ARE_SET.equals(keyValue)) {
+                if (value instanceof List) {
+                    component.getStateHelper().put(UIComponent.PropertyKeysPrivate.attributesThatAreSet, value);
                 }
                 return null;
             }
@@ -2480,7 +2495,7 @@ public abstract class UIComponentBase extends UIComponent {
             if (marker && (MARK_DELETED.equals(key) || KEY.equals(key))) {
                 return null;
             }
-            if (ATTRIBUTES_THAT_ARE_SET_KEY.equals(key)) {
+            if (ATTRIBUTES_THAT_ARE_SET.equals(key)) {
                 return null;
             }
             PropertyDescriptor pd = marker ? null : getPropertyDescriptor(key);
