@@ -46,16 +46,11 @@ public class GroupRenderer extends HtmlBasicRenderer {
             return;
         }
         // Render a span around this group if necessary
-        String styleClass = (String) RenderKitUtils.getAttributeIfSet(component, "styleClass");
+        String styleClass = getStyleClass(component);
         ResponseWriter writer = context.getResponseWriter();
 
         if (divOrSpan(component, styleClass)) {
-            if (component instanceof HtmlPanelGroup ? "block".equals(((HtmlPanelGroup) component).getLayout())
-                    : "block".equals(component.getAttributes().get("layout"))) {
-                writer.startElement("div", component);
-            } else {
-                writer.startElement("span", component);
-            }
+            writer.startElement(getElementName(component), component);
             writeIdAttributeIfNecessary(context, writer, component);
             if (styleClass != null) {
                 writer.writeAttribute("class", styleClass, "styleClass");
@@ -96,14 +91,9 @@ public class GroupRenderer extends HtmlBasicRenderer {
 
         // Close our span element if necessary
         ResponseWriter writer = context.getResponseWriter();
-        String styleClass = (String) RenderKitUtils.getAttributeIfSet(component, "styleClass");
+        String styleClass = getStyleClass(component);
         if (divOrSpan(component, styleClass)) {
-            if (component instanceof HtmlPanelGroup ? "block".equals(((HtmlPanelGroup) component).getLayout())
-                    : "block".equals(component.getAttributes().get("layout"))) {
-                writer.endElement("div");
-            } else {
-                writer.endElement("span");
-            }
+            writer.endElement(getElementName(component));
         }
 
     }
@@ -125,7 +115,33 @@ public class GroupRenderer extends HtmlBasicRenderer {
      */
     private boolean divOrSpan(UIComponent component, String styleClass) {
 
-        return shouldWriteIdAttribute(component) || styleClass != null || RenderKitUtils.getAttributeIfSet(component, "style") != null;
+        return shouldWriteIdAttribute(component) || styleClass != null || getStyle(component) != null;
+
+    }
+
+    /**
+     * @return the element name to wrap this group in, which is a {@code div} when its layout is {@code block} and a
+     * {@code span} otherwise.
+     */
+    private static String getElementName(UIComponent component) {
+
+        String layout = component instanceof HtmlPanelGroup ? ((HtmlPanelGroup) component).getLayout()
+                : (String) component.getAttributes().get("layout");
+        return "block".equals(layout) ? "div" : "span";
+
+    }
+
+    private static String getStyleClass(UIComponent component) {
+
+        return component instanceof HtmlPanelGroup ? ((HtmlPanelGroup) component).getStyleClass()
+                : (String) RenderKitUtils.getAttributeIfSet(component, "styleClass");
+
+    }
+
+    private static String getStyle(UIComponent component) {
+
+        return component instanceof HtmlPanelGroup ? ((HtmlPanelGroup) component).getStyle()
+                : (String) RenderKitUtils.getAttributeIfSet(component, "style");
 
     }
 
