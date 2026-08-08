@@ -25,6 +25,7 @@ import jakarta.faces.component.UniqueIdVendor;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.facelets.FaceletContext;
 
+import org.glassfish.mojarra.facelets.UniqueIdSlot;
 import org.glassfish.mojarra.facelets.el.ELText;
 import org.glassfish.mojarra.facelets.impl.IdMapper;
 import org.glassfish.mojarra.facelets.tag.faces.ComponentSupport;
@@ -47,6 +48,8 @@ final class UIInstructionHandler extends AbstractUIHandler {
     private final int length;
 
     private final boolean literal;
+
+    private final UniqueIdSlot idSlot = new UniqueIdSlot();
 
     public UIInstructionHandler(String alias, String id, Instruction[] instructions, ELText txt) {
         this.alias = alias;
@@ -73,7 +76,7 @@ final class UIInstructionHandler extends AbstractUIHandler {
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         if (parent != null) {
             // our id
-            String id = ctx.generateUniqueId(this.id);
+            String id = idSlot.generateUniqueId(ctx, this.id);
             FacesContext context = ctx.getFacesContext();
 
             // grab our component

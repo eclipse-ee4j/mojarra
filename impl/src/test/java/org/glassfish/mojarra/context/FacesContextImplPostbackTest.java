@@ -19,6 +19,8 @@ package org.glassfish.mojarra.context;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.lang.reflect.Method;
+
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.component.UIViewRoot;
@@ -65,7 +67,13 @@ class FacesContextImplPostbackTest {
     }
 
     @AfterEach
-    void tearDown() {
+    void tearDown() throws Exception {
+        // Constructing a FacesContext makes it the current one for the thread. FacesContextImpl.release() would clear
+        // that but needs a CDI environment, so reach the protected setter the way the other tests in this tree do.
+        Method setCurrentInstance = FacesContext.class.getDeclaredMethod("setCurrentInstance", FacesContext.class);
+        setCurrentInstance.setAccessible(true);
+        setCurrentInstance.invoke(null, new Object[] { null });
+
         FactoryFinder.releaseFactories();
     }
 

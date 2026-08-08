@@ -45,7 +45,6 @@ import jakarta.faces.component.behavior.ClientBehaviorHolder;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.facelets.ComponentConfig;
 import jakarta.faces.view.facelets.ComponentHandler;
-import jakarta.faces.view.facelets.Facelet;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.MetaRuleset;
 import jakarta.faces.view.facelets.TagAttribute;
@@ -56,7 +55,7 @@ import org.glassfish.mojarra.component.CompositeComponentStackManager;
 import org.glassfish.mojarra.component.behavior.AjaxBehaviors;
 import org.glassfish.mojarra.component.validator.ComponentValidators;
 import org.glassfish.mojarra.context.StateContext;
-import org.glassfish.mojarra.facelets.FaceletContextImplBase;
+import org.glassfish.mojarra.facelets.UniqueIdSlot;
 import org.glassfish.mojarra.facelets.impl.IdMapper;
 import org.glassfish.mojarra.facelets.tag.MetaRulesetImpl;
 import org.glassfish.mojarra.facelets.tag.faces.core.FacetHandler;
@@ -86,10 +85,7 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
      * the one this tag was compiled in, because a {@code ui:define} body applies under the template it is inserted
      * into; a tag that alternates between templates simply rebinds.
      */
-    private record IdSlot(Facelet owner, int slot) {
-    }
-
-    private volatile IdSlot idSlot;
+    private final UniqueIdSlot idSlot = new UniqueIdSlot();
 
     public ComponentTagHandlerDelegateImpl(ComponentHandler owner) {
         this.owner = owner;
@@ -463,25 +459,7 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
      * may supply.
      */
     private String generateUniqueId(FaceletContext ctx) {
-
-        if (!(ctx instanceof FaceletContextImplBase context)) {
-            return ctx.generateUniqueId(owner.getTagId());
-        }
-
-        Facelet slotOwner = context.getUniqueIdSlotOwner();
-
-        if (slotOwner == null) {
-            return ctx.generateUniqueId(owner.getTagId());
-        }
-
-        IdSlot slot = idSlot;
-
-        if (slot == null || slot.owner() != slotOwner) {
-            slot = new IdSlot(slotOwner, context.getUniqueIdSlot(owner.getTagId()));
-            idSlot = slot;
-        }
-
-        return context.generateUniqueId(owner.getTagId(), slot.owner(), slot.slot());
+        return idSlot.generateUniqueId(ctx, owner.getTagId());
     }
 
     protected void doNewComponentActions(FaceletContext ctx, String id, UIComponent c) {

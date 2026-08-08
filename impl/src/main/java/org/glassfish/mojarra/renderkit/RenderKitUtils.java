@@ -132,20 +132,21 @@ public class RenderKitUtils {
      * This represents the base package that can leverage the <code>attributesThatAreSet</code> List for optimized attribute
      * rendering.
      *
-     * IMPLEMENTATION NOTE: This must be kept in sync with the array in UIComponentBase$AttributesMap and
-     * HtmlComponentGenerator.
+     * IMPLEMENTATION NOTE: This must be kept in sync with UIComponentBase.STANDARD_COMPONENT_PACKAGE and the copies in
+     * HtmlComponentUtils and PassthroughElement.
      *
      * Hopefully Faces X will remove the need for this.
      */
     private static final String OPTIMIZED_PACKAGE = "jakarta.faces.component.";
 
     /**
-     * IMPLEMENTATION NOTE: This must be kept in sync with the Key in UIComponentBase$AttributesMap and
-     * HtmlComponentGenerator.
+     * IMPLEMENTATION NOTE: This must be kept in sync with UIComponentBase.ATTRIBUTES_THAT_ARE_SET and the copies in
+     * HtmlComponentUtils and PassthroughElement. Spelled out as a literal so that all of them are the same interned
+     * instance.
      *
      * Hopefully Faces X will remove the need for this.
      */
-    private static final String ATTRIBUTES_THAT_ARE_SET_KEY = UIComponentBase.class.getName() + ".attributesThatAreSet";
+    private static final String ATTRIBUTES_THAT_ARE_SET_KEY = "jakarta.faces.component.UIComponentBase.attributesThatAreSet";
 
     private static final String PENDING_BEHAVIOR_EVENT_LISTENERS_KEY = UIComponentBase.class.getName() + ".pendingBehaviorEventListeners";
 
