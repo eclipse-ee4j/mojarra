@@ -712,17 +712,6 @@ public class Util {
         return null;
     }
 
-    public static <T> List<T> reverse(List<T> list) {
-        int length = list.size();
-        List<T> result = new ArrayList<>(length);
-
-        for (int i = length - 1; i >= 0; i--) {
-            result.add(list.get(i));
-        }
-
-        return result;
-    }
-
     /**
      * Returns <code>true</code> if the given string starts with one of the given prefixes.
      *

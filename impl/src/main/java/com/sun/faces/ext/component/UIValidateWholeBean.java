@@ -16,7 +16,6 @@
 
 package com.sun.faces.ext.component;
 
-import static com.sun.faces.util.Util.reverse;
 import static jakarta.faces.validator.BeanValidator.EMPTY_VALIDATION_GROUPS_PATTERN;
 import static jakarta.faces.validator.BeanValidator.ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME;
 import static jakarta.faces.validator.BeanValidator.VALIDATION_GROUPS_DELIMITER;
@@ -134,27 +133,41 @@ public class UIValidateWholeBean extends UIInput implements PartialStateHolder {
             throw new IllegalArgumentException(ERROR_MISSING_FORM);
         }
 
-        misplacedComponentCheck(parent, getClientId());
+        misplacedComponentCheck(parent);
     }
 
-    private static void misplacedComponentCheck(UIComponent parentComponent, String clientId) throws IllegalArgumentException {
-        try {
-            reverse(parentComponent.getChildren()).stream().forEach((UIComponent childComponent) -> {
-                if (childComponent.isRendered()) {
-                    if (childComponent instanceof EditableValueHolder && !(childComponent instanceof UIValidateWholeBean)) {
-                        throw new IllegalArgumentException(ERROR_MISPLACED_COMPONENT);
-                    } else {
-                        if (!childComponent.getClientId().equals(clientId)) {
-                            misplacedComponentCheck(childComponent, clientId);
-                        } else {
-                            throw new BreakException();
-                        }
-                    }
-                }
-            });
-        } catch (BreakException be) {
-            // STOP
+    /**
+     * Walks the form backwards looking for a rendered input placed after this component, which whole-bean validation
+     * cannot see the submitted value of, and stops as soon as it reaches this component itself: everything before it is
+     * in the right place by definition.
+     *
+     * @return whether this component was reached, which ends the walk for the caller too
+     * @throws IllegalArgumentException when a rendered input sits after this component
+     */
+    private boolean misplacedComponentCheck(UIComponent parentComponent) throws IllegalArgumentException {
+        List<UIComponent> children = parentComponent.getChildren();
+
+        for (int i = children.size() - 1; i >= 0; i--) {
+            UIComponent childComponent = children.get(i);
+
+            if (!childComponent.isRendered()) {
+                continue;
+            }
+
+            if (childComponent == this) {
+                return true;
+            }
+
+            if (childComponent instanceof EditableValueHolder && !(childComponent instanceof UIValidateWholeBean)) {
+                throw new IllegalArgumentException(ERROR_MISPLACED_COMPONENT);
+            }
+
+            if (misplacedComponentCheck(childComponent)) {
+                return true;
+            }
         }
+
+        return false;
     }
 
     public static <C extends UIComponent> C getClosestParent(UIComponent component, Class<C> parentType) {
@@ -275,7 +288,4 @@ public class UIValidateWholeBean extends UIInput implements PartialStateHolder {
         }
     }
 
-    private static class BreakException extends RuntimeException {
-        private static final long serialVersionUID = 1L;
-    }
 }
