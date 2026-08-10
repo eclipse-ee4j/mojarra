@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
@@ -719,7 +718,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
             }
 
             // We're stuck splitting up the string.
-            String[] values = SPLIT_PATTERN.split(strValue);
+            String[] values = strValue.split(" ");
             if (values == null || values.length == 0) {
                 return null;
             }
@@ -787,8 +786,5 @@ public class AjaxBehavior extends ClientBehaviorBase {
     private static final List<String> FORM_LIST = List.of(FORM);
     private static final List<String> THIS_LIST = List.of(THIS);
     private static final List<String> NONE_LIST = List.of(NONE);
-
-    // Pattern used for execute/render string splitting
-    private static final Pattern SPLIT_PATTERN = Pattern.compile(" ");
 
 }

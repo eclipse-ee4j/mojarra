@@ -372,7 +372,7 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
 
     /*
      * Because our renderers optimize we need to make sure that upon restore we mimic the handleAttribute of our standard
-     * generated HTML components setter methods.
+     * generated HTML components setter methods -- including where in the list it records a name, not only that it does.
      */
     private void handleAttribute(String name, Object value) {
         List<String> setAttributes = (List<String>) component.getAttributes().get(UIComponentBase.ATTRIBUTES_THAT_ARE_SET);
@@ -390,10 +390,38 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
                 if (valueExpression == null) {
                     setAttributes.remove(name);
                 }
-            } else if (!setAttributes.contains(name)) {
-                setAttributes.add(name);
+            } else {
+                int index = insertionPoint(setAttributes, name);
+                if (index >= 0) {
+                    setAttributes.add(index, name);
+                }
             }
         }
+    }
+
+    /**
+     * Returns the index at which {@code name} belongs for the recorded attributes to stay in natural order, or -1 when
+     * it is recorded already.
+     * <p>
+     * Mirrors {@code jakarta.faces.component.html.HtmlComponentUtils.insertionPoint}, which is package-private to a
+     * package this one cannot see. The two must agree: a name recorded here in a different position than the setter
+     * would have put it makes a component restored from full state render its attributes in a different order than the
+     * same component built from the view.
+     */
+    private static int insertionPoint(List<String> setAttributes, String name) {
+        int index = setAttributes.size();
+
+        for (int i = 0; i < setAttributes.size(); i++) {
+            int order = setAttributes.get(i).compareTo(name);
+            if (order == 0) {
+                return -1;
+            }
+            if (order > 0 && i < index) {
+                index = i;
+            }
+        }
+
+        return index;
     }
 
     /**

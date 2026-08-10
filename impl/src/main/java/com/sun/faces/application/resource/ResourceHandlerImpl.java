@@ -107,7 +107,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
         webconfig = WebConfiguration.getInstance();
         ExternalContext extContext = FacesContext.getCurrentInstance().getExternalContext();
         manager = ApplicationAssociate.getInstance(extContext).getResourceManager();
-        initExclusions(extContext.getApplicationMap());
+        initExclusions();
         initMaxAge();
         cspEnabled = webconfig.isOptionEnabled(WebConfiguration.BooleanWebContextInitParameter.CspNonceEnabled);
         if (cspEnabled) {
@@ -609,7 +609,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
     }
 
     /**
-     * @param excludedExtensions the excluded file extensions as returned by {@link #parseExcludedExtensions(Map, String)}
+     * @param excludedExtensions the excluded file extensions as returned by {@link #parseExcludedExtensions(String)}
      * @param resourceId the normalized request path as returned by
      * {@link #normalizeResourceRequest(jakarta.faces.context.FacesContext)}
      * @return <code>true</code> if the request matces an excluded resource, otherwise <code>false</code>
@@ -628,8 +628,8 @@ public class ResourceHandlerImpl extends ResourceHandler {
      * Initialize the exclusions for this application. If no explicit exclusions are configured, the defaults of
      * {@link ResourceHandler#RESOURCE_EXCLUDES_DEFAULT_VALUE} will be used.
      */
-    private void initExclusions(Map<String, Object> appMap) {
-        excludedExtensions = parseExcludedExtensions(appMap, webconfig.getOptionValue(ResourceExcludes));
+    private void initExclusions() {
+        excludedExtensions = parseExcludedExtensions(webconfig.getOptionValue(ResourceExcludes));
     }
 
     /**
@@ -637,8 +637,8 @@ public class ResourceHandlerImpl extends ResourceHandler {
      * @param excludesParam the space separated list of file extensions, including the leading '.' character
      * @return the excluded file extensions, without empty entries, as an empty entry would exclude every resource
      */
-    static String[] parseExcludedExtensions(Map<String, Object> appMap, String excludesParam) {
-        return Stream.of(Util.split(appMap, excludesParam, " ")).filter(extension -> !extension.isEmpty()).toArray(String[]::new);
+    static String[] parseExcludedExtensions(String excludesParam) {
+        return Stream.of(Util.split(excludesParam, ' ')).filter(extension -> !extension.isEmpty()).toArray(String[]::new);
     }
 
     private void initMaxAge() {

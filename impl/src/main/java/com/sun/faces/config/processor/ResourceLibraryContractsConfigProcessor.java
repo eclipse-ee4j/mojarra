@@ -35,6 +35,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.sun.faces.util.Util;
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.manager.documents.DocumentInfo;
 import com.sun.faces.util.FacesLogger;
@@ -124,7 +125,7 @@ public class ResourceLibraryContractsConfigProcessor extends AbstractConfigProce
                                     NodeList contracts = (NodeList) xpath.evaluate(".//ns1:contracts/text()", contractMapping, XPathConstants.NODESET);
                                     if (contracts != null && contracts.getLength() > 0) {
                                         for (int j = 0; j < contracts.getLength(); j++) {
-                                            String[] contractStrings = contracts.item(j).getNodeValue().trim().split(",");
+                                            String[] contractStrings = Util.split(contracts.item(j).getNodeValue().trim(), ',');
                                             for (String contractString : contractStrings) {
                                                 if (!list.contains(contractString)) {
                                                     if (LOGGER.isLoggable(INFO)) {

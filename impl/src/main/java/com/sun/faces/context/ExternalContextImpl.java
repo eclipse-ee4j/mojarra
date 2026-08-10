@@ -545,7 +545,7 @@ public class ExternalContextImpl extends ExternalContext {
             if (null != cw) {
                 String clientWindowId = cw.getId();
                 StringBuilder builder = new StringBuilder(url);
-                if ( !url.contains(UrlBuilder.QUERY_STRING_SEPARATOR) ) {
+                if (url.indexOf(UrlBuilder.QUERY_STRING_SEPARATOR) < 0) {
                     builder.append(UrlBuilder.QUERY_STRING_SEPARATOR);
                 } else {
                     builder.append(UrlBuilder.PARAMETER_PAIR_SEPARATOR);

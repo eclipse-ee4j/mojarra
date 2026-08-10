@@ -18,6 +18,8 @@ package com.sun.faces.config.configprovider;
 
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsLibraries;
 
+import java.util.regex.Pattern;
+
 import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
 
 /**
@@ -25,7 +27,7 @@ import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
  */
 public class WebFaceletTaglibResourceProvider extends BaseWebConfigResourceProvider {
 
-    private static final String SEPARATOR = ";";
+    private static final Pattern SEPARATOR = Pattern.compile(";", Pattern.LITERAL);
     private static final String[] EXCLUDES = {};
 
     // ------------------------------ Methods from BaseWebConfigResourceProvider
@@ -41,7 +43,7 @@ public class WebFaceletTaglibResourceProvider extends BaseWebConfigResourceProvi
     }
 
     @Override
-    protected String getSeparatorRegex() {
+    protected Pattern getSeparatorPattern() {
         return SEPARATOR;
     }
 }

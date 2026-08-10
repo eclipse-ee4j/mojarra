@@ -21,10 +21,8 @@ import static com.sun.faces.util.Util.ensureLeadingSlash;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.concurrent.locks.ReentrantLock;
@@ -92,25 +90,14 @@ public class ResourceManager {
 
     // ------------------------------------------------------------ Constructors
 
-    /*
-     * This ctor is only ever called by test code.
-     */
-
-    public ResourceManager(ResourceCache cache) {
-        this.cache = cache;
-        Map<String, Object> throwAwayMap = new HashMap<>();
-        initCompressableTypes(throwAwayMap);
-    }
-
     /**
      * Constructs a new <code>ResourceManager</code>. Note: if the current {@link ProjectStage} is
      * {@link ProjectStage#Development} caching or {@link ResourceInfo} instances will not occur.
-     * @param appMap the application map
      * @param cache the resource cache
      */
-    public ResourceManager(Map<String, Object> appMap, ResourceCache cache) {
+    public ResourceManager(ResourceCache cache) {
         this.cache = cache;
-        initCompressableTypes(appMap);
+        initCompressableTypes();
     }
 
     // ------------------------------------------------------ Public Methods
@@ -606,12 +593,12 @@ public class ResourceManager {
     /**
      * Init <code>compressableTypes</code> from the configuration.
      */
-    private void initCompressableTypes(Map<String, Object> appMap) {
+    private void initCompressableTypes() {
 
         WebConfiguration config = WebConfiguration.getInstance();
         String value = config.getOptionValue(WebConfiguration.WebContextInitParameter.CompressableMimeTypes);
         if (value != null && value.length() > 0) {
-            String[] values = Util.split(appMap, value, ",");
+            String[] values = Util.split(value, ',');
             if (values != null) {
                 for (String s : values) {
                     String pattern = s.trim();

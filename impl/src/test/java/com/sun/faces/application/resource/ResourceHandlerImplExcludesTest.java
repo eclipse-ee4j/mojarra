@@ -36,7 +36,7 @@ class ResourceHandlerImplExcludesTest {
     private final Map<String, Object> appMap = new HashMap<>();
 
     private String[] parse(String excludesParam) {
-        return parseExcludedExtensions(appMap, excludesParam);
+        return parseExcludedExtensions(excludesParam);
     }
 
     // --- parseExcludedExtensions ---

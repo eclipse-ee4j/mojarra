@@ -37,7 +37,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -514,8 +513,7 @@ public abstract class ResourceHelper {
      */
     private VersionInfo getVersion(String pathElement, boolean isResource) {
 
-        Map<String, Object> appMap = FacesContext.getCurrentInstance().getExternalContext().getApplicationMap();
-        String[] pathElements = Util.split(appMap, pathElement, "/");
+        String[] pathElements = Util.split(pathElement, '/');
         String path = pathElements[pathElements.length - 1];
 
         String extension = null;
@@ -736,9 +734,8 @@ public abstract class ResourceHelper {
                     String message = MessageUtils.getExceptionMessageString(MessageUtils.INVALID_RESOURCE_FORMAT_COLON_ERROR, expressionBody);
                     throw new ELException(message);
                 }
-                Map<String, Object> appMap = FacesContext.getCurrentInstance().getExternalContext().getApplicationMap();
 
-                String[] parts = Util.split(appMap, expressionBody, ":");
+                String[] parts = Util.split(expressionBody, ':');
                 if (null == parts[0] || null == parts[1]) {
                     String message = MessageUtils.getExceptionMessageString(MessageUtils.INVALID_RESOURCE_FORMAT_NO_LIBRARY_NAME_ERROR, expressionBody);
                     throw new ELException(message);

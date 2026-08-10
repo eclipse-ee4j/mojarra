@@ -16,6 +16,7 @@
 
 package com.sun.faces.facelets.tag.faces.core;
 
+import com.sun.faces.util.Util;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -88,7 +89,7 @@ public final class ResetValuesHandler extends ActionListenerHandlerBase implemen
         }
 
         // We're stuck splitting up the string.
-        String[] values = SPLIT_PATTERN.split(strValue);
+        String[] values = Util.split(strValue, ' ');
         if (values == null || values.length == 0) {
             return null;
         }

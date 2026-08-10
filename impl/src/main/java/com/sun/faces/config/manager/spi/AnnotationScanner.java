@@ -20,6 +20,7 @@ import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.Anno
 import static java.util.logging.Level.WARNING;
 
 import java.lang.annotation.Annotation;
+import java.util.regex.Pattern;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -63,6 +64,9 @@ public abstract class AnnotationScanner extends AnnotationProvider {
     private static final Logger LOGGER = FacesLogger.CONFIG.getLogger();
     private static final String WILDCARD = "*";
 
+    /** The scan-packages parameter is a whitespace separated list, which the spec allows to be padded out. */
+    private static final Pattern WHITESPACE_RUN = Pattern.compile("\\s+");
+
     protected static final Set<String> FACES_ANNOTATIONS = Set.of(
             "Ljakarta/faces/component/FacesComponent;", "Ljakarta/faces/convert/FacesConverter;",
             "Ljakarta/faces/validator/FacesValidator;", "Ljakarta/faces/render/FacesRenderer;",
@@ -93,10 +97,10 @@ public abstract class AnnotationScanner extends AnnotationProvider {
         super(sc);
 
         WebConfiguration webConfig = WebConfiguration.getInstance(sc);
-        initializeAnnotationScanPackages(sc, webConfig);
+        initializeAnnotationScanPackages(webConfig);
     }
 
-    private void initializeAnnotationScanPackages(ServletContext sc, WebConfiguration webConfig) {
+    private void initializeAnnotationScanPackages(WebConfiguration webConfig) {
         if (!webConfig.isSet(AnnotationScanPackages)) {
             return;
         }
@@ -104,14 +108,14 @@ public abstract class AnnotationScanner extends AnnotationProvider {
         isAnnotationScanPackagesSet = true;
         classpathPackages = new HashMap<>(4);
         webInfClassesPackages = new String[0];
-        String[] options = webConfig.getOptionValue(AnnotationScanPackages, "\\s+");
+        String[] options = webConfig.getOptionValue(AnnotationScanPackages, WHITESPACE_RUN);
         List<String> packages = new ArrayList<>(4);
         for (String option : options) {
             if (option.length() == 0) {
                 continue;
             }
             if (option.startsWith("jar:")) {
-                String[] parts = Util.split(sc, option, ":");
+                String[] parts = Util.split(option, ':');
                 if (parts.length != 3) {
                     if (LOGGER.isLoggable(WARNING)) {
                         LOGGER.log(WARNING, "faces.annotation.scanner.configuration.invalid",
@@ -120,7 +124,7 @@ public abstract class AnnotationScanner extends AnnotationProvider {
                 } else {
                     if (WILDCARD.equals(parts[1]) && !classpathPackages.containsKey(WILDCARD)) {
                         classpathPackages.clear();
-                        classpathPackages.put(WILDCARD, normalizeJarPackages(Util.split(sc, parts[2], ",")));
+                        classpathPackages.put(WILDCARD, normalizeJarPackages(Util.split(parts[2], ',')));
                     } else if (WILDCARD.equals(parts[1]) && classpathPackages.containsKey(WILDCARD)) {
                         if (LOGGER.isLoggable(WARNING)) {
                             LOGGER.log(WARNING, "faces.annotation.scanner.configuration.duplicate.wildcard",
@@ -128,7 +132,7 @@ public abstract class AnnotationScanner extends AnnotationProvider {
                         }
                     } else {
                         if (!classpathPackages.containsKey(WILDCARD)) {
-                            classpathPackages.put(parts[1], normalizeJarPackages(Util.split(sc, parts[2], ",")));
+                            classpathPackages.put(parts[1], normalizeJarPackages(Util.split(parts[2], ',')));
                         }
                     }
                 }

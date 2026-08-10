@@ -16,6 +16,7 @@
 
 package com.sun.faces.util.copier;
 
+import com.sun.faces.util.Util;
 import static com.sun.faces.util.ReflectionUtils.instance;
 
 import java.util.Collections;
@@ -89,7 +90,7 @@ public class CopierUtils {
     private static boolean isName(CharSequence name) {
         String id = name.toString();
 
-        for (String s : id.split("\\.", -1)) {
+        for (String s : Util.split(id, '.', -1)) {
             if (!isIdentifier(s) || isKeyword(s)) {
                 return false;
             }
