@@ -63,6 +63,21 @@ public class IdMapper {
 
     }
 
+    /**
+     * Returns the alias the mapper in effect for the current build gives to the given id, or the id itself when no
+     * mapper is in effect.
+     *
+     * @param ctx the current FacesContext
+     * @param id the id to alias
+     * @return the aliased id
+     */
+    public static String getAliasedId(FacesContext ctx, String id) {
+
+        IdMapper mapper = getMapper(ctx);
+        return mapper != null ? mapper.getAliasedId(id) : id;
+
+    }
+
     // ---------------------------------------------------------- Nested Classes
 
     private static final class IdGen implements Cache.Factory<String, String> {

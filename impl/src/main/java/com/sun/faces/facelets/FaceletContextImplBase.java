@@ -18,6 +18,8 @@ package com.sun.faces.facelets;
 
 import java.io.IOException;
 
+import com.sun.faces.facelets.impl.IdMapper;
+
 import jakarta.el.ELException;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
@@ -66,6 +68,19 @@ public abstract class FaceletContextImplBase extends FaceletContext {
      */
     public String generateUniqueId(String base, Facelet owner, int slot) {
         return generateUniqueId(base);
+    }
+
+    /**
+     * Returns the alias the {@link IdMapper} in effect for this build gives to the given id, or the id itself when no
+     * mapper is in effect. The mapper is fixed for the duration of a build, so an implementation that resolves it once
+     * answers this without the lookup in {@link jakarta.faces.context.FacesContext#getAttributes()} that this default
+     * performs per call.
+     *
+     * @param id the id to alias
+     * @return the aliased id
+     */
+    public String getAliasedId(String id) {
+        return IdMapper.getAliasedId(getFacesContext(), id);
     }
 
     /**
