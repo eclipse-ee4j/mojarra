@@ -27,7 +27,6 @@ import jakarta.faces.view.facelets.FaceletContext;
 
 import org.glassfish.mojarra.facelets.UniqueIdSlot;
 import org.glassfish.mojarra.facelets.el.ELText;
-import org.glassfish.mojarra.facelets.impl.IdMapper;
 import org.glassfish.mojarra.facelets.tag.faces.ComponentSupport;
 import org.glassfish.mojarra.facelets.util.FastWriter;
 
@@ -107,8 +106,7 @@ final class UIInstructionHandler extends AbstractUIHandler {
                 c = new UIInstructions(txt, applied);
                 // mark it owned by a facelet instance
                 String uid;
-                IdMapper mapper = IdMapper.getMapper(ctx.getFacesContext());
-                String mid = mapper != null ? mapper.getAliasedId(id) : id;
+                String mid = ComponentSupport.getAliasedId(ctx, id);
                 UIComponent ancestorNamingContainer = parent.getNamingContainer();
                 if (null != ancestorNamingContainer && ancestorNamingContainer instanceof UniqueIdVendor) {
                     uid = ((UniqueIdVendor) ancestorNamingContainer).createUniqueId(ctx.getFacesContext(), mid);

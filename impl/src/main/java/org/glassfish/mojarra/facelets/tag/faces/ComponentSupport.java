@@ -46,6 +46,8 @@ import jakarta.faces.view.facelets.TagAttributeException;
 import jakarta.faces.view.facelets.TagAttributes;
 
 import org.glassfish.mojarra.context.StateContext;
+import org.glassfish.mojarra.facelets.FaceletContextImplBase;
+import org.glassfish.mojarra.facelets.impl.IdMapper;
 import org.glassfish.mojarra.facelets.tag.TagAttributesImpl;
 import org.glassfish.mojarra.facelets.tag.faces.core.FacetHandler;
 import org.glassfish.mojarra.util.Util;
@@ -235,6 +237,23 @@ public final class ComponentSupport {
         // The existing UIInstructions is a direct child of the parent it was applied under, so the bounded
         // direct scan locates it by its MARK_CREATED tag id without a descendant cache.
         return findChildByTagIdFullStateSaving(context, parent, id);
+    }
+
+    /**
+     * Returns the alias the {@link IdMapper} in effect for this build gives to the given id, or the id itself when no
+     * mapper is in effect. Answered from the context where it holds the mapper itself, and through the
+     * {@link FacesContext} attributes otherwise, which a wrapping context or a foreign implementation may supply.
+     *
+     * @param ctx the context being built under
+     * @param id the id to alias
+     * @return the aliased id
+     */
+    public static String getAliasedId(FaceletContext ctx, String id) {
+        if (ctx instanceof FaceletContextImplBase) {
+            return ((FaceletContextImplBase) ctx).getAliasedId(id);
+        }
+
+        return IdMapper.getAliasedId(ctx.getFacesContext(), id);
     }
 
     /**

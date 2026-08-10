@@ -56,7 +56,6 @@ import org.glassfish.mojarra.component.behavior.AjaxBehaviors;
 import org.glassfish.mojarra.component.validator.ComponentValidators;
 import org.glassfish.mojarra.context.StateContext;
 import org.glassfish.mojarra.facelets.UniqueIdSlot;
-import org.glassfish.mojarra.facelets.impl.IdMapper;
 import org.glassfish.mojarra.facelets.tag.MetaRulesetImpl;
 import org.glassfish.mojarra.facelets.tag.faces.core.FacetHandler;
 import org.glassfish.mojarra.util.FacesLogger;
@@ -431,8 +430,7 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
         if (this.id != null && !(this.id.isLiteral() && IterationIdManager.registerLiteralId(ctx, this.id.getValue()))) {
             c.setId(this.id.getValue(ctx));
         } else {
-            IdMapper mapper = IdMapper.getMapper(ctx.getFacesContext());
-            String mid = mapper != null ? mapper.getAliasedId(id) : id;
+            String mid = ComponentSupport.getAliasedId(ctx, id);
             UIComponent ancestorNamingContainer = parent.getNamingContainer();
             if (ancestorNamingContainer instanceof UniqueIdVendor) {
                 c.setId(((UniqueIdVendor) ancestorNamingContainer).createUniqueId(ctx.getFacesContext(), mid));
