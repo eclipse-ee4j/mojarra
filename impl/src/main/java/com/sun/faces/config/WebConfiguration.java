@@ -276,6 +276,20 @@ public class WebConfiguration {
         return getFacesConfigOptionValue(param, false);
     }
 
+    /**
+     * As {@link #getOptionValue(WebContextInitParameter, String)}, for a parameter whose values are separated by
+     * something only a regular expression can describe rather than by one literal delimiter.
+     *
+     * @param param the parameter to read
+     * @param sep the pattern separating the values
+     * @return the trimmed, non-empty values
+     */
+    public String[] getOptionValue(WebContextInitParameter param, Pattern sep) {
+        String value = getOptionValue(param);
+        return value == null ? new String[0]
+                : stream(sep.split(value)).map(String::trim).filter(not(String::isEmpty)).toArray(String[]::new);
+    }
+
     public String[] getOptionValue(WebContextInitParameter param, String sep) {
         String[] result;
 
@@ -284,8 +298,7 @@ public class WebConfiguration {
             if (value == null) {
                 result = new String[0];
             } else {
-                Map<String, Object> appMap = FacesContext.getCurrentInstance().getExternalContext().getApplicationMap();
-                result = stream(split(appMap, value, sep)).map(String::trim).filter(not(String::isEmpty)).toArray(String[]::new);
+                result = stream(split(value, sep)).map(String::trim).filter(not(String::isEmpty)).toArray(String[]::new);
             }
             cachedListParams.put(param, result);
         }

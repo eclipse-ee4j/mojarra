@@ -161,11 +161,10 @@ class UrlBuilder {
             return;
         }
 
-        Map<String, Object> appMap = FacesContext.getCurrentInstance().getExternalContext().getApplicationMap();
 
-        String[] pairs = Util.split(appMap, queryString, PARAMETER_PAIR_SEPARATOR);
+        String[] pairs = Util.split(queryString, PARAMETER_PAIR_SEPARATOR);
         for (String pair : pairs) {
-            String[] nameAndValue = Util.split(appMap, pair, PARAMETER_NAME_VALUE_SEPARATOR);
+            String[] nameAndValue = Util.split(pair, PARAMETER_NAME_VALUE_SEPARATOR);
             // ignore malformed pair
             if (nameAndValue.length != 2 || nameAndValue[0].trim().length() == 0) {
                 continue;

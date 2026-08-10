@@ -141,38 +141,14 @@ public class Util {
     private static boolean unitTestModeEnabled = false;
 
     /**
-     * RegEx patterns
+     * The application scoped key the pattern for detecting an iterator-nested client id is stored under.
      */
-    private static final String PATTERN_CACHE_KEY = RIConstants.FACES_PREFIX + "patternCache";
-
     private static final String CLIENT_ID_NESTED_IN_ITERATOR_PATTERN = "CLIENT_ID_NESTED_IN_ITERATOR_PATTERN";
 
     private static final String FACES_SERVLET_CLASS = FacesServlet.class.getName();
 
     private Util() {
         throw new IllegalStateException();
-    }
-
-    private static Map<String, Pattern> getPatternCache(Map<String, Object> appMap) {
-    @SuppressWarnings("unchecked")
-        Map<String, Pattern> result = (Map<String, Pattern>) appMap.get(PATTERN_CACHE_KEY);
-        if (result == null) {
-            result = Collections.synchronizedMap(new LRUMap<>(15));
-            appMap.put(PATTERN_CACHE_KEY, result);
-        }
-
-        return result;
-    }
-
-    private static Map<String, Pattern> getPatternCache(ServletContext sc) {
-        @SuppressWarnings("unchecked")
-        Map<String, Pattern> result = (Map<String, Pattern>) sc.getAttribute(PATTERN_CACHE_KEY);
-        if (result == null) {
-            result = Collections.synchronizedMap(new LRUMap<>(15));
-            sc.setAttribute(PATTERN_CACHE_KEY, result);
-        }
-
-        return result;
     }
 
     private static Collection<String> getFacesServletMappings(ServletContext servletContext) {
@@ -1003,41 +979,64 @@ public class Util {
 
     /**
      * <p>
-     * A slightly more efficient version of <code>String.split()</code> which caches the <code>Pattern</code>s in an LRUMap
-     * instead of creating a new <code>Pattern</code> on each invocation.
+     * Splits the given string around occurrences of the given delimiter, which is taken literally: unlike
+     * {@link String#split(String)} it is not a regular expression, so nothing is compiled and nothing is cached. A
+     * caller that needs a real regular expression should hold its own {@link Pattern} constant and call
+     * {@link Pattern#split(CharSequence)}, which compiles it once at class initialisation rather than per call.
      * </p>
      *
-     * @param appMap the Application Map
      * @param toSplit the string to split
-     * @param regex the regex used for splitting
-     * @return the result of <code>Pattern.spit(String, int)</code>
+     * @param delimiter the literal delimiter to split around
+     * @return the split result, with trailing empty strings removed
      */
-    public static String[] split(Map<String, Object> appMap, String toSplit, String regex) {
-        return split(appMap, toSplit, regex, 0);
+    public static String[] split(String toSplit, String delimiter) {
+        return split(toSplit, delimiter, 0);
     }
 
     /**
-     * <p>A slightly more efficient version of
-     * <code>String.split()</code> which caches
-     * the <code>Pattern</code>s in an LRUMap instead of
-     * creating a new <code>Pattern</code> on each
-     * invocation. Limited by splitLimit.</p>
-     * @param appMap the Application Map
+     * <p>
+     * As {@link #split(String, String)}, limited by splitLimit, whose meaning follows
+     * {@link String#split(String, int)}: a positive limit caps the number of parts and leaves the remainder in the
+     * last one, zero means no cap and discards trailing empty strings, and a negative limit means no cap and keeps
+     * them.
+     * </p>
+     *
      * @param toSplit the string to split
-     * @param regex the regex used for splitting
+     * @param delimiter the literal delimiter to split around
      * @param splitLimit split result threshold
-     * @return the result of <code>Pattern.spit(String, int)</code>
+     * @return the split result
      */
-    public static String[] split(Map<String, Object> appMap, String toSplit, String regex, int splitLimit) {
-        Map<String, Pattern> patternCache = getPatternCache(appMap);
-        Pattern pattern = patternCache.computeIfAbsent(regex, Pattern::compile);
-        return pattern.split(toSplit, splitLimit);
-    }
+    public static String[] split(String toSplit, String delimiter, int splitLimit) {
+        if (delimiter.isEmpty()) {
+            throw new IllegalArgumentException("delimiter must not be empty");
+        }
 
-    public static String[] split(ServletContext sc, String toSplit, String regex) {
-        Map<String, Pattern> patternCache = getPatternCache(sc);
-        Pattern pattern = patternCache.computeIfAbsent(regex, Pattern::compile);
-        return pattern.split(toSplit, 0);
+        List<String> parts = new ArrayList<>();
+        int offset = 0;
+
+        for (int found; (found = toSplit.indexOf(delimiter, offset)) != -1;) {
+            if (splitLimit > 0 && parts.size() == splitLimit - 1) {
+                break;
+            }
+            parts.add(toSplit.substring(offset, found));
+            offset = found + delimiter.length();
+        }
+
+        if (parts.isEmpty()) {
+            // Nothing to split around, so the whole string is the only part -- kept even when it is itself empty,
+            // which is what String.split does before it discards any trailing empty one.
+            return new String[] { toSplit };
+        }
+
+        parts.add(toSplit.substring(offset));
+
+        if (splitLimit == 0) {
+            for (int last = parts.size() - 1; last >= 0 && parts.get(last).isEmpty(); last--) {
+                parts.remove(last);
+            }
+        }
+
+        return parts.toArray(new String[parts.size()]);
     }
 
     /**
@@ -1614,7 +1613,8 @@ public class Util {
         // We should in long term probably introduce a common interface like UIIterable.
         // But this is solid for now as all known implementing components already follow this pattern.
         // We could theoretically even remove the above instanceof checks.
-        Pattern clientIdNestedInIteratorPattern = getPatternCache(context.getExternalContext().getApplicationMap()).computeIfAbsent(CLIENT_ID_NESTED_IN_ITERATOR_PATTERN, k -> {
+        // Application scoped rather than a constant: the separator character it is built around is configurable.
+        Pattern clientIdNestedInIteratorPattern = (Pattern) context.getExternalContext().getApplicationMap().computeIfAbsent(CLIENT_ID_NESTED_IN_ITERATOR_PATTERN, k -> {
             String separatorChar = Pattern.quote(String.valueOf(UINamingContainer.getSeparatorChar(context)));
             return Pattern.compile(".+" + separatorChar + "[0-9]+" + separatorChar + ".+");
         });

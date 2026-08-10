@@ -28,12 +28,12 @@ import static java.util.logging.Level.WARNING;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.regex.Pattern;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -91,6 +91,9 @@ public class PartialViewContextImpl extends PartialViewContext {
     private FacesContext ctx;
 
     private static final String ORIGINAL_WRITER = "com.sun.faces.ORIGINAL_WRITER";
+
+    /** The render and execute parameters are space separated lists, which the spec allows to be padded out. */
+    private static final Pattern WHITESPACE_RUN = Pattern.compile("[ \t]+");
 
     // ----------------------------------------------------------- Constructors
 
@@ -377,8 +380,7 @@ public class PartialViewContextImpl extends PartialViewContext {
         if (param == null) {
             return new ArrayList<>();
         } else {
-            Map<String, Object> appMap = FacesContext.getCurrentInstance().getExternalContext().getApplicationMap();
-            String[] pcs = Util.split(appMap, param, "[ \t]+");
+            String[] pcs = WHITESPACE_RUN.split(param);
             return pcs != null && pcs.length != 0 ? new ArrayList<>(Arrays.asList(pcs)) : new ArrayList<>();
         }
 

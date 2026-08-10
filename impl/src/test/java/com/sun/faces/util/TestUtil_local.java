@@ -72,15 +72,15 @@ public class TestUtil_local {
     public void testSplit() {
         String[] result = null;
 
-        result = Util.split(new HashMap<String,Object>(), "fooBarKey=Zm9vQmFyVmFsdWU====", "=", 2);
+        result = Util.split("fooBarKey=Zm9vQmFyVmFsdWU====", "=", 2);
         assertEquals(2, result.length);
         assertEquals(result[1], "Zm9vQmFyVmFsdWU====");
 
-        result = Util.split(new HashMap<String,Object>(), "fooBarKey=Zm9vQmFyVmFsdWU=", "=", 2);
+        result = Util.split("fooBarKey=Zm9vQmFyVmFsdWU=", "=", 2);
         assertEquals(2, result.length);
         assertEquals(result[1], "Zm9vQmFyVmFsdWU=");
 
-        result = Util.split(new HashMap<String,Object>(), "fooBarKey2=Zm9vQmFyVmFsdWUy", "=", 2);
+        result = Util.split("fooBarKey2=Zm9vQmFyVmFsdWUy", "=", 2);
         assertEquals(2, result.length);
         assertEquals(result[1], "Zm9vQmFyVmFsdWUy");
     }

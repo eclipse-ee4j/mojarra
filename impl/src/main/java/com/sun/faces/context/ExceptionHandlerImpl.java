@@ -215,7 +215,7 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
         var typesParam = WebConfiguration.getInstance(context.getExternalContext()).getOptionValue(WebContextInitParameter.ExceptionTypesToIgnoreInLogging);
 
         if (typesParam != null) {
-            for (var typeParam : Util.split(context.getExternalContext().getApplicationMap(), typesParam, ",")) {
+            for (var typeParam : Util.split(typesParam, ",")) {
                 try {
                     types.add((Class<? extends Throwable>) Class.forName(typeParam));
                 }
