@@ -43,7 +43,7 @@ public class ApplicationStateInfo {
         partialStateSaving = config.isOptionEnabled(PartialStateSaving);
 
         if (partialStateSaving) {
-            String[] viewIds = config.getOptionValue(FullStateSavingViewIds, ",");
+            String[] viewIds = config.getOptionValue(FullStateSavingViewIds, ',');
             fullStateViewIds = new HashSet<>(viewIds.length, 1.0f);
             fullStateViewIds.addAll(asList(viewIds));
         }

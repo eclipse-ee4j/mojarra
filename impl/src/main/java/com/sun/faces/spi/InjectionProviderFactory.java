@@ -242,7 +242,7 @@ public class InjectionProviderFactory {
             return null;
         }
 
-        String[] parts = Util.split(entry, ":");
+        String[] parts = Util.split(entry, ':');
         if (parts.length != 2) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, "faces.spi.injection.invalid_service_entry", new Object[] { entry });

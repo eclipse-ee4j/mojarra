@@ -968,38 +968,35 @@ public class Util {
 
     /**
      * <p>
-     * Splits the given string around occurrences of the given delimiter, which is taken literally: unlike
-     * {@link String#split(String)} it is not a regular expression, so nothing is compiled and nothing is cached. A
-     * caller that needs a real regular expression should hold its own {@link Pattern} constant and call
-     * {@link Pattern#split(CharSequence)}, which compiles it once at class initialisation rather than per call.
+     * Splits the given string around occurrences of the given delimiter character. Unlike
+     * {@link String#split(String)} the delimiter is a character rather than a regular expression, so nothing is
+     * compiled and nothing is cached. A caller that needs a real regular expression should hold its own
+     * {@link Pattern} constant and call {@link Pattern#split(CharSequence)}, which compiles it once at class
+     * initialisation rather than per call.
      * </p>
      *
      * @param toSplit the string to split
-     * @param delimiter the literal delimiter to split around
+     * @param delimiter the character to split around
      * @return the split result, with trailing empty strings removed
      */
-    public static String[] split(String toSplit, String delimiter) {
+    public static String[] split(String toSplit, char delimiter) {
         return split(toSplit, delimiter, 0);
     }
 
     /**
      * <p>
-     * As {@link #split(String, String)}, limited by splitLimit, whose meaning follows
+     * As {@link #split(String, char)}, limited by splitLimit, whose meaning follows
      * {@link String#split(String, int)}: a positive limit caps the number of parts and leaves the remainder in the
      * last one, zero means no cap and discards trailing empty strings, and a negative limit means no cap and keeps
      * them.
      * </p>
      *
      * @param toSplit the string to split
-     * @param delimiter the literal delimiter to split around
+     * @param delimiter the character to split around
      * @param splitLimit split result threshold
      * @return the split result
      */
-    public static String[] split(String toSplit, String delimiter, int splitLimit) {
-        if (delimiter.isEmpty()) {
-            throw new IllegalArgumentException("delimiter must not be empty");
-        }
-
+    public static String[] split(String toSplit, char delimiter, int splitLimit) {
         List<String> parts = new ArrayList<>();
         int offset = 0;
 
@@ -1008,7 +1005,7 @@ public class Util {
                 break;
             }
             parts.add(toSplit.substring(offset, found));
-            offset = found + delimiter.length();
+            offset = found + 1;
         }
 
         if (parts.isEmpty()) {
