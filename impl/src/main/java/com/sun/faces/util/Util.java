@@ -63,6 +63,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -151,26 +153,37 @@ public class Util {
         throw new IllegalStateException();
     }
 
-    private static Map<String, Pattern> getPatternCache(Map<String, Object> appMap) {
+    private static final Object PATTERN_CACHE_LOCK = new Object();
+
     @SuppressWarnings("unchecked")
-        Map<String, Pattern> result = (Map<String, Pattern>) appMap.get(PATTERN_CACHE_KEY);
-        if (result == null) {
-            result = Collections.synchronizedMap(new LRUMap<>(15));
-            appMap.put(PATTERN_CACHE_KEY, result);
+    private static ConcurrentMap<String,Pattern> getPatternCache(Map<String, Object> appMap) {
+        ConcurrentMap<String, Pattern> cache = (ConcurrentMap<String, Pattern>) appMap.get(PATTERN_CACHE_KEY);
+        if (cache == null) {
+            synchronized (PATTERN_CACHE_LOCK) {
+                cache = (ConcurrentMap<String, Pattern>) appMap.get(PATTERN_CACHE_KEY);
+                if (cache == null) {
+                    cache = new ConcurrentHashMap<>();
+                    appMap.put(PATTERN_CACHE_KEY, cache);
+                }
+            }
         }
 
-        return result;
+        return cache;
     }
 
-    private static Map<String, Pattern> getPatternCache(ServletContext sc) {
-        @SuppressWarnings("unchecked")
-        Map<String, Pattern> result = (Map<String, Pattern>) sc.getAttribute(PATTERN_CACHE_KEY);
-        if (result == null) {
-            result = Collections.synchronizedMap(new LRUMap<>(15));
-            sc.setAttribute(PATTERN_CACHE_KEY, result);
+    @SuppressWarnings("unchecked")
+    private static ConcurrentMap<String, Pattern> getPatternCache(ServletContext sc) {
+        ConcurrentMap<String, Pattern> cache = (ConcurrentMap<String, Pattern>) sc.getAttribute(PATTERN_CACHE_KEY);
+        if (cache == null) {
+            synchronized (PATTERN_CACHE_LOCK) {
+                cache = (ConcurrentMap<String, Pattern>) sc.getAttribute(PATTERN_CACHE_KEY);
+                if (cache == null) {
+                    cache = new ConcurrentHashMap<>();
+                    sc.setAttribute(PATTERN_CACHE_KEY, cache);
+                }
+            }
         }
-
-        return result;
+        return cache;
     }
 
     private static Collection<String> getFacesServletMappings(ServletContext servletContext) {
@@ -1011,43 +1024,126 @@ public class Util {
         return result;
     }
 
+    // Split -------------------------------------------------------------------------------------
+
+    /** Regex metacharacters that, taken as a single char, require the full regex engine. */
+    private static final String REGEX_METACHARS = ".$|()[{^?*+\\";
+
+    /**
+     * Returns {@code true} when {@code regex} is not really a regex but a plain
+     * literal that {@link String#split(String, int)} can match with its internal
+     * character-scan fast-path (no Pattern compilation).
+     * <p>
+     * Mirrors the check in java.lang.String (JDK 7+) and is kept intentionally
+     * conservative: it must NEVER report more cases than the JDK actually
+     * fast-paths, otherwise delegating to String.split would recompile a Pattern
+     * on every call. Assumes regex != null (guaranteed by the caller).
+     */
+    private static boolean isNotSplitRegex(String regex) {
+        final char ch;
+
+        if (regex.length() == 1) {
+            // Case 1: a single character. It is a plain literal only if it is
+            // NOT one of the regex metacharacters.
+            ch = regex.charAt(0);
+            if (REGEX_METACHARS.indexOf(ch) != -1) return false;   // real metachar -> needs the regex
+
+        } else if (regex.length() == 2 && regex.charAt(0) == '\\') {
+            // Case 2: a backslash followed by one character. This is an escaped
+            // literal (e.g. "\.", "\|", "\$") ONLY when the second char is neither
+            // a digit nor a letter. "\d", "\w", "\s", "\1"... are regex constructs,
+            // not literals, so they must go through the engine.
+            ch = regex.charAt(1);
+            if ((ch >= '0' && ch <= '9') ||
+                    (ch >= 'a' && ch <= 'z') ||
+                    (ch >= 'A' && ch <= 'Z')) return false;            // escape sequence -> needs the regex
+
+        } else {
+            // Empty, longer, or any other shape: treat as a real regex.
+            return false;
+        }
+
+        // Final guard: the literal char must be a normal BMP code point, not a lone
+        // surrogate code unit. The constant names are counter-intuitive: a HIGH
+        // surrogate has a LOWER code point (0xD800) than a LOW surrogate (0xDFFF),
+        // so the surrogate block is exactly [MIN_HIGH_SURROGATE, MAX_LOW_SURROGATE].
+        // Hence "< MIN_HIGH_SURROGATE || > MAX_LOW_SURROGATE" reads as "outside the
+        // surrogate range" -> a safe, splittable literal.
+        return ch < Character.MIN_HIGH_SURROGATE || ch > Character.MAX_LOW_SURROGATE;
+    }
+
+    private static ConcurrentMap<String,Pattern> getPatternCache(FacesContext context) {
+        ServletContext sc = (ServletContext) context.getExternalContext().getContext();
+        return getPatternCache(sc);
+    }
+
     /**
      * <p>
      * A slightly more efficient version of <code>String.split()</code> which caches the <code>Pattern</code>s in an LRUMap
      * instead of creating a new <code>Pattern</code> on each invocation.
      * </p>
      *
-     * @param appMap the Application Map
+     * @param context the current FacesContext
      * @param toSplit the string to split
      * @param regex the regex used for splitting
      * @return the result of <code>Pattern.spit(String, int)</code>
      */
-    public static String[] split(Map<String, Object> appMap, String toSplit, String regex) {
-        return split(appMap, toSplit, regex, 0);
+    public static String[] split(FacesContext context, String toSplit, String regex) {
+        return split(context, toSplit, regex, 0);
     }
 
     /**
      * <p>A slightly more efficient version of
      * <code>String.split()</code> which caches
-     * the <code>Pattern</code>s in an LRUMap instead of
+     * the <code>Pattern</code>s in a cache instead of
      * creating a new <code>Pattern</code> on each
      * invocation. Limited by splitLimit.</p>
-     * @param appMap the Application Map
+     *
+     * If the passed regex is not a real regex, rely
+     * on the native {@link String#split(String)} method
+     * which is optimized to split on literal since Java 7
+     * @param context the current FacesContext
      * @param toSplit the string to split
      * @param regex the regex used for splitting
      * @param splitLimit split result threshold
      * @return the result of <code>Pattern.spit(String, int)</code>
      */
+    public static String[] split(FacesContext context, String toSplit, String regex, int splitLimit) {
+        // if is not a real Regex -> use optimized Java 7+ String.split
+        if (isNotSplitRegex(regex)) {
+            return toSplit.split(regex, splitLimit);
+        }
+
+        return split(getPatternCache(context), toSplit, regex, splitLimit);
+    }
+
+    public static String[] split(Map<String, Object> appMap, String toSplit, String regex) {
+        return split(appMap, toSplit, regex, 0);
+    }
+
     public static String[] split(Map<String, Object> appMap, String toSplit, String regex, int splitLimit) {
-        Map<String, Pattern> patternCache = getPatternCache(appMap);
-        Pattern pattern = patternCache.computeIfAbsent(regex, Pattern::compile);
-        return pattern.split(toSplit, splitLimit);
+        // if is not a real Regex -> use optimized Java 7+ String.split
+        if (isNotSplitRegex(regex)) {
+            return toSplit.split(regex, splitLimit);
+        }
+
+        return split(getPatternCache(appMap), toSplit, regex, splitLimit);
     }
 
     public static String[] split(ServletContext sc, String toSplit, String regex) {
-        Map<String, Pattern> patternCache = getPatternCache(sc);
-        Pattern pattern = patternCache.computeIfAbsent(regex, Pattern::compile);
-        return pattern.split(toSplit, 0);
+        // if is not a real Regex -> use optimized Java 7+ String.split
+        if (isNotSplitRegex(regex)) {
+            return toSplit.split(regex);
+        }
+
+        return split(getPatternCache(sc), toSplit, regex, 0);
+    }
+
+    private static String[] split(ConcurrentMap<String,Pattern> cache, String toSplit, String regex, int limit) {
+        Pattern pattern = cache.get(regex);
+        if (pattern == null) pattern = cache.computeIfAbsent(regex, Pattern::compile);
+
+        return pattern.split(toSplit, limit);
     }
 
     /**
