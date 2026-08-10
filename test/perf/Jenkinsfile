@@ -93,11 +93,6 @@ pipeline {
         // Nothing here is published, so the javadoc and source jars impl/pom.xml attaches are dead
         // weight on a perf bench.
         SKIP_FLAGS   = '-DskipTests -Dmaven.javadoc.skip=true -Dsource.skip=true'
-        // test/pom.xml activates its glassfish profile by default, whose unpack-glassfish execution
-        // runs at pre-integration-test -- a phase `install` passes through. Installing the IT base
-        // needs no server at all, so the whole distribution download is skipped here; the bench
-        // stages provision their own Tomcat through -Ptomcat.
-        NO_GLASSFISH    = "-P '!glassfish'"
         PERF_FLAGS   = "-Dperf=true -Dperf.warmup=${params.PERF_WARMUP} -Dperf.runs=${params.PERF_RUNS}"
     }
 
@@ -178,15 +173,24 @@ pipeline {
                             stage("${line}: build Mojarra") {
                                 // The bench bundles this freshly installed jar into the WAR, so it
                                 // must be installed before either arm runs. `clean` is mandatory: a
-                                // packaged artifact is never built incrementally.
+                                // packaged artifact is never built incrementally. test/pom.xml
+                                // activates its glassfish profile by default, whose unpack-glassfish
+                                // execution runs at pre-integration-test -- a phase `install` passes
+                                // through -- so it is deactivated here: installing the IT base needs
+                                // no server, and the bench stages provision Tomcat themselves.
                                 if (cfg.apiSubmodule) {
                                     // -am walks test/pom.xml's own reactor down to the TCK util
                                     // module the IT base extends, so `base` alone selects both.
                                     sh "mvn ${env.MVN_EXTRA} -Papi -pl faces/api,impl -am clean install ${env.SKIP_FLAGS}"
-                                    sh "mvn ${env.MVN_EXTRA} ${env.NO_GLASSFISH} -f test/pom.xml -pl base -am clean install ${env.SKIP_FLAGS}"
+                                    // The bench modules resolve the TCK util jar from the local
+                                    // repository rather than from a reactor, so util's parent pom
+                                    // has to be installed as well: building util alongside it only
+                                    // reads that parent off disk.
+                                    sh "mvn ${env.MVN_EXTRA} -N -f faces/tck/pom.xml clean install ${env.SKIP_FLAGS}"
+                                    sh "mvn ${env.MVN_EXTRA} -P '!glassfish' -f test/pom.xml -pl base -am clean install ${env.SKIP_FLAGS}"
                                 }
                                 else {
-                                    sh "mvn ${env.MVN_EXTRA} ${env.NO_GLASSFISH} -pl impl,test/base -am clean install ${env.SKIP_FLAGS}"
+                                    sh "mvn ${env.MVN_EXTRA} -P '!glassfish' -pl impl,test/base -am clean install ${env.SKIP_FLAGS}"
                                 }
                                 // Both arms stash their dump here, outside the target/ that the next
                                 // arm's `clean` wipes.
