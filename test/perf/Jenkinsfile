@@ -8,12 +8,34 @@
 // with no CPU-governor control, so absolute numbers drift between nights and comparing an arm
 // against a dump from an earlier build measures the host, not the code.
 //
+// RELEASE_LINE picks what gets benched: the job checks out that line's branch and pairs the
+// Mojarra snapshot built from it against the newest MyFaces snapshot of the same line. Both lines
+// run nightly, an hour apart. This is a plain Pipeline job whose script comes from one branch, so
+// the checkout is explicit rather than the implicit `checkout scm` -- which branch holds the script
+// must not decide which line gets benched.
+//
 // The build fails when a phase's suite total is slower than MyFaces. Only suite totals gate --
 // per-scenario cells are far noisier, and a single scenario being slower is a lead to chase, not a
 // broken build. FAIL_OVER widens the tolerance if a phase near parity starts flapping.
 //
 // Tomcat is the only server: it needs no application-server provisioning, which keeps a run
 // within a sane wall-clock and keeps the measured stack down to Faces + Weld + the container.
+
+// ---- Per-release-line configuration ---------------------------------------
+// Same shape and same keys as BRANCH_CONFIG in the root Jenkinsfile: the map key is the MAJOR.MINOR
+// version family, which deliberately differs from the git branch (the head of development sits on
+// `master`, not on a `5.x` branch). It doubles as the MyFaces version line to resolve.
+//
+// Fields:
+//   implBranch   : mojarra git branch holding the impl source for this line.
+//   apiSubmodule : the line keeps jakarta.faces-api in the `faces` git submodule (5.0+) instead of
+//                  bundling the API into the impl jar (4.x). Drives the Build stage: the api is
+//                  built into the reactor with -Papi, and test/ is reachable only through its own
+//                  pom because the root reactor is impl-only there.
+def LINE_CONFIG = [
+    '4.1': [ implBranch: '4.1',    apiSubmodule: false ],
+    '5.0': [ implBranch: 'master', apiSubmodule: true  ],
+]
 
 pipeline {
 
@@ -23,38 +45,101 @@ pipeline {
     agent any
 
     parameters {
-        string(name: 'MYFACES_VERSION', defaultValue: '4.1.4-SNAPSHOT', description: 'MyFaces version.')
+        choice(name: 'RELEASE_LINE', choices: ['4.1', '5.0'], description: 'Release line to benchmark: the branch that is checked out and built, and the MyFaces snapshot line it is benchmarked against.')
         string(name: 'PERF_WARMUP', defaultValue: '50', description: 'Warmup iterations per scenario.')
         string(name: 'PERF_RUNS', defaultValue: '1000', description: 'Measured iterations per scenario.')
         string(name: 'FAIL_OVER', defaultValue: '0', description: 'Tolerance for the regression gate, in percent: the build fails when the suite total of a phase is slower than MyFaces by more than this. 0 fails on any regression. Raise it if a phase sitting near parity starts flapping on agent noise.')
     }
 
     triggers {
-        cron('H 2 * * *')
+        // Parameterized Scheduler plugin: a plain cron() fires with the default parameters only, so
+        // one line would never be benched. A run takes ~11 minutes, so 4.1's hash-spread window has
+        // to end early enough that it is finished before 02:30; disableConcurrentBuilds() below is
+        // only the backstop for a run that overruns.
+        parameterizedCron('''H(0-15) 2 * * * %RELEASE_LINE=4.1
+30 2 * * * %RELEASE_LINE=5.0''')
     }
 
     options {
-        buildDiscarder(logRotator(numToKeepStr: '60', artifactNumToKeepStr: '60'))
+        // Two lines a night, so twice the builds for the same 60 nights of history.
+        buildDiscarder(logRotator(numToKeepStr: '120', artifactNumToKeepStr: '120'))
         timeout(time: 1, unit: 'HOURS')
         disableConcurrentBuilds()
         timestamps()
     }
 
     environment {
-        // JDK install root layout on Eclipse CI: /opt/tools/java/<distro>/jdk-<N>/latest.
+        // JDK install root layout on Eclipse CI: /opt/tools/java/<distro>/jdk-<N>/latest. Unlike the
+        // root Jenkinsfile this is not per-line: every line compiles to release 17 and a cross-line
+        // number is only readable when both were measured on the same JVM.
         TOOLS_PREFIX = '/opt/tools'
         JAVA_HOME    = "${TOOLS_PREFIX}/java/temurin/jdk-21/latest"
         MVN_HOME     = "${TOOLS_PREFIX}/apache-maven/latest"
         PATH         = "${MVN_HOME}/bin:${JAVA_HOME}/bin:${PATH}"
         MAVEN_OPTS   = '-Xmx2g'
         HELP_PLUGIN  = 'org.apache.maven.plugins:maven-help-plugin:3.5.1'
+        // Public repo, so the URL can be spelled out instead of borrowed from `scm`, which would
+        // need script approval for no gain: no credentials are involved in a read-only clone.
+        REPO_URL     = 'https://github.com/eclipse-ee4j/mojarra.git'
+        MYFACES_METADATA = 'https://repository.apache.org/content/repositories/snapshots/org/apache/myfaces/core/myfaces-impl/maven-metadata.xml'
+        MVN_BASE     = '--batch-mode --no-transfer-progress'
         // -gs merges with the agent's own settings.xml rather than replacing it, so the Apache
-        // snapshot repo can be added for a -SNAPSHOT MYFACES_VERSION without touching test/pom.xml.
-        MVN_EXTRA    = "--batch-mode --no-transfer-progress -gs ${env.WORKSPACE}/apache-snapshots-settings.xml"
+        // snapshot repo can be added for the -SNAPSHOT MyFaces build without touching test/pom.xml.
+        MVN_EXTRA    = "${MVN_BASE} -gs ${env.WORKSPACE}/apache-snapshots-settings.xml"
+        // Nothing here is published, so the javadoc and source jars impl/pom.xml attaches are dead
+        // weight on a perf bench.
+        SKIP_FLAGS   = '-DskipTests -Dmaven.javadoc.skip=true -Dsource.skip=true'
         PERF_FLAGS   = "-Dperf=true -Dperf.warmup=${params.PERF_WARMUP} -Dperf.runs=${params.PERF_RUNS}"
     }
 
     stages {
+
+        stage('Checkout') {
+            steps {
+                script {
+                    def cfg = LINE_CONFIG[params.RELEASE_LINE]
+                    if (cfg == null) error "Unknown RELEASE_LINE: ${params.RELEASE_LINE}. Add it to LINE_CONFIG at the top of this Jenkinsfile."
+
+                    // The submodule holds jakarta.faces-api plus the TCK util the ITs extend, and is
+                    // taken at the recorded SHA: the api this impl commit is meant to build against.
+                    // Cleaning first because the workspace alternates between two lines with
+                    // different module layouts; nested repositories are left alone so the submodule
+                    // clone survives into the next run of that line.
+                    checkout([$class: 'GitSCM',
+                              branches: [[name: "*/${cfg.implBranch}"]],
+                              userRemoteConfigs: [[url: env.REPO_URL]],
+                              extensions: [
+                                  [$class: 'CleanBeforeCheckout'],
+                                  [$class: 'SubmoduleOption',
+                                   disableSubmodules: false,
+                                   recursiveSubmodules: false,
+                                   trackingSubmodules: false]
+                              ]])
+                    currentBuild.displayName = "#${env.BUILD_NUMBER} ${params.RELEASE_LINE}"
+                }
+            }
+        }
+
+        stage('Resolve MyFaces') {
+            steps {
+                script {
+                    // The metadata lists every line's snapshots, hence the filter; sort -V is what
+                    // makes 4.1.10 win over 4.1.9.
+                    def line = params.RELEASE_LINE.replace('.', '\\.')
+                    def version = sh(returnStdout: true, script: "curl -sf ${env.MYFACES_METADATA} | grep -oE '${line}\\.[0-9]+-SNAPSHOT' | sort -Vu | tail -1").trim()
+                    if (!version) {
+                        // Snapshot repo unreachable, or the line has no snapshot deployed yet. The
+                        // version test/pom.xml pins tracks the line per branch anyway, so it is a
+                        // sound second choice -- and reading a property resolves no artifact, so it
+                        // needs none of the snapshot-repo settings written below.
+                        sh "mvn ${env.MVN_BASE} -q -f test/pom.xml ${env.HELP_PLUGIN}:evaluate -Dexpression=myfaces.version -Doutput=${env.WORKSPACE}/myfaces.version"
+                        version = readFile('myfaces.version').trim()
+                    }
+                    env.MYFACES_VERSION = version
+                    echo "Benchmarking the ${params.RELEASE_LINE} line against MyFaces ${version}"
+                }
+            }
+        }
 
         stage('Build Mojarra') {
             steps {
@@ -78,9 +163,17 @@ pipeline {
                 // The bench bundles this freshly installed jar into the WAR, so it must be installed
                 // before either arm runs. `clean` is mandatory: a packaged artifact is never built
                 // incrementally.
-                // Nothing here is published, so the javadoc and source jars impl/pom.xml attaches are
-                // dead weight on a perf bench.
-                sh "mvn ${env.MVN_EXTRA} -pl impl,test/base -am clean install -DskipTests -Dmaven.javadoc.skip=true -Dsource.skip=true"
+                script {
+                    if (LINE_CONFIG[params.RELEASE_LINE].apiSubmodule) {
+                        // -am walks test/pom.xml's own reactor down to the TCK util module the IT
+                        // base extends, so `base` alone selects both.
+                        sh "mvn ${env.MVN_EXTRA} -Papi -pl faces/api,impl -am clean install ${env.SKIP_FLAGS}"
+                        sh "mvn ${env.MVN_EXTRA} -f test/pom.xml -pl base -am clean install ${env.SKIP_FLAGS}"
+                    }
+                    else {
+                        sh "mvn ${env.MVN_EXTRA} -pl impl,test/base -am clean install ${env.SKIP_FLAGS}"
+                    }
+                }
                 // Both arms stash their dump here, outside the target/ that the next arm's `clean` wipes.
                 sh 'mkdir -p target/perf'
             }
@@ -98,7 +191,7 @@ pipeline {
         stage('Bench MyFaces') {
             steps {
                 dir('test/perf') {
-                    sh "mvn ${env.MVN_EXTRA} clean verify ${env.PERF_FLAGS} -Ptomcat-myfaces -Dmyfaces.version=${params.MYFACES_VERSION}"
+                    sh "mvn ${env.MVN_EXTRA} clean verify ${env.PERF_FLAGS} -Ptomcat-myfaces -Dmyfaces.version=${env.MYFACES_VERSION}"
                     sh 'cp target/perf-stats-*.txt ../../target/perf/myfaces.txt'
                 }
             }
@@ -116,12 +209,12 @@ pipeline {
                         python3 test/perf/perfreport.py \\
                             target/perf/mojarra.txt target/perf/myfaces.txt \\
                             --a-label 'Mojarra ${mojarraVersion}' \\
-                            --b-label 'MyFaces ${params.MYFACES_VERSION}' \\
-                            --title 'Perf report #${env.BUILD_NUMBER} — Tomcat' \\
+                            --b-label 'MyFaces ${env.MYFACES_VERSION}' \\
+                            --title 'Perf report #${env.BUILD_NUMBER} — ${params.RELEASE_LINE} on Tomcat' \\
                             --out target/perf/report.md \\
                             --fail-on-regression --fail-over ${params.FAIL_OVER}
                     """
-                    currentBuild.description = "Mojarra ${mojarraVersion} vs MyFaces ${params.MYFACES_VERSION} (warmup=${params.PERF_WARMUP}, runs=${params.PERF_RUNS})"
+                    currentBuild.description = "Mojarra ${mojarraVersion} vs MyFaces ${env.MYFACES_VERSION} (warmup=${params.PERF_WARMUP}, runs=${params.PERF_RUNS})"
                 }
             }
         }
