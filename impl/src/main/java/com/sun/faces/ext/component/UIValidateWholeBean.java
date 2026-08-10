@@ -139,7 +139,7 @@ public class UIValidateWholeBean extends UIInput implements PartialStateHolder {
 
     private static void misplacedComponentCheck(UIComponent parentComponent, String clientId) throws IllegalArgumentException {
         try {
-            reverse(parentComponent.getChildren()).stream().forEach((UIComponent childComponent) -> {
+            for (UIComponent childComponent : reverse(parentComponent.getChildren())) {
                 if (childComponent.isRendered()) {
                     if (childComponent instanceof EditableValueHolder && !(childComponent instanceof UIValidateWholeBean)) {
                         throw new IllegalArgumentException(ERROR_MISPLACED_COMPONENT);
@@ -151,7 +151,7 @@ public class UIValidateWholeBean extends UIInput implements PartialStateHolder {
                         }
                     }
                 }
-            });
+            }
         } catch (BreakException be) {
             // STOP
         }

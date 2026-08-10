@@ -56,6 +56,7 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -737,15 +738,18 @@ public class Util {
         return null;
     }
 
-    public static <T> List<T> reverse(List<T> list) {
-        int length = list.size();
-        List<T> result = new ArrayList<>(length);
-
-        for (int i = length - 1; i >= 0; i--) {
-            result.add(list.get(i));
-        }
-
-        return result;
+    /**
+     * @deprecated use Java 21 List#reversed()
+     * @return a view of the passed {@link List} with all the elements in reverse order
+     */
+    @Deprecated(forRemoval = true, since = "5.0")
+    public static <T> Iterable<T> reverse(final List<T> list) {
+        return () -> new Iterator<T>() {
+            private final ListIterator<T> li = list.listIterator(list.size());
+            @Override public boolean hasNext() { return li.hasPrevious(); }
+            @Override public T next() { return li.previous(); }
+            @Override public void remove() { li.remove(); }
+        };
     }
 
     /**
