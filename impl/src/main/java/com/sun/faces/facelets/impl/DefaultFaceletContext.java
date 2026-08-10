@@ -87,6 +87,12 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
     private final Map<Integer, Integer> prefixes;
     private String prefix;
     private final StringBuilder uniqueIdBuilder = new StringBuilder(30);
+    /**
+     * The {@link IdMapper} in effect for this build, or {@code null} when ids are not aliased. {@link DefaultFacelet}
+     * installs the outermost Facelet's mapper before it constructs the outermost context and removes it only once the
+     * whole build is done, so it does not change while any context in the chain is alive.
+     */
+    private final IdMapper idMapper;
 
     public DefaultFaceletContext(DefaultFaceletContext ctx, DefaultFacelet facelet) {
         this.ctx = ctx.ctx;
@@ -101,6 +107,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
         faceletHierarchy.addAll(ctx.faceletHierarchy);
         faceletHierarchy.add(facelet);
         this.facelet = facelet;
+        idMapper = ctx.idMapper;
         faces.getAttributes().put(FaceletContext.FACELET_CONTEXT_KEY, this);
     }
 
@@ -119,7 +126,13 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
             varMapper = new DefaultVariableMapper();
         }
         fnMapper = ctx.getFunctionMapper();
+        idMapper = IdMapper.getMapper(faces);
         this.faces.getAttributes().put(FaceletContext.FACELET_CONTEXT_KEY, this);
+    }
+
+    @Override
+    public String getAliasedId(String id) {
+        return idMapper != null ? idMapper.getAliasedId(id) : id;
     }
 
     /*

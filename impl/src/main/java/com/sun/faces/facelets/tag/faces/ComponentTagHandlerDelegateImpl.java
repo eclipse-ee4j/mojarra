@@ -34,7 +34,6 @@ import com.sun.faces.component.behavior.AjaxBehaviors;
 import com.sun.faces.component.validator.ComponentValidators;
 import com.sun.faces.context.StateContext;
 import com.sun.faces.facelets.UniqueIdSlot;
-import com.sun.faces.facelets.impl.IdMapper;
 import com.sun.faces.facelets.tag.MetaRulesetImpl;
 import com.sun.faces.facelets.tag.faces.core.FacetHandler;
 import com.sun.faces.util.FacesLogger;
@@ -431,8 +430,7 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
         if (this.id != null && !(this.id.isLiteral() && IterationIdManager.registerLiteralId(ctx, this.id.getValue()))) {
             c.setId(this.id.getValue(ctx));
         } else {
-            IdMapper mapper = IdMapper.getMapper(ctx.getFacesContext());
-            String mid = mapper != null ? mapper.getAliasedId(id) : id;
+            String mid = ComponentSupport.getAliasedId(ctx, id);
             UIComponent ancestorNamingContainer = parent.getNamingContainer();
             if (ancestorNamingContainer instanceof UniqueIdVendor) {
                 c.setId(((UniqueIdVendor) ancestorNamingContainer).createUniqueId(ctx.getFacesContext(), mid));
