@@ -19,6 +19,7 @@ package com.sun.faces.facelets.tag;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.sun.faces.util.Util;
 import com.sun.faces.facelets.tag.faces.PassThroughAttributeLibrary;
 import com.sun.faces.facelets.tag.faces.PassThroughElementLibrary;
 import com.sun.faces.facelets.tag.faces.html.HtmlLibrary;
@@ -144,13 +145,13 @@ class DefaultTagDecorator implements TagDecorator {
         }
 
         private ElementConverter(String faceletsTag, String arbiterAttributeName) {
-            String[] strings = faceletsTag.split(":");
+            String[] strings = Util.split(faceletsTag, ':');
             namespace = Namespace.valueOf(strings[0]);
             localName = strings[1];
             this.arbiterAttributeName = arbiterAttributeName;
 
             if (arbiterAttributeName != null && arbiterAttributeName.indexOf(':') > 0) {
-                strings = arbiterAttributeName.split(":");
+                strings = Util.split(arbiterAttributeName, ':');
                 arbiterAttributeNamespace = Namespace.valueOf(strings[0]).uri;
                 this.arbiterAttributeName = strings[1];
             }

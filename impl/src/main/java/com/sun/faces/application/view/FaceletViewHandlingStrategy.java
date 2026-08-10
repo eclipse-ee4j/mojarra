@@ -1624,7 +1624,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                     if (-1 != j) {
                         String strValue = methodSignature.substring(i + 1, j);
                         if (0 < strValue.length()) {
-                            String[] params = strValue.split(",");
+                            String[] params = Util.split(strValue, ',');
                             expectedParameters = new Class[params.length];
                             boolean exceptionThrown = false;
                             for (i = 0; i < params.length; i++) {

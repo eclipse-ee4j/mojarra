@@ -45,6 +45,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.sun.faces.util.Util;
 import com.sun.faces.RIConstants;
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.WebConfiguration;
@@ -99,7 +100,7 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
     public static boolean uriIsFlowDefinition(URI uri) {
         boolean result = false;
         String path = uri.getPath();
-        String[] segments = path.split("/");
+        String[] segments = Util.split(path, '/');
         if (1 < segments.length) {
             String flowName = segments[segments.length - 2];
             String definingName = segments[segments.length - 1];
@@ -122,7 +123,7 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
         Document newDoc = null;
 
         String path = uri.getPath();
-        String[] segments = path.split("/");
+        String[] segments = Util.split(path, '/');
         if (segments.length < 2) {
             return newDoc;
         }

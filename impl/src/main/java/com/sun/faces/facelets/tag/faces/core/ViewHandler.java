@@ -23,6 +23,7 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.sun.faces.util.Util;
 import com.sun.faces.RIConstants;
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 import com.sun.faces.facelets.tag.faces.ComponentSupport;
@@ -135,7 +136,7 @@ public final class ViewHandler extends TagHandlerImpl {
                 }
                 String contractsValue = contracts.getValue(ctx);
                 if (contractsValue != null) {
-                    List<String> contractList = Arrays.asList(contractsValue.split(","));
+                    List<String> contractList = Arrays.asList(Util.split(contractsValue, ','));
                     ctx.getFacesContext().setResourceLibraryContracts(contractList);
                 }
             }
