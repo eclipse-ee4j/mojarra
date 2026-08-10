@@ -36,6 +36,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
 
+import org.glassfish.mojarra.util.Util;
+
 /**
  * @author Jacob Hookom
  * @author Roland Huss
@@ -157,7 +159,7 @@ public final class Classpath {
         if (!done && prefix.length() > 0) {
             // we add '/' at the end since join adds it as well
             String urlString = url.toExternalForm() + "/";
-            String[] split = prefix.split("/");
+            String[] split = Util.split(prefix, '/');
             prefix = join(split, true);
             String end = join(split, false);
             int p = urlString.lastIndexOf(end);

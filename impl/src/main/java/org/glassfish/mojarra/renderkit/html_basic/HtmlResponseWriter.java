@@ -1265,23 +1265,6 @@ public class HtmlResponseWriter extends ResponseWriter {
     }
 
     /*
-     * lazily-allocated CDATA buffers; only touched on the writingCdata path
-     */
-    private char[] cdataBuffer() {
-        if (cdataBuffer == null) {
-            cdataBuffer = new char[cdataBufferSize];
-        }
-        return cdataBuffer;
-    }
-
-    private char[] cdataTextBuffer() {
-        if (cdataTextBuffer == null) {
-            cdataTextBuffer = new char[cdataTextBufferSize];
-        }
-        return cdataTextBuffer;
-    }
-
-    /*
      * append a character array to the cdatabuffer
      */
     private void appendBuffer(char[] cbuf) throws IOException {
@@ -1304,6 +1287,23 @@ public class HtmlResponseWriter extends ResponseWriter {
         }
         cdataBuffer()[cdataBufferLength] = c;
         cdataBufferLength++;
+    }
+
+    /*
+     * lazily-allocated CDATA buffers; only touched on the writingCdata path
+     */
+    private char[] cdataBuffer() {
+        if (cdataBuffer == null) {
+            cdataBuffer = new char[cdataBufferSize];
+        }
+        return cdataBuffer;
+    }
+
+    private char[] cdataTextBuffer() {
+        if (cdataTextBuffer == null) {
+            cdataTextBuffer = new char[cdataTextBufferSize];
+        }
+        return cdataTextBuffer;
     }
 
     /*

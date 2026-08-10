@@ -232,7 +232,7 @@ public class InjectionProviderFactory {
             String[] serviceEntries = getServiceEntries();
             if (serviceEntries.length > 0) {
                 for (int i = 0; i < serviceEntries.length; i++) {
-                    provider = getProviderFromEntry(context.getExternalContext().getApplicationMap(), serviceEntries[i]);
+                    provider = getProviderFromEntry(serviceEntries[i]);
                     if (provider != null) {
                         break;
                     }
@@ -246,13 +246,13 @@ public class InjectionProviderFactory {
 
     }
 
-    private static String getProviderFromEntry(Map<String, Object> appMap, String entry) {
+    private static String getProviderFromEntry(String entry) {
 
         if (entry == null) {
             return null;
         }
 
-        String[] parts = Util.split(appMap, entry, ":");
+        String[] parts = Util.split(entry, ':');
         if (parts.length != 2) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, "faces.spi.injection.invalid_service_entry", new Object[] { entry });

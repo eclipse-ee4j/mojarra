@@ -39,6 +39,7 @@ import org.glassfish.mojarra.facelets.tag.TagLibraryImpl;
 import org.glassfish.mojarra.facelets.tag.faces.CompositeComponentTagLibrary;
 import org.glassfish.mojarra.facelets.util.ReflectionUtil;
 import org.glassfish.mojarra.util.FacesLogger;
+import org.glassfish.mojarra.util.Util;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -613,7 +614,7 @@ public class FaceletTaglibConfigProcessor extends AbstractConfigProcessor {
                 if (pos == -1) {
                     throw new Exception("Must close parentheses, ')' missing: " + signature);
                 } else {
-                    String[] ps = signature.substring(pos2 + 1, pos).trim().split(",");
+                    String[] ps = Util.split(signature.substring(pos2 + 1, pos).trim(), ',');
                     Class<?>[] pc;
                     if (ps.length == 1 && "".equals(ps[0])) {
                         pc = new Class<?>[0];

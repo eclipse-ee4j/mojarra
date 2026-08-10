@@ -20,7 +20,6 @@ import static java.util.Arrays.stream;
 import static java.util.function.Predicate.not;
 
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.context.FacesContext;
@@ -345,18 +344,23 @@ public interface ContextParam {
      */
     enum Separator {
 
-        COMMA("\\s*,\\s*"),
-        SEMICOLON("\\s*;\\s*"),
+        COMMA(","),
+        SEMICOLON(";"),
         SPACE("\\s+");
 
-        private final Pattern pattern;
+        private final String separator;
 
-        private Separator(String pattern) {
-            this.pattern = Pattern.compile(pattern);
+        private Separator(String separator) {
+            this.separator = separator;
         }
 
+        /**
+         * Splits around the separator, dropping whatever whitespace surrounds each entry, and any entry left empty.
+         * The separator therefore does not have to describe that whitespace itself, which lets the single character
+         * ones stay characters: {@link String#split(String)} splits by index for those, compiling nothing.
+         */
         public String[] split(String value) {
-            return stream(pattern.split(value)).map(String::trim).filter(not(String::isEmpty)).toArray(String[]::new);
+            return stream(value.split(separator)).map(String::trim).filter(not(String::isEmpty)).toArray(String[]::new);
         }
     }
 }

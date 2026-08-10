@@ -37,6 +37,7 @@ import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.facelets.tag.TagHandlerImpl;
 import org.glassfish.mojarra.facelets.tag.faces.ComponentSupport;
 import org.glassfish.mojarra.util.FacesLogger;
+import org.glassfish.mojarra.util.Util;
 
 /**
  * Container for all Jakarta Faces core and custom component actions used on a page.
@@ -135,7 +136,7 @@ public final class ViewHandler extends TagHandlerImpl {
                 }
                 String contractsValue = contracts.getValue(ctx);
                 if (contractsValue != null) {
-                    List<String> contractList = Arrays.asList(contractsValue.split(","));
+                    List<String> contractList = Arrays.asList(Util.split(contractsValue, ','));
                     ctx.getFacesContext().setResourceLibraryContracts(contractList);
                 }
             }

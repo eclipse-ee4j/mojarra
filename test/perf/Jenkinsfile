@@ -210,6 +210,9 @@ pipeline {
                     // help:evaluate resolves a relative one against the -f project's basedir, not the CWD.
                     sh "mvn ${env.MVN_EXTRA} -q -f impl/pom.xml ${env.HELP_PLUGIN}:evaluate -Dexpression=project.version -Doutput=${env.WORKSPACE}/target/perf/mojarra.version"
                     def mojarraVersion = readFile('target/perf/mojarra.version').trim()
+                    // Ahead of the gate below, which fails the build on a regression: what was
+                    // benched has to show up on the build whether or not it passed.
+                    currentBuild.description = "Mojarra ${mojarraVersion} vs MyFaces ${env.MYFACES_VERSION} (warmup=${params.PERF_WARMUP}, runs=${params.PERF_RUNS})"
                     sh """
                         python3 test/perf/perfreport.py \\
                             target/perf/mojarra.txt target/perf/myfaces.txt \\
@@ -219,7 +222,6 @@ pipeline {
                             --out target/perf/report.md \\
                             --fail-on-regression --fail-over ${params.FAIL_OVER}
                     """
-                    currentBuild.description = "Mojarra ${mojarraVersion} vs MyFaces ${env.MYFACES_VERSION} (warmup=${params.PERF_WARMUP}, runs=${params.PERF_RUNS})"
                 }
             }
         }

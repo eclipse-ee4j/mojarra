@@ -18,7 +18,6 @@ package org.glassfish.mojarra.facelets.tag.composite;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
@@ -49,8 +48,7 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget {
         FacesContext ctx = FacesContext.getCurrentInstance();
         if (null != targetsList) {
             String targetsListStr = (String) targetsList.getValue(ctx.getELContext());
-            Map<String, Object> appMap = FacesContext.getCurrentInstance().getExternalContext().getApplicationMap();
-            String[] targetArray = Util.split(appMap, targetsListStr, " ");
+            String[] targetArray = Util.split(targetsListStr, ' ');
             result = new ArrayList<>(targetArray.length);
             for (int i = 0, len = targetArray.length; i < len; i++) {
                 UIComponent comp = topLevelComponent.findComponent(augmentSearchId(ctx, topLevelComponent, targetArray[i]));

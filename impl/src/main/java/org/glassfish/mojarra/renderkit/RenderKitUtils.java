@@ -119,14 +119,14 @@ public class RenderKitUtils {
      * The character that is used to delimit content types in an accept String.
      * </p>
      */
-    private final static String CONTENT_TYPE_DELIMITER = ",";
+    private final static char CONTENT_TYPE_DELIMITER = ',';
 
     /**
      * The character that is used to delimit the type and subtype portions of a content type in an accept String. Example:
      * text/html
      * </p>
      */
-    private final static String CONTENT_TYPE_SUBTYPE_DELIMITER = "/";
+    private final static char CONTENT_TYPE_SUBTYPE_DELIMITER = '/';
 
     /**
      * This represents the base package that can leverage the <code>attributesThatAreSet</code> List for optimized attribute
@@ -891,10 +891,9 @@ public class RenderKitUtils {
         String subtype;
         String level = null;
         String quality = null;
-        Map<String, Object> appMap = FacesContext.getCurrentInstance().getExternalContext().getApplicationMap();
 
         // Parse "types"
-        String[] types = Util.split(appMap, accept, CONTENT_TYPE_DELIMITER);
+        String[] types = Util.split(accept, CONTENT_TYPE_DELIMITER);
         String[][] arrayAccept = new String[types.length][MAX_CONTENT_TYPE_PARTS];
         int index = -1;
         for (int i = 0; i < types.length; i++) {
@@ -904,7 +903,7 @@ public class RenderKitUtils {
             // to add uniqueness to a type/subtype, and/or delimits a qualifier value:
             // Example: text/html;level=1,text/html;level=2; q=.5
             if (token.contains(";")) {
-                String[] typeParts = Util.split(appMap, token, ";");
+                String[] typeParts = Util.split(token, ';');
                 typeSubType = new StringBuilder(typeParts[0].trim());
                 for (int j = 1; j < typeParts.length; j++) {
                     quality = "not set";
@@ -912,14 +911,14 @@ public class RenderKitUtils {
                     // if "level" is present, make sure it gets included in the "type/subtype"
                     if (token.contains("level")) {
                         typeSubType.append(';').append(token);
-                        String[] levelParts = Util.split(appMap, token, "=");
+                        String[] levelParts = Util.split(token, '=');
                         level = levelParts[0].trim();
                         if (level.equalsIgnoreCase("level")) {
                             level = levelParts[1].trim();
                         }
                     } else {
                         quality = token;
-                        String[] qualityParts = Util.split(appMap, quality, "=");
+                        String[] qualityParts = Util.split(quality, '=');
                         quality = qualityParts[0].trim();
                         if (quality.equalsIgnoreCase("q")) {
                             quality = qualityParts[1].trim();
@@ -934,8 +933,9 @@ public class RenderKitUtils {
                 quality = "not set"; // to identifiy that no quality was supplied
             }
             // now split type and subtype
-            if (typeSubType.indexOf(CONTENT_TYPE_SUBTYPE_DELIMITER) >= 0) {
-                String[] typeSubTypeParts = Util.split(appMap, typeSubType.toString(), CONTENT_TYPE_SUBTYPE_DELIMITER);
+            String typeSubTypeString = typeSubType.toString();
+            if (typeSubTypeString.indexOf(CONTENT_TYPE_SUBTYPE_DELIMITER) >= 0) {
+                String[] typeSubTypeParts = Util.split(typeSubTypeString, CONTENT_TYPE_SUBTYPE_DELIMITER);
                 // Apparently there are user-agents that send invalid
                 // Accept headers containing no subtype (i.e. text/).
                 // For those cases, assume "*" for the subtype.

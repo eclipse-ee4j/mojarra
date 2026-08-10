@@ -23,7 +23,6 @@ import org.glassfish.mojarra.config.FacesContextParam;
  */
 public class WebFaceletTaglibResourceProvider extends BaseWebConfigResourceProvider {
 
-    private static final String SEPARATOR = ";";
     private static final String[] EXCLUDES = {};
 
     // ------------------------------ Methods from BaseWebConfigResourceProvider
@@ -38,8 +37,4 @@ public class WebFaceletTaglibResourceProvider extends BaseWebConfigResourceProvi
         return EXCLUDES;
     }
 
-    @Override
-    protected String getSeparatorRegex() {
-        return SEPARATOR;
-    }
 }

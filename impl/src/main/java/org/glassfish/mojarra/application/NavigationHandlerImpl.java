@@ -120,6 +120,8 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
      * Flag indicated the current mode.
      */
     private boolean development;
+    /** Query strings reach here both raw and HTML-escaped, so both forms of the parameter separator are matched. */
+    private static final Pattern QUERY_STRING_SEPARATOR = Pattern.compile("&amp;|&");
     private static final Pattern REDIRECT_EQUALS_TRUE = Pattern.compile("(.*)(faces-redirect=true)(.*)");
     private static final Pattern INCLUDE_VIEW_PARAMS_EQUALS_TRUE = Pattern.compile("(.*)(includeViewParams=true)(.*)");
 
@@ -869,11 +871,9 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
             }
 
             if (queryString != null && queryString.length() > 0) {
-                Map<String, Object> appMap = context.getExternalContext().getApplicationMap();
-
-                String[] queryElements = Util.split(appMap, queryString, "&amp;|&");
+                String[] queryElements = QUERY_STRING_SEPARATOR.split(queryString);
                 for (String queryElement : queryElements) {
-                    String[] elements = Util.split(appMap, queryElement, "=", 2);
+                    String[] elements = Util.split(queryElement, '=', 2);
                     if (elements.length == 2) {
                         String rightHandSide = elements[1];
                         String sanitized = null != rightHandSide && 2 < rightHandSide.length() ? rightHandSide.trim() : "";

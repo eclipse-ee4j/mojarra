@@ -69,6 +69,7 @@ import org.glassfish.mojarra.flow.FlowImpl;
 import org.glassfish.mojarra.flow.ParameterImpl;
 import org.glassfish.mojarra.flow.builder.FlowBuilderImpl;
 import org.glassfish.mojarra.util.FacesLogger;
+import org.glassfish.mojarra.util.Util;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
@@ -99,7 +100,7 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
     public static boolean uriIsFlowDefinition(URI uri) {
         boolean result = false;
         String path = uri.getPath();
-        String[] segments = path.split("/");
+        String[] segments = Util.split(path, '/');
         if (1 < segments.length) {
             String flowName = segments[segments.length - 2];
             String definingName = segments[segments.length - 1];
@@ -122,7 +123,7 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
         Document newDoc = null;
 
         String path = uri.getPath();
-        String[] segments = path.split("/");
+        String[] segments = Util.split(path, '/');
         if (segments.length < 2) {
             return newDoc;
         }

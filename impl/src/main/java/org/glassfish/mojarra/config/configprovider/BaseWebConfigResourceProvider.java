@@ -73,7 +73,6 @@ public abstract class BaseWebConfigResourceProvider implements ConfigurationReso
 
     protected abstract String[] getExcludedResources();
 
-    protected abstract String getSeparatorRegex();
 
     protected URI getContextURLForPath(ServletContext context, String path) {
         try {

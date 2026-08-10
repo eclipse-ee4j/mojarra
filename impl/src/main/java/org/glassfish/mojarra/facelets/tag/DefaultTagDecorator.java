@@ -30,6 +30,7 @@ import jakarta.faces.view.facelets.TagDecorator;
 import org.glassfish.mojarra.facelets.tag.faces.PassThroughAttributeLibrary;
 import org.glassfish.mojarra.facelets.tag.faces.PassThroughElementLibrary;
 import org.glassfish.mojarra.facelets.tag.faces.html.HtmlLibrary;
+import org.glassfish.mojarra.util.Util;
 
 /**
  * A simple tag decorator to enable faces: syntax
@@ -144,13 +145,13 @@ class DefaultTagDecorator implements TagDecorator {
         }
 
         private ElementConverter(String faceletsTag, String arbiterAttributeName) {
-            String[] strings = faceletsTag.split(":");
+            String[] strings = Util.split(faceletsTag, ':');
             namespace = Namespace.valueOf(strings[0]);
             localName = strings[1];
             this.arbiterAttributeName = arbiterAttributeName;
 
             if (arbiterAttributeName != null && arbiterAttributeName.indexOf(':') > 0) {
-                strings = arbiterAttributeName.split(":");
+                strings = Util.split(arbiterAttributeName, ':');
                 arbiterAttributeNamespace = Namespace.valueOf(strings[0]).uri;
                 this.arbiterAttributeName = strings[1];
             }
