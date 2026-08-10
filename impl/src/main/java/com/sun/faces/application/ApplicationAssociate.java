@@ -258,7 +258,7 @@ public class ApplicationAssociate {
             resourceCache = new ResourceCache();
         }
 
-        resourceManager = new ResourceManager(applicationMap, resourceCache);
+        resourceManager = new ResourceManager(resourceCache);
         namedEventManager = new NamedEventManager();
         applicationStateInfo = new ApplicationStateInfo();
 
@@ -331,8 +331,7 @@ public class ApplicationAssociate {
 
         FacesContext ctx = FacesContext.getCurrentInstance();
 
-        Map<String, Object> appMap = ctx.getExternalContext().getApplicationMap();
-        compiler = createCompiler(appMap, webConfig);
+        compiler = createCompiler(webConfig);
         faceletFactory = createFaceletFactory(ctx, compiler, webConfig);
     }
 
@@ -649,10 +648,10 @@ public class ApplicationAssociate {
         return toReturn;
     }
 
-    protected Compiler createCompiler(Map<String, Object> appMap, WebConfiguration webConfig) {
+    protected Compiler createCompiler(WebConfiguration webConfig) {
         Compiler newCompiler = new SAXCompiler();
 
-        loadDecorators(appMap, newCompiler);
+        loadDecorators(newCompiler);
 
         // Skip params?
         newCompiler.setTrimmingComments(webConfig.isOptionEnabled(FaceletsSkipComments));
@@ -662,11 +661,11 @@ public class ApplicationAssociate {
         return newCompiler;
     }
 
-    protected void loadDecorators(Map<String, Object> appMap, Compiler newCompiler) {
+    protected void loadDecorators(Compiler newCompiler) {
         String decoratorsParamValue = webConfig.getOptionValue(FaceletsDecorators);
 
         if (decoratorsParamValue != null) {
-            for (String decorator : split(appMap, decoratorsParamValue.trim(), ";")) {
+            for (String decorator : split(decoratorsParamValue.trim(), ";")) {
                 try {
                     newCompiler
                             .addTagDecorator((TagDecorator) forName(decorator).getDeclaredConstructor().newInstance());

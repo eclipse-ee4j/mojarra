@@ -17,7 +17,6 @@
 package com.sun.faces.config.configprovider;
 
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.JakartaFacesConfigFiles;
-import static com.sun.faces.util.Util.split;
 import static java.util.Arrays.binarySearch;
 import static java.util.logging.Level.WARNING;
 
@@ -25,6 +24,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.regex.Pattern;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -55,7 +55,7 @@ public abstract class BaseWebConfigResourceProvider implements ConfigurationReso
         Set<URI> urls = new LinkedHashSet<>(6);
 
         if (paths != null) {
-            for (String token : split(context, paths.trim(), getSeparatorRegex())) {
+            for (String token : getSeparatorPattern().split(paths.trim())) {
                 String path = token.trim();
                 if (!isExcluded(path) && path.length() != 0) {
                     URI u = getContextURLForPath(context, path);
@@ -80,7 +80,7 @@ public abstract class BaseWebConfigResourceProvider implements ConfigurationReso
 
     protected abstract String[] getExcludedResources();
 
-    protected abstract String getSeparatorRegex();
+    protected abstract Pattern getSeparatorPattern();
 
     protected URI getContextURLForPath(ServletContext context, String path) {
         try {

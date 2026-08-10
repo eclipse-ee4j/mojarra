@@ -19,6 +19,7 @@ package com.sun.faces.config.configprovider;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.JakartaFacesConfigFiles;
 
 import java.net.URI;
+import java.util.regex.Pattern;
 import java.util.Collection;
 
 import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
@@ -38,7 +39,7 @@ public class WebFacesConfigResourceProvider extends BaseWebConfigResourceProvide
     private static final String WEB_INF_RESOURCE = "/WEB-INF/faces-config.xml";
 
     private static final String[] EXCLUDES = { WEB_INF_RESOURCE };
-    private static final String SEPARATORS = ",|;";
+    private static final Pattern SEPARATORS = Pattern.compile(",|;");
 
     // ------------------------------ Methods from ConfigurationResourceProvider
 
@@ -76,7 +77,7 @@ public class WebFacesConfigResourceProvider extends BaseWebConfigResourceProvide
     }
 
     @Override
-    protected String getSeparatorRegex() {
+    protected Pattern getSeparatorPattern() {
         return SEPARATORS;
     }
 }
