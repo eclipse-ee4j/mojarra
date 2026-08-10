@@ -21,7 +21,6 @@ import java.io.Writer;
 
 import com.sun.faces.facelets.UniqueIdSlot;
 import com.sun.faces.facelets.el.ELText;
-import com.sun.faces.facelets.impl.IdMapper;
 import com.sun.faces.facelets.tag.faces.ComponentSupport;
 import com.sun.faces.facelets.util.FastWriter;
 
@@ -107,8 +106,7 @@ final class UIInstructionHandler extends AbstractUIHandler {
                 c = new UIInstructions(txt, applied);
                 // mark it owned by a facelet instance
                 String uid;
-                IdMapper mapper = IdMapper.getMapper(ctx.getFacesContext());
-                String mid = mapper != null ? mapper.getAliasedId(id) : id;
+                String mid = ComponentSupport.getAliasedId(ctx, id);
                 UIComponent ancestorNamingContainer = parent.getNamingContainer();
                 if (null != ancestorNamingContainer && ancestorNamingContainer instanceof UniqueIdVendor) {
                     uid = ((UniqueIdVendor) ancestorNamingContainer).createUniqueId(ctx.getFacesContext(), mid);
