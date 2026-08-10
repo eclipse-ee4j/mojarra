@@ -16,6 +16,7 @@
 
 package com.sun.faces.facelets.util;
 
+import com.sun.faces.util.Util;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.io.File;
@@ -156,7 +157,7 @@ public final class Classpath {
         if (!done && prefix.length() > 0) {
             // we add '/' at the end since join adds it as well
             String urlString = url.toExternalForm() + "/";
-            String[] split = prefix.split("/");
+            String[] split = Util.split(prefix, '/');
             prefix = join(split, true);
             String end = join(split, false);
             int p = urlString.lastIndexOf(end);

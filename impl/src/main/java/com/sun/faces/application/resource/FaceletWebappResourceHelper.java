@@ -56,7 +56,7 @@ public class FaceletWebappResourceHelper extends ResourceHelper {
     public FaceletWebappResourceHelper(WebappResourceHelper webappResourceHelper) {
         this.webappResourceHelper = webappResourceHelper;
         WebConfiguration webConfig = WebConfiguration.getInstance();
-        configuredExtensions = webConfig.getOptionValue(FaceletsSuffix, " ");
+        configuredExtensions = webConfig.getOptionValue(FaceletsSuffix, ' ');
     }
 
     @Override

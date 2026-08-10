@@ -665,7 +665,7 @@ public class ApplicationAssociate {
         String decoratorsParamValue = webConfig.getOptionValue(FaceletsDecorators);
 
         if (decoratorsParamValue != null) {
-            for (String decorator : split(decoratorsParamValue.trim(), ";")) {
+            for (String decorator : split(decoratorsParamValue.trim(), ';')) {
                 try {
                     newCompiler
                             .addTagDecorator((TagDecorator) forName(decorator).getDeclaredConstructor().newInstance());

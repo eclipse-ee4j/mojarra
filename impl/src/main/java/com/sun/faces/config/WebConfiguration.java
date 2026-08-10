@@ -136,9 +136,9 @@ public class WebConfiguration {
 
         // build the cache of list type params
         cachedListParams = new HashMap<>(3);
-        getOptionValue(WebContextInitParameter.ResourceExcludes, " ");
-        getOptionValue(WebContextInitParameter.FaceletsViewMappings, ";");
-        getOptionValue(WebContextInitParameter.FaceletsSuffix, " ");
+        getOptionValue(WebContextInitParameter.ResourceExcludes, ' ');
+        getOptionValue(WebContextInitParameter.FaceletsViewMappings, ';');
+        getOptionValue(WebContextInitParameter.FaceletsSuffix, ' ');
     }
 
     // ---------------------------------------------------------- Public Methods
@@ -277,7 +277,7 @@ public class WebConfiguration {
     }
 
     /**
-     * As {@link #getOptionValue(WebContextInitParameter, String)}, for a parameter whose values are separated by
+     * As {@link #getOptionValue(WebContextInitParameter, char)}, for a parameter whose values are separated by
      * something only a regular expression can describe rather than by one literal delimiter.
      *
      * @param param the parameter to read
@@ -290,7 +290,7 @@ public class WebConfiguration {
                 : stream(sep.split(value)).map(String::trim).filter(not(String::isEmpty)).toArray(String[]::new);
     }
 
-    public String[] getOptionValue(WebContextInitParameter param, String sep) {
+    public String[] getOptionValue(WebContextInitParameter param, char sep) {
         String[] result;
 
         if ((result = cachedListParams.get(param)) == null) {
@@ -358,7 +358,7 @@ public class WebConfiguration {
      * @return the configured Facelets suffixes.
      */
     public List<String> getFaceletsSuffixes() {
-        String[] faceletsSuffix = getOptionValue(FaceletsSuffix, " ");
+        String[] faceletsSuffix = getOptionValue(FaceletsSuffix, ' ');
 
         Set<String> deduplicatedFaceletsSuffixes = new LinkedHashSet<>(asList(faceletsSuffix));
 
@@ -382,7 +382,7 @@ public class WebConfiguration {
         Set<String> faceletResourceSuffixes = new LinkedHashSet<>(getFaceletsSuffixes());
         faceletResourceSuffixes.add(ViewHandler.DEFAULT_FACELETS_SUFFIX);
 
-        for (String viewMapping : getOptionValue(FaceletsViewMappings, ";")) {
+        for (String viewMapping : getOptionValue(FaceletsViewMappings, ';')) {
             if (viewMapping.length() > 1 && viewMapping.charAt(0) == '*') {
                 faceletResourceSuffixes.add(viewMapping.substring(1));
             }

@@ -49,10 +49,10 @@ import com.sun.faces.util.Util;
  * </p>
  */
 class UrlBuilder {
-    public static final String QUERY_STRING_SEPARATOR = "?";
-    public static final String PARAMETER_PAIR_SEPARATOR = "&";
-    public static final String PARAMETER_NAME_VALUE_SEPARATOR = "=";
-    public static final String FRAGMENT_SEPARATOR = "#";
+    public static final char QUERY_STRING_SEPARATOR = '?';
+    public static final char PARAMETER_PAIR_SEPARATOR = '&';
+    public static final char PARAMETER_NAME_VALUE_SEPARATOR = '=';
+    public static final char FRAGMENT_SEPARATOR = '#';
 
     private static final List<String> NULL_LIST = Arrays.asList((String) null);
 
@@ -184,7 +184,7 @@ class UrlBuilder {
         boolean hasQueryString = false;
 
         if (parameters != null) {
-            String nextSeparatorChar;
+            char nextSeparatorChar;
             if (queryString == null) {
                 nextSeparatorChar = QUERY_STRING_SEPARATOR;
             } else {
@@ -307,7 +307,7 @@ class UrlBuilder {
         if (fragment != null) {
             String f = fragment;
             f = f.trim();
-            if (f.startsWith(FRAGMENT_SEPARATOR)) {
+            if (!f.isEmpty() && f.charAt(0) == FRAGMENT_SEPARATOR) {
                 f = f.substring(1);
             }
 
@@ -323,7 +323,7 @@ class UrlBuilder {
         if (queryString != null) {
             String q = queryString;
             q = q.trim();
-            if (q.startsWith(QUERY_STRING_SEPARATOR)) {
+            if (!q.isEmpty() && q.charAt(0) == QUERY_STRING_SEPARATOR) {
                 q = q.substring(1);
             }
 

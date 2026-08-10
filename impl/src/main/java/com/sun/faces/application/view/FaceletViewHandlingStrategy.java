@@ -907,7 +907,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         String viewMappings = webConfig.getOptionValue(FaceletsViewMappings);
         if (viewMappings != null && viewMappings.length() > 0) {
 
-            String[] mappingsArray = split(viewMappings, ";");
+            String[] mappingsArray = split(viewMappings, ';');
 
             List<String> prefixesList = new ArrayList<>(mappingsArray.length);
 
@@ -1357,7 +1357,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             if (targetsExpression != null) {
                 String targets = (String) targetsExpression.getValue(ctx.getELContext());
                 if (targets != null) {
-                    return Util.split(targets, " ");
+                    return Util.split(targets, ' ');
                 }
             }
 
@@ -1624,7 +1624,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                     if (-1 != j) {
                         String strValue = methodSignature.substring(i + 1, j);
                         if (0 < strValue.length()) {
-                            String[] params = strValue.split(",");
+                            String[] params = Util.split(strValue, ',');
                             expectedParameters = new Class[params.length];
                             boolean exceptionThrown = false;
                             for (i = 0; i < params.length; i++) {

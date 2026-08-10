@@ -258,7 +258,7 @@ public class RenderKitImpl extends RenderKit {
     }
 
     private String[] contentTypeSplit(String contentTypeString) {
-        String[] result = Util.split(contentTypeString, ",");
+        String[] result = Util.split(contentTypeString, ',');
         for (int i = 0; i < result.length; i++) {
             int semicolon = result[i].indexOf(";");
             if (-1 != semicolon) {

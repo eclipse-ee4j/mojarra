@@ -638,7 +638,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
      * @return the excluded file extensions, without empty entries, as an empty entry would exclude every resource
      */
     static String[] parseExcludedExtensions(String excludesParam) {
-        return Stream.of(Util.split(excludesParam, " ")).filter(extension -> !extension.isEmpty()).toArray(String[]::new);
+        return Stream.of(Util.split(excludesParam, ' ')).filter(extension -> !extension.isEmpty()).toArray(String[]::new);
     }
 
     private void initMaxAge() {

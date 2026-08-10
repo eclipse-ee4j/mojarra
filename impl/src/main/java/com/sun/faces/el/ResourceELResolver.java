@@ -79,7 +79,7 @@ public class ResourceELResolver extends ELResolver {
                     throw new ELException("Invalid resource format.  Property " + prop + " contains more than one colon (:)");
                 }
 
-                String[] parts = Util.split(prop, ":");
+                String[] parts = Util.split(prop, ':');
 
                 // If the enclosing entity for this expression is itself
                 // a resource, the "this" syntax for the library name must

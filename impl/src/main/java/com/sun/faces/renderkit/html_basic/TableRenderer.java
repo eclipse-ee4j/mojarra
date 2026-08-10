@@ -184,7 +184,7 @@ public class TableRenderer extends BaseTableRenderer {
         List<Integer> result = null;
         String bodyRows = (String) data.getAttributes().get("bodyrows");
         if (bodyRows != null) {
-            String[] rows = Util.split(bodyRows, ",");
+            String[] rows = Util.split(bodyRows, ',');
             if (rows != null) {
                 result = new ArrayList<>(rows.length);
                 for (String curRow : rows) {

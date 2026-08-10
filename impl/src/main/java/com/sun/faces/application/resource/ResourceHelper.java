@@ -514,7 +514,7 @@ public abstract class ResourceHelper {
      */
     private VersionInfo getVersion(String pathElement, boolean isResource) {
 
-        String[] pathElements = Util.split(pathElement, "/");
+        String[] pathElements = Util.split(pathElement, '/');
         String path = pathElements[pathElements.length - 1];
 
         String extension = null;
@@ -736,7 +736,7 @@ public abstract class ResourceHelper {
                     throw new ELException(message);
                 }
 
-                String[] parts = Util.split(expressionBody, ":");
+                String[] parts = Util.split(expressionBody, ':');
                 if (null == parts[0] || null == parts[1]) {
                     String message = MessageUtils.getExceptionMessageString(MessageUtils.INVALID_RESOURCE_FORMAT_NO_LIBRARY_NAME_ERROR, expressionBody);
                     throw new ELException(message);

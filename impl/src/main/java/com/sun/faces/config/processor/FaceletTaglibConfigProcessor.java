@@ -31,6 +31,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.sun.faces.util.Util;
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.ConfigurationException;
 import com.sun.faces.config.manager.documents.DocumentInfo;
@@ -614,7 +615,7 @@ public class FaceletTaglibConfigProcessor extends AbstractConfigProcessor {
                 if (pos == -1) {
                     throw new Exception("Must close parentheses, ')' missing: " + signature);
                 } else {
-                    String[] ps = signature.substring(pos2 + 1, pos).trim().split(",");
+                    String[] ps = Util.split(signature.substring(pos2 + 1, pos).trim(), ',');
                     Class<?>[] pc;
                     if (ps.length == 1 && "".equals(ps[0])) {
                         pc = new Class[0];

@@ -598,7 +598,7 @@ public class ResourceManager {
         WebConfiguration config = WebConfiguration.getInstance();
         String value = config.getOptionValue(WebConfiguration.WebContextInitParameter.CompressableMimeTypes);
         if (value != null && value.length() > 0) {
-            String[] values = Util.split(value, ",");
+            String[] values = Util.split(value, ',');
             if (values != null) {
                 for (String s : values) {
                     String pattern = s.trim();

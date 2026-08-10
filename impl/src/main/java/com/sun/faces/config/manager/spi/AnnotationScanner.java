@@ -117,7 +117,7 @@ public abstract class AnnotationScanner extends AnnotationProvider {
                 continue;
             }
             if (option.startsWith("jar:")) {
-                String[] parts = Util.split(option, ":");
+                String[] parts = Util.split(option, ':');
                 if (parts.length != 3) {
                     if (LOGGER.isLoggable(WARNING)) {
                         LOGGER.log(WARNING, "faces.annotation.scanner.configuration.invalid",
@@ -126,7 +126,7 @@ public abstract class AnnotationScanner extends AnnotationProvider {
                 } else {
                     if (WILDCARD.equals(parts[1]) && !classpathPackages.containsKey(WILDCARD)) {
                         classpathPackages.clear();
-                        classpathPackages.put(WILDCARD, normalizeJarPackages(Util.split(parts[2], ",")));
+                        classpathPackages.put(WILDCARD, normalizeJarPackages(Util.split(parts[2], ',')));
                     } else if (WILDCARD.equals(parts[1]) && classpathPackages.containsKey(WILDCARD)) {
                         if (LOGGER.isLoggable(WARNING)) {
                             LOGGER.log(WARNING, "faces.annotation.scanner.configuration.duplicate.wildcard",
@@ -134,7 +134,7 @@ public abstract class AnnotationScanner extends AnnotationProvider {
                         }
                     } else {
                         if (!classpathPackages.containsKey(WILDCARD)) {
-                            classpathPackages.put(parts[1], normalizeJarPackages(Util.split(parts[2], ",")));
+                            classpathPackages.put(parts[1], normalizeJarPackages(Util.split(parts[2], ',')));
                         }
                     }
                 }
