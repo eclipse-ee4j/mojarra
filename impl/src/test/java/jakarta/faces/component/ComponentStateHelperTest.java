@@ -16,9 +16,15 @@
 
 package jakarta.faces.component;
 
+import static java.util.Comparator.comparing;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.faces.component.html.HtmlOutputText;
 import jakarta.faces.component.html.HtmlPanelGroup;
 import jakarta.faces.context.FacesContext;
 
@@ -61,9 +67,60 @@ class ComponentStateHelperTest {
         assertTrackedAttributes(restored, "styleClass");
     }
 
-    @SuppressWarnings("unchecked")
+    /**
+     * Rendering emits the tracked attributes in the order of this list, so restoring full state must record them where
+     * the setters would have. Otherwise the same component renders its attributes in one order when the view builds it
+     * and another when a postback restores it, under {@code partialStateSaving=false}.
+     * <p>
+     * The saved entries are replayed in the iteration order of the state map, so the tracked list may be rebuilt from
+     * the individual properties before the saved copy of the list itself is merged in. This moves that copy last to
+     * exercise that path, which is otherwise reached or not depending on where the key happens to hash.
+     */
+    @Test
+    void restoringFullStateRecordsTheAttributesInTheOrderTheSettersWouldHave() {
+        FacesContext context = mock(FacesContext.class);
+
+        HtmlOutputText built = new HtmlOutputText();
+        built.setTitle("t");
+        built.setDir("ltr");
+        built.setStyle("color:#000");
+        built.setLang("en");
+
+        HtmlOutputText restored = new HtmlOutputText();
+        restored.getStateHelper().restoreState(context, trackedListLast(built.getStateHelper().saveState(context)));
+
+        assertEquals(trackedAttributes(built), trackedAttributes(restored));
+    }
+
+    /**
+     * Returns the saved state with the {@code attributesThatAreSet} entry moved to the end, so restoring replays every
+     * property before it.
+     */
+    private static Object[] trackedListLast(Object state) {
+        Object[] saved = (Object[]) state;
+        List<Object[]> entries = new ArrayList<>();
+
+        for (int i = 0; i < (saved.length - 1) / 2; i++) {
+            entries.add(new Object[] { saved[i * 2], saved[i * 2 + 1] });
+        }
+
+        entries.sort(comparing(entry -> UIComponent.PropertyKeysPrivate.attributesThatAreSet.equals(entry[0])));
+
+        Object[] reordered = new Object[saved.length];
+        for (int i = 0; i < entries.size(); i++) {
+            reordered[i * 2] = entries.get(i)[0];
+            reordered[i * 2 + 1] = entries.get(i)[1];
+        }
+        reordered[saved.length - 1] = saved[saved.length - 1];
+        return reordered;
+    }
+
     private static void assertTrackedAttributes(UIComponent component, String... expected) {
-        org.junit.jupiter.api.Assertions.assertEquals(java.util.List.of(expected),
-                component.getAttributes().get(UIComponentBase.ATTRIBUTES_THAT_ARE_SET));
+        assertEquals(List.of(expected), trackedAttributes(component));
+    }
+
+    @SuppressWarnings("unchecked")
+    private static List<String> trackedAttributes(UIComponent component) {
+        return (List<String>) component.getAttributes().get(UIComponentBase.ATTRIBUTES_THAT_ARE_SET);
     }
 }
