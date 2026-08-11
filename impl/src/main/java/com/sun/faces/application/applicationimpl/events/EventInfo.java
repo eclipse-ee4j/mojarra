@@ -77,7 +77,9 @@ public class EventInfo {
     // ----------------------------------------------------- Private Methods
 
     private Constructor<?> getCachedConstructor(Class<?> source) {
-        if (eventConstructor != null) return eventConstructor;
+        if (eventConstructor != null) {
+            return eventConstructor;
+        }
         return constructorCache.get(source);
     }
 
