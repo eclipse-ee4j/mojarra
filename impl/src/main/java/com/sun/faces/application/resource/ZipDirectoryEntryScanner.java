@@ -19,7 +19,6 @@ package com.sun.faces.application.resource;
 import static java.util.logging.Level.SEVERE;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
@@ -58,7 +57,9 @@ class ZipDirectoryEntryScanner {
                                 int i = entryName.lastIndexOf('/');
                                 if (-1 != i) {
                                     entryName = entryName.substring(0, i);
-                                    resourceLibraries.add(entryName);
+                                    if (isLibraryKey(entryName)) {
+                                        resourceLibraries.add(entryName);
+                                    }
                                 }
                             }
                         }
@@ -70,16 +71,14 @@ class ZipDirectoryEntryScanner {
                 }
             }
         }
+    }
 
-        // remove the optional local prefix entries
-        Iterator<String> iter = resourceLibraries.iterator();
-        String cur;
-        while (iter.hasNext()) {
-            cur = iter.next();
-            if (cur.contains("/")) {
-                iter.remove();
-            }
-        }
+    /**
+     * A key as built by {@link #libraryExists(String, String)} is either {@code libraryName} or
+     * {@code localePrefix + "/" + libraryName}. Anything deeper is a directory within a library, not a library.
+     */
+    private static boolean isLibraryKey(String entryName) {
+        return entryName.indexOf('/') == entryName.lastIndexOf('/');
     }
 
     boolean libraryExists(String libraryName, String localePrefix) {
