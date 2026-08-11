@@ -16,6 +16,8 @@
 
 package com.sun.faces.application.resource;
 
+import java.util.Objects;
+
 /**
  * Metadata pertaining to versions.
  */
@@ -44,53 +46,31 @@ public class VersionInfo implements Comparable<VersionInfo> {
      * @return the version
      */
     public String getVersion() {
-
         return version;
-
     }
 
     /**
      * @return the extension of the resource at processing time, or null if this version is associated with a library
      */
     public String getExtension() {
-
         return extension;
-
     }
 
     @Override
     public String toString() {
-
         return version;
-
     }
 
     @Override
     public int hashCode() {
-
-        return version.hashCode() ^ (extension != null ? extension.hashCode() : 0);
-
+        return 31 * version.hashCode() + Objects.hashCode(extension);
     }
 
     @Override
     public boolean equals(Object obj) {
-
-        if (!(obj instanceof VersionInfo)) {
-            return false;
-        }
-        if (this == obj) {
-            return true;
-        }
-        VersionInfo passed = (VersionInfo) obj;
-        boolean versionsEqual = version.equals(passed.version);
-        boolean extensionEqual;
-        if (extension == null) {
-            extensionEqual = passed.extension == null;
-        } else {
-            extensionEqual = extension.equals(passed.extension);
-        }
-        return versionsEqual && extensionEqual;
-
+        return obj instanceof VersionInfo info
+            && version.equals(info.version)
+            && Objects.equals(extension, info.extension);
     }
 
     // ------------------------------------------------- Methods from Comparable
