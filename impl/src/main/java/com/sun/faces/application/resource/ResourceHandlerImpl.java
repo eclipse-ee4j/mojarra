@@ -89,13 +89,14 @@ public class ResourceHandlerImpl extends ResourceHandler {
      */
     public static final String DEFAULT_CSP_POLICY = "script-src 'self' 'nonce-#{nonce}' 'strict-dynamic'";
 
-    ResourceManager manager;
+    private final ResourceManager manager;
     private String[] excludedExtensions;
     private long creationTime;
     private long maxAge;
-    private boolean cspEnabled;
+    private final boolean cspEnabled;
     private SecureRandom secureRandom;
-    private WebConfiguration webconfig;
+    private final WebConfiguration webconfig;
+    private final int bufferSize;
 
     // ------------------------------------------------------------ Constructors
 
@@ -103,12 +104,13 @@ public class ResourceHandlerImpl extends ResourceHandler {
      * Creates a new instance of ResourceHandlerImpl
      */
     public ResourceHandlerImpl() {
-        creationTime = System.currentTimeMillis();
-        webconfig = WebConfiguration.getInstance();
         ExternalContext extContext = FacesContext.getCurrentInstance().getExternalContext();
+        creationTime = System.currentTimeMillis();
+        webconfig = WebConfiguration.getInstance(extContext);
         manager = ApplicationAssociate.getInstance(extContext).getResourceManager();
         initExclusions();
         initMaxAge();
+        bufferSize = initBufferSize();
         cspEnabled = webconfig.isOptionEnabled(WebConfiguration.BooleanWebContextInitParameter.CspNonceEnabled);
         if (cspEnabled) {
             secureRandom = new SecureRandom();
@@ -328,7 +330,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
             if (resource.userAgentNeedsUpdate(context)) {
                 ReadableByteChannel resourceChannel = null;
                 WritableByteChannel out = null;
-                ByteBuffer buf = allocateByteBuffer();
+                ByteBuffer buf = ByteBuffer.allocate(bufferSize);
                 try {
                     InputStream in = resource.getInputStream();
                     if (in == null) {
@@ -342,7 +344,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
                     if (contentType != null) {
                         extContext.setResponseContentType(resource.getContentType());
                     }
-                    handleHeaders(context, resource);
+                    handleHeaders(extContext, resource);
 
                     int size = 0;
                     for (int thisRead = resourceChannel.read(buf), totalWritten = 0; thisRead != -1; thisRead = resourceChannel.read(buf)) {
@@ -602,7 +604,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
         if (getFacesMapping(context).getMappingMatch() == EXTENSION) {
             String path = context.getExternalContext().getRequestServletPath();
             // strip off the extension
-            return path.substring(0, path.lastIndexOf("."));
+            return path.substring(0, path.lastIndexOf('.'));
         }
 
         return context.getExternalContext().getRequestPathInfo();
@@ -645,26 +647,23 @@ public class ResourceHandlerImpl extends ResourceHandler {
         maxAge = Long.parseLong(webconfig.getOptionValue(DefaultResourceMaxAge));
     }
 
-    private void handleHeaders(FacesContext ctx, Resource resource) {
-        ExternalContext extContext = ctx.getExternalContext();
-        for (Map.Entry<String, String> cur : resource.getResponseHeaders().entrySet()) {
-            extContext.setResponseHeader(cur.getKey(), cur.getValue());
+    private int initBufferSize() {
+        String size = webconfig.getOptionValue(ResourceBufferSize);
+        try {
+            return Integer.parseInt(size);
+        } catch (NumberFormatException nfe) {
+            if (LOGGER.isLoggable(WARNING)) {
+                LOGGER.log(WARNING, "faces.application.resource.invalid_resource_buffer_size",
+                        new Object[] { size, ResourceBufferSize.getQualifiedName(), ResourceBufferSize.getDefaultValue() });
+            }
+            return Integer.parseInt(ResourceBufferSize.getDefaultValue());
         }
     }
 
-    private ByteBuffer allocateByteBuffer() {
-        int size;
-        try {
-            size = Integer.parseInt(webconfig.getOptionValue(ResourceBufferSize));
-        } catch (NumberFormatException nfe) {
-            if (LOGGER.isLoggable(WARNING)) {
-                LOGGER.log(WARNING, "faces.application.resource.invalid_resource_buffer_size", new Object[] { webconfig.getOptionValue(ResourceBufferSize),
-                        ResourceBufferSize.getQualifiedName(), ResourceBufferSize.getDefaultValue() });
-            }
-            size = Integer.parseInt(ResourceBufferSize.getDefaultValue());
+    private void handleHeaders(ExternalContext extContext, Resource resource) {
+        for (Map.Entry<String, String> cur : resource.getResponseHeaders().entrySet()) {
+            extContext.setResponseHeader(cur.getKey(), cur.getValue());
         }
-
-        return ByteBuffer.allocate(size);
     }
 
 }
