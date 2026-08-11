@@ -142,7 +142,7 @@ public final class LoadBundleHandler extends TagHandlerImpl {
 
         @Override
         public boolean isEmpty() {
-            return false;
+            return !bundle.getKeys().hasMoreElements();
         }
 
         @Override
