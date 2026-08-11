@@ -16,6 +16,8 @@
 
 package com.sun.faces.application.resource;
 
+import java.util.Objects;
+
 public class ResourceInfo {
 
     ResourceHelper helper;
@@ -29,14 +31,13 @@ public class ResourceInfo {
     boolean doNotCache = false;
 
     public ResourceInfo(LibraryInfo library, ContractInfo contract, String name, VersionInfo version) {
-        this.contract = contract;
         this.library = library;
-        helper = library.getHelper();
-        localePrefix = library.getLocalePrefix();
+        this.contract = contract;
         this.name = name;
         this.version = version;
-        libraryName = library.getName();
-
+        this.helper = library.getHelper();
+        this.localePrefix = library.getLocalePrefix();
+        this.libraryName = library.getName();
     }
 
     public ResourceInfo(ContractInfo contract, String name, VersionInfo version, ResourceHelper helper) {
@@ -70,38 +71,19 @@ public class ResourceInfo {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
+        if ( this == obj ) {
+            return true;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final ResourceInfo other = (ResourceInfo) obj;
-        if (helper != other.helper && (helper == null || !helper.equals(other.helper))) {
-            return false;
-        }
-        if (library != other.library && (library == null || !library.equals(other.library))) {
-            return false;
-        }
-        if (libraryName == null ? other.libraryName != null : !libraryName.equals(other.libraryName)) {
-            return false;
-        }
-        if (localePrefix == null ? other.localePrefix != null : !localePrefix.equals(other.localePrefix)) {
-            return false;
-        }
-        if (name == null ? other.name != null : !name.equals(other.name)) {
-            return false;
-        }
-        if (path == null ? other.path != null : !path.equals(other.path)) {
-            return false;
-        }
-        if (version != other.version && (version == null || !version.equals(other.version))) {
-            return false;
-        }
-        if (doNotCache != other.doNotCache) {
-            return false;
-        }
-        return true;
+
+        return obj instanceof ResourceInfo info
+            && Objects.equals(helper, info.helper)
+            && Objects.equals(library, info.library)
+            && Objects.equals(libraryName, info.libraryName)
+            && Objects.equals(localePrefix, info.localePrefix)
+            && Objects.equals(name, info.name)
+            && Objects.equals(path, info.path)
+            && Objects.equals(version, info.version)
+            && doNotCache == info.doNotCache;
     }
 
     @Override
