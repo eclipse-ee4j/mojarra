@@ -18,6 +18,7 @@ package com.sun.faces.cdi;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.annotation.Annotation;
@@ -29,8 +30,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.behavior.Behavior;
 import jakarta.faces.component.behavior.BehaviorBase;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.Facelet;
 
 import com.sun.faces.mock.MockBeanManager;
 
@@ -154,6 +158,81 @@ public class CdiLookupCountTest {
         CdiUtils.createConverter(bm, "jakarta.faces.Integer"); // by-id                            = 2
 
         assertEquals(6, bm.getBeansByType.get(), "Total getBeans calls for one Integer input component");
+    }
+
+    @Test
+    public void getViewFacelet_unknown_performsOneLookup() {
+        CountingBeanManager bm = new CountingBeanManager();
+
+        assertNull(CdiUtils.getViewFacelet(bm, "/index.xhtml"));
+
+        assertEquals(1, bm.getBeansByType.get(), "getBeans(Type, qualifiers) calls per getViewFacelet");
+        assertEquals(1, bm.resolves.get(), "resolve(Set) calls per getViewFacelet");
+    }
+
+    @Test
+    public void getViewFacelet_repeatedCalls_areCached() {
+        CountingBeanManager bm = new CountingBeanManager();
+
+        for (int i = 0; i < 10; i++) {
+            CdiUtils.getViewFacelet(bm, "/index.xhtml");
+        }
+
+        // Every request looks up the facelet for the view it renders -- twice on a postback, once for the
+        // metadata facelet and once for the build. Only the first call may walk the BeanManager.
+        assertEquals(1, bm.getBeansByType.get(), "Only first getViewFacelet call hits BeanManager");
+    }
+
+    /**
+     * A {@link jakarta.faces.annotation.View} facelet may be request scoped, so caching the resolution must
+     * not cache the instance: the reference is obtained per call and its scope decides what that yields.
+     */
+    @Test
+    public void getViewFacelet_matchingBean_resolutionCachedButReferenceCalledEveryTime() {
+        final Facelet dummyFacelet = new Facelet() {
+            @Override
+            public void apply(FacesContext facesContext, UIComponent parent) { }
+        };
+        final Bean<Facelet> matchingBean = new StubBean<>(dummyFacelet);
+        CountingBeanManager bm = new CountingBeanManager() {
+            @Override
+            @SuppressWarnings({ "unchecked", "rawtypes" })
+            public Set<Bean<?>> getBeans(Type beanType, Annotation... qualifiers) {
+                getBeansByType.incrementAndGet();
+                return (Set) Collections.singleton(matchingBean);
+            }
+
+            @Override
+            @SuppressWarnings("unchecked")
+            public <X> Bean<? extends X> resolve(Set<Bean<? extends X>> beans) {
+                resolves.incrementAndGet();
+                return (Bean<? extends X>) matchingBean;
+            }
+
+            @Override
+            public Object getReference(Bean<?> bean, Type beanType, CreationalContext<?> ctx) {
+                references.incrementAndGet();
+                return dummyFacelet;
+            }
+        };
+
+        for (int i = 0; i < 10; i++) {
+            assertSame(dummyFacelet, CdiUtils.getViewFacelet(bm, "/index.xhtml"));
+        }
+
+        assertEquals(1, bm.getBeansByType.get(), "Resolution cached after first hit");
+        assertEquals(10, bm.references.get(), "getReference invoked per call to preserve scope semantics");
+    }
+
+    @Test
+    public void getViewFacelet_distinctViewIds_resolveIndependently() {
+        CountingBeanManager bm = new CountingBeanManager();
+
+        CdiUtils.getViewFacelet(bm, "/index.xhtml");
+        CdiUtils.getViewFacelet(bm, "/other.xhtml");
+        CdiUtils.getViewFacelet(bm, "/index.xhtml");
+
+        assertEquals(2, bm.getBeansByType.get(), "Each view id resolves once; a view id is never conflated with another");
     }
 
     @Test

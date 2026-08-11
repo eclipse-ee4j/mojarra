@@ -2169,10 +2169,10 @@ public abstract class UIComponentBase extends UIComponent {
             }
 
             if (component.getFacetCount() > 0) {
-                // Facets are few and rarely relocated; a small defensive copy keeps the iteration trivially safe.
-                Collection<UIComponent> clist = new ArrayList<>(component.getFacets().values());
-                for (UIComponent c : clist) {
-                    publishAfterViewEvents(context, application, c);
+                // The facets map's values iterator walks a snapshot of the map, so a listener relocating a facet
+                // mid-walk cannot disturb this iteration and it needs no defensive copy of its own.
+                for (UIComponent facet : component.getFacets().values()) {
+                    publishAfterViewEvents(context, application, facet);
                 }
             }
         } finally {

@@ -38,6 +38,13 @@ final class CurrentThreadToServletContext {
     // by the fix for 20458755
     private final ServletContextFacesContextFactory servletContextFacesContextFactory = new ServletContextFacesContextFactory();
 
+    /**
+     * Application map key under which a web app's resolved {@link FactoryFinderInstance} is memoized. Every
+     * {@code FactoryFinder.getFactory} call otherwise rebuilds a {@link FactoryFinderCacheKey}, which reads the
+     * marker and the init-time ClassLoader out of that same application map before it can even be hashed.
+     */
+    private static final String FACTORY_FINDER_KEY = FactoryFinder.class.getName() + ".FactoryFinderInstance";
+
     ConcurrentMap<FactoryFinderCacheKey, FactoryFinderInstance> factoryFinderMap = new ConcurrentHashMap<>();
     private final AtomicBoolean logNullFacesContext = new AtomicBoolean();
     private final AtomicBoolean logNonNullFacesContext = new AtomicBoolean();
@@ -55,6 +62,14 @@ final class CurrentThreadToServletContext {
     private FactoryFinderInstance getFactoryFinder(ClassLoader classLoader, boolean create) {
 
         FacesContext facesContext = servletContextFacesContextFactory.getFacesContextWithoutServletContextLookup();
+
+        Map<String, Object> applicationMap = applicationMapOf(facesContext);
+        if (applicationMap != null) {
+            FactoryFinderInstance resolved = (FactoryFinderInstance) applicationMap.get(FACTORY_FINDER_KEY);
+            if (resolved != null) {
+                return resolved;
+            }
+        }
 
         boolean isSpecialInitializationCase = detectSpecialInitializationCase(facesContext);
         FactoryFinderCacheKey key = new FactoryFinderCacheKey(facesContext, classLoader, factoryFinderMap);
@@ -112,9 +127,27 @@ final class CurrentThreadToServletContext {
             }
         }
 
+        if (applicationMap != null && factoryFinder != null) {
+            applicationMap.put(FACTORY_FINDER_KEY, factoryFinder);
+        }
+
         return factoryFinder;
     }
 
+    /**
+     * The application map of the given context, or null when there is none to answer from -- which is the same
+     * condition {@link FactoryFinderCacheKey} treats as "no web app to key on", so a context without one keeps
+     * resolving through the ClassLoader-and-marker key alone.
+     */
+    private static Map<String, Object> applicationMapOf(FacesContext facesContext) {
+        ExternalContext extContext = facesContext != null ? facesContext.getExternalContext() : null;
+
+        if (extContext == null || extContext.getContext() == null) {
+            return null;
+        }
+
+        return extContext.getApplicationMap();
+    }
 
     Object getFallbackFactory(FactoryFinderInstance brokenFactoryManager, String factoryName) {
 
@@ -165,6 +198,11 @@ final class CurrentThreadToServletContext {
 
         FacesContext facesContext = servletContextFacesContextFactory.getFacesContextWithoutServletContextLookup();
         boolean isSpecialInitializationCase = detectSpecialInitializationCase(facesContext);
+
+        Map<String, Object> applicationMap = applicationMapOf(facesContext);
+        if (applicationMap != null) {
+            applicationMap.remove(FACTORY_FINDER_KEY);
+        }
 
         factoryFinderMap.remove(new FactoryFinderCacheKey(facesContext, classLoader, factoryFinderMap));
 
