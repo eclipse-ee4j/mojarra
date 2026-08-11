@@ -16,36 +16,28 @@
 
 package com.sun.faces.application.resource;
 
-public final class ContractInfo {
+import java.io.Serializable;
+import java.util.Objects;
+
+public final class ContractInfo implements Serializable {
 
     private static final long serialVersionUID = 6585532979916457692L;
 
-    String contract;
+    final String contract;
 
     public ContractInfo(String contract) {
         this.contract = contract;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final ContractInfo other = (ContractInfo) obj;
-        if (contract == null ? other.contract != null : !contract.equals(other.contract)) {
-            return false;
-        }
-        return true;
+    public boolean equals(Object object) {
+        return object instanceof ContractInfo info
+            && Objects.equals(contract, info.contract);
     }
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 29 * hash + (contract != null ? contract.hashCode() : 0);
-        return hash;
+        return Objects.hashCode(contract);
     }
 
     @Override
