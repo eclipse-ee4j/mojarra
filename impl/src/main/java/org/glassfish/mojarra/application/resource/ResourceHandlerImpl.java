@@ -72,7 +72,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
     private String[] excludedExtensions;
     private long creationTime;
     private long maxAge;
-    private boolean cspEnabled;
+    private final boolean cspEnabled;
     private SecureRandom secureRandom;
     private final int resourceBufferSize;
 
@@ -314,7 +314,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
                     if (contentType != null) {
                         extContext.setResponseContentType(resource.getContentType());
                     }
-                    handleHeaders(context, resource);
+                    handleHeaders(extContext, resource);
 
                     int size = 0;
                     for (int thisRead = resourceChannel.read(buf), totalWritten = 0; thisRead != -1; thisRead = resourceChannel.read(buf)) {
@@ -544,7 +544,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
         if (getFacesMapping(context).getMappingMatch() == EXTENSION) {
             String path = context.getExternalContext().getRequestServletPath();
             // strip off the extension
-            return path.substring(0, path.lastIndexOf("."));
+            return path.substring(0, path.lastIndexOf('.'));
         }
 
         return context.getExternalContext().getRequestPathInfo();
@@ -582,8 +582,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
         return Stream.of(extensions).filter(extension -> !extension.isEmpty()).toArray(String[]::new);
     }
 
-    private void handleHeaders(FacesContext context, Resource resource) {
-        ExternalContext extContext = context.getExternalContext();
+    private void handleHeaders(ExternalContext extContext, Resource resource) {
         for (Map.Entry<String, String> cur : resource.getResponseHeaders().entrySet()) {
             extContext.setResponseHeader(cur.getKey(), cur.getValue());
         }

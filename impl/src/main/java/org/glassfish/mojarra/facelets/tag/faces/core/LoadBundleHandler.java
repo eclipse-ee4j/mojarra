@@ -17,9 +17,10 @@
 package org.glassfish.mojarra.facelets.tag.faces.core;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
@@ -36,6 +37,7 @@ import jakarta.faces.view.facelets.TagConfig;
 
 import org.glassfish.mojarra.facelets.tag.TagHandlerImpl;
 import org.glassfish.mojarra.facelets.tag.faces.ComponentSupport;
+import org.glassfish.mojarra.util.Util;
 
 /**
  * Load a resource bundle localized for the Locale of the current view, and expose it (as a Map) in the request
@@ -49,139 +51,7 @@ import org.glassfish.mojarra.facelets.tag.faces.ComponentSupport;
  */
 public final class LoadBundleHandler extends TagHandlerImpl {
 
-    private final static class ResourceBundleMap implements Map<String, Object> {
-        private final static class ResourceEntry implements Map.Entry<String, Object> {
-
-            protected final String key;
-
-            protected final String value;
-
-            public ResourceEntry(String key, String value) {
-                this.key = key;
-                this.value = value;
-            }
-
-            @Override
-            public String getKey() {
-                return key;
-            }
-
-            @Override
-            public Object getValue() {
-                return value;
-            }
-
-            @Override
-            public Object setValue(Object value) {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public int hashCode() {
-                return key.hashCode();
-            }
-
-            @Override
-            public boolean equals(Object obj) {
-                return obj instanceof ResourceEntry && hashCode() == obj.hashCode();
-            }
-        }
-
-        protected final ResourceBundle bundle;
-
-        public ResourceBundleMap(ResourceBundle bundle) {
-            this.bundle = bundle;
-        }
-
-        @Override
-        public void clear() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public boolean containsKey(Object key) {
-            try {
-                bundle.getString(key.toString());
-                return true;
-            } catch (MissingResourceException e) {
-                return false;
-            }
-        }
-
-        @Override
-        public boolean containsValue(Object value) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public Set<Map.Entry<String, Object>> entrySet() {
-            Enumeration<String> e = bundle.getKeys();
-            Set<Map.Entry<String, Object>> s = new HashSet<>();
-            String k;
-            while (e.hasMoreElements()) {
-                k = e.nextElement();
-                s.add(new ResourceEntry(k, bundle.getString(k)));
-            }
-            return s;
-        }
-
-        @Override
-        public Object get(Object key) {
-            try {
-                return bundle.getObject((String) key);
-            } catch (java.util.MissingResourceException mre) {
-                return "???" + key + "???";
-            }
-        }
-
-        @Override
-        public boolean isEmpty() {
-            return false;
-        }
-
-        @Override
-        public Set<String> keySet() {
-            Enumeration<String> e = bundle.getKeys();
-            Set<String> s = new HashSet<>();
-            while (e.hasMoreElements()) {
-                s.add(e.nextElement());
-            }
-            return s;
-        }
-
-        @Override
-        public Object put(String key, Object value) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void putAll(Map<? extends String, ?> t) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public Object remove(Object key) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public int size() {
-            return keySet().size();
-        }
-
-        @Override
-        public Collection<Object> values() {
-            Enumeration<String> e = bundle.getKeys();
-            Set<Object> s = new HashSet<>();
-            while (e.hasMoreElements()) {
-                s.add(bundle.getObject(e.nextElement()));
-            }
-            return s;
-        }
-    }
-
     private final TagAttribute basename;
-
     private final TagAttribute var;
 
     /**
@@ -203,21 +73,113 @@ public final class LoadBundleHandler extends TagHandlerImpl {
             // instead of skipped (see refreshTransientBuildOnPSS) to re-resolve the bundle under var.
             markDynamicTransientBuild(ctx);
         }
-        UIViewRoot root = ComponentSupport.getViewRoot(ctx, parent);
-        ResourceBundle bundle = null;
+
+        final UIViewRoot root = ComponentSupport.getViewRoot(ctx, parent);
+
+        final ResourceBundle bundle;
         try {
             String name = basename.getValue(ctx);
             ClassLoader cl = Thread.currentThread().getContextClassLoader();
-            if (root != null && root.getLocale() != null) {
-                bundle = ResourceBundle.getBundle(name, root.getLocale(), cl);
-            } else {
-                bundle = ResourceBundle.getBundle(name, Locale.getDefault(), cl);
-            }
-        } catch (Exception e) {
+            Locale locale = root != null && root.getLocale() != null ? root.getLocale() : Locale.getDefault();
+
+            bundle = ResourceBundle.getBundle(name, locale, cl);
+        }
+        catch (Exception e) {
             throw new TagAttributeException(tag, basename, e);
         }
-        ResourceBundleMap map = new ResourceBundleMap(bundle);
-        FacesContext faces = ctx.getFacesContext();
+
+        final ResourceBundleMap map = new ResourceBundleMap(bundle);
+        final FacesContext faces = ctx.getFacesContext();
+
         faces.getExternalContext().getRequestMap().put(var.getValue(ctx), map);
     }
+
+    // ResourceBundleMap ---------------------------------------------------------------------
+
+    private final static class ResourceBundleMap implements Map<String,Object> {
+
+        private static final String MISSING_RESOURCE_PLACEHOLDER = "???";
+
+        private final ResourceBundle bundle;
+
+        public ResourceBundleMap(ResourceBundle bundle) {
+            this.bundle = bundle;
+        }
+
+        @Override
+        public void clear() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean containsKey(Object key) {
+            return key != null && bundle.containsKey((String)key);
+        }
+
+        @Override
+        public boolean containsValue(Object value) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Set<Map.Entry<String,Object>> entrySet() {
+            Set<String> keys = keySet();
+            Set<Map.Entry<String,Object>> set = new HashSet<>(Util.calculateMapCapacity(keys.size()));
+            for (String key : keys) {
+                set.add(Map.entry(key, bundle.getObject(key)));
+            }
+            return set;
+        }
+
+        @Override
+        public Object get(Object key) {
+            try {
+                return bundle.getObject((String) key);
+            } catch (MissingResourceException mre) {
+                return MISSING_RESOURCE_PLACEHOLDER + key + MISSING_RESOURCE_PLACEHOLDER;
+            }
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return !bundle.getKeys().hasMoreElements();
+        }
+
+        @Override
+        public Set<String> keySet() {
+            return bundle.keySet();
+        }
+
+        @Override
+        public Object put(String key, Object value) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void putAll(Map t) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Object remove(Object key) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public int size() {
+            return keySet().size();
+        }
+
+        @Override
+        public Collection<Object> values() {
+            Set<String> keys = bundle.keySet();
+            List<Object> list = new ArrayList<>(keys.size());
+            for (String key : keys) {
+                list.add(bundle.getObject(key));
+            }
+            return list;
+        }
+
+    }
+
 }

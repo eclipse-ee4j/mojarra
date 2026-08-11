@@ -50,6 +50,7 @@ import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.enterprise.inject.spi.InjectionPoint;
 import jakarta.enterprise.util.TypeLiteral;
+import jakarta.faces.annotation.View;
 import jakarta.faces.component.behavior.Behavior;
 import jakarta.faces.component.behavior.FacesBehavior;
 import jakarta.faces.context.FacesContext;
@@ -59,6 +60,7 @@ import jakarta.faces.model.DataModel;
 import jakarta.faces.model.FacesDataModel;
 import jakarta.faces.validator.FacesValidator;
 import jakarta.faces.validator.Validator;
+import jakarta.faces.view.facelets.Facelet;
 
 import org.glassfish.mojarra.application.ApplicationAssociate;
 import org.glassfish.mojarra.context.FacesContextImpl;
@@ -116,19 +118,22 @@ public final class CdiUtils {
             synchronizedMap(new WeakHashMap<>());
 
     /**
-     * Second-level caches keyed by the artifact's own identity -- the {@code @FacesConverter} value or
-     * {@code forClass}, the {@code @FacesValidator} id, the {@code @FacesBehavior} id -- of the resolved
-     * managed {@link Bean}. {@link #RESOLVED_BEANS} already memoizes the {@code getBeans}/{@code resolve}
-     * discovery, but reaching it still rebuilds the qualifier and the {@link BeanLookupKey} (and, for
-     * by-class converters, walks the superclass chain) on every call -- i.e. per cell during render.
-     * Keying directly by value/class collapses the hot path to a single map lookup; {@code getReference}
-     * stays per-call so scope semantics are preserved. Misses are cached as {@link #NO_BEAN}.
+     * Target-class / id / view-id keyed caches of the resolved managed converter, validator, behavior and
+     * {@link View} facelet {@link Bean}s per {@link BeanManager}. The by-class converter lookup otherwise walks
+     * the superclass chain building a {@link FacesConverter} qualifier + {@link BeanLookupKey} at each level (and
+     * the by-id paths build two to four such keys) on every call -- per cell during render, and per facelet
+     * lookup for the view path. Keying directly on the target {@code Class}, id or view id collapses that to a
+     * single cheap map lookup. The resolved {@link Bean} is stable post-bootstrap;
+     * {@link BeanManager#getReference} stays per-call so scope semantics are preserved. Misses are cached as
+     * {@link #NO_BEAN}. Cleared on shutdown together with {@link #RESOLVED_BEANS} (same stale-Bean concern).
      */
     private static final Map<BeanManager, ConcurrentMap<Object, Bean<?>>> CONVERTER_BEANS_BY_KEY =
             synchronizedMap(new WeakHashMap<>());
     private static final Map<BeanManager, ConcurrentMap<Object, Bean<?>>> VALIDATOR_BEANS_BY_KEY =
             synchronizedMap(new WeakHashMap<>());
     private static final Map<BeanManager, ConcurrentMap<Object, Bean<?>>> BEHAVIOR_BEANS_BY_KEY =
+            synchronizedMap(new WeakHashMap<>());
+    private static final Map<BeanManager, ConcurrentMap<Object, Bean<?>>> VIEW_FACELET_BEANS_BY_KEY =
             synchronizedMap(new WeakHashMap<>());
 
     private static final Bean<?> NO_BEAN = new NoBean();
@@ -149,6 +154,7 @@ public final class CdiUtils {
         CONVERTER_BEANS_BY_KEY.clear();
         VALIDATOR_BEANS_BY_KEY.clear();
         BEHAVIOR_BEANS_BY_KEY.clear();
+        VIEW_FACELET_BEANS_BY_KEY.clear();
     }
 
     /**
@@ -258,6 +264,24 @@ public final class CdiUtils {
         }
 
         return (Behavior) getReferenceInstance(beanManager, bean.getBeanClass(), bean);
+    }
+
+    /**
+     * Obtain the programmatic facelet the application declares for the given view id with {@link View}.
+     *
+     * @param beanManager the bean manager.
+     * @param viewId the view id.
+     * @return the facelet, or null if the application declares none for that view id.
+     */
+    public static Facelet getViewFacelet(BeanManager beanManager, String viewId) {
+        Bean<?> bean = cachedBean(VIEW_FACELET_BEANS_BY_KEY, beanManager, viewId,
+                () -> resolveBean(beanManager, Facelet.class, View.Literal.of(viewId)));
+
+        if (bean == null) {
+            return null;
+        }
+
+        return (Facelet) getReferenceInstance(beanManager, Facelet.class, bean);
     }
 
     /**

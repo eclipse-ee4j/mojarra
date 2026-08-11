@@ -19,7 +19,8 @@ package org.glassfish.mojarra.facelets.impl;
 import static java.util.logging.Level.FINEST;
 import static java.util.regex.Pattern.quote;
 import static org.glassfish.mojarra.RIConstants.CHAR_ENCODING;
-import static org.glassfish.mojarra.cdi.CdiUtils.getBeanReference;
+import static org.glassfish.mojarra.cdi.CdiUtils.getViewFacelet;
+import static org.glassfish.mojarra.util.Util.getCdiBeanManager;
 import static org.glassfish.mojarra.util.Util.isEmpty;
 import static org.glassfish.mojarra.util.Util.notNull;
 import static org.glassfish.mojarra.util.Util.saveDOCTYPEToFacesContextAttributes;
@@ -46,7 +47,6 @@ import java.util.regex.Pattern;
 import jakarta.el.ELException;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
-import jakarta.faces.annotation.View;
 import jakarta.faces.application.Application;
 import jakarta.faces.component.Doctype;
 import jakarta.faces.component.UIComponent;
@@ -133,16 +133,16 @@ public class DefaultFaceletFactory {
     }
 
     public Facelet getMetadataFacelet(FacesContext context, String viewId) throws IOException {
-        Facelet facelet = getBeanReference(context, Facelet.class, View.Literal.of(viewId));
+        Facelet facelet = getViewFacelet(getCdiBeanManager(context), viewId);
         if (facelet == null) {
             facelet = getMetadataFacelet(context, resolveURL(viewId));
         }
 
         return facelet;
     }
-   
+
     public Facelet getFacelet(FacesContext context, String viewId) throws IOException {
-        Facelet facelet = getBeanReference(context, Facelet.class, View.Literal.of(viewId));
+        Facelet facelet = getViewFacelet(getCdiBeanManager(context), viewId);
         if (facelet == null) {
             facelet = getFacelet(context, resolveURL(viewId));
         }
