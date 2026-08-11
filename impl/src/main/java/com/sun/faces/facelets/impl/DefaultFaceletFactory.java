@@ -17,8 +17,9 @@
 package com.sun.faces.facelets.impl;
 
 import static com.sun.faces.RIConstants.CHAR_ENCODING;
-import static com.sun.faces.cdi.CdiUtils.getBeanReference;
+import static com.sun.faces.cdi.CdiUtils.getViewFacelet;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.UseFaceletsID;
+import static com.sun.faces.util.Util.getCdiBeanManager;
 import static com.sun.faces.util.Util.isEmpty;
 import static com.sun.faces.util.Util.notNull;
 import static com.sun.faces.util.Util.saveDOCTYPEToFacesContextAttributes;
@@ -47,7 +48,6 @@ import java.util.regex.Pattern;
 import jakarta.el.ELException;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
-import jakarta.faces.annotation.View;
 import jakarta.faces.application.Application;
 import jakarta.faces.component.Doctype;
 import jakarta.faces.component.UIComponent;
@@ -135,16 +135,16 @@ public class DefaultFaceletFactory {
     }
 
     public Facelet getMetadataFacelet(FacesContext context, String viewId) throws IOException {
-        Facelet facelet = getBeanReference(context, Facelet.class, View.Literal.of(viewId));
+        Facelet facelet = getViewFacelet(getCdiBeanManager(context), viewId);
         if (facelet == null) {
             facelet = getMetadataFacelet(context, resolveURL(viewId));
         }
 
         return facelet;
     }
-   
+
     public Facelet getFacelet(FacesContext context, String viewId) throws IOException {
-        Facelet facelet = getBeanReference(context, Facelet.class, View.Literal.of(viewId));
+        Facelet facelet = getViewFacelet(getCdiBeanManager(context), viewId);
         if (facelet == null) {
             facelet = getFacelet(context, resolveURL(viewId));
         }
