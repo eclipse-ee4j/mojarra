@@ -25,6 +25,7 @@ import static java.util.Arrays.stream;
 import static java.util.Collections.emptyMap;
 import static java.util.function.Predicate.not;
 import static java.util.logging.Level.FINE;
+import static java.util.logging.Level.WARNING;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static java.util.regex.Pattern.compile;
 
@@ -216,8 +217,9 @@ public class WebConfiguration {
      * @return the value of the specified boolean parameter
      */
     public boolean isOptionEnabled(BooleanWebContextInitParameter param) {
-        if (booleanContextParameters.get(param) != null) {
-            return booleanContextParameters.get(param);
+        Boolean enabled = booleanContextParameters.get(param);
+        if (enabled != null) {
+            return enabled;
         }
 
         return param.getDefaultValue();
@@ -291,9 +293,11 @@ public class WebConfiguration {
     }
 
     public String[] getOptionValue(WebContextInitParameter param, char sep) {
-        String[] result;
+        // get from cache
+        String[] result = cachedListParams.get(param);
 
-        if ((result = cachedListParams.get(param)) == null) {
+        // if not found in cache -> evaluate + save in cache
+        if (result == null) {
             String value = getOptionValue(param);
             if (value == null) {
                 result = new String[0];
@@ -304,6 +308,46 @@ public class WebConfiguration {
         }
 
         return result;
+    }
+
+    /**
+     * retrieve the param value defined in the config param
+     * or fallback to the defined default value of the config param
+     */
+    public static int getOptionIntValueOrDefault(WebConfiguration config, WebContextInitParameter param) {
+        return getOptionIntValueOrDefault(config, param, 0);
+    }
+
+    /**
+     * retrieve the param value defined in the config or fallback to the defined default value
+     * or fallback to the hardcoded fallback passed parameter
+     * @param fallback hardcoded fallback value when everything fails
+     */
+    public static int getOptionIntValueOrDefault(WebConfiguration config, WebContextInitParameter param, int fallback) {
+        String valueOrAlternateValue = config.getOptionValue(param);
+        if (valueOrAlternateValue != null) {
+            // --- return the parsed value or warn ---
+            try {
+                return Integer.parseInt(valueOrAlternateValue);
+            }
+            catch (NumberFormatException e) {
+                if (LOGGER.isLoggable(WARNING)) {
+                    LOGGER.log(WARNING, "Cannot parse " + param.getQualifiedName(), e);
+                }
+
+                // --- return the parsed default value or warn ---
+                try {
+                    return Integer.parseInt(param.getDefaultValue());
+                }
+                catch (NumberFormatException nre) {
+                    if (LOGGER.isLoggable(WARNING)) {
+                        LOGGER.log(WARNING, "Cannot parse the default value of " + param.getQualifiedName(), nre);
+                    }
+                }
+            }
+        }
+        // return the passed hardcoded fallback value
+        return fallback;
     }
 
     /**
@@ -392,7 +436,7 @@ public class WebConfiguration {
     }
 
     public void overrideContextInitParameter(WebContextInitParameter param, String value) {
-        if (param == null || value == null || value.length() == 0) {
+        if (param == null || value == null || value.isEmpty()) {
             return;
         }
 
@@ -417,7 +461,9 @@ public class WebConfiguration {
             LifecycleFactory factory = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
             PhaseListener listener = null;
 
-            for (String lifecycleId : toIterable(factory.getLifecycleIds())) {
+            Iterator<String> iterator = factory.getLifecycleIds();
+            while (iterator.hasNext()) {
+                String lifecycleId = iterator.next();
                 Lifecycle lifecycle = factory.getLifecycle(lifecycleId);
                 boolean foundExistingListenerInstance = false;
                 for (PhaseListener curListener : lifecycle.getPhaseListeners()) {
@@ -441,7 +487,7 @@ public class WebConfiguration {
 
     private void discoverResourceLibraryContracts() {
         FacesContext context = FacesContext.getCurrentInstance();
-        ExternalContext extContex = context.getExternalContext();
+        ExternalContext extContext = context.getExternalContext();
         Set<String> foundContracts = new HashSet<>();
         Set<String> candidates;
 
@@ -449,7 +495,7 @@ public class WebConfiguration {
         ApplicationAssociate associate = ApplicationAssociate.getCurrentInstance();
         String contractsDirName = associate.getResourceManager().getBaseContractsPath();
         assert null != contractsDirName;
-        candidates = extContex.getResourcePaths(contractsDirName);
+        candidates = extContext.getResourcePaths(contractsDirName);
         if (null != candidates) {
             int contractsDirNameLen = contractsDirName.length();
             int end;
@@ -523,7 +569,7 @@ public class WebConfiguration {
             contractsToExpose = new ArrayList<>(foundContracts);
             contractMappings.put("*", contractsToExpose);
         }
-        extContex.getApplicationMap().put(FaceletViewHandlingStrategy.RESOURCE_LIBRARY_CONTRACT_DATA_STRUCTURE_KEY, contractMappings);
+        extContext.getApplicationMap().put(FaceletViewHandlingStrategy.RESOURCE_LIBRARY_CONTRACT_DATA_STRUCTURE_KEY, contractMappings);
 
     }
 
@@ -575,7 +621,7 @@ public class WebConfiguration {
             String strValue = servletContext.getInitParameter(param.getQualifiedName());
             boolean value;
 
-            if (strValue != null && strValue.length() > 0 && param.isDeprecated()) {
+            if (strValue != null && !strValue.isEmpty() && param.isDeprecated()) {
                 BooleanWebContextInitParameter alternate = param.getAlternate();
                 if (LOGGER.isLoggable(Level.WARNING)) {
                     if (alternate != null) {
@@ -672,7 +718,7 @@ public class WebConfiguration {
         for (WebContextInitParameter param : WebContextInitParameter.values()) {
             String value = servletContext.getInitParameter(param.getQualifiedName());
 
-            if (value != null && value.length() > 0 && param.isDeprecated()) {
+            if (value != null && !value.isEmpty() && param.isDeprecated()) {
                 WebContextInitParameter alternate = param.getAlternate();
                 DeprecationLoggingStrategy strategy = param.getDeprecationLoggingStrategy();
                 if (strategy == null || strategy.shouldBeLogged(this)) {
@@ -697,14 +743,14 @@ public class WebConfiguration {
                 continue;
             }
 
-            if ((value == null || value.length() == 0) && !param.isDeprecated()) {
+            if ((value == null || value.isEmpty()) && !param.isDeprecated()) {
                 value = param.getDefaultValue();
             }
-            if (value == null || value.length() == 0) {
+            if (value == null || value.isEmpty()) {
                 continue;
             }
 
-            if (value.length() > 0) {
+            if (!value.isEmpty()) {
                 if (LOGGER.isLoggable(loggingLevel)) {
                     LOGGER.log(loggingLevel, "faces.config.webconfig.configinfo", new Object[] { contextName, param.getQualifiedName(), value });
 
@@ -781,15 +827,11 @@ public class WebConfiguration {
         deferredLoggingActions.add(loggingAction);
     }
 
-    public <T> Iterable<T> toIterable(Iterator<T> iterator) {
-        return () -> iterator;
-    }
-
     // ------------------------------------------------------------------- Enums
 
     /**
      * <p>
-     * An <code>enum</code> of all non-boolean context initalization parameters recognized by the implementation.
+     * An <code>enum</code> of all non-boolean context initialization parameters recognized by the implementation.
      * </p>
      */
     public enum WebContextInitParameter {
@@ -892,7 +934,7 @@ public class WebConfiguration {
 
     /**
      * <p>
-     * An <code>enum</code> of all boolean context initalization parameters recognized by the implementation.
+     * An <code>enum</code> of all boolean context initialization parameters recognized by the implementation.
      * </p>
      */
     public enum BooleanWebContextInitParameter {
@@ -1001,7 +1043,7 @@ public class WebConfiguration {
 
     /**
      * <p>
-     * An <code>enum</code> of all environment entries (specified in the web.xml) recognized by the implemenetation.
+     * An <code>enum</code> of all environment entries (specified in the web.xml) recognized by the implementation.
      * </p>
      */
     public enum WebEnvironmentEntry {
@@ -1070,7 +1112,7 @@ public class WebConfiguration {
 
         void log();
 
-    } // END DeferredLogginAction
+    } // END DeferredLoggingAction
 
     private class DeferredParameterLoggingAction implements DeferredLoggingAction {
 
