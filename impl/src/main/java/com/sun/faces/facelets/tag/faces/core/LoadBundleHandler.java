@@ -74,12 +74,13 @@ public final class LoadBundleHandler extends TagHandlerImpl {
             markDynamicTransientBuild(ctx);
         }
 
+        final UIViewRoot root = ComponentSupport.getViewRoot(ctx, parent);
+
         final ResourceBundle bundle;
         try {
-            final String name = basename.getValue(ctx);
-            final ClassLoader cl = Thread.currentThread().getContextClassLoader();
-            final UIViewRoot root = ComponentSupport.getViewRoot(ctx, parent);
-            final Locale locale = root != null && root.getLocale() != null ? root.getLocale() : Locale.getDefault();
+            String name = basename.getValue(ctx);
+            ClassLoader cl = Thread.currentThread().getContextClassLoader();
+            Locale locale = root != null && root.getLocale() != null ? root.getLocale() : Locale.getDefault();
 
             bundle = ResourceBundle.getBundle(name, locale, cl);
         }
@@ -141,7 +142,7 @@ public final class LoadBundleHandler extends TagHandlerImpl {
 
         @Override
         public boolean isEmpty() {
-            return keySet().isEmpty();
+            return false;
         }
 
         @Override
