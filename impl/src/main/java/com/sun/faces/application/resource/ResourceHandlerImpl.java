@@ -89,13 +89,14 @@ public class ResourceHandlerImpl extends ResourceHandler {
      */
     public static final String DEFAULT_CSP_POLICY = "script-src 'self' 'nonce-#{nonce}' 'strict-dynamic'";
 
-    ResourceManager manager;
+    private final ResourceManager manager;
     private String[] excludedExtensions;
     private long creationTime;
     private long maxAge;
-    private boolean cspEnabled;
+    private final boolean cspEnabled;
     private SecureRandom secureRandom;
     private final WebConfiguration webconfig;
+    private final int bufferSize;
 
     // ------------------------------------------------------------ Constructors
 
@@ -103,9 +104,9 @@ public class ResourceHandlerImpl extends ResourceHandler {
      * Creates a new instance of ResourceHandlerImpl
      */
     public ResourceHandlerImpl() {
+        final ExternalContext extContext = FacesContext.getCurrentInstance().getExternalContext();
         creationTime = System.currentTimeMillis();
-        webconfig = WebConfiguration.getInstance();
-        ExternalContext extContext = FacesContext.getCurrentInstance().getExternalContext();
+        webconfig = WebConfiguration.getInstance(extContext);
         manager = ApplicationAssociate.getInstance(extContext).getResourceManager();
         initExclusions();
         initMaxAge();
@@ -114,6 +115,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
             secureRandom = new SecureRandom();
             secureRandom.nextBytes(new byte[1]);
         }
+        bufferSize = WebConfiguration.getOptionIntValueOrDefault(webconfig, ResourceBufferSize);
     }
 
     // ------------------------------------------- Methods from Resource Handler
@@ -328,7 +330,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
             if (resource.userAgentNeedsUpdate(context)) {
                 ReadableByteChannel resourceChannel = null;
                 WritableByteChannel out = null;
-                ByteBuffer buf = allocateByteBuffer();
+                ByteBuffer buf = ByteBuffer.allocate(bufferSize);
                 try {
                     InputStream in = resource.getInputStream();
                     if (in == null) {
@@ -342,7 +344,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
                     if (contentType != null) {
                         extContext.setResponseContentType(resource.getContentType());
                     }
-                    handleHeaders(context, resource);
+                    handleHeaders(extContext, resource);
 
                     int size = 0;
                     for (int thisRead = resourceChannel.read(buf), totalWritten = 0; thisRead != -1; thisRead = resourceChannel.read(buf)) {
@@ -551,14 +553,13 @@ public class ResourceHandlerImpl extends ResourceHandler {
      * Log a message indicating a particular resource (reference by name and/or library) could not be found. If this was due
      * to an exception, the exception provided will be logged as well.
      *
-     * @param ctx the {@link FacesContext} for the current request
-     * @param resourceName the resource name
-     * @param libraryName the resource library
+     * @param context the {@link FacesContext} for the current request
+     * @param resourceId the resource name
      * @param t the exception caught when attempting to find the resource
      */
-    private void logMissingResource(FacesContext ctx, String resourceId, Throwable t) {
+    private void logMissingResource(FacesContext context, String resourceId, Throwable t) {
         Level level;
-        if (!ctx.isProjectStage(Production)) {
+        if (!context.isProjectStage(Production)) {
             level = WARNING;
         } else {
             level = t != null ? WARNING : FINE;
@@ -602,7 +603,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
         if (getFacesMapping(context).getMappingMatch() == EXTENSION) {
             String path = context.getExternalContext().getRequestServletPath();
             // strip off the extension
-            return path.substring(0, path.lastIndexOf("."));
+            return path.substring(0, path.lastIndexOf('.'));
         }
 
         return context.getExternalContext().getRequestPathInfo();
@@ -612,7 +613,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
      * @param excludedExtensions the excluded file extensions as returned by {@link #parseExcludedExtensions(String)}
      * @param resourceId the normalized request path as returned by
      * {@link #normalizeResourceRequest(jakarta.faces.context.FacesContext)}
-     * @return <code>true</code> if the request matces an excluded resource, otherwise <code>false</code>
+     * @return <code>true</code> if the request matches an excluded resource, otherwise <code>false</code>
      */
     static boolean isExcluded(String[] excludedExtensions, String resourceId) {
         for (String excludedExtension : excludedExtensions) {
@@ -633,38 +634,21 @@ public class ResourceHandlerImpl extends ResourceHandler {
     }
 
     /**
-     * @param appMap the application map, used to cache the split pattern
      * @param excludesParam the space separated list of file extensions, including the leading '.' character
      * @return the excluded file extensions, without empty entries, as an empty entry would exclude every resource
      */
     static String[] parseExcludedExtensions(String excludesParam) {
-        return Stream.of(Util.split(excludesParam, ' ')).filter(extension -> !extension.isEmpty()).toArray(String[]::new);
+        return Stream.of(Util.split(excludesParam, ' ')).filter(Util::isNotEmpty).toArray(String[]::new);
     }
 
     private void initMaxAge() {
         maxAge = Long.parseLong(webconfig.getOptionValue(DefaultResourceMaxAge));
     }
 
-    private void handleHeaders(FacesContext ctx, Resource resource) {
-        ExternalContext extContext = ctx.getExternalContext();
+    private void handleHeaders(ExternalContext extContext, Resource resource) {
         for (Map.Entry<String, String> cur : resource.getResponseHeaders().entrySet()) {
             extContext.setResponseHeader(cur.getKey(), cur.getValue());
         }
-    }
-
-    private ByteBuffer allocateByteBuffer() {
-        int size;
-        try {
-            size = Integer.parseInt(webconfig.getOptionValue(ResourceBufferSize));
-        } catch (NumberFormatException nfe) {
-            if (LOGGER.isLoggable(WARNING)) {
-                LOGGER.log(WARNING, "faces.application.resource.invalid_resource_buffer_size", new Object[] { webconfig.getOptionValue(ResourceBufferSize),
-                        ResourceBufferSize.getQualifiedName(), ResourceBufferSize.getDefaultValue() });
-            }
-            size = Integer.parseInt(ResourceBufferSize.getDefaultValue());
-        }
-
-        return ByteBuffer.allocate(size);
     }
 
 }
