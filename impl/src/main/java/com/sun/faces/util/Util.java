@@ -735,6 +735,20 @@ public class Util {
         return false;
     }
 
+    // Collections --------------------------------------------------------------------------------
+
+    /**
+     * Ported from Java 19+
+     *
+     * @param numMappings number of expected elements to be stored in the Map
+     * @return the correct initial capacity for a {@link Map} to contain numMappings elements without rehashing
+     */
+    public static int calculateMapCapacity(int numMappings) {
+        return (int) Math.ceil( numMappings / 0.75 );
+    }
+
+    // Locale --------------------------------------------------------------------------------
+
     /**
      * @param context the <code>FacesContext</code> for the current request
      * @return the Locale from the UIViewRoot, the the value of Locale.getDefault()
