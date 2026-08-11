@@ -547,6 +547,14 @@ public class Util {
     }
 
     /**
+     * Returns true if the given string is not null and not empty.
+     *
+     * @param string The string to be checked on emptiness.
+     * @return True if the given string is not null and not empty.
+     */
+    public static boolean isNotEmpty(String string) { return !isEmpty(string); }
+
+    /**
      * Returns true if the given string is null or is blank.
      *
      * @param string The string to be checked.
