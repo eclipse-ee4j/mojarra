@@ -60,21 +60,10 @@ public class ClasspathResourceHelper extends ResourceHelper {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final ClasspathResourceHelper other = (ClasspathResourceHelper) obj;
-        if (cacheTimestamp != other.cacheTimestamp) {
-            return false;
-        }
-        if (enableMissingResourceLibraryDetection != other.enableMissingResourceLibraryDetection) {
-            return false;
-        }
-        return true;
+    public boolean equals(Object object) {
+        return object instanceof ClasspathResourceHelper resource
+            && cacheTimestamp == resource.cacheTimestamp
+            && enableMissingResourceLibraryDetection == resource.enableMissingResourceLibraryDetection;
     }
 
     @Override
@@ -288,7 +277,7 @@ public class ClasspathResourceHelper extends ResourceHelper {
             }
         } else if (root == null) {
             String contractName = ctx.getExternalContext().getRequestParameterMap().get("con");
-            if (null != contractName && 0 < contractName.length() && !ResourceManager.nameContainsForbiddenSequence(contractName)) {
+            if (null != contractName && !contractName.isEmpty() && !ResourceManager.nameContainsForbiddenSequence(contractName)) {
                 contracts = new ArrayList<>();
                 contracts.add(contractName);
             } else {
