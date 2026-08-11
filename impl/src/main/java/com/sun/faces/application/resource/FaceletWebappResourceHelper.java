@@ -34,6 +34,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import com.sun.faces.RIConstants;
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.util.Util;
@@ -189,10 +190,10 @@ public class FaceletWebappResourceHelper extends ResourceHelper {
 
     private URL findResourceUrlConsideringFlows(String resourceName, boolean[] outDoNotCache) throws IOException {
 
-        URL url = null;
+        final ClassLoader cl = Util.getCurrentLoader(this);
+        final Enumeration<URL> matches = cl.getResources(FLOW_IN_JAR_PREFIX + resourceName);
 
-        ClassLoader cl = Util.getCurrentLoader(this);
-        Enumeration<URL> matches = cl.getResources(FLOW_IN_JAR_PREFIX + resourceName);
+        URL url;
         try {
             url = matches.nextElement();
         } catch (NoSuchElementException nsee) {
@@ -205,7 +206,7 @@ public class FaceletWebappResourceHelper extends ResourceHelper {
             Flow currentFlow = context.getApplication().getFlowHandler().getCurrentFlow(context);
 
             do {
-                if (currentFlow != null && 0 < currentFlow.getDefiningDocumentId().length()) {
+                if (currentFlow != null && !currentFlow.getDefiningDocumentId().isEmpty()) {
                     String definingDocumentId = currentFlow.getDefiningDocumentId();
                     ExternalContext extContext = context.getExternalContext();
                     ApplicationAssociate associate = ApplicationAssociate.getInstance(extContext);
@@ -230,7 +231,7 @@ public class FaceletWebappResourceHelper extends ResourceHelper {
 
     @Override
     public String getBaseResourcePath() {
-        return "";
+        return RIConstants.NO_VALUE;
     }
 
     @Override
