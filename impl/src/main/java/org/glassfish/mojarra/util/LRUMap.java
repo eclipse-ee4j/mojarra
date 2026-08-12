@@ -30,7 +30,8 @@ public class LRUMap<K, V> extends LinkedHashMap<K, V> {
     // ------------------------------------------------------------ Constructors
 
     public LRUMap(int maxCapacity) {
-        super(maxCapacity, 1.0f, true);
+        // The eldest entry is evicted only after the new one is inserted, so the table must hold maxCapacity + 1 entries.
+        super(maxCapacity + 1, 1.0f, true);
         this.maxCapacity = maxCapacity;
     }
 
