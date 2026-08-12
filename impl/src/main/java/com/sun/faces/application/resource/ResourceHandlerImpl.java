@@ -455,9 +455,10 @@ public class ResourceHandlerImpl extends ResourceHandler {
             var nonce = (String) requestMap.get(CURRENT_NONCE);
 
             if (nonce == null) {
-                var viewMap = context.getViewRoot().getViewMap(true);
+                var viewRoot = context.getViewRoot();
+                var viewMap = viewRoot.isTransient() ? null : viewRoot.getViewMap(true);
 
-                if (context.getPartialViewContext().isPartialRequest()) {
+                if (viewMap != null && context.getPartialViewContext().isPartialRequest()) {
                     nonce = (String) viewMap.get(CURRENT_NONCE);
                 }
 
@@ -468,7 +469,10 @@ public class ResourceHandlerImpl extends ResourceHandler {
                 }
 
                 requestMap.put(CURRENT_NONCE, nonce);
-                viewMap.put(CURRENT_NONCE, nonce);
+
+                if (viewMap != null) {
+                    viewMap.put(CURRENT_NONCE, nonce);
+                }
             }
 
             return nonce;
