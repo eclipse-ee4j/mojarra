@@ -16,11 +16,11 @@
 
 package com.sun.faces.application.resource;
 
+import java.util.Objects;
+
 public final class ContractInfo {
 
-    private static final long serialVersionUID = 6585532979916457692L;
-
-    String contract;
+    final String contract;
 
     public ContractInfo(String contract) {
         this.contract = contract;
@@ -28,24 +28,21 @@ public final class ContractInfo {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof ContractInfo)) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final ContractInfo other = (ContractInfo) obj;
-        if (contract == null ? other.contract != null : !contract.equals(other.contract)) {
-            return false;
-        }
-        return true;
+
+        ContractInfo other = (ContractInfo) obj;
+
+        return Objects.equals(contract, other.contract);
     }
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 29 * hash + (contract != null ? contract.hashCode() : 0);
-        return hash;
+        return Objects.hashCode(contract);
     }
 
     @Override

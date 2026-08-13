@@ -416,7 +416,7 @@ public abstract class ResourceHelper {
                     break;
                 }
                 if (value.contains("*") && !value.contains("*;q=0,") && !value.endsWith("*;q=0")) {
-                    // gzip not explictly listed, but client sent *
+                    // gzip not explicitly listed, but client sent *
                     // meaning gzip is implicitly acceptable
                     // keep looping to ensure we don't come across a
                     // *;q=0 value.
@@ -436,7 +436,7 @@ public abstract class ResourceHelper {
 
     /**
      * <p>
-     * Utility method to peform the necessary actions to compress content.
+     * Utility method to perform the necessary actions to compress content.
      * </p>
      *
      * <p>
@@ -478,14 +478,12 @@ public abstract class ResourceHelper {
      * @param s input String
      * @return the String without a leading slash if it has one.
      */
-    protected String trimLeadingSlash(String s) {
-
+    protected static String trimLeadingSlash(String s) {
         if (s.charAt(0) == '/') {
             return s.substring(1);
         } else {
             return s;
         }
-
     }
 
     // --------------------------------------------------------- Private Methods
@@ -532,12 +530,12 @@ public abstract class ResourceHelper {
     private static final class ELEvaluatingInputStream extends InputStream {
 
         // Premature optimization is the root of all evil. Blah blah.
-        private List<Integer> buf = new ArrayList<>(1024);
+        private final List<Integer> buf = new ArrayList<>(1024);
         private boolean failedExpressionTest = false;
         private boolean writingExpression = false;
-        private InputStream inner;
-        private ClientResourceInfo info;
-        private FacesContext ctx;
+        private final InputStream inner;
+        private final ClientResourceInfo info;
+        private final FacesContext ctx;
         private boolean expressionEvaluated;
         private boolean endOfStreamReached;
 
@@ -550,11 +548,9 @@ public abstract class ResourceHelper {
         // ---------------------------------------------------- Constructors
 
         public ELEvaluatingInputStream(FacesContext ctx, ClientResourceInfo info, InputStream inner) {
-
-            this.inner = inner;
-            this.info = info;
             this.ctx = ctx;
-
+            this.info = info;
+            this.inner = inner;
         }
 
         // ------------------------------------------------ Methods from InputStream
@@ -573,7 +569,7 @@ public abstract class ResourceHelper {
                 nextRead = -1;
                 failedExpressionTest = false;
             } else if (writingExpression) {
-                if (0 < buf.size()) {
+                if (!buf.isEmpty()) {
                     i = buf.remove(0);
                 } else {
                     writingExpression = false;
@@ -729,7 +725,7 @@ public abstract class ResourceHelper {
             String expressionBody = new String(chars);
             int colon;
             // If this expression contains a ":"
-            if (-1 != (colon = expressionBody.indexOf(":"))) {
+            if (-1 != (colon = expressionBody.indexOf(':'))) {
                 // Make sure it contains only one ":"
                 if (!isPropertyValid(expressionBody)) {
                     String message = MessageUtils.getExceptionMessageString(MessageUtils.INVALID_RESOURCE_FORMAT_COLON_ERROR, expressionBody);
@@ -743,7 +739,7 @@ public abstract class ResourceHelper {
 
                 }
                 try {
-                    int mark = parts[0].indexOf("[") + 2;
+                    int mark = parts[0].indexOf('[') + 2;
                     char quoteMark = parts[0].charAt(mark - 1);
                     parts[0] = parts[0].substring(mark, colon);
                     if (parts[0].equals("this")) {
@@ -756,7 +752,7 @@ public abstract class ResourceHelper {
                             throw new NullPointerException("Resource expression is not a library or resource library contract");
                         }
 
-                        mark = parts[1].indexOf("]") - 1;
+                        mark = parts[1].indexOf(']') - 1;
                         parts[1] = parts[1].substring(0, mark);
                         expressionBody = "resource[" + quoteMark + parts[0] + ":" + parts[1] + quoteMark + "]";
                     }
