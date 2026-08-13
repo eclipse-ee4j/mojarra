@@ -23,9 +23,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -59,42 +59,31 @@ public class WebappResourceHelper extends ResourceHelper {
     // ------------------------------------------------------------ Constructors
 
     public WebappResourceHelper() {
-
         WebConfiguration webconfig = WebConfiguration.getInstance();
         cacheTimestamp = webconfig.isOptionEnabled(CacheResourceModificationTimestamp);
         BASE_RESOURCE_PATH = ensureLeadingSlash(webconfig.getOptionValue(WebConfiguration.WebContextInitParameter.WebAppResourcesDirectory));
         BASE_CONTRACTS_PATH = ensureLeadingSlash(webconfig.getOptionValue(WebConfiguration.WebContextInitParameter.WebAppContractsDirectory));
-
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final WebappResourceHelper other = (WebappResourceHelper) obj;
-        if (BASE_RESOURCE_PATH == null ? other.BASE_RESOURCE_PATH != null : !BASE_RESOURCE_PATH.equals(other.BASE_RESOURCE_PATH)) {
-            return false;
-        }
-        if (BASE_CONTRACTS_PATH == null ? other.BASE_CONTRACTS_PATH != null : !BASE_CONTRACTS_PATH.equals(other.BASE_CONTRACTS_PATH)) {
-            return false;
-        }
-        if (cacheTimestamp != other.cacheTimestamp) {
-            return false;
-        }
-        return true;
+
+        WebappResourceHelper other = (WebappResourceHelper) obj;
+
+        return Objects.equals(BASE_RESOURCE_PATH, other.BASE_RESOURCE_PATH)
+            && Objects.equals(BASE_CONTRACTS_PATH, other.BASE_CONTRACTS_PATH)
+            && cacheTimestamp == other.cacheTimestamp;
     }
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 37 * hash + (BASE_RESOURCE_PATH != null ? BASE_RESOURCE_PATH.hashCode() : 0);
-        hash = 37 * hash + (BASE_CONTRACTS_PATH != null ? BASE_CONTRACTS_PATH.hashCode() : 0);
-        hash = 37 * hash + (cacheTimestamp ? 1 : 0);
-        return hash;
+        return Objects.hash(BASE_RESOURCE_PATH, BASE_CONTRACTS_PATH, cacheTimestamp);
     }
 
     // --------------------------------------------- Methods from ResourceHelper
@@ -104,9 +93,7 @@ public class WebappResourceHelper extends ResourceHelper {
      */
     @Override
     public String getBaseResourcePath() {
-
         return BASE_RESOURCE_PATH;
-
     }
 
     @Override
@@ -213,7 +200,7 @@ public class WebappResourceHelper extends ResourceHelper {
         // if getResourcePaths returns null or an empty set, this means that we have
         // a non-directory resource, therefor, this resource isn't versioned.
         ClientResourceInfo value;
-        if (resourcePaths == null || resourcePaths.size() == 0) {
+        if (resourcePaths == null || resourcePaths.isEmpty()) {
             if (library != null) {
                 value = new ClientResourceInfo(library, outContract[0], resourceName, null, compressable,
                         resourceSupportsEL(resourceName, library.getName(), ctx), ctx.isProjectStage(ProjectStage.Development), cacheTimestamp);
@@ -245,20 +232,18 @@ public class WebappResourceHelper extends ResourceHelper {
 
     private String findPathConsideringContracts(LibraryInfo library, String resourceName, String localePrefix, ContractInfo[] outContract, FacesContext ctx) {
         UIViewRoot root = ctx.getViewRoot();
-        List<String> contracts = null;
+        final List<String> contracts;
 
         if (library != null) {
             if (library.getContract() == null) {
                 contracts = Collections.emptyList();
             } else {
-                contracts = new ArrayList<>(1);
-                contracts.add(library.getContract());
+                contracts = List.of(library.getContract());
             }
         } else if (root == null) {
             String contractName = ctx.getExternalContext().getRequestParameterMap().get("con");
-            if (null != contractName && 0 < contractName.length() && !ResourceManager.nameContainsForbiddenSequence(contractName)) {
-                contracts = new ArrayList<>();
-                contracts.add(contractName);
+            if (contractName != null && !contractName.isEmpty() && !ResourceManager.nameContainsForbiddenSequence(contractName)) {
+                contracts = List.of(contractName);
             } else {
                 return null;
             }

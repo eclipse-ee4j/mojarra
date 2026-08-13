@@ -24,9 +24,9 @@ import static jakarta.faces.application.ProjectStage.Development;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.util.Util;
@@ -56,33 +56,26 @@ public class ClasspathResourceHelper extends ResourceHelper {
         WebConfiguration webconfig = WebConfiguration.getInstance();
         cacheTimestamp = webconfig.isOptionEnabled(CacheResourceModificationTimestamp);
         enableMissingResourceLibraryDetection = webconfig.isOptionEnabled(EnableMissingResourceLibraryDetection);
-
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final ClasspathResourceHelper other = (ClasspathResourceHelper) obj;
-        if (cacheTimestamp != other.cacheTimestamp) {
-            return false;
-        }
-        if (enableMissingResourceLibraryDetection != other.enableMissingResourceLibraryDetection) {
-            return false;
-        }
-        return true;
+
+        ClasspathResourceHelper other = (ClasspathResourceHelper) obj;
+
+        return cacheTimestamp == other.cacheTimestamp
+            && enableMissingResourceLibraryDetection == other.enableMissingResourceLibraryDetection;
     }
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 67 * hash + (cacheTimestamp ? 1 : 0);
-        hash = 67 * hash + (enableMissingResourceLibraryDetection ? 1 : 0);
-        return hash;
+        return Objects.hash(cacheTimestamp, enableMissingResourceLibraryDetection);
     }
 
     // --------------------------------------------- Methods from ResourceHelper
@@ -276,21 +269,19 @@ public class ClasspathResourceHelper extends ResourceHelper {
     private URL findPathConsideringContracts(ClassLoader loader, LibraryInfo library, String resourceName, String localePrefix, ContractInfo[] outContract,
             String[] outBasePath, FacesContext ctx) {
         UIViewRoot root = ctx.getViewRoot();
-        List<String> contracts = null;
+        final List<String> contracts;
         URL result = null;
 
         if (library != null) {
             if (library.getContract() == null) {
                 contracts = Collections.emptyList();
             } else {
-                contracts = new ArrayList<>(1);
-                contracts.add(library.getContract());
+                contracts = List.of(library.getContract());
             }
         } else if (root == null) {
             String contractName = ctx.getExternalContext().getRequestParameterMap().get("con");
-            if (null != contractName && 0 < contractName.length() && !ResourceManager.nameContainsForbiddenSequence(contractName)) {
-                contracts = new ArrayList<>();
-                contracts.add(contractName);
+            if (contractName != null && !contractName.isEmpty() && !ResourceManager.nameContainsForbiddenSequence(contractName)) {
+                contracts = List.of(contractName);
             } else {
                 return null;
             }

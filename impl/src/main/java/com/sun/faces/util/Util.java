@@ -20,10 +20,10 @@
 package com.sun.faces.util;
 
 import static com.sun.faces.RIConstants.CDI_BEAN_MANAGER;
+import static com.sun.faces.RIConstants.EMPTY_STRING;
 import static com.sun.faces.RIConstants.FACELETS_ENCODING_KEY;
 import static com.sun.faces.RIConstants.FACES_SERVLET_MAPPINGS;
 import static com.sun.faces.RIConstants.FACES_SERVLET_REGISTRATION;
-import static com.sun.faces.RIConstants.NO_VALUE;
 import static com.sun.faces.util.MessageUtils.ILLEGAL_ATTEMPT_SETTING_APPLICATION_ARTIFACT_ID;
 import static com.sun.faces.util.MessageUtils.NAMED_OBJECT_NOT_FOUND_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID;
@@ -283,8 +283,8 @@ public class Util {
         try {
             Thread.currentThread().setContextClassLoader(Util.class.getClassLoader());
             factory = TransformerFactory.newInstance();
-            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, NO_VALUE);
-            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, NO_VALUE);
+            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, EMPTY_STRING);
+            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, EMPTY_STRING);
             setFeature(factory::setFeature, XMLConstants.FEATURE_SECURE_PROCESSING, true);
         } finally {
             Thread.currentThread().setContextClassLoader(cl);
@@ -946,7 +946,7 @@ public class Util {
      */
     public static String getStackTraceString(Throwable e) {
         if (null == e) {
-            return "";
+            return EMPTY_STRING;
         }
 
         StackTraceElement[] stacks = e.getStackTrace();
@@ -1136,7 +1136,7 @@ public class Util {
 
             @Override
             public String getServletName() {
-                return "";
+                return EMPTY_STRING;
             }
 
             @Override
@@ -1303,7 +1303,7 @@ public class Util {
         if (viewRoot instanceof NamingContainer) {
             return viewRoot.getContainerClientId(context) + UINamingContainer.getSeparatorChar(context);
         } else {
-            return "";
+            return EMPTY_STRING;
         }
     }
 
