@@ -148,8 +148,7 @@ public final class ViewHandler extends TagHandlerImpl {
 
             String viewId = root.getViewId();
 
-            // At this point in the lifecycle we should have a non-null/empty
-            // view id. The partial state saving check below requires this.
+            // At this point in the lifecycle we should have a non-null/empty view id.
             assert null != viewId;
             assert 0 < viewId.length();
 

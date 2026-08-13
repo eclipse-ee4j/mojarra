@@ -96,7 +96,7 @@ public final class ForEachHandler extends TagHandlerImpl {
 
     // Request-attribute key prefix under which an indexable c:forEach records, at its restore-time (re)build, the
     // iteration it produced (range plus, for items, the element snapshot) and the child components it created. When
-    // the same view is built a second time in the same request (render under partial state saving) with an unchanged
+    // the same view is built a second time in the same request (render) with an unchanged
     // iteration, that subtree is still correct - the index-based var expressions render content changes live - so the
     // redundant re-apply of the body is skipped and the retained children are un-marked from the parent refresh's
     // pending deletion. Keyed additionally by parent identity + tag location.
@@ -161,7 +161,7 @@ public final class ForEachHandler extends TagHandlerImpl {
             stateKey = ITERATION_STATE + System.identityHashCode(parent) + ':' + tag.getLocation();
             range = new int[] { s, e, m };
             if (ctx.getFacesContext().getCurrentPhaseId() == PhaseId.RESTORE_VIEW) {
-                // Restore-time (re)build under PSS rebuilds this transient subtree from scratch; snapshot the existing
+                // Restore-time (re)build rebuilds this transient subtree from scratch; snapshot the existing
                 // children so the ones created below can be recorded for the render pass to retain. Clear the
                 // build-time-dynamic marker first: if applying the body re-sets it, the body holds nested dynamic
                 // content (a nested c:forEach/c:if/...) that could change without this item list changing, so it must
@@ -273,7 +273,7 @@ public final class ForEachHandler extends TagHandlerImpl {
             }
             // Record (enabling the render-pass skip) only for a static body that actually created the subtree here: a
             // nested-dynamic body could change with this item list unchanged, and an empty delta means this build did
-            // not create the subtree (e.g. full state saving already restored it) so there is nothing to retain.
+            // not create the subtree, so there is nothing to retain.
             if (!nestedDynamic && !created.isEmpty()) {
                 contextAttributes.put(stateKey, new Object[] { range, srcVE == null ? null : snapshotElements(src), created });
             }

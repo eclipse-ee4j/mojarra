@@ -172,7 +172,7 @@ public class UIComponentBaseAttachedStateTestCase {
         component.restoreState(facesContext, state);
         assertEquals("newvalue", listener.getValue());
 
-        // verify listeners are overwritten when using full state saving
+        // verify listeners are overwritten when restoring full attached state
         component = new UIOutput();
         listener = new TestFacesListener();
         component.addFacesListener(listener);

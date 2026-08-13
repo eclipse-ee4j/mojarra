@@ -906,7 +906,7 @@ public class UIRepeat extends UINamingContainer {
     }
 
     // SKIP_ITERATION is honored unconditionally, as UIData does. A visit that asks for it wants the
-    // row-less clientIds: full state saving keys the saved component state by them, so iterating anyway
+    // row-less clientIds: the saved component state is keyed by them, so iterating anyway
     // makes the restore look up repeat:N:foo for state filed under repeat:foo and restore nothing.
     private boolean requiresRowIteration(VisitContext ctx) {
         return !ctx.getHints().contains(VisitHint.SKIP_ITERATION);

@@ -227,16 +227,13 @@ public final class ComponentSupport {
     // If this method is called during RestoreView, it will always return null
     // so we can just return null in that case without any iteration.
 
-    // If PartialStateSaving is false, the UIInstruction components will
-    // never be in the tree at this point, so we can return null and skip iterating.
-
     public static UIComponent findUIInstructionChildByTagId(FacesContext context, UIComponent parent, String id) {
-        if (isBuildingNewComponentTree(context) || !StateContext.getStateContext(context).isPartialStateSaving(context, null)) {
+        if (isBuildingNewComponentTree(context)) {
             return null;
         }
         // The existing UIInstructions is a direct child of the parent it was applied under, so the bounded
         // direct scan locates it by its MARK_CREATED tag id without a descendant cache.
-        return findChildByTagIdFullStateSaving(context, parent, id);
+        return findChildByTagIdScan(context, parent, id);
     }
 
     /**
@@ -283,7 +280,7 @@ public final class ComponentSupport {
      * MARK_CREATED -> component index once per parent and look up in O(1). The index is request-scoped and guarded
      * by the parent's child+facet count plus the child count of any implicit panel it indexed through: a body that
      * creates a new child (count grows) rebuilds it, so it can never return a stale or detached component. The
-     * facetName fast-path and coverage mirror {@link #findChildByTagIdFullStateSaving} exactly.
+     * facetName fast-path and coverage mirror {@link #findChildByTagIdScan} exactly.
      */
     private static UIComponent findChildByTagIdIndexed(FacesContext context, UIComponent parent, String id) {
         String facetName = getFacetName(parent);
@@ -377,7 +374,7 @@ public final class ComponentSupport {
         }
     }
 
-    private static UIComponent findChildByTagIdFullStateSaving(FacesContext context, UIComponent parent, String id) {
+    private static UIComponent findChildByTagIdScan(FacesContext context, UIComponent parent, String id) {
         UIComponent c = null;
         String cid = null;
         List<UIComponent> components;
@@ -432,7 +429,7 @@ public final class ComponentSupport {
     public static UIComponent findChildByTagIdDeep(FacesContext context, UIComponent parent, String id) {
         // Raw scan (not findChildByTagId): the reparent path must search even inside a freshly built composite,
         // so it deliberately bypasses the BUILDING_FRESH_SUBTREE gate.
-        UIComponent c = findChildByTagIdFullStateSaving(context, parent, id);
+        UIComponent c = findChildByTagIdScan(context, parent, id);
         if (c != null) {
             return c;
         }
@@ -667,19 +664,7 @@ public final class ComponentSupport {
 
     public static boolean suppressViewModificationEvents(FacesContext ctx) {
 
-        String viewId = getViewIdForModificationEvents(ctx);
-        return viewId != null && StateContext.getStateContext(ctx).isPartialStateSaving(ctx, viewId);
-
-    }
-
-    /**
-     * Variant for callers that already hold the request's {@link StateContext}, so that a tree walk does not look it up
-     * once per component.
-     */
-    public static boolean suppressViewModificationEvents(FacesContext ctx, StateContext stateCtx) {
-
-        String viewId = getViewIdForModificationEvents(ctx);
-        return viewId != null && stateCtx.isPartialStateSaving(ctx, viewId);
+        return getViewIdForModificationEvents(ctx) != null;
 
     }
 

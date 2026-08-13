@@ -23,10 +23,7 @@ import static org.glassfish.mojarra.util.ComponentStruct.REMOVE;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -46,38 +43,29 @@ import jakarta.faces.event.PreRemoveFromViewEvent;
 import jakarta.faces.event.SystemEvent;
 import jakarta.faces.event.SystemEventListener;
 
-import org.glassfish.mojarra.RIConstants;
-import org.glassfish.mojarra.application.ApplicationAssociate;
-import org.glassfish.mojarra.application.ApplicationStateInfo;
-import org.glassfish.mojarra.facelets.tag.faces.ComponentSupport;
 import org.glassfish.mojarra.util.ComponentStruct;
 import org.glassfish.mojarra.util.FacesLogger;
-import org.glassfish.mojarra.util.MostlySingletonSet;
 
 /**
- * Context for dealing with partial state saving mechanics.
+ * Context for dealing with state saving mechanics.
  */
 public class StateContext {
 
     private static final String KEY = StateContext.class.getName() + "_KEY";
 
-    private boolean partial;
-    private boolean partialLocked;
     private boolean trackMods = true;
     // A view whose saved state carries no dynamic add/remove actions has no component bearing the
     // DYNAMIC_COMPONENT marker, so componentAddedDynamically can skip the per-component attribute
-    // lookup. The partial-state restore sets this false for such views; true (always check) otherwise.
+    // lookup. The state restore sets this false for such views; true (always check) otherwise.
     private boolean hasDynamicComponents = true;
     private AddRemoveListener modListener;
-    private ApplicationStateInfo stateInfo;
     private WeakReference<UIViewRoot> viewRootRef = new WeakReference<>(null);
 
     private static final Logger LOGGER = FacesLogger.CONTEXT.getLogger();
 
     // ------------------------------------------------------------ Constructors
 
-    private StateContext(ApplicationStateInfo stateInfo) {
-        this.stateInfo = stateInfo;
+    private StateContext() {
     }
 
     // ---------------------------------------------------------- Public Methods
@@ -104,56 +92,11 @@ public class StateContext {
     public static StateContext getStateContext(FacesContext ctx) {
         StateContext stateCtx = (StateContext) ctx.getAttributes().get(KEY);
         if (stateCtx == null) {
-            ApplicationAssociate associate = ApplicationAssociate.getCurrentInstance();
-            ApplicationStateInfo info = associate.getApplicationStateInfo();
-            stateCtx = new StateContext(info);
+            stateCtx = new StateContext();
             ctx.getAttributes().put(KEY, stateCtx);
         }
         
         return stateCtx;
-    }
-
-    /**
-     * @param ctx FacesContext.
-     * @param viewId the view ID to check or null if viewId is unknown.
-     * @return <code>true</code> if partial state saving should be used for the specified view ID, otherwise
-     * <code>false</code>
-     */
-    public boolean isPartialStateSaving(FacesContext ctx, String viewId) {
-        // track UIViewRoot changes
-        UIViewRoot root = ctx.getViewRoot();
-        UIViewRoot refRoot = viewRootRef.get();
-        if (root != refRoot) {
-            // set weak reference to current viewRoot
-            viewRootRef = new WeakReference<>(root);
-
-            // On first call in restore phase, viewRoot is null, so we treat the first
-            // change to not null not as a changing viewRoot.
-            if (refRoot != null) {
-                // view root changed in request processing - force usage of a
-                // new AddRemoveListener instance for the new viewId ...
-                modListener = null;
-                // ... and also force check for partial state saving for the new viewId
-                partialLocked = false;
-            }
-        }
-
-        if (!partialLocked) {
-            if (viewId == null) {
-                if (root != null) {
-                    viewId = root.getViewId();
-                } else {
-                    // View root has not yet been initialized. Check to see whether
-                    // the target view id has been stashed away for us.
-                    viewId = (String) ctx.getAttributes().get(RIConstants.VIEWID_KEY_NAME);
-                }
-            }
-
-            partial = stateInfo.usePartialStateSaving(viewId);
-            partialLocked = true;
-        }
-        
-        return partial;
     }
 
     /**
@@ -170,6 +113,17 @@ public class StateContext {
      * @param root the involved view root
      */
     public void startTrackViewModifications(FacesContext ctx, UIViewRoot root) {
+        UIViewRoot refRoot = viewRootRef.get();
+        if (root != refRoot) {
+            viewRootRef = new WeakReference<>(root);
+
+            // On the first call in the restore phase the view root is null, so the first change from null is not
+            // a changing view root. Any later change is, and the new view needs its own AddRemoveListener.
+            if (refRoot != null) {
+                modListener = null;
+            }
+        }
+
         if (modListener == null) {
             if (root != null) {
                 modListener = createAddRemoveListener(ctx, root);
@@ -380,7 +334,7 @@ public class StateContext {
     // ---------------------------------------------------------- Nested Classes
 
     private AddRemoveListener createAddRemoveListener(FacesContext context, UIViewRoot root) {
-        return isPartialStateSaving(context, root.getViewId()) ? new DynamicAddRemoveListener(context) : new StatelessAddRemoveListener(context);
+        return new DynamicAddRemoveListener(context);
     }
 
     abstract private class AddRemoveListener implements SystemEventListener {
@@ -463,181 +417,6 @@ public class StateContext {
          * @param component the UI component to add to the list as an ADD.
          */
         abstract protected void handleAdd(FacesContext context, UIComponent component);
-    }
-
-    public class NoopAddRemoveListener extends AddRemoveListener {
-
-        // This is silly. We should be able to use Colletions.emptyMap(),
-        // but cannot as StateContext.getDynamicComponents() API returns a
-        // HashMap instead of a Map.
-        private HashMap<String, UIComponent> emptyComponentsMap = new HashMap<>();
-
-        public NoopAddRemoveListener(FacesContext context) {
-            super(context);
-        }
-
-        @Override
-        public List<ComponentStruct> getDynamicActions() {
-            return Collections.emptyList();
-        }
-
-        @Override
-        public HashMap<String, UIComponent> getDynamicComponents() {
-            return emptyComponentsMap;
-        }
-
-        @Override
-        protected void handleRemove(FacesContext context, UIComponent component) {
-        }
-
-        @Override
-        protected void handleAdd(FacesContext context, UIComponent component) {
-        }
-    }
-
-    /**
-     * An AddRemoveListener that implements the new dynamic component strategy where no state is managed by the listener
-     * itself. Instead, we use expando attributes on the dynamic components (and their parents) to track/preserve the
-     * dynamic nature of these components.
-     */
-    public class StatelessAddRemoveListener extends NoopAddRemoveListener {
-
-        public StatelessAddRemoveListener(FacesContext context) {
-            super(context);
-        }
-
-        private boolean thisEventCorrespondsToSubtreeRootRemove(FacesContext context, UIComponent c) {
-            boolean result = false;
-            if (null != c) {
-                c = c.getParent();
-                if (null != c) {
-                    result = c.isInView();
-                }
-            }
-
-            return result;
-        }
-
-        private boolean thisEventCorrespondsToSubtreeRootAdd(FacesContext context, UIComponent c) {
-            boolean result = false;
-            Map<Object, Object> contextMap = context.getAttributes();
-            UIViewRoot root = context.getViewRoot();
-            UIComponent originalComponent = c;
-            if (null != c) {
-                Collection<UIComponent> dynamics = getDynamicComponentCollection(contextMap);
-                if (dynamics.contains(c)) {
-                    result = true;
-                } else {
-                    c = c.getParent();
-                    while (null != c && !dynamics.contains(c)) {
-                        c = c.getParent();
-                    }
-                    if (null == c || root.equals(c)) {
-                        dynamics.add(originalComponent);
-                        result = true;
-                    }
-                }
-            }
-
-            return result;
-        }
-
-        private static final String DYNAMIC_COMPONENT_ADD_COLLECTION = RIConstants.RI_PREFIX + "DynamicComponentSubtreeRoots";
-
-        @SuppressWarnings("unchecked")
-        private Collection<UIComponent> getDynamicComponentCollection(Map<Object, Object> contextMap) {
-            Collection<UIComponent> result = (Collection<UIComponent>) contextMap.get(DYNAMIC_COMPONENT_ADD_COLLECTION);
-            if (null == result) {
-                result = new HashSet<>();
-                contextMap.put(DYNAMIC_COMPONENT_ADD_COLLECTION, result);
-            }
-            return result;
-        }
-
-        @Override
-        protected void handleRemove(FacesContext context, UIComponent component) {
-            if (!thisEventCorrespondsToSubtreeRootRemove(context, component)) {
-                return;
-            }
-
-            Map<String, Object> attrs = component.getAttributes();
-
-            // If the component is a tag-created child, we remove its
-            // MARK_CREATED expando so that it will now be treated as
-            // a dynamic/non-tag created component.
-            String tagId = (String) attrs.remove(ComponentSupport.MARK_CREATED);
-            if (tagId != null) {
-                // Actually, we don't just remove the MARK_CREATED - we need
-                // to stash it away so that we can restore it later if the
-                // component happens to be re-added to its original parent.
-                attrs.put(ComponentSupport.MARK_CREATED_REMOVED, tagId);
-                childRemovedFromParent(component.getParent(), tagId);
-            }
-        }
-
-        private void childRemovedFromParent(UIComponent parent, String childTagId) {
-            if (parent != null) {
-                Collection<String> removedChildrenIds = getPreviouslyRemovedChildren(parent);
-                removedChildrenIds.add(childTagId);
-
-                markChildrenModified(parent);
-            }
-        }
-
-        @SuppressWarnings("unchecked")
-        private Collection<String> getPreviouslyRemovedChildren(UIComponent parent) {
-            Map<String, Object> attrs = parent.getAttributes();
-            Collection<String> removedChildrenIds = (Collection<String>) attrs.get(ComponentSupport.REMOVED_CHILDREN);
-
-            if (removedChildrenIds == null) {
-                removedChildrenIds = new MostlySingletonSet<>();
-                attrs.put(ComponentSupport.REMOVED_CHILDREN, removedChildrenIds);
-            }
-
-            return removedChildrenIds;
-        }
-
-        private void markChildrenModified(UIComponent parent) {
-            parent.getAttributes().put(ComponentSupport.MARK_CHILDREN_MODIFIED, true);
-        }
-
-        @Override
-        protected void handleAdd(FacesContext context, UIComponent component) {
-            if (!thisEventCorrespondsToSubtreeRootAdd(context, component)) {
-                return;
-            }
-
-            Map<String, Object> attrs = component.getAttributes();
-            String tagId = (String) attrs.get(ComponentSupport.MARK_CREATED_REMOVED);
-
-            if (childAddedToSameParentAsBefore(component.getParent(), tagId)) {
-
-                // Restore MARK_CREATED if the added component was originally
-                // created as a tag-based child of this parent.
-                attrs.remove(ComponentSupport.MARK_CREATED_REMOVED);
-                attrs.put(ComponentSupport.MARK_CREATED, tagId);
-            }
-
-            markChildrenModified(component.getParent());
-        }
-
-        // Handles the addition of a new child to the parent. Returns true
-        // if the child was previously removed from this parent.
-        @SuppressWarnings("unchecked")
-        private boolean childAddedToSameParentAsBefore(UIComponent parent, String childTagId) {
-            if (parent != null) {
-                Map<String, Object> attrs = parent.getAttributes();
-                Collection<String> removedChildrenIds = (Collection<String>) attrs.get(ComponentSupport.REMOVED_CHILDREN);
-                if (removedChildrenIds != null && removedChildrenIds.remove(childTagId)) {
-                    if (removedChildrenIds.isEmpty()) {
-                        attrs.remove(ComponentSupport.REMOVED_CHILDREN);
-                    }
-                    return true;
-                }
-            }
-
-            return false;
-        }
     }
 
     /**
@@ -761,7 +540,7 @@ public class StateContext {
          * <p>
          * Redundant add/remove pairs for the same client id (e.g. a component added then removed within a request)
          * are collapsed in a single pass at save time (see
-         * {@code FaceletPartialStateManagementStrategy#saveDynamicActions}) rather than per event. A per-event prune
+         * {@code FaceletStateManagementStrategy#saveDynamicActions}) rather than per event. A per-event prune
          * has to {@code indexOf}/{@code remove} on the action list for every add or remove, which is O(n&sup2;) over
          * n dynamically added components; appending and pruning once at save keeps recording O(1) per event.
          * </p>

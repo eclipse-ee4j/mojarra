@@ -20,7 +20,7 @@ import jakarta.faces.component.StateHolder;
 import jakarta.faces.context.FacesContext;
 
 /**
- * Utility class to enable partial state saving of components that have been dynamically added to the view.
+ * Utility class to enable state saving of components that have been dynamically added to the view.
  */
 public class ComponentStruct implements StateHolder {
 

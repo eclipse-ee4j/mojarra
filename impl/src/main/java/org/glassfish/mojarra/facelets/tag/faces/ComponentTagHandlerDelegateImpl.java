@@ -354,7 +354,7 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
     protected void addComponentToView(FaceletContext ctx, UIComponent parent, UIComponent c, boolean componentFound, StateContext stateContext) {
 
         FacesContext context = ctx.getFacesContext();
-        boolean suppressEvents = ComponentSupport.suppressViewModificationEvents(context, stateContext);
+        boolean suppressEvents = ComponentSupport.suppressViewModificationEvents(context);
         boolean compcomp = UIComponent.isCompositeComponent(c);
 
         if (suppressEvents && componentFound && !compcomp) {

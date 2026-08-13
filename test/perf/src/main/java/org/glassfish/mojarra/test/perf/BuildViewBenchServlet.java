@@ -35,7 +35,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Isolates the Facelets {@code buildView} cost — the component-tree construction the Restore View
- * phase pays on every postback under partial state saving — apart from state restore, render and
+ * phase pays on every postback — apart from state restore, render and
  * state save. Uses only standard {@code jakarta.faces} API, so the same endpoint runs on Eclipse
  * Mojarra and Apache MyFaces, giving an apples-to-apples buildView comparison.
  *
