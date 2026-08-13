@@ -28,7 +28,8 @@ import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINER;
 import static java.util.logging.Level.SEVERE;
 import static java.util.stream.Collectors.joining;
-import static org.glassfish.mojarra.RIConstants.NO_VALUE;
+import static org.glassfish.mojarra.RIConstants.EMPTY_STRING;
+import static org.glassfish.mojarra.renderkit.RenderKitUtils.NO_VALUE;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.getSelectItems;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.renderPassThruAttributes;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.renderXHTMLStyleBooleanAttributes;
@@ -81,7 +82,6 @@ import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
 import jakarta.faces.model.SelectItem;
 import jakarta.faces.model.SelectItemGroup;
 
-import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.io.FastStringWriter;
 import org.glassfish.mojarra.renderkit.AttributeManager;
 import org.glassfish.mojarra.renderkit.Attributes;
@@ -551,7 +551,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
             return " multiple ";
         }
 
-        return "";
+        return EMPTY_STRING;
     }
 
     protected Object[] getSubmittedSelectedValues(UIComponent component) {
@@ -922,7 +922,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
             if (newValue != null && !newValue.isEmpty()) {
                 Set<String> disabledSelectItemValues = getDisabledSelectItemValues(context, component);
                 if (disabledSelectItemValues.contains(newValue)) {
-                    newValue = RIConstants.NO_VALUE;
+                    newValue = NO_VALUE;
                 }
             }
 

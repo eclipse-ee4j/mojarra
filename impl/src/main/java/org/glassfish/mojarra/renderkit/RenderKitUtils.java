@@ -19,6 +19,7 @@ package org.glassfish.mojarra.renderkit;
 import static jakarta.faces.application.ResourceHandler.FACES_SCRIPT_LIBRARY_NAME;
 import static jakarta.faces.application.ResourceHandler.FACES_SCRIPT_RESOURCE_NAME;
 import static java.util.stream.Collectors.toList;
+import static org.glassfish.mojarra.RIConstants.EMPTY_STRING;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.PredefinedPostbackParameter.BEHAVIOR_EVENT_PARAM;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.PredefinedPostbackParameter.BEHAVIOR_SOURCE_PARAM;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.PredefinedPostbackParameter.PARTIAL_EVENT_PARAM;
@@ -155,6 +156,15 @@ public class RenderKitUtils {
     protected static final Logger LOGGER = FacesLogger.RENDERKIT.getLogger();
 
     public static final String DEVELOPMENT_STAGE_MESSAGES_ID = "jakarta_faces_developmentstage_messages";
+
+    /**
+     * <p>
+     * Sentinel submitted value for a selection component whose request parameter was absent, so that a subsequent
+     * decode can tell "submitted with nothing selected" apart from "not submitted at all". It is not a general purpose
+     * empty string; use {@link RIConstants#EMPTY_STRING} for that.
+     * </p>
+     */
+    public static final String NO_VALUE = "";
 
     /**
      * @see UIViewRoot#encodeChildren(FacesContext)
@@ -1364,8 +1374,8 @@ public class RenderKitUtils {
         } else {
 
             String value = (String) component.getAttributes().get(attrName);
-            if (value == null || value.length() == 0) {
-                return "";
+            if (value == null || value.isEmpty()) {
+                return EMPTY_STRING;
             }
             if (ApplicationAssociate.getInstance(context).getResourceManager().isContractsResource(value)) {
                 if (context.isProjectStage(ProjectStage.Development)) {

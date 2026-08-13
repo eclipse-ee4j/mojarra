@@ -19,6 +19,7 @@
 package org.glassfish.mojarra.renderkit.html_basic;
 
 import static java.lang.Boolean.TRUE;
+import static org.glassfish.mojarra.renderkit.RenderKitUtils.NO_VALUE;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -50,7 +51,6 @@ import jakarta.faces.event.ListenerFor;
 import jakarta.faces.event.PostAddToViewEvent;
 import jakarta.faces.model.SelectItem;
 
-import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.renderkit.AttributeManager;
 import org.glassfish.mojarra.renderkit.Attributes;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
@@ -153,7 +153,7 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
             }
         } else {
             // There is no submitted value at all, but this is different from a null value.
-            radio.setSubmittedValue(RIConstants.NO_VALUE);
+            radio.setSubmittedValue(NO_VALUE);
         }
     }
 

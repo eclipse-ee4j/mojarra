@@ -156,7 +156,7 @@ public final class LoadBundleHandler extends TagHandlerImpl {
         }
 
         @Override
-        public void putAll(Map t) {
+        public void putAll(Map<? extends String, ?> t) {
             throw new UnsupportedOperationException();
         }
 
