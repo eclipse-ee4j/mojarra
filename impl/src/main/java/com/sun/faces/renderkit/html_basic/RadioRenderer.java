@@ -18,6 +18,7 @@
 
 package com.sun.faces.renderkit.html_basic;
 
+import static com.sun.faces.renderkit.RenderKitUtils.NO_VALUE;
 import static java.lang.Boolean.TRUE;
 
 import java.io.IOException;
@@ -48,7 +49,6 @@ import jakarta.faces.event.ListenerFor;
 import jakarta.faces.event.PostAddToViewEvent;
 import jakarta.faces.model.SelectItem;
 
-import com.sun.faces.RIConstants;
 import com.sun.faces.renderkit.Attributes;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
@@ -151,7 +151,7 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
             }
         } else {
             // There is no submitted value at all, but this is different from a null value.
-            radio.setSubmittedValue(RIConstants.NO_VALUE);
+            radio.setSubmittedValue(NO_VALUE);
         }
     }
 

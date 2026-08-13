@@ -187,7 +187,7 @@ public class ClientResourceInfo extends ResourceInfo {
 
     /**
      * Create the full path to the resource. If the resource can be compressed, setup the compressedPath ivar so that the
-     * path refers to the directory refereneced by the context attribute <code>jakarta.servlet.context.tempdir</code>.
+     * path refers to the directory referenced by the context attribute <code>jakarta.servlet.context.tempdir</code>.
      */
     private void initPath(boolean isDevStage) {
 
