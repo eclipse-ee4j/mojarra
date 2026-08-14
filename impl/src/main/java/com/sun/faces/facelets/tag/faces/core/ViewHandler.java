@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,6 +34,7 @@ import jakarta.el.MethodExpression;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PhaseEvent;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagAttribute;
@@ -95,12 +97,6 @@ public final class ViewHandler extends TagHandlerImpl {
      */
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
-        if (hasDynamicAttribute()) {
-            // A non-literal f:view attribute (e.g. locale, contentType) is re-evaluated per request and applied to
-            // the UIViewRoot during this build, so the view must be re-applied on every (re)build instead of skipped
-            // (see refreshTransientBuildOnPSS), otherwise a value changed by a postback would not take effect.
-            markDynamicTransientBuild(ctx);
-        }
         UIViewRoot root = ComponentSupport.getViewRoot(ctx, parent);
         if (root != null) {
             if (renderKitId != null) {
@@ -176,22 +172,51 @@ public final class ViewHandler extends TagHandlerImpl {
             }
         }
 
+        recordDecisions(ctx, root);
+
         nextHandler.apply(ctx, parent);
     }
 
     /**
-     * Whether any of the view attributes applied to the {@link UIViewRoot} during the build is non-literal, i.e.
-     * re-evaluated per request. Such a view must be re-applied on every (re)build so a value changed by a postback
-     * is reflected; the {@code beforePhase}/{@code afterPhase} listener expressions are excluded as they are fixed
-     * per facelet and restored from state.
+     * Records what this build decided for every non-literal view attribute, so the redundant render-time re-apply is
+     * skipped as long as each still holds and is performed when one of them does not, which is what applies the new
+     * value (see {@code refreshTransientBuildOnPSS}). Each takes two decisions: the attribute still evaluates to the
+     * value this build got, and, for the attributes held in the state of the {@link UIViewRoot} rather than in that
+     * of the request, the value this build applied is still the one in effect, since the state restored over the tree
+     * after this build replaces it with the one the previous request saved. The resource library contracts take that
+     * second decision as well, on the {@link FacesContext} rather than on the view: restoring a view recalculates them
+     * from the configured mappings once the build that applied them has finished. The {@code beforePhase}/{@code afterPhase}
+     * listener expressions are excluded as they are fixed per facelet and restored from state.
      */
-    private boolean hasDynamicAttribute() {
-        return isDynamic(locale) || isDynamic(renderKitId) || isDynamic(contentType) || isDynamic(encoding)
-                || isDynamic(contracts) || isDynamic(transientFlag);
-    }
+    private void recordDecisions(FaceletContext ctx, UIViewRoot root) {
+        recordBuildTimeDecision(ctx, locale);
+        recordBuildTimeDecision(ctx, renderKitId);
+        recordBuildTimeDecision(ctx, contentType);
+        recordBuildTimeDecision(ctx, encoding);
+        recordBuildTimeDecision(ctx, contracts);
+        recordBuildTimeDecision(ctx, transientFlag);
 
-    private static boolean isDynamic(TagAttribute attribute) {
-        return attribute != null && !attribute.isLiteral();
+        if (root != null) {
+            if (isDynamic(locale)) {
+                recordBuildTimeDecision(ctx, root::getLocale, root.getLocale());
+            }
+            if (isDynamic(renderKitId)) {
+                recordBuildTimeDecision(ctx, root::getRenderKitId, root.getRenderKitId());
+            }
+            if (isDynamic(transientFlag)) {
+                recordBuildTimeDecision(ctx, root::isTransient, root.isTransient());
+            }
+            if (isDynamic(encoding)) {
+                Map<String, Object> attributes = root.getAttributes();
+                recordBuildTimeDecision(ctx, () -> attributes.get(RIConstants.FACELETS_ENCODING_KEY),
+                        attributes.get(RIConstants.FACELETS_ENCODING_KEY));
+            }
+        }
+
+        if (isDynamic(contracts)) {
+            FacesContext facesContext = ctx.getFacesContext();
+            recordBuildTimeDecision(ctx, facesContext::getResourceLibraryContracts, facesContext.getResourceLibraryContracts());
+        }
     }
 
 }

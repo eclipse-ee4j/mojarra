@@ -23,6 +23,7 @@ import java.util.List;
 
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagConfig;
@@ -59,9 +60,11 @@ public final class ChooseHandler extends TagHandlerImpl {
 
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
-        markDynamicTransientBuild(ctx);
         for (int i = 0; i < when.length; i++) {
-            if (when[i].isTestTrue(ctx)) {
+            ValueExpression testExpression = when[i].getTestExpression(ctx);
+            boolean b = Boolean.TRUE.equals(testExpression.getValue(ctx));
+            recordBuildTimeDecision(ctx, testExpression, b);
+            if (b) {
                 when[i].apply(ctx, parent);
                 return;
             }

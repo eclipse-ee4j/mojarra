@@ -22,8 +22,8 @@ import jakarta.faces.view.facelets.Tag;
 
 final class InterfaceUnit extends TagUnit {
 
-    public InterfaceUnit(TagLibrary library, String namespace, String name, Tag tag, String id) {
-        super(library, namespace, name, tag, id);
+    public InterfaceUnit(CompilationManager manager, TagLibrary library, String namespace, String name, Tag tag, String id) {
+        super(manager, library, namespace, name, tag, id);
     }
 
 }

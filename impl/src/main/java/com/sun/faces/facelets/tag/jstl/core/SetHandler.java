@@ -21,6 +21,7 @@ import java.util.Iterator;
 
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 
+import jakarta.el.ELContext;
 import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;
@@ -59,8 +60,6 @@ public class SetHandler extends TagHandlerImpl {
 
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
-
-        markDynamicTransientBuild(ctx);
 
         StringBuilder bodyValue = new StringBuilder();
 
@@ -114,8 +113,15 @@ public class SetHandler extends TagHandlerImpl {
                 // Conjure up an expression
                 expr = "#{" + scopeStr + "." + varStr + "}";
                 lhs = ctx.getExpressionFactory().createValueExpression(ctx, expr, Object.class);
-                lhs.setValue(ctx, veObj.getValue(ctx));
+                Object scopedValue = veObj.getValue(ctx);
+                lhs.setValue(ctx, scopedValue);
+                recordBuildTimeDecision(ctx, var);
+                recordBuildTimeDecision(ctx, scope);
+                recordWrite(ctx, veObj, lhs, scopedValue);
             } else {
+                // The variable is mapped to the expression itself, so what this build produced does not depend on its
+                // value at all; only on the name under which the rest of the build captured it.
+                recordBuildTimeDecision(ctx, var);
                 ctx.getVariableMapper().setVariable(varStr, veObj);
             }
         } else {
@@ -139,9 +145,27 @@ public class SetHandler extends TagHandlerImpl {
             }
             ValueExpression targetVe = target.getValueExpression(ctx, Object.class);
             Object targetValue = targetVe.getValue(ctx);
-            ctx.getFacesContext().getELContext().getELResolver().setValue(ctx, targetValue, propertyStr, veObj.getValue(ctx));
+            Object propertyValue = veObj.getValue(ctx);
+            ctx.getFacesContext().getELContext().getELResolver().setValue(ctx, targetValue, propertyStr, propertyValue);
 
+            ELContext elContext = ctx.getFacesContext().getELContext();
+            String resolvedProperty = propertyStr;
+            recordBuildTimeDecision(ctx, property);
+            recordBuildTimeDecision(ctx, veObj, propertyValue);
+            recordBuildTimeDecision(ctx, targetVe, targetValue);
+            recordBuildTimeDecision(ctx, () -> elContext.getELResolver().getValue(elContext, targetValue, resolvedProperty), propertyValue);
         }
+    }
+
+    /**
+     * Records the write this build performed: the value it wrote, and that value still being the one at the location it
+     * wrote it to. The second is what a write the application performed after this build breaks, which re-applying
+     * would put back.
+     */
+    private static void recordWrite(FaceletContext ctx, ValueExpression valueExpression, ValueExpression location, Object value) {
+        ELContext elContext = ctx.getFacesContext().getELContext();
+        recordBuildTimeDecision(ctx, valueExpression, value);
+        recordBuildTimeDecision(ctx, () -> location.getValue(elContext), value);
     }
 
     // Swallow children - if they're text, we've already handled them.
