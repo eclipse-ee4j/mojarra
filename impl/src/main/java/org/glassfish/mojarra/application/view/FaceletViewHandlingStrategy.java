@@ -367,13 +367,12 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                 htmlDoctype.setSystem(doctype.getSystem());
                 view.setDoctype(htmlDoctype);
             }
-
-            startTrackViewModifications(ctx, view);
         } finally {
             ctx.getAttributes().remove(IS_BUILDING_INITIAL_STATE);
         }
         ctx.getApplication().publishEvent(ctx, PostAddToViewEvent.class, UIViewRoot.class, view);
         markInitialState(ctx, view);
+        startTrackViewModifications(ctx, view);
 
         setViewPopulated(ctx, view);
     }
