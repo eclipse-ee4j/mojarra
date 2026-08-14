@@ -41,14 +41,6 @@ public class RIConstants {
     public static final String SAVED_STATE = FACES_PREFIX + "savedState";
 
     /**
-     * Request-scoped flag set during a view build when a build-time-dynamic handler (a JSTL conditional/iteration or a
-     * dynamic ui:include/ui:decorate/ui:composition) participates, marking the view as one whose facelet must be
-     * re-applied on every (re)build. Read by {@code FaceletViewHandlingStrategy.buildView} to decide whether the
-     * redundant render-time re-apply may be skipped (see {@code refreshTransientBuildOnPSS}).
-     */
-    public static final String DYNAMIC_TRANSIENT_BUILD = FACES_PREFIX + "dynamicTransientBuild";
-
-    /**
      * Request-scoped flag recording whether the render-time {@code buildView} re-applied the facelet ({@code TRUE}) or
      * skipped the re-apply for an already-populated static view ({@code FALSE}, see {@code refreshTransientBuildOnPSS}).
      * Since {@code buildView} runs immediately before {@code renderView}, this reflects whether the tree the state

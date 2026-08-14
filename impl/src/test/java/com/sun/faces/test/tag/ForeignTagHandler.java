@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) Contributors to Eclipse Foundation.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -14,42 +14,28 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.faces.facelets.tag.jstl.core;
+package com.sun.faces.test.tag;
 
 import java.io.IOException;
 
-import com.sun.faces.facelets.tag.TagHandlerImpl;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;
-import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagHandler;
 
 /**
- * @author Jacob Hookom
+ * A tag handler taking over {@code apply} from outside the packages of this implementation, which is what every tag
+ * handler of another tag library does. It lives here rather than beside the test using it so that it does not fall
+ * under the package this implementation audits.
  */
-public final class CatchHandler extends TagHandlerImpl {
+public class ForeignTagHandler extends TagHandler {
 
-    private final TagAttribute var;
-
-    /**
-     * @param config
-     */
-    public CatchHandler(TagConfig config) {
+    public ForeignTagHandler(TagConfig config) {
         super(config);
-        var = getAttribute("var");
     }
 
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
-        markUnreproducibleBuild(ctx);
-        try {
-            nextHandler.apply(ctx, parent);
-        } catch (Exception e) {
-            if (var != null) {
-                ctx.setAttribute(var.getValue(ctx), e);
-            }
-        }
+        // Whatever this contributes to the view is exactly what this implementation cannot know.
     }
-
 }

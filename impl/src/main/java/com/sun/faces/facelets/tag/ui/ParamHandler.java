@@ -52,6 +52,7 @@ public class ParamHandler extends TagHandlerImpl {
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         String nameStr = name.getValue(ctx);
+        recordBuildTimeDecision(ctx, name);
         ValueExpression valueVE = value.getValueExpression(ctx, Object.class);
         ctx.getVariableMapper().setVariable(nameStr, valueVE);
     }

@@ -397,7 +397,7 @@ public final class SAXCompiler extends Compiler {
         } catch (FaceletException e) {
             throw e;
         }
-        FaceletHandler result = new EncodingHandler(mngr.createFaceletHandler(), encoding, mngr.getCompilationMessageHolder());
+        FaceletHandler result = new EncodingHandler(mngr.createFaceletHandler(), encoding, mngr.getCompilationMessageHolder(), mngr.isUnreproducibleBuild());
         mngr.setCompilationMessageHolder(null);
 
         return result;

@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import com.sun.faces.RIConstants;
+import com.sun.faces.facelets.tag.BuildTimeDecisions;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
@@ -31,16 +32,25 @@ public class EncodingHandler implements FaceletHandler {
     private final FaceletHandler next;
     private final String encoding;
     private final CompilationMessageHolder messageHolder;
+    private final boolean unreproducibleBuild;
 
-    public EncodingHandler(FaceletHandler next, String encoding, CompilationMessageHolder messageHolder) {
+    public EncodingHandler(FaceletHandler next, String encoding, CompilationMessageHolder messageHolder, boolean unreproducibleBuild) {
         this.next = next;
         this.encoding = encoding;
         this.messageHolder = messageHolder;
+        this.unreproducibleBuild = unreproducibleBuild;
     }
 
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         FacesContext context = ctx.getFacesContext();
+
+        if (unreproducibleBuild) {
+            // This facelet holds a handler that decides what it contributes to the view by means unknown here, so
+            // this build cannot be proven to reproduce what a later one would build.
+            BuildTimeDecisions.markUnreproducible(context);
+        }
+
         Map<Object, Object> ctxAttributes = context.getAttributes();
         ctxAttributes.put("facelets.compilationMessages", messageHolder);
         next.apply(ctx, parent);

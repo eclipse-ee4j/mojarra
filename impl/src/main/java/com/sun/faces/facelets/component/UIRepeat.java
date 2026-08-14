@@ -233,6 +233,21 @@ public class UIRepeat extends UINamingContainer {
         return false;
     }
 
+    /**
+     * A value expression cannot name the variable this component exports, since the body of the tag resolves that name
+     * as it is written. One is therefore rejected rather than accepted and then ignored.
+     *
+     * @throws IllegalArgumentException when the given name is {@code var} or {@code varStatus}
+     */
+    @Override
+    public void setValueExpression(String name, ValueExpression binding) {
+        if ("var".equals(name) || "varStatus".equals(name)) {
+            throw new IllegalArgumentException(name);
+        }
+
+        super.setValueExpression(name, binding);
+    }
+
     public String getVar() {
         return var;
     }

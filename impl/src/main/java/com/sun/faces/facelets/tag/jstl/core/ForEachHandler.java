@@ -26,14 +26,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import com.sun.faces.RIConstants;
+import com.sun.faces.facelets.tag.BuildTimeDecisions;
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 import com.sun.faces.facelets.tag.faces.ComponentSupport;
 import com.sun.faces.facelets.tag.faces.IterationIdManager;
 
+import jakarta.el.ELContext;
 import jakarta.el.ValueExpression;
 import jakarta.el.VariableMapper;
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagAttribute;
@@ -124,7 +126,6 @@ public final class ForEachHandler extends TagHandlerImpl {
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
 
-        markDynamicTransientBuild(ctx);
         int s = getBegin(ctx);
         int e = getEnd(ctx);
         int m = getStep(ctx);
@@ -153,21 +154,26 @@ public final class ForEachHandler extends TagHandlerImpl {
         // positional index to compare against or read live - so it, and any other non-indexable Collection, is left to
         // the normal re-apply path.
         boolean indexable = src != null && (srcVE == null || src instanceof List || src.getClass().isArray());
-        Map<Object, Object> contextAttributes = ctx.getFacesContext().getAttributes();
+        FacesContext facesContext = ctx.getFacesContext();
+        Map<Object, Object> contextAttributes = facesContext.getAttributes();
         String stateKey = null;
         int[] range = null;
         List<UIComponent> childrenBeforeBuild = null;
+        int decisionsBeforeBody = 0;
+        int unreproducibleMarksBeforeBody = 0;
         if (indexable) {
+            recordDecisions(ctx, srcVE, src, s, e, m, t);
             stateKey = ITERATION_STATE + System.identityHashCode(parent) + ':' + tag.getLocation();
             range = new int[] { s, e, m };
-            if (ctx.getFacesContext().getCurrentPhaseId() == PhaseId.RESTORE_VIEW) {
+            if (facesContext.getCurrentPhaseId() == PhaseId.RESTORE_VIEW) {
                 // Restore-time (re)build under PSS rebuilds this transient subtree from scratch; snapshot the existing
-                // children so the ones created below can be recorded for the render pass to retain. Clear the
-                // build-time-dynamic marker first: if applying the body re-sets it, the body holds nested dynamic
-                // content (a nested c:forEach/c:if/...) that could change without this item list changing, so it must
-                // not be skip-retained - only a fully static body is safe.
+                // children so the ones created below can be recorded for the render pass to retain, and the decisions
+                // recorded so far so the ones the body records are recognizable: a body holding nested dynamic content
+                // (a nested c:forEach/c:if/...) could change without this item list changing, so it must not be
+                // skip-retained - only a fully static body is safe.
                 childrenBeforeBuild = new ArrayList<>(parent.getChildren());
-                contextAttributes.remove(RIConstants.DYNAMIC_TRANSIENT_BUILD);
+                decisionsBeforeBody = BuildTimeDecisions.size(facesContext);
+                unreproducibleMarksBeforeBody = BuildTimeDecisions.unreproducibleMarks(facesContext);
             } else {
                 Object[] state = (Object[]) contextAttributes.get(stateKey);
                 if (state != null && sameIteration(state, range, srcVE == null ? null : src)) {
@@ -181,6 +187,8 @@ public final class ForEachHandler extends TagHandlerImpl {
                     return;
                 }
             }
+        } else {
+            markUnreproducibleBuild(ctx);
         }
 
         if (src != null) {
@@ -260,10 +268,10 @@ public final class ForEachHandler extends TagHandlerImpl {
         }
 
         if (childrenBeforeBuild != null) {
-            // The body just applied re-set the dynamic marker iff it holds nested build-time-dynamic content; capture
-            // that, then restore the marker this handler itself set (this c:forEach is build-time-dynamic).
-            boolean nestedDynamic = contextAttributes.containsKey(RIConstants.DYNAMIC_TRANSIENT_BUILD);
-            markDynamicTransientBuild(ctx);
+            // The body just applied recorded a decision of its own, or marked the build unreproducible, iff it holds
+            // nested build-time-dynamic content.
+            boolean nestedDynamic = BuildTimeDecisions.size(facesContext) > decisionsBeforeBody
+                    || BuildTimeDecisions.unreproducibleMarks(facesContext) > unreproducibleMarksBeforeBody;
 
             List<UIComponent> created = new ArrayList<>();
             for (UIComponent child : parent.getChildren()) {
@@ -278,6 +286,37 @@ public final class ForEachHandler extends TagHandlerImpl {
                 contextAttributes.put(stateKey, new Object[] { range, srcVE == null ? null : snapshotElements(src), created });
             }
         }
+    }
+
+    /**
+     * Records what this build iterated over, so the redundant render-time re-apply is skipped as long as it would
+     * iterate the same way and is performed when it would not (see {@code refreshTransientBuildOnPSS}). The item
+     * sequence takes a decision of its own, since it is a comparison over every element rather than a single value;
+     * the body's own decisions stand beside it, each captured with this iteration's index-based var expression and
+     * therefore reading its own element live.
+     */
+    private void recordDecisions(FaceletContext ctx, ValueExpression srcVE, Object src, int begin, int end, int step, boolean tranzient) {
+        recordBuildTimeDecision(ctx, this.begin, Integer.class, begin);
+        recordBuildTimeDecision(ctx, this.end, Integer.class, end);
+        recordBuildTimeDecision(ctx, this.step, Integer.class, step);
+        recordBuildTimeDecision(ctx, this.tranzient, Boolean.class, tranzient);
+        recordBuildTimeDecision(ctx, var);
+        recordBuildTimeDecision(ctx, varStatus);
+
+        if (srcVE != null) {
+            ELContext elContext = ctx.getFacesContext().getELContext();
+            List<Object> recordedItems = snapshotElements(src);
+            recordBuildTimeDecision(ctx, () -> sameItems(recordedItems, srcVE.getValue(elContext)), Boolean.TRUE);
+        }
+    }
+
+    /**
+     * Whether the current items are still the indexable sequence of elements that was recorded, which is what makes
+     * the subtree built over them reproducible.
+     */
+    private static boolean sameItems(List<Object> recordedItems, Object currentItems) {
+        return currentItems != null && (currentItems instanceof List || currentItems.getClass().isArray())
+                && sameElements(recordedItems, currentItems);
     }
 
     /**
