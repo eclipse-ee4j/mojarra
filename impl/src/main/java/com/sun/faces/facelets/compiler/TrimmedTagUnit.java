@@ -22,8 +22,8 @@ import jakarta.faces.view.facelets.Tag;
 
 class TrimmedTagUnit extends TagUnit {
 
-    public TrimmedTagUnit(TagLibrary library, String namespace, String name, Tag tag, String id) {
-        super(library, namespace, name, tag, id);
+    public TrimmedTagUnit(CompilationManager manager, TagLibrary library, String namespace, String name, Tag tag, String id) {
+        super(manager, library, namespace, name, tag, id);
     }
 
 }
