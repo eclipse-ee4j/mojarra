@@ -101,10 +101,6 @@ public final class CompositionHandler extends TagHandlerImpl implements Template
 
         if (template != null) {
 
-            if (!template.isLiteral()) {
-                markDynamicTransientBuild(ctx);
-            }
-
             FacesContext facesContext = ctx.getFacesContext();
             Integer compositionCount = (Integer) facesContext.getAttributes().get("org.glassfish.mojarra.uiCompositionCount");
             if (compositionCount == null) {
@@ -127,6 +123,7 @@ public final class CompositionHandler extends TagHandlerImpl implements Template
             String path = null;
             try {
                 path = template.getValue(ctx);
+                recordBuildTimeDecision(ctx, template, String.class, path);
                 if (path.trim().length() == 0) {
                     throw new TagAttributeException(tag, template, "Invalid path : " + path);
                 }

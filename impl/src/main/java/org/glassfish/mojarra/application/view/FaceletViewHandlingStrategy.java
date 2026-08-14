@@ -35,7 +35,6 @@ import static java.util.Collections.emptyList;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINEST;
 import static java.util.logging.Level.WARNING;
-import static org.glassfish.mojarra.RIConstants.DYNAMIC_TRANSIENT_BUILD;
 import static org.glassfish.mojarra.RIConstants.FACELETS_ENCODING_KEY;
 import static org.glassfish.mojarra.RIConstants.FLOW_DEFINITION_ID_SUFFIX;
 import static org.glassfish.mojarra.RIConstants.VIEW_REBUILT_AT_RENDER;
@@ -126,7 +125,6 @@ import jakarta.faces.view.facelets.Facelet;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.servlet.http.HttpSession;
 
-import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.application.ApplicationAssociate;
 import org.glassfish.mojarra.config.FacesContextParam;
 import org.glassfish.mojarra.config.MojarraContextParam;
@@ -136,6 +134,7 @@ import org.glassfish.mojarra.facelets.el.ContextualCompositeMethodExpression;
 import org.glassfish.mojarra.facelets.el.VariableMapperWrapper;
 import org.glassfish.mojarra.facelets.impl.DefaultFaceletFactory;
 import org.glassfish.mojarra.facelets.impl.XMLFrontMatterSaver;
+import org.glassfish.mojarra.facelets.tag.BuildTimeDecisions;
 import org.glassfish.mojarra.facelets.tag.composite.CompositeComponentBeanInfo;
 import org.glassfish.mojarra.facelets.tag.faces.CompositeComponentTagHandler;
 import org.glassfish.mojarra.facelets.tag.ui.UIDebug;
@@ -309,8 +308,8 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
         if (isViewPopulated(ctx, view)) {
             if (canSkipTransientBuildRefresh(ctx, view, stateCtx)) {
-                // The view was already (re)built this request and holds no build-time-dynamic content, so re-applying
-                // the facelet would reproduce the identical tree. Skip it (see refreshTransientBuildOnPSS).
+                // The view was already (re)built this request and re-applying the facelet would reproduce the
+                // identical tree. Skip it (see refreshTransientBuildOnPSS).
                 ctx.getAttributes().put(VIEW_REBUILT_AT_RENDER, Boolean.FALSE);
                 return;
             }
@@ -319,6 +318,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             // virute of re-applying the handlers.
             try {
                 stateCtx.setTrackViewModifications(false);
+                BuildTimeDecisions.reset(ctx);
                 facelet.apply(ctx, view);
                 reapplyDynamicActions(ctx);
                 if (stateCtx.isPartialStateSaving(ctx, view.getViewId())) {
@@ -348,6 +348,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         try {
             ctx.getAttributes().put(IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
             stateCtx.setTrackViewModifications(false);
+            BuildTimeDecisions.reset(ctx);
             facelet.apply(ctx, view);
 
             if (facelet instanceof XMLFrontMatterSaver) {
@@ -390,16 +391,17 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     /**
      * Determines whether the redundant re-apply of the facelet on an already-populated view may be skipped. Enabled by
      * default; set {@code refreshTransientBuildOnPSS} to {@code true} to restore the legacy unconditional re-apply.
-     * The skip is only safe under partial state saving for a non-transient view whose build this request involved no
-     * build-time-dynamic content ({@link RIConstants#DYNAMIC_TRANSIENT_BUILD}) and no dynamic component add/remove,
-     * since re-applying would then reproduce the identical tree.
+     * The skip is only safe under partial state saving for a non-transient view with no dynamic component add/remove
+     * whose build this request either involved no build-time-dynamic content at all or decided every piece of it on
+     * expressions that still evaluate to the value they had ({@link BuildTimeDecisions}), since re-applying would then
+     * reproduce the identical tree.
      */
     private boolean canSkipTransientBuildRefresh(FacesContext ctx, UIViewRoot view, StateContext stateCtx) {
         return !refreshTransientBuildOnPSS
                 && !view.isTransient()
                 && stateCtx.isPartialStateSaving(ctx, view.getViewId())
                 && isEmpty(stateCtx.getDynamicActions())
-                && !ctx.getAttributes().containsKey(DYNAMIC_TRANSIENT_BUILD);
+                && BuildTimeDecisions.reproducesBuild(ctx);
     }
 
     /**

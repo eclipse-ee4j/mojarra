@@ -68,19 +68,14 @@ public final class LoadBundleHandler extends TagHandlerImpl {
      */
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
-        if (!basename.isLiteral()) {
-            // A non-literal basename is re-evaluated per request, so the view must be re-applied on every (re)build
-            // instead of skipped (see refreshTransientBuildOnPSS) to re-resolve the bundle under var.
-            markDynamicTransientBuild(ctx);
-        }
-
         final UIViewRoot root = ComponentSupport.getViewRoot(ctx, parent);
+        final Locale locale = root != null && root.getLocale() != null ? root.getLocale() : Locale.getDefault();
 
+        final String name;
         final ResourceBundle bundle;
         try {
-            String name = basename.getValue(ctx);
+            name = basename.getValue(ctx);
             ClassLoader cl = Thread.currentThread().getContextClassLoader();
-            Locale locale = root != null && root.getLocale() != null ? root.getLocale() : Locale.getDefault();
 
             bundle = ResourceBundle.getBundle(name, locale, cl);
         }
@@ -91,7 +86,25 @@ public final class LoadBundleHandler extends TagHandlerImpl {
         final ResourceBundleMap map = new ResourceBundleMap(bundle);
         final FacesContext faces = ctx.getFacesContext();
 
-        faces.getExternalContext().getRequestMap().put(var.getValue(ctx), map);
+        final String varValue = var.getValue(ctx);
+        faces.getExternalContext().getRequestMap().put(varValue, map);
+
+        recordDecisions(ctx, root, name, varValue);
+    }
+
+    /**
+     * Records what this build resolved the bundle from, so the redundant render-time re-apply is skipped as long as
+     * it would resolve the same bundle under the same name, and performed when it would not, which is what re-resolves
+     * it (see {@code refreshTransientBuildOnPSS}). The view locale takes a decision even for a literal basename, since
+     * a locale changed after this build resolves a different bundle from the very same basename.
+     */
+    private void recordDecisions(FaceletContext ctx, UIViewRoot root, String basename, String var) {
+        recordBuildTimeDecision(ctx, this.basename, String.class, basename);
+        recordBuildTimeDecision(ctx, this.var, String.class, var);
+
+        if (root != null) {
+            recordBuildTimeDecision(ctx, root::getLocale, root.getLocale());
+        }
     }
 
     // ResourceBundleMap ---------------------------------------------------------------------

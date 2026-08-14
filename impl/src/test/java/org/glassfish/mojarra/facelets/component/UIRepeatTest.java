@@ -17,10 +17,12 @@
 package org.glassfish.mojarra.facelets.component;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Method;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.application.FacesMessage.Severity;
 import jakarta.faces.context.FacesContext;
@@ -37,6 +39,15 @@ public class UIRepeatTest {
 	private FacesMessage.Severity maximumSeverity = FacesMessage.Severity.WARN;
 
 	private Method uiRepeatHasErrorMessages;
+
+	@Test
+	public void testVarAndVarStatusRejectValueExpression() {
+		UIRepeat repeat = new UIRepeat();
+		ValueExpression expression = Mockito.mock(ValueExpression.class);
+
+		assertThrows(IllegalArgumentException.class, () -> repeat.setValueExpression("var", expression));
+		assertThrows(IllegalArgumentException.class, () -> repeat.setValueExpression("varStatus", expression));
+	}
 
 	@Test
 	public void testHasErrorMessages() throws Exception {
