@@ -88,9 +88,10 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
     /**
      * What resolves a mismatch between the rendered and the rebuilt view, appended to the report of either.
      */
-    private static final String REMEDY = " A build time condition such as c:if, c:choose or a variable ui:include path must evaluate to the"
-            + " same value while the postback is restored as it did while the response was rendered. Hold what it depends on in a @ViewScoped"
-            + " bean, or recompute it from the relevant request parameters in the @PostConstruct of the request scoped one.";
+    private static final String REMEDY = " A build time condition such as c:if, c:choose, a c:forEach range or a variable ui:include path must"
+            + " evaluate to the same value while the postback is restored as it did while the response was rendered, and the items a c:forEach"
+            + " iterated must still hold the rows it produced. Hold what they depend on in a @ViewScoped bean, or recompute it from the relevant"
+            + " request parameters in the @PostConstruct of the request scoped one.";
 
     /**
      * Reported for the components the rendered view held which the rebuilt one does not.
