@@ -290,7 +290,7 @@ public final class ForEachHandler extends TagHandlerImpl {
 
     /**
      * Records what this build iterated over, so the redundant render-time re-apply is skipped as long as it would
-     * iterate the same way and is performed when it would not (see {@code refreshTransientBuildOnPSS}). The item
+     * iterate the same way and is performed when it would not (see {@code refreshTransientBuild}). The item
      * sequence takes a decision of its own, since it is a comparison over every element rather than a single value;
      * the body's own decisions stand beside it, each captured with this iteration's index-based var expression and
      * therefore reading its own element live.

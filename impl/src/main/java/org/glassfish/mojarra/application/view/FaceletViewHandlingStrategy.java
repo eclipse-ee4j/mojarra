@@ -171,7 +171,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     private final MethodRetargetHandlerManager retargetHandlerManager = new MethodRetargetHandlerManager();
 
     private int responseBufferSize;
-    private boolean refreshTransientBuildOnPSS;
+    private boolean refreshTransientBuild;
     private StateSavingMethod stateSavingMethod;
 
     private Cache<Resource, BeanInfo> metadataCache;
@@ -306,7 +306,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         if (isViewPopulated(ctx, view)) {
             if (canSkipTransientBuildRefresh(ctx, view, stateCtx)) {
                 // The view was already (re)built this request and re-applying the facelet would reproduce the
-                // identical tree. Skip it (see refreshTransientBuildOnPSS).
+                // identical tree. Skip it (see refreshTransientBuild).
                 ctx.getAttributes().put(VIEW_REBUILT_AT_RENDER, Boolean.FALSE);
                 return;
             }
@@ -380,14 +380,14 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
     /**
      * Determines whether the redundant re-apply of the facelet on an already-populated view may be skipped. Enabled by
-     * default; set {@code refreshTransientBuildOnPSS} to {@code true} to restore the legacy unconditional re-apply.
+     * default; set {@code refreshTransientBuild} to {@code true} to restore the legacy unconditional re-apply.
      * The skip is only safe for a non-transient view with no dynamic component add/remove whose build this request
      * either involved no build-time-dynamic content at all or decided every piece of it on expressions that still
      * evaluate to the value they had ({@link BuildTimeDecisions}), since re-applying would then reproduce the
      * identical tree.
      */
     private boolean canSkipTransientBuildRefresh(FacesContext ctx, UIViewRoot view, StateContext stateCtx) {
-        return !refreshTransientBuildOnPSS
+        return !refreshTransientBuild
                 && !view.isTransient()
                 && isEmpty(stateCtx.getDynamicActions())
                 && BuildTimeDecisions.reproducesBuild(ctx);
@@ -853,7 +853,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
         FacesContext context = FacesContext.getCurrentInstance();
         responseBufferSize = FacesContextParam.FACELETS_BUFFER_SIZE.getInt(context);
-        refreshTransientBuildOnPSS = MojarraContextParam.REFRESH_TRANSIENT_BUILD_ON_PSS.isEnabled(context);
+        refreshTransientBuild = MojarraContextParam.REFRESH_TRANSIENT_BUILD.isEnabled(context);
         stateSavingMethod = FacesContextParam.STATE_SAVING_METHOD.getEnum(context);
 
         LOGGER.fine("Initialization Successful");

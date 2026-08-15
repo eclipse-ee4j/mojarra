@@ -179,7 +179,7 @@ public final class ViewHandler extends TagHandlerImpl {
     /**
      * Records what this build decided for every non-literal view attribute, so the redundant render-time re-apply is
      * skipped as long as each still holds and is performed when one of them does not, which is what applies the new
-     * value (see {@code refreshTransientBuildOnPSS}). Each takes two decisions: the attribute still evaluates to the
+     * value (see {@code refreshTransientBuild}). Each takes two decisions: the attribute still evaluates to the
      * value this build got, and, for the attributes held in the state of the {@link UIViewRoot} rather than in that
      * of the request, the value this build applied is still the one in effect, since the state restored over the tree
      * after this build replaces it with the one the previous request saved. The resource library contracts take that
