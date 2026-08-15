@@ -69,10 +69,8 @@ public final class IncludeHandler extends TagHandlerImpl {
      */
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
-        if (!src.isLiteral()) {
-            markDynamicTransientBuild(ctx);
-        }
         String path = src.getValue(ctx);
+        recordBuildTimeDecision(ctx, src, String.class, path);
         if (path == null || path.length() == 0) {
             return;
         }

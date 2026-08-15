@@ -61,6 +61,8 @@ public final class FacetHandler extends TagHandlerImpl implements jakarta.faces.
             throw new TagException(tag, "Parent UIComponent was null");
         }
 
+        recordBuildTimeDecision(ctx, name);
+
         String facetName = getFacetName(ctx);
         parent.getAttributes().put(KEY, facetName);
 
