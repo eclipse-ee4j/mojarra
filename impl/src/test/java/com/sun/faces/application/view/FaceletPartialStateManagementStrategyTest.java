@@ -15,6 +15,7 @@
  */
 package com.sun.faces.application.view;
 
+import static com.sun.faces.RIConstants.BUILD_TIME_DECISIONS;
 import static com.sun.faces.RIConstants.DYNAMIC_ACTIONS;
 import static com.sun.faces.RIConstants.RENDERED_TAGS;
 import static com.sun.faces.application.view.FaceletPartialStateManagementStrategy.NOT_REBUILT_REPORT;
@@ -159,7 +160,8 @@ class FaceletPartialStateManagementStrategyTest {
         assertTrue(isViewRootOnlyState("root", state()));
         assertTrue(isViewRootOnlyState("root", state(DYNAMIC_ACTIONS)));
         assertTrue(isViewRootOnlyState("root", state(RENDERED_TAGS)));
-        assertTrue(isViewRootOnlyState("root", state(DYNAMIC_ACTIONS, RENDERED_TAGS)));
+        assertTrue(isViewRootOnlyState("root", state(BUILD_TIME_DECISIONS)));
+        assertTrue(isViewRootOnlyState("root", state(DYNAMIC_ACTIONS, RENDERED_TAGS, BUILD_TIME_DECISIONS)));
     }
 
     @Test
@@ -167,7 +169,8 @@ class FaceletPartialStateManagementStrategyTest {
         assertTrue(isViewRootOnlyState("root", state("root")));
         assertTrue(isViewRootOnlyState("root", state("root", DYNAMIC_ACTIONS)));
         assertTrue(isViewRootOnlyState("root", state("root", RENDERED_TAGS)));
-        assertTrue(isViewRootOnlyState("root", state("root", DYNAMIC_ACTIONS, RENDERED_TAGS)));
+        assertTrue(isViewRootOnlyState("root", state("root", BUILD_TIME_DECISIONS)));
+        assertTrue(isViewRootOnlyState("root", state("root", DYNAMIC_ACTIONS, RENDERED_TAGS, BUILD_TIME_DECISIONS)));
     }
 
     @Test
@@ -175,7 +178,8 @@ class FaceletPartialStateManagementStrategyTest {
         assertFalse(isViewRootOnlyState("root", state("form:input")));
         assertFalse(isViewRootOnlyState("root", state("form:input", DYNAMIC_ACTIONS)));
         assertFalse(isViewRootOnlyState("root", state("form:input", RENDERED_TAGS)));
-        assertFalse(isViewRootOnlyState("root", state("root", "form:input", DYNAMIC_ACTIONS, RENDERED_TAGS)));
+        assertFalse(isViewRootOnlyState("root", state("form:input", BUILD_TIME_DECISIONS)));
+        assertFalse(isViewRootOnlyState("root", state("root", "form:input", DYNAMIC_ACTIONS, RENDERED_TAGS, BUILD_TIME_DECISIONS)));
     }
 
     @Test

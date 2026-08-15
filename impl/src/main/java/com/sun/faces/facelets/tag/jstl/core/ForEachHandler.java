@@ -104,6 +104,19 @@ public final class ForEachHandler extends TagHandlerImpl {
     // pending deletion. Keyed additionally by parent identity + tag location.
     private static final String ITERATION_STATE = "com.sun.faces.facelets.forEachIterationState:";
 
+    // Indices into the decision saved for an indexable iteration: the range it iterated over and how many iterations
+    // it produced. Replaying those four is what makes the build restoring a view produce the rows that were rendered,
+    // each var reference still reading its own element live by position from the items the model holds now.
+    private static final int BEGIN = 0;
+    private static final int END = 1;
+    private static final int STEP = 2;
+    private static final int COUNT = 3;
+
+    /**
+     * The iteration count of a build which reproduces no earlier one, so iterates as far as the items reach.
+     */
+    private static final int NO_REPLAY = -1;
+
     /**
      * @param config
      */
@@ -129,9 +142,6 @@ public final class ForEachHandler extends TagHandlerImpl {
         int s = getBegin(ctx);
         int e = getEnd(ctx);
         int m = getStep(ctx);
-        Integer sO = begin != null ? s : null;
-        Integer eO = end != null ? e : null;
-        Integer mO = step != null ? m : null;
 
         boolean t = getTransient(ctx);
         Object src = null;
@@ -139,7 +149,27 @@ public final class ForEachHandler extends TagHandlerImpl {
         if (items != null) {
             srcVE = items.getValueExpression(ctx, Object.class);
             src = srcVE.getValue(ctx);
-        } else {
+        }
+
+        // Reproduce the iteration the build which rendered the view produced, so that a value submitted for a row it
+        // held is decoded by that row rather than by nothing. Only the range and the row count are saved, never the
+        // items: each var reference reads its own element live by position, so items which no longer supply those
+        // rows are iterated as they are now and the render time re-apply is what follows the model.
+        String decisionKey = buildTimeDecisionKey(ctx);
+        int[] rendered = (int[]) replayBuildTimeDecision(ctx, decisionKey);
+        int replayCount = NO_REPLAY;
+        if (rendered != null && (srcVE == null || isIndexable(src) && supplies(src, rendered[BEGIN], rendered[STEP], rendered[COUNT]))) {
+            s = rendered[BEGIN];
+            e = rendered[END];
+            m = rendered[STEP];
+            replayCount = rendered[COUNT];
+        }
+
+        Integer sO = begin != null ? s : null;
+        Integer eO = end != null ? e : null;
+        Integer mO = step != null ? m : null;
+
+        if (items == null) {
             byte[] b = new byte[e + 1];
             for (int i = 0; i < b.length; i++) {
                 b[i] = (byte) i;
@@ -153,7 +183,7 @@ public final class ForEachHandler extends TagHandlerImpl {
         // value). A Map is not indexable - it iterates as a MappedValueExpression over a snapshotted Map.Entry, with no
         // positional index to compare against or read live - so it, and any other non-indexable Collection, is left to
         // the normal re-apply path.
-        boolean indexable = src != null && (srcVE == null || src instanceof List || src.getClass().isArray());
+        boolean indexable = src != null && (srcVE == null || isIndexable(src));
         FacesContext facesContext = ctx.getFacesContext();
         Map<Object, Object> contextAttributes = facesContext.getAttributes();
         String stateKey = null;
@@ -163,6 +193,9 @@ public final class ForEachHandler extends TagHandlerImpl {
         int unreproducibleMarksBeforeBody = 0;
         if (indexable) {
             recordDecisions(ctx, srcVE, src, s, e, m, t);
+            if (replayCount != NO_REPLAY) {
+                recordIterationCount(ctx, srcVE, s, e, m, replayCount);
+            }
             stateKey = ITERATION_STATE + System.identityHashCode(parent) + ':' + tag.getLocation();
             range = new int[] { s, e, m };
             if (facesContext.getCurrentPhaseId() == PhaseId.RESTORE_VIEW) {
@@ -191,6 +224,8 @@ public final class ForEachHandler extends TagHandlerImpl {
             markUnreproducibleBuild(ctx);
         }
 
+        int count = 0;
+
         if (src != null) {
             Iterator itr = toIterator(src);
             if (itr != null) {
@@ -210,13 +245,12 @@ public final class ForEachHandler extends TagHandlerImpl {
                 ValueExpression vsO = capture(vs, vars);
                 int mi = 0;
                 Object value = null;
-                int count = 0;
 
                 IterationIdManager.startIteration(ctx);
 
                 try {
                     boolean first = true;
-                    while (i <= e && itr.hasNext()) {
+                    while (i <= e && itr.hasNext() && count != replayCount) {
                         count++;
                         value = itr.next();
 
@@ -232,7 +266,8 @@ public final class ForEachHandler extends TagHandlerImpl {
 
                         // set the varStatus
                         if (vs != null) {
-                            JstlIterationStatus itrS = new JstlIterationStatus(first, !itr.hasNext(), i, sO, eO, mO, value, count);
+                            boolean last = !itr.hasNext() || count == replayCount;
+                            JstlIterationStatus itrS = new JstlIterationStatus(first, last, i, sO, eO, mO, value, count);
                             if (t || srcVE == null) {
                                 ctx.setAttribute(vs, itrS);
                             } else {
@@ -267,7 +302,11 @@ public final class ForEachHandler extends TagHandlerImpl {
             }
         }
 
-        if (childrenBeforeBuild != null) {
+        if (indexable) {
+            saveBuildTimeDecision(ctx, decisionKey, new int[] { s, e, m, count });
+        }
+
+        if (childrenBeforeBuild != null && count == iterationCount(src, s, e, m)) {
             // The body just applied recorded a decision of its own, or marked the build unreproducible, iff it holds
             // nested build-time-dynamic content.
             boolean nestedDynamic = BuildTimeDecisions.size(facesContext) > decisionsBeforeBody
@@ -308,6 +347,47 @@ public final class ForEachHandler extends TagHandlerImpl {
             List<Object> recordedItems = snapshotElements(src);
             recordBuildTimeDecision(ctx, () -> sameItems(recordedItems, srcVE.getValue(elContext)), Boolean.TRUE);
         }
+    }
+
+    /**
+     * Records that this build produced the iterations the build which rendered the view produced rather than the ones
+     * the items hold now, so that the render time re-apply which would produce another count is performed rather than
+     * skipped. A begin/end range needs none of this: its count follows from the range, which is recorded already.
+     */
+    private void recordIterationCount(FaceletContext ctx, ValueExpression srcVE, int begin, int end, int step, int count) {
+        if (srcVE != null) {
+            ELContext elContext = ctx.getFacesContext().getELContext();
+            recordBuildTimeDecision(ctx, () -> iterationCount(srcVE.getValue(elContext), begin, end, step), count);
+        }
+    }
+
+    /**
+     * Whether each element of the given items is read by position, which is what lets a row of the subtree built over
+     * them read its own element live rather than from a value saved with the state.
+     */
+    private static boolean isIndexable(Object src) {
+        return src instanceof List || src != null && src.getClass().isArray();
+    }
+
+    /**
+     * Whether the given items supply every index the given iteration reads. Replaying is all or nothing on that: this
+     * build iterates the items it has, so items which fall short of the recorded row count would produce fewer rows
+     * than were recorded and leave the recorded count naming an iteration this build did not produce.
+     */
+    private static boolean supplies(Object src, int begin, int step, int count) {
+        return count == 0 || begin + (count - 1) * step < elementCount(src);
+    }
+
+    /**
+     * How many iterations the given items produce over the given range.
+     */
+    private static int iterationCount(Object src, int begin, int end, int step) {
+        int last = Math.min(end, elementCount(src) - 1);
+        return last < begin ? 0 : (last - begin) / step + 1;
+    }
+
+    private static int elementCount(Object src) {
+        return src instanceof List ? ((List<?>) src).size() : Array.getLength(src);
     }
 
     /**

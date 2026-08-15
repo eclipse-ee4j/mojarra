@@ -103,8 +103,11 @@ public final class DecorateHandler extends TagHandlerImpl implements TemplateCli
         ctx.pushClient(this);
         String path = null;
         try {
-            path = template.getValue(ctx);
+            String key = buildTimeDecisionKey(ctx);
+            String rendered = (String) replayBuildTimeDecision(ctx, key);
+            path = rendered != null ? rendered : template.getValue(ctx);
             recordBuildTimeDecision(ctx, template, String.class, path);
+            saveBuildTimeDecision(ctx, key, path);
             if (path.trim().length() == 0) {
                 throw new TagAttributeException(tag, template, "Invalid path : " + path);
             }

@@ -34,6 +34,11 @@ import jakarta.faces.view.facelets.TagException;
  */
 public final class ChooseHandler extends TagHandlerImpl {
 
+    /**
+     * The decision saved for a build that took no when branch at all.
+     */
+    private static final int OTHERWISE = -1;
+
     private final ChooseOtherwiseHandler otherwise;
     private final ChooseWhenHandler[] when;
 
@@ -60,15 +65,22 @@ public final class ChooseHandler extends TagHandlerImpl {
 
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
+        String key = buildTimeDecisionKey(ctx);
+        Integer rendered = (Integer) replayBuildTimeDecision(ctx, key);
+
         for (int i = 0; i < when.length; i++) {
             ValueExpression testExpression = when[i].getTestExpression(ctx);
-            boolean b = Boolean.TRUE.equals(testExpression.getValue(ctx));
+            boolean b = rendered != null ? rendered == i : Boolean.TRUE.equals(testExpression.getValue(ctx));
             recordBuildTimeDecision(ctx, testExpression, b);
             if (b) {
+                saveBuildTimeDecision(ctx, key, i);
                 when[i].apply(ctx, parent);
                 return;
             }
         }
+
+        saveBuildTimeDecision(ctx, key, OTHERWISE);
+
         if (otherwise != null) {
             otherwise.apply(ctx, parent);
         }

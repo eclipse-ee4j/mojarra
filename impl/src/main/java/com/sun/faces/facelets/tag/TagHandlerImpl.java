@@ -106,6 +106,46 @@ public abstract class TagHandlerImpl extends TagHandler {
     }
 
     /**
+     * The key under which this handler's decision is saved and replayed, or {@code null} when decisions are not saved
+     * at all. The id the tag generates for this build is unique per tag and stable across the builds of one view,
+     * which is what lets the build restoring a view find back what the build which rendered it decided here.
+     *
+     * @param ctx the {@link FaceletContext} for the current build
+     * @return the key under which this handler's decision is saved and replayed
+     */
+    protected String buildTimeDecisionKey(FaceletContext ctx) {
+        return SavedBuildTimeDecisions.isEnabled(ctx.getFacesContext()) ? ctx.generateUniqueId(tagId) : null;
+    }
+
+    /**
+     * The value the build which rendered the view decided on here, or {@code null} when this build is not the one
+     * restoring that view or when there is nothing to replay.
+     *
+     * @param ctx the {@link FaceletContext} for the current build
+     * @param key the key of the decision, as returned by {@link #buildTimeDecisionKey(FaceletContext)}
+     * @return the value the build which rendered the view decided on here
+     */
+    protected static Object replayBuildTimeDecision(FaceletContext ctx, String key) {
+        return key == null ? null : SavedBuildTimeDecisions.replay(ctx.getFacesContext(), key);
+    }
+
+    /**
+     * Saves the decision this handler took with the state of the view, so that the build which restores it reproduces
+     * what this build produced. Only a value of a type the JDK declares may be saved, since a runtime which does not
+     * know this state entry must still be able to deserialize the state that carries it. A {@code null} decision is
+     * not saved at all, since that is what a build which has nothing to replay reads back.
+     *
+     * @param ctx the {@link FaceletContext} for the current build
+     * @param key the key of the decision, as returned by {@link #buildTimeDecisionKey(FaceletContext)}
+     * @param value the value this handler decided on, may be {@code null}
+     */
+    protected static void saveBuildTimeDecision(FaceletContext ctx, String key, Object value) {
+        if (key != null && value != null) {
+            SavedBuildTimeDecisions.record(ctx.getFacesContext(), key, value);
+        }
+    }
+
+    /**
      * Whether the given attribute can evaluate to something other than what it evaluated to before, which an absent or
      * literal attribute cannot.
      *

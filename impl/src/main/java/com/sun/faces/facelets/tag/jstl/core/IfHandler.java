@@ -49,8 +49,11 @@ public final class IfHandler extends TagHandlerImpl {
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, ELException {
         ValueExpression testExpression = test.getValueExpression(ctx, Boolean.class);
-        boolean b = Boolean.TRUE.equals(testExpression.getValue(ctx));
+        String key = buildTimeDecisionKey(ctx);
+        Boolean rendered = (Boolean) replayBuildTimeDecision(ctx, key);
+        boolean b = rendered != null ? rendered : Boolean.TRUE.equals(testExpression.getValue(ctx));
         recordBuildTimeDecision(ctx, testExpression, b);
+        saveBuildTimeDecision(ctx, key, b);
         if (var != null) {
             ctx.setAttribute(var.getValue(ctx), b);
         }

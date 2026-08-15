@@ -927,6 +927,7 @@ public class WebConfiguration {
         FaceletsSkipComments(ViewHandler.FACELETS_SKIP_COMMENTS_PARAM_NAME, false),
         PartialStateSaving(StateManager.PARTIAL_STATE_SAVING_PARAM_NAME, true),
         RefreshTransientBuildOnPSS("com.sun.faces.refreshTransientBuildOnPSS", false),
+        RestoreBuildTimeDecisions("com.sun.faces.restoreBuildTimeDecisions", false),
         GenerateUniqueServerStateIds("com.sun.faces.generateUniqueServerStateIds", true),
         InterpretEmptyStringSubmittedValuesAsNull(UIInput.EMPTY_STRING_AS_NULL_PARAM_NAME, false),
         AutoCompleteOffOnViewState("com.sun.faces.autoCompleteOffOnViewState", true),

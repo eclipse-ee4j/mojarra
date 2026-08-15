@@ -16,6 +16,7 @@
 
 package com.sun.faces.application.view;
 
+import static com.sun.faces.RIConstants.BUILD_TIME_DECISIONS;
 import static com.sun.faces.RIConstants.DYNAMIC_ACTIONS;
 import static com.sun.faces.RIConstants.DYNAMIC_COMPONENT;
 import static com.sun.faces.RIConstants.RENDERED_TAGS;
@@ -38,6 +39,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.sun.faces.context.StateContext;
+import com.sun.faces.facelets.tag.SavedBuildTimeDecisions;
 import com.sun.faces.facelets.tag.faces.ComponentSupport;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.ComponentStruct;
@@ -417,8 +419,8 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
 
     /**
      * Determine whether the saved state holds no per-component delta other than (optionally) the view
-     * root's own state. The {@code DYNAMIC_ACTIONS} and {@code RENDERED_TAGS} entries are bookkeeping
-     * rather than a component delta, so they are excluded from the count.
+     * root's own state. The {@code DYNAMIC_ACTIONS}, {@code RENDERED_TAGS} and {@code BUILD_TIME_DECISIONS}
+     * entries are bookkeeping rather than a component delta, so they are excluded from the count.
      *
      * @param viewRootClientId the client id of the view root.
      * @param state the saved state map.
@@ -430,6 +432,9 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
             componentStateCount--;
         }
         if (state.containsKey(RENDERED_TAGS)) {
+            componentStateCount--;
+        }
+        if (state.containsKey(BUILD_TIME_DECISIONS)) {
             componentStateCount--;
         }
         return componentStateCount == 0
@@ -663,6 +668,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
             stateMap.put(RENDERED_TAGS, renderedTags);
         }
 
+        SavedBuildTimeDecisions.save(context, stateMap);
         saveDynamicActions(context, stateContext, stateMap);
         StateContext.release(context);
         return new Object[] { null, stateMap };

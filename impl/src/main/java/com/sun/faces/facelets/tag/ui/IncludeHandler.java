@@ -67,8 +67,11 @@ public final class IncludeHandler extends TagHandlerImpl {
      */
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
-        String path = src.getValue(ctx);
+        String key = buildTimeDecisionKey(ctx);
+        String rendered = (String) replayBuildTimeDecision(ctx, key);
+        String path = rendered != null ? rendered : src.getValue(ctx);
         recordBuildTimeDecision(ctx, src, String.class, path);
+        saveBuildTimeDecision(ctx, key, path);
         if (path == null || path.length() == 0) {
             return;
         }
