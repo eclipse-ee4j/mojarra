@@ -25,6 +25,7 @@ import static com.sun.faces.application.view.FaceletPartialStateManagementStrate
 import static com.sun.faces.application.view.FaceletPartialStateManagementStrategy.isViewRootOnlyState;
 import static com.sun.faces.application.view.FaceletPartialStateManagementStrategy.tagOf;
 import static com.sun.faces.application.view.FaceletPartialStateManagementStrategy.truncated;
+import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.RestoreBuildTimeDecisions;
 import static com.sun.faces.facelets.tag.faces.ComponentSupport.MARK_CREATED;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -206,6 +207,18 @@ class FaceletPartialStateManagementStrategyTest {
     void neitherReportHoldsALoneApostrophe() {
         assertFalse(LONE_APOSTROPHE.matcher(NOT_REBUILT_REPORT).find(), NOT_REBUILT_REPORT);
         assertFalse(LONE_APOSTROPHE.matcher(REBUILT_FROM_ANOTHER_TAG_REPORT).find(), REBUILT_FROM_ANOTHER_TAG_REPORT);
+    }
+
+    /**
+     * The remedy of either report names the parameter which replays the build time decisions of the render, taken from
+     * the parameter itself so that renaming it cannot leave the report naming one which no longer exists.
+     */
+    @Test
+    void bothReportsNameTheParameterWhichReplaysTheBuildTimeDecisionsOfTheRender() {
+        String parameterName = RestoreBuildTimeDecisions.getQualifiedName();
+
+        assertTrue(NOT_REBUILT_REPORT.contains(parameterName), NOT_REBUILT_REPORT);
+        assertTrue(REBUILT_FROM_ANOTHER_TAG_REPORT.contains(parameterName), REBUILT_FROM_ANOTHER_TAG_REPORT);
     }
 
     private static List<String> clientIds(int count) {

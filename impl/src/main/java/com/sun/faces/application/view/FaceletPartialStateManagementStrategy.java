@@ -21,6 +21,7 @@ import static com.sun.faces.RIConstants.DYNAMIC_ACTIONS;
 import static com.sun.faces.RIConstants.DYNAMIC_COMPONENT;
 import static com.sun.faces.RIConstants.RENDERED_TAGS;
 import static com.sun.faces.RIConstants.VIEW_REBUILT_AT_RENDER;
+import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.RestoreBuildTimeDecisions;
 import static com.sun.faces.util.ComponentStruct.ADD;
 import static com.sun.faces.util.ComponentStruct.REMOVE;
 import static com.sun.faces.util.Util.isEmpty;
@@ -91,7 +92,8 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
     private static final String REMEDY = " A build time condition such as c:if, c:choose, a c:forEach range or a variable ui:include path must"
             + " evaluate to the same value while the postback is restored as it did while the response was rendered, and the items a c:forEach"
             + " iterated must still hold the rows it produced. Hold what they depend on in a @ViewScoped bean, or recompute it from the relevant"
-            + " request parameters in the @PostConstruct of the request scoped one.";
+            + " request parameters in the @PostConstruct of the request scoped one, or set the " + RestoreBuildTimeDecisions.getQualifiedName()
+            + " context parameter to true.";
 
     /**
      * Reported for the components the rendered view held which the rebuilt one does not.
