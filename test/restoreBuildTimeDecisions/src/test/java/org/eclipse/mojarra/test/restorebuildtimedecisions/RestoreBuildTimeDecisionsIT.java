@@ -44,6 +44,9 @@ class RestoreBuildTimeDecisionsIT extends BaseIT {
     @FindBy(id = "form:input")
     private WebElement input;
 
+    @FindBy(id = "form:inputA")
+    private WebElement inputA;
+
     @FindBy(id = "form:input0")
     private WebElement firstInput;
 
@@ -185,6 +188,21 @@ class RestoreBuildTimeDecisionsIT extends BaseIT {
         secondInput.sendKeys("second");
         guardHttp(submit::click);
         assertEquals("a,first,second", setNames.getText());
+    }
+
+    /**
+     * A value submitted for an input whose id an expression decided reaches the model, even though that expression
+     * yields another id while the postback is restored, and the response which follows holds the id the model asks
+     * for now.
+     */
+    @Test
+    void testDynamicId() {
+        open("dynamicid.xhtml");
+        guardHttp(show::click);
+        inputA.sendKeys("test");
+        guardHttp(submit::click);
+        assertEquals("test", value.getText());
+        assertTrue(getPageSource().contains("form:inputB"), "the re-apply which precedes rendering renames the input");
     }
 
     /**
