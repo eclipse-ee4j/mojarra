@@ -69,8 +69,19 @@ public final class MappedValueExpression extends ValueExpression {
      *
      */
     public MappedValueExpression(ValueExpression orig, Map.Entry entry) {
+        this(orig, entry.getKey());
+    }
+
+    /**
+     * The entry the given key holds in the given map, rather than the one an iteration handed out, so that a row an
+     * earlier build produced is reproduced from that key alone.
+     *
+     * @param orig the expression the map is read from
+     * @param key the key of the entry this expression reads
+     */
+    MappedValueExpression(ValueExpression orig, Object key) {
         this.orig = orig;
-        key = entry.getKey();
+        this.key = key;
     }
 
     /*

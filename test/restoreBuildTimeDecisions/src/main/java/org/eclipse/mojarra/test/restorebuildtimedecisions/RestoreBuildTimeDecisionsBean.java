@@ -30,10 +30,36 @@ import jakarta.inject.Named;
 @RequestScoped
 public class RestoreBuildTimeDecisionsBean {
 
+    /**
+     * The key of an entry which cannot be saved with the state, so that an iteration over it cannot be reproduced.
+     */
+    public static class UnsavableKey {
+
+        private final String name;
+
+        public UnsavableKey(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
+
     private boolean shown;
     private String value;
     private String otherValue;
     private final Map<Integer, String> values = new LinkedHashMap<>();
+
+    private final Map<UnsavableKey, String> unsavable = unsavable();
+
+    private static Map<UnsavableKey, String> unsavable() {
+        Map<UnsavableKey, String> unsavable = new LinkedHashMap<>();
+        unsavable.put(new UnsavableKey("first"), "a");
+        unsavable.put(new UnsavableKey("second"), "b");
+        return unsavable;
+    }
 
     public void show() {
         shown = true;
@@ -61,5 +87,9 @@ public class RestoreBuildTimeDecisionsBean {
 
     public Map<Integer, String> getValues() {
         return values;
+    }
+
+    public Map<UnsavableKey, String> getUnsavable() {
+        return unsavable;
     }
 }
