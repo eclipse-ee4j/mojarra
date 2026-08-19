@@ -706,10 +706,12 @@ public class RenderKitUtils {
                 continue;
             }
 
-            if (knownAttributes.get(name) != null || isBehaviorEventAttribute(name)) {
+            boolean supportedBehaviorEventAttribute = isSupportedBehaviorEventAttribute(component, name);
+
+            if (knownAttributes.get(name) != null || supportedBehaviorEventAttribute) {
                 Object value = attrMap.get(name);
                 if (value != null && shouldRenderAttribute(value)) {
-                    if (isBehaviorEventAttribute(name)) {
+                    if (supportedBehaviorEventAttribute) {
                         String eventName = name.substring(BEHAVIOR_EVENT_ATTRIBUTE_PREFIX.length());
                         addBehaviorEventListener(context, component, null, null, name, value, eventName, eventName, null, false, false);
                         if (eventName.equals(behaviorEventName)) {
@@ -776,7 +778,7 @@ public class RenderKitUtils {
         behaviorEventNames.addAll(behaviors.keySet());
 
         if (setAttributes != null) {
-            setAttributes.stream().filter(RenderKitUtils::isBehaviorEventAttribute).map(a -> a.substring(BEHAVIOR_EVENT_ATTRIBUTE_PREFIX.length())).forEach(behaviorEventNames::add);
+            setAttributes.stream().filter(name -> isSupportedBehaviorEventAttribute(component, name)).map(a -> a.substring(BEHAVIOR_EVENT_ATTRIBUTE_PREFIX.length())).forEach(behaviorEventNames::add);
         }
 
         for (Attribute attribute : knownAttributes) {
@@ -814,6 +816,31 @@ public class RenderKitUtils {
         } else if (hasValue) {
             writer.writeAttribute(prefixAttribute(attrName, isXhtml), value, attrName);
         }
+    }
+
+    /**
+     * <p>
+     * A behavior event attribute is only rendered when the component names the event after "on" in
+     * {@link ClientBehaviorHolder#getEventNames()}, as required by the behavior event attribute rule of the standard
+     * HTML render kit. A component which is no {@link ClientBehaviorHolder} has no such list to check against, so its
+     * behavior event attributes are all rendered.
+     * </p>
+     *
+     * @param component the component whose attribute is being rendered
+     * @param name the attribute name
+     * @return whether the given attribute is a behavior event attribute which the given component supports
+     */
+    private static boolean isSupportedBehaviorEventAttribute(UIComponent component, String name) {
+        if (!isBehaviorEventAttribute(name)) {
+            return false;
+        }
+
+        if (!(component instanceof ClientBehaviorHolder clientBehaviorHolder)) {
+            return true;
+        }
+
+        Collection<String> eventNames = clientBehaviorHolder.getEventNames();
+        return eventNames != null && eventNames.contains(name.substring(BEHAVIOR_EVENT_ATTRIBUTE_PREFIX.length()));
     }
 
     public static boolean isBehaviorEventAttribute(String name) {
