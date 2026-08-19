@@ -60,7 +60,7 @@ import jakarta.faces.component.behavior.ClientBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorContext;
 import jakarta.faces.component.behavior.ClientBehaviorHint;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
-import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
+import jakarta.faces.component.html.HtmlEvents.HtmlElementEvent;
 import jakarta.faces.component.html.HtmlMessages;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
@@ -348,7 +348,7 @@ public class RenderKitUtils {
      * @throws IOException if an error occurs writing the attributes
      */
     public static void renderPassThruAttributes(FacesContext context, ResponseWriter writer, UIComponent component, String clientId, boolean incExec,
-            Attributes attributes, HtmlDocumentElementEvent defaultDomEvent, FacesComponentEvent defaultComponentEvent) throws IOException {
+            Attributes attributes, HtmlElementEvent defaultDomEvent, FacesComponentEvent defaultComponentEvent) throws IOException {
 
         Map<String, List<ClientBehavior>> behaviors = null;
         boolean hasValueChangeBehavior = false;
@@ -464,7 +464,7 @@ public class RenderKitUtils {
     }
 
     private static void renderValueChangeEventListener(FacesContext context, UIComponent component, String clientId,
-            HtmlDocumentElementEvent defaultDomEvent, String componentEventName, String domEventName,
+            HtmlElementEvent defaultDomEvent, String componentEventName, String domEventName,
             boolean hasBehaviorForDefaultEvent, boolean incExec) throws IOException {
 
         String handlerName = BEHAVIOR_EVENT_ATTRIBUTE_PREFIX + domEventName;
@@ -495,7 +495,7 @@ public class RenderKitUtils {
         final String handlerName = "onclick";
         final Object userHandler = component.getAttributes().get(handlerName);
         String behaviorEventName = FacesComponentEvent.action.name();
-        String domEventName = HtmlDocumentElementEvent.click.name();
+        String domEventName = HtmlElementEvent.click.name();
         if (component instanceof ClientBehaviorHolder) {
             Map<String, List<ClientBehavior>> behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
             boolean mixed = null != behaviors && behaviors.containsKey(domEventName) && behaviors.containsKey(behaviorEventName);
@@ -1284,7 +1284,7 @@ public class RenderKitUtils {
         // request params.
         String partialEvent = PARTIAL_EVENT_PARAM.getValue(context);
 
-        return HtmlDocumentElementEvent.click.name().equals(partialEvent);
+        return HtmlElementEvent.click.name().equals(partialEvent);
     }
 
     /**
@@ -1653,7 +1653,7 @@ public class RenderKitUtils {
         // If we're submitting (either via a behavior, or by rendering
         // a submit script), we need to prevent the
         // default button/link action event.
-        if (submitting && (FacesComponentEvent.action.name().equals(behaviorEventName) || HtmlDocumentElementEvent.click.name().equals(behaviorEventName))) {
+        if (submitting && (FacesComponentEvent.action.name().equals(behaviorEventName) || HtmlElementEvent.click.name().equals(behaviorEventName))) {
             builder.append(";event.preventDefault()");
         }
 

@@ -20,7 +20,7 @@ import java.io.IOException;
 
 import jakarta.faces.application.NavigationCase;
 import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
+import jakarta.faces.component.html.HtmlEvents.HtmlElementEvent;
 import jakarta.faces.component.html.HtmlOutcomeTargetButton;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
@@ -114,7 +114,7 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
             if (navCase != null) {
                 String hrefVal = getEncodedTargetURL(context, component, navCase);
                 hrefVal += getFragment(component);
-                RenderKitUtils.addEventListener(context, component, HtmlDocumentElementEvent.click.name(), getOnclick(component, hrefVal));
+                RenderKitUtils.addEventListener(context, component, HtmlElementEvent.click.name(), getOnclick(component, hrefVal));
             }
         }
 

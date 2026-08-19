@@ -22,7 +22,7 @@ import java.util.Map;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
+import jakarta.faces.component.html.HtmlEvents.HtmlElementEvent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
@@ -64,7 +64,7 @@ public class PassthroughRenderer extends HtmlBasicRenderer {
         // render the default click/action behavior separately - both are queued as CSP-safe event
         // listeners that encodeEnd() flushes via flushPendingBehaviorEventListeners().
         RenderKitUtils.renderPassThruAttributes(context, writer, component, null, false, ATTRIBUTES,
-                HtmlDocumentElementEvent.click, FacesComponentEvent.action);
+                HtmlElementEvent.click, FacesComponentEvent.action);
         RenderKitUtils.renderOnclickEventListener(context, component, null, null, false);
 
     }
