@@ -42,9 +42,13 @@ import jakarta.faces.context.FacesContext;
  * of one view, and holds a value of a type the JDK declares, so that a runtime which does not know this state entry
  * can still deserialize the state that carries it. What a handler cannot express in one - the keys of an iteration
  * over a map, which name the entries its rows were rendered for - is carried in a JDK typed array of the application's
- * own values, which must be {@link java.io.Serializable} like everything else the state holds. The decisions of the
- * previous build are read only: a build records into a map of its own, which is what is saved, so that a decision no
- * longer taken does not linger in the state.
+ * own values, which must be {@link java.io.Serializable} like everything else the state holds. What is replayed and
+ * what is saved are two maps: the builds of this request record into the second, so that a decision an earlier
+ * response took and this one does not is gone from the state rather than replayed by the next restore. They record
+ * into it together rather than one build at a time, since the re-apply which precedes rendering is skipped for a view
+ * whose decisions still hold and would otherwise leave nothing to save, which is also why a postback which navigates
+ * saves what the view it restored decided beside what the view it renders did: telling the two apart costs the build
+ * it was restored by.
  *
  * <p>
  * Nothing of this happens unless {@code com.sun.faces.restoreBuildTimeDecisions} is enabled.
@@ -64,6 +68,7 @@ public final class SavedBuildTimeDecisions {
     private final Map<String, Object> restored = new HashMap<>();
     private final Map<String, Object> recorded = new HashMap<>();
     private boolean replaying;
+    private boolean suspended;
 
     private SavedBuildTimeDecisions() {
     }
@@ -76,7 +81,35 @@ public final class SavedBuildTimeDecisions {
      * @return whether build time decisions are saved and replayed
      */
     public static boolean isEnabled(FacesContext context) {
-        return of(context) != null;
+        return active(context) != null;
+    }
+
+    /**
+     * Stops the builds of this request from deciding anything, to be resumed with {@link #resume(FacesContext)}. A
+     * build which contributes nothing to the response has nothing to replay and nothing worth saving: the view it
+     * produces is thrown away, and the ids its tags generate are of a facelet of its own.
+     *
+     * @param context the {@link FacesContext} for the current request
+     */
+    public static void suspend(FacesContext context) {
+        SavedBuildTimeDecisions instance = of(context);
+
+        if (instance != null) {
+            instance.suspended = true;
+        }
+    }
+
+    /**
+     * Lets the builds of this request decide again, after {@link #suspend(FacesContext)}.
+     *
+     * @param context the {@link FacesContext} for the current request
+     */
+    public static void resume(FacesContext context) {
+        SavedBuildTimeDecisions instance = of(context);
+
+        if (instance != null) {
+            instance.suspended = false;
+        }
     }
 
     /**
@@ -91,7 +124,8 @@ public final class SavedBuildTimeDecisions {
         SavedBuildTimeDecisions instance = of(context);
 
         if (instance != null) {
-            Map<String, Object> saved = state == null ? null : (Map<String, Object>) state.get(RIConstants.BUILD_TIME_DECISIONS);
+            Object entry = state == null ? null : state.get(RIConstants.BUILD_TIME_DECISIONS);
+            Map<String, Object> saved = entry instanceof Map ? (Map<String, Object>) entry : null;
 
             if (saved != null) {
                 instance.restored.putAll(saved);
@@ -138,7 +172,7 @@ public final class SavedBuildTimeDecisions {
      * @return the value the build which rendered the view decided on
      */
     public static Object replay(FacesContext context, String key) {
-        SavedBuildTimeDecisions instance = of(context);
+        SavedBuildTimeDecisions instance = active(context);
 
         return instance != null && instance.replaying ? instance.restored.get(key) : null;
     }
@@ -152,11 +186,20 @@ public final class SavedBuildTimeDecisions {
      * the application's own where a handler cannot express its decision in one
      */
     public static void record(FacesContext context, String key, Object value) {
-        SavedBuildTimeDecisions instance = of(context);
+        SavedBuildTimeDecisions instance = active(context);
 
         if (instance != null) {
             instance.recorded.put(key, value);
         }
+    }
+
+    /**
+     * @return the instance for the current request, or {@code null} when the feature is off or the build in progress
+     * decides nothing.
+     */
+    private static SavedBuildTimeDecisions active(FacesContext context) {
+        SavedBuildTimeDecisions instance = of(context);
+        return instance == null || instance.suspended ? null : instance;
     }
 
     /**

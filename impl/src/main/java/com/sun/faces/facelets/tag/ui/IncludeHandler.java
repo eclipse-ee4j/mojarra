@@ -24,6 +24,8 @@ import com.sun.faces.facelets.el.VariableMapperWrapper;
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 import com.sun.faces.util.FacesLogger;
 
+import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
 import jakarta.el.VariableMapper;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;
@@ -67,11 +69,20 @@ public final class IncludeHandler extends TagHandlerImpl {
      */
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
-        String key = buildTimeDecisionKey(ctx);
-        String rendered = (String) replayBuildTimeDecision(ctx, key);
-        String path = rendered != null ? rendered : src.getValue(ctx);
-        recordBuildTimeDecision(ctx, src, String.class, path);
-        saveBuildTimeDecision(ctx, key, path);
+        String key = isDynamic(src) ? buildTimeDecisionKey(ctx) : null;
+        String rendered = replayBuildTimeDecision(ctx, key, String.class);
+        String path = rendered == null ? src.getValue(ctx) : included(rendered);
+
+        if (isDynamic(src)) {
+            // This handler includes nothing for an absent path and nothing for an empty one, so the decision is which
+            // of the two it is, and the state carries an absent path as an empty one: a decision of null reads back as
+            // no decision at all, and the build restoring the view would include what the response did not hold.
+            ValueExpression expression = src.getValueExpression(ctx, String.class);
+            ELContext elContext = ctx.getFacesContext().getELContext();
+            recordBuildTimeDecision(ctx, () -> included(expression.getValue(elContext)), included(path));
+            saveBuildTimeDecision(ctx, key, path == null ? "" : path);
+        }
+
         if (path == null || path.length() == 0) {
             return;
         }
@@ -88,5 +99,13 @@ public final class IncludeHandler extends TagHandlerImpl {
         } finally {
             ctx.setVariableMapper(orig);
         }
+    }
+
+    /**
+     * The given path where it includes something, and {@code null} where it does not, which an absent path and an
+     * empty one both do not.
+     */
+    private static String included(Object path) {
+        return path == null || path.toString().isEmpty() ? null : path.toString();
     }
 }

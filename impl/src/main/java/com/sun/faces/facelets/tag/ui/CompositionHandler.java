@@ -122,8 +122,8 @@ public final class CompositionHandler extends TagHandlerImpl implements Template
             ctx.extendClient(this);
             String path = null;
             try {
-                String key = buildTimeDecisionKey(ctx);
-                String rendered = (String) replayBuildTimeDecision(ctx, key);
+                String key = isDynamic(template) ? buildTimeDecisionKey(ctx) : null;
+                String rendered = replayBuildTimeDecision(ctx, key, String.class);
                 path = rendered != null ? rendered : template.getValue(ctx);
                 recordBuildTimeDecision(ctx, template, String.class, path);
                 saveBuildTimeDecision(ctx, key, path);

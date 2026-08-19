@@ -130,6 +130,23 @@ public abstract class TagHandlerImpl extends TagHandler {
     }
 
     /**
+     * The value the build which rendered the view decided on here, of the given type, or {@code null} when this build
+     * is not the one restoring that view, when there is nothing to replay, or when what is there is of another type.
+     * The keys of the decisions of a facelet edited since the response was rendered name other decisions than they did,
+     * so a handler must read back what it saved rather than whatever stands under its key.
+     *
+     * @param <T> the type of the decision.
+     * @param ctx the {@link FaceletContext} for the current build.
+     * @param key the key of the decision, as returned by {@link #buildTimeDecisionKey(FaceletContext)}.
+     * @param type the type this handler saves its decision as.
+     * @return the value the build which rendered the view decided on here.
+     */
+    protected static <T> T replayBuildTimeDecision(FaceletContext ctx, String key, Class<T> type) {
+        Object decision = replayBuildTimeDecision(ctx, key);
+        return type.isInstance(decision) ? type.cast(decision) : null;
+    }
+
+    /**
      * Saves the decision this handler took with the state of the view, so that the build which restores it reproduces
      * what this build produced. Only a value of a type the JDK declares may be saved, since a runtime which does not
      * know this state entry must still be able to deserialize the state that carries it. A {@code null} decision is

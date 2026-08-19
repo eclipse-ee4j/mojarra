@@ -35,6 +35,7 @@ import com.sun.faces.RIConstants;
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.context.FacesFileNotFoundException;
 import com.sun.faces.facelets.impl.DefaultFaceletFactory;
+import com.sun.faces.facelets.tag.SavedBuildTimeDecisions;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIImportConstants;
@@ -110,8 +111,14 @@ public class ViewMetadataImpl extends ViewMetadata {
                 context.setViewRoot(metadataView);
             }
 
-            faceletFactory.getMetadataFacelet(context, metadataView.getViewId())
-                          .applyMetadata(context, metadataView);
+            SavedBuildTimeDecisions.suspend(context);
+
+            try {
+                faceletFactory.getMetadataFacelet(context, metadataView.getViewId())
+                              .applyMetadata(context, metadataView);
+            } finally {
+                SavedBuildTimeDecisions.resume(context);
+            }
 
             importConstantsIfNecessary(context, metadataView);
 
