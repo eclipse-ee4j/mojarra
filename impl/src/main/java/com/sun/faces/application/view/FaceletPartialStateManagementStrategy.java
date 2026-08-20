@@ -16,10 +16,12 @@
 
 package com.sun.faces.application.view;
 
+import static com.sun.faces.RIConstants.BUILD_TIME_DECISIONS;
 import static com.sun.faces.RIConstants.DYNAMIC_ACTIONS;
 import static com.sun.faces.RIConstants.DYNAMIC_COMPONENT;
 import static com.sun.faces.RIConstants.RENDERED_TAGS;
 import static com.sun.faces.RIConstants.VIEW_REBUILT_AT_RENDER;
+import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.RestoreBuildTimeDecisions;
 import static com.sun.faces.util.ComponentStruct.ADD;
 import static com.sun.faces.util.ComponentStruct.REMOVE;
 import static com.sun.faces.util.Util.isEmpty;
@@ -38,6 +40,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.sun.faces.context.StateContext;
+import com.sun.faces.facelets.tag.SavedBuildTimeDecisions;
 import com.sun.faces.facelets.tag.faces.ComponentSupport;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.ComponentStruct;
@@ -86,9 +89,11 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
     /**
      * What resolves a mismatch between the rendered and the rebuilt view, appended to the report of either.
      */
-    private static final String REMEDY = " A build time condition such as c:if, c:choose or a variable ui:include path must evaluate to the"
-            + " same value while the postback is restored as it did while the response was rendered. Hold what it depends on in a @ViewScoped"
-            + " bean, or recompute it from the relevant request parameters in the @PostConstruct of the request scoped one.";
+    private static final String REMEDY = " A build time condition such as c:if, c:choose, a c:forEach range or a variable ui:include path must"
+            + " evaluate to the same value while the postback is restored as it did while the response was rendered, and the items a c:forEach"
+            + " iterated must still hold the rows it produced. Hold what they depend on in a @ViewScoped bean, or recompute it from the relevant"
+            + " request parameters in the @PostConstruct of the request scoped one, or set the " + RestoreBuildTimeDecisions.getQualifiedName()
+            + " context parameter to true.";
 
     /**
      * Reported for the components the rendered view held which the rebuilt one does not.
@@ -417,8 +422,8 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
 
     /**
      * Determine whether the saved state holds no per-component delta other than (optionally) the view
-     * root's own state. The {@code DYNAMIC_ACTIONS} and {@code RENDERED_TAGS} entries are bookkeeping
-     * rather than a component delta, so they are excluded from the count.
+     * root's own state. The {@code DYNAMIC_ACTIONS}, {@code RENDERED_TAGS} and {@code BUILD_TIME_DECISIONS}
+     * entries are bookkeeping rather than a component delta, so they are excluded from the count.
      *
      * @param viewRootClientId the client id of the view root.
      * @param state the saved state map.
@@ -430,6 +435,9 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
             componentStateCount--;
         }
         if (state.containsKey(RENDERED_TAGS)) {
+            componentStateCount--;
+        }
+        if (state.containsKey(BUILD_TIME_DECISIONS)) {
             componentStateCount--;
         }
         return componentStateCount == 0
@@ -663,6 +671,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
             stateMap.put(RENDERED_TAGS, renderedTags);
         }
 
+        SavedBuildTimeDecisions.save(context, stateMap);
         saveDynamicActions(context, stateContext, stateMap);
         StateContext.release(context);
         return new Object[] { null, stateMap };
