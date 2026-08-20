@@ -156,7 +156,14 @@ public enum MojarraContextParam implements ContextParam {
 
     PREFER_XHTML("preferXHTML", false),
 
-    REFRESH_TRANSIENT_BUILD_ON_PSS("refreshTransientBuildOnPSS", false),
+    REFRESH_TRANSIENT_BUILD("refreshTransientBuild", false),
+
+    /**
+     * @deprecated Renamed to {@code org.glassfish.mojarra.refreshTransientBuild}, since partial state saving is the
+     * only state saving there is.
+     */
+    @Deprecated(since = "5.0", forRemoval = true)
+    REFRESH_TRANSIENT_BUILD_ON_PSS("refreshTransientBuildOnPSS", false, Deprecation.replacedBy("refreshTransientBuild")),
 
     REGISTER_CONVERTER_PROPERTY_EDITORS("registerConverterPropertyEditors", false),
 

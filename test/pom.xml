@@ -34,6 +34,7 @@
     <modules>
         <module>../faces/tck/util</module> <!-- BaseITNG et.al. -->
         <module>base</module>
+        <module>impl</module>
         <module>perf</module>
     </modules>
 

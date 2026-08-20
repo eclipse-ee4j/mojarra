@@ -292,7 +292,7 @@ public class ComponentTreePerfHarness extends JUnitFacesTestCaseBase {
 
     /**
      * SKIP_ITERATION matches what Mojarra's own state-management strategies pass to
-     * visitTree (see FaceletPartialStateManagementStrategy), so the visitTree
+     * visitTree (see FaceletStateManagementStrategy), so the visitTree
      * measurement reflects what production state save/restore actually sees rather
      * than the worst-case full row iteration on UIData.
      */

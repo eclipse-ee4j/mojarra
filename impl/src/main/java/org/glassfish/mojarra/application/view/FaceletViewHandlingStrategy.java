@@ -38,7 +38,6 @@ import static java.util.logging.Level.WARNING;
 import static org.glassfish.mojarra.RIConstants.FACELETS_ENCODING_KEY;
 import static org.glassfish.mojarra.RIConstants.FLOW_DEFINITION_ID_SUFFIX;
 import static org.glassfish.mojarra.RIConstants.VIEW_REBUILT_AT_RENDER;
-import static org.glassfish.mojarra.context.StateContext.getStateContext;
 import static org.glassfish.mojarra.facelets.tag.faces.ComponentSupport.DYNAMIC_COMPONENT;
 import static org.glassfish.mojarra.facelets.tag.ui.UIDebug.debugRequest;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.getResponseStateManager;
@@ -173,7 +172,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     private final MethodRetargetHandlerManager retargetHandlerManager = new MethodRetargetHandlerManager();
 
     private int responseBufferSize;
-    private boolean refreshTransientBuildOnPSS;
+    private boolean refreshTransientBuild;
     private StateSavingMethod stateSavingMethod;
 
     private Cache<Resource, BeanInfo> metadataCache;
@@ -238,37 +237,35 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             }
         }
 
-        if (getStateContext(context).isPartialStateSaving(context, viewId)) {
-            try {
-                context.setProcessingEvents(false);
-                ViewDeclarationLanguage vdl = vdlFactory.getViewDeclarationLanguage(viewId);
-                UIViewRoot viewRoot = vdl.getViewMetadata(context, viewId).createMetadataView(context);
-                context.setViewRoot(viewRoot);
-                Object[] rawState = (Object[]) RenderKitUtils.getResponseStateManager(context, context.getApplication().getViewHandler().calculateRenderKitId(context)).getState(context, viewId);
+        try {
+            context.setProcessingEvents(false);
+            ViewDeclarationLanguage vdl = vdlFactory.getViewDeclarationLanguage(viewId);
+            UIViewRoot viewRoot = vdl.getViewMetadata(context, viewId).createMetadataView(context);
+            context.setViewRoot(viewRoot);
+            Object[] rawState = (Object[]) RenderKitUtils.getResponseStateManager(context, context.getApplication().getViewHandler().calculateRenderKitId(context)).getState(context, viewId);
 
-                Map<String, Object> state = stateOf(rawState);
+            Map<String, Object> state = stateOf(rawState);
 
-                if (state != null) {
-                    String clientId = viewRoot.getClientId(context);
-                    Object stateObj = state.get(clientId);
-                    if (stateObj != null) {
-                        viewRoot.restoreViewScopeState(context, stateObj);
-                    }
+            if (state != null) {
+                String clientId = viewRoot.getClientId(context);
+                Object stateObj = state.get(clientId);
+                if (stateObj != null) {
+                    viewRoot.restoreViewScopeState(context, stateObj);
                 }
-
-                context.setProcessingEvents(true);
-
-                // This build reproduces the view that was submitted rather than the one the current state of the model
-                // asks for; the re-apply which precedes rendering evaluates the conditions again.
-                SavedBuildTimeDecisions.startReplaying(context, state);
-                try {
-                    vdl.buildView(context, viewRoot);
-                } finally {
-                    SavedBuildTimeDecisions.stopReplaying(context);
-                }
-            } catch (IOException ioe) {
-                throw new FacesException(ioe);
             }
+
+            context.setProcessingEvents(true);
+
+            // This build reproduces the view that was submitted rather than the one the current state of the model
+            // asks for; the re-apply which precedes rendering evaluates the conditions again.
+            SavedBuildTimeDecisions.startReplaying(context, state);
+            try {
+                vdl.buildView(context, viewRoot);
+            } finally {
+                SavedBuildTimeDecisions.stopReplaying(context);
+            }
+        } catch (IOException ioe) {
+            throw new FacesException(ioe);
         }
 
         UIViewRoot root = super.restoreView(context, viewId);
@@ -327,7 +324,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         if (isViewPopulated(ctx, view)) {
             if (canSkipTransientBuildRefresh(ctx, view, stateCtx)) {
                 // The view was already (re)built this request and re-applying the facelet would reproduce the
-                // identical tree. Skip it (see refreshTransientBuildOnPSS).
+                // identical tree. Skip it (see refreshTransientBuild).
                 ctx.getAttributes().put(VIEW_REBUILT_AT_RENDER, Boolean.FALSE);
                 return;
             }
@@ -339,11 +336,9 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                 BuildTimeDecisions.reset(ctx);
                 facelet.apply(ctx, view);
                 reapplyDynamicActions(ctx);
-                if (stateCtx.isPartialStateSaving(ctx, view.getViewId())) {
-                    // reapplyDynamicActions ran above, so the dynamic-action list now reflects this view;
-                    // when it is empty no component bears DYNAMIC_COMPONENT and the per-node marker check is skipped.
-                    markInitialStateIfNotMarked(view, !isEmpty(stateCtx.getDynamicActions()));
-                }
+                // reapplyDynamicActions ran above, so the dynamic-action list now reflects this view;
+                // when it is empty no component bears DYNAMIC_COMPONENT and the per-node marker check is skipped.
+                markInitialStateIfNotMarked(view, !isEmpty(stateCtx.getDynamicActions()));
             } finally {
                 stateCtx.setTrackViewModifications(true);
             }
@@ -391,33 +386,27 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                 htmlDoctype.setSystem(doctype.getSystem());
                 view.setDoctype(htmlDoctype);
             }
-
-            if (!stateCtx.isPartialStateSaving(ctx, view.getViewId())) {
-                reapplyDynamicActions(ctx);
-            }
-
-            startTrackViewModifications(ctx, view);
         } finally {
             ctx.getAttributes().remove(IS_BUILDING_INITIAL_STATE);
         }
         ctx.getApplication().publishEvent(ctx, PostAddToViewEvent.class, UIViewRoot.class, view);
         markInitialState(ctx, view);
+        startTrackViewModifications(ctx, view);
 
         setViewPopulated(ctx, view);
     }
 
     /**
      * Determines whether the redundant re-apply of the facelet on an already-populated view may be skipped. Enabled by
-     * default; set {@code refreshTransientBuildOnPSS} to {@code true} to restore the legacy unconditional re-apply.
-     * The skip is only safe under partial state saving for a non-transient view with no dynamic component add/remove
-     * whose build this request either involved no build-time-dynamic content at all or decided every piece of it on
-     * expressions that still evaluate to the value they had ({@link BuildTimeDecisions}), since re-applying would then
-     * reproduce the identical tree.
+     * default; set {@code refreshTransientBuild} to {@code true} to restore the legacy unconditional re-apply.
+     * The skip is only safe for a non-transient view with no dynamic component add/remove whose build this request
+     * either involved no build-time-dynamic content at all or decided every piece of it on expressions that still
+     * evaluate to the value they had ({@link BuildTimeDecisions}), since re-applying would then reproduce the
+     * identical tree.
      */
     private boolean canSkipTransientBuildRefresh(FacesContext ctx, UIViewRoot view, StateContext stateCtx) {
-        return !refreshTransientBuildOnPSS
+        return !refreshTransientBuild
                 && !view.isTransient()
-                && stateCtx.isPartialStateSaving(ctx, view.getViewId())
                 && isEmpty(stateCtx.getDynamicActions())
                 && BuildTimeDecisions.reproducesBuild(ctx);
     }
@@ -542,11 +531,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
     @Override
     public StateManagementStrategy getStateManagementStrategy(FacesContext context, String viewId) {
-        if (getStateContext(context).isPartialStateSaving(context, viewId)) {
-            return new FaceletPartialStateManagementStrategy(context);
-        }
-
-        return new FaceletFullStateManagementStrategy(context);
+        return new FaceletStateManagementStrategy(context);
     }
 
     /**
@@ -886,7 +871,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
         FacesContext context = FacesContext.getCurrentInstance();
         responseBufferSize = FacesContextParam.FACELETS_BUFFER_SIZE.getInt(context);
-        refreshTransientBuildOnPSS = MojarraContextParam.REFRESH_TRANSIENT_BUILD_ON_PSS.isEnabled(context);
+        refreshTransientBuild = MojarraContextParam.REFRESH_TRANSIENT_BUILD.isEnabled(context);
         stateSavingMethod = FacesContextParam.STATE_SAVING_METHOD.getEnum(context);
 
         LOGGER.fine("Initialization Successful");
@@ -1199,16 +1184,13 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     }
 
     private void markInitialState(FacesContext ctx, UIViewRoot root) {
-        StateContext stateCtx = StateContext.getStateContext(ctx);
-        if (stateCtx.isPartialStateSaving(ctx, root.getViewId())) {
-            try {
-                ctx.getAttributes().put(IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
-                if (!root.isTransient()) {
-                    markInitialState(root);
-                }
-            } finally {
-                ctx.getAttributes().remove(IS_BUILDING_INITIAL_STATE);
+        try {
+            ctx.getAttributes().put(IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
+            if (!root.isTransient()) {
+                markInitialState(root);
             }
+        } finally {
+            ctx.getAttributes().remove(IS_BUILDING_INITIAL_STATE);
         }
     }
 
@@ -1763,7 +1745,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      * duplicate.
      *
      * <p>
-     * The visit skips iteration, as the same lookup in {@link FaceletPartialStateManagementStrategy} always has.
+     * The visit skips iteration, as the same lookup in {@link FaceletStateManagementStrategy} always has.
      * Iterating is not free of consequence: it sets the row index on every iterating component in the view, which a
      * component can act on -- a data table backed by a lazily loaded model fetches a page of data per iteration --
      * and replay must not provoke that merely to find components by client id.
@@ -1774,7 +1756,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      * a row index was set) does not resolve here. That costs nothing: a component inside a row is a single instance
      * shared by every row, so such an action denotes no position the index is missing, and the request which
      * recorded it has the component attached already. Later requests never see it either way, as
-     * {@link FaceletPartialStateManagementStrategy} resolves against an equally row-free index when restoring.
+     * {@link FaceletStateManagementStrategy} resolves against an equally row-free index when restoring.
      * </p>
      *
      * @param context the Faces context.

@@ -61,7 +61,6 @@ import jakarta.faces.view.facelets.MetadataTarget;
 import jakarta.faces.view.facelets.Tag;
 import jakarta.faces.view.facelets.TagAttribute;
 
-import org.glassfish.mojarra.context.StateContext;
 import org.glassfish.mojarra.el.CompositeComponentELResolver;
 import org.glassfish.mojarra.facelets.el.VariableMapperWrapper;
 import org.glassfish.mojarra.facelets.tag.MetaRulesetImpl;
@@ -551,12 +550,9 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
                 // A composite component's attribute expressions are re-derived from the Facelet on every
                 // (re)build. On a postback rebuild the tree is already initial-state-marked, so recording
                 // them through the normal path stores a per-component delta that buildView reconstructs
-                // identically anyway. Under partial state saving, write them as initial state so the saved
-                // view stays free of this redundant, fully-reconstructable binding. (Legacy from full state
-                // saving, where the component is never initial-state-marked and this branch is a no-op.)
-                FacesContext context = ctx.getFacesContext();
-                boolean writeAsInitialState = cc.initialStateMarked()
-                        && StateContext.getStateContext(context).isPartialStateSaving(context, null);
+                // identically anyway. Write them as initial state so the saved view stays free of this
+                // redundant, fully-reconstructable binding.
+                boolean writeAsInitialState = cc.initialStateMarked();
                 if (writeAsInitialState) {
                     cc.clearInitialState();
                 }

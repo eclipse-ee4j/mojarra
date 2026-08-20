@@ -95,7 +95,7 @@ public final class LoadBundleHandler extends TagHandlerImpl {
     /**
      * Records what this build resolved the bundle from, so the redundant render-time re-apply is skipped as long as
      * it would resolve the same bundle under the same name, and performed when it would not, which is what re-resolves
-     * it (see {@code refreshTransientBuildOnPSS}). The view locale takes a decision even for a literal basename, since
+     * it (see {@code refreshTransientBuild}). The view locale takes a decision even for a literal basename, since
      * a locale changed after this build resolves a different bundle from the very same basename.
      */
     private void recordDecisions(FaceletContext ctx, UIViewRoot root, String basename, String var) {

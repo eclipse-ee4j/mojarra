@@ -62,7 +62,7 @@ class FaceletViewHandlingStrategyTest {
      * Regression guard for the dynamic-action restore O(n) fix (PR #5783). A postback with no dynamic
      * add/remove must not build the {@code clientId -> component} index, i.e. must not walk the view.
      *
-     * <p>Once the {@code AddRemoveListener} is installed (every partial-state-saving postback),
+     * <p>Once the {@code AddRemoveListener} is installed (every postback),
      * {@code getDynamicActions()} returns a non-null <em>empty</em> list and {@code pruneDynamicActions}
      * preserves that, so the guard in {@code reapplyDynamicActions} must be {@code !isEmpty(actions)} —
      * a bare {@code actions != null} walks the whole tree on every postback for nothing.

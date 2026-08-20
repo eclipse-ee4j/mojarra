@@ -20,13 +20,13 @@ import static java.util.Collections.singletonList;
 import static org.glassfish.mojarra.RIConstants.BUILD_TIME_DECISIONS;
 import static org.glassfish.mojarra.RIConstants.DYNAMIC_ACTIONS;
 import static org.glassfish.mojarra.RIConstants.RENDERED_TAGS;
-import static org.glassfish.mojarra.application.view.FaceletPartialStateManagementStrategy.NOT_REBUILT_REPORT;
-import static org.glassfish.mojarra.application.view.FaceletPartialStateManagementStrategy.REBUILT_FROM_ANOTHER_TAG_REPORT;
-import static org.glassfish.mojarra.application.view.FaceletPartialStateManagementStrategy.clientIdsNotRebuilt;
-import static org.glassfish.mojarra.application.view.FaceletPartialStateManagementStrategy.clientIdsRebuiltFromAnotherTag;
-import static org.glassfish.mojarra.application.view.FaceletPartialStateManagementStrategy.isViewRootOnlyState;
-import static org.glassfish.mojarra.application.view.FaceletPartialStateManagementStrategy.tagOf;
-import static org.glassfish.mojarra.application.view.FaceletPartialStateManagementStrategy.truncated;
+import static org.glassfish.mojarra.application.view.FaceletStateManagementStrategy.NOT_REBUILT_REPORT;
+import static org.glassfish.mojarra.application.view.FaceletStateManagementStrategy.REBUILT_FROM_ANOTHER_TAG_REPORT;
+import static org.glassfish.mojarra.application.view.FaceletStateManagementStrategy.clientIdsNotRebuilt;
+import static org.glassfish.mojarra.application.view.FaceletStateManagementStrategy.clientIdsRebuiltFromAnotherTag;
+import static org.glassfish.mojarra.application.view.FaceletStateManagementStrategy.isViewRootOnlyState;
+import static org.glassfish.mojarra.application.view.FaceletStateManagementStrategy.tagOf;
+import static org.glassfish.mojarra.application.view.FaceletStateManagementStrategy.truncated;
 import static org.glassfish.mojarra.config.MojarraContextParam.RESTORE_BUILD_TIME_DECISIONS;
 import static org.glassfish.mojarra.facelets.tag.faces.ComponentSupport.MARK_CREATED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -53,7 +53,7 @@ import org.junit.jupiter.api.Test;
  * from is saved with the state, and comparing it against the rebuilt view is what turns that into a diagnosable
  * report. This holds what the comparison reports.
  */
-class FaceletPartialStateManagementStrategyTest {
+class FaceletStateManagementStrategyTest {
 
     private static final Pattern LONE_APOSTROPHE = Pattern.compile("(?<!\')\'(?!\')");
 

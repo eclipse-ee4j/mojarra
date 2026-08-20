@@ -150,7 +150,6 @@ public class ApplicationAssociate {
     private Compiler compiler;
     private DefaultFaceletFactory faceletFactory;
     private ResourceManager resourceManager;
-    private final ApplicationStateInfo applicationStateInfo;
 
     private final PropertyEditorHelper propertyEditorHelper;
 
@@ -247,7 +246,6 @@ public class ApplicationAssociate {
 
         resourceManager = new ResourceManager(applicationMap, resourceCache);
         namedEventManager = new NamedEventManager();
-        applicationStateInfo = new ApplicationStateInfo();
 
         appImpl.subscribeToEvent(PostConstructApplicationEvent.class, Application.class, new PostConstructApplicationListener());
 
@@ -324,10 +322,6 @@ public class ApplicationAssociate {
 
     public long getTimeOfInstantiation() {
         return timeOfInstantiation;
-    }
-
-    public ApplicationStateInfo getApplicationStateInfo() {
-        return applicationStateInfo;
     }
 
     public ResourceManager getResourceManager() {

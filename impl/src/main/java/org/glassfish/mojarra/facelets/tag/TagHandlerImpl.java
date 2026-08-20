@@ -42,7 +42,7 @@ public abstract class TagHandlerImpl extends TagHandler {
     /**
      * Mark the current view build unreproducible, so its facelet is re-applied on every (re)build. A handler calls
      * this when what it contributes to the view follows from something no decision can express; the skip of the
-     * redundant render-time re-apply is then denied for the whole build (see {@code refreshTransientBuildOnPSS}).
+     * redundant render-time re-apply is then denied for the whole build (see {@code refreshTransientBuild}).
      *
      * @param ctx the {@link FaceletContext} for the current build
      */

@@ -141,7 +141,7 @@ public final class ForEachHandler extends TagHandlerImpl {
 
     // Request-attribute key prefix under which an indexable c:forEach records, at its restore-time (re)build, the
     // iteration it produced (range plus, for items, the element snapshot) and the child components it created. When
-    // the same view is built a second time in the same request (render under partial state saving) with an unchanged
+    // the same view is built a second time in the same request (render) with an unchanged
     // iteration, that subtree is still correct - the index-based var expressions render content changes live - so the
     // redundant re-apply of the body is skipped and the retained children are un-marked from the parent refresh's
     // pending deletion. Keyed additionally by parent identity + tag location.
@@ -299,10 +299,10 @@ public final class ForEachHandler extends TagHandlerImpl {
             stateKey = ITERATION_STATE + System.identityHashCode(parent) + ':' + tag.getLocation();
             range = new int[] { s, e, m };
             if (facesContext.getCurrentPhaseId() == PhaseId.RESTORE_VIEW) {
-                // Restore-time (re)build under PSS rebuilds this transient subtree from scratch; snapshot the existing
-                // children so the ones created below can be recorded for the render pass to retain, and the decisions
-                // recorded so far so the ones the body records are recognizable: a body holding nested dynamic content
-                // (a nested c:forEach/c:if/...) could change without this item list changing, so it must not be
+                // Restore-time (re)build rebuilds this transient subtree from scratch; snapshot the existing children
+                // so the ones created below can be recorded for the render pass to retain, and the decisions recorded
+                // so far so the ones the body records are recognizable: a body holding nested dynamic content (a
+                // nested c:forEach/c:if/...) could change without this item list changing, so it must not be
                 // skip-retained - only a fully static body is safe.
                 childrenBeforeBuild = new ArrayList<>(parent.getChildren());
                 decisionsBeforeBody = BuildTimeDecisions.size(facesContext);
@@ -492,7 +492,7 @@ public final class ForEachHandler extends TagHandlerImpl {
             }
             // Record (enabling the render-pass skip) only for a static body that actually created the subtree here: a
             // nested-dynamic body could change with this item list unchanged, and an empty delta means this build did
-            // not create the subtree (e.g. full state saving already restored it) so there is nothing to retain.
+            // not create the subtree, so there is nothing to retain.
             if (!nestedDynamic && !created.isEmpty()) {
                 contextAttributes.put(stateKey, new Object[] { range, srcVE == null ? null : snapshotElements(src), created });
             }
@@ -575,7 +575,7 @@ public final class ForEachHandler extends TagHandlerImpl {
 
     /**
      * Records what this build iterated over, so the redundant render-time re-apply is skipped as long as it would
-     * iterate the same way and is performed when it would not (see {@code refreshTransientBuildOnPSS}). The item
+     * iterate the same way and is performed when it would not (see {@code refreshTransientBuild}). The item
      * sequence takes a decision of its own, since it is a comparison over every element rather than a single value;
      * the body's own decisions stand beside it, each captured with this iteration's index-based var expression and
      * therefore reading its own element live.

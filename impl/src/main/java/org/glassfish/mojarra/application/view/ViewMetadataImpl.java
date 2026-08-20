@@ -21,7 +21,6 @@ import static java.lang.reflect.Modifier.isPublic;
 import static java.lang.reflect.Modifier.isStatic;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.unmodifiableMap;
-import static org.glassfish.mojarra.RIConstants.VIEWID_KEY_NAME;
 import static org.glassfish.mojarra.util.Util.isEmpty;
 
 import java.io.IOException;
@@ -37,7 +36,6 @@ import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewMetadata;
 
-import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.application.ApplicationAssociate;
 import org.glassfish.mojarra.context.FacesFileNotFoundException;
 import org.glassfish.mojarra.facelets.impl.DefaultFaceletFactory;
@@ -87,11 +85,6 @@ public class ViewMetadataImpl extends ViewMetadata {
                                   .getViewHandler()
                                   .createView(context, viewId);
 
-            // Stash away view id before invoking handlers so that
-            // StateContext.partialStateSaving() can determine the current
-            // view.
-            context.getAttributes().put(RIConstants.VIEWID_KEY_NAME, viewId);
-
             // If the currentViewRoot has a viewMap, make sure the entries are
             // copied to the temporary UIViewRoot before invoking handlers.
             if (currentViewRoot != null) {
@@ -131,7 +124,6 @@ public class ViewMetadataImpl extends ViewMetadata {
         } catch (IOException ioe) {
             throw new FacesException(ioe);
         } finally {
-            context.getAttributes().remove(VIEWID_KEY_NAME);
             if (currentViewRoot != null) {
                 context.setViewRoot(currentViewRoot);
                 if (!currentViewMapShallowCopy.isEmpty()) {

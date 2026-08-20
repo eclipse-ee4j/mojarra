@@ -60,11 +60,11 @@ import org.glassfish.mojarra.util.MessageUtils;
 import org.glassfish.mojarra.util.Util;
 
 /**
- * The state management strategy for PSS.
+ * The state management strategy for Facelets views.
  *
  * @author Manfred Riem (manfred.riem@oracle.com)
  */
-public class FaceletPartialStateManagementStrategy extends StateManagementStrategy {
+public class FaceletStateManagementStrategy extends StateManagementStrategy {
 
     /**
      * Stores the logger.
@@ -114,7 +114,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
     /**
      * Constructor.
      */
-    public FaceletPartialStateManagementStrategy() {
+    public FaceletStateManagementStrategy() {
         this(FacesContext.getCurrentInstance());
     }
 
@@ -123,7 +123,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
      *
      * @param context the Faces context.
      */
-    public FaceletPartialStateManagementStrategy(FacesContext context) {
+    public FaceletStateManagementStrategy(FacesContext context) {
         disableIdUniquenessCheck = MojarraContextParam.DISABLE_ID_UNIQUENESS_CHECK.isEnabled(context);
     }
 
@@ -173,7 +173,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
      */
     private void restoreDynamicActions(FacesContext context, StateContext stateContext, Map<String, Object> stateMap) {
         if (LOGGER.isLoggable(FINEST)) {
-            LOGGER.finest("FaceletPartialStateManagementStrategy.restoreDynamicActions");
+            LOGGER.finest("FaceletStateManagementStrategy.restoreDynamicActions");
         }
 
         @SuppressWarnings("unchecked")
@@ -228,7 +228,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
      */
     private void restoreDynamicAdd(FacesContext context, Map<String, Object> state, ComponentStruct struct, Map<String, UIComponent> componentIndex) {
         if (LOGGER.isLoggable(FINEST)) {
-            LOGGER.finest("FaceletPartialStateManagementStrategy.restoreDynamicAdd");
+            LOGGER.finest("FaceletStateManagementStrategy.restoreDynamicAdd");
         }
 
         UIComponent parent = componentIndex.get(struct.getParentClientId());
@@ -321,7 +321,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
      */
     private void restoreDynamicRemove(FacesContext context, ComponentStruct struct, Map<String, UIComponent> componentIndex) {
         if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.finest("FaceletPartialStateManagementStrategy.restoreDynamicRemove");
+            LOGGER.finest("FaceletStateManagementStrategy.restoreDynamicRemove");
         }
 
         UIComponent child = componentIndex.get(struct.getClientId());
@@ -350,7 +350,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
     public UIViewRoot restoreView(FacesContext context, String viewId, String renderKitId) {
 
         if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.log(Level.FINEST, "FaceletPartialStateManagementStrategy.restoreView", new Object[] { viewId, renderKitId });
+            LOGGER.log(Level.FINEST, "FaceletStateManagementStrategy.restoreView", new Object[] { viewId, renderKitId });
         }
 
         ResponseStateManager rsm = RenderKitUtils.getResponseStateManager(context, renderKitId);
@@ -579,7 +579,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
      */
     private void saveDynamicActions(FacesContext context, StateContext stateContext, Map<String, Object> stateMap) {
         if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.finest("FaceletPartialStateManagementStrategy.saveDynamicActions");
+            LOGGER.finest("FaceletStateManagementStrategy.saveDynamicActions");
         }
 
         List<ComponentStruct> actions = stateContext.getDynamicActions();
@@ -617,7 +617,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
     @Override
     public Object saveView(FacesContext context) {
         if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.finest("FaceletPartialStateManagementStrategy.saveView");
+            LOGGER.finest("FaceletStateManagementStrategy.saveView");
         }
 
         if (context == null) {
