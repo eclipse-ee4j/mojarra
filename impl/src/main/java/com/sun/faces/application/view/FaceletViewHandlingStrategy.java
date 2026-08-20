@@ -140,6 +140,7 @@ import com.sun.faces.facelets.el.ContextualCompositeMethodExpression;
 import com.sun.faces.facelets.el.VariableMapperWrapper;
 import com.sun.faces.facelets.impl.DefaultFaceletFactory;
 import com.sun.faces.facelets.impl.XMLFrontMatterSaver;
+import com.sun.faces.facelets.tag.SavedBuildTimeDecisions;
 import com.sun.faces.facelets.tag.composite.CompositeComponentBeanInfo;
 import com.sun.faces.facelets.tag.faces.CompositeComponentTagHandler;
 import com.sun.faces.facelets.tag.ui.UIDebug;
@@ -249,22 +250,28 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                 context.setViewRoot(viewRoot);
                 Object[] rawState = (Object[]) RenderKitUtils.getResponseStateManager(context, context.getApplication().getViewHandler().calculateRenderKitId(context)).getState(context, viewId);
 
-                if (rawState != null) {
-                    @SuppressWarnings("unchecked")
-                    Map<String, Object> state = (Map<String, Object>) rawState[1];
-                    if (state != null) {
-                        String clientId = viewRoot.getClientId(context);
-                        Object stateObj = state.get(clientId);
-                        if (stateObj != null) {
-                            context.getAttributes().put("com.sun.faces.application.view.restoreViewScopeOnly", true);
-                            viewRoot.restoreState(context, stateObj);
-                            context.getAttributes().remove("com.sun.faces.application.view.restoreViewScopeOnly");
-                        }
+                Map<String, Object> state = stateOf(rawState);
+
+                if (state != null) {
+                    String clientId = viewRoot.getClientId(context);
+                    Object stateObj = state.get(clientId);
+                    if (stateObj != null) {
+                        context.getAttributes().put("com.sun.faces.application.view.restoreViewScopeOnly", true);
+                        viewRoot.restoreState(context, stateObj);
+                        context.getAttributes().remove("com.sun.faces.application.view.restoreViewScopeOnly");
                     }
                 }
 
                 context.setProcessingEvents(true);
-                vdl.buildView(context, viewRoot);
+
+                // This build reproduces the view that was submitted rather than the one the current state of the model
+                // asks for; the re-apply which precedes rendering evaluates the conditions again.
+                SavedBuildTimeDecisions.startReplaying(context, state);
+                try {
+                    vdl.buildView(context, viewRoot);
+                } finally {
+                    SavedBuildTimeDecisions.stopReplaying(context);
+                }
             } catch (IOException ioe) {
                 throw new FacesException(ioe);
             }
@@ -276,6 +283,17 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         startTrackViewModifications(context, root);
 
         return root;
+    }
+
+    /**
+     * The per component state of the view being restored, as saved by {@code StateManagementStrategy.saveView}.
+     *
+     * @param rawState the state obtained from the {@code ResponseStateManager}, may be {@code null}
+     * @return the per component state, or {@code null} when there is none
+     */
+    @SuppressWarnings("unchecked")
+    private static Map<String, Object> stateOf(Object[] rawState) {
+        return rawState == null ? null : (Map<String, Object>) rawState[1];
     }
 
     @Override

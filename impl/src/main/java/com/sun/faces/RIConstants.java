@@ -95,6 +95,13 @@ public class RIConstants {
     public static final String RENDERED_TAGS = FACES_PREFIX + "RenderedTags";
 
     /**
+     * Marker used when saving, under {@code com.sun.faces.restoreBuildTimeDecisions} only, the value each build time
+     * condition evaluated to while the response was rendered, so that the build which restores the view reproduces
+     * the view that was submitted rather than the one the current state of the model asks for.
+     */
+    public static final String BUILD_TIME_DECISIONS = FACES_PREFIX + "BuildTimeDecisions";
+
+    /**
      * Marker attached to a component that has dynamic children.
      */
     public static final String DYNAMIC_CHILD_COUNT = FACES_PREFIX + "DynamicChildCount";

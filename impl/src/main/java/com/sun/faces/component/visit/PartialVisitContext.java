@@ -26,7 +26,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
+import static java.util.logging.Level.WARNING;
+
+import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.NamingContainer;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UINamingContainer;
@@ -35,6 +39,8 @@ import jakarta.faces.component.visit.VisitContext;
 import jakarta.faces.component.visit.VisitHint;
 import jakarta.faces.component.visit.VisitResult;
 import jakarta.faces.context.FacesContext;
+
+import com.sun.faces.util.FacesLogger;
 
 /**
  *
@@ -47,6 +53,14 @@ import jakarta.faces.context.FacesContext;
  * @since 2.0
  */
 public class PartialVisitContext extends VisitContext {
+
+    // Maximum NamingContainer nesting depth (separator count) registered per client id. The separator count
+    // equals the NamingContainer nesting depth, which real views keep to a handful. Bounding it keeps this
+    // method linear in the id length, and the registered map a proportionate size, even for a pathological id
+    // built from many separators. The primary input caps live in PartialViewContextImpl.
+    private static final int MAX_NAMING_CONTAINER_DEPTH = 64;
+
+    private static final Logger LOGGER = FacesLogger.CONTEXT.getLogger();
 
     /**
      * Creates a PartialVisitorContext instance.
@@ -297,9 +311,15 @@ public class PartialVisitContext extends VisitContext {
 
         int length = clientId.length();
 
+        int depth = 0;
         for (int i = 0; i < length; i++) {
 
             if (clientId.charAt(i) == separator) {
+
+                if (depth == MAX_NAMING_CONTAINER_DEPTH) {
+                    warnNamingContainerDepthExceeded(facesContext, clientId);
+                    break;
+                }
 
                 // We found an ancestor NamingContainer client id - add
                 // an entry to the map.
@@ -313,7 +333,17 @@ public class PartialVisitContext extends VisitContext {
 
                 // Stash away the client id
                 c.add(clientId);
+
+                depth++;
             }
+        }
+    }
+
+    private static void warnNamingContainerDepthExceeded(FacesContext context, String clientId) {
+        if (context.isProjectStage(ProjectStage.Development)) {
+            LOGGER.log(WARNING, "Not registering naming-container ancestors beyond depth {0} for a client id of"
+                    + " length {1} starting with: {2}", new Object[] { MAX_NAMING_CONTAINER_DEPTH, clientId.length(),
+                    clientId.substring(0, Math.min(clientId.length(), 32)) });
         }
     }
 

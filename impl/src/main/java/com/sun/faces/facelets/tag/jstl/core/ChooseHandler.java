@@ -34,8 +34,19 @@ import jakarta.faces.view.facelets.TagException;
  */
 public final class ChooseHandler extends TagHandlerImpl {
 
+    /**
+     * The decision saved for a build that took no when branch at all.
+     */
+    private static final int OTHERWISE = -1;
+
     private final ChooseOtherwiseHandler otherwise;
     private final ChooseWhenHandler[] when;
+
+    /**
+     * Whether one build of a view can take another branch here than another build, which a choose whose tests are all
+     * literal cannot: it takes the same branch every time and there is nothing to replay.
+     */
+    private final boolean dynamic;
 
     public ChooseHandler(TagConfig config) {
         super(config);
@@ -56,19 +67,32 @@ public final class ChooseHandler extends TagHandlerImpl {
         } else {
             otherwise = null;
         }
+
+        boolean dynamic = false;
+        for (ChooseWhenHandler branch : when) {
+            dynamic |= branch.isDynamicTest();
+        }
+        this.dynamic = dynamic;
     }
 
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
+        String key = dynamic ? buildTimeDecisionKey(ctx) : null;
+        Integer rendered = replayBuildTimeDecision(ctx, key, Integer.class);
+
         for (int i = 0; i < when.length; i++) {
             ValueExpression testExpression = when[i].getTestExpression(ctx);
-            boolean b = Boolean.TRUE.equals(testExpression.getValue(ctx));
+            boolean b = rendered != null ? rendered == i : Boolean.TRUE.equals(testExpression.getValue(ctx));
             recordBuildTimeDecision(ctx, testExpression, b);
             if (b) {
+                saveBuildTimeDecision(ctx, key, i);
                 when[i].apply(ctx, parent);
                 return;
             }
         }
+
+        saveBuildTimeDecision(ctx, key, OTHERWISE);
+
         if (otherwise != null) {
             otherwise.apply(ctx, parent);
         }
