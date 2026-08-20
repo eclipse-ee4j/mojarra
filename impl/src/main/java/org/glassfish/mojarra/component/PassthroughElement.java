@@ -16,12 +16,12 @@
 
 package org.glassfish.mojarra.component;
 
-import static jakarta.faces.component.html.HtmlEvents.getHtmlBodyElementEventNames;
+import static jakarta.faces.component.html.HtmlEvents.getHtmlElementEventNames;
 
 import java.util.Collection;
 
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
-import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
+import jakarta.faces.component.html.HtmlEvents.HtmlElementEvent;
 
 /**
  * <p>
@@ -344,12 +344,12 @@ public class PassthroughElement extends jakarta.faces.component.UIPanel implemen
 
     @Override
     public Collection<String> getEventNames() {
-        return getHtmlBodyElementEventNames(getFacesContext()); 
+        return getHtmlElementEventNames(getFacesContext()); 
     }
 
     @Override
     public String getDefaultEventName() {
-        return HtmlDocumentElementEvent.click.name();
+        return HtmlElementEvent.click.name();
     }
 
 }

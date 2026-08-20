@@ -30,7 +30,7 @@ import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIInput;
 import jakarta.faces.component.UIOutput;
-import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
+import jakarta.faces.component.html.HtmlEvents.HtmlElementEvent;
 import jakarta.faces.component.html.HtmlInputFile;
 import jakarta.faces.component.html.HtmlInputText;
 import jakarta.faces.component.html.HtmlOutputText;
@@ -148,7 +148,7 @@ public class TextRenderer extends HtmlBasicInputRenderer {
 
             // style is rendered as a passthru attribute
             Attributes attributes = component instanceof HtmlInputFile ? INPUTFILE_ATTRIBUTES : INPUTTEXT_ATTRIBUTES;
-            RenderKitUtils.renderPassThruAttributes(context, writer, component, null, false, attributes, HtmlDocumentElementEvent.change, FacesComponentEvent.valueChange);
+            RenderKitUtils.renderPassThruAttributes(context, writer, component, null, false, attributes, HtmlElementEvent.change, FacesComponentEvent.valueChange);
             RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
             writer.endElement("input");

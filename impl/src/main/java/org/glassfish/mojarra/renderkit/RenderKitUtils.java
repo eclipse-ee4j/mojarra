@@ -60,7 +60,7 @@ import jakarta.faces.component.behavior.ClientBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorContext;
 import jakarta.faces.component.behavior.ClientBehaviorHint;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
-import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
+import jakarta.faces.component.html.HtmlEvents.HtmlElementEvent;
 import jakarta.faces.component.html.HtmlMessages;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
@@ -348,7 +348,7 @@ public class RenderKitUtils {
      * @throws IOException if an error occurs writing the attributes
      */
     public static void renderPassThruAttributes(FacesContext context, ResponseWriter writer, UIComponent component, String clientId, boolean incExec,
-            Attributes attributes, HtmlDocumentElementEvent defaultDomEvent, FacesComponentEvent defaultComponentEvent) throws IOException {
+            Attributes attributes, HtmlElementEvent defaultDomEvent, FacesComponentEvent defaultComponentEvent) throws IOException {
 
         Map<String, List<ClientBehavior>> behaviors = null;
         boolean hasValueChangeBehavior = false;
@@ -464,7 +464,7 @@ public class RenderKitUtils {
     }
 
     private static void renderValueChangeEventListener(FacesContext context, UIComponent component, String clientId,
-            HtmlDocumentElementEvent defaultDomEvent, String componentEventName, String domEventName,
+            HtmlElementEvent defaultDomEvent, String componentEventName, String domEventName,
             boolean hasBehaviorForDefaultEvent, boolean incExec) throws IOException {
 
         String handlerName = BEHAVIOR_EVENT_ATTRIBUTE_PREFIX + domEventName;
@@ -495,7 +495,7 @@ public class RenderKitUtils {
         final String handlerName = "onclick";
         final Object userHandler = component.getAttributes().get(handlerName);
         String behaviorEventName = FacesComponentEvent.action.name();
-        String domEventName = HtmlDocumentElementEvent.click.name();
+        String domEventName = HtmlElementEvent.click.name();
         if (component instanceof ClientBehaviorHolder) {
             Map<String, List<ClientBehavior>> behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
             boolean mixed = null != behaviors && behaviors.containsKey(domEventName) && behaviors.containsKey(behaviorEventName);
@@ -706,10 +706,12 @@ public class RenderKitUtils {
                 continue;
             }
 
-            if (knownAttributes.get(name) != null || isBehaviorEventAttribute(name)) {
+            boolean supportedBehaviorEventAttribute = isSupportedBehaviorEventAttribute(component, name);
+
+            if (knownAttributes.get(name) != null || supportedBehaviorEventAttribute) {
                 Object value = attrMap.get(name);
                 if (value != null && shouldRenderAttribute(value)) {
-                    if (isBehaviorEventAttribute(name)) {
+                    if (supportedBehaviorEventAttribute) {
                         String eventName = name.substring(BEHAVIOR_EVENT_ATTRIBUTE_PREFIX.length());
                         addBehaviorEventListener(context, component, null, null, name, value, eventName, eventName, null, false, false);
                         if (eventName.equals(behaviorEventName)) {
@@ -776,7 +778,7 @@ public class RenderKitUtils {
         behaviorEventNames.addAll(behaviors.keySet());
 
         if (setAttributes != null) {
-            setAttributes.stream().filter(RenderKitUtils::isBehaviorEventAttribute).map(a -> a.substring(BEHAVIOR_EVENT_ATTRIBUTE_PREFIX.length())).forEach(behaviorEventNames::add);
+            setAttributes.stream().filter(name -> isSupportedBehaviorEventAttribute(component, name)).map(a -> a.substring(BEHAVIOR_EVENT_ATTRIBUTE_PREFIX.length())).forEach(behaviorEventNames::add);
         }
 
         for (Attribute attribute : knownAttributes) {
@@ -814,6 +816,31 @@ public class RenderKitUtils {
         } else if (hasValue) {
             writer.writeAttribute(prefixAttribute(attrName, isXhtml), value, attrName);
         }
+    }
+
+    /**
+     * <p>
+     * A behavior event attribute is only rendered when the component names the event after "on" in
+     * {@link ClientBehaviorHolder#getEventNames()}, as required by the behavior event attribute rule of the standard
+     * HTML render kit. A component which is no {@link ClientBehaviorHolder} has no such list to check against, so its
+     * behavior event attributes are all rendered.
+     * </p>
+     *
+     * @param component the component whose attribute is being rendered
+     * @param name the attribute name
+     * @return whether the given attribute is a behavior event attribute which the given component supports
+     */
+    private static boolean isSupportedBehaviorEventAttribute(UIComponent component, String name) {
+        if (!isBehaviorEventAttribute(name)) {
+            return false;
+        }
+
+        if (!(component instanceof ClientBehaviorHolder clientBehaviorHolder)) {
+            return true;
+        }
+
+        Collection<String> eventNames = clientBehaviorHolder.getEventNames();
+        return eventNames != null && eventNames.contains(name.substring(BEHAVIOR_EVENT_ATTRIBUTE_PREFIX.length()));
     }
 
     public static boolean isBehaviorEventAttribute(String name) {
@@ -1284,7 +1311,7 @@ public class RenderKitUtils {
         // request params.
         String partialEvent = PARTIAL_EVENT_PARAM.getValue(context);
 
-        return HtmlDocumentElementEvent.click.name().equals(partialEvent);
+        return HtmlElementEvent.click.name().equals(partialEvent);
     }
 
     /**
@@ -1653,7 +1680,7 @@ public class RenderKitUtils {
         // If we're submitting (either via a behavior, or by rendering
         // a submit script), we need to prevent the
         // default button/link action event.
-        if (submitting && (FacesComponentEvent.action.name().equals(behaviorEventName) || HtmlDocumentElementEvent.click.name().equals(behaviorEventName))) {
+        if (submitting && (FacesComponentEvent.action.name().equals(behaviorEventName) || HtmlElementEvent.click.name().equals(behaviorEventName))) {
             builder.append(";event.preventDefault()");
         }
 

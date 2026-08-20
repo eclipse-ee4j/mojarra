@@ -76,14 +76,27 @@ public class RIConstants {
 
     public static final String ERROR_PAGE_PRESENT_KEY_NAME = RI_PREFIX + "errorPagePresent";
 
-    public static final String VIEWID_KEY_NAME = RI_PREFIX + "viewId";
-
     public static final String PUSH_RESOURCE_URLS_KEY_NAME = RI_PREFIX + "resourceUrls";
 
     /**
      * Marker used when saving the list of component adds and removes.
      */
     public static final String DYNAMIC_ACTIONS = RI_PREFIX + "DynamicActions";
+
+    /**
+     * Marker used when saving, under {@link jakarta.faces.application.ProjectStage#Development} only, the tag each
+     * client id was built from, so that the build which restores the view can be told where it produced another
+     * component than the one that was rendered. It holds every component rather than only those carrying a delta: a
+     * component the restore fails to produce is the one to report, and it need never have held state of its own.
+     */
+    public static final String RENDERED_TAGS = RI_PREFIX + "RenderedTags";
+
+    /**
+     * Marker used when saving, under {@code org.glassfish.mojarra.restoreBuildTimeDecisions} only, the value each
+     * build time condition evaluated to while the response was rendered, so that the build which restores the view
+     * reproduces the view that was submitted rather than the one the current state of the model asks for.
+     */
+    public static final String BUILD_TIME_DECISIONS = RI_PREFIX + "BuildTimeDecisions";
 
     /**
      * Marker attached to a component that has dynamic children.

@@ -175,6 +175,8 @@ public enum MojarraContextParam implements ContextParam {
      */
     RESOURCE_UPDATE_CHECK_PERIOD("resourceUpdateCheckPeriod", -1, projectStage -> projectStage == ProjectStage.Development ? 5 : -1),
 
+    RESTORE_BUILD_TIME_DECISIONS("restoreBuildTimeDecisions", true),
+
     SEND_POWERED_BY_HEADER("sendPoweredByHeader", false),
 
     SERIALIZATION_PROVIDER("serializationProvider", ""),
