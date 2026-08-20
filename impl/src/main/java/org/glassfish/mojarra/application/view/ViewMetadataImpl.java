@@ -41,6 +41,7 @@ import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.application.ApplicationAssociate;
 import org.glassfish.mojarra.context.FacesFileNotFoundException;
 import org.glassfish.mojarra.facelets.impl.DefaultFaceletFactory;
+import org.glassfish.mojarra.facelets.tag.SavedBuildTimeDecisions;
 
 /**
  * @see jakarta.faces.view.ViewMetadata
@@ -110,8 +111,14 @@ public class ViewMetadataImpl extends ViewMetadata {
                 context.setViewRoot(metadataView);
             }
 
-            faceletFactory.getMetadataFacelet(context, metadataView.getViewId())
-                          .applyMetadata(context, metadataView);
+            SavedBuildTimeDecisions.suspend(context);
+
+            try {
+                faceletFactory.getMetadataFacelet(context, metadataView.getViewId())
+                              .applyMetadata(context, metadataView);
+            } finally {
+                SavedBuildTimeDecisions.resume(context);
+            }
 
             importConstantsIfNecessary(context, metadataView);
 

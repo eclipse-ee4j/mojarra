@@ -46,4 +46,13 @@ public final class ChooseWhenHandler extends TagHandlerImpl {
     public ValueExpression getTestExpression(FaceletContext ctx) {
         return test.getValueExpression(ctx, Boolean.class);
     }
+
+    /**
+     * Whether this branch can be taken by one build of a view and not by another, which a literal test cannot.
+     *
+     * @return whether this branch can be taken by one build of a view and not by another.
+     */
+    boolean isDynamicTest() {
+        return isDynamic(test);
+    }
 }

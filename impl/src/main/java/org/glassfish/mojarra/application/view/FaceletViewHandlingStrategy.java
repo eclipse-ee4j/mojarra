@@ -135,6 +135,7 @@ import org.glassfish.mojarra.facelets.el.VariableMapperWrapper;
 import org.glassfish.mojarra.facelets.impl.DefaultFaceletFactory;
 import org.glassfish.mojarra.facelets.impl.XMLFrontMatterSaver;
 import org.glassfish.mojarra.facelets.tag.BuildTimeDecisions;
+import org.glassfish.mojarra.facelets.tag.SavedBuildTimeDecisions;
 import org.glassfish.mojarra.facelets.tag.composite.CompositeComponentBeanInfo;
 import org.glassfish.mojarra.facelets.tag.faces.CompositeComponentTagHandler;
 import org.glassfish.mojarra.facelets.tag.ui.UIDebug;
@@ -245,20 +246,26 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                 context.setViewRoot(viewRoot);
                 Object[] rawState = (Object[]) RenderKitUtils.getResponseStateManager(context, context.getApplication().getViewHandler().calculateRenderKitId(context)).getState(context, viewId);
 
-                if (rawState != null) {
-                    @SuppressWarnings("unchecked")
-                    Map<String, Object> state = (Map<String, Object>) rawState[1];
-                    if (state != null) {
-                        String clientId = viewRoot.getClientId(context);
-                        Object stateObj = state.get(clientId);
-                        if (stateObj != null) {
-                            viewRoot.restoreViewScopeState(context, stateObj);
-                        }
+                Map<String, Object> state = stateOf(rawState);
+
+                if (state != null) {
+                    String clientId = viewRoot.getClientId(context);
+                    Object stateObj = state.get(clientId);
+                    if (stateObj != null) {
+                        viewRoot.restoreViewScopeState(context, stateObj);
                     }
                 }
 
                 context.setProcessingEvents(true);
-                vdl.buildView(context, viewRoot);
+
+                // This build reproduces the view that was submitted rather than the one the current state of the model
+                // asks for; the re-apply which precedes rendering evaluates the conditions again.
+                SavedBuildTimeDecisions.startReplaying(context, state);
+                try {
+                    vdl.buildView(context, viewRoot);
+                } finally {
+                    SavedBuildTimeDecisions.stopReplaying(context);
+                }
             } catch (IOException ioe) {
                 throw new FacesException(ioe);
             }
@@ -270,6 +277,17 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         startTrackViewModifications(context, root);
 
         return root;
+    }
+
+    /**
+     * The per component state of the view being restored, as saved by {@code StateManagementStrategy.saveView}.
+     *
+     * @param rawState the state obtained from the {@code ResponseStateManager}, may be {@code null}
+     * @return the per component state, or {@code null} when there is none
+     */
+    @SuppressWarnings("unchecked")
+    private static Map<String, Object> stateOf(Object[] rawState) {
+        return rawState == null ? null : (Map<String, Object>) rawState[1];
     }
 
     @Override

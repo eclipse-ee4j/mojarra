@@ -17,6 +17,7 @@ package org.glassfish.mojarra.application.view;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static org.glassfish.mojarra.RIConstants.BUILD_TIME_DECISIONS;
 import static org.glassfish.mojarra.RIConstants.DYNAMIC_ACTIONS;
 import static org.glassfish.mojarra.RIConstants.RENDERED_TAGS;
 import static org.glassfish.mojarra.application.view.FaceletPartialStateManagementStrategy.NOT_REBUILT_REPORT;
@@ -26,6 +27,7 @@ import static org.glassfish.mojarra.application.view.FaceletPartialStateManageme
 import static org.glassfish.mojarra.application.view.FaceletPartialStateManagementStrategy.isViewRootOnlyState;
 import static org.glassfish.mojarra.application.view.FaceletPartialStateManagementStrategy.tagOf;
 import static org.glassfish.mojarra.application.view.FaceletPartialStateManagementStrategy.truncated;
+import static org.glassfish.mojarra.config.MojarraContextParam.RESTORE_BUILD_TIME_DECISIONS;
 import static org.glassfish.mojarra.facelets.tag.faces.ComponentSupport.MARK_CREATED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -159,7 +161,8 @@ class FaceletPartialStateManagementStrategyTest {
         assertTrue(isViewRootOnlyState("root", state()));
         assertTrue(isViewRootOnlyState("root", state(DYNAMIC_ACTIONS)));
         assertTrue(isViewRootOnlyState("root", state(RENDERED_TAGS)));
-        assertTrue(isViewRootOnlyState("root", state(DYNAMIC_ACTIONS, RENDERED_TAGS)));
+        assertTrue(isViewRootOnlyState("root", state(BUILD_TIME_DECISIONS)));
+        assertTrue(isViewRootOnlyState("root", state(DYNAMIC_ACTIONS, RENDERED_TAGS, BUILD_TIME_DECISIONS)));
     }
 
     @Test
@@ -167,7 +170,8 @@ class FaceletPartialStateManagementStrategyTest {
         assertTrue(isViewRootOnlyState("root", state("root")));
         assertTrue(isViewRootOnlyState("root", state("root", DYNAMIC_ACTIONS)));
         assertTrue(isViewRootOnlyState("root", state("root", RENDERED_TAGS)));
-        assertTrue(isViewRootOnlyState("root", state("root", DYNAMIC_ACTIONS, RENDERED_TAGS)));
+        assertTrue(isViewRootOnlyState("root", state("root", BUILD_TIME_DECISIONS)));
+        assertTrue(isViewRootOnlyState("root", state("root", DYNAMIC_ACTIONS, RENDERED_TAGS, BUILD_TIME_DECISIONS)));
     }
 
     @Test
@@ -175,7 +179,8 @@ class FaceletPartialStateManagementStrategyTest {
         assertFalse(isViewRootOnlyState("root", state("form:input")));
         assertFalse(isViewRootOnlyState("root", state("form:input", DYNAMIC_ACTIONS)));
         assertFalse(isViewRootOnlyState("root", state("form:input", RENDERED_TAGS)));
-        assertFalse(isViewRootOnlyState("root", state("root", "form:input", DYNAMIC_ACTIONS, RENDERED_TAGS)));
+        assertFalse(isViewRootOnlyState("root", state("form:input", BUILD_TIME_DECISIONS)));
+        assertFalse(isViewRootOnlyState("root", state("root", "form:input", DYNAMIC_ACTIONS, RENDERED_TAGS, BUILD_TIME_DECISIONS)));
     }
 
     @Test
@@ -202,6 +207,18 @@ class FaceletPartialStateManagementStrategyTest {
     void neitherReportHoldsALoneApostrophe() {
         assertFalse(LONE_APOSTROPHE.matcher(NOT_REBUILT_REPORT).find(), NOT_REBUILT_REPORT);
         assertFalse(LONE_APOSTROPHE.matcher(REBUILT_FROM_ANOTHER_TAG_REPORT).find(), REBUILT_FROM_ANOTHER_TAG_REPORT);
+    }
+
+    /**
+     * The remedy of either report names the parameter which replays the build time decisions of the render, taken from
+     * the parameter itself so that renaming it cannot leave the report naming one which no longer exists.
+     */
+    @Test
+    void bothReportsNameTheParameterWhichReplaysTheBuildTimeDecisionsOfTheRender() {
+        String parameterName = RESTORE_BUILD_TIME_DECISIONS.getName();
+
+        assertTrue(NOT_REBUILT_REPORT.contains(parameterName), NOT_REBUILT_REPORT);
+        assertTrue(REBUILT_FROM_ANOTHER_TAG_REPORT.contains(parameterName), REBUILT_FROM_ANOTHER_TAG_REPORT);
     }
 
     private static List<String> clientIds(int count) {

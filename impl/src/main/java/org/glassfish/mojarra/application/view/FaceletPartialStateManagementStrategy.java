@@ -19,6 +19,7 @@ package org.glassfish.mojarra.application.view;
 import static jakarta.faces.component.visit.VisitHint.SKIP_ITERATION;
 import static jakarta.faces.component.visit.VisitResult.ACCEPT;
 import static java.util.logging.Level.FINEST;
+import static org.glassfish.mojarra.RIConstants.BUILD_TIME_DECISIONS;
 import static org.glassfish.mojarra.RIConstants.DYNAMIC_ACTIONS;
 import static org.glassfish.mojarra.RIConstants.RENDERED_TAGS;
 import static org.glassfish.mojarra.RIConstants.VIEW_REBUILT_AT_RENDER;
@@ -50,6 +51,7 @@ import jakarta.faces.view.StateManagementStrategy;
 
 import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.context.StateContext;
+import org.glassfish.mojarra.facelets.tag.SavedBuildTimeDecisions;
 import org.glassfish.mojarra.facelets.tag.faces.ComponentSupport;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 import org.glassfish.mojarra.util.ComponentStruct;
@@ -89,9 +91,11 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
     /**
      * What resolves a mismatch between the rendered and the rebuilt view, appended to the report of either.
      */
-    private static final String REMEDY = " A build time condition such as c:if, c:choose or a variable ui:include path must evaluate to the"
-            + " same value while the postback is restored as it did while the response was rendered. Hold what it depends on in a @ViewScoped"
-            + " bean, or recompute it from the relevant request parameters in the @PostConstruct of the request scoped one.";
+    private static final String REMEDY = " A build time condition such as c:if, c:choose, a c:forEach range or a variable ui:include path must"
+            + " evaluate to the same value while the postback is restored as it did while the response was rendered, and the items a c:forEach"
+            + " iterated must still hold the rows it produced. Hold what they depend on in a @ViewScoped bean, or recompute it from the relevant"
+            + " request parameters in the @PostConstruct of the request scoped one, or leave the "
+            + MojarraContextParam.RESTORE_BUILD_TIME_DECISIONS.getName() + " context parameter enabled.";
 
     /**
      * Reported for the components the rendered view held which the rebuilt one does not.
@@ -420,8 +424,8 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
 
     /**
      * Determine whether the saved state holds no per-component delta other than (optionally) the view
-     * root's own state. The {@code DYNAMIC_ACTIONS} and {@code RENDERED_TAGS} entries are bookkeeping
-     * rather than a component delta, so they are excluded from the count.
+     * root's own state. The {@code DYNAMIC_ACTIONS}, {@code RENDERED_TAGS} and {@code BUILD_TIME_DECISIONS}
+     * entries are bookkeeping rather than a component delta, so they are excluded from the count.
      *
      * @param viewRootClientId the client id of the view root.
      * @param state the saved state map.
@@ -433,6 +437,9 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
             componentStateCount--;
         }
         if (state.containsKey(RENDERED_TAGS)) {
+            componentStateCount--;
+        }
+        if (state.containsKey(BUILD_TIME_DECISIONS)) {
             componentStateCount--;
         }
         return componentStateCount == 0
@@ -665,6 +672,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
             stateMap.put(RENDERED_TAGS, renderedTags);
         }
 
+        SavedBuildTimeDecisions.save(context, stateMap);
         saveDynamicActions(context, stateContext, stateMap);
         StateContext.release(context);
         return new Object[] { null, stateMap };
