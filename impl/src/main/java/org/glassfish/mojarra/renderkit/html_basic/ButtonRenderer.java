@@ -27,7 +27,7 @@ import jakarta.faces.component.UICommand;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.behavior.ClientBehaviorContext;
 import jakarta.faces.component.html.HtmlCommandButton;
-import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
+import jakarta.faces.component.html.HtmlEvents.HtmlElementEvent;
 import jakarta.faces.component.html.HtmlOutcomeTargetButton;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
@@ -132,7 +132,7 @@ public class ButtonRenderer extends HtmlBasicRenderer {
             writer.writeAttribute("value", label, "value");
         }
 
-        RenderKitUtils.renderPassThruAttributes(context, writer, component, null, false, ATTRIBUTES, HtmlDocumentElementEvent.click, FacesComponentEvent.action);
+        RenderKitUtils.renderPassThruAttributes(context, writer, component, null, false, ATTRIBUTES, HtmlElementEvent.click, FacesComponentEvent.action);
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
         String styleClass = (String) RenderKitUtils.getAttributeIfSet(component, "styleClass");

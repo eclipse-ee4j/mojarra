@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
+import jakarta.faces.component.html.HtmlEvents.HtmlElementEvent;
 import jakarta.faces.component.html.HtmlSelectBooleanCheckbox;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
@@ -109,7 +109,7 @@ public class CheckboxRenderer extends HtmlBasicInputRenderer {
             writer.writeAttribute("checked", Boolean.TRUE, "value");
         }
         writeStyleClassAttributeIfNecessary(writer, component);
-        RenderKitUtils.renderPassThruAttributes(context, writer, component, null, false, ATTRIBUTES, HtmlDocumentElementEvent.click, FacesComponentEvent.valueChange);
+        RenderKitUtils.renderPassThruAttributes(context, writer, component, null, false, ATTRIBUTES, HtmlElementEvent.click, FacesComponentEvent.valueChange);
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
         writer.endElement("input");

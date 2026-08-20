@@ -29,7 +29,7 @@ import jakarta.faces.component.UICommand;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.behavior.ClientBehaviorContext;
 import jakarta.faces.component.html.HtmlCommandLink;
-import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
+import jakarta.faces.component.html.HtmlEvents.HtmlElementEvent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.event.ActionEvent;
@@ -170,7 +170,7 @@ public class CommandLinkRenderer extends LinkRenderer {
         writer.startElement("a", command);
         writeIdAttributeIfNecessary(context, writer, command);
         writer.writeAttribute("href", "#", "href");
-        RenderKitUtils.renderPassThruAttributes(context, writer, command, null, false, ATTRIBUTES, HtmlDocumentElementEvent.click, FacesComponentEvent.action);
+        RenderKitUtils.renderPassThruAttributes(context, writer, command, null, false, ATTRIBUTES, HtmlElementEvent.click, FacesComponentEvent.action);
 
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, command);
 

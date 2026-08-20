@@ -21,7 +21,7 @@ package org.glassfish.mojarra.renderkit.html_basic;
 import java.io.IOException;
 
 import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
+import jakarta.faces.component.html.HtmlEvents.HtmlElementEvent;
 import jakarta.faces.component.html.HtmlInputSecret;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
@@ -83,7 +83,7 @@ public class SecretRenderer extends HtmlBasicInputRenderer {
             writer.writeAttribute("value", currentValue, "value");
         }
 
-        RenderKitUtils.renderPassThruAttributes(context, writer, component, null, false, ATTRIBUTES, HtmlDocumentElementEvent.change, FacesComponentEvent.valueChange);
+        RenderKitUtils.renderPassThruAttributes(context, writer, component, null, false, ATTRIBUTES, HtmlElementEvent.change, FacesComponentEvent.valueChange);
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
         writeStyleClassAttributeIfNecessary(writer, component);
