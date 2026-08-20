@@ -28,9 +28,8 @@ import static java.util.logging.Level.WARNING;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.regex.Pattern;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
@@ -40,6 +39,7 @@ import java.util.logging.Logger;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.NamingContainer;
@@ -92,8 +92,11 @@ public class PartialViewContextImpl extends PartialViewContext {
 
     private static final String ORIGINAL_WRITER = "com.sun.faces.ORIGINAL_WRITER";
 
-    /** The render and execute parameters are space separated lists, which the spec allows to be padded out. */
-    private static final Pattern WHITESPACE_RUN = Pattern.compile("[ \t]+");
+    // Upper bounds for the jakarta.faces.partial.execute/render client id lists. A legitimate ajax request
+    // references only a handful of client ids well under these limits; the bounds keep a pathological request
+    // from expanding either parameter into a disproportionately large PartialVisitContext.
+    private static final int MAX_CLIENT_IDS = 256;
+    private static final int MAX_CLIENT_ID_LENGTH = 1024;
 
     // ----------------------------------------------------------- Constructors
 
@@ -379,11 +382,49 @@ public class PartialViewContextImpl extends PartialViewContext {
         String param = parameterName.getValue(ctx);
         if (param == null) {
             return new ArrayList<>();
-        } else {
-            String[] pcs = WHITESPACE_RUN.split(param);
-            return pcs != null && pcs.length != 0 ? new ArrayList<>(Arrays.asList(pcs)) : new ArrayList<>();
         }
 
+        // Split the space separated (spec allows any whitespace padding) list ourselves so we can bound it as
+        // we go: drop empty tokens, reject over-long ids, collapse duplicates and cap the count, keeping the
+        // resulting PartialVisitContext a proportionate size.
+        Set<String> clientIds = new LinkedHashSet<>();
+        int length = param.length();
+        int start = -1;
+
+        for (int i = 0; i <= length; i++) {
+            if (i < length && !Character.isWhitespace(param.charAt(i))) {
+                if (start < 0) {
+                    start = i;
+                }
+                continue;
+            }
+
+            if (start >= 0) {
+                addClientId(param, start, i, clientIds);
+                start = -1;
+
+                if (clientIds.size() >= MAX_CLIENT_IDS) {
+                    break;
+                }
+            }
+        }
+
+        return new ArrayList<>(clientIds);
+    }
+
+    private void addClientId(String param, int start, int end, Set<String> clientIds) {
+        int idLength = end - start;
+
+        if (idLength > MAX_CLIENT_ID_LENGTH) {
+            if (ctx.isProjectStage(ProjectStage.Development)) {
+                LOGGER.log(WARNING, "Ignoring a jakarta.faces.partial.execute/render client id of length {0}"
+                        + " because it exceeds the limit of {1}; starts with: {2}",
+                        new Object[] { idLength, MAX_CLIENT_ID_LENGTH, param.substring(start, Math.min(end, start + 32)) });
+            }
+            return;
+        }
+
+        clientIds.add(param.substring(start, end));
     }
 
     // Process the components specified in the phaseClientIds list
