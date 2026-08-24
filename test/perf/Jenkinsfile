@@ -37,7 +37,7 @@
 //                  into the reactor with -Papi, and test/ is reachable only through its own pom
 //                  because the root reactor is impl-only there.
 def LINE_CONFIG = [
-    '4.1': [ implBranch: '4.1',    apiSubmodule: false ],
+    '4.1': [ implBranch: 'main',   apiSubmodule: false ],
     '5.0': [ implBranch: 'master', apiSubmodule: true  ],
 ]
 
