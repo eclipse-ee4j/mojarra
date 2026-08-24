@@ -18,6 +18,7 @@ package org.glassfish.mojarra.application;
 
 import static jakarta.faces.FactoryFinder.FACELET_CACHE_FACTORY;
 import static jakarta.faces.FactoryFinder.FLOW_HANDLER_FACTORY;
+import static jakarta.faces.FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY;
 import static jakarta.faces.application.ProjectStage.Development;
 import static jakarta.faces.application.ViewVisitOption.RETURN_AS_MINIMAL_IMPLICIT_OUTCOME;
 import static java.util.Collections.emptyList;
@@ -25,7 +26,6 @@ import static java.util.Collections.emptyMap;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.SEVERE;
 import static org.glassfish.mojarra.RIConstants.FACES_CONFIG_VERSION;
-import static org.glassfish.mojarra.RIConstants.RI_PREFIX;
 import static org.glassfish.mojarra.el.ELUtils.buildFacesResolver;
 import static org.glassfish.mojarra.el.FacesCompositeELResolver.ELResolverChainType.Faces;
 import static org.glassfish.mojarra.facelets.util.ReflectionUtil.forName;
@@ -64,6 +64,7 @@ import jakarta.faces.event.SystemEvent;
 import jakarta.faces.event.SystemEventListener;
 import jakarta.faces.flow.FlowHandler;
 import jakarta.faces.flow.FlowHandlerFactory;
+import jakarta.faces.view.ViewDeclarationLanguageFactory;
 import jakarta.faces.view.facelets.FaceletCache;
 import jakarta.faces.view.facelets.FaceletCacheFactory;
 import jakarta.faces.view.facelets.TagDecorator;
@@ -76,7 +77,7 @@ import org.glassfish.mojarra.application.resource.ResourceCache;
 import org.glassfish.mojarra.application.resource.ResourceManager;
 import org.glassfish.mojarra.component.search.SearchExpressionHandlerImpl;
 import org.glassfish.mojarra.config.ConfigManager;
-import org.glassfish.mojarra.context.FacesContextParam;
+import org.glassfish.mojarra.config.FacesContextParam;
 import org.glassfish.mojarra.el.DemuxCompositeELResolver;
 import org.glassfish.mojarra.facelets.compiler.Compiler;
 import org.glassfish.mojarra.facelets.compiler.SAXCompiler;
@@ -145,11 +146,10 @@ public class ApplicationAssociate {
     private boolean errorPagePresent;
 
     private final AnnotationManager annotationManager;
-    private final boolean devModeEnabled;
+    private final boolean development;
     private Compiler compiler;
     private DefaultFaceletFactory faceletFactory;
     private ResourceManager resourceManager;
-    private final ApplicationStateInfo applicationStateInfo;
 
     private final PropertyEditorHelper propertyEditorHelper;
 
@@ -238,15 +238,14 @@ public class ApplicationAssociate {
 
         annotationManager = new AnnotationManager();
 
-        devModeEnabled = appImpl.getProjectStage() == Development;
+        development = appImpl.getProjectStage() == Development;
 
-        if (!devModeEnabled) {
+        if (!development) {
             resourceCache = new ResourceCache();
         }
 
         resourceManager = new ResourceManager(applicationMap, resourceCache);
         namedEventManager = new NamedEventManager();
-        applicationStateInfo = new ApplicationStateInfo();
 
         appImpl.subscribeToEvent(PostConstructApplicationEvent.class, Application.class, new PostConstructApplicationListener());
 
@@ -290,19 +289,16 @@ public class ApplicationAssociate {
                 LOGGER.log(SEVERE, null, ex);
             }
 
-            // cause the Facelet VDL to be instantiated eagerly, so it can
-            // become aware of the resource library contracts
+            // Instantiate every view declaration language eagerly, so that the Facelets one
+            // becomes aware of the resource library contracts.
+            ((ViewDeclarationLanguageFactory) FactoryFinder.getFactory(VIEW_DECLARATION_LANGUAGE_FACTORY)).getAllViewDeclarationLanguages();
 
             ViewHandler viewHandler = context.getApplication().getViewHandler();
-
-            // FindBugs: ignore the return value, this is just to get the
-            // ctor called at this time.
-            viewHandler.getViewDeclarationLanguage(context, RI_PREFIX + "xhtml");
 
             String facesConfigVersion = getFacesConfigXmlVersion(context);
             context.getExternalContext().getApplicationMap().put(FACES_CONFIG_VERSION, facesConfigVersion);
 
-            if (FacesContextParam.AUTOMATIC_EXTENSIONLESS_MAPPING.isSet(context)) {
+            if (FacesContextParam.AUTOMATIC_EXTENSIONLESS_MAPPING.isEnabled(context)) {
                 getFacesServletRegistration(context)
                     .ifPresent(registration ->
                         viewHandler.getViews(context, "/", RETURN_AS_MINIMAL_IMPLICIT_OUTCOME)
@@ -326,10 +322,6 @@ public class ApplicationAssociate {
 
     public long getTimeOfInstantiation() {
         return timeOfInstantiation;
-    }
-
-    public ApplicationStateInfo getApplicationStateInfo() {
-        return applicationStateInfo;
     }
 
     public ResourceManager getResourceManager() {
@@ -403,8 +395,8 @@ public class ApplicationAssociate {
         }
     }
 
-    public boolean isDevModeEnabled() {
-        return devModeEnabled;
+    public boolean isDevelopment() {
+        return development;
     }
 
     /**
@@ -623,7 +615,7 @@ public class ApplicationAssociate {
     protected DefaultFaceletFactory createFaceletFactory(FacesContext context, Compiler compiler) {
 
         // refresh period
-        int refreshPeriodInSeconds = FacesContextParam.FACELETS_REFRESH_PERIOD.getValue(context);
+        int refreshPeriodInSeconds = FacesContextParam.FACELETS_REFRESH_PERIOD.getInt(context);
 
         // resource resolver
         DefaultResourceResolver resolver = new DefaultResourceResolver(applicationImpl.getResourceHandler());
@@ -643,7 +635,7 @@ public class ApplicationAssociate {
         loadDecorators(context, newCompiler);
 
         // Skip params?
-        newCompiler.setTrimmingComments(FacesContextParam.FACELETS_SKIP_COMMENTS.isSet(context));
+        newCompiler.setTrimmingComments(FacesContextParam.FACELETS_SKIP_COMMENTS.isEnabled(context));
 
         addTagLibraries(newCompiler);
 
@@ -651,7 +643,7 @@ public class ApplicationAssociate {
     }
 
     protected void loadDecorators(FacesContext context, Compiler newCompiler) {
-        String[] decorators = FacesContextParam.FACELETS_DECORATORS.getValue(context);
+        String[] decorators = FacesContextParam.FACELETS_DECORATORS.getStringArray(context);
 
         for (String decorator : decorators) {
             try {
@@ -678,7 +670,7 @@ public class ApplicationAssociate {
         PassThroughElementLibrary.NAMESPACES.forEach(namespace -> newCompiler.addTagLibrary(new PassThroughElementLibrary(namespace)));
         FunctionLibrary.NAMESPACES.forEach(namespace -> newCompiler.addTagLibrary(new FunctionLibrary(JstlFunction.class, namespace)));
 
-        if (isDevModeEnabled()) {
+        if (isDevelopment()) {
             DevTools.NAMESPACES.forEach(namespace -> newCompiler.addTagLibrary(new FunctionLibrary(DevTools.class, namespace)));
         }
 

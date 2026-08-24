@@ -18,6 +18,7 @@ package org.glassfish.mojarra.facelets.tag.jstl.core;
 
 import java.io.IOException;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagAttribute;
@@ -42,7 +43,16 @@ public final class ChooseWhenHandler extends TagHandlerImpl {
         nextHandler.apply(ctx, parent);
     }
 
-    public boolean isTestTrue(FaceletContext ctx) {
-        return test.getBoolean(ctx);
+    public ValueExpression getTestExpression(FaceletContext ctx) {
+        return test.getValueExpression(ctx, Boolean.class);
+    }
+
+    /**
+     * Whether this branch can be taken by one build of a view and not by another, which a literal test cannot.
+     *
+     * @return whether this branch can be taken by one build of a view and not by another.
+     */
+    boolean isDynamicTest() {
+        return isDynamic(test);
     }
 }

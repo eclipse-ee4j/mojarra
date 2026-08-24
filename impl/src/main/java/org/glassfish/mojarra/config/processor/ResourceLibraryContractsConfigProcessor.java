@@ -37,6 +37,7 @@ import jakarta.servlet.ServletContext;
 import org.glassfish.mojarra.application.ApplicationAssociate;
 import org.glassfish.mojarra.config.manager.documents.DocumentInfo;
 import org.glassfish.mojarra.util.FacesLogger;
+import org.glassfish.mojarra.util.Util;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -123,7 +124,7 @@ public class ResourceLibraryContractsConfigProcessor extends AbstractConfigProce
                                     NodeList contracts = (NodeList) xpath.evaluate(".//ns1:contracts/text()", contractMapping, XPathConstants.NODESET);
                                     if (contracts != null && contracts.getLength() > 0) {
                                         for (int j = 0; j < contracts.getLength(); j++) {
-                                            String[] contractStrings = contracts.item(j).getNodeValue().trim().split(",");
+                                            String[] contractStrings = Util.split(contracts.item(j).getNodeValue().trim(), ',');
                                             for (String contractString : contractStrings) {
                                                 if (!list.contains(contractString)) {
                                                     if (LOGGER.isLoggable(INFO)) {

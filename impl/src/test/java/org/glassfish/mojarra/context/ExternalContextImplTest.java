@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -52,7 +53,7 @@ public class ExternalContextImplTest {
      */
     @Test
     public void testGetRequestCookieMap() {
-        ServletContext servletContext = Mockito.mock(ServletContext.class);
+        ServletContext servletContext = mockServletContext();
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
         HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
 
@@ -66,7 +67,7 @@ public class ExternalContextImplTest {
      */
     @Test
     public void testGetRequestCookieMap2() {
-        ServletContext servletContext = Mockito.mock(ServletContext.class);
+        ServletContext servletContext = mockServletContext();
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
         HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
         Cookie cookie = new Cookie("foo", "bar");
@@ -93,7 +94,7 @@ public class ExternalContextImplTest {
      */
     @Test
     public void testGetRequestCookieMap3() {
-        ServletContext servletContext = Mockito.mock(ServletContext.class);
+        ServletContext servletContext = mockServletContext();
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
         HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
         Cookie cookie = new Cookie("foo", "bar");
@@ -151,7 +152,7 @@ public class ExternalContextImplTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testGetRequestCookieMap4() {
-        ServletContext servletContext = Mockito.mock(ServletContext.class);
+        ServletContext servletContext = mockServletContext();
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
         HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
         Cookie cookie = new Cookie("foo", "bar");
@@ -255,7 +256,7 @@ public class ExternalContextImplTest {
     }
 
     private ExternalContextImpl createExternalContext(StringWriter container) throws IOException {
-        ServletContext servletContext = Mockito.mock(ServletContext.class);
+        ServletContext servletContext = mockServletContext();
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
         HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
         when(response.getWriter()).thenReturn(new PrintWriter(container));
@@ -295,5 +296,14 @@ public class ExternalContextImplTest {
         }
 
         assertTrue(exceptionThrown);
+    }
+
+    /**
+     * ExternalContextImpl builds a WebConfiguration, which walks the init parameter names, so a bare mock is not enough.
+     */
+    private static ServletContext mockServletContext() {
+        ServletContext servletContext = Mockito.mock(ServletContext.class);
+        when(servletContext.getInitParameterNames()).thenAnswer(invocation -> Collections.enumeration(Collections.emptyList()));
+        return servletContext;
     }
 }

@@ -20,7 +20,6 @@ import static java.util.Arrays.asList;
 import static org.glassfish.mojarra.application.view.ViewScopeManager.ACTIVE_VIEW_MAPS;
 import static org.glassfish.mojarra.application.view.ViewScopeManager.VIEW_SCOPE_MANAGER;
 import static org.glassfish.mojarra.cdi.clientwindow.ClientWindowScopeManager.CLIENT_WINDOW_SCOPE_MANAGER;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +38,7 @@ import jakarta.servlet.http.HttpSessionEvent;
 import jakarta.servlet.http.HttpSessionListener;
 
 import org.glassfish.mojarra.config.InitFacesContext;
-import org.glassfish.mojarra.config.WebConfiguration;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.flow.FlowCDIContext;
 import org.glassfish.mojarra.renderkit.StateHelper;
 
@@ -118,7 +117,7 @@ public class WebappLifecycleListener {
      */
     public void sessionCreated(HttpSessionEvent event) {
         ApplicationAssociate associate = getAssociate();
-        if (isDevModeEnabled(associate)) {
+        if (isDevelopment(associate)) {
             activeSessions.add(event.getSession());
         }
 
@@ -184,11 +183,11 @@ public class WebappLifecycleListener {
     }
 
     private boolean isDistributable(ServletRequestEvent event) {
-        return WebConfiguration.getInstance(event.getServletContext()).isOptionEnabled(EnableDistributable);
+        return MojarraContextParam.ENABLE_DISTRIBUTABLE.isEnabled(event.getServletContext());
     }
 
-    private boolean isDevModeEnabled(ApplicationAssociate associate) {
-        return associate != null && associate.isDevModeEnabled();
+    private boolean isDevelopment(ApplicationAssociate associate) {
+        return associate != null && associate.isDevelopment();
     }
 
     private boolean haveProtectedViews(ApplicationAssociate associate) {

@@ -19,8 +19,8 @@ package org.glassfish.mojarra.facelets.impl;
 import static java.util.logging.Level.FINEST;
 import static java.util.regex.Pattern.quote;
 import static org.glassfish.mojarra.RIConstants.CHAR_ENCODING;
-import static org.glassfish.mojarra.cdi.CdiUtils.getBeanReference;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.UseFaceletsID;
+import static org.glassfish.mojarra.cdi.CdiUtils.getViewFacelet;
+import static org.glassfish.mojarra.util.Util.getCdiBeanManager;
 import static org.glassfish.mojarra.util.Util.isEmpty;
 import static org.glassfish.mojarra.util.Util.notNull;
 import static org.glassfish.mojarra.util.Util.saveDOCTYPEToFacesContextAttributes;
@@ -37,6 +37,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
@@ -46,7 +47,6 @@ import java.util.regex.Pattern;
 import jakarta.el.ELException;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
-import jakarta.faces.annotation.View;
 import jakarta.faces.application.Application;
 import jakarta.faces.component.Doctype;
 import jakarta.faces.component.UIComponent;
@@ -61,11 +61,12 @@ import jakarta.faces.view.facelets.FaceletHandler;
 import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.application.ApplicationAssociate;
 import org.glassfish.mojarra.application.resource.ResourceManager;
-import org.glassfish.mojarra.config.WebConfiguration;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.context.FacesFileNotFoundException;
 import org.glassfish.mojarra.facelets.compiler.Compiler;
 import org.glassfish.mojarra.util.Cache;
 import org.glassfish.mojarra.util.FacesLogger;
+import org.glassfish.mojarra.util.Util;
 
 /**
  * Default FaceletFactory implementation.
@@ -77,6 +78,9 @@ public class DefaultFaceletFactory {
 
     protected final static Logger log = FacesLogger.FACELETS_FACTORY.getLogger();
 
+    private static final String ARCHIVE_PROTOCOL = "jar";
+    private static final String ARCHIVE_SEPARATOR = "!/";
+
     private Compiler compiler;
 
     // We continue to use a ResourceResolver just in case someone
@@ -86,6 +90,7 @@ public class DefaultFaceletFactory {
     private ResourceManager manager;
     private URL baseUrl;
     private String baseUrlAsString;
+    private String[] faceletResourceSuffixes;
     private long refreshPeriodInMillis;
     private FaceletCache<DefaultFacelet> cache;
     private ConcurrentMap<String, FaceletCache<DefaultFacelet>> cachePerContract;
@@ -103,16 +108,14 @@ public class DefaultFaceletFactory {
         notNull("compiler", compiler);
         notNull("resolver", resolver);
 
-        ExternalContext externalContext = facesContext.getExternalContext();
-        WebConfiguration config = WebConfiguration.getInstance(externalContext);
-
         this.compiler = compiler;
         cachePerContract = new ConcurrentHashMap<>();
         this.resolver = resolver;
-        this.manager = ApplicationAssociate.getInstance(externalContext).getResourceManager();
+        this.manager = ApplicationAssociate.getInstance(facesContext.getExternalContext()).getResourceManager();
         baseUrl = resolver.resolveUrl("/");
         baseUrlAsString = baseUrl.toExternalForm();
-        this.idMappers = config.isOptionEnabled(UseFaceletsID) ? null : new Cache<>(new IdMapperFactory());
+        faceletResourceSuffixes = Util.getFaceletResourceSuffixes(facesContext);
+        this.idMappers = MojarraContextParam.USE_FACELETS_ID.isEnabled(facesContext) ? null : new Cache<>(new IdMapperFactory());
         this.refreshPeriodInMillis = refreshPeriodInSeconds >= 0 ? refreshPeriodInSeconds * 1000 : -1;
         if (log.isLoggable(Level.FINE)) {
             log.log(Level.FINE, "Using ResourceResolver: {0}", resolver);
@@ -130,16 +133,16 @@ public class DefaultFaceletFactory {
     }
 
     public Facelet getMetadataFacelet(FacesContext context, String viewId) throws IOException {
-        Facelet facelet = getBeanReference(context, Facelet.class, View.Literal.of(viewId));
+        Facelet facelet = getViewFacelet(getCdiBeanManager(context), viewId);
         if (facelet == null) {
             facelet = getMetadataFacelet(context, resolveURL(viewId));
         }
 
         return facelet;
     }
-   
+
     public Facelet getFacelet(FacesContext context, String viewId) throws IOException {
-        Facelet facelet = getBeanReference(context, Facelet.class, View.Literal.of(viewId));
+        Facelet facelet = getViewFacelet(getCdiBeanManager(context), viewId);
         if (facelet == null) {
             facelet = getFacelet(context, resolveURL(viewId));
         }
@@ -163,14 +166,66 @@ public class DefaultFaceletFactory {
     public URL resolveURL(URL source, String path) throws IOException {
         // PENDING(FCAPUTO): always go to the resolver to make resource library contracts work with relative urls
         if (path.startsWith("/")) {
-            URL url = resolver.resolveUrl(path);
+            URL url = this.resolver.resolveUrl(path);
             if (url == null) {
                 throw new FacesFileNotFoundException(path + " Not Found in ExternalContext as a Resource");
+            }
+            // A top-level view is already constrained by the ViewHandler/container; an include or
+            // template (resolved against a nested facelet as source) must point at a Facelet resource,
+            // so a user-controlled src cannot disclose descriptors such as /WEB-INF/web.xml.
+            if (source != baseUrl) {
+                requireFaceletResource(url, path);
             }
             return url;
         }
 
-        return new URL(source, path);
+        // A relative src/template must resolve to a Facelet inside this application. Reject absolute
+        // URLs (http:, file:, jar:, ...) whose scheme discards the base, "../" traversal that escapes
+        // the deployment, and any non-Facelet resource.
+        URL url = new URL(source, path);
+        requireSameOrigin(source, url, path);
+        requireWithinApplicationRoot(url, path);
+        requireFaceletResource(url, path);
+        return url;
+    }
+
+    private void requireSameOrigin(URL source, URL url, String path) throws FacesFileNotFoundException {
+        if (!url.getProtocol().equals(source.getProtocol()) || !Objects.equals(getOrigin(url), getOrigin(source))) {
+            throw new FacesFileNotFoundException(path + " must be a relative path within the application");
+        }
+    }
+
+    private void requireWithinApplicationRoot(URL url, String path) throws FacesFileNotFoundException {
+        if (url.getProtocol().equals(baseUrl.getProtocol()) && !url.toExternalForm().startsWith(baseUrlAsString)) {
+            throw new FacesFileNotFoundException(path + " is not within the application root");
+        }
+    }
+
+    /**
+     * A nested scheme carries no authority: every {@code jar:} URL has a null one, so a remote archive would compare
+     * equal to the local archive holding the facelet. The archive a resource lives in is therefore its origin.
+     *
+     * @return the origin to compare a resolved URL against the facelet it was resolved from.
+     */
+    private static String getOrigin(URL url) {
+        if (!ARCHIVE_PROTOCOL.equals(url.getProtocol())) {
+            return url.getAuthority();
+        }
+
+        String form = url.toExternalForm();
+        int separator = form.indexOf(ARCHIVE_SEPARATOR);
+
+        return separator == -1 ? form : form.substring(0, separator + ARCHIVE_SEPARATOR.length());
+    }
+
+    private void requireFaceletResource(URL url, String path) throws FacesFileNotFoundException {
+        String resourcePath = url.getPath();
+        for (String suffix : faceletResourceSuffixes) {
+            if (resourcePath.endsWith(suffix)) {
+                return;
+            }
+        }
+        throw new FacesFileNotFoundException(path + " is not a Facelet resource");
     }
 
     /**
@@ -385,7 +440,7 @@ public class DefaultFaceletFactory {
             String contractsKey = builder.toString();
             FaceletCache<DefaultFacelet> faceletCache = cachePerContract.get(contractsKey);
             if (faceletCache == null) {
-                // PENDING(FCAPUTO) we don't support org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter#FaceletCache for
+                // PENDING(FCAPUTO) we don't support org.glassfish.mojarra.context.MojarraContextParam#FaceletCache for
                 // contracts
                 faceletCache = initCache(null);
                 cachePerContract.putIfAbsent(contractsKey, faceletCache);

@@ -21,15 +21,16 @@ package org.glassfish.mojarra.util;
 
 import static jakarta.faces.application.ViewHandler.CHARACTER_ENCODING_KEY;
 import static java.lang.Character.isDigit;
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINEST;
 import static java.util.logging.Level.SEVERE;
 import static org.glassfish.mojarra.RIConstants.CDI_BEAN_MANAGER;
+import static org.glassfish.mojarra.RIConstants.EMPTY_STRING;
 import static org.glassfish.mojarra.RIConstants.FACELETS_ENCODING_KEY;
 import static org.glassfish.mojarra.RIConstants.FACES_SERVLET_MAPPINGS;
 import static org.glassfish.mojarra.RIConstants.FACES_SERVLET_REGISTRATION;
-import static org.glassfish.mojarra.RIConstants.NO_VALUE;
 import static org.glassfish.mojarra.util.MessageUtils.ILLEGAL_ATTEMPT_SETTING_APPLICATION_ARTIFACT_ID;
 import static org.glassfish.mojarra.util.MessageUtils.NAMED_OBJECT_NOT_FOUND_ERROR_MESSAGE_ID;
 import static org.glassfish.mojarra.util.MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID;
@@ -51,9 +52,9 @@ import java.nio.channels.ClosedChannelException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -87,7 +88,6 @@ import jakarta.enterprise.inject.spi.CDI;
 import jakarta.enterprise.inject.spi.el.ELAwareBeanManager;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Application;
-import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.StateManager;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.Doctype;
@@ -112,7 +112,7 @@ import jakarta.servlet.http.MappingMatch;
 
 import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.application.ApplicationAssociate;
-import org.glassfish.mojarra.config.WebConfiguration;
+import org.glassfish.mojarra.config.FacesContextParam;
 import org.glassfish.mojarra.config.manager.FacesSchema;
 import org.glassfish.mojarra.facelets.component.UIRepeat;
 import org.glassfish.mojarra.io.FastStringWriter;
@@ -140,36 +140,12 @@ public class Util {
     /**
      * RegEx patterns
      */
-    private static final String PATTERN_CACHE_KEY = RIConstants.RI_PREFIX + "patternCache";
-
     private static final String CLIENT_ID_NESTED_IN_ITERATOR_PATTERN = "CLIENT_ID_NESTED_IN_ITERATOR_PATTERN";
 
     private static final String FACES_SERVLET_CLASS = FacesServlet.class.getName();
 
     private Util() {
         throw new IllegalStateException();
-    }
-
-    private static Map<String, Pattern> getPatternCache(Map<String, Object> appMap) {
-    @SuppressWarnings("unchecked")
-        Map<String, Pattern> result = (Map<String, Pattern>) appMap.get(PATTERN_CACHE_KEY);
-        if (result == null) {
-            result = Collections.synchronizedMap(new LRUMap<>(15));
-            appMap.put(PATTERN_CACHE_KEY, result);
-        }
-
-        return result;
-    }
-
-    private static Map<String, Pattern> getPatternCache(ServletContext sc) {
-        @SuppressWarnings("unchecked")
-        Map<String, Pattern> result = (Map<String, Pattern>) sc.getAttribute(PATTERN_CACHE_KEY);
-        if (result == null) {
-            result = Collections.synchronizedMap(new LRUMap<>(15));
-            sc.setAttribute(PATTERN_CACHE_KEY, result);
-        }
-
-        return result;
     }
 
     private static Collection<String> getFacesServletMappings(ServletContext servletContext) {
@@ -306,8 +282,8 @@ public class Util {
         try {
             Thread.currentThread().setContextClassLoader(Util.class.getClassLoader());
             factory = TransformerFactory.newInstance();
-            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, NO_VALUE);
-            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, NO_VALUE);
+            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, EMPTY_STRING);
+            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, EMPTY_STRING);
             setFeature(factory::setFeature, XMLConstants.FEATURE_SECURE_PROCESSING, true);
         } finally {
             Thread.currentThread().setContextClassLoader(cl);
@@ -418,6 +394,31 @@ public class Util {
 
     private static ClassLoader getContextClassLoader() {
         return Thread.currentThread().getContextClassLoader();
+    }
+
+    /**
+     * <p>
+     * Whether JNDI can be reached from this application, which it cannot on every platform: Google App Engine forbids
+     * <code>javax.naming</code> outright. Asked per call rather than remembered, because the answer belongs to the
+     * class loader of the application and this class may be shared between several.
+     * </p>
+     *
+     * @return whether JNDI is available.
+     */
+    public static boolean isJndiAvailable() {
+        ClassLoader loader = getContextClassLoader();
+
+        if (loader == null) {
+            loader = Util.class.getClassLoader();
+        }
+
+        try {
+            loader.loadClass("javax.naming.InitialContext");
+            return true;
+        } catch (Exception e) {
+            LOGGER.log(Level.FINE, "javax.naming is unavailable.", e);
+            return false;
+        }
     }
 
     /**
@@ -706,6 +707,18 @@ public class Util {
     }
 
     /**
+     * Returns the first argument if is non-null, otherwise the second argument.
+     *
+     * @param <T> The generic object type.
+     * @param o1 The value to be tested for to be tested for non-<code>null</code>.
+     * @param o2 The alternative value to be returned if value is null
+     * @return value if is not null, otherwise return alternative
+     */
+    public static <T> T coalesce(T o1, T o2) {
+        return o1 != null ? o1 : o2;
+    }
+
+    /**
      * Returns the first non-<code>null</code> object of the argument list, or <code>null</code> if there is no such
      * element.
      *
@@ -757,6 +770,20 @@ public class Util {
 
         return false;
     }
+
+    // Collections --------------------------------------------------------------------------------
+
+    /**
+     * Ported from Java 19+
+     *
+     * @param numMappings number of expected elements to be stored in the Map
+     * @return the correct initial capacity for a {@link Map} to contain numMappings elements without rehashing
+     */
+    public static int calculateMapCapacity(int numMappings) {
+        return (int) Math.ceil( numMappings / 0.75 );
+    }
+
+    // Locale --------------------------------------------------------------------------------
 
     /**
      * @param context the <code>FacesContext</code> for the current request
@@ -815,6 +842,33 @@ public class Util {
 
         Class<?> result = loadClass(type, Void.TYPE);
         return result;
+    }
+
+    /**
+     * Returns the suffixes which identify a resource as a Facelet, being the union of
+     * {@link FacesContextParam#FACELETS_SUFFIX}, the extension entries of
+     * {@link FacesContextParam#FACELETS_VIEW_MAPPINGS}, and always
+     * {@link ViewHandler#DEFAULT_FACELETS_SUFFIX}, in that precedence order.
+     * <p>
+     * This answers <em>whether a resource is a Facelet at all</em>, which is a wider question than whether it is
+     * reachable as a view. A template or an included fragment is a Facelet without ever being requested, so the
+     * default suffix stays in this set even when the webapp declares another view suffix, and an extension declared
+     * through the view mappings joins it.
+     *
+     * @param context the <code>FacesContext</code> for the current request
+     * @return the suffixes which identify a resource as a Facelet, deduplicated and in precedence order.
+     */
+    public static String[] getFaceletResourceSuffixes(FacesContext context) {
+        Set<String> faceletResourceSuffixes = new LinkedHashSet<>(asList(FacesContextParam.FACELETS_SUFFIX.getStringArray(context)));
+        faceletResourceSuffixes.add(ViewHandler.DEFAULT_FACELETS_SUFFIX);
+
+        for (String viewMapping : FacesContextParam.FACELETS_VIEW_MAPPINGS.getStringArray(context)) {
+            if (viewMapping.length() > 1 && viewMapping.charAt(0) == '*') {
+                faceletResourceSuffixes.add(viewMapping.substring(1));
+            }
+        }
+
+        return faceletResourceSuffixes.toArray(String[]::new);
     }
 
     public static ViewHandler getViewHandler(FacesContext context) throws FacesException {
@@ -955,7 +1009,7 @@ public class Util {
      */
     public static String getStackTraceString(Throwable e) {
         if (null == e) {
-            return "";
+            return EMPTY_STRING;
         }
 
         StackTraceElement[] stacks = e.getStackTrace();
@@ -1001,41 +1055,61 @@ public class Util {
 
     /**
      * <p>
-     * A slightly more efficient version of <code>String.split()</code> which caches the <code>Pattern</code>s in an LRUMap
-     * instead of creating a new <code>Pattern</code> on each invocation.
+     * Splits the given string around occurrences of the given delimiter character. Unlike
+     * {@link String#split(String)} the delimiter is a character rather than a regular expression, so nothing is
+     * compiled and nothing is cached. A caller that needs a real regular expression should hold its own
+     * {@link Pattern} constant and call {@link Pattern#split(CharSequence)}, which compiles it once at class
+     * initialisation rather than per call.
      * </p>
      *
-     * @param appMap the Application Map
      * @param toSplit the string to split
-     * @param regex the regex used for splitting
-     * @return the result of <code>Pattern.spit(String, int)</code>
+     * @param delimiter the character to split around
+     * @return the split result, with trailing empty strings removed
      */
-    public static String[] split(Map<String, Object> appMap, String toSplit, String regex) {
-        return split(appMap, toSplit, regex, 0);
+    public static String[] split(String toSplit, char delimiter) {
+        return split(toSplit, delimiter, 0);
     }
 
     /**
-     * <p>A slightly more efficient version of
-     * <code>String.split()</code> which caches
-     * the <code>Pattern</code>s in an LRUMap instead of
-     * creating a new <code>Pattern</code> on each
-     * invocation. Limited by splitLimit.</p>
-     * @param appMap the Application Map
+     * <p>
+     * As {@link #split(String, char)}, limited by splitLimit, whose meaning follows
+     * {@link String#split(String, int)}: a positive limit caps the number of parts and leaves the remainder in the
+     * last one, zero means no cap and discards trailing empty strings, and a negative limit means no cap and keeps
+     * them.
+     * </p>
+     *
      * @param toSplit the string to split
-     * @param regex the regex used for splitting
+     * @param delimiter the character to split around
      * @param splitLimit split result threshold
-     * @return the result of <code>Pattern.spit(String, int)</code>
+     * @return the split result
      */
-    public static String[] split(Map<String, Object> appMap, String toSplit, String regex, int splitLimit) {
-        Map<String, Pattern> patternCache = getPatternCache(appMap);
-        Pattern pattern = patternCache.computeIfAbsent(regex, Pattern::compile);
-        return pattern.split(toSplit, splitLimit);
-    }
+    public static String[] split(String toSplit, char delimiter, int splitLimit) {
+        List<String> parts = new ArrayList<>();
+        int offset = 0;
 
-    public static String[] split(ServletContext sc, String toSplit, String regex) {
-        Map<String, Pattern> patternCache = getPatternCache(sc);
-        Pattern pattern = patternCache.computeIfAbsent(regex, Pattern::compile);
-        return pattern.split(toSplit, 0);
+        for (int found; (found = toSplit.indexOf(delimiter, offset)) != -1;) {
+            if (splitLimit > 0 && parts.size() == splitLimit - 1) {
+                break;
+            }
+            parts.add(toSplit.substring(offset, found));
+            offset = found + 1;
+        }
+
+        if (parts.isEmpty()) {
+            // Nothing to split around, so the whole string is the only part -- kept even when it is itself empty,
+            // which is what String.split does before it discards any trailing empty one.
+            return new String[] { toSplit };
+        }
+
+        parts.add(toSplit.substring(offset));
+
+        if (splitLimit == 0) {
+            for (int last = parts.size() - 1; last >= 0 && parts.get(last).isEmpty(); last--) {
+                parts.remove(last);
+            }
+        }
+
+        return parts.toArray(new String[parts.size()]);
     }
 
     /**
@@ -1124,7 +1198,7 @@ public class Util {
 
             @Override
             public String getServletName() {
-                return "";
+                return EMPTY_STRING;
             }
 
             @Override
@@ -1189,27 +1263,10 @@ public class Util {
     }
 
     /**
-     * Utility method to validate ID uniqueness for the tree represented by <code>component</code>.
+     * Utility method to validate ID uniqueness for the tree represented by <code>component</code>. Whether it runs at
+     * all is up to the caller, which is the one holding the answer for the view it is about to save.
      */
     public static void checkIdUniqueness(FacesContext context, UIComponent component, Set<String> componentIds) {
-        if (!isIdUniquenessCheckDisabled(context)) {
-            doCheckIdUniqueness(context, component, componentIds);
-        }
-    }
-
-    // org.glassfish.mojarra.disableIdUniquenessCheck is true|false|auto (default false: always run the check).
-    // Opt-in auto skips the whole-tree duplicate-id walk in Production only (a duplicate id would already
-    // have surfaced in Development). The default keeps the check on; the skip stays opt-in.
-    private static boolean isIdUniquenessCheckDisabled(FacesContext context) {
-        String value = WebConfiguration.getInstance(context.getExternalContext())
-                .getOptionValue(WebConfiguration.WebContextInitParameter.DisableIdUniquenessCheck);
-        if (value == null || "auto".equals(value)) {
-            return context.isProjectStage(ProjectStage.Production);
-        }
-        return Boolean.parseBoolean(value);
-    }
-
-    private static void doCheckIdUniqueness(FacesContext context, UIComponent component, Set<String> componentIds) {
         // deal with children/facets that are marked transient.
         for (Iterator<UIComponent> kids = component.getFacetsAndChildren(); kids.hasNext();) {
 
@@ -1225,7 +1282,7 @@ public class Util {
             // check for id uniqueness
             String id = kid.getClientId(context);
             if (componentIds.add(id)) {
-                doCheckIdUniqueness(context, kid, componentIds);
+                checkIdUniqueness(context, kid, componentIds);
             } else {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE, "faces.duplicate_component_id_error", id);
@@ -1291,7 +1348,7 @@ public class Util {
         if (viewRoot instanceof NamingContainer) {
             return viewRoot.getContainerClientId(context) + UINamingContainer.getSeparatorChar(context);
         } else {
-            return "";
+            return EMPTY_STRING;
         }
     }
 
@@ -1615,7 +1672,8 @@ public class Util {
         // We should in long term probably introduce a common interface like UIIterable.
         // But this is solid for now as all known implementing components already follow this pattern.
         // We could theoretically even remove the above instanceof checks.
-        Pattern clientIdNestedInIteratorPattern = getPatternCache(context.getExternalContext().getApplicationMap()).computeIfAbsent(CLIENT_ID_NESTED_IN_ITERATOR_PATTERN, k -> {
+        // Application scoped rather than a constant: the separator character it is built around is configurable.
+        Pattern clientIdNestedInIteratorPattern = (Pattern) context.getExternalContext().getApplicationMap().computeIfAbsent(CLIENT_ID_NESTED_IN_ITERATOR_PATTERN, k -> {
             String separatorChar = Pattern.quote(String.valueOf(UINamingContainer.getSeparatorChar(context)));
             return Pattern.compile(".+" + separatorChar + "[0-9]+" + separatorChar + ".+");
         });

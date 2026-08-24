@@ -39,6 +39,7 @@ import jakarta.faces.event.ExceptionQueuedEventContext;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.event.SystemEvent;
 
+import org.glassfish.mojarra.config.FacesContextParam;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.Util;
@@ -208,7 +209,7 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
     @SuppressWarnings("unchecked")
     private static Set<Class<? extends Throwable>> parseExceptionTypesToIgnoreInLogging(FacesContext context) {
         var types = new HashSet<Class<? extends Throwable>>();
-        String[] typesParam = FacesContextParam.EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING.getValue(context);
+        String[] typesParam = FacesContextParam.EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING.getStringArray(context);
 
         for (var typeParam : typesParam) {
             try {

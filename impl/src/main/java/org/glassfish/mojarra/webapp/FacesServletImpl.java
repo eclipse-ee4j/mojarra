@@ -19,16 +19,19 @@ package org.glassfish.mojarra.webapp;
 
 import static jakarta.faces.FactoryFinder.FACES_CONTEXT_FACTORY;
 import static jakarta.faces.FactoryFinder.LIFECYCLE_FACTORY;
-import static jakarta.faces.lifecycle.LifecycleFactory.DEFAULT_LIFECYCLE;
 import static jakarta.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
+import static jakarta.servlet.http.HttpServletResponse.SC_OK;
 import static java.util.Collections.emptySet;
 import static java.util.EnumSet.allOf;
 import static java.util.EnumSet.range;
+import static java.util.Locale.ROOT;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINER;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Level.WARNING;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Stream.concat;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -45,6 +48,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.FacesContextFactory;
 import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.lifecycle.LifecycleFactory;
+import jakarta.faces.webapp.FacesServlet;
 import jakarta.servlet.Servlet;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -54,6 +58,9 @@ import jakarta.servlet.UnavailableException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import org.glassfish.mojarra.config.FacesContextParam;
+import org.glassfish.mojarra.config.MojarraContextParam;
 
 /**
  * <p>
@@ -161,7 +168,7 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  * <p class="changed_added_2_3">
  * Note that the automatic mapping to {@code *.xhtml} can be disabled with the context param
- * {@link #DISABLE_FACESSERVLET_TO_XHTML_PARAM_NAME}.
+ * {@link FacesServlet#DISABLE_FACESSERVLET_TO_XHTML_PARAM_NAME}.
  * </p>
  *
  * <div class="changed_added_2_2">
@@ -218,57 +225,9 @@ import jakarta.servlet.http.HttpServletResponse;
 public final class FacesServletImpl implements Servlet {
 
     /**
-     * <p>
-     * Context initialization parameter name for a comma delimited list of context-relative resource paths (in addition to
-     * <code>/WEB-INF/faces-config.xml</code> which is loaded automatically if it exists) containing Jakarta Faces
-     * configuration information.
-     * </p>
-     */
-    public static final String CONFIG_FILES_ATTR = "jakarta.faces.CONFIG_FILES";
-
-    /**
-     * <p>
-     * Context initialization parameter name for the lifecycle identifier of the {@link Lifecycle} instance to be utilized.
-     * </p>
-     */
-    public static final String LIFECYCLE_ID_ATTR = "jakarta.faces.LIFECYCLE_ID";
-
-    /**
-     * <p class="changed_added_2_3">
-     * The <code>ServletContext</code> init parameter consulted by the runtime to tell if the automatic mapping of the
-     * {@code FacesServlet} to the extension {@code *.xhtml} should be disabled. The implementation must disable this
-     * automatic mapping if and only if the value of this parameter is equal, ignoring case, to {@code true}.
-     * </p>
-     *
-     * <p>
-     * If this parameter is not specified, this automatic mapping is enabled as specified above.
-     * </p>
-     */
-    public static final String DISABLE_FACESSERVLET_TO_XHTML_PARAM_NAME = "jakarta.faces.DISABLE_FACESSERVLET_TO_XHTML";
-
-    /**
-     * <p class="changed_added_4_0">
-     * The <code>ServletContext</code> init parameter consulted by the runtime to tell if the automatic mapping of the
-     * {@code FacesServlet} to the extensionless variant (without {@code *.xhtml}) should be enabled. The implementation
-     * must enable this automatic mapping if and only if the value of this parameter is equal, ignoring case, to {@code true}.
-     * </p>
-     *
-     * <p>
-     * If this parameter is not specified, this automatic mapping is not enabled.
-     * </p>
-     */
-    public static final String AUTOMATIC_EXTENSIONLESS_MAPPING_PARAM_NAME = "jakarta.faces.AUTOMATIC_EXTENSIONLESS_MAPPING";
-
-    /**
      * The <code>Logger</code> for this class.
      */
     private static final Logger LOGGER = Logger.getLogger("jakarta.faces.webapp", "jakarta.faces.LogStrings");
-
-    /**
-     * A white space separated list of case sensitive HTTP method names that are allowed to be processed by this servlet. *
-     * means allow all
-     */
-    private static final String ALLOWED_HTTP_METHODS_ATTR = "org.glassfish.mojarra.allowedHttpMethods";
 
     // Http method names must be upper case. http://www.w3.org/Protocols/HTTP/NoteMethodCS.html
     // List of valid methods in Http 1.1 http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9
@@ -432,6 +391,11 @@ public final class FacesServletImpl implements Servlet {
             return;
         }
 
+        if (HttpMethod.OPTIONS.toString().equals(request.getMethod())) {
+            respondToOptions(response);
+            return;
+        }
+
         logIfThreadInterrupted();
 
         // If prefix mapped, then ensure requests for /WEB-INF are not processed.
@@ -503,17 +467,11 @@ public final class FacesServletImpl implements Servlet {
         try {
             LifecycleFactory lifecycleFactory = (LifecycleFactory) FactoryFinder.getFactory(LIFECYCLE_FACTORY);
 
-            // First look in the Jakarta Servlet init-param set
-            String lifecycleId = servletConfig.getInitParameter(LIFECYCLE_ID_ATTR);
+            // The servlet init parameter overrides the context parameter, for this servlet only.
+            String lifecycleId = servletConfig.getInitParameter(FacesServlet.LIFECYCLE_ID_ATTR);
 
             if (lifecycleId == null) {
-                // If not found, look in the context-param set
-                lifecycleId = servletConfig.getServletContext().getInitParameter(LIFECYCLE_ID_ATTR);
-            }
-
-            if (lifecycleId == null) {
-                // If still not found, use the default
-                lifecycleId = DEFAULT_LIFECYCLE;
+                lifecycleId = FacesContextParam.LIFECYCLE_ID.getString(servletConfig.getServletContext());
             }
 
             return lifecycleFactory.getLifecycle(lifecycleId);
@@ -554,10 +512,8 @@ public final class FacesServletImpl implements Servlet {
         allowedUnknownHttpMethods = emptySet();
         allowedKnownHttpMethods = defaultAllowedHttpMethods;
 
-        String allowedHttpMethodsString = servletConfig.getServletContext().getInitParameter(ALLOWED_HTTP_METHODS_ATTR);
-        if (allowedHttpMethodsString != null) {
-            String[] methods = allowedHttpMethodsString.split("\\s+");
-
+        String[] methods = MojarraContextParam.ALLOWED_HTTP_METHODS.getStringArray(servletConfig.getServletContext());
+        if (methods.length > 0) {
             allowedUnknownHttpMethods = new HashSet<>(methods.length);
             List<String> allowedKnownHttpMethodsStringList = new ArrayList<>();
 
@@ -665,8 +621,8 @@ public final class FacesServletImpl implements Servlet {
     private boolean notProcessWebInfIfPrefixMapped(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String pathInfo = request.getPathInfo();
         if (pathInfo != null) {
-            pathInfo = pathInfo.toUpperCase();
-            if (pathInfo.contains("/WEB-INF/") || pathInfo.contains("/WEB-INF") || pathInfo.contains("/META-INF/") || pathInfo.contains("/META-INF")) {
+            pathInfo = pathInfo.toUpperCase(ROOT);
+            if (pathInfo.contains("/WEB-INF") || pathInfo.contains("/META-INF")) {
                 response.sendError(SC_NOT_FOUND);
                 return true;
             }
@@ -741,6 +697,27 @@ public final class FacesServletImpl implements Servlet {
         }
 
         return result;
+    }
+
+    /**
+     * <p>
+     * Answers an <code>OPTIONS</code> request with the methods this servlet accepts, as required by RFC 9110 section
+     * 9.3.7, without running the lifecycle. A Faces view has nothing to contribute to the answer, and rendering one
+     * would hand the page content to a request which did not ask for it.
+     * </p>
+     */
+    private void respondToOptions(HttpServletResponse response) {
+        response.setStatus(SC_OK);
+        response.setHeader("Allow", getAllowedHttpMethods());
+        response.setContentLength(0);
+    }
+
+    private String getAllowedHttpMethods() {
+        if (allowAllMethods) {
+            return allHttpMethods.stream().map(HttpMethod::toString).collect(joining(", "));
+        }
+
+        return concat(allowedKnownHttpMethods.stream().map(HttpMethod::toString), allowedUnknownHttpMethods.stream()).collect(joining(", "));
     }
 
 }

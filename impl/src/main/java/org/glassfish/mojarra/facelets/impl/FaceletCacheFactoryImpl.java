@@ -20,7 +20,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.facelets.FaceletCache;
 import jakarta.faces.view.facelets.FaceletCacheFactory;
 
-import org.glassfish.mojarra.context.FacesContextParam;
+import org.glassfish.mojarra.config.FacesContextParam;
 
 /**
  * Default implementation of {@link FaceletCacheFactory}.
@@ -33,7 +33,7 @@ public class FaceletCacheFactoryImpl extends FaceletCacheFactory {
 
     @Override
     public FaceletCache<DefaultFacelet> getFaceletCache() {
-        int refreshPeriodInSeconds = FacesContextParam.FACELETS_REFRESH_PERIOD.getValue(FacesContext.getCurrentInstance());
+        int refreshPeriodInSeconds = FacesContextParam.FACELETS_REFRESH_PERIOD.getInt(FacesContext.getCurrentInstance());
         FaceletCache<DefaultFacelet> result = new DefaultFaceletCache(refreshPeriodInSeconds);
         return result;
     }

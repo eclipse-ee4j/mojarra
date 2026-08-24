@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.ViewHandler;
 
 import org.glassfish.mojarra.junit.JUnitFacesTestCaseBase;
 import org.glassfish.mojarra.mock.MockFacesMappingSupport;
@@ -91,4 +92,56 @@ public class MultiViewHandlerTest extends JUnitFacesTestCaseBase {
         facesContext.setExternalContext(externalContext);
         MockFacesMappingSupport.setFacesServletMappings(servletContext, servletMappings);
     }
+
+    // --- convertViewId ---
+
+    /**
+     * Builds a view handler whose configured Facelets suffixes are the given ones. The suffixes are read once, when
+     * the view handler is constructed, so the parameter has to be in place before that.
+     */
+    private MultiViewHandler viewHandlerWithFaceletsSuffixes(String faceletsSuffixes) {
+        externalContext.addInitParameter(ViewHandler.FACELETS_SUFFIX_PARAM_NAME, faceletsSuffixes);
+
+        return new MultiViewHandler();
+    }
+
+    @Test
+    public void convertViewIdReplacesAnyExtensionWithTheConfiguredOne() {
+        MultiViewHandler handler = viewHandlerWithFaceletsSuffixes(".xhtml");
+
+        assertEquals("/foo.xhtml", handler.convertViewId(facesContext, "/foo.jsf"));
+        assertEquals("/foo.xhtml", handler.convertViewId(facesContext, "/foo.xhtml"));
+    }
+
+    @Test
+    public void convertViewIdAppendsWhenTheViewIdCarriesNoExtension() {
+        MultiViewHandler handler = viewHandlerWithFaceletsSuffixes(".xhtml");
+
+        assertEquals("/foo.xhtml", handler.convertViewId(facesContext, "/foo"));
+    }
+
+    /**
+     * Only the last dot separates the extension, so a dot in a directory segment must be left alone.
+     */
+    @Test
+    public void convertViewIdIgnoresADotInADirectorySegment() {
+        MultiViewHandler handler = viewHandlerWithFaceletsSuffixes(".xhtml");
+
+        assertEquals("/a.b/foo.xhtml", handler.convertViewId(facesContext, "/a.b/foo.jsf"));
+        assertEquals("/a.b/foo.xhtml", handler.convertViewId(facesContext, "/a.b/foo"));
+    }
+
+    /**
+     * A single configured suffix admits no alternative, so the candidate is returned without consulting the physical
+     * resource, which keeps the common case free of that lookup.
+     *
+     * @see https://github.com/eclipse-ee4j/mojarra/issues/5918
+     */
+    @Test
+    public void convertViewIdReturnsTheOnlyCandidateWhenOneSuffixIsConfigured() {
+        MultiViewHandler handler = viewHandlerWithFaceletsSuffixes(".page");
+
+        assertEquals("/foo.page", handler.convertViewId(facesContext, "/foo.jsf"));
+    }
+
 }

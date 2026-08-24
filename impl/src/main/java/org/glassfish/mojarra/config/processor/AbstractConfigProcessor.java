@@ -18,10 +18,7 @@ package org.glassfish.mojarra.config.processor;
 
 import static jakarta.faces.FactoryFinder.APPLICATION_FACTORY;
 import static jakarta.faces.application.ProjectStage.Development;
-import static jakarta.faces.application.ProjectStage.Production;
 import static java.text.MessageFormat.format;
-import static java.util.logging.Level.FINE;
-import static java.util.logging.Level.INFO;
 import static java.util.logging.Level.SEVERE;
 import static org.glassfish.mojarra.application.ApplicationResourceBundle.DEFAULT_KEY;
 import static org.glassfish.mojarra.config.ConfigManager.INJECTION_PROVIDER_KEY;
@@ -54,8 +51,7 @@ import org.glassfish.mojarra.application.ApplicationInstanceFactoryMetadataMap;
 import org.glassfish.mojarra.application.ApplicationResourceBundle;
 import org.glassfish.mojarra.config.ConfigManager;
 import org.glassfish.mojarra.config.ConfigurationException;
-import org.glassfish.mojarra.config.WebConfiguration;
-import org.glassfish.mojarra.context.FacesContextParam;
+import org.glassfish.mojarra.config.FacesContextParam;
 import org.glassfish.mojarra.spi.InjectionProvider;
 import org.glassfish.mojarra.spi.InjectionProviderException;
 import org.glassfish.mojarra.util.FacesLogger;
@@ -275,7 +271,7 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
         if (clazz == null) {
             try {
                 clazz = Util.loadClass(className, fallback);
-                if (!isDevModeEnabled(sc, facesContext)) {
+                if (!isDevelopment(facesContext)) {
                     classMetadataMap.put(className, clazz);
                 } else {
                     classMetadataMap.scanForAnnotations(className, clazz);
@@ -320,46 +316,10 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
         return MessageFormat.format("\n  Source Document: {0}\n  Cause: {1}", source.getOwnerDocument().getDocumentURI(), cause);
     }
 
-    private boolean isDevModeEnabled(ServletContext sc, FacesContext facesContext) {
-        return getProjectStage(sc, facesContext).equals(Development);
+    private static boolean isDevelopment(FacesContext facesContext) {
+    	ProjectStage projectStage = FacesContextParam.PROJECT_STAGE.getEnum(facesContext);
+        return projectStage == Development;
     }
 
-    private ProjectStage getProjectStage(ServletContext sc, FacesContext facesContext) {
-        final String projectStageKey = AbstractConfigProcessor.class.getName() + ".PROJECTSTAGE";
-        ProjectStage projectStage = (ProjectStage) sc.getAttribute(projectStageKey);
-
-        if (projectStage == null) {
-            WebConfiguration webConfig = WebConfiguration.getInstance(facesContext.getExternalContext());
-            String value = webConfig.getEnvironmentEntry(WebConfiguration.WebEnvironmentEntry.ProjectStage);
-
-            if (value != null) {
-                if (LOGGER.isLoggable(FINE)) {
-                    LOGGER.log(FINE, "ProjectStage configured via JNDI: {0}", value);
-                }
-                try {
-                    projectStage = ProjectStage.valueOf(value);
-                } catch (IllegalArgumentException iae) {
-                    if (LOGGER.isLoggable(INFO)) {
-                        LOGGER.log(INFO, "Unable to discern ProjectStage for value {0}.", value);
-                    }
-                }
-            } else {
-                projectStage = FacesContextParam.PROJECT_STAGE.getValue(facesContext);
-                if (projectStage != null) {
-                    if (LOGGER.isLoggable(FINE)) {
-                        LOGGER.log(FINE, "ProjectStage configured via servlet context init parameter: {0}", value);
-                    }
-                }
-            }
-
-            if (projectStage == null) {
-                projectStage = Production;
-            }
-
-            sc.setAttribute(projectStageKey, projectStage);
-        }
-
-        return projectStage;
-    }
 
 }

@@ -21,6 +21,7 @@ import jakarta.faces.view.facelets.FaceletHandler;
 import jakarta.faces.view.facelets.Tag;
 import jakarta.faces.view.facelets.TagConfig;
 
+import org.glassfish.mojarra.facelets.tag.BuildTimeDecisions;
 import org.glassfish.mojarra.facelets.tag.TagLibrary;
 import org.glassfish.mojarra.facelets.tag.ui.UILibrary;
 
@@ -30,6 +31,8 @@ import org.glassfish.mojarra.facelets.tag.ui.UILibrary;
  * @version $Id$
  */
 class TagUnit extends CompilationUnit implements TagConfig {
+
+    private final CompilationManager manager;
 
     private final TagLibrary library;
 
@@ -41,7 +44,8 @@ class TagUnit extends CompilationUnit implements TagConfig {
 
     private final String name;
 
-    public TagUnit(TagLibrary library, String namespace, String name, Tag tag, String id) {
+    public TagUnit(CompilationManager manager, TagLibrary library, String namespace, String name, Tag tag, String id) {
+        this.manager = manager;
         this.library = library;
         this.tag = tag;
         this.namespace = namespace;
@@ -70,7 +74,13 @@ class TagUnit extends CompilationUnit implements TagConfig {
 
     @Override
     public FaceletHandler createFaceletHandler() {
-        return library.createTagHandler(namespace, name, this);
+        FaceletHandler handler = library.createTagHandler(namespace, name, this);
+
+        if (!BuildTimeDecisions.keepsBuildReproducible(handler, tag)) {
+            manager.markUnreproducibleBuild();
+        }
+
+        return handler;
     }
 
     @Override

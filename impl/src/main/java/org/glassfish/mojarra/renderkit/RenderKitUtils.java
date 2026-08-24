@@ -19,6 +19,7 @@ package org.glassfish.mojarra.renderkit;
 import static jakarta.faces.application.ResourceHandler.FACES_SCRIPT_LIBRARY_NAME;
 import static jakarta.faces.application.ResourceHandler.FACES_SCRIPT_RESOURCE_NAME;
 import static java.util.stream.Collectors.toList;
+import static org.glassfish.mojarra.RIConstants.EMPTY_STRING;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.PredefinedPostbackParameter.BEHAVIOR_EVENT_PARAM;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.PredefinedPostbackParameter.BEHAVIOR_SOURCE_PARAM;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.PredefinedPostbackParameter.PARTIAL_EVENT_PARAM;
@@ -59,7 +60,7 @@ import jakarta.faces.component.behavior.ClientBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorContext;
 import jakarta.faces.component.behavior.ClientBehaviorHint;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
-import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
+import jakarta.faces.component.html.HtmlEvents.HtmlElementEvent;
 import jakarta.faces.component.html.HtmlMessages;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
@@ -119,33 +120,34 @@ public class RenderKitUtils {
      * The character that is used to delimit content types in an accept String.
      * </p>
      */
-    private final static String CONTENT_TYPE_DELIMITER = ",";
+    private final static char CONTENT_TYPE_DELIMITER = ',';
 
     /**
      * The character that is used to delimit the type and subtype portions of a content type in an accept String. Example:
      * text/html
      * </p>
      */
-    private final static String CONTENT_TYPE_SUBTYPE_DELIMITER = "/";
+    private final static char CONTENT_TYPE_SUBTYPE_DELIMITER = '/';
 
     /**
      * This represents the base package that can leverage the <code>attributesThatAreSet</code> List for optimized attribute
      * rendering.
      *
-     * IMPLEMENTATION NOTE: This must be kept in sync with the array in UIComponentBase$AttributesMap and
-     * HtmlComponentGenerator.
+     * IMPLEMENTATION NOTE: This must be kept in sync with UIComponentBase.STANDARD_COMPONENT_PACKAGE and the copies in
+     * HtmlComponentUtils and PassthroughElement.
      *
      * Hopefully Faces X will remove the need for this.
      */
     private static final String OPTIMIZED_PACKAGE = "jakarta.faces.component.";
 
     /**
-     * IMPLEMENTATION NOTE: This must be kept in sync with the Key in UIComponentBase$AttributesMap and
-     * HtmlComponentGenerator.
+     * IMPLEMENTATION NOTE: This must be kept in sync with UIComponentBase.ATTRIBUTES_THAT_ARE_SET and the copies in
+     * HtmlComponentUtils and PassthroughElement. Spelled out as a literal so that all of them are the same interned
+     * instance.
      *
      * Hopefully Faces X will remove the need for this.
      */
-    private static final String ATTRIBUTES_THAT_ARE_SET_KEY = UIComponentBase.class.getName() + ".attributesThatAreSet";
+    private static final String ATTRIBUTES_THAT_ARE_SET_KEY = "jakarta.faces.component.UIComponentBase.attributesThatAreSet";
 
     private static final String PENDING_BEHAVIOR_EVENT_LISTENERS_KEY = UIComponentBase.class.getName() + ".pendingBehaviorEventListeners";
 
@@ -154,6 +156,15 @@ public class RenderKitUtils {
     protected static final Logger LOGGER = FacesLogger.RENDERKIT.getLogger();
 
     public static final String DEVELOPMENT_STAGE_MESSAGES_ID = "jakarta_faces_developmentstage_messages";
+
+    /**
+     * <p>
+     * Sentinel submitted value for a selection component whose request parameter was absent, so that a subsequent
+     * decode can tell "submitted with nothing selected" apart from "not submitted at all". It is not a general purpose
+     * empty string; use {@link RIConstants#EMPTY_STRING} for that.
+     * </p>
+     */
+    public static final String NO_VALUE = "";
 
     /**
      * @see UIViewRoot#encodeChildren(FacesContext)
@@ -286,10 +297,10 @@ public class RenderKitUtils {
      * @param context the FacesContext for this request
      * @param writer writer the {@link jakarta.faces.context.ResponseWriter} to be used when writing the attributes
      * @param component the component
-     * @param attributes an array of attributes to be processed
+     * @param attributes the pass-through attributes to be processed
      * @throws IOException if an error occurs writing the attributes
      */
-    public static void renderPassThruAttributes(FacesContext context, ResponseWriter writer, UIComponent component, Attribute[] attributes) throws IOException {
+    public static void renderPassThruAttributes(FacesContext context, ResponseWriter writer, UIComponent component, Attributes attributes) throws IOException {
 
         assert null != component;
 
@@ -331,13 +342,13 @@ public class RenderKitUtils {
      * @param writer writer the {@link jakarta.faces.context.ResponseWriter} to be used when writing the attributes
      * @param component the component
      * @param clientId the client id to be associated with any behaviors
-     * @param attributes an array of attributes to be processed
+     * @param attributes the pass-through attributes to be processed
      * @param defaultDomEvent the name of the default dom-level event of this component
      * @param defaultComponentEvent the name of the default component-level event of this component
      * @throws IOException if an error occurs writing the attributes
      */
     public static void renderPassThruAttributes(FacesContext context, ResponseWriter writer, UIComponent component, String clientId, boolean incExec,
-            Attribute[] attributes, HtmlDocumentElementEvent defaultDomEvent, FacesComponentEvent defaultComponentEvent) throws IOException {
+            Attributes attributes, HtmlElementEvent defaultDomEvent, FacesComponentEvent defaultComponentEvent) throws IOException {
 
         Map<String, List<ClientBehavior>> behaviors = null;
         boolean hasValueChangeBehavior = false;
@@ -374,7 +385,7 @@ public class RenderKitUtils {
     }
 
     private static void renderPassThruAttributesInternal(FacesContext context, ResponseWriter writer, UIComponent component,
-            Attribute[] attributes, Map<String, List<ClientBehavior>> behaviors, String defaultDomEvent) throws IOException {
+            Attributes attributes, Map<String, List<ClientBehavior>> behaviors, String defaultDomEvent) throws IOException {
 
         assert null != writer;
         assert null != component;
@@ -406,7 +417,9 @@ public class RenderKitUtils {
     /**
      * Returns the names of the attributes that have been explicitly set on the given component, either as a literal value
      * or as a value expression, or an empty list when none have been set. This is the same list that
-     * {@link #renderPassThruAttributes} consults to skip reflective reads of attributes that were never set.
+     * {@link #renderPassThruAttributes} consults to skip reflective reads of attributes that were never set. Its writer,
+     * {@code HtmlComponentUtils.handleAttribute}, keeps it in natural order, which is therefore the order in which the
+     * attributes are emitted.
      */
     @SuppressWarnings("unchecked")
     public static List<String> getAttributesThatAreSet(UIComponent component) {
@@ -451,7 +464,7 @@ public class RenderKitUtils {
     }
 
     private static void renderValueChangeEventListener(FacesContext context, UIComponent component, String clientId,
-            HtmlDocumentElementEvent defaultDomEvent, String componentEventName, String domEventName,
+            HtmlElementEvent defaultDomEvent, String componentEventName, String domEventName,
             boolean hasBehaviorForDefaultEvent, boolean incExec) throws IOException {
 
         String handlerName = BEHAVIOR_EVENT_ATTRIBUTE_PREFIX + domEventName;
@@ -482,7 +495,7 @@ public class RenderKitUtils {
         final String handlerName = "onclick";
         final Object userHandler = component.getAttributes().get(handlerName);
         String behaviorEventName = FacesComponentEvent.action.name();
-        String domEventName = HtmlDocumentElementEvent.click.name();
+        String domEventName = HtmlElementEvent.click.name();
         if (component instanceof ClientBehaviorHolder) {
             Map<String, List<ClientBehavior>> behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
             boolean mixed = null != behaviors && behaviors.containsKey(domEventName) && behaviors.containsKey(behaviorEventName);
@@ -666,18 +679,18 @@ public class RenderKitUtils {
 
     /**
      * <p>
-     * For each attribute in <code>setAttributes</code>, perform a binary search against the array of
-     * <code>knownAttributes</code> If a match is found and the value is not <code>null</code>, render the attribute.
+     * For each attribute in <code>setAttributes</code>, look it up among <code>knownAttributes</code>. If it is one of
+     * them and the value is not <code>null</code>, render the attribute.
      *
      * @param context the {@link FacesContext} of the current request
      * @param writer the current writer
      * @param component the component whose attributes we're rendering
-     * @param knownAttributes an array of pass-through attributes supported by this component
+     * @param knownAttributes the pass-through attributes supported by this component
      * @param setAttributes a <code>List</code> of attributes that have been set on the provided component
      * @param behaviors the non-null behaviors map for this request.
      * @throws IOException if an error occurs during the write
      */
-    private static void renderPassThruAttributesOptimized(FacesContext context, ResponseWriter writer, UIComponent component, Attribute[] knownAttributes,
+    private static void renderPassThruAttributesOptimized(FacesContext context, ResponseWriter writer, UIComponent component, Attributes knownAttributes,
             List<String> setAttributes, Map<String, List<ClientBehavior>> behaviors, String excludedEventAttribute) throws IOException {
 
         // We should only come in here if we've got zero or one behavior event
@@ -685,7 +698,6 @@ public class RenderKitUtils {
         String behaviorEventName = getSingleBehaviorEventName(behaviors);
         boolean renderedBehavior = false;
 
-        Collections.sort(setAttributes);
         boolean isXhtml = RIConstants.XHTML_CONTENT_TYPE.equals(writer.getContentType());
         Map<String, Object> attrMap = component.getAttributes();
         for (String name : setAttributes) {
@@ -694,14 +706,12 @@ public class RenderKitUtils {
                 continue;
             }
 
-            // Note that this search can be optimized by switching from
-            // an array to a Map<String, Attribute>. This would change
-            // the search time from O(log n) to O(1).
-            int index = Arrays.binarySearch(knownAttributes, Attribute.attr(name));
-            if (index >= 0 || isBehaviorEventAttribute(name)) {
+            boolean supportedBehaviorEventAttribute = isSupportedBehaviorEventAttribute(component, name);
+
+            if (knownAttributes.get(name) != null || supportedBehaviorEventAttribute) {
                 Object value = attrMap.get(name);
                 if (value != null && shouldRenderAttribute(value)) {
-                    if (isBehaviorEventAttribute(name)) {
+                    if (supportedBehaviorEventAttribute) {
                         String eventName = name.substring(BEHAVIOR_EVENT_ATTRIBUTE_PREFIX.length());
                         addBehaviorEventListener(context, component, null, null, name, value, eventName, eventName, null, false, false);
                         if (eventName.equals(behaviorEventName)) {
@@ -752,12 +762,12 @@ public class RenderKitUtils {
      * @param context the {@link FacesContext} of the current request
      * @param writer the current writer
      * @param component the component whose attributes we're rendering
-     * @param knownAttributes an array of pass-through attributes supported by this component
+     * @param knownAttributes the pass-through attributes supported by this component
      * @param setAttributes a <code>List</code> of attributes that have been set on the provided component
      * @param behaviors the non-null behaviors map for this request.
      * @throws IOException if an error occurs during the write
      */
-    private static void renderPassThruAttributesUnoptimized(FacesContext context, ResponseWriter writer, UIComponent component, Attribute[] knownAttributes,
+    private static void renderPassThruAttributesUnoptimized(FacesContext context, ResponseWriter writer, UIComponent component, Attributes knownAttributes,
             List<String> setAttributes, Map<String, List<ClientBehavior>> behaviors, String excludedEventAttribute) throws IOException {
 
         boolean isXhtml = RIConstants.XHTML_CONTENT_TYPE.equals(writer.getContentType());
@@ -768,7 +778,7 @@ public class RenderKitUtils {
         behaviorEventNames.addAll(behaviors.keySet());
 
         if (setAttributes != null) {
-            setAttributes.stream().filter(RenderKitUtils::isBehaviorEventAttribute).map(a -> a.substring(BEHAVIOR_EVENT_ATTRIBUTE_PREFIX.length())).forEach(behaviorEventNames::add);
+            setAttributes.stream().filter(name -> isSupportedBehaviorEventAttribute(component, name)).map(a -> a.substring(BEHAVIOR_EVENT_ATTRIBUTE_PREFIX.length())).forEach(behaviorEventNames::add);
         }
 
         for (Attribute attribute : knownAttributes) {
@@ -806,6 +816,31 @@ public class RenderKitUtils {
         } else if (hasValue) {
             writer.writeAttribute(prefixAttribute(attrName, isXhtml), value, attrName);
         }
+    }
+
+    /**
+     * <p>
+     * A behavior event attribute is only rendered when the component names the event after "on" in
+     * {@link ClientBehaviorHolder#getEventNames()}, as required by the behavior event attribute rule of the standard
+     * HTML render kit. A component which is no {@link ClientBehaviorHolder} has no such list to check against, so its
+     * behavior event attributes are all rendered.
+     * </p>
+     *
+     * @param component the component whose attribute is being rendered
+     * @param name the attribute name
+     * @return whether the given attribute is a behavior event attribute which the given component supports
+     */
+    private static boolean isSupportedBehaviorEventAttribute(UIComponent component, String name) {
+        if (!isBehaviorEventAttribute(name)) {
+            return false;
+        }
+
+        if (!(component instanceof ClientBehaviorHolder clientBehaviorHolder)) {
+            return true;
+        }
+
+        Collection<String> eventNames = clientBehaviorHolder.getEventNames();
+        return eventNames != null && eventNames.contains(name.substring(BEHAVIOR_EVENT_ATTRIBUTE_PREFIX.length()));
     }
 
     public static boolean isBehaviorEventAttribute(String name) {
@@ -893,10 +928,9 @@ public class RenderKitUtils {
         String subtype;
         String level = null;
         String quality = null;
-        Map<String, Object> appMap = FacesContext.getCurrentInstance().getExternalContext().getApplicationMap();
 
         // Parse "types"
-        String[] types = Util.split(appMap, accept, CONTENT_TYPE_DELIMITER);
+        String[] types = Util.split(accept, CONTENT_TYPE_DELIMITER);
         String[][] arrayAccept = new String[types.length][MAX_CONTENT_TYPE_PARTS];
         int index = -1;
         for (int i = 0; i < types.length; i++) {
@@ -906,7 +940,7 @@ public class RenderKitUtils {
             // to add uniqueness to a type/subtype, and/or delimits a qualifier value:
             // Example: text/html;level=1,text/html;level=2; q=.5
             if (token.contains(";")) {
-                String[] typeParts = Util.split(appMap, token, ";");
+                String[] typeParts = Util.split(token, ';');
                 typeSubType = new StringBuilder(typeParts[0].trim());
                 for (int j = 1; j < typeParts.length; j++) {
                     quality = "not set";
@@ -914,14 +948,14 @@ public class RenderKitUtils {
                     // if "level" is present, make sure it gets included in the "type/subtype"
                     if (token.contains("level")) {
                         typeSubType.append(';').append(token);
-                        String[] levelParts = Util.split(appMap, token, "=");
+                        String[] levelParts = Util.split(token, '=');
                         level = levelParts[0].trim();
                         if (level.equalsIgnoreCase("level")) {
                             level = levelParts[1].trim();
                         }
                     } else {
                         quality = token;
-                        String[] qualityParts = Util.split(appMap, quality, "=");
+                        String[] qualityParts = Util.split(quality, '=');
                         quality = qualityParts[0].trim();
                         if (quality.equalsIgnoreCase("q")) {
                             quality = qualityParts[1].trim();
@@ -936,8 +970,9 @@ public class RenderKitUtils {
                 quality = "not set"; // to identifiy that no quality was supplied
             }
             // now split type and subtype
-            if (typeSubType.indexOf(CONTENT_TYPE_SUBTYPE_DELIMITER) >= 0) {
-                String[] typeSubTypeParts = Util.split(appMap, typeSubType.toString(), CONTENT_TYPE_SUBTYPE_DELIMITER);
+            String typeSubTypeString = typeSubType.toString();
+            if (typeSubTypeString.indexOf(CONTENT_TYPE_SUBTYPE_DELIMITER) >= 0) {
+                String[] typeSubTypeParts = Util.split(typeSubTypeString, CONTENT_TYPE_SUBTYPE_DELIMITER);
                 // Apparently there are user-agents that send invalid
                 // Accept headers containing no subtype (i.e. text/).
                 // For those cases, assume "*" for the subtype.
@@ -1276,7 +1311,7 @@ public class RenderKitUtils {
         // request params.
         String partialEvent = PARTIAL_EVENT_PARAM.getValue(context);
 
-        return HtmlDocumentElementEvent.click.name().equals(partialEvent);
+        return HtmlElementEvent.click.name().equals(partialEvent);
     }
 
     /**
@@ -1366,8 +1401,8 @@ public class RenderKitUtils {
         } else {
 
             String value = (String) component.getAttributes().get(attrName);
-            if (value == null || value.length() == 0) {
-                return "";
+            if (value == null || value.isEmpty()) {
+                return EMPTY_STRING;
             }
             if (ApplicationAssociate.getInstance(context).getResourceManager().isContractsResource(value)) {
                 if (context.isProjectStage(ProjectStage.Development)) {
@@ -1645,7 +1680,7 @@ public class RenderKitUtils {
         // If we're submitting (either via a behavior, or by rendering
         // a submit script), we need to prevent the
         // default button/link action event.
-        if (submitting && (FacesComponentEvent.action.name().equals(behaviorEventName) || HtmlDocumentElementEvent.click.name().equals(behaviorEventName))) {
+        if (submitting && (FacesComponentEvent.action.name().equals(behaviorEventName) || HtmlElementEvent.click.name().equals(behaviorEventName))) {
             builder.append(";event.preventDefault()");
         }
 

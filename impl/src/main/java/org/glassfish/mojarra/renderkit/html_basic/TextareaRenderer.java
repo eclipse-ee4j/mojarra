@@ -21,13 +21,13 @@ package org.glassfish.mojarra.renderkit.html_basic;
 import java.io.IOException;
 
 import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
+import jakarta.faces.component.html.HtmlEvents.HtmlElementEvent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
 
-import org.glassfish.mojarra.renderkit.Attribute;
 import org.glassfish.mojarra.renderkit.AttributeManager;
+import org.glassfish.mojarra.renderkit.Attributes;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 
 /**
@@ -36,7 +36,7 @@ import org.glassfish.mojarra.renderkit.RenderKitUtils;
 
 public class TextareaRenderer extends HtmlBasicInputRenderer {
 
-    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.INPUTTEXTAREA);
+    private static final Attributes ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.INPUTTEXTAREA);
 
     // ---------------------------------------------------------- Public Methods
 
@@ -58,7 +58,7 @@ public class TextareaRenderer extends HtmlBasicInputRenderer {
         writeStyleClassAttributeIfNecessary(writer, component);
 
         // style is rendered as a passthru attribute
-        RenderKitUtils.renderPassThruAttributes(context, writer, component, null, false, ATTRIBUTES, HtmlDocumentElementEvent.change, FacesComponentEvent.valueChange);
+        RenderKitUtils.renderPassThruAttributes(context, writer, component, null, false, ATTRIBUTES, HtmlElementEvent.change, FacesComponentEvent.valueChange);
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
         if (component.getAttributes().containsKey("org.glassfish.mojarra.addNewLineAtStart")

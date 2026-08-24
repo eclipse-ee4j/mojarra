@@ -17,48 +17,36 @@
 
 package org.glassfish.mojarra.config;
 
-import static java.util.Collections.emptyMap;
+import static java.util.Arrays.stream;
 import static java.util.logging.Level.FINE;
-import static java.util.regex.Pattern.CASE_INSENSITIVE;
-import static java.util.regex.Pattern.compile;
-import static org.glassfish.mojarra.util.Util.split;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import jakarta.faces.FactoryFinder;
-import jakarta.faces.application.ResourceHandler;
-import jakarta.faces.application.StateManager;
-import jakarta.faces.context.ExternalContext;
+import jakarta.faces.application.ProjectStage;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.event.PhaseListener;
-import jakarta.faces.lifecycle.Lifecycle;
-import jakarta.faces.lifecycle.LifecycleFactory;
 import jakarta.servlet.ServletContext;
 
-import org.glassfish.mojarra.application.ApplicationAssociate;
-import org.glassfish.mojarra.application.view.FaceletViewHandlingStrategy;
-import org.glassfish.mojarra.facelets.util.Classpath;
-import org.glassfish.mojarra.lifecycle.HttpMethodRestrictionsPhaseListener;
+import org.glassfish.mojarra.RIConstants;
+import org.glassfish.mojarra.application.resource.ResourceLibraryContracts;
 import org.glassfish.mojarra.util.FacesLogger;
-import org.glassfish.mojarra.util.MojarraVersion;
 import org.glassfish.mojarra.util.Util;
 
 /**
@@ -69,84 +57,179 @@ public class WebConfiguration {
     // Log instance for this class
     private static final Logger LOGGER = FacesLogger.CONFIG.getLogger();
 
-    // A Simple regular expression of allowable boolean values
-    private static final Pattern ALLOWABLE_BOOLEANS = compile("true|false", CASE_INSENSITIVE);
+    /**
+     * <p>
+     * Maps a specification context parameter to the unqualified name it had while it was Mojarra specific. Both
+     * prefixes are accepted for it: the one it actually carried, and the one the 5.0 rename produces for anybody
+     * replacing com.sun.faces with org.glassfish.mojarra throughout, which is a name it never had, but is the single
+     * most likely wrong spelling in this release.
+     * </p>
+     *
+     * <p>
+     * This lives here rather than beside the parameters themselves because it is Mojarra's own history. Those
+     * parameters belong to the specification now, and so does the enum which declares them.
+     * </p>
+     */
+    private static final Map<FacesContextParam, String> PROMOTED_PARAMETERS = Map.of(
+            FacesContextParam.ENABLE_CSP_NONCE, "enableCspNonce",
+            FacesContextParam.CSP_POLICY, "cspPolicy",
+            FacesContextParam.EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING, "exceptionTypesToIgnoreInLogging");
+
+    /**
+     * Parameters which exist to make debugging easier and would weaken a deployment if honored anywhere else, so outside
+     * Development they revert to their default, which is in each case the safe value.
+     */
+    private static final Set<MojarraContextParam> DEVELOPMENT_ONLY_OPTIONS = EnumSet.of(
+            MojarraContextParam.ENABLE_CLIENT_STATE_DEBUGGING,
+            MojarraContextParam.GENERATE_UNIQUE_SERVER_STATE_IDS);
 
     private static final String LEGACY_PARAM_PREFIX = "com.sun.faces.";
-    private static final String CURRENT_PARAM_PREFIX = "org.glassfish.mojarra.";
+    private static final String CURRENT_PARAM_PREFIX = RIConstants.RI_PREFIX;
 
     // Key under which we store our WebConfiguration instance.
     private static final String WEB_CONFIG_KEY = "org.glassfish.mojarra.config.WebConfiguration";
 
-    public static final String META_INF_CONTRACTS_DIR = "META-INF/" + ResourceHandler.WEBAPP_CONTRACTS_DIRECTORY_DEFAULT_VALUE;
-
-    private static final int META_INF_CONTRACTS_DIR_LEN = META_INF_CONTRACTS_DIR.length();
-
-    private static final String RESOURCE_CONTRACT_SUFFIX = "/" + ResourceHandler.RESOURCE_CONTRACT_XML;
-
-    // Logging level. Defaults to FINE
-    private Level loggingLevel = Level.FINE;
-
-    private final Map<BooleanWebContextInitParameter, Boolean> booleanContextParameters = new EnumMap<>(BooleanWebContextInitParameter.class);
-
-    private final Map<WebContextInitParameter, String> contextParameters = new EnumMap<>(WebContextInitParameter.class);
-
-    private final Map<WebContextInitParameter, Map<String, String>> facesConfigParameters = new EnumMap<>(WebContextInitParameter.class);
+    private final Level loggingLevel;
 
     private final Map<WebEnvironmentEntry, String> envEntries = new EnumMap<>(WebEnvironmentEntry.class);
 
-    private final Map<WebContextInitParameter, String[]> cachedListParams = new HashMap<>();
+    private final Map<ContextParam, Object> resolvedValues = new HashMap<>();
 
     private final Set<String> setParams = new HashSet<>();
 
     private final ServletContext servletContext;
 
-    private FaceletsConfiguration faceletsConfig;
-
-    private boolean hasFlows;
+    private final ProjectStage projectStage;
 
     // ------------------------------------------------------------ Constructors
 
     private WebConfiguration(ServletContext servletContext) {
         this.servletContext = servletContext;
 
-        String contextName = servletContext.getContextPath();
+        initSetList();
 
-        initSetList(servletContext);
-        processBooleanParameters(servletContext, contextName);
-        processInitParameters(servletContext, contextName);
-        if (canProcessJndiEntries()) {
-            processJndiEntries(contextName);
+        // Before the parameters, because displayConfiguration decides at which level they are logged, and some of the
+        // others derive their default from the stage.
+        if (Util.isJndiAvailable()) {
+            processJndiEntries();
         }
 
+        projectStage = resolveProjectStage();
+        loggingLevel = resolveLoggingLevel();
+
+        logEnvironmentEntries();
+        processContextParams();
+        processDeprecatedParameters();
+        warnAboutUnrecognizedParameters();
+    }
+
+    /**
+     * <p>
+     * Reports every <code>org.glassfish.mojarra.*</code> name the application declared which this release does not
+     * recognize, so that a typo or a parameter which has been removed says so rather than being silently ignored.
+     * </p>
+     *
+     * <p>
+     * Only Mojarra's own namespace is checked, because it is the only one this release is authoritative about. It also
+     * covers the legacy <code>com.sun.faces</code> spelling, which {@link #initSetList()} normalizes into
+     * it. This does not run in Production, where nothing can be done about it any more anyway.
+     * </p>
+     */
+    private void warnAboutUnrecognizedParameters() {
+        if (projectStage == ProjectStage.Production) {
+            return;
+        }
+
+        Set<String> recognized = new HashSet<>();
+
+        for (FacesContextParam param : FacesContextParam.values()) {
+            recognized.addAll(namesOf(param));
+        }
+
+        for (MojarraContextParam param : MojarraContextParam.values()) {
+            recognized.addAll(namesOf(param));
+        }
+
+        setParams.stream()
+                 .filter(name -> name.startsWith(CURRENT_PARAM_PREFIX) && !recognized.contains(name))
+                 .sorted()
+                 .forEach(name -> LOGGER.log(Level.WARNING, "faces.config.webconfig.param.unrecognized", new Object[] { getContextName(), name }));
+    }
+
+    /**
+     * <p>
+     * Reports the JNDI environment entries, which have to be read before the level at which they are reported can be
+     * resolved, because one of them decides the project stage which that level derives from.
+     * </p>
+     */
+    private void logEnvironmentEntries() {
+        if (LOGGER.isLoggable(loggingLevel)) {
+            envEntries.forEach((entry, value) -> LOGGER.log(loggingLevel, "faces.config.webconfig.enventryinfo",
+                    new Object[] { getContextName(), entry.getQualifiedName(), value }));
+        }
+    }
+
+    /**
+     * <p>
+     * The level at which every recognized parameter is logged, which is informational outside Production so that a
+     * deployment can be read back from its own log, and fine grained there so that it stays out of the way. Setting
+     * <code>displayConfiguration</code> explicitly overrules that either way, which is what keeps it usable in
+     * Production for a deployment whose parameters are substituted at build time.
+     * </p>
+     */
+    private Level resolveLoggingLevel() {
+        return Boolean.TRUE.equals(resolveUnreported(MojarraContextParam.DISPLAY_CONFIGURATION)) ? Level.INFO : Level.FINE;
+    }
+
+    /**
+     * <p>
+     * The value as declared, under either prefix and without reporting the legacy one, which the regular pass over the
+     * parameters does later. This exists because the level at which that pass reports has to be known before it runs.
+     * </p>
+     */
+    /**
+     * <p>
+     * Resolves the project stage from its JNDI environment entry, falling back to the context parameter, which is what
+     * {@link jakarta.faces.application.Application#getProjectStage()} ends up doing as well.
+     * </p>
+     */
+    private ProjectStage resolveProjectStage() {
+        String value = getEnvironmentEntry(WebEnvironmentEntry.ProjectStage);
+
+        if (value == null) {
+            value = servletContext.getInitParameter(ProjectStage.PROJECT_STAGE_PARAM_NAME);
+        }
+
+        try {
+            // Via the parameter itself, whose conversion matches an enum constant regardless of case.
+            return FacesContextParam.PROJECT_STAGE.<ProjectStage>toValue(value).orElse(ProjectStage.Production);
+        } catch (IllegalArgumentException e) {
+            LOGGER.log(Level.WARNING, "faces.config.webconfig.boolconfig.invalidvalue", new Object[] { getContextName(), value,
+                    ProjectStage.PROJECT_STAGE_PARAM_NAME, Arrays.toString(ProjectStage.values()), asText(ProjectStage.Production) });
+            return ProjectStage.Production;
+        }
     }
 
     // ---------------------------------------------------------- Public Methods
 
     /**
-     * Return the WebConfiguration instance for this application passing the result of
-     * FacesContext.getCurrentInstance().getExternalContext() to
-     * {@link #getInstance(jakarta.faces.context.ExternalContext)}.
+     * Returns the WebConfiguration instance for this application, by passing the current faces context to
+     * {@link #getInstance(FacesContext)}.
      *
      * @return the WebConfiguration for this application or <code>null</code> if no FacesContext is available.
      */
     public static WebConfiguration getInstance() {
-        return getInstance(FacesContext.getCurrentInstance().getExternalContext());
+        return getInstance(FacesContext.getCurrentInstance());
     }
 
     /**
      * Return the WebConfiguration instance for this application.
      *
-     * @param extContext the ExternalContext for this request
+     * @param context the FacesContext for this request
      * @return the WebConfiguration for this application
      */
-    public static WebConfiguration getInstance(ExternalContext extContext) {
-        WebConfiguration config = (WebConfiguration) extContext.getApplicationMap().get(WEB_CONFIG_KEY);
-        if (config == null) {
-            return getInstance((ServletContext) extContext.getContext());
-        }
-
-        return config;
+    public static WebConfiguration getInstance(FacesContext context) {
+        return getInstance((ServletContext) context.getExternalContext().getContext());
     }
 
     /**
@@ -177,91 +260,17 @@ public class WebConfiguration {
         return servletContext;
     }
 
-    public boolean isHasFlows() {
-        return hasFlows;
-    }
-
-    public void setHasFlows(boolean hasFlows) {
-        this.hasFlows = hasFlows;
-    }
-
-    public String getSpecificationVersion() {
-        return MojarraVersion.SPECIFICATION_VERSION;
-    }
-
     /**
-     * Obtain the value of the specified boolean parameter
+     * <p>
+     * Overrides what a parameter resolved to, for the one setting which is not expressible as a context parameter:
+     * <code>web.xml</code> declaring <code>&lt;distributable/&gt;</code>, which no parameter can observe.
+     * </p>
      *
-     * @param param the parameter of interest
-     * @return the value of the specified boolean parameter
+     * @param param the parameter of interest.
+     * @param value the value it resolves to from here on.
      */
-    public boolean isOptionEnabled(BooleanWebContextInitParameter param) {
-        if (booleanContextParameters.get(param) != null) {
-            return booleanContextParameters.get(param);
-        }
-
-        return param.getDefaultValue();
-    }
-
-    /**
-     * Obtain the value of the specified parameter
-     *
-     * @param param the parameter of interest
-     * @return the value of the specified parameter
-     */
-    public String getOptionValue(WebContextInitParameter param) {
-        return contextParameters.get(param);
-    }
-
-    public void setOptionValue(WebContextInitParameter param, String value) {
-        contextParameters.put(param, value);
-    }
-
-    public void setOptionEnabled(BooleanWebContextInitParameter param, boolean value) {
-        booleanContextParameters.put(param, value);
-    }
-
-    public FaceletsConfiguration getFaceletsConfiguration() {
-        if (faceletsConfig == null) {
-            faceletsConfig = new FaceletsConfiguration(this);
-        }
-
-        return faceletsConfig;
-    }
-
-    public Map<String, String> getFacesConfigOptionValue(WebContextInitParameter param, boolean create) {
-        Map<String, String> result = facesConfigParameters.get(param);
-        if (result == null) {
-            if (create) {
-                result = new ConcurrentHashMap<>(3);
-                facesConfigParameters.put(param, result);
-            } else {
-                result = emptyMap();
-            }
-        }
-
-        return result;
-    }
-
-    public Map<String, String> getFacesConfigOptionValue(WebContextInitParameter param) {
-        return getFacesConfigOptionValue(param, false);
-    }
-
-    public String[] getOptionValue(WebContextInitParameter param, String sep) {
-        String[] result;
-
-        if ((result = cachedListParams.get(param)) == null) {
-            String value = getOptionValue(param);
-            if (value == null) {
-                result = new String[0];
-            } else {
-                Map<String, Object> appMap = FacesContext.getCurrentInstance().getExternalContext().getApplicationMap();
-                result = split(appMap, value, sep);
-            }
-            cachedListParams.put(param, result);
-        }
-
-        return result;
+    void overrideValue(ContextParam param, Object value) {
+        resolvedValues.put(param, value);
     }
 
     /**
@@ -270,248 +279,351 @@ public class WebConfiguration {
      * @param entry the env-entry of interest
      * @return the value of the specified env-entry
      */
-    public String getEnvironmentEntry(WebEnvironmentEntry entry) {
+    private String getEnvironmentEntry(WebEnvironmentEntry entry) {
         return envEntries.get(entry);
     }
 
     /**
-     * @param param the init parameter of interest
-     * @return <code>true</code> if the parameter was explicitly set, otherwise, <code>false</code>
+     * <p>
+     * Returns the value a context parameter resolved to for this application, in the type it declares. The resolution
+     * happens once, while this configuration is being read, so that a parameter costs a lookup rather than a parse
+     * wherever it is consulted.
+     * </p>
+     *
+     * @param <T> the expected type of the value.
+     * @param param the parameter of interest.
+     * @return the value of the parameter, which is its default when it was not declared.
+     * @throws ClassCastException when the parameter does not declare that type.
      */
-    public boolean isSet(WebContextInitParameter param) {
-        return isSet(param.getQualifiedName());
+    @SuppressWarnings("unchecked")
+    <T> T getValue(ContextParam param) {
+        return (T) resolvedValues.get(param);
     }
 
     /**
-     * @param param the init parameter of interest
-     * @return <code>true</code> if the parameter was explicitly set, otherwise, <code>false</code>
+     * @param param the parameter of interest.
+     * @return <code>true</code> when the parameter was explicitly declared, under any of the names it answers to.
      */
-    public boolean isSet(BooleanWebContextInitParameter param) {
-        return isSet(param.getQualifiedName());
+    boolean isSet(ContextParam param) {
+        return namesOf(param).stream().anyMatch(this::isSet);
     }
 
-    public void overrideContextInitParameter(BooleanWebContextInitParameter param, boolean value) {
-        if (param == null) {
-            return;
+    /**
+     * <p>
+     * Every name a parameter answers to as an application may spell it, most preferred first: the one it declares,
+     * followed by the ones it only still answers to for compatibility. A Mojarra parameter accepts the
+     * <code>com.sun.faces</code> prefix it carried before 5.0. A specification parameter which used to be a Mojarra one
+     * accepts the unqualified name it had then, under both prefixes: the one it actually carried, and the one the 5.0
+     * rename produces for anybody replacing <code>com.sun.faces</code> with <code>org.glassfish.mojarra</code>
+     * throughout, which is a name it never had, but is the single most likely wrong spelling in this release.
+     * </p>
+     */
+    private static List<String> declaredNamesOf(ContextParam param) {
+        String name = param.getName();
+        String promoted = PROMOTED_PARAMETERS.get(param);
+
+        if (promoted != null) {
+            return List.of(name, LEGACY_PARAM_PREFIX + promoted, CURRENT_PARAM_PREFIX + promoted);
         }
 
-        boolean oldVal = Boolean.TRUE.equals(booleanContextParameters.put(param, value));
-        if (LOGGER.isLoggable(FINE) && oldVal != value) {
-            LOGGER.log(FINE, "Overriding init parameter {0}.  Changing from {1} to {2}.", new Object[] { param.getQualifiedName(), oldVal, value });
+        if (name.startsWith(CURRENT_PARAM_PREFIX)) {
+            return List.of(name, LEGACY_PARAM_PREFIX + name.substring(CURRENT_PARAM_PREFIX.length()));
         }
 
+        return List.of(name);
     }
 
-    public void overrideContextInitParameter(WebContextInitParameter param, String value) {
-        if (param == null || value == null || value.length() == 0) {
-            return;
+    /**
+     * @return the same names as {@link #declaredNamesOf(ContextParam)}, in the spelling
+     * {@link #initSetList()} records them under and {@link #isSet(String)} therefore answers to.
+     */
+    private static List<String> namesOf(ContextParam param) {
+        return declaredNamesOf(param).stream().map(WebConfiguration::normalize).distinct().collect(toList());
+    }
+
+    private static String normalize(String name) {
+        return name.startsWith(LEGACY_PARAM_PREFIX) ? CURRENT_PARAM_PREFIX + name.substring(LEGACY_PARAM_PREFIX.length()) : name;
+    }
+
+    /**
+     * <p>
+     * Resolves every context parameter to the value this application will see, once, so that consulting one costs a
+     * lookup rather than a parse. A value which cannot be converted to the type the parameter declares is reported and
+     * behaves as though the parameter was never declared, rather than as whatever a lenient parse happens to make of
+     * it, which for a boolean would silently be <code>false</code>.
+     * </p>
+     */
+    private void processContextParams() {
+        for (FacesContextParam param : FacesContextParam.values()) {
+            if (param != FacesContextParam.PROJECT_STAGE) {
+                resolvedValues.put(param, resolve(param));
+            }
         }
 
-        value = value.trim();
-        String oldVal = contextParameters.put(param, value);
-        cachedListParams.remove(param);
-        if (oldVal != null && LOGGER.isLoggable(FINE) && !oldVal.equals(value)) {
-            LOGGER.log(FINE, "Overriding init parameter {0}.  Changing from {1} to {2}.", new Object[] { param.getQualifiedName(), oldVal, value });
+        for (MojarraContextParam param : MojarraContextParam.values()) {
+            resolvedValues.put(param, resolve(param));
         }
+
+        // Skipped by the pass above, because it was resolved ahead of the others: its JNDI environment entry outranks
+        // the parameter, and the defaults of the others derive from it. Reported here under whichever of the two
+        // decided it.
+        resolvedValues.put(FacesContextParam.PROJECT_STAGE, projectStage);
+
+        String decidedBy = getEnvironmentEntry(WebEnvironmentEntry.ProjectStage) != null
+                ? WebEnvironmentEntry.ProjectStage.getQualifiedName()
+                : ProjectStage.PROJECT_STAGE_PARAM_NAME;
+
+        report(decidedBy, projectStage);
+    }
+
+    private Object resolve(ContextParam param) {
+        String value = getDeclaredValue(param);
+
+        try {
+            Optional<?> resolved = param.toValue(value);
+
+            if (resolved.isPresent()) {
+                if (!isCarriedOver(param)) {
+                    report(param.getName(), value);
+                }
+
+                return resolved.get();
+            }
+        } catch (IllegalArgumentException e) {
+            LOGGER.log(Level.WARNING, "faces.config.webconfig.boolconfig.invalidvalue",
+                    new Object[] { getContextName(), value, param.getName(), allowedValuesOf(param), asText(param.getDefaultValue(projectStage)) });
+        }
+
+        return param.getDefaultValue(projectStage);
+    }
+
+    /**
+     * <p>
+     * What a parameter resolves to, without reporting it, for the one parameter which has to be resolved before the
+     * level at which parameters are reported is known. {@link #processContextParams()} resolves it again along with all
+     * others, which is where it does get reported, and where an unusable value gets warned about.
+     * </p>
+     */
+    private Object resolveUnreported(ContextParam param) {
+        try {
+            return param.toValue(getDeclaredValue(param)).orElseGet(() -> param.getDefaultValue(projectStage));
+        } catch (IllegalArgumentException e) {
+            return param.getDefaultValue(projectStage);
+        }
+    }
+
+    /**
+     * @return the value the application declared for the parameter, under whichever of its names it used, reporting the
+     * ones which only exist for compatibility.
+     */
+    private String getDeclaredValue(ContextParam param) {
+        for (String name : declaredNamesOf(param)) {
+            String value = servletContext.getInitParameter(name);
+
+            if (value != null) {
+                if (!name.equals(param.getName())) {
+                    LOGGER.log(Level.WARNING, "faces.config.webconfig.param.deprecated", new Object[] { getContextName(), name, param.getName() });
+                }
+
+                return value.trim();
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @return what the parameter accepts, for the benefit of whoever has to correct the value which was rejected.
+     */
+    private static String allowedValuesOf(ContextParam param) {
+        Class<?> type = param.getType();
+
+        if (type == Boolean.class) {
+            return "true|false";
+        }
+
+        if (type.isEnum()) {
+            return stream(type.getEnumConstants()).map(Object::toString).collect(joining("|"));
+        }
+
+        return type.getSimpleName();
+    }
+
+    /**
+     * <p>
+     * Resolves a tri-state parameter, whose value is <code>true</code>, <code>false</code> or <code>auto</code>. An
+     * unusable value is reported and behaves as though the parameter was never set, rather than as <code>false</code>,
+     * which is what a bare {@link Boolean#parseBoolean(String)} would silently make of a typo.
+     * </p>
+     *
+     * @param param the parameter of interest.
+     * @param whenAuto what <code>auto</code> means for it.
+     * @return whether the option is enabled.
+     */
+    /**
+     * @return the trimmed value of a tri-state parameter, or <code>null</code> when it says <code>auto</code> or
+     * says something which cannot be used, in which case that is reported first.
+     */
+    /**
+     * @return the name every message about this configuration reports the application under.
+     */
+    private String getContextName() {
+        return servletContext.getContextPath();
+    }
+
+    ProjectStage getProjectStage() {
+        return projectStage;
     }
 
     public void doPostBringupActions() {
-        // Add the HttpMethodRestrictionPhaseListener if the parameter is enabled.
-        boolean enabled = isOptionEnabled(BooleanWebContextInitParameter.EnableHttpMethodRestrictionPhaseListener);
-        if (enabled) {
-            LifecycleFactory factory = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
-            PhaseListener listener = null;
-
-            for (String lifecycleId : toIterable(factory.getLifecycleIds())) {
-                Lifecycle lifecycle = factory.getLifecycle(lifecycleId);
-                boolean foundExistingListenerInstance = false;
-                for (PhaseListener curListener : lifecycle.getPhaseListeners()) {
-                    if (curListener instanceof HttpMethodRestrictionsPhaseListener) {
-                        foundExistingListenerInstance = true;
-                        break;
-                    }
-                }
-
-                if (!foundExistingListenerInstance) {
-                    if (listener == null) {
-                        listener = new HttpMethodRestrictionsPhaseListener();
-                    }
-                    lifecycle.addPhaseListener(listener);
-                }
-            }
-        }
-
-        discoverResourceLibraryContracts();
+        processDevelopmentOnlyParameters();
+        ResourceLibraryContracts.discover();
     }
 
-    private void discoverResourceLibraryContracts() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        ExternalContext extContex = context.getExternalContext();
-        Set<String> foundContracts = new HashSet<>();
-        Set<String> candidates;
+    /**
+     * <p>
+     * Reverts every development only parameter which was explicitly set away from its default to that default, unless
+     * the project stage is Development, and says so. Silently ignoring a setting which weakens the deployment would be
+     * worse than honoring it, so the warning matters as much as the gating.
+     * </p>
+     *
+     * <p>
+     * This runs after bringup rather than during construction because it needs the project stage, and therefore a
+     * FacesContext, which does not exist yet while the parameters are being read.
+     * </p>
+     */
+    void processDevelopmentOnlyParameters() {
+        ProjectStage projectStage = getProjectStage();
 
-        // Scan for "contractMappings" in the web app root
-        ApplicationAssociate associate = ApplicationAssociate.getCurrentInstance();
-        String contractsDirName = associate.getResourceManager().getBaseContractsPath();
-        assert null != contractsDirName;
-        candidates = extContex.getResourcePaths(contractsDirName);
-        if (null != candidates) {
-            int contractsDirNameLen = contractsDirName.length();
-            int end;
-            for (String cur : candidates) {
-                end = cur.length();
-                if (cur.endsWith("/")) {
-                    end--;
-                }
-                foundContracts.add(cur.substring(contractsDirNameLen + 1, end));
-            }
-        }
-
-        // Scan for "META-INF" contractMappings in the classpath
-        try {
-            URL[] candidateURLs = Classpath.search(Util.getCurrentLoader(this), META_INF_CONTRACTS_DIR, RESOURCE_CONTRACT_SUFFIX,
-                    Classpath.SearchAdvice.AllMatches);
-            for (URL curURL : candidateURLs) {
-                String cur = curURL.toExternalForm();
-
-                int i = cur.indexOf(META_INF_CONTRACTS_DIR) + META_INF_CONTRACTS_DIR_LEN + 1;
-                int j = cur.indexOf(RESOURCE_CONTRACT_SUFFIX);
-                if (i < j) {
-                    foundContracts.add(cur.substring(i, j));
-                }
-
-            }
-        } catch (IOException ioe) {
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.log(Level.FINEST, "Unable to scan " + META_INF_CONTRACTS_DIR, ioe);
-            }
-        }
-
-        if (foundContracts.isEmpty()) {
+        if (projectStage == ProjectStage.Development) {
             return;
         }
 
-        Map<String, List<String>> contractMappings = new HashMap<>();
+        for (MojarraContextParam param : DEVELOPMENT_ONLY_OPTIONS) {
+            Object defaultValue = param.getDefaultValue(projectStage);
 
-        Map<String, List<String>> contractsFromConfig = associate.getResourceLibraryContracts();
-        List<String> contractsToExpose;
+            if (!defaultValue.equals(getValue(param))) {
+                LOGGER.log(Level.WARNING, "faces.config.webconfig.param.development_only",
+                        new Object[] { getContextName(), param.getName(), projectStage, asText(defaultValue) });
 
-        if (null != contractsFromConfig && !contractsFromConfig.isEmpty()) {
-            List<String> contractsFromMapping;
-            for (Map.Entry<String, List<String>> cur : contractsFromConfig.entrySet()) {
-                // Verify that the contractsToExpose in this mapping actually exist
-                // in the application. If not, log a message.
-                contractsFromMapping = cur.getValue();
-                if (null == contractsFromMapping || contractsFromMapping.isEmpty()) {
-                    if (LOGGER.isLoggable(Level.CONFIG)) {
-                        LOGGER.log(Level.CONFIG, "resource library contract mapping for pattern {0} has no contracts.", cur.getKey());
-                    }
-                } else {
-                    contractsToExpose = new ArrayList<>();
-                    for (String curContractFromMapping : contractsFromMapping) {
-                        if (foundContracts.contains(curContractFromMapping)) {
-                            contractsToExpose.add(curContractFromMapping);
-                        } else {
-                            if (LOGGER.isLoggable(Level.CONFIG)) {
-                                LOGGER.log(Level.CONFIG,
-                                        "resource library contract mapping for pattern {0} exposes contract {1}, but that contract is not available to the application.",
-                                        new String[] { cur.getKey(), curContractFromMapping });
-                            }
-                        }
-                    }
-                    if (!contractsToExpose.isEmpty()) {
-                        contractMappings.put(cur.getKey(), contractsToExpose);
-                    }
-                }
+                resolvedValues.put(param, defaultValue);
             }
-        } else {
-            contractsToExpose = new ArrayList<>(foundContracts);
-            contractMappings.put("*", contractsToExpose);
         }
-        extContex.getApplicationMap().put(FaceletViewHandlingStrategy.RESOURCE_LIBRARY_CONTRACT_DATA_STRUCTURE_KEY, contractMappings);
-
     }
+
 
     // ------------------------------------------------- Package Private Methods
 
+    /**
+     * <p>
+     * Discards the configuration read for the given context, so that the next reader reads it afresh. A container fixes
+     * its context parameters before anything can read them, so this exists for the one moment which is not that:
+     * bringup, which reads a provisional configuration before the application is known.
+     * </p>
+     */
     static void clear(ServletContext servletContext) {
-
         servletContext.removeAttribute(WEB_CONFIG_KEY);
-
     }
 
     // --------------------------------------------------------- Private Methods
 
-    /**
-     * <p>
-     * Is the configured value valid against the default boolean pattern.
-     * </p>
-     *
-     * @param param the boolean parameter
-     * @param value the configured value
-     * @return <code>true</code> if the value is valid, otherwise <code>false</code>
-     */
-    private boolean isValueValid(BooleanWebContextInitParameter param, String value) {
-
-        if (!ALLOWABLE_BOOLEANS.matcher(value).matches()) {
-            if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.log(Level.WARNING, "faces.config.webconfig.boolconfig.invalidvalue",
-                        new Object[] { value, param.getQualifiedName(), "true|false", "true|false", param.getDefaultValue() });
-            }
-            return false;
-        }
-
-        return true;
-
+    private static List<ContextParam> deprecatedParams() {
+        return Stream.of(Stream.of(FacesContextParam.values()), Stream.of(MojarraContextParam.values()))
+                .flatMap(params -> params.filter(ContextParam::isDeprecated))
+                .collect(toList());
     }
 
     /**
      * <p>
-     * Process all boolean context initialization parameters.
+     * Warns about every deprecated context initialization parameter which was explicitly set, and carries the value of
+     * each one over to the parameter which replaces it, unless that one was explicitly set as well.
      * </p>
      *
-     * @param servletContext the ServletContext of interest
-     * @param contextName the context name
+     * <p>
+     * A carried over value is reported under the name it moved to, because that is the parameter which governs the
+     * behaviour from here on, and the pass which reports the others has already run by then.
+     * </p>
      */
-    private void processBooleanParameters(ServletContext servletContext, String contextName) {
-
-        for (BooleanWebContextInitParameter param : BooleanWebContextInitParameter.values()) {
-            String strValue = getInitParameter(servletContext, contextName, param.getQualifiedName());
-            boolean value;
-
-            if (strValue == null) {
-                value = param.getDefaultValue();
-            } else {
-                if (isValueValid(param, strValue)) {
-                    value = Boolean.parseBoolean(strValue);
-                } else {
-                    value = param.getDefaultValue();
-                }
+    private void processDeprecatedParameters() {
+        for (ContextParam param : deprecatedParams()) {
+            if (!isSet(param)) {
+                continue;
             }
 
-            // first param processed should be
-            // org.glassfish.mojarra.displayConfiguration
-            if (BooleanWebContextInitParameter.DisplayConfiguration.equals(param) && value) {
-                loggingLevel = Level.INFO;
-            }
+            warnAboutDeprecatedParameter(param.getName(), param.getAlternateName());
 
-            if (LOGGER.isLoggable(loggingLevel)) {
-                LOGGER.log(loggingLevel, value ? "faces.config.webconfig.boolconfiginfo.enabled" : "faces.config.webconfig.boolconfiginfo.disabled",
-                        new Object[] { contextName, param.getQualifiedName() });
+            if (isCarriedOver(param)) {
+                Object value = resolvedValues.get(param);
+                resolvedValues.put(alternateOf(param), value);
+                report(alternateOf(param).getName(), value);
             }
-
-            booleanContextParameters.put(param, value);
         }
+    }
 
+    /**
+     * <p>
+     * The warning is deliberately not gated on the project stage. It announces a change in the runtime rather than a
+     * mistake in the application, and an application which is going to break on the next upgrade needs to hear about that
+     * in production too.
+     * </p>
+     *
+     * @param alternateName the qualified name of the replacement, or <code>null</code> when there is no replacement.
+     */
+    /**
+     * @return the parameter which replaces this one and which can hold its value, or <code>null</code> when there is
+     * none. A replacement of another type cannot take the value over, which is what tells a rename apart from a
+     * successor which happens to cover the same ground.
+     */
+    private static MojarraContextParam alternateOf(ContextParam param) {
+        MojarraContextParam alternate = MojarraContextParam.of(param.getAlternateName());
+
+        return alternate != null && alternate.getType() == param.getType() ? alternate : null;
+    }
+
+    /**
+     * @return whether what this parameter resolves to ends up under the name of its replacement, which is the case
+     * when it has one of its type and the application did not declare that one itself.
+     */
+    private boolean isCarriedOver(ContextParam param) {
+        MojarraContextParam alternate = alternateOf(param);
+
+        return alternate != null && !isSet(alternate);
+    }
+
+    /**
+     * Reports what a parameter resolved to, under the name which decided it, so that a deployment can be read back
+     * from its own log.
+     */
+    private void report(String name, Object value) {
+        if (LOGGER.isLoggable(loggingLevel)) {
+            LOGGER.log(loggingLevel, "faces.config.webconfig.configinfo", new Object[] { getContextName(), name, asText(value) });
+        }
+    }
+
+    /**
+     * @return the value as it would be written in <code>web.xml</code>. A log message is a format pattern, which would
+     * otherwise render a number the way the reader's locale groups it, and a value which cannot be pasted back into a
+     * deployment descriptor is worse than no value at all.
+     */
+    private static String asText(Object value) {
+        return value instanceof String[] values ? String.join(" ", values) : String.valueOf(value);
+    }
+
+    private void warnAboutDeprecatedParameter(String qualifiedName, String alternateName) {
+
+        if (alternateName == null) {
+            LOGGER.log(Level.WARNING, "faces.config.webconfig.param.deprecated.no_replacement", new Object[] { getContextName(), qualifiedName });
+        } else {
+            LOGGER.log(Level.WARNING, "faces.config.webconfig.param.deprecated", new Object[] { getContextName(), qualifiedName, alternateName });
+        }
     }
 
     /**
      * Adds all org.glassfish.mojarra init parameter names to a list. This allows callers to determine if a parameter was explicitly
      * set.
      *
-     * @param servletContext the ServletContext of interest
      */
-    private void initSetList(ServletContext servletContext) {
+    private void initSetList() {
         for (Enumeration<String> e = servletContext.getInitParameterNames(); e.hasMoreElements();) {
             String name = e.nextElement();
             if (name.startsWith(CURRENT_PARAM_PREFIX) || name.startsWith("jakarta.faces")) {
@@ -526,21 +638,6 @@ public class WebConfiguration {
      * Returns the init parameter value for the given qualified name, falling back to the legacy {@code com.sun.faces.*} equivalent
      * if the current {@code org.glassfish.mojarra.*} name is not set. Logs a deprecation warning when the legacy name is used.
      */
-    private String getInitParameter(ServletContext servletContext, String contextName, String qualifiedName) {
-        String value = servletContext.getInitParameter(qualifiedName);
-
-        if (value == null && qualifiedName.startsWith(CURRENT_PARAM_PREFIX)) {
-            String legacyName = LEGACY_PARAM_PREFIX + qualifiedName.substring(CURRENT_PARAM_PREFIX.length());
-            value = servletContext.getInitParameter(legacyName);
-
-            if (value != null && LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.log(Level.WARNING, "faces.config.webconfig.param.deprecated", new Object[] { contextName, legacyName, qualifiedName });
-            }
-        }
-
-        return value;
-    }
-
     /**
      * @param name the param name
      * @return <code>true</code> if the name was explicitly specified
@@ -554,37 +651,14 @@ public class WebConfiguration {
      * Process all non-boolean context initialization parameters.
      * </p>
      *
-     * @param servletContext the ServletContext of interest
-     * @param contextName the context name
      */
-    private void processInitParameters(ServletContext servletContext, String contextName) {
-
-        for (WebContextInitParameter param : WebContextInitParameter.values()) {
-            String value = getInitParameter(servletContext, contextName, param.getQualifiedName());
-
-            if (value == null || value.isEmpty()) {
-                value = param.getDefaultValue();
-            }
-            if (value == null || value.isEmpty()) {
-                continue;
-            }
-
-            if (LOGGER.isLoggable(loggingLevel)) {
-                LOGGER.log(loggingLevel, "faces.config.webconfig.configinfo", new Object[] { contextName, param.getQualifiedName(), value });
-            }
-            contextParameters.put(param, value);
-        }
-
-    }
-
     /**
      * <p>
      * Process all JNDI entries.
      * </p>
      *
-     * @param contextName the context name
      */
-    private void processJndiEntries(String contextName) {
+    private void processJndiEntries() {
         Context initialContext = null;
 
         try {
@@ -609,143 +683,20 @@ public class WebConfiguration {
                 }
 
                 if (value != null) {
-                    if (LOGGER.isLoggable(Level.INFO)) {
-                        if (LOGGER.isLoggable(loggingLevel)) {
-                            LOGGER.log(loggingLevel, "faces.config.webconfig.enventryinfo", new Object[] { contextName, entryName, value });
-                        }
-                    }
                     envEntries.put(entry, value);
                 }
             }
         }
     }
 
-    public boolean canProcessJndiEntries() {
-        try {
-            Util.getCurrentLoader(this).loadClass("javax.naming.InitialContext");
-        } catch (Exception e) {
-            LOGGER.fine("javax.naming is unavailable. JNDI entries related to Mojarra configuration will not be processed.");
-            return false;
-        }
-        return true;
-    }
-
-    public <T> Iterable<T> toIterable(Iterator<T> iterator) {
-        return () -> iterator;
-    }
-
     // ------------------------------------------------------------------- Enums
-
-    /**
-     * <p>
-     * An <code>enum</code> of all non-boolean context initalization parameters recognized by the implementation.
-     * </p>
-     */
-    public enum WebContextInitParameter {
-
-        NumberOfViews("org.glassfish.mojarra.numberOfViewsInSession", "15"),
-        NumberOfLogicalViews("org.glassfish.mojarra.numberOfLogicalViews", "15"),
-        NumberOfActiveViewMaps("org.glassfish.mojarra.numberOfActiveViewMaps", "25"),
-        NumberOfConcurrentFlashUsers("org.glassfish.mojarra.numberOfConcurrentFlashUsers", "5000"),
-        NumberOfFlashesBetweenFlashReapings("org.glassfish.mojarra.numberOfFlashesBetweenFlashReapings", "5000"),
-        InjectionProviderClass("org.glassfish.mojarra.injectionProvider", ""),
-        SerializationProviderClass("org.glassfish.mojarra.serializationProvider", ""),
-        ClientStateWriteBufferSize("org.glassfish.mojarra.clientStateWriteBufferSize", "8192"),
-        ResourceBufferSize("org.glassfish.mojarra.resourceBufferSize", "2048"),
-        ClientStateTimeout("org.glassfish.mojarra.clientStateTimeout", ""),
-        DefaultResourceMaxAge("org.glassfish.mojarra.defaultResourceMaxAge", "604800000"), // 7 days
-        ResourceUpdateCheckPeriod("org.glassfish.mojarra.resourceUpdateCheckPeriod", "5"), // in minutes
-        CompressableMimeTypes("org.glassfish.mojarra.compressableMimeTypes", ""),
-        DisableUnicodeEscaping("org.glassfish.mojarra.disableUnicodeEscaping", "auto"),
-        DisableIdUniquenessCheck("org.glassfish.mojarra.disableIdUniquenessCheck", "false"), // true|false|auto; default false (always check), opt-in auto skips it in Production
-        DuplicateJARPattern("org.glassfish.mojarra.duplicateJARPattern", ""),
-        FullStateSavingViewIds(StateManager.FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME, ""),
-
-        FaceletsProcessingFileExtensionProcessAs("", ""),
-        WebsocketEndpointIdleTimeout("org.glassfish.mojarra.websocketEndpointIdleTimeout", "0"), // in milliseconds; 0 means no timeout
-        WebsocketMaxSessionsPerChannel("org.glassfish.mojarra.websocketMaxSessionsPerChannel", ""), // empty means unbounded
-        ;
-
-        private final String qualifiedName;
-        private final String defaultValue;
-
-        public String getQualifiedName() {
-            return qualifiedName;
-        }
-
-        public String getDefaultValue() {
-            return defaultValue;
-        }
-
-        WebContextInitParameter(String qualifiedName, String defaultValue) {
-            this.qualifiedName = qualifiedName;
-            this.defaultValue = defaultValue;
-        }
-
-    }
-
-    /**
-     * <p>
-     * An <code>enum</code> of all boolean context initalization parameters recognized by the implementation.
-     * </p>
-     */
-    public enum BooleanWebContextInitParameter {
-
-        DisplayConfiguration("org.glassfish.mojarra.displayConfiguration", false),
-        ValidateFacesConfigFiles("org.glassfish.mojarra.validateXml", false),
-        VerifyFacesConfigObjects("org.glassfish.mojarra.verifyObjects", false),
-        ForceLoadFacesConfigFiles("org.glassfish.mojarra.forceLoadConfiguration", false),
-        DisableClientStateEncryption("org.glassfish.mojarra.disableClientStateEncryption", false),
-        EnableClientStateDebugging("org.glassfish.mojarra.enableClientStateDebugging", false),
-        PreferXHTMLContentType("org.glassfish.mojarra.preferXHTML", false),
-        CompressViewState("org.glassfish.mojarra.compressViewState", true),
-        EnableJSStyleHiding("org.glassfish.mojarra.enableJSStyleHiding", false),
-        EnableScriptInAttributeValue("org.glassfish.mojarra.enableScriptsInAttributeValues", true),
-        WriteStateAtFormEnd("org.glassfish.mojarra.writeStateAtFormEnd", true),
-        EnableLazyBeanValidation("org.glassfish.mojarra.enableLazyBeanValidation", true),
-        EnableViewStateIdRendering("org.glassfish.mojarra.enableViewStateIdRendering", true),
-        RegisterConverterPropertyEditors("org.glassfish.mojarra.registerConverterPropertyEditors", false),
-        EnableHttpMethodRestrictionPhaseListener("org.glassfish.mojarra.ENABLE_HTTP_METHOD_RESTRICTION_PHASE_LISTENER", false),
-        PartialStateSaving(StateManager.PARTIAL_STATE_SAVING_PARAM_NAME, true),
-        RefreshTransientBuildOnPSS("org.glassfish.mojarra.refreshTransientBuildOnPSS", false),
-        GenerateUniqueServerStateIds("org.glassfish.mojarra.generateUniqueServerStateIds", true),
-        AutoCompleteOffOnViewState("org.glassfish.mojarra.autoCompleteOffOnViewState", false),
-        EnableThreading("org.glassfish.mojarra.enableThreading", false),
-        AllowTextChildren("org.glassfish.mojarra.allowTextChildren", false),
-        CacheResourceModificationTimestamp("org.glassfish.mojarra.cacheResourceModificationTimestamp", false),
-        EnableDistributable("org.glassfish.mojarra.enableDistributable", false), // NOTE: this is indeed implicitly set to true when web.xml distributable is also set, see ConfigureListener.
-        EnableMissingResourceLibraryDetection("org.glassfish.mojarra.enableMissingResourceLibraryDetection", false),
-        EnableTransitionTimeNoOpFlash("org.glassfish.mojarra.enableTransitionTimeNoOpFlash", false),
-        ForceAlwaysWriteFlashCookie("org.glassfish.mojarra.forceAlwaysWriteFlashCookie", false),
-        DisallowDoctypeDecl("org.glassfish.mojarra.disallowDoctypeDecl", false),
-        UseFaceletsID("org.glassfish.mojarra.useFaceletsID", false),
-        DisableOptionalELResolver("org.glassfish.mojarra.disableOptionalELResolver", false),
-        ;
-
-        private final String qualifiedName;
-        private final boolean defaultValue;
-
-        public String getQualifiedName() {
-            return qualifiedName;
-        }
-
-        public boolean getDefaultValue() {
-            return defaultValue;
-        }
-
-        BooleanWebContextInitParameter(String qualifiedName, boolean defaultValue) {
-            this.qualifiedName = qualifiedName;
-            this.defaultValue = defaultValue;
-        }
-
-    }
 
     /**
      * <p>
      * An <code>enum</code> of all environment entries (specified in the web.xml) recognized by the implemenetation.
      * </p>
      */
-    public enum WebEnvironmentEntry {
+    private enum WebEnvironmentEntry {
 
         ProjectStage(jakarta.faces.application.ProjectStage.PROJECT_STAGE_JNDI_NAME);
 
@@ -772,31 +723,6 @@ public class WebConfiguration {
 
         }
 
-    }
-
-    /**
-     * <p>
-     * An <code>enum</code> of all possible values for the <code>disableUnicodeEscaping</code> configuration parameter.
-     * </p>
-     */
-    public enum DisableUnicodeEscaping {
-        True("true"), False("false"), Auto("auto");
-
-        private final String value;
-
-        DisableUnicodeEscaping(String value) {
-            this.value = value;
-        }
-
-        public static DisableUnicodeEscaping getByValue(String value) {
-            for (DisableUnicodeEscaping disableUnicodeEscaping : DisableUnicodeEscaping.values()) {
-                if (disableUnicodeEscaping.value.equals(value)) {
-                    return disableUnicodeEscaping;
-                }
-            }
-
-            return null;
-        }
     }
 
 } // END WebConfiguration

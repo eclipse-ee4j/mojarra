@@ -19,6 +19,7 @@ package org.glassfish.mojarra.facelets.tag.jstl.core;
 import java.io.IOException;
 
 import jakarta.el.ELException;
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;
@@ -47,8 +48,12 @@ public final class IfHandler extends TagHandlerImpl {
 
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, ELException {
-        markDynamicTransientBuild(ctx);
-        boolean b = test.getBoolean(ctx);
+        ValueExpression testExpression = test.getValueExpression(ctx, Boolean.class);
+        String key = isDynamic(test) ? buildTimeDecisionKey(ctx) : null;
+        Boolean rendered = replayBuildTimeDecision(ctx, key, Boolean.class);
+        boolean b = rendered != null ? rendered : Boolean.TRUE.equals(testExpression.getValue(ctx));
+        recordBuildTimeDecision(ctx, testExpression, b);
+        saveBuildTimeDecision(ctx, key, b);
         if (var != null) {
             ctx.setAttribute(var.getValue(ctx), b);
         }

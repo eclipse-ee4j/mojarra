@@ -23,10 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import jakarta.servlet.ServletContext;
+import jakarta.faces.context.FacesContext;
 
-import org.glassfish.mojarra.config.WebConfiguration;
-import org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.MultiKeyConcurrentHashMap;
 
@@ -40,7 +39,7 @@ import org.glassfish.mojarra.util.MultiKeyConcurrentHashMap;
  * resources. This check is periodic, configurable via context init param
  * <code>org.glassfish.mojarra.resourceUpdateCheckPeriod</code>. Through this config option, the cache can also be made static
  * or completely disabled. If the value of of this option is <code>0</code>, then no check will be made making the cache
- * static. If value of this option is <code>less than 0</code>, then no caching will be perfomed. Otherwise, the value
+ * static. If value of this option is <code>less than 0</code>, then no caching will be performed. Otherwise, the value
  * of the option will be the number of minutes between modification checks.
  * </p>
  */
@@ -51,12 +50,12 @@ public class ResourceCache {
     /**
      * The <code>ResourceInfo<code> cache.
      */
-    private MultiKeyConcurrentHashMap<Object, ResourceInfoCheckPeriodProxy> resourceCache;
+    private final MultiKeyConcurrentHashMap<Object, ResourceInfoCheckPeriodProxy> resourceCache;
 
     /**
      * Resource check period in minutes.
      */
-    private long checkPeriod;
+    private final long checkPeriod;
 
     // ------------------------------------------------------------ Constructors
 
@@ -64,16 +63,11 @@ public class ResourceCache {
      * Constructs a new ResourceCache.
      */
     public ResourceCache() {
-        this(WebConfiguration.getInstance());
-    }
-
-    private ResourceCache(WebConfiguration config) {
-        this(getCheckPeriod(config));
+        this(MojarraContextParam.RESOURCE_UPDATE_CHECK_PERIOD.getInt(FacesContext.getCurrentInstance()));
 
         if (LOGGER.isLoggable(FINE)) {
-            ServletContext sc = config.getServletContext();
             LOGGER.log(FINE, "ResourceCache constructed for {0}.  Check period is {1} minutes.",
-                    new Object[] { getServletContextIdentifier(sc), checkPeriod });
+                    new Object[] { getServletContextIdentifier(), checkPeriod });
         }
     }
 
@@ -136,17 +130,8 @@ public class ResourceCache {
 
     // --------------------------------------------------------- Private Methods
 
-    private static Long getCheckPeriod(WebConfiguration webConfig) {
-        String val = webConfig.getOptionValue(WebContextInitParameter.ResourceUpdateCheckPeriod);
-        try {
-            return Long.parseLong(val);
-        } catch (NumberFormatException nfe) {
-            return Long.parseLong(WebContextInitParameter.ResourceUpdateCheckPeriod.getDefaultValue());
-        }
-    }
-
-    private static String getServletContextIdentifier(ServletContext context) {
-        return context.getContextPath();
+    private static String getServletContextIdentifier() {
+        return FacesContext.getCurrentInstance().getExternalContext().getApplicationContextPath();
     }
 
     // ---------------------------------------------------------- Nested Classes

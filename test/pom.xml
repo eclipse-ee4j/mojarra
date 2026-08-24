@@ -34,6 +34,7 @@
     <modules>
         <module>../faces/tck/util</module> <!-- BaseITNG et.al. -->
         <module>base</module>
+        <module>impl</module>
         <module>issue5746</module>
         <module>perf</module>
     </modules>
@@ -1306,7 +1307,7 @@
                                 <configuration>
                                     <artifactItems>
                                         <artifactItem>
-                                            <groupId>io.openliberty.beta</groupId>
+                                            <groupId>io.openliberty</groupId>
                                             <artifactId>openliberty-runtime</artifactId>
                                             <version>${liberty.version}</version>
                                             <type>zip</type>

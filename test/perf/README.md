@@ -1,7 +1,7 @@
 # test/perf — Mojarra request-pipeline microbenchmark
 
 A WAR with a representative spread of Facelets pages (forms, tables, ui:repeat,
-composites, nested variants, readonly+input flavors) plus CDI-managed converters
+composites, flat markup, nested variants, readonly+input flavors) plus CDI-managed converters
 and validators, driven by a single integration test that loops thousands of
 GETs and postbacks against a managed app server (GlassFish by default, optionally
 WildFly, TomEE, Payara, OpenLiberty or Tomcat) and dumps per-phase server-side
@@ -222,18 +222,30 @@ mvn clean verify -Dperf=true \
 
 ## Scenarios
 
-Row data for the table/repeat/composite/foreach scenarios comes from one shared `DataBean`, sized by four
+Row data for the table/repeat/composite/foreach scenarios comes from one shared `DataBean`, sized by five
 constants — one per tier — so a whole tier is tuned by editing a single number: `READONLY_ROWS` (200),
-`INPUT_ROWS` (35), `FOREACH_ROWS` (100) and nested `GROUPS`×`GROUP_ROWS` (5×10). The rows themselves are
+`INPUT_ROWS` (35), `FOREACH_ROWS` (100), nested `GROUPS`×`GROUP_ROWS` (5×10) and `WIDE_ROWS` (5). The rows themselves are
 realistic `Row` records (typed fields, a non-ASCII/HTML-metachar description exercising the slow escaping path).
 The two `dynamic-*` scenarios are sized by the `FIELD_COUNT` constant of their backing bean, and the flat forms
 by the shared `/WEB-INF/includes/form-fields.xhtml` field body. `index` and `viewparam-get` are intentionally
 left small.
 
+The `flat-*` scenarios take no row data at all: they are unrolled sibling tags, all bound to the same cheap
+application-scoped property, so what varies between them is attribute shape and node kind rather than expression
+resolution or iteration. Their component counts are **not** equal — `flat-nopassthru` and `flat-passthru` carry 400,
+`flat-readonly` and `flat-build` 800, `flat-text` 1600, `flat-allattrs` one block of every declared tag — because they
+are calibrated by cost, not by size: a bare `h:outputText` renders far less than one carrying five attributes, and a
+template-text node less again, so equal counts would park the cheap views near the noise floor where a pass-to-pass
+swing of 10-25% says nothing. They all land around the ~2ms/request the rest of the suite sits at; tune a count
+against the TOTAL column, not against the component count. The views are unrolled by hand rather than by a
+`c:forEach`, precisely so that the build has no iteration in it — so changing a count means regenerating the
+repeated block. Treat the round that lands new counts as a re-baseline: the WAR has to stay functionally unchanged
+between rounds or cross-round comparisons stop meaning anything.
+
 ### Component-family matrix
 
-Four component families each span up to six variants. The family fixes the *structure*; the variant fixes the
-*request shape* and whether inputs are present:
+Five component families each span up to six variants. The family fixes the *structure*; the variant fixes the
+*request shape* and whether inputs are present. Four families iterate; `flat` is the control that does not:
 
 | family | iterator | readonly (GET) | inputs | nested | build | inputs-ajax | nested-ajax |
 |---|---|:-:|:-:|:-:|:-:|:-:|:-:|
@@ -241,15 +253,25 @@ Four component families each span up to six variants. The family fixes the *stru
 | **repeat** | `ui:repeat` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | **composite** | composite components | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | **foreach** | `c:forEach items` (build-time unrolled) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| **flat** | *none — unrolled sibling tags, plus the 200-column facet pair* | ✓ | - | - | ✓ | - | - |
 
 - **readonly** — GET render, outputs only, no form: isolates fresh `buildView` + encode (no state restore). Sized by `READONLY_ROWS` (200); `foreach-readonly` by `FOREACH_ROWS` (100).
 - **inputs** — full postback, per-row inputs + managed converters/validators (`INPUT_ROWS`, 35): full lifecycle over a flat iteration.
 - **nested** — full postback, the iterator inside itself two levels deep with per-row inputs (`GROUPS`×`GROUP_ROWS`, 5×10): isolates per-row child-state save/restore.
-- **build** — full postback of a **readonly** (no-input) tree: empty ARV/PV/UMV, so it isolates the state-**restore** path + encode from any input processing — the representative postback cost for readonly content. `table-build`/`repeat-build` re-post the standard readonly tree (`READONLY_ROWS`); `composite-build` (the #4811 all-NamingContainer case) and `foreach-build` (flat unrolled outputs) are the `c:forEach`-built trees (`FOREACH_ROWS`, delta-free restore).
+- **build** — full postback of a **readonly** (no-input) tree: empty ARV/PV/UMV, so it isolates the state-**restore** path + encode from any input processing — the representative postback cost for readonly content. `table-build`/`repeat-build` re-post the standard readonly tree (`READONLY_ROWS`); `composite-build` (the #4811 all-NamingContainer case) and `foreach-build` (flat unrolled outputs) are the `c:forEach`-built trees (`FOREACH_ROWS`, delta-free restore); `flat-build` re-posts the `flat-readonly` tree, the only one built without an iterating construct.
 - **inputs-ajax** / **nested-ajax** — ajax twins of `inputs`/`nested`, submitting `<f:ajax execute="@form" render="…">`; the driver sends a partial-ajax POST and refreshes `ViewState` from the XML response.
 
 The GET `readonly` and postback `build` variants of the same family render the same tree, giving a clean
 `buildView` (GET) vs `restore` (postback) A/B. Everything else is a full postback (all six phases on POST).
+
+The `flat` family carries four further variants nothing else has, all GET:
+
+- **passthru** — 400 `h:panelGroup layout="block" styleClass="cell"`, each with five `jakarta.faces.passthrough` `p:data-*` attributes: the only scenario exercising that feature, through the pass-through attribute handler at build time and `renderPassThruAttributes` at encode time. Two details are load-bearing and both were arrived at the hard way. The **namespace** is what makes them pass-through attributes at all: an attribute with no prefix carries namespace `""`, which `TagAttributesImpl.collectPassthrough` does not accept, so the same five names written without it miss every property descriptor, land in the plain attribute map and never reach the response. The **`styleClass`** (an `id` would serve equally) is what unconditionally forces the element to be emitted. Whether pass-through attributes on their own are enough to force it varies by implementation and by version, so a scenario relying on that renders nothing on some arm of the matrix and silently measures nothing — which is exactly how `h:outputText` failed here: Mojarra's `TextRenderer` treats pass-through attributes as a reason to emit a span, MyFaces does not, so that shape compared 400 spans against an empty response. Verify rendered output on both implementations before trusting any number from this scenario.
+- **nopassthru** — the control for `passthru`: the same 400 `h:panelGroup layout="block" styleClass="cell"` at the same count, with the five `p:data-*` attributes removed and nothing else changed. Subtracting it from `passthru` is what isolates the pass-through path; both must keep the same multiplier, or the differential stops meaning anything. A control that also changed the component — the earlier one used `h:outputText` carrying five component properties — folds the whole renderer difference into the delta and isolates nothing.
+- **allattrs** — one of every tag the HTML taglib declares, each carrying every attribute declared for it, generated from `faces.html.taglib.xml` so it follows the branch rather than a hand-written list. It is the coverage instrument: it says whether a change to the attribute machinery touches paths the narrow scenarios never reach (behavior-holder events, resource-backed attributes, converters, the select and table families). It is not a slope instrument — a block holds ~30 different components, so a regression in it does not localize on its own.
+- **text** — the same component count as template text plus EL (`<span>#{…}</span>`) instead of component tags, so the build runs through the text/instruction handlers rather than `ComponentTagHandlerDelegateImpl`.
+
+**`flat-table-facets` and `flat-table-nofacets` are a matched pair, and only useful read together.** Both post back the same 200-column `h:dataTable` over `WIDE_ROWS` (5) rows — few rows on purpose, since facet cost is fixed per column and every extra row only dilutes it — they differ in one thing, whether an otherwise identical `h:outputText` sits in a `header` facet or is an ordinary child. Same column count, same component count, same component types. So the RESTORE_VIEW difference between them is facet handling with everything else held constant, which is the only way the suite can see it: the ordinary `table-*` scenarios carry 7 facets, worth a few µs on a ~2000µs request, and a GET would bury the build inside RENDER_RESPONSE together with 1200 cells of encode. Postbacks put the build in RV; the control attributes it. Do not read either scenario's absolute number as a facet measurement — only their difference, divided by the 200 columns for a per-facet figure. Both implementations must render the pair identically before that difference means anything; verify it whenever either view changes.
 
 Scenarios outside the matrix:
 

@@ -20,13 +20,15 @@ import static jakarta.faces.application.ResourceVisitOption.TOP_LEVEL_VIEWS_ONLY
 import static java.util.Spliterator.DISTINCT;
 import static java.util.Spliterators.spliteratorUnknownSize;
 import static java.util.stream.StreamSupport.stream;
+import static org.glassfish.mojarra.RIConstants.EMPTY_STRING;
 import static org.glassfish.mojarra.RIConstants.FLOW_IN_JAR_PREFIX;
-import static org.glassfish.mojarra.config.WebConfiguration.META_INF_CONTRACTS_DIR;
+import static org.glassfish.mojarra.application.resource.ResourceLibraryContracts.META_INF_CONTRACTS_DIR;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -42,7 +44,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.flow.Flow;
 
 import org.glassfish.mojarra.application.ApplicationAssociate;
-import org.glassfish.mojarra.context.FacesContextParam;
+import org.glassfish.mojarra.config.FacesContextParam;
 import org.glassfish.mojarra.util.Util;
 
 public class FaceletWebappResourceHelper extends ResourceHelper {
@@ -55,17 +57,27 @@ public class FaceletWebappResourceHelper extends ResourceHelper {
     public FaceletWebappResourceHelper(WebappResourceHelper webappResourceHelper) {
         this.webappResourceHelper = webappResourceHelper;
         FacesContext context = FacesContext.getCurrentInstance();
-        configuredExtensions = new String[] { FacesContextParam.FACELETS_SUFFIX.getValue(context) };
+        configuredExtensions = FacesContextParam.FACELETS_SUFFIX.getStringArray(context);
     }
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof FaceletWebappResourceHelper;
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        FaceletWebappResourceHelper other = (FaceletWebappResourceHelper) obj;
+
+        return Objects.equals(webappResourceHelper, other.webappResourceHelper)
+            && Arrays.equals(configuredExtensions, other.configuredExtensions);
     }
 
     @Override
     public int hashCode() {
-        return 3;
+        return Objects.hash(webappResourceHelper, Arrays.hashCode(configuredExtensions));
     }
 
     @Override
@@ -188,7 +200,7 @@ public class FaceletWebappResourceHelper extends ResourceHelper {
 
     private URL findResourceUrlConsideringFlows(String resourceName, boolean[] outDoNotCache) throws IOException {
 
-        URL url = null;
+        URL url;
 
         ClassLoader cl = Util.getCurrentLoader(this);
         Enumeration<URL> matches = cl.getResources(FLOW_IN_JAR_PREFIX + resourceName);
@@ -204,7 +216,7 @@ public class FaceletWebappResourceHelper extends ResourceHelper {
             Flow currentFlow = context.getApplication().getFlowHandler().getCurrentFlow(context);
 
             do {
-                if (currentFlow != null && 0 < currentFlow.getDefiningDocumentId().length()) {
+                if (currentFlow != null && !currentFlow.getDefiningDocumentId().isEmpty()) {
                     String definingDocumentId = currentFlow.getDefiningDocumentId();
                     ExternalContext extContext = context.getExternalContext();
                     ApplicationAssociate associate = ApplicationAssociate.getInstance(extContext);
@@ -229,7 +241,7 @@ public class FaceletWebappResourceHelper extends ResourceHelper {
 
     @Override
     public String getBaseResourcePath() {
-        return "";
+        return EMPTY_STRING;
     }
 
     @Override

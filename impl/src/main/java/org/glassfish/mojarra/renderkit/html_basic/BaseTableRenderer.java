@@ -30,7 +30,7 @@ import jakarta.faces.component.html.HtmlPanelGrid;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
-import org.glassfish.mojarra.renderkit.Attribute;
+import org.glassfish.mojarra.renderkit.Attributes;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 import org.glassfish.mojarra.util.Util;
 
@@ -82,7 +82,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
      * @param attributes pass-through attributes that the component supports
      * @throws IOException if content cannot be written
      */
-    protected void renderTableStart(FacesContext context, UIComponent table, ResponseWriter writer, Attribute[] attributes) throws IOException {
+    protected void renderTableStart(FacesContext context, UIComponent table, ResponseWriter writer, Attributes attributes) throws IOException {
 
         writer.startElement("table", table);
         writeIdAttributeIfNecessary(context, writer, table);
@@ -350,8 +350,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
             if (values == null) {
                 return EMPTY_STRING_ARRAY;
             }
-            Map<String, Object> appMap = FacesContext.getCurrentInstance().getExternalContext().getApplicationMap();
-            return Util.split(appMap, values.trim(), ",");
+            return Util.split(values.trim(), ',');
 
         }
 
@@ -443,8 +442,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
             if (values == null) {
                 return EMPTY_STRING_ARRAY;
             }
-            Map<String, Object> appMap = FacesContext.getCurrentInstance().getExternalContext().getApplicationMap();
-            return Util.split(appMap, values.trim(), ",");
+            return Util.split(values.trim(), ',');
 
         }
 

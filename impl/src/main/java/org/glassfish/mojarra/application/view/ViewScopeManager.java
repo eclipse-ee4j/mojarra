@@ -18,8 +18,6 @@ package org.glassfish.mojarra.application.view;
 
 import static java.util.logging.Level.FINEST;
 import static java.util.logging.Level.WARNING;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
-import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.NumberOfActiveViewMaps;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -48,7 +46,7 @@ import jakarta.servlet.http.HttpSessionEvent;
 import jakarta.servlet.http.HttpSessionListener;
 
 import org.glassfish.mojarra.application.ApplicationAssociate;
-import org.glassfish.mojarra.config.WebConfiguration;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.util.LRUMap;
 
 /**
@@ -99,20 +97,8 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
     public ViewScopeManager() {
         FacesContext context = FacesContext.getCurrentInstance();
         contextManager = new ViewScopeContextManager();
-        WebConfiguration config = WebConfiguration.getInstance(context.getExternalContext());
-        distributable = config.isOptionEnabled(EnableDistributable);
-
-        String numberOfActiveViewMapsAsString = config.getOptionValue(NumberOfActiveViewMaps);
-        if (numberOfActiveViewMapsAsString != null) {
-            try {
-                numberOfActiveViewMapsInWebXml = Integer.parseInt(numberOfActiveViewMapsAsString);
-            }
-            catch (NumberFormatException e) {
-                if (LOGGER.isLoggable(WARNING)) {
-                    LOGGER.log(WARNING, "Cannot parse " + NumberOfActiveViewMaps.getQualifiedName(), e);
-                }
-            }
-        }
+        distributable = MojarraContextParam.ENABLE_DISTRIBUTABLE.isEnabled(context);
+        numberOfActiveViewMapsInWebXml = MojarraContextParam.NUMBER_OF_ACTIVE_VIEW_MAPS.getInt(context);
     }
     
     /**
@@ -309,10 +295,6 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
         Integer size = (Integer) sessionMap.get(ACTIVE_VIEW_MAPS_SIZE);
         if (size == null) {
             size = numberOfActiveViewMapsInWebXml;
-
-            if (size == null) {
-                size = Integer.parseInt(NumberOfActiveViewMaps.getDefaultValue());
-            }
         }
 
         if (sessionMap.get(ACTIVE_VIEW_MAPS) == null) {

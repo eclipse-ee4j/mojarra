@@ -48,9 +48,9 @@ import jakarta.el.ELContext;
 import jakarta.el.MethodExpression;
 import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
+import jakarta.faces.application.ConfigurableNavigationHandler;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.application.NavigationCase;
-import jakarta.faces.application.NavigationHandler;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
@@ -83,7 +83,9 @@ import org.glassfish.mojarra.util.Util;
  * 7.4.2 of the specification for more details. PENDING: Make independent of ApplicationAssociate.
  */
 
-public class NavigationHandlerImpl extends NavigationHandler {
+@SuppressWarnings("removal") // ConfigurableNavigationHandler is deprecated for removal, but must be kept as the supertype until it is actually removed, else
+                            // every third party which obtains navigation cases through the documented instanceof check silently stops working on Faces 5.
+public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
 
     // Private Constants
     private static final String RESET_FLOW_HANDLER_STATE_KEY = NavigationHandlerImpl.class.getName() + "_RESET_FLOW_HANDLER_STATE_KEY";
@@ -118,6 +120,8 @@ public class NavigationHandlerImpl extends NavigationHandler {
      * Flag indicated the current mode.
      */
     private boolean development;
+    /** Query strings reach here both raw and HTML-escaped, so both forms of the parameter separator are matched. */
+    private static final Pattern QUERY_STRING_SEPARATOR = Pattern.compile("&amp;|&");
     private static final Pattern REDIRECT_EQUALS_TRUE = Pattern.compile("(.*)(faces-redirect=true)(.*)");
     private static final Pattern INCLUDE_VIEW_PARAMS_EQUALS_TRUE = Pattern.compile("(.*)(includeViewParams=true)(.*)");
 
@@ -137,7 +141,7 @@ public class NavigationHandlerImpl extends NavigationHandler {
 
         ApplicationAssociate associate = ApplicationAssociate.getInstance(FacesContext.getCurrentInstance().getExternalContext());
         if (associate != null) {
-            development = associate.isDevModeEnabled();
+            development = associate.isDevelopment();
         }
 
     }
@@ -867,11 +871,9 @@ public class NavigationHandlerImpl extends NavigationHandler {
             }
 
             if (queryString != null && queryString.length() > 0) {
-                Map<String, Object> appMap = context.getExternalContext().getApplicationMap();
-
-                String[] queryElements = Util.split(appMap, queryString, "&amp;|&");
+                String[] queryElements = QUERY_STRING_SEPARATOR.split(queryString);
                 for (String queryElement : queryElements) {
-                    String[] elements = Util.split(appMap, queryElement, "=", 2);
+                    String[] elements = Util.split(queryElement, '=', 2);
                     if (elements.length == 2) {
                         String rightHandSide = elements[1];
                         String sanitized = null != rightHandSide && 2 < rightHandSide.length() ? rightHandSide.trim() : "";

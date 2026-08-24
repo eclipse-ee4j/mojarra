@@ -27,7 +27,7 @@ import jakarta.faces.component.UICommand;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.behavior.ClientBehaviorContext;
 import jakarta.faces.component.html.HtmlCommandButton;
-import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
+import jakarta.faces.component.html.HtmlEvents.HtmlElementEvent;
 import jakarta.faces.component.html.HtmlOutcomeTargetButton;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
@@ -35,8 +35,8 @@ import jakarta.faces.event.ActionEvent;
 import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
 
 import org.glassfish.mojarra.RIConstants;
-import org.glassfish.mojarra.renderkit.Attribute;
 import org.glassfish.mojarra.renderkit.AttributeManager;
+import org.glassfish.mojarra.renderkit.Attributes;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 
 /**
@@ -45,7 +45,7 @@ import org.glassfish.mojarra.renderkit.RenderKitUtils;
 
 public class ButtonRenderer extends HtmlBasicRenderer {
 
-    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.COMMANDBUTTON);
+    private static final Attributes ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.COMMANDBUTTON);
 
     // ---------------------------------------------------------- Public Methods
 
@@ -132,7 +132,7 @@ public class ButtonRenderer extends HtmlBasicRenderer {
             writer.writeAttribute("value", label, "value");
         }
 
-        RenderKitUtils.renderPassThruAttributes(context, writer, component, null, false, ATTRIBUTES, HtmlDocumentElementEvent.click, FacesComponentEvent.action);
+        RenderKitUtils.renderPassThruAttributes(context, writer, component, null, false, ATTRIBUTES, HtmlElementEvent.click, FacesComponentEvent.action);
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
         String styleClass = (String) RenderKitUtils.getAttributeIfSet(component, "styleClass");

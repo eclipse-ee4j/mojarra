@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.facelets.FaceletHandler;
 import jakarta.faces.view.facelets.Tag;
 import jakarta.faces.view.facelets.TagAttribute;
@@ -28,7 +29,7 @@ import jakarta.faces.view.facelets.TagAttributeException;
 import jakarta.faces.view.facelets.TagDecorator;
 import jakarta.faces.view.facelets.TagException;
 
-import org.glassfish.mojarra.config.WebConfiguration;
+import org.glassfish.mojarra.config.FaceletsConfiguration;
 import org.glassfish.mojarra.facelets.tag.TagAttributesImpl;
 import org.glassfish.mojarra.facelets.tag.TagLibrary;
 import org.glassfish.mojarra.facelets.tag.composite.CompositeLibrary;
@@ -48,6 +49,8 @@ import org.glassfish.mojarra.util.FacesLogger;
  * @author Jacob Hookom
  */
 final class CompilationManager {
+
+    private boolean unreproducibleBuild;
 
     private final static Logger log = FacesLogger.FACELETS_COMPILER.getLogger();
 
@@ -69,7 +72,7 @@ final class CompilationManager {
 
     private CompilationMessageHolder messageHolder = null;
 
-    private WebConfiguration config;
+    private final FaceletsConfiguration faceletsConfig;
 
     public CompilationManager(String alias, Compiler compiler) {
 
@@ -94,7 +97,7 @@ final class CompilationManager {
         units = new ArrayList<>();
         units.add(new CompilationUnit());
 
-        config = WebConfiguration.getInstance();
+        faceletsConfig = FaceletsConfiguration.getInstance(FacesContext.getCurrentInstance());
 
     }
 
@@ -115,8 +118,8 @@ final class CompilationManager {
         return alias;
     }
 
-    public WebConfiguration getWebConfiguration() {
-        return config;
+    public FaceletsConfiguration getFaceletsConfiguration() {
+        return faceletsConfig;
     }
 
     public void setCompilationMessageHolder(CompilationMessageHolder messageHolder) {
@@ -230,7 +233,7 @@ final class CompilationManager {
                 viewRootUnit.removeChildren();
                 currentUnit().addChild(viewRootUnit);
             }
-            startUnit(new TrimmedTagUnit(tagLibrary, qname[0], qname[1], t, nextTagId()));
+            startUnit(new TrimmedTagUnit(this, tagLibrary, qname[0], qname[1], t, nextTagId()));
             if (log.isLoggable(Level.FINE)) {
                 log.fine("New Namespace and [Trimmed] TagUnit pushed");
             }
@@ -250,7 +253,7 @@ final class CompilationManager {
             NamespaceUnit nsUnit = namespaceManager.toNamespaceUnit(tagLibrary);
             units.add(nsUnit);
             currentUnit().addChild(iface);
-            startUnit(new ImplementationUnit(tagLibrary, qname[0], qname[1], t, nextTagId()));
+            startUnit(new ImplementationUnit(this, tagLibrary, qname[0], qname[1], t, nextTagId()));
             if (log.isLoggable(Level.FINE)) {
                 log.fine("New Namespace and ImplementationUnit pushed");
             }
@@ -259,11 +262,11 @@ final class CompilationManager {
             units.add(new RemoveUnit());
         } else if (tagLibrary.containsTagHandler(qname[0], qname[1])) {
             if (isInterface(qname[0], qname[1])) {
-                InterfaceUnit iface = new InterfaceUnit(tagLibrary, qname[0], qname[1], t, nextTagId());
+                InterfaceUnit iface = new InterfaceUnit(this, tagLibrary, qname[0], qname[1], t, nextTagId());
                 setInterfaceUnit(iface);
                 startUnit(iface);
             } else {
-                startUnit(new TagUnit(tagLibrary, qname[0], qname[1], t, nextTagId()));
+                startUnit(new TagUnit(this, tagLibrary, qname[0], qname[1], t, nextTagId()));
             }
         } else if (tagLibrary.containsNamespace(qname[0], t)) {
             throw new TagException(orig, "Tag Library supports namespace: " + qname[0] + ", but no tag was defined for name: " + qname[1]);
@@ -343,6 +346,22 @@ final class CompilationManager {
             startUnit(unit);
         }
         unit.setNamespace(prefix, uri);
+    }
+
+    /**
+     * Whether this facelet holds a tag handler that decides what it contributes to the view by means this
+     * implementation cannot know, in which case its build cannot be proven reproducible and the redundant render-time
+     * re-apply is performed rather than skipped. Set while the handlers are created, so read it after
+     * {@link #createFaceletHandler()}.
+     *
+     * @return whether this facelet holds a handler that leaves the build unreproducible
+     */
+    boolean isUnreproducibleBuild() {
+        return unreproducibleBuild;
+    }
+
+    void markUnreproducibleBuild() {
+        unreproducibleBuild = true;
     }
 
     public FaceletHandler createFaceletHandler() {

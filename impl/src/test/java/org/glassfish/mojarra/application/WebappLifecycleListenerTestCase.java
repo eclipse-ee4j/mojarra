@@ -1,6 +1,5 @@
 package org.glassfish.mojarra.application;
 
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
@@ -9,7 +8,7 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletRequestEvent;
 
 import org.glassfish.mojarra.config.InitFacesContext;
-import org.glassfish.mojarra.config.WebConfiguration;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.junit.JUnitFacesTestCaseBase;
 import org.glassfish.mojarra.mock.MockHttpServletRequest;
 import org.junit.jupiter.api.AfterEach;
@@ -39,15 +38,15 @@ public class WebappLifecycleListenerTestCase extends JUnitFacesTestCaseBase {
         FactoryFinder.releaseFactories();
     }
     /**
-     * Tests that exception handling in WebappLifecycleListener.requestDestroyed(event) works.
+     * Tests that exception handling in WebappLifecycleListener.requestDestroyed(event) works. The application has to be
+     * distributable, because that is the only case in which requestDestroyed touches the request at all.
      */
     @Test
     public void testRequestDestroyedExceptionHandling() {
         // Create lifecycle listener and related objects.
         WebappLifecycleListener lifecycleListener = new WebappLifecycleListener(null);
 
-        WebConfiguration webConfiguration = WebConfiguration.getInstance(servletContext);
-        webConfiguration.setOptionEnabled(EnableDistributable, true);
+        servletContext.addInitParameter(MojarraContextParam.ENABLE_DISTRIBUTABLE.getName(), "true");
 
         // Create a request event. Make it cause an exception inside the lifecycleListener.requestDestroyed(event) call.
         ServletRequestEvent event = new ServletRequestEvent(servletContext, new MockHttpServletRequest()) {

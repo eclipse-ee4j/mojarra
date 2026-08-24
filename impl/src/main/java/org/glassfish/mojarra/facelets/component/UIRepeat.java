@@ -22,7 +22,6 @@ import static org.glassfish.mojarra.facelets.tag.faces.ComponentSupport.restoreF
 import static org.glassfish.mojarra.facelets.tag.faces.ComponentSupport.restoreTransientDescendantComponentStates;
 import static org.glassfish.mojarra.facelets.tag.faces.ComponentSupport.saveDescendantComponentStates;
 import static org.glassfish.mojarra.facelets.tag.faces.ComponentSupport.saveDescendantInitialComponentStates;
-import static org.glassfish.mojarra.renderkit.RenderKitUtils.PredefinedPostbackParameter.BEHAVIOR_SOURCE_PARAM;
 import static org.glassfish.mojarra.util.Util.isNestedInIterator;
 
 import java.io.IOException;
@@ -251,6 +250,21 @@ public class UIRepeat extends UINamingContainer {
             return (Boolean) ve.getValue(getFacesContext().getELContext());
         }
         return false;
+    }
+
+    /**
+     * A value expression cannot name the variable this component exports, since the body of the tag resolves that name
+     * as it is written. One is therefore rejected rather than accepted and then ignored.
+     *
+     * @throws IllegalArgumentException when the given name is {@code var} or {@code varStatus}
+     */
+    @Override
+    public void setValueExpression(String name, ValueExpression binding) {
+        if ("var".equals(name) || "varStatus".equals(name)) {
+            throw new IllegalArgumentException(name);
+        }
+
+        super.setValueExpression(name, binding);
     }
 
     public String getVar() {
@@ -580,7 +594,7 @@ public class UIRepeat extends UINamingContainer {
     }
 
     private void setIndex(FacesContext ctx, int index) {
-        if (isRowStatePreserved()) {
+        if (isRowStatePreserved() && initialDescendantFullComponentState != null) {
             setRowIndexWithRowStatePreserved(ctx, index);
         } else {
             setRowIndexWithoutRowStatePreserved(ctx, index);
@@ -906,16 +920,11 @@ public class UIRepeat extends UINamingContainer {
         return false;
     }
 
+    // SKIP_ITERATION is honored unconditionally, as UIData does. A visit that asks for it wants the
+    // row-less clientIds: the saved component state is keyed by them, so iterating anyway
+    // makes the restore look up repeat:N:foo for state filed under repeat:foo and restore nothing.
     private boolean requiresRowIteration(VisitContext ctx) {
-        boolean shouldIterate = !ctx.getHints().contains(VisitHint.SKIP_ITERATION);
-        if (!shouldIterate) {
-            FacesContext faces = ctx.getFacesContext();
-            String sourceId = BEHAVIOR_SOURCE_PARAM.getValue(faces);
-            boolean containsSource = sourceId != null ? sourceId.startsWith(super.getClientId(faces) + getSeparatorChar(faces)) : false;
-            return containsSource;
-        } else {
-            return shouldIterate;
-        }
+        return !ctx.getHints().contains(VisitHint.SKIP_ITERATION);
     }
 
     // Tests whether we need to visit our children as part of

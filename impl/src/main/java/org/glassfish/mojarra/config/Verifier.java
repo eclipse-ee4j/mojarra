@@ -26,8 +26,8 @@ import org.glassfish.mojarra.util.MessageUtils;
 import org.glassfish.mojarra.util.Util;
 
 /**
- * This class backs the <code>org.glassfish.mojarra.verifyObjects</code> feature which provides basic validation of Components,
- * Converters, and Validators.
+ * Provides basic validation of the Components, Converters and Validators named in the configuration, which runs at
+ * startup in every project stage other than <code>Production</code>.
  */
 public class Verifier {
 
@@ -60,8 +60,8 @@ public class Verifier {
     // ------------------------------------------------- Public Methods
 
     /**
-     * @return a <code>Verifier</code> for the current web application <em>if</em> <code>org.glassfish.mojarra.verifyObjects</code>
-     * is enabled
+     * @return a <code>Verifier</code> for the current web application when the project stage is not
+     * <code>Production</code>, otherwise <code>null</code>
      */
     public static Verifier getCurrentInstance() {
         return VERIFIER.get();

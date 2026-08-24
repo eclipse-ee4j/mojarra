@@ -55,8 +55,10 @@ import org.glassfish.mojarra.component.CompositeComponentStackManager;
 import org.glassfish.mojarra.component.behavior.AjaxBehaviors;
 import org.glassfish.mojarra.component.validator.ComponentValidators;
 import org.glassfish.mojarra.context.StateContext;
-import org.glassfish.mojarra.facelets.impl.IdMapper;
+import org.glassfish.mojarra.facelets.UniqueIdSlot;
+import org.glassfish.mojarra.facelets.tag.BuildTimeDecisions;
 import org.glassfish.mojarra.facelets.tag.MetaRulesetImpl;
+import org.glassfish.mojarra.facelets.tag.SavedBuildTimeDecisions;
 import org.glassfish.mojarra.facelets.tag.faces.core.FacetHandler;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.Util;
@@ -76,6 +78,15 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
     private final String rendererType;
 
     private CreateComponentDelegate createCompositeComponentDelegate;
+
+    /**
+     * This tag's unique-id counter slot and the Facelet holding it, so {@link #apply} can count this tag's generated
+     * ids by array index instead of by a per-build map lookup on the tag id. Held as one object so that both are read
+     * together: a build that saw the owner must see that owner's slot. Bound to the Facelet being applied rather than
+     * the one this tag was compiled in, because a {@code ui:define} body applies under the template it is inserted
+     * into; a tag that alternates between templates simply rebinds.
+     */
+    private final UniqueIdSlot idSlot = new UniqueIdSlot();
 
     public ComponentTagHandlerDelegateImpl(ComponentHandler owner) {
         this.owner = owner;
@@ -123,7 +134,7 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
         }
 
         // our id
-        String id = ctx.generateUniqueId(owner.getTagId());
+        String id = generateUniqueId(ctx);
 
         // grab our component
         UIComponent c = findChild(ctx, parent, id);
@@ -345,7 +356,7 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
     protected void addComponentToView(FaceletContext ctx, UIComponent parent, UIComponent c, boolean componentFound, StateContext stateContext) {
 
         FacesContext context = ctx.getFacesContext();
-        boolean suppressEvents = ComponentSupport.suppressViewModificationEvents(context, stateContext);
+        boolean suppressEvents = ComponentSupport.suppressViewModificationEvents(context);
         boolean compcomp = UIComponent.isCompositeComponent(c);
 
         if (suppressEvents && componentFound && !compcomp) {
@@ -419,10 +430,9 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
         // after the first instance
 
         if (this.id != null && !(this.id.isLiteral() && IterationIdManager.registerLiteralId(ctx, this.id.getValue()))) {
-            c.setId(this.id.getValue(ctx));
+            c.setId(resolveId(ctx, id));
         } else {
-            IdMapper mapper = IdMapper.getMapper(ctx.getFacesContext());
-            String mid = mapper != null ? mapper.getAliasedId(id) : id;
+            String mid = ComponentSupport.getAliasedId(ctx, id);
             UIComponent ancestorNamingContainer = parent.getNamingContainer();
             if (ancestorNamingContainer instanceof UniqueIdVendor) {
                 c.setId(((UniqueIdVendor) ancestorNamingContainer).createUniqueId(ctx.getFacesContext(), mid));
@@ -440,6 +450,56 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
             c.setRendererType(rendererType);
         }
 
+    }
+
+    /**
+     * The id this tag assigns, which an expression can decide per build. Where build time decisions are replayed, the
+     * build which restores a view assigns the id the build which rendered it assigned, so that the state saved for a
+     * component is restored into the component it was saved for, and every build after that decides for itself again:
+     * the decision recorded beside it denies the skip of the render time re-apply once the expression yields another
+     * id than the one this build assigned.
+     *
+     * <p>
+     * Nothing of this happens where the decisions are not replayed: the decision would then deny the skip of that
+     * re-apply for every build whose body holds a component with an expression for an id, which is what an unrolled
+     * iteration naming its rows produces, while there is no replayed id for it to reconcile.
+     *
+     * <p>
+     * The attribute evaluates itself rather than the expression recorded beside it, so that an expression which fails
+     * to evaluate reports the tag it belongs to.
+     *
+     * @param ctx the {@link FaceletContext} for the current build.
+     * @param tagId the id this tag generated for the current build, under which its decision is saved and replayed.
+     * @return the id this tag assigns.
+     */
+    private String resolveId(FaceletContext ctx, String tagId) {
+        FacesContext context = ctx.getFacesContext();
+
+        if (id.isLiteral() || !SavedBuildTimeDecisions.isEnabled(context)) {
+            return id.getValue(ctx);
+        }
+
+        Object replayed = SavedBuildTimeDecisions.replay(context, tagId);
+        String value = replayed instanceof String ? (String) replayed : id.getValue(ctx);
+
+        if (value != null) {
+            // A null decision is what a build with nothing to replay reads back, so saving one would say the id was
+            // never decided here at all.
+            SavedBuildTimeDecisions.record(context, tagId, value);
+        }
+
+        BuildTimeDecisions.record(context, id.getValueExpression(ctx, String.class), value);
+        return value;
+    }
+
+    /**
+     * Generates this tag's unique id through {@link org.glassfish.mojarra.facelets.impl.DefaultFaceletContext}'s
+     * slot-based counter where the context supports it (the only implementation Facelets builds views with), and
+     * through the public {@link FaceletContext} API otherwise, which a wrapping context or a foreign implementation
+     * may supply.
+     */
+    private String generateUniqueId(FaceletContext ctx) {
+        return idSlot.generateUniqueId(ctx, owner.getTagId());
     }
 
     protected void doNewComponentActions(FaceletContext ctx, String id, UIComponent c) {
@@ -484,7 +544,7 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
              * Repply the id, for the case when the component tree was changed, and the id's are set explicitly.
              */
             if (!autoGenerated) {
-                c.setId(this.id.getValue(ctx));
+                c.setId(resolveId(ctx, id));
             }
         }
     }

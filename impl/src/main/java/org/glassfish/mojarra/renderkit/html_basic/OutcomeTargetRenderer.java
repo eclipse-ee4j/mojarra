@@ -36,7 +36,7 @@ import jakarta.faces.lifecycle.ClientWindow;
 
 import org.glassfish.mojarra.application.NavigationHandlerImpl;
 import org.glassfish.mojarra.flow.FlowHandlerImpl;
-import org.glassfish.mojarra.renderkit.Attribute;
+import org.glassfish.mojarra.renderkit.Attributes;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 import org.glassfish.mojarra.util.Util;
 
@@ -48,7 +48,7 @@ public abstract class OutcomeTargetRenderer extends HtmlBasicRenderer {
 
     // ------------------------------------------------------- Protected Methods
 
-    protected void renderPassThruAttributes(FacesContext ctx, ResponseWriter writer, UIComponent component, Attribute[] attributes, List<String> excludedAttributes)
+    protected void renderPassThruAttributes(FacesContext ctx, ResponseWriter writer, UIComponent component, Attributes attributes, List<String> excludedAttributes)
             throws IOException {
         RenderKitUtils.renderPassThruAttributes(ctx, writer, component, attributes);
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component, excludedAttributes);

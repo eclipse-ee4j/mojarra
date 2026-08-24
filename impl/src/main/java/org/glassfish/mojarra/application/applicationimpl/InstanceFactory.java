@@ -27,7 +27,6 @@ import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Level.WARNING;
 import static org.glassfish.mojarra.application.ApplicationImpl.THIS_LIBRARY;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.RegisterConverterPropertyEditors;
 import static org.glassfish.mojarra.util.Util.isEmpty;
 import static org.glassfish.mojarra.util.Util.loadClass;
 import static org.glassfish.mojarra.util.Util.notNull;
@@ -90,8 +89,8 @@ import org.glassfish.mojarra.application.ApplicationAssociate;
 import org.glassfish.mojarra.application.ConverterPropertyEditorFactory;
 import org.glassfish.mojarra.application.ViewMemberInstanceFactoryMetadataMap;
 import org.glassfish.mojarra.cdi.CdiUtils;
-import org.glassfish.mojarra.config.WebConfiguration;
-import org.glassfish.mojarra.context.FacesContextParam;
+import org.glassfish.mojarra.config.FacesContextParam;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.MessageUtils;
 import org.glassfish.mojarra.util.ReflectionUtils;
@@ -172,10 +171,9 @@ public class InstanceFactory {
         constructorCache = new ConcurrentHashMap<>();
 
         FacesContext context = FacesContext.getCurrentInstance();
-        WebConfiguration webConfig = WebConfiguration.getInstance(context.getExternalContext());
-        registerPropertyEditors = webConfig.isOptionEnabled(RegisterConverterPropertyEditors);
+        registerPropertyEditors = MojarraContextParam.REGISTER_CONVERTER_PROPERTY_EDITORS.isEnabled(context);
 
-        passDefaultTimeZone = FacesContextParam.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE.getValue(context);
+        passDefaultTimeZone = FacesContextParam.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE.isEnabled(context);
         if (passDefaultTimeZone) {
             systemTimeZone = TimeZone.getDefault();
         }
@@ -268,13 +266,13 @@ public class InstanceFactory {
                     clazz = loadClass(className, this);
                 }
                 if (clazz != ComponentResourceClassNotFound.class) {
-                    if (!associate.isDevModeEnabled()) {
+                    if (!associate.isDevelopment()) {
                         componentMap.put(className, clazz);
                     }
                     result = (UIComponent) clazz.getDeclaredConstructor().newInstance();
                 }
             } catch (ClassNotFoundException ex) {
-                if (!associate.isDevModeEnabled()) {
+                if (!associate.isDevelopment()) {
                     componentMap.put(className, ComponentResourceClassNotFound.class);
                 }
             } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException ie) {
@@ -643,7 +641,7 @@ public class InstanceFactory {
             if (componentClass == null) {
                 componentClass = Util.loadClass(className, this);
             }
-            if (!associate.isDevModeEnabled()) {
+            if (!associate.isDevelopment()) {
                 componentMap.put(className, componentClass);
             }
             result = (UIComponent) componentClass.getDeclaredConstructor().newInstance();
@@ -790,7 +788,7 @@ public class InstanceFactory {
             String cValue = (String) value;
             try {
                 clazz = Util.loadClass(cValue, value);
-                if (!associate.isDevModeEnabled()) {
+                if (!associate.isDevelopment()) {
                     map.put(key, clazz);
                 }
                 assert clazz != null;
@@ -834,7 +832,7 @@ public class InstanceFactory {
             } catch (RuntimeException accessNotGranted) {
                 // leave the per-call access check in place
             }
-            if (!associate.isDevModeEnabled()) {
+            if (!associate.isDevelopment()) {
                 constructorCache.put(clazz, constructor);
             }
         }
@@ -998,7 +996,7 @@ public class InstanceFactory {
             String cValue = (String) value;
             try {
                 clazz = Util.loadClass(cValue, value);
-                if (!associate.isDevModeEnabled()) {
+                if (!associate.isDevelopment()) {
                     map.put(key, clazz);
                 }
                 assert clazz != null;

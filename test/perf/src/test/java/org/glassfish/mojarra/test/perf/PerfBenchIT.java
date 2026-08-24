@@ -111,6 +111,11 @@ class PerfBenchIT extends BaseITNG {
             Map.entry("repeat-readonly", "repeat-readonly.xhtml"),
             Map.entry("composite-readonly", "composite-readonly.xhtml"),
             Map.entry("foreach-readonly", "foreach-readonly.xhtml"),
+            Map.entry("flat-readonly", "flat-readonly.xhtml"),
+            Map.entry("flat-passthru", "flat-passthru.xhtml"),
+            Map.entry("flat-nopassthru", "flat-nopassthru.xhtml"),
+            Map.entry("flat-allattrs", "flat-allattrs.xhtml"),
+            Map.entry("flat-text", "flat-text.xhtml"),
             Map.entry("viewparam-get", "viewparam-get.xhtml?id=42")));
 
     /** Full (non-ajax) form postbacks. The {@code *-build} scenarios are readonly (no input fields), so their
@@ -129,7 +134,10 @@ class PerfBenchIT extends BaseITNG {
             "table-build",
             "repeat-build",
             "composite-build",
-            "foreach-build"));
+            "foreach-build",
+            "flat-build",
+            "flat-table-facets",
+            "flat-table-nofacets"));
 
     /** Ajax-partial postbacks. Same body fields as their non-ajax twin plus the
      *  {@code jakarta.faces.partial.*} markers and the {@code Faces-Request} header. */

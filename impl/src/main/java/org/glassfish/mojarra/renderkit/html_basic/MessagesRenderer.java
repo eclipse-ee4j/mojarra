@@ -28,8 +28,8 @@ import jakarta.faces.component.html.HtmlMessages;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
-import org.glassfish.mojarra.renderkit.Attribute;
 import org.glassfish.mojarra.renderkit.AttributeManager;
+import org.glassfish.mojarra.renderkit.Attributes;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 
 /**
@@ -42,7 +42,7 @@ import org.glassfish.mojarra.renderkit.RenderKitUtils;
 
 public class MessagesRenderer extends HtmlBasicRenderer {
 
-    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.MESSAGESMESSAGES);
+    private static final Attributes ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.MESSAGESMESSAGES);
 
     // ---------------------------------------------------------- Public Methods
 

@@ -19,7 +19,9 @@ package org.glassfish.mojarra.application.view;
 import static jakarta.faces.component.visit.VisitHint.SKIP_ITERATION;
 import static jakarta.faces.component.visit.VisitResult.ACCEPT;
 import static java.util.logging.Level.FINEST;
+import static org.glassfish.mojarra.RIConstants.BUILD_TIME_DECISIONS;
 import static org.glassfish.mojarra.RIConstants.DYNAMIC_ACTIONS;
+import static org.glassfish.mojarra.RIConstants.RENDERED_TAGS;
 import static org.glassfish.mojarra.RIConstants.VIEW_REBUILT_AT_RENDER;
 import static org.glassfish.mojarra.facelets.tag.faces.ComponentSupport.DYNAMIC_COMPONENT;
 import static org.glassfish.mojarra.util.ComponentStruct.ADD;
@@ -47,7 +49,10 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.render.ResponseStateManager;
 import jakarta.faces.view.StateManagementStrategy;
 
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.context.StateContext;
+import org.glassfish.mojarra.facelets.tag.SavedBuildTimeDecisions;
+import org.glassfish.mojarra.facelets.tag.faces.ComponentSupport;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 import org.glassfish.mojarra.util.ComponentStruct;
 import org.glassfish.mojarra.util.FacesLogger;
@@ -55,11 +60,11 @@ import org.glassfish.mojarra.util.MessageUtils;
 import org.glassfish.mojarra.util.Util;
 
 /**
- * The state management strategy for PSS.
+ * The state management strategy for Facelets views.
  *
  * @author Manfred Riem (manfred.riem@oracle.com)
  */
-public class FaceletPartialStateManagementStrategy extends StateManagementStrategy {
+public class FaceletStateManagementStrategy extends StateManagementStrategy {
 
     /**
      * Stores the logger.
@@ -76,10 +81,40 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
      */
     private static final Set<VisitHint> SKIP_ITERATION_AND_EXECUTE_LIFECYCLE_HINTS = EnumSet.of(VisitHint.SKIP_ITERATION, VisitHint.EXECUTE_LIFECYCLE);
 
+    private final boolean disableIdUniquenessCheck;
+    
+    /**
+     * How many client ids at most are named when reporting a mismatch between the rendered and the rebuilt view.
+     */
+    private static final int MAX_REPORTED_CLIENT_IDS = 10;
+
+    /**
+     * What resolves a mismatch between the rendered and the rebuilt view, appended to the report of either.
+     */
+    private static final String REMEDY = " A build time condition such as c:if, c:choose, a c:forEach range or a variable ui:include path must"
+            + " evaluate to the same value while the postback is restored as it did while the response was rendered, and the items a c:forEach"
+            + " iterated must still hold the rows it produced. Hold what they depend on in a @ViewScoped bean, or recompute it from the relevant"
+            + " request parameters in the @PostConstruct of the request scoped one, or leave the "
+            + MojarraContextParam.RESTORE_BUILD_TIME_DECISIONS.getName() + " context parameter enabled.";
+
+    /**
+     * Reported for the components the rendered view held which the rebuilt one does not.
+     */
+    static final String NOT_REBUILT_REPORT = "The view rebuilt for this postback does not hold {0} of the components the response was rendered"
+            + " from, so their state is restored into nothing: {1}. Of these, {2} carry a submitted value which is therefore decoded by"
+            + " nothing: {3}." + REMEDY;
+
+    /**
+     * Reported for the client ids another tag occupies in the rebuilt view than the one that rendered them.
+     */
+    static final String REBUILT_FROM_ANOTHER_TAG_REPORT = "The view rebuilt for this postback holds {0} client ids built from another tag than"
+            + " the one the response was rendered from, so the state saved by one tag is restored into the component of another: {1}. The"
+            + " facelet may also have been edited since the response was rendered, which moves every tag." + REMEDY;
+
     /**
      * Constructor.
      */
-    public FaceletPartialStateManagementStrategy() {
+    public FaceletStateManagementStrategy() {
         this(FacesContext.getCurrentInstance());
     }
 
@@ -88,7 +123,8 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
      *
      * @param context the Faces context.
      */
-    public FaceletPartialStateManagementStrategy(FacesContext context) {
+    public FaceletStateManagementStrategy(FacesContext context) {
+        disableIdUniquenessCheck = MojarraContextParam.DISABLE_ID_UNIQUENESS_CHECK.isEnabled(context);
     }
 
     /**
@@ -137,7 +173,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
      */
     private void restoreDynamicActions(FacesContext context, StateContext stateContext, Map<String, Object> stateMap) {
         if (LOGGER.isLoggable(FINEST)) {
-            LOGGER.finest("FaceletPartialStateManagementStrategy.restoreDynamicActions");
+            LOGGER.finest("FaceletStateManagementStrategy.restoreDynamicActions");
         }
 
         @SuppressWarnings("unchecked")
@@ -192,7 +228,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
      */
     private void restoreDynamicAdd(FacesContext context, Map<String, Object> state, ComponentStruct struct, Map<String, UIComponent> componentIndex) {
         if (LOGGER.isLoggable(FINEST)) {
-            LOGGER.finest("FaceletPartialStateManagementStrategy.restoreDynamicAdd");
+            LOGGER.finest("FaceletStateManagementStrategy.restoreDynamicAdd");
         }
 
         UIComponent parent = componentIndex.get(struct.getParentClientId());
@@ -285,7 +321,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
      */
     private void restoreDynamicRemove(FacesContext context, ComponentStruct struct, Map<String, UIComponent> componentIndex) {
         if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.finest("FaceletPartialStateManagementStrategy.restoreDynamicRemove");
+            LOGGER.finest("FaceletStateManagementStrategy.restoreDynamicRemove");
         }
 
         UIComponent child = componentIndex.get(struct.getClientId());
@@ -314,7 +350,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
     public UIViewRoot restoreView(FacesContext context, String viewId, String renderKitId) {
 
         if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.log(Level.FINEST, "FaceletPartialStateManagementStrategy.restoreView", new Object[] { viewId, renderKitId });
+            LOGGER.log(Level.FINEST, "FaceletStateManagementStrategy.restoreView", new Object[] { viewId, renderKitId });
         }
 
         ResponseStateManager rsm = RenderKitUtils.getResponseStateManager(context, renderKitId);
@@ -340,7 +376,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
                 boolean hasDynamicActions = !isEmpty(savedActions);
                 stateContext.setHasDynamicComponents(hasDynamicActions);
 
-                if (!hasDynamicActions && isViewRootOnlyState(context, viewRoot, state)) {
+                if (!hasDynamicActions && isViewRootOnlyState(viewRoot.getClientId(context), state)) {
                     // No dynamic actions and no per-component delta (or only the view root's): restore the
                     // view root in isolation and skip the full O(N) restore traversal. Any component whose
                     // state actually changed carries a non-null delta in the map, which forces the walk via
@@ -371,6 +407,10 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
                     });
                     restoreDynamicActions(context, stateContext, state);
                 }
+
+                if (context.isProjectStage(ProjectStage.Development)) {
+                    logRebuildMismatches(context, viewRoot, state);
+                }
             } finally {
                 stateContext.setHasDynamicComponents(true);
                 stateContext.setTrackViewModifications(true);
@@ -384,18 +424,131 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
 
     /**
      * Determine whether the saved state holds no per-component delta other than (optionally) the view
-     * root's own state. The {@code DYNAMIC_ACTIONS} entry is bookkeeping rather than a component delta,
-     * so it is excluded from the count.
+     * root's own state. The {@code DYNAMIC_ACTIONS}, {@code RENDERED_TAGS} and {@code BUILD_TIME_DECISIONS}
+     * entries are bookkeeping rather than a component delta, so they are excluded from the count.
+     *
+     * @param viewRootClientId the client id of the view root.
+     * @param state the saved state map.
+     * @return true if only the view root needs restoring, allowing the full restore traversal to be skipped.
+     */
+    static boolean isViewRootOnlyState(String viewRootClientId, Map<String, Object> state) {
+        int componentStateCount = state.size();
+        if (state.containsKey(DYNAMIC_ACTIONS)) {
+            componentStateCount--;
+        }
+        if (state.containsKey(RENDERED_TAGS)) {
+            componentStateCount--;
+        }
+        if (state.containsKey(BUILD_TIME_DECISIONS)) {
+            componentStateCount--;
+        }
+        return componentStateCount == 0
+                || componentStateCount == 1 && state.containsKey(viewRootClientId);
+    }
+
+    /**
+     * The tag a component was built from, which tells two components apart that share a client id because only one of
+     * them is ever built. Every component a facelet creates carries it; the ones that no facelet created - the view
+     * root, and anything added programmatically - fall back to their type, which the restore reproduces as well.
+     *
+     * @param component the component.
+     * @return the identity of what built the given component.
+     */
+    static String tagOf(UIComponent component) {
+        String tagId = (String) component.getAttributes().get(ComponentSupport.MARK_CREATED);
+        return tagId != null ? tagId : component.getClass().getName();
+    }
+
+    /**
+     * The client ids the rendered view held which the rebuilt one does not, so that the state saved for them is
+     * restored into nothing and a value submitted for them is decoded by nothing.
+     *
+     * @param renderedTags the tag per client id of the view that rendered the response.
+     * @param rebuiltTags the tag per client id of the view rebuilt for this postback.
+     * @return the client ids that were not rebuilt.
+     */
+    static List<String> clientIdsNotRebuilt(Map<String, String> renderedTags, Map<String, String> rebuiltTags) {
+        List<String> clientIds = new ArrayList<>();
+        for (Map.Entry<String, String> renderedTag : renderedTags.entrySet()) {
+            if (!rebuiltTags.containsKey(renderedTag.getKey())) {
+                clientIds.add(renderedTag.getKey());
+            }
+        }
+        return clientIds;
+    }
+
+    /**
+     * The client ids another tag occupies in the rebuilt view than the one that rendered them, so that the state
+     * saved by one tag is restored into the component of another. Two tags sharing a client id is legitimate as long
+     * as only one of them is ever built, which a build time conditional deciding differently breaks.
+     *
+     * @param renderedTags the tag per client id of the view that rendered the response.
+     * @param rebuiltTags the tag per client id of the view rebuilt for this postback.
+     * @return the client ids that were rebuilt from another tag.
+     */
+    static List<String> clientIdsRebuiltFromAnotherTag(Map<String, String> renderedTags, Map<String, String> rebuiltTags) {
+        List<String> clientIds = new ArrayList<>();
+        for (Map.Entry<String, String> renderedTag : renderedTags.entrySet()) {
+            String rebuiltTag = rebuiltTags.get(renderedTag.getKey());
+            if (rebuiltTag != null && !rebuiltTag.equals(renderedTag.getValue())) {
+                clientIds.add(renderedTag.getKey());
+            }
+        }
+        return clientIds;
+    }
+
+    /**
+     * Report where the view rebuilt for this postback holds another component than the one the response was rendered
+     * from, which is what a build time conditional evaluating to another value than it did produces. The state of such
+     * a component is restored into nothing or into the wrong component, and a value submitted for it is decoded by
+     * neither, none of which fails loudly on its own.
      *
      * @param context the Faces context.
      * @param viewRoot the view root.
      * @param state the saved state map.
-     * @return true if only the view root needs restoring, allowing the full restore traversal to be skipped.
      */
-    private boolean isViewRootOnlyState(FacesContext context, UIViewRoot viewRoot, Map<String, Object> state) {
-        int componentStateCount = state.containsKey(DYNAMIC_ACTIONS) ? state.size() - 1 : state.size();
-        return componentStateCount == 0
-                || componentStateCount == 1 && state.containsKey(viewRoot.getClientId(context));
+    private void logRebuildMismatches(FacesContext context, UIViewRoot viewRoot, Map<String, Object> state) {
+        @SuppressWarnings("unchecked")
+        Map<String, String> renderedTags = (Map<String, String>) state.get(RENDERED_TAGS);
+        if (renderedTags == null || !LOGGER.isLoggable(Level.WARNING)) {
+            return;
+        }
+
+        Map<String, String> rebuiltTags = new HashMap<>(renderedTags.size());
+        VisitContext visitContext = VisitContext.createVisitContext(context, null, SKIP_ITERATION_HINT);
+        viewRoot.visitTree(visitContext, (context1, target) -> {
+            if (target.isTransient()) {
+                return VisitResult.REJECT;
+            }
+            rebuiltTags.put(target.getClientId(context1.getFacesContext()), tagOf(target));
+            return ACCEPT;
+        });
+
+        List<String> notRebuilt = clientIdsNotRebuilt(renderedTags, rebuiltTags);
+        if (!notRebuilt.isEmpty()) {
+            Set<String> requestParameterNames = context.getExternalContext().getRequestParameterMap().keySet();
+            List<String> submittedNotRebuilt = new ArrayList<>(notRebuilt);
+            submittedNotRebuilt.retainAll(requestParameterNames);
+            LOGGER.log(Level.WARNING, NOT_REBUILT_REPORT,
+                    new Object[] { notRebuilt.size(), truncated(notRebuilt), submittedNotRebuilt.size(), truncated(submittedNotRebuilt) });
+        }
+
+        List<String> rebuiltFromAnotherTag = clientIdsRebuiltFromAnotherTag(renderedTags, rebuiltTags);
+        if (!rebuiltFromAnotherTag.isEmpty()) {
+            LOGGER.log(Level.WARNING, REBUILT_FROM_ANOTHER_TAG_REPORT,
+                    new Object[] { rebuiltFromAnotherTag.size(), truncated(rebuiltFromAnotherTag) });
+        }
+    }
+
+    /**
+     * The given client ids, cut down to what is worth reading: a conditional over a collection can drop as many
+     * components as the collection had elements, of which the first few say the same as all of them.
+     *
+     * @param clientIds the client ids.
+     * @return the client ids to log.
+     */
+    static List<String> truncated(List<String> clientIds) {
+        return clientIds.size() <= MAX_REPORTED_CLIENT_IDS ? clientIds : clientIds.subList(0, MAX_REPORTED_CLIENT_IDS);
     }
 
     /**
@@ -426,7 +579,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
      */
     private void saveDynamicActions(FacesContext context, StateContext stateContext, Map<String, Object> stateMap) {
         if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.finest("FaceletPartialStateManagementStrategy.saveDynamicActions");
+            LOGGER.finest("FaceletStateManagementStrategy.saveDynamicActions");
         }
 
         List<ComponentStruct> actions = stateContext.getDynamicActions();
@@ -464,7 +617,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
     @Override
     public Object saveView(FacesContext context) {
         if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.finest("FaceletPartialStateManagementStrategy.saveView");
+            LOGGER.finest("FaceletStateManagementStrategy.saveView");
         }
 
         if (context == null) {
@@ -479,12 +632,13 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
         // Skip the whole-tree duplicate-id walk when the render-time build skipped the facelet re-apply: the tree is
         // then identical to the one already validated when it was first built (see VIEW_REBUILT_AT_RENDER). A rebuilt
         // or freshly-built (GET / navigation / JSTL) tree, or an unset flag, still runs the check.
-        if (!Boolean.FALSE.equals(context.getAttributes().get(VIEW_REBUILT_AT_RENDER))) {
+        if (!Boolean.FALSE.equals(context.getAttributes().get(VIEW_REBUILT_AT_RENDER)) && !disableIdUniquenessCheck) {
             Util.checkIdUniqueness(context, viewRoot, new HashSet<>(64));
         }
 
         final Map<String, Object> stateMap = new HashMap<>();
         final StateContext stateContext = StateContext.getStateContext(context);
+        final Map<String, String> renderedTags = context.isProjectStage(ProjectStage.Development) ? new HashMap<>() : null;
 
         VisitContext visitContext = VisitContext.createVisitContext(context, null, SKIP_ITERATION_HINT);
         final FacesContext finalContext = context;
@@ -499,8 +653,14 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
                 } else {
                     stateObj = target.saveState(context1.getFacesContext());
                 }
-                if (stateObj != null) {
-                    stateMap.put(target.getClientId(context1.getFacesContext()), stateObj);
+                if (renderedTags != null || stateObj != null) {
+                    String clientId = target.getClientId(context1.getFacesContext());
+                    if (renderedTags != null) {
+                        renderedTags.put(clientId, tagOf(target));
+                    }
+                    if (stateObj != null) {
+                        stateMap.put(clientId, stateObj);
+                    }
                 }
             } else {
                 return VisitResult.REJECT;
@@ -508,6 +668,11 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
             return result;
         });
 
+        if (renderedTags != null) {
+            stateMap.put(RENDERED_TAGS, renderedTags);
+        }
+
+        SavedBuildTimeDecisions.save(context, stateMap);
         saveDynamicActions(context, stateContext, stateMap);
         StateContext.release(context);
         return new Object[] { null, stateMap };

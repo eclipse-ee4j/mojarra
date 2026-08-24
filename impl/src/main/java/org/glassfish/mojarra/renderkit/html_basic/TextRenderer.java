@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import jakarta.faces.application.FacesMessage;
@@ -29,7 +30,7 @@ import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIInput;
 import jakarta.faces.component.UIOutput;
-import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
+import jakarta.faces.component.html.HtmlEvents.HtmlElementEvent;
 import jakarta.faces.component.html.HtmlInputFile;
 import jakarta.faces.component.html.HtmlInputText;
 import jakarta.faces.component.html.HtmlOutputText;
@@ -37,9 +38,9 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
 
-import org.glassfish.mojarra.config.WebConfiguration;
-import org.glassfish.mojarra.renderkit.Attribute;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.renderkit.AttributeManager;
+import org.glassfish.mojarra.renderkit.Attributes;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 
 /**
@@ -48,9 +49,9 @@ import org.glassfish.mojarra.renderkit.RenderKitUtils;
  */
 public class TextRenderer extends HtmlBasicInputRenderer {
 
-    private static final Attribute[] INPUTTEXT_ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.INPUTTEXT);
-    private static final Attribute[] INPUTFILE_ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.INPUTFILE);
-    private static final Attribute[] OUTPUT_ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.OUTPUTTEXT);
+    private static final Attributes INPUTTEXT_ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.INPUTTEXT);
+    private static final Attributes INPUTFILE_ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.INPUTFILE);
+    private static final Attributes OUTPUT_ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.OUTPUTTEXT);
 
     private static final Map<String, String> RECOMMENDED_COMPONENTS_BY_DISCOMMENDED_TYPES = mapRecommendedComponentsByDiscommendedTypes();
 
@@ -73,7 +74,7 @@ public class TextRenderer extends HtmlBasicInputRenderer {
     // ------------------------------------------------------------ Constructors
 
     public TextRenderer() {
-        allowTextChildren = WebConfiguration.getInstance().isOptionEnabled(WebConfiguration.BooleanWebContextInitParameter.AllowTextChildren);
+        allowTextChildren = MojarraContextParam.ALLOW_TEXT_CHILDREN.isEnabled(FacesContext.getCurrentInstance());
     }
 
     // ---------------------------------------------------------- Public Methods
@@ -115,7 +116,7 @@ public class TextRenderer extends HtmlBasicInputRenderer {
                 String type = ((HtmlInputText) component).getType();
 
                 if (context.isProjectStage(ProjectStage.Development)) {
-                    String recommendedComponent = RECOMMENDED_COMPONENTS_BY_DISCOMMENDED_TYPES.get(type.trim().toLowerCase());
+                    String recommendedComponent = RECOMMENDED_COMPONENTS_BY_DISCOMMENDED_TYPES.get(type.trim().toLowerCase(Locale.ROOT));
 
                     if (recommendedComponent != null) {
                         String message = "<h:inputText type=\"" + type + "\"> is discommended, you should instead use " + recommendedComponent;
@@ -146,8 +147,8 @@ public class TextRenderer extends HtmlBasicInputRenderer {
             }
 
             // style is rendered as a passthru attribute
-            Attribute[] attributes = component instanceof HtmlInputFile ? INPUTFILE_ATTRIBUTES : INPUTTEXT_ATTRIBUTES;
-            RenderKitUtils.renderPassThruAttributes(context, writer, component, null, false, attributes, HtmlDocumentElementEvent.change, FacesComponentEvent.valueChange);
+            Attributes attributes = component instanceof HtmlInputFile ? INPUTFILE_ATTRIBUTES : INPUTTEXT_ATTRIBUTES;
+            RenderKitUtils.renderPassThruAttributes(context, writer, component, null, false, attributes, HtmlElementEvent.change, FacesComponentEvent.valueChange);
             RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
             writer.endElement("input");

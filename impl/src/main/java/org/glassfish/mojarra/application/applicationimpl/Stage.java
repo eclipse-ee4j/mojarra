@@ -27,8 +27,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PostAddToViewEvent;
 
 import org.glassfish.mojarra.application.ValidateComponentNesting;
-import org.glassfish.mojarra.config.WebConfiguration;
-import org.glassfish.mojarra.context.FacesContextParam;
+import org.glassfish.mojarra.config.FacesContextParam;
 import org.glassfish.mojarra.util.FacesLogger;
 
 public class Stage {
@@ -57,20 +56,9 @@ public class Stage {
 
     private ProjectStage fetchProjectStageFromConfig() {
         FacesContext context = FacesContext.getCurrentInstance();
-        WebConfiguration webConfig = WebConfiguration.getInstance(context.getExternalContext());
-        String value = webConfig.getEnvironmentEntry(WebConfiguration.WebEnvironmentEntry.ProjectStage);
+        projectStage = FacesContextParam.PROJECT_STAGE.getEnum(context);
 
-        if (value != null) {
-            projectStage = ProjectStage.valueOf(value);
-            if (LOGGER.isLoggable(FINE)) {
-                LOGGER.log(FINE, "ProjectStage configured via JNDI: {0}", value);
-            }
-        } else {
-            projectStage = FacesContextParam.PROJECT_STAGE.getValue(context);
-            if (LOGGER.isLoggable(FINE)) {
-                LOGGER.log(FINE, "ProjectStage configured via servlet context init parameter: {0}", value);
-            }
-        }
+        LOGGER.log(FINE, "ProjectStage is {0}", projectStage);
 
         return projectStage;
     }

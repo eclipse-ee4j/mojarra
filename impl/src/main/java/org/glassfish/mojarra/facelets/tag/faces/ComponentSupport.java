@@ -16,7 +16,7 @@
 
 package org.glassfish.mojarra.facelets.tag.faces;
 
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.PartialStateSaving;
+import static java.util.Arrays.asList;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,8 +43,12 @@ import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.Tag;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagAttributeException;
+import jakarta.faces.view.facelets.TagAttributes;
 
 import org.glassfish.mojarra.context.StateContext;
+import org.glassfish.mojarra.facelets.FaceletContextImplBase;
+import org.glassfish.mojarra.facelets.impl.IdMapper;
+import org.glassfish.mojarra.facelets.tag.TagAttributesImpl;
 import org.glassfish.mojarra.facelets.tag.faces.core.FacetHandler;
 import org.glassfish.mojarra.util.Util;
 
@@ -223,20 +227,30 @@ public final class ComponentSupport {
     // If this method is called during RestoreView, it will always return null
     // so we can just return null in that case without any iteration.
 
-    // If PartialStateSaving is false, the UIInstruction components will
-    // never be in the tree at this point, so we can return null and skip iterating.
-
     public static UIComponent findUIInstructionChildByTagId(FacesContext context, UIComponent parent, String id) {
-        if (isBuildingNewComponentTree(context) || !isPartialStateSaving(context)) {
+        if (isBuildingNewComponentTree(context)) {
             return null;
         }
         // The existing UIInstructions is a direct child of the parent it was applied under, so the bounded
         // direct scan locates it by its MARK_CREATED tag id without a descendant cache.
-        return findChildByTagIdFullStateSaving(context, parent, id);
+        return findChildByTagIdScan(context, parent, id);
     }
 
-    private static boolean isPartialStateSaving(FacesContext context) {
-        return context.getAttributes().get(PartialStateSaving) == Boolean.TRUE;
+    /**
+     * Returns the alias the {@link IdMapper} in effect for this build gives to the given id, or the id itself when no
+     * mapper is in effect. Answered from the context where it holds the mapper itself, and through the
+     * {@link FacesContext} attributes otherwise, which a wrapping context or a foreign implementation may supply.
+     *
+     * @param ctx the context being built under
+     * @param id the id to alias
+     * @return the aliased id
+     */
+    public static String getAliasedId(FaceletContext ctx, String id) {
+        if (ctx instanceof FaceletContextImplBase) {
+            return ((FaceletContextImplBase) ctx).getAliasedId(id);
+        }
+
+        return IdMapper.getAliasedId(ctx.getFacesContext(), id);
     }
 
     /**
@@ -266,7 +280,7 @@ public final class ComponentSupport {
      * MARK_CREATED -> component index once per parent and look up in O(1). The index is request-scoped and guarded
      * by the parent's child+facet count plus the child count of any implicit panel it indexed through: a body that
      * creates a new child (count grows) rebuilds it, so it can never return a stale or detached component. The
-     * facetName fast-path and coverage mirror {@link #findChildByTagIdFullStateSaving} exactly.
+     * facetName fast-path and coverage mirror {@link #findChildByTagIdScan} exactly.
      */
     private static UIComponent findChildByTagIdIndexed(FacesContext context, UIComponent parent, String id) {
         String facetName = getFacetName(parent);
@@ -360,7 +374,7 @@ public final class ComponentSupport {
         }
     }
 
-    private static UIComponent findChildByTagIdFullStateSaving(FacesContext context, UIComponent parent, String id) {
+    private static UIComponent findChildByTagIdScan(FacesContext context, UIComponent parent, String id) {
         UIComponent c = null;
         String cid = null;
         List<UIComponent> components;
@@ -415,7 +429,7 @@ public final class ComponentSupport {
     public static UIComponent findChildByTagIdDeep(FacesContext context, UIComponent parent, String id) {
         // Raw scan (not findChildByTagId): the reparent path must search even inside a freshly built composite,
         // so it deliberately bypasses the BUILDING_FRESH_SUBTREE gate.
-        UIComponent c = findChildByTagIdFullStateSaving(context, parent, id);
+        UIComponent c = findChildByTagIdScan(context, parent, id);
         if (c != null) {
             return c;
         }
@@ -650,19 +664,7 @@ public final class ComponentSupport {
 
     public static boolean suppressViewModificationEvents(FacesContext ctx) {
 
-        String viewId = getViewIdForModificationEvents(ctx);
-        return viewId != null && StateContext.getStateContext(ctx).isPartialStateSaving(ctx, viewId);
-
-    }
-
-    /**
-     * Variant for callers that already hold the request's {@link StateContext}, so that a tree walk does not look it up
-     * once per component.
-     */
-    public static boolean suppressViewModificationEvents(FacesContext ctx, StateContext stateCtx) {
-
-        String viewId = getViewIdForModificationEvents(ctx);
-        return viewId != null && stateCtx.isPartialStateSaving(ctx, viewId);
+        return getViewIdForModificationEvents(ctx) != null;
 
     }
 
@@ -691,17 +693,36 @@ public final class ComponentSupport {
             return;
         }
 
-        for (String namespace : PassThroughAttributeLibrary.NAMESPACES) {
-            TagAttribute[] passthroughAttrs = t.getAttributes().getAll(namespace);
-            if (null != passthroughAttrs && 0 < passthroughAttrs.length) {
-                Map<String, Object> componentPassthroughAttrs = c.getPassThroughAttributes(true);
-                Object attrValue = null;
-                for (TagAttribute cur : passthroughAttrs) {
-                    attrValue = cur.isLiteral() ? cur.getValue(ctx) : cur.getValueExpression(ctx, Object.class);
-                    componentPassthroughAttrs.put(cur.getLocalName(), attrValue);
-                }
-            }
+        TagAttribute[] passthroughAttrs = passthroughAttributes(t.getAttributes());
+
+        if (0 == passthroughAttrs.length) {
+            return;
         }
+
+        Map<String, Object> componentPassthroughAttrs = c.getPassThroughAttributes(true);
+        for (TagAttribute cur : passthroughAttrs) {
+            Object attrValue = cur.isLiteral() ? cur.getValue(ctx) : cur.getValueExpression(ctx, Object.class);
+            componentPassthroughAttrs.put(cur.getLocalName(), attrValue);
+        }
+    }
+
+    /**
+     * Returns the attributes of the given tag that are in a pass-through namespace: from the field the standard
+     * implementation singles them out into when the tag is compiled, and by searching each pass-through namespace for
+     * any other implementation.
+     */
+    private static TagAttribute[] passthroughAttributes(TagAttributes attributes) {
+
+        if (attributes instanceof TagAttributesImpl) {
+            return ((TagAttributesImpl) attributes).getPassthroughAttributes();
+        }
+
+        List<TagAttribute> passthrough = new ArrayList<>();
+        for (String namespace : PassThroughAttributeLibrary.NAMESPACES) {
+            passthrough.addAll(asList(attributes.getAll(namespace)));
+        }
+
+        return passthrough.toArray(new TagAttribute[passthrough.size()]);
     }
 
     public static Collection<Object[]> saveDescendantInitialComponentStates(FacesContext facesContext, Iterator<UIComponent> childIterator, boolean saveChildFacets) {

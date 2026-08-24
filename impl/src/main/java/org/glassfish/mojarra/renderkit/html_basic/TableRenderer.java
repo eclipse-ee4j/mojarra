@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import jakarta.faces.component.UIColumn;
 import jakarta.faces.component.UIComponent;
@@ -31,8 +30,8 @@ import jakarta.faces.component.html.HtmlDataTable;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
-import org.glassfish.mojarra.renderkit.Attribute;
 import org.glassfish.mojarra.renderkit.AttributeManager;
+import org.glassfish.mojarra.renderkit.Attributes;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 import org.glassfish.mojarra.util.Util;
 
@@ -44,7 +43,7 @@ import org.glassfish.mojarra.util.Util;
 
 public class TableRenderer extends BaseTableRenderer {
 
-    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.DATATABLE);
+    private static final Attributes ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.DATATABLE);
 
     // ---------------------------------------------------------- Public Methods
 
@@ -103,7 +102,7 @@ public class TableRenderer extends BaseTableRenderer {
         int processed = 0;
         int rowIndex = data.getFirst() - 1;
         int rows = data.getRows();
-        List<Integer> bodyRows = getBodyRows(context.getExternalContext().getApplicationMap(), data);
+        List<Integer> bodyRows = getBodyRows(data);
         boolean hasBodyRows = bodyRows != null && !bodyRows.isEmpty();
         boolean wroteTableBody = false;
         if (!hasBodyRows) {
@@ -180,12 +179,12 @@ public class TableRenderer extends BaseTableRenderer {
 
     // ------------------------------------------------------- Protected Methods
 
-    private List<Integer> getBodyRows(Map<String, Object> appMap, UIData data) {
+    private List<Integer> getBodyRows(UIData data) {
 
         List<Integer> result = null;
         String bodyRows = (String) data.getAttributes().get("bodyrows");
         if (bodyRows != null) {
-            String[] rows = Util.split(appMap, bodyRows, ",");
+            String[] rows = Util.split(bodyRows, ',');
             if (rows != null) {
                 result = new ArrayList<>(rows.length);
                 for (String curRow : rows) {

@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.PrintWriter;
-import java.lang.reflect.Method;
 
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.faces.FactoryFinder;
@@ -33,6 +32,7 @@ import jakarta.faces.context.FacesContextFactory;
 import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.lifecycle.LifecycleFactory;
 
+import org.glassfish.mojarra.junit.CurrentFacesContext;
 import org.glassfish.mojarra.mock.MockCDIProvider;
 import org.glassfish.mojarra.mock.MockHttpServletRequest;
 import org.glassfish.mojarra.mock.MockHttpServletResponse;
@@ -68,9 +68,7 @@ public class FactoryFinderTestCase {
         // Set up CDI
         CDI.setCDIProvider(new MockCDIProvider());
 
-        Method method = FacesContext.class.getDeclaredMethod("setCurrentInstance", FacesContext.class);
-        method.setAccessible(true);
-        method.invoke(null, new Object[]{null});
+        CurrentFacesContext.set(null);
 
         for (int i = 0, len = FACTORIES.length; i < len; i++) {
             System.getProperties().remove(FACTORIES[i][0]);

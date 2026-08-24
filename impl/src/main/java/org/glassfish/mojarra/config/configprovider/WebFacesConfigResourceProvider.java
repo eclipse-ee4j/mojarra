@@ -21,7 +21,7 @@ import java.util.Collection;
 
 import jakarta.servlet.ServletContext;
 
-import org.glassfish.mojarra.context.FacesContextParam;
+import org.glassfish.mojarra.config.FacesContextParam;
 
 /**
  *
@@ -36,7 +36,6 @@ public class WebFacesConfigResourceProvider extends BaseWebConfigResourceProvide
     private static final String WEB_INF_RESOURCE = "/WEB-INF/faces-config.xml";
 
     private static final String[] EXCLUDES = { WEB_INF_RESOURCE };
-    private static final String SEPARATORS = ",|;";
 
     // ------------------------------ Methods from ConfigurationResourceProvider
 
@@ -73,8 +72,4 @@ public class WebFacesConfigResourceProvider extends BaseWebConfigResourceProvide
         return EXCLUDES;
     }
 
-    @Override
-    protected String getSeparatorRegex() {
-        return SEPARATORS;
-    }
 }

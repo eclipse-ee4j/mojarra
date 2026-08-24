@@ -19,6 +19,7 @@
 package org.glassfish.mojarra.renderkit.html_basic;
 
 import static java.lang.Boolean.TRUE;
+import static org.glassfish.mojarra.renderkit.RenderKitUtils.NO_VALUE;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -37,7 +38,7 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.component.UISelectItem;
 import jakarta.faces.component.UISelectOne;
-import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
+import jakarta.faces.component.html.HtmlEvents.HtmlElementEvent;
 import jakarta.faces.component.html.HtmlSelectOneRadio;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
@@ -50,9 +51,8 @@ import jakarta.faces.event.ListenerFor;
 import jakarta.faces.event.PostAddToViewEvent;
 import jakarta.faces.model.SelectItem;
 
-import org.glassfish.mojarra.RIConstants;
-import org.glassfish.mojarra.renderkit.Attribute;
 import org.glassfish.mojarra.renderkit.AttributeManager;
+import org.glassfish.mojarra.renderkit.Attributes;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 import org.glassfish.mojarra.renderkit.SelectItemsIterator;
 import org.glassfish.mojarra.util.RequestStateManager;
@@ -65,7 +65,7 @@ import org.glassfish.mojarra.util.Util;
 @ListenerFor(systemEventClass = PostAddToViewEvent.class)
 public class RadioRenderer extends SelectManyCheckboxListRenderer implements ComponentSystemEventListener {
 
-    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.SELECTONERADIO);
+    private static final Attributes ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.SELECTONERADIO);
 
     // -------------------------------------------------------------------------------------------------- Public Methods
 
@@ -153,7 +153,7 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
             }
         } else {
             // There is no submitted value at all, but this is different from a null value.
-            radio.setSubmittedValue(RIConstants.NO_VALUE);
+            radio.setSubmittedValue(NO_VALUE);
         }
     }
 
@@ -307,7 +307,7 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
         // Apply HTML 4.x attributes specified on UISelectMany component to all
         // items in the list except styleClass and style which are rendered as
         // attributes of outer most table.
-        RenderKitUtils.renderPassThruAttributes(context, writer, component, clientId, false, ATTRIBUTES, HtmlDocumentElementEvent.click, FacesComponentEvent.valueChange);
+        RenderKitUtils.renderPassThruAttributes(context, writer, component, clientId, false, ATTRIBUTES, HtmlElementEvent.click, FacesComponentEvent.valueChange);
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
         writer.endElement("input");

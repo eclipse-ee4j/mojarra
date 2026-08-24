@@ -17,15 +17,14 @@
 
 package org.glassfish.mojarra.application.resource;
 
-import static jakarta.faces.application.ProjectStage.Production;
+import static jakarta.faces.application.ProjectStage.Development;
 import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static jakarta.servlet.http.HttpServletResponse.SC_NOT_MODIFIED;
 import static jakarta.servlet.http.MappingMatch.EXTENSION;
 import static java.lang.Boolean.FALSE;
+import static java.util.Locale.ROOT;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.WARNING;
-import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.DefaultResourceMaxAge;
-import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.ResourceBufferSize;
 import static org.glassfish.mojarra.util.RequestStateManager.RESOURCE_REQUEST;
 import static org.glassfish.mojarra.util.Util.getFacesMapping;
 import static org.glassfish.mojarra.util.Util.notNegative;
@@ -51,8 +50,8 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 
 import org.glassfish.mojarra.application.ApplicationAssociate;
-import org.glassfish.mojarra.config.WebConfiguration;
-import org.glassfish.mojarra.context.FacesContextParam;
+import org.glassfish.mojarra.config.FacesContextParam;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.renderkit.html_basic.ScriptRenderer;
 import org.glassfish.mojarra.renderkit.html_basic.StylesheetRenderer;
 import org.glassfish.mojarra.util.FacesLogger;
@@ -73,9 +72,9 @@ public class ResourceHandlerImpl extends ResourceHandler {
     private String[] excludedExtensions;
     private long creationTime;
     private long maxAge;
-    private boolean cspEnabled;
+    private final boolean cspEnabled;
     private SecureRandom secureRandom;
-    private final WebConfiguration webconfig;
+    private final int resourceBufferSize;
 
     // ------------------------------------------------------------ Constructors
 
@@ -84,13 +83,13 @@ public class ResourceHandlerImpl extends ResourceHandler {
      */
     public ResourceHandlerImpl() {
         creationTime = System.currentTimeMillis();
-        webconfig = WebConfiguration.getInstance();
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext extContext = context.getExternalContext();
         manager = ApplicationAssociate.getInstance(extContext).getResourceManager();
         initExclusions(context);
-        initMaxAge();
-        cspEnabled = FacesContextParam.ENABLE_CSP_NONCE.isSet(context);
+        maxAge = MojarraContextParam.DEFAULT_RESOURCE_MAX_AGE.getLong(context);
+        resourceBufferSize = MojarraContextParam.RESOURCE_BUFFER_SIZE.getInt(context);
+        cspEnabled = FacesContextParam.ENABLE_CSP_NONCE.isEnabled(context);
         if (cspEnabled) {
             secureRandom = new SecureRandom();
             secureRandom.nextBytes(new byte[1]);
@@ -229,19 +228,23 @@ public class ResourceHandlerImpl extends ResourceHandler {
 
         String resourceType = getResourceType(getContentType(FacesContext.getCurrentInstance(), resourceName));
 
+        if (resourceType == null) {
+            return null;
+        }
+
         return switch (resourceType) {
             case "script" -> "jakarta.faces.resource.Script";
             case "style" -> "jakarta.faces.resource.Stylesheet";
             default -> null;
         };
     }
-    
+
     private static String getResourceType(String contentType) {
         if (contentType == null) {
             return null;
         }
 
-        return switch (contentType.toLowerCase()) {
+        return switch (contentType.toLowerCase(ROOT)) {
             case ScriptRenderer.DEFAULT_CONTENT_TYPE -> "script";
             case StylesheetRenderer.DEFAULT_CONTENT_TYPE -> "style";
             default -> null;
@@ -311,7 +314,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
                     if (contentType != null) {
                         extContext.setResponseContentType(resource.getContentType());
                     }
-                    handleHeaders(context, resource);
+                    handleHeaders(extContext, resource);
 
                     int size = 0;
                     for (int thisRead = resourceChannel.read(buf), totalWritten = 0; thisRead != -1; thisRead = resourceChannel.read(buf)) {
@@ -405,9 +408,10 @@ public class ResourceHandlerImpl extends ResourceHandler {
             var nonce = (String) requestMap.get(CURRENT_NONCE);
 
             if (nonce == null) {
-                var viewMap = context.getViewRoot().getViewMap(true);
+                var viewRoot = context.getViewRoot();
+                var viewMap = viewRoot.isTransient() ? null : viewRoot.getViewMap(true);
 
-                if (context.getPartialViewContext().isPartialRequest()) {
+                if (viewMap != null && context.getPartialViewContext().isPartialRequest()) {
                     nonce = (String) viewMap.get(CURRENT_NONCE);
                 }
 
@@ -418,7 +422,10 @@ public class ResourceHandlerImpl extends ResourceHandler {
                 }
 
                 requestMap.put(CURRENT_NONCE, nonce);
-                viewMap.put(CURRENT_NONCE, nonce);
+
+                if (viewMap != null) {
+                    viewMap.put(CURRENT_NONCE, nonce);
+                }
             }
 
             return nonce;
@@ -448,15 +455,6 @@ public class ResourceHandlerImpl extends ResourceHandler {
         this.creationTime = creationTime;
     }
 
-    /**
-     * Utility method leveraged by ResourceImpl to reduce the cost of looking up the WebConfiguration per-instance.
-     *
-     * @return the {@link WebConfiguration} for this application
-     */
-    WebConfiguration getWebConfig() {
-        return webconfig;
-    }
-
     // --------------------------------------------------------- Private Methods
 
     /**
@@ -471,7 +469,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
     private void logMissingResource(FacesContext ctx, String resourceName, String libraryName, Throwable t) {
 
         Level level;
-        if (!ctx.isProjectStage(Production)) {
+        if (ctx.isProjectStage(Development)) {
             level = WARNING;
         } else {
             level = t != null ? WARNING : FINE;
@@ -506,7 +504,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
      */
     private void logMissingResource(FacesContext ctx, String resourceId, Throwable t) {
         Level level;
-        if (!ctx.isProjectStage(Production)) {
+        if (ctx.isProjectStage(Development)) {
             level = WARNING;
         } else {
             level = t != null ? WARNING : FINE;
@@ -550,7 +548,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
         if (getFacesMapping(context).getMappingMatch() == EXTENSION) {
             String path = context.getExternalContext().getRequestServletPath();
             // strip off the extension
-            return path.substring(0, path.lastIndexOf("."));
+            return path.substring(0, path.lastIndexOf('.'));
         }
 
         return context.getExternalContext().getRequestPathInfo();
@@ -577,7 +575,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
      * {@link ResourceHandler#RESOURCE_EXCLUDES_DEFAULT_VALUE} will be used.
      */
     private void initExclusions(FacesContext context) {
-        excludedExtensions = parseExcludedExtensions(FacesContextParam.RESOURCE_EXCLUDES.getValue(context));
+        excludedExtensions = parseExcludedExtensions(FacesContextParam.RESOURCE_EXCLUDES.getStringArray(context));
     }
 
     /**
@@ -588,30 +586,14 @@ public class ResourceHandlerImpl extends ResourceHandler {
         return Stream.of(extensions).filter(extension -> !extension.isEmpty()).toArray(String[]::new);
     }
 
-    private void initMaxAge() {
-        maxAge = Long.parseLong(webconfig.getOptionValue(DefaultResourceMaxAge));
-    }
-
-    private void handleHeaders(FacesContext context, Resource resource) {
-        ExternalContext extContext = context.getExternalContext();
+    private void handleHeaders(ExternalContext extContext, Resource resource) {
         for (Map.Entry<String, String> cur : resource.getResponseHeaders().entrySet()) {
             extContext.setResponseHeader(cur.getKey(), cur.getValue());
         }
     }
 
     private ByteBuffer allocateByteBuffer() {
-        int size;
-        try {
-            size = Integer.parseInt(webconfig.getOptionValue(ResourceBufferSize));
-        } catch (NumberFormatException nfe) {
-            if (LOGGER.isLoggable(WARNING)) {
-                LOGGER.log(WARNING, "faces.application.resource.invalid_resource_buffer_size", new Object[] { webconfig.getOptionValue(ResourceBufferSize),
-                        ResourceBufferSize.getQualifiedName(), ResourceBufferSize.getDefaultValue() });
-            }
-            size = Integer.parseInt(ResourceBufferSize.getDefaultValue());
-        }
-
-        return ByteBuffer.allocate(size);
+        return ByteBuffer.allocate(resourceBufferSize);
     }
 
 }

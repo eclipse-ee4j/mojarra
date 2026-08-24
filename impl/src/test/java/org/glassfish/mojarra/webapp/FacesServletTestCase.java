@@ -18,6 +18,9 @@ package org.glassfish.mojarra.webapp;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.List;
+import java.util.Locale;
+
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.render.RenderKit;
@@ -25,16 +28,13 @@ import jakarta.faces.render.RenderKitFactory;
 import jakarta.faces.webapp.FacesServlet;
 import jakarta.servlet.http.HttpServletResponse;
 
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.junit.JUnitFacesTestCaseBase;
 import org.glassfish.mojarra.mock.MockRenderKit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class FacesServletTestCase extends JUnitFacesTestCaseBase {
-
-    // this is private in FacesServlet to not break backwards compatibility
-    private static final String ALLOWED_HTTP_METHODS_ATTR_COPY
-            = "org.glassfish.mojarra.allowedHttpMethods";
 
     @Override
     @BeforeEach
@@ -83,7 +83,7 @@ public class FacesServletTestCase extends JUnitFacesTestCaseBase {
     @Test
     public void testPositiveInitWithContextParamsOfKnownHttpMethods() throws Exception {
         FacesServlet me = new FacesServlet();
-        servletContext.addInitParameter(ALLOWED_HTTP_METHODS_ATTR_COPY, "GET   POST");
+        servletContext.addInitParameter(MojarraContextParam.ALLOWED_HTTP_METHODS.getName(), "GET   POST");
         me.init(config);
         this.sendRequest(me, "OPTIONS");
         assertEquals(HttpServletResponse.SC_BAD_REQUEST, response.getStatus());
@@ -106,7 +106,7 @@ public class FacesServletTestCase extends JUnitFacesTestCaseBase {
     @Test
     public void testNegativeInitWithContextParamsOfKnownHttpMethods() throws Exception {
         FacesServlet me = new FacesServlet();
-        servletContext.addInitParameter(ALLOWED_HTTP_METHODS_ATTR_COPY, "GET   POST GET  POST");
+        servletContext.addInitParameter(MojarraContextParam.ALLOWED_HTTP_METHODS.getName(), "GET   POST GET  POST");
         me.init(config);
         this.sendRequest(me, "OPTIONS");
         assertEquals(HttpServletResponse.SC_BAD_REQUEST, response.getStatus());
@@ -129,7 +129,7 @@ public class FacesServletTestCase extends JUnitFacesTestCaseBase {
     @Test
     public void testPositiveInitWithContextParamsOfWildcardHttpMethods() throws Exception {
         FacesServlet me = new FacesServlet();
-        servletContext.addInitParameter(ALLOWED_HTTP_METHODS_ATTR_COPY, "*");
+        servletContext.addInitParameter(MojarraContextParam.ALLOWED_HTTP_METHODS.getName(), "*");
         me.init(config);
         this.sendRequest(me, "OPTIONS");
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());
@@ -154,7 +154,7 @@ public class FacesServletTestCase extends JUnitFacesTestCaseBase {
     @Test
     public void testNegativeInitWithContextParamsOfWildcardHttpMethods() throws Exception {
         FacesServlet me = new FacesServlet();
-        servletContext.addInitParameter(ALLOWED_HTTP_METHODS_ATTR_COPY, "* * * *");
+        servletContext.addInitParameter(MojarraContextParam.ALLOWED_HTTP_METHODS.getName(), "* * * *");
         me.init(config);
         this.sendRequest(me, "OPTIONS");
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());
@@ -179,7 +179,7 @@ public class FacesServletTestCase extends JUnitFacesTestCaseBase {
     @Test
     public void testPositiveInitWithContextParamsOfUnknownAndKnownHttpMethods() throws Exception {
         FacesServlet me = new FacesServlet();
-        servletContext.addInitParameter(ALLOWED_HTTP_METHODS_ATTR_COPY, "GET\tPOST\tGETAAAAA");
+        servletContext.addInitParameter(MojarraContextParam.ALLOWED_HTTP_METHODS.getName(), "GET\tPOST\tGETAAAAA");
         me.init(config);
         this.sendRequest(me, "OPTIONS");
         assertEquals(HttpServletResponse.SC_BAD_REQUEST, response.getStatus());
@@ -203,9 +203,88 @@ public class FacesServletTestCase extends JUnitFacesTestCaseBase {
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());
     }
 
+    /**
+     * Going through WebConfiguration rather than reading the init parameter directly is what makes the legacy
+     * com.sun.faces spelling work here, as it does for every other Mojarra context parameter.
+     */
+    @Test
+    public void testAllowedHttpMethodsHonorsLegacyPrefix() throws Exception {
+        FacesServlet me = new FacesServlet();
+        servletContext.addInitParameter("com.sun.faces.allowedHttpMethods", "GET POST");
+        me.init(config);
+
+        this.sendRequest(me, "GET");
+        assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+        this.sendRequest(me, "DELETE");
+        assertEquals(HttpServletResponse.SC_BAD_REQUEST, response.getStatus());
+    }
+
+    /**
+     * An OPTIONS request is answered by the servlet itself, with the methods it accepts, and never reaches the
+     * lifecycle. Rendering a view would hand the page content to a request which did not ask for it.
+     */
+    @Test
+    public void testOptionsIsAnsweredWithAllowHeaderAndEmptyBody() throws Exception {
+        FacesServlet me = new FacesServlet();
+        me.init(config);
+
+        this.sendRequest(me, "OPTIONS");
+
+        assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+        assertEquals(0, response.getContentLength());
+        assertEquals("OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT", response.getHeader("Allow"));
+    }
+
+    /**
+     * The Allow header reports what was actually configured, not the full set.
+     */
+    @Test
+    public void testOptionsAllowHeaderReflectsAllowedHttpMethods() throws Exception {
+        FacesServlet me = new FacesServlet();
+        servletContext.addInitParameter(MojarraContextParam.ALLOWED_HTTP_METHODS.getName(), "GET POST OPTIONS");
+        me.init(config);
+
+        this.sendRequest(me, "OPTIONS");
+
+        assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+        assertEquals("OPTIONS, GET, POST", response.getHeader("Allow"));
+    }
+
+    /**
+     * The protected path check must not depend on the default locale of the deploying JVM. Under a Turkish or Azeri
+     * locale {@code i} uppercases to dotted capital {@code I} (U+0130), which would let the lowercase spellings of
+     * {@code /WEB-INF} and {@code /META-INF} through a guard that uppercases with the default locale.
+     */
+    @Test
+    public void testProtectedPathsAreRejectedRegardlessOfDefaultLocale() throws Exception {
+        Locale defaultLocale = Locale.getDefault();
+
+        try {
+            for (Locale locale : List.of(Locale.US, Locale.forLanguageTag("tr-TR"), Locale.forLanguageTag("az-AZ"))) {
+                Locale.setDefault(locale);
+                FacesServlet me = new FacesServlet();
+                me.init(config);
+
+                for (String protectedPath : List.of("/WEB-INF/web.xml", "/web-inf/web.xml", "/META-INF/MANIFEST.MF", "/meta-inf/MANIFEST.MF")) {
+                    this.sendRequest(me, "GET", protectedPath);
+                    assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus(), locale + " must reject " + protectedPath);
+                }
+
+                this.sendRequest(me, "GET", "/view.xhtml");
+                assertEquals(HttpServletResponse.SC_OK, response.getStatus(), locale + " must accept an ordinary view");
+            }
+        } finally {
+            Locale.setDefault(defaultLocale);
+        }
+    }
+
     private void sendRequest(FacesServlet me, String method) throws Exception {
+        this.sendRequest(me, method, "/test");
+    }
+
+    private void sendRequest(FacesServlet me, String method, String pathInfo) throws Exception {
         request.setMethod(method);
-        request.setPathElements("/test", "/test", "/test", "");
+        request.setPathElements("/test", "/test", pathInfo, "");
         me.service(request, response);
     }
 }

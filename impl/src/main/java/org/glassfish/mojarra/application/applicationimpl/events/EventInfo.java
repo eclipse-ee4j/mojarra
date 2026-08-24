@@ -18,8 +18,6 @@ package org.glassfish.mojarra.application.applicationimpl.events;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Level;
@@ -29,6 +27,7 @@ import jakarta.faces.FacesException;
 import jakarta.faces.event.SystemEvent;
 import jakarta.faces.event.SystemEventListener;
 
+import org.glassfish.mojarra.util.Cache;
 import org.glassfish.mojarra.util.FacesLogger;
 
 /**
@@ -42,34 +41,29 @@ public class EventInfo {
     private final Class<? extends SystemEvent> systemEvent;
     private final Class<?> sourceClass;
     private final Set<SystemEventListener> listeners;
+    private final Cache<Class<?>, Constructor<?>> constructorCache;
     private Constructor<?> eventConstructor;
-    private final Map<Class<?>, Constructor<?>> constructorMap;
 
     // -------------------------------------------------------- Constructors
 
     public EventInfo(Class<? extends SystemEvent> systemEvent, Class<?> sourceClass) {
-
         this.systemEvent = systemEvent;
         this.sourceClass = sourceClass;
-        listeners = new CopyOnWriteArraySet<>();
-        constructorMap = new HashMap<>();
+        this.listeners = new CopyOnWriteArraySet<>();
+        this.constructorCache = new Cache<>(this::getEventConstructor);
         if (!sourceClass.equals(Void.class)) {
             eventConstructor = getEventConstructor(sourceClass);
         }
-
     }
 
     // ------------------------------------------------------ Public Methods
 
     public Set<SystemEventListener> getListeners() {
-
         return listeners;
-
     }
 
     public SystemEvent createSystemEvent(Object source) {
-
-        Constructor<? >toInvoke = getCachedConstructor(source.getClass());
+        Constructor<?> toInvoke = getCachedConstructor(source.getClass());
         if (toInvoke != null) {
             try {
                 return (SystemEvent) toInvoke.newInstance(source);
@@ -78,53 +72,42 @@ public class EventInfo {
             }
         }
         return null;
-
     }
 
     // ----------------------------------------------------- Private Methods
 
     private Constructor<?> getCachedConstructor(Class<?> source) {
-
         if (eventConstructor != null) {
             return eventConstructor;
-        } else {
-            Constructor<?> c = constructorMap.get(source);
-            if (c == null) {
-                c = getEventConstructor(source);
-                if (c != null) {
-                    constructorMap.put(source, c);
-                }
-            }
-            return c;
         }
-
+        return constructorCache.get(source);
     }
 
     private Constructor<?> getEventConstructor(Class<?> source) {
 
-        Constructor<?> ctor = null;
         try {
             return systemEvent.getDeclaredConstructor(source);
-        } catch (NoSuchMethodException ignored) {
+        }
+        catch (NoSuchMethodException ignored) {
             Constructor<?>[] ctors = systemEvent.getConstructors();
-            if (ctors != null) {
-                for (Constructor<?> c : ctors) {
-                    Class<?>[] params = c.getParameterTypes();
-                    if (params.length != 1) {
-                        continue;
-                    }
-                    if (params[0].isAssignableFrom(source)) {
-                        return c;
-                    }
+
+            for (Constructor<?> c : ctors) {
+                Class<?>[] params = c.getParameterTypes();
+                if (params.length != 1) {
+                    continue;
+                }
+                if (params[0].isAssignableFrom(source)) {
+                    return c;
                 }
             }
+
             if (eventConstructor == null && LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.log(Level.FINE, "Unable to find Constructor within {0} that accepts {1} instances.",
                         new Object[] { systemEvent.getName(), sourceClass.getName() });
             }
         }
-        return ctor;
 
+        return null;
     }
 
 }

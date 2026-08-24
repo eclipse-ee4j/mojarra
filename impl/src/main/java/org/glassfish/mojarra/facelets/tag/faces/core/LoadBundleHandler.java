@@ -17,9 +17,10 @@
 package org.glassfish.mojarra.facelets.tag.faces.core;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
@@ -36,6 +37,7 @@ import jakarta.faces.view.facelets.TagConfig;
 
 import org.glassfish.mojarra.facelets.tag.TagHandlerImpl;
 import org.glassfish.mojarra.facelets.tag.faces.ComponentSupport;
+import org.glassfish.mojarra.util.Util;
 
 /**
  * Load a resource bundle localized for the Locale of the current view, and expose it (as a Map) in the request
@@ -49,45 +51,69 @@ import org.glassfish.mojarra.facelets.tag.faces.ComponentSupport;
  */
 public final class LoadBundleHandler extends TagHandlerImpl {
 
-    private final static class ResourceBundleMap implements Map<String, Object> {
-        private final static class ResourceEntry implements Map.Entry<String, Object> {
+    private final TagAttribute basename;
+    private final TagAttribute var;
 
-            protected final String key;
+    /**
+     * @param config
+     */
+    public LoadBundleHandler(TagConfig config) {
+        super(config);
+        basename = getRequiredAttribute("basename");
+        var = getRequiredAttribute("var");
+    }
 
-            protected final String value;
+    /**
+     * See taglib documentation.
+     */
+    @Override
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
+        final UIViewRoot root = ComponentSupport.getViewRoot(ctx, parent);
+        final Locale locale = root != null && root.getLocale() != null ? root.getLocale() : Locale.getDefault();
 
-            public ResourceEntry(String key, String value) {
-                this.key = key;
-                this.value = value;
-            }
+        final String name;
+        final ResourceBundle bundle;
+        try {
+            name = basename.getValue(ctx);
+            ClassLoader cl = Thread.currentThread().getContextClassLoader();
 
-            @Override
-            public String getKey() {
-                return key;
-            }
-
-            @Override
-            public Object getValue() {
-                return value;
-            }
-
-            @Override
-            public Object setValue(Object value) {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public int hashCode() {
-                return key.hashCode();
-            }
-
-            @Override
-            public boolean equals(Object obj) {
-                return obj instanceof ResourceEntry && hashCode() == obj.hashCode();
-            }
+            bundle = ResourceBundle.getBundle(name, locale, cl);
+        }
+        catch (Exception e) {
+            throw new TagAttributeException(tag, basename, e);
         }
 
-        protected final ResourceBundle bundle;
+        final ResourceBundleMap map = new ResourceBundleMap(bundle);
+        final FacesContext faces = ctx.getFacesContext();
+
+        final String varValue = var.getValue(ctx);
+        faces.getExternalContext().getRequestMap().put(varValue, map);
+
+        recordDecisions(ctx, root, name, varValue);
+    }
+
+    /**
+     * Records what this build resolved the bundle from, so the redundant render-time re-apply is skipped as long as
+     * it would resolve the same bundle under the same name, and performed when it would not, which is what re-resolves
+     * it (see {@code refreshTransientBuild}). The view locale takes a decision even for a literal basename, since
+     * a locale changed after this build resolves a different bundle from the very same basename.
+     */
+    private void recordDecisions(FaceletContext ctx, UIViewRoot root, String basename, String var) {
+        recordBuildTimeDecision(ctx, this.basename, String.class, basename);
+        recordBuildTimeDecision(ctx, this.var, String.class, var);
+
+        if (root != null) {
+            recordBuildTimeDecision(ctx, root::getLocale, root.getLocale());
+        }
+    }
+
+    // ResourceBundleMap ---------------------------------------------------------------------
+
+    private final static class ResourceBundleMap implements Map<String,Object> {
+
+        private static final String MISSING_RESOURCE_PLACEHOLDER = "???";
+
+        private final ResourceBundle bundle;
 
         public ResourceBundleMap(ResourceBundle bundle) {
             this.bundle = bundle;
@@ -100,12 +126,7 @@ public final class LoadBundleHandler extends TagHandlerImpl {
 
         @Override
         public boolean containsKey(Object key) {
-            try {
-                bundle.getString(key.toString());
-                return true;
-            } catch (MissingResourceException e) {
-                return false;
-            }
+            return key != null && bundle.containsKey((String)key);
         }
 
         @Override
@@ -114,39 +135,32 @@ public final class LoadBundleHandler extends TagHandlerImpl {
         }
 
         @Override
-        public Set<Map.Entry<String, Object>> entrySet() {
-            Enumeration<String> e = bundle.getKeys();
-            Set<Map.Entry<String, Object>> s = new HashSet<>();
-            String k;
-            while (e.hasMoreElements()) {
-                k = e.nextElement();
-                s.add(new ResourceEntry(k, bundle.getString(k)));
+        public Set<Map.Entry<String,Object>> entrySet() {
+            Set<String> keys = keySet();
+            Set<Map.Entry<String,Object>> set = new HashSet<>(Util.calculateMapCapacity(keys.size()));
+            for (String key : keys) {
+                set.add(Map.entry(key, bundle.getObject(key)));
             }
-            return s;
+            return set;
         }
 
         @Override
         public Object get(Object key) {
             try {
                 return bundle.getObject((String) key);
-            } catch (java.util.MissingResourceException mre) {
-                return "???" + key + "???";
+            } catch (MissingResourceException mre) {
+                return MISSING_RESOURCE_PLACEHOLDER + key + MISSING_RESOURCE_PLACEHOLDER;
             }
         }
 
         @Override
         public boolean isEmpty() {
-            return false;
+            return !bundle.getKeys().hasMoreElements();
         }
 
         @Override
         public Set<String> keySet() {
-            Enumeration<String> e = bundle.getKeys();
-            Set<String> s = new HashSet<>();
-            while (e.hasMoreElements()) {
-                s.add(e.nextElement());
-            }
-            return s;
+            return bundle.keySet();
         }
 
         @Override
@@ -171,53 +185,14 @@ public final class LoadBundleHandler extends TagHandlerImpl {
 
         @Override
         public Collection<Object> values() {
-            Enumeration<String> e = bundle.getKeys();
-            Set<Object> s = new HashSet<>();
-            while (e.hasMoreElements()) {
-                s.add(bundle.getObject(e.nextElement()));
+            Set<String> keys = bundle.keySet();
+            List<Object> list = new ArrayList<>(keys.size());
+            for (String key : keys) {
+                list.add(bundle.getObject(key));
             }
-            return s;
+            return list;
         }
+
     }
 
-    private final TagAttribute basename;
-
-    private final TagAttribute var;
-
-    /**
-     * @param config
-     */
-    public LoadBundleHandler(TagConfig config) {
-        super(config);
-        basename = getRequiredAttribute("basename");
-        var = getRequiredAttribute("var");
-    }
-
-    /**
-     * See taglib documentation.
-     */
-    @Override
-    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
-        if (!basename.isLiteral()) {
-            // A non-literal basename is re-evaluated per request, so the view must be re-applied on every (re)build
-            // instead of skipped (see refreshTransientBuildOnPSS) to re-resolve the bundle under var.
-            markDynamicTransientBuild(ctx);
-        }
-        UIViewRoot root = ComponentSupport.getViewRoot(ctx, parent);
-        ResourceBundle bundle = null;
-        try {
-            String name = basename.getValue(ctx);
-            ClassLoader cl = Thread.currentThread().getContextClassLoader();
-            if (root != null && root.getLocale() != null) {
-                bundle = ResourceBundle.getBundle(name, root.getLocale(), cl);
-            } else {
-                bundle = ResourceBundle.getBundle(name, Locale.getDefault(), cl);
-            }
-        } catch (Exception e) {
-            throw new TagAttributeException(tag, basename, e);
-        }
-        ResourceBundleMap map = new ResourceBundleMap(bundle);
-        FacesContext faces = ctx.getFacesContext();
-        faces.getExternalContext().getRequestMap().put(var.getValue(ctx), map);
-    }
 }

@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import jakarta.faces.component.ActionSource;
 import jakarta.faces.component.UIComponent;
@@ -36,13 +35,13 @@ import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagConfig;
 
+import org.glassfish.mojarra.util.Util;
+
 public final class ResetValuesHandler extends ActionListenerHandlerBase implements ActionSourceAttachedObjectHandler {
 
     private final TagAttribute render;
     private final TagAttribute clearModel;
 
-    // Pattern used for execute/render string splitting
-    private static Pattern SPLIT_PATTERN = Pattern.compile(" ");
 
     private final static class LazyActionListener implements ActionListener, Serializable {
         final Collection<String> render;
@@ -93,7 +92,7 @@ public final class ResetValuesHandler extends ActionListenerHandlerBase implemen
         }
 
         // We're stuck splitting up the string.
-        String[] values = SPLIT_PATTERN.split(strValue);
+        String[] values = Util.split(strValue, ' ');
         if (values == null || values.length == 0) {
             return null;
         }

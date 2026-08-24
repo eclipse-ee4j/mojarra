@@ -22,6 +22,8 @@ import java.util.Set;
 
 import jakarta.faces.context.FacesContext;
 
+import org.glassfish.mojarra.util.Util;
+
 public class CopierUtils {
 
     private static final String ERROR_COPIER_NAME = "The copier name should be a Java valid simple/qualified name.";
@@ -87,7 +89,7 @@ public class CopierUtils {
     private static boolean isName(CharSequence name) {
         String id = name.toString();
 
-        for (String s : id.split("\\.", -1)) {
+        for (String s : Util.split(id, '.', -1)) {
             if (!isIdentifier(s) || isKeyword(s)) {
                 return false;
             }

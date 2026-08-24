@@ -27,7 +27,7 @@ import java.util.Iterator;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.component.ValueHolder;
-import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
+import jakarta.faces.component.html.HtmlEvents.HtmlElementEvent;
 import jakarta.faces.component.html.HtmlSelectManyCheckbox;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
@@ -36,8 +36,8 @@ import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
 import jakarta.faces.model.SelectItem;
 import jakarta.faces.model.SelectItemGroup;
 
-import org.glassfish.mojarra.renderkit.Attribute;
 import org.glassfish.mojarra.renderkit.AttributeManager;
+import org.glassfish.mojarra.renderkit.Attributes;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 import org.glassfish.mojarra.util.RequestStateManager;
 
@@ -48,7 +48,7 @@ import org.glassfish.mojarra.util.RequestStateManager;
 
 public class SelectManyCheckboxListRenderer extends MenuRenderer {
 
-    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.SELECTMANYCHECKBOX);
+    private static final Attributes ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.SELECTMANYCHECKBOX);
 
     // ---------------------------------------------------------- Public Methods
 
@@ -270,7 +270,7 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
         // Apply HTML 4.x attributes specified on UISelectMany component to all
         // items in the list except styleClass and style which are rendered as
         // attributes of outer most table.
-        RenderKitUtils.renderPassThruAttributes(context, writer, component, idString, false, ATTRIBUTES, HtmlDocumentElementEvent.click, FacesComponentEvent.valueChange);
+        RenderKitUtils.renderPassThruAttributes(context, writer, component, idString, false, ATTRIBUTES, HtmlElementEvent.click, FacesComponentEvent.valueChange);
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
         writer.endElement("input");

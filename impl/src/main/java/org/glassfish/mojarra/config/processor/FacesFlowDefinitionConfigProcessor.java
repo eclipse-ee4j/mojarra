@@ -62,13 +62,14 @@ import jakarta.servlet.ServletContext;
 import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.application.ApplicationAssociate;
 import org.glassfish.mojarra.application.JavaFlowLoaderHelper;
-import org.glassfish.mojarra.config.WebConfiguration;
+import org.glassfish.mojarra.config.manager.FacesSchema;
 import org.glassfish.mojarra.config.manager.documents.DocumentInfo;
 import org.glassfish.mojarra.facelets.util.ReflectionUtil;
 import org.glassfish.mojarra.flow.FlowImpl;
 import org.glassfish.mojarra.flow.ParameterImpl;
 import org.glassfish.mojarra.flow.builder.FlowBuilderImpl;
 import org.glassfish.mojarra.util.FacesLogger;
+import org.glassfish.mojarra.util.Util;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
@@ -99,7 +100,7 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
     public static boolean uriIsFlowDefinition(URI uri) {
         boolean result = false;
         String path = uri.getPath();
-        String[] segments = path.split("/");
+        String[] segments = Util.split(path, '/');
         if (1 < segments.length) {
             String flowName = segments[segments.length - 2];
             String definingName = segments[segments.length - 1];
@@ -122,7 +123,7 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
         Document newDoc = null;
 
         String path = uri.getPath();
-        String[] segments = path.split("/");
+        String[] segments = Util.split(path, '/');
         if (segments.length < 2) {
             return newDoc;
         }
@@ -132,24 +133,24 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
         dbf.setNamespaceAware(true);
         DocumentBuilder builder = dbf.newDocumentBuilder();
         DOMImplementation domImpl = builder.getDOMImplementation();
-        newDoc = domImpl.createDocument(RIConstants.DOCUMENT_NAMESPACE, "faces-config", null);
+        newDoc = domImpl.createDocument(FacesSchema.CURRENT_NAMESPACE, "faces-config", null);
         Node documentElement = newDoc.getDocumentElement();
         Attr versionAttribute = newDoc.createAttribute("version");
-        versionAttribute.setValue(RIConstants.DOCUMENT_VERSION);
+        versionAttribute.setValue(FacesSchema.CURRENT_VERSION);
         documentElement.getAttributes().setNamedItem(versionAttribute);
 
         Node facesConfig = newDoc.getFirstChild();
 
-        Element flowDefinition = newDoc.createElementNS(RIConstants.DOCUMENT_NAMESPACE, "flow-definition");
+        Element flowDefinition = newDoc.createElementNS(FacesSchema.CURRENT_NAMESPACE, "flow-definition");
         flowDefinition.setAttribute("id", flowName);
         facesConfig.appendChild(flowDefinition);
         final String flowReturnStr = flowName + "-return";
 
-        Element flowReturn = newDoc.createElementNS(RIConstants.DOCUMENT_NAMESPACE, "flow-return");
+        Element flowReturn = newDoc.createElementNS(FacesSchema.CURRENT_NAMESPACE, "flow-return");
         flowReturn.setAttribute("id", flowReturnStr);
         flowDefinition.appendChild(flowReturn);
 
-        Element fromOutcome = newDoc.createElementNS(RIConstants.DOCUMENT_NAMESPACE, "from-outcome");
+        Element fromOutcome = newDoc.createElementNS(FacesSchema.CURRENT_NAMESPACE, "from-outcome");
         flowReturn.appendChild(fromOutcome);
         fromOutcome.setTextContent("/" + flowReturnStr);
 
@@ -159,7 +160,7 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
     @Override
     public void process(ServletContext sc, FacesContext facesContext, DocumentInfo[] documentInfos) throws Exception {
 
-        WebConfiguration config = WebConfiguration.getInstance(sc);
+        boolean hasFlows = false;
 
         for (DocumentInfo documentInfo : documentInfos) {
             URI definingDocumentURI = documentInfo.getSourceURI();
@@ -170,13 +171,12 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
             String namespace = document.getDocumentElement().getNamespaceURI();
             NodeList flowDefinitions = document.getDocumentElement().getElementsByTagNameNS(namespace, FACES_FLOW_DEFINITION);
             if (flowDefinitions != null && flowDefinitions.getLength() > 0) {
-                config.setHasFlows(true);
-
+                hasFlows = true;
                 saveFlowDefinition(facesContext, definingDocumentURI, document);
             }
         }
 
-        if (config.isHasFlows()) {
+        if (hasFlows) {
             JavaFlowLoaderHelper.enableClientWindowModeIfNecessary(facesContext);
             facesContext.getApplication().subscribeToEvent(PostConstructApplicationEvent.class, Application.class, new PerformDeferredFlowProcessing());
         }

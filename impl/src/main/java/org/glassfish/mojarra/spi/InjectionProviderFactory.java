@@ -35,11 +35,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 import jakarta.servlet.ServletContext;
 
 import org.glassfish.mojarra.RIConstants;
-import org.glassfish.mojarra.config.WebConfiguration;
-import org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.Util;
 import org.glassfish.mojarra.vendor.WebContainerInjectionProvider;
@@ -79,21 +79,19 @@ public class InjectionProviderFactory {
      * Creates a new instance of the class specified by the <code>org.glassfish.mojarra.InjectionProvider</code> system property. If
      * this propery is not defined, then a default, no-op, <code>InjectionProvider</code> will be returned.
      *
-     * @param extContext ExteranlContext for the current request
+     * @param context FacesContext for the current request
      *
      * @return an implementation of the <code>InjectionProvider</code> interfaces
      */
-    public static InjectionProvider createInstance(ExternalContext extContext) {
+    public static InjectionProvider createInstance(FacesContext context) {
 
-        String providerClass = findProviderClass(extContext);
-        InjectionProvider provider = getProviderInstance(providerClass, extContext);
+        String providerClass = findProviderClass(context);
+        InjectionProvider provider = getProviderInstance(providerClass, context.getExternalContext());
 
         if (!NoopInjectionProvider.class.equals(provider.getClass()) && !WebContainerInjectionProvider.class.equals(provider.getClass())) {
-            if (provider instanceof AnnotationScanner) {
-                LOGGER.log(WARNING, "InjectionProvider {0} implements deprecated AnnotationScanner interface which is no longer used. "
-                        + "Annotation scanning is now handled via CDI bean discovery. Please remove the AnnotationScanner interface from the implementation.",
-                        provider.getClass().getName());
-            }
+            warnWhenDeprecatedInterfaceIsImplemented(provider, AnnotationScanner.class, "Annotation scanning is now handled via CDI bean discovery.");
+            warnWhenDeprecatedInterfaceIsImplemented(provider, ThreadContext.class, "Configuration processing no longer runs on an optional thread pool.");
+
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.log(Level.FINE, "faces.spi.injection.provider_configured", new Object[] { provider.getClass().getName() });
             }
@@ -106,6 +104,14 @@ public class InjectionProviderFactory {
             return provider;
         }
 
+    }
+
+    private static void warnWhenDeprecatedInterfaceIsImplemented(InjectionProvider provider, Class<?> deprecatedInterface, String reason) {
+        if (deprecatedInterface.isInstance(provider)) {
+            LOGGER.log(WARNING, "InjectionProvider {0} implements deprecated {1} interface which is no longer used. {2}"
+                    + " Please remove the {1} interface from the implementation.",
+                    new Object[] { provider.getClass().getName(), deprecatedInterface.getSimpleName(), reason });
+        }
     }
 
     private static InjectionProvider getProviderInstance(String className, ExternalContext extContext) {
@@ -207,15 +213,14 @@ public class InjectionProviderFactory {
      * context parameter. If not present it tries to find it as a System property. If still not found returns null.
      * <ul>
      *
-     * @param extContext The ExternalContext for this request
+     * @param context FacesContext for the current request
      * @return The provider class name specified in the container configuration, or <code>null</code> if not found.
      */
-    private static String findProviderClass(ExternalContext extContext) {
+    private static String findProviderClass(FacesContext context) {
 
-        WebConfiguration webConfig = WebConfiguration.getInstance(extContext);
-        String provider = webConfig.getOptionValue(WebContextInitParameter.InjectionProviderClass);
+        String provider = MojarraContextParam.INJECTION_PROVIDER.getString(context);
 
-        if (provider != null) {
+        if (!provider.isEmpty()) {
             return provider;
         } else {
             provider = System.getProperty(INJECTION_PROVIDER_PROPERTY);
@@ -227,7 +232,7 @@ public class InjectionProviderFactory {
             String[] serviceEntries = getServiceEntries();
             if (serviceEntries.length > 0) {
                 for (int i = 0; i < serviceEntries.length; i++) {
-                    provider = getProviderFromEntry(extContext.getApplicationMap(), serviceEntries[i]);
+                    provider = getProviderFromEntry(serviceEntries[i]);
                     if (provider != null) {
                         break;
                     }
@@ -241,13 +246,13 @@ public class InjectionProviderFactory {
 
     }
 
-    private static String getProviderFromEntry(Map<String, Object> appMap, String entry) {
+    private static String getProviderFromEntry(String entry) {
 
         if (entry == null) {
             return null;
         }
 
-        String[] parts = Util.split(appMap, entry, ":");
+        String[] parts = Util.split(entry, ':');
         if (parts.length != 2) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, "faces.spi.injection.invalid_service_entry", new Object[] { entry });

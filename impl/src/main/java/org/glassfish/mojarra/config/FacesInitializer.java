@@ -50,7 +50,6 @@ import jakarta.servlet.ServletRegistration;
 import jakarta.servlet.annotation.HandlesTypes;
 import jakarta.websocket.server.ServerContainer;
 
-import org.glassfish.mojarra.context.FacesContextParam;
 import org.glassfish.mojarra.util.FacesLogger;
 
 /**
@@ -205,7 +204,7 @@ public class FacesInitializer implements ServletContainerInitializer {
             return;
         }
 
-        if (!FacesContextParam.ENABLE_WEBSOCKET_ENDPOINT.isSet(facesContext)) {
+        if (!FacesContextParam.ENABLE_WEBSOCKET_ENDPOINT.isEnabled(facesContext)) {
             // Register websocket endpoint is not enabled
             return;
         }

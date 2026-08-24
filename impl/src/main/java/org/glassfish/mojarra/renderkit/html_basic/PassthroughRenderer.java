@@ -22,21 +22,21 @@ import java.util.Map;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
+import jakarta.faces.component.html.HtmlEvents.HtmlElementEvent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
 import jakarta.faces.render.Renderer;
 
-import org.glassfish.mojarra.renderkit.Attribute;
 import org.glassfish.mojarra.renderkit.AttributeManager;
+import org.glassfish.mojarra.renderkit.Attributes;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 
 public class PassthroughRenderer extends HtmlBasicRenderer {
 
 // We are purposely piggy backing off the PANELGROUP attributes since they are
 // identical for this renderer.
-    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.PANELGROUP);
+    private static final Attributes ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.PANELGROUP);
 
     @Override
     public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
@@ -64,7 +64,7 @@ public class PassthroughRenderer extends HtmlBasicRenderer {
         // render the default click/action behavior separately - both are queued as CSP-safe event
         // listeners that encodeEnd() flushes via flushPendingBehaviorEventListeners().
         RenderKitUtils.renderPassThruAttributes(context, writer, component, null, false, ATTRIBUTES,
-                HtmlDocumentElementEvent.click, FacesComponentEvent.action);
+                HtmlElementEvent.click, FacesComponentEvent.action);
         RenderKitUtils.renderOnclickEventListener(context, component, null, null, false);
 
     }

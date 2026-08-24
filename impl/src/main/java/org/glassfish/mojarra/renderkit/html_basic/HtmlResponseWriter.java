@@ -20,7 +20,8 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,14 +29,13 @@ import java.util.regex.Pattern;
 import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
-import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.render.Renderer;
 
 import org.glassfish.mojarra.RIConstants;
-import org.glassfish.mojarra.config.WebConfiguration;
-import org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter;
+import org.glassfish.mojarra.config.ContextParam.Tristate;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.io.FastStringWriter;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 import org.glassfish.mojarra.util.HtmlUtils;
@@ -67,7 +67,7 @@ public class HtmlResponseWriter extends ResponseWriter {
 
     // Configuration flag regarding disableUnicodeEscaping
     //
-    private WebConfiguration.DisableUnicodeEscaping disableUnicodeEscaping;
+    private Tristate disableUnicodeEscaping;
 
     // Flag to escape Unicode
     //
@@ -118,10 +118,6 @@ public class HtmlResponseWriter extends ResponseWriter {
     // Keep one instance of the script buffer per Writer
     private FastStringWriter scriptBuffer;
 
-    // Enables hiding of inlined script and style
-    // elements from old browsers
-    private Boolean isScriptHidingEnabled;
-
     // Enables scripts to be included in attribute values
     private Boolean isScriptInAttributeValueEnabled;
 
@@ -135,6 +131,10 @@ public class HtmlResponseWriter extends ResponseWriter {
     private final static int cdataTextBufferSize = 128;
     private char[] cdataTextBuffer;
 
+    /**
+     * The pass-through attributes of the element currently being started. This aliases the component's own map, so it
+     * must never be mutated here; {@link #pushElementName} takes a copy for the one case that needs to drop a key.
+     */
     private Map<String, Object> passthroughAttributes;
 
     // Component associated with the most-recently-opened element, captured from startElement(name,
@@ -198,7 +198,7 @@ public class HtmlResponseWriter extends ResponseWriter {
      * @throws jakarta.faces.FacesException the encoding is not recognized.
      */
     public HtmlResponseWriter(Writer writer, String contentType, String encoding) throws FacesException {
-        this(writer, contentType, encoding, null, null, null, false);
+        this(writer, contentType, encoding, null, null, false);
     }
 
     /**
@@ -210,19 +210,14 @@ public class HtmlResponseWriter extends ResponseWriter {
      * The argument configPrefs is a map of configurable prefs that affect this instance's behavior. Supported keys are:
      * </p>
      *
-     * <p>
-     * BooleanWebContextInitParameter.EnableJSStyleHiding: <code>true</code> if the writer should attempt to hide JS from
-     * older browsers
-     * </p>
-     *
      * @param writer the <code>ResponseWriter</code>
      * @param contentType the content type.
      * @param encoding the character encoding.
      *
      * @throws jakarta.faces.FacesException the encoding is not recognized.
      */
-    public HtmlResponseWriter(Writer writer, String contentType, String encoding, Boolean isScriptHidingEnabled, Boolean isScriptInAttributeValueEnabled,
-            WebConfiguration.DisableUnicodeEscaping disableUnicodeEscaping, boolean isPartial) throws FacesException {
+    public HtmlResponseWriter(Writer writer, String contentType, String encoding, Boolean isScriptInAttributeValueEnabled,
+            Tristate disableUnicodeEscaping, boolean isPartial) throws FacesException {
 
         this.writer = writer;
 
@@ -231,34 +226,21 @@ public class HtmlResponseWriter extends ResponseWriter {
         }
 
         this.encoding = encoding;
+        FacesContext context = FacesContext.getCurrentInstance();
 
         // init those configuration parameters not yet initialized
-        WebConfiguration webConfig = null;
-        if (isScriptHidingEnabled == null) {
-            webConfig = getWebConfiguration(webConfig);
-            isScriptHidingEnabled = null == webConfig ? BooleanWebContextInitParameter.EnableJSStyleHiding.getDefaultValue()
-                    : webConfig.isOptionEnabled(BooleanWebContextInitParameter.EnableJSStyleHiding);
-        }
-
         if (isScriptInAttributeValueEnabled == null) {
-            webConfig = getWebConfiguration(webConfig);
-            isScriptInAttributeValueEnabled = null == webConfig ? BooleanWebContextInitParameter.EnableScriptInAttributeValue.getDefaultValue()
-                    : webConfig.isOptionEnabled(BooleanWebContextInitParameter.EnableScriptInAttributeValue);
+            isScriptInAttributeValueEnabled = null == context ? MojarraContextParam.ENABLE_SCRIPTS_IN_ATTRIBUTE_VALUES.getDefaultValue(null)
+                    : MojarraContextParam.ENABLE_SCRIPTS_IN_ATTRIBUTE_VALUES.isEnabled(context);
         }
 
         if (disableUnicodeEscaping == null) {
-            webConfig = getWebConfiguration(webConfig);
-            disableUnicodeEscaping = WebConfiguration.DisableUnicodeEscaping
-                    .getByValue(null == webConfig ? WebConfiguration.WebContextInitParameter.DisableUnicodeEscaping.getDefaultValue()
-                            : webConfig.getOptionValue(WebConfiguration.WebContextInitParameter.DisableUnicodeEscaping));
-            if (disableUnicodeEscaping == null) {
-                disableUnicodeEscaping = WebConfiguration.DisableUnicodeEscaping.False;
-            }
+            disableUnicodeEscaping = null == context ? MojarraContextParam.DISABLE_UNICODE_ESCAPING.getDefaultValue(null)
+                    : MojarraContextParam.DISABLE_UNICODE_ESCAPING.getEnum(context);
         }
 
         // and store them for later use
         this.isPartial = isPartial;
-        this.isScriptHidingEnabled = isScriptHidingEnabled;
         this.isScriptInAttributeValueEnabled = isScriptInAttributeValueEnabled;
         this.disableUnicodeEscaping = disableUnicodeEscaping;
 
@@ -267,41 +249,26 @@ public class HtmlResponseWriter extends ResponseWriter {
             throw new IllegalArgumentException(MessageUtils.getExceptionMessageString(MessageUtils.ENCODING_ERROR_MESSAGE_ID));
         }
 
-        String charsetName = encoding.toUpperCase();
+        String charsetName = encoding.toUpperCase(Locale.ROOT);
 
         switch (disableUnicodeEscaping) {
-        case True:
+        case TRUE:
             // html escape noting (except the dangerous characters like "<>'" etc
             escapeUnicode = false;
             escapeIso = false;
             break;
-        case False:
+        case FALSE:
             // html escape any non-ascii character
             escapeUnicode = true;
             escapeIso = true;
             break;
-        case Auto:
+        case AUTO:
             // is stream capable of rendering unicode, do not escape
             escapeUnicode = !HtmlUtils.isUTFencoding(charsetName);
             // is stream capable of rendering unicode or iso-8859-1, do not escape
             escapeIso = !HtmlUtils.isISO8859_1encoding(charsetName) && !HtmlUtils.isUTFencoding(charsetName);
             break;
         }
-    }
-
-    private WebConfiguration getWebConfiguration(WebConfiguration webConfig) {
-        if (webConfig != null) {
-            return webConfig;
-        }
-
-        FacesContext context = FacesContext.getCurrentInstance();
-        if (null != context) {
-            ExternalContext extContext = context.getExternalContext();
-            if (null != extContext) {
-                webConfig = WebConfiguration.getInstance(extContext);
-            }
-        }
-        return webConfig;
     }
 
     // -------------------------------------------------- Methods From Closeable
@@ -347,7 +314,7 @@ public class HtmlResponseWriter extends ResponseWriter {
     @Override
     public ResponseWriter cloneWithWriter(Writer writer) {
         try {
-            HtmlResponseWriter responseWriter = new HtmlResponseWriter(writer, getContentType(), getCharacterEncoding(), isScriptHidingEnabled,
+            HtmlResponseWriter responseWriter = new HtmlResponseWriter(writer, getContentType(), getCharacterEncoding(),
                     isScriptInAttributeValueEnabled, disableUnicodeEscaping, isPartial);
             responseWriter.dontEscape = dontEscape;
             responseWriter.writingCdata = writingCdata;
@@ -474,10 +441,6 @@ public class HtmlResponseWriter extends ResponseWriter {
                     } else {
                         writer.write("\n]]>\n");
                     }
-                }
-            } else {
-                if (isScriptHidingEnabled) {
-                    writer.write("\n//-->\n");
                 }
             }
         }
@@ -1039,10 +1002,6 @@ public class HtmlResponseWriter extends ResponseWriter {
                             writer.write("\n<![CDATA[\n");
                         }
                     }
-                } else {
-                    if (isScriptHidingEnabled) {
-                        writer.write("\n<!--\n");
-                    }
                 }
                 origWriter = writer;
                 if (scriptBuffer == null) {
@@ -1057,13 +1016,13 @@ public class HtmlResponseWriter extends ResponseWriter {
 
     }
 
-    private void considerPassThroughAttributes(Map<String, Object> toCopy) {
-        assert null != toCopy && !toCopy.isEmpty();
+    private void considerPassThroughAttributes(Map<String, Object> attributes) {
+        assert null != attributes && !attributes.isEmpty();
 
         if (null != passthroughAttributes) {
             throw new IllegalStateException("Error, this method should only be called once per instance.");
         }
-        passthroughAttributes = new HashMap<>(toCopy);
+        passthroughAttributes = attributes;
     }
 
     private boolean containsPassThroughAttribute(String attrName) {
@@ -1075,10 +1034,7 @@ public class HtmlResponseWriter extends ResponseWriter {
     }
 
     private void clearPassthroughAttributes() {
-        if (passthroughAttributes != null) {
-            passthroughAttributes.clear();
-            passthroughAttributes = null;
-        }
+        passthroughAttributes = null;
     }
 
     /**
@@ -1138,10 +1094,12 @@ public class HtmlResponseWriter extends ResponseWriter {
 
         String name = getElementName(original);
 
-        if (passthroughAttributes != null) {
-            passthroughAttributes.remove(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY);
-            if (passthroughAttributes.isEmpty()) {
+        if (containsPassThroughAttribute(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY)) {
+            if (passthroughAttributes.size() == 1) {
                 passthroughAttributes = null;
+            } else {
+                passthroughAttributes = new LinkedHashMap<>(passthroughAttributes);
+                passthroughAttributes.remove(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY);
             }
         }
 
@@ -1307,23 +1265,6 @@ public class HtmlResponseWriter extends ResponseWriter {
     }
 
     /*
-     * lazily-allocated CDATA buffers; only touched on the writingCdata path
-     */
-    private char[] cdataBuffer() {
-        if (cdataBuffer == null) {
-            cdataBuffer = new char[cdataBufferSize];
-        }
-        return cdataBuffer;
-    }
-
-    private char[] cdataTextBuffer() {
-        if (cdataTextBuffer == null) {
-            cdataTextBuffer = new char[cdataTextBufferSize];
-        }
-        return cdataTextBuffer;
-    }
-
-    /*
      * append a character array to the cdatabuffer
      */
     private void appendBuffer(char[] cbuf) throws IOException {
@@ -1346,6 +1287,23 @@ public class HtmlResponseWriter extends ResponseWriter {
         }
         cdataBuffer()[cdataBufferLength] = c;
         cdataBufferLength++;
+    }
+
+    /*
+     * lazily-allocated CDATA buffers; only touched on the writingCdata path
+     */
+    private char[] cdataBuffer() {
+        if (cdataBuffer == null) {
+            cdataBuffer = new char[cdataBufferSize];
+        }
+        return cdataBuffer;
+    }
+
+    private char[] cdataTextBuffer() {
+        if (cdataTextBuffer == null) {
+            cdataTextBuffer = new char[cdataTextBufferSize];
+        }
+        return cdataTextBuffer;
     }
 
     /*

@@ -63,8 +63,8 @@ import jakarta.validation.ValidatorFactory;
 import org.glassfish.mojarra.application.ApplicationAssociate;
 import org.glassfish.mojarra.application.ApplicationResourceBundle;
 import org.glassfish.mojarra.config.ConfigurationException;
+import org.glassfish.mojarra.config.FacesContextParam;
 import org.glassfish.mojarra.config.manager.documents.DocumentInfo;
-import org.glassfish.mojarra.context.FacesContextParam;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.Util;
 import org.w3c.dom.Document;
@@ -340,7 +340,7 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
         if (defaultValidatorIds == null) {
             defaultValidatorIds = new LinkedHashSet<>();
             if (isBeanValidatorAvailable(facesContext)) {
-                if (!FacesContextParam.DISABLE_DEFAULT_BEAN_VALIDATOR.isSet(facesContext)) {
+                if (!FacesContextParam.DISABLE_DEFAULT_BEAN_VALIDATOR.isEnabled(facesContext)) {
                     defaultValidatorIds.add(BeanValidator.VALIDATOR_ID);
                 }
             }

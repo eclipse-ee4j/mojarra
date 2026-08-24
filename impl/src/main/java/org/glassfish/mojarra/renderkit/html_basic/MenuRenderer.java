@@ -28,7 +28,8 @@ import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINER;
 import static java.util.logging.Level.SEVERE;
 import static java.util.stream.Collectors.joining;
-import static org.glassfish.mojarra.RIConstants.NO_VALUE;
+import static org.glassfish.mojarra.RIConstants.EMPTY_STRING;
+import static org.glassfish.mojarra.renderkit.RenderKitUtils.NO_VALUE;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.getSelectItems;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.renderPassThruAttributes;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.renderXHTMLStyleBooleanAttributes;
@@ -66,7 +67,7 @@ import jakarta.faces.component.UISelectItems;
 import jakarta.faces.component.UISelectMany;
 import jakarta.faces.component.UISelectOne;
 import jakarta.faces.component.ValueHolder;
-import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
+import jakarta.faces.component.html.HtmlEvents.HtmlElementEvent;
 import jakarta.faces.component.html.HtmlSelectManyCheckbox;
 import jakarta.faces.component.html.HtmlSelectManyListbox;
 import jakarta.faces.component.html.HtmlSelectManyMenu;
@@ -81,10 +82,9 @@ import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
 import jakarta.faces.model.SelectItem;
 import jakarta.faces.model.SelectItemGroup;
 
-import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.io.FastStringWriter;
-import org.glassfish.mojarra.renderkit.Attribute;
 import org.glassfish.mojarra.renderkit.AttributeManager;
+import org.glassfish.mojarra.renderkit.Attributes;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 import org.glassfish.mojarra.renderkit.SelectItemsIterator;
 import org.glassfish.mojarra.util.RequestStateManager;
@@ -98,7 +98,7 @@ import org.glassfish.mojarra.util.Util;
  */
 public class MenuRenderer extends HtmlBasicInputRenderer {
 
-    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.SELECTMANYMENU);
+    private static final Attributes ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.SELECTMANYMENU);
 
     // ---------------------------------------------------------- Public Methods
 
@@ -551,7 +551,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
             return " multiple ";
         }
 
-        return "";
+        return EMPTY_STRING;
     }
 
     protected Object[] getSubmittedSelectedValues(UIComponent component) {
@@ -706,7 +706,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
 
         writeDefaultSize(writer, size);
 
-        renderPassThruAttributes(context, writer, component, null, false, ATTRIBUTES, HtmlDocumentElementEvent.change, FacesComponentEvent.valueChange);
+        renderPassThruAttributes(context, writer, component, null, false, ATTRIBUTES, HtmlElementEvent.change, FacesComponentEvent.valueChange);
         renderXHTMLStyleBooleanAttributes(writer, component);
 
         // Now, write the buffered option content
@@ -922,7 +922,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
             if (newValue != null && !newValue.isEmpty()) {
                 Set<String> disabledSelectItemValues = getDisabledSelectItemValues(context, component);
                 if (disabledSelectItemValues.contains(newValue)) {
-                    newValue = RIConstants.NO_VALUE;
+                    newValue = NO_VALUE;
                 }
             }
 
