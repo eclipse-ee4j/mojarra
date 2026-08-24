@@ -2,16 +2,16 @@ name: build
 on:
   push:
     branches: [ '*' ]
-    paths: [ 'impl/**', '.github/workflows/build.yml' ]
+    paths: [ 'impl/**', 'test/**', 'pom.xml', '.gitmodules', '.github/workflows/build.yml' ]
   pull_request:
     branches: [ '*' ]
-    paths: [ 'impl/**', '.github/workflows/build.yml' ]
+    paths: [ 'impl/**', 'test/**', 'pom.xml', '.gitmodules', '.github/workflows/build.yml' ]
 jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        java: [ '17' ]
+        java: [ '21' ]
         os: [ ubuntu-latest ]
     steps:
       - name: Checkout sources
