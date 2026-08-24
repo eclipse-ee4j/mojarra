@@ -35,7 +35,6 @@
         <module>../faces/tck/util</module> <!-- BaseITNG et.al. -->
         <module>base</module>
         <module>impl</module>
-        <module>issue5746</module>
         <module>perf</module>
     </modules>
 
@@ -48,7 +47,7 @@
         <faces-api.version>5.0.0-SNAPSHOT</faces-api.version>
         <mojarra.version>${project.version}</mojarra.version>
         <myfaces.version>5.0.0-SNAPSHOT</myfaces.version> <!-- consumed by the *-myfaces profiles -->
-        <glassfish.version>9.0.0-SNAPSHOT</glassfish.version> <!-- https://mvnrepository.com/artifact/org.glassfish.main.distributions/glassfish -->
+        <glassfish.version>9.0.0-M3</glassfish.version> <!-- https://mvnrepository.com/artifact/org.glassfish.main.distributions/glassfish -->
         <wildfly.version>40.0.1.Final</wildfly.version> <!-- https://mvnrepository.com/artifact/org.wildfly/wildfly-dist -->
         <tomee.version>10.1.5</tomee.version> <!-- https://mvnrepository.com/artifact/org.apache.tomee/apache-tomee -->
         <payara.version>7.2026.6</payara.version> <!-- https://mvnrepository.com/artifact/fish.payara.distributions/payara-web -->
