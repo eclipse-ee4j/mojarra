@@ -124,7 +124,7 @@ Maintained in `BRANCH_CONFIG` at the top of each `Jenkinsfile`; adding a release
 | Release | Impl branch | API branch | Build JDK | TCK JDK | API version | TCK version | GF version | Selenium | Threads |
 | ------- | ----------- | ---------- | --------- | ------- | ----------- | ----------- | ---------- | -------- | ------- |
 | `4.0`   | `4.0`       | — (bundled) | 11 | 17 | 4.0.1 | 4.0.4 | 7.1.1 | off | 1 |
-| `4.1`   | `4.1`       | — (bundled) | 17 | 21 | 4.1.0 | 4.1.2 | 8.0.3 | on | 1 |
+| `4.1`   | `main`      | — (bundled) | 17 | 21 | 4.1.0 | 4.1.2 | 8.0.3 | on | 1 |
 | `5.0`   | `master`    | `5.0`       | 17 | 21 | resolved | 5.0.0-SNAPSHOT (from submodule) | 9.0.0-M2 | on | 2 |
 
 - **Impl branch**: the mojarra git branch with the impl source — `master` for 5.0, since the head of development lives there, not on a `5.x` branch.
