@@ -21,34 +21,13 @@
 
     <parent>
         <groupId>org.glassfish.mojarra.test</groupId>
-        <artifactId>pom</artifactId>
+        <artifactId>impl</artifactId>
         <version>5.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>impl</artifactId>
-    <packaging>pom</packaging>
+    <artifactId>issue5746</artifactId>
+    <packaging>war</packaging>
 
     <name>Mojarra ${project.version} - IT - ${project.artifactId}</name>
-
-    <description>
-        Integration tests for behavior the TCK cannot assert because it is implementation specific, such as what ends up
-        in the saved state or which interim responses are sent. One module per issue, as in the 4.x test layout. They
-        run against the same server profiles as the other test modules, unless a module narrows that itself.
-    </description>
-
-    <modules>
-        <module>issue5746</module>
-        <module>issue5958</module>
-    </modules>
-
-    <dependencies>
-        <!-- Supplies arquillian-server.xml (the bare-container server-profile Arquillian config, e.g. Tomcat). -->
-        <dependency>
-            <groupId>org.glassfish.mojarra.test</groupId>
-            <artifactId>base</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
 
 </project>
