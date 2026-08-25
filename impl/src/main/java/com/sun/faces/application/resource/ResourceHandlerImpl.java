@@ -56,8 +56,6 @@ import jakarta.faces.context.FacesContext;
 
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.renderkit.html_basic.ScriptRenderer;
-import com.sun.faces.renderkit.html_basic.StylesheetRenderer;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.RequestStateManager;
 import com.sun.faces.util.Util;
@@ -280,21 +278,6 @@ public class ResourceHandlerImpl extends ResourceHandler {
     @Override
     public boolean isResourceRendered(FacesContext context, String resourceName, String libraryName) {
         return super.isResourceRendered(context, removeQueryString(resourceName), libraryName);
-    }
-
-    private static String getResourceType(String contentType) {
-        if (contentType == null) {
-            return null;
-        }
-
-        final String type = contentType.toLowerCase(ROOT);
-        if (type.equals(ScriptRenderer.DEFAULT_CONTENT_TYPE)) {
-            return "script";
-        } else if (type.equals(StylesheetRenderer.DEFAULT_CONTENT_TYPE)) {
-            return "style";
-        }
-
-        return null;
     }
 
     /**
