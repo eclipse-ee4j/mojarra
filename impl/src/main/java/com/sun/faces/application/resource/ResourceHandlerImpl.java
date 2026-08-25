@@ -585,7 +585,21 @@ public class ResourceHandlerImpl extends ResourceHandler {
      * @return the content type for this resource
      */
     private String getContentType(FacesContext ctx, String resourceName) {
-        return ctx.getExternalContext().getMimeType(resourceName);
+        return ctx.getExternalContext().getMimeType(removeQueryString(resourceName));
+    }
+
+    /**
+     * @param resourceName the resource name, optionally carrying a query string as supported by
+     * {@link com.sun.faces.renderkit.html_basic.ScriptStyleBaseRenderer}
+     * @return the resource name without its query string, as only the part before the '?' identifies the file
+     */
+    static String removeQueryString(String resourceName) {
+        if (resourceName == null) {
+            return null;
+        }
+
+        int queryStringIndex = resourceName.indexOf('?');
+        return queryStringIndex == -1 ? resourceName : resourceName.substring(0, queryStringIndex);
     }
 
     /**
