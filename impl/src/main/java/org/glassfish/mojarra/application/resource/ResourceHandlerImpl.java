@@ -252,6 +252,22 @@ public class ResourceHandlerImpl extends ResourceHandler {
     }
 
     /**
+     * @see ResourceHandler#markResourceRendered(FacesContext, String, String)
+     */
+    @Override
+    public void markResourceRendered(FacesContext context, String resourceName, String libraryName) {
+        super.markResourceRendered(context, removeQueryString(resourceName), libraryName);
+    }
+
+    /**
+     * @see ResourceHandler#isResourceRendered(FacesContext, String, String)
+     */
+    @Override
+    public boolean isResourceRendered(FacesContext context, String resourceName, String libraryName) {
+        return super.isResourceRendered(context, removeQueryString(resourceName), libraryName);
+    }
+
+    /**
      * @see jakarta.faces.application.ResourceHandler#handleResourceRequest(jakarta.faces.context.FacesContext)
      */
     @Override
@@ -525,7 +541,21 @@ public class ResourceHandlerImpl extends ResourceHandler {
      * @return the content type for this resource
      */
     private String getContentType(FacesContext ctx, String resourceName) {
-        return ctx.getExternalContext().getMimeType(resourceName);
+        return ctx.getExternalContext().getMimeType(removeQueryString(resourceName));
+    }
+
+    /**
+     * @param resourceName the resource name, optionally carrying a query string as supported by
+     * {@link org.glassfish.mojarra.renderkit.html_basic.ScriptStyleBaseRenderer}
+     * @return the resource name without its query string, as only the part before the '?' identifies the file
+     */
+    static String removeQueryString(String resourceName) {
+        if (resourceName == null) {
+            return null;
+        }
+
+        int queryStringIndex = resourceName.indexOf('?');
+        return queryStringIndex == -1 ? resourceName : resourceName.substring(0, queryStringIndex);
     }
 
     /**

@@ -448,15 +448,22 @@ public class FaceletStateManagementStrategy extends StateManagementStrategy {
 
     /**
      * The tag a component was built from, which tells two components apart that share a client id because only one of
-     * them is ever built. Every component a facelet creates carries it; the ones that no facelet created - the view
-     * root, and anything added programmatically - fall back to their type, which the restore reproduces as well.
+     * them is ever built.
+     *
+     * <p>
+     * Only a component a facelet built carries one, and only such a component is worth comparing across the two
+     * builds: a build time condition governs which tags are applied, so it can add or drop only what a tag built. A
+     * component the facelet did not build - the view root, a component resource, anything added programmatically -
+     * holds no tag, and one of those left without an id of its own does not even hold a stable client id:
+     * {@link UIViewRoot#createUniqueId(FacesContext, String)} numbers it from a counter which the view root's state
+     * restores past the number the rebuild reached, so it is numbered anew on every request.
+     * </p>
      *
      * @param component the component.
-     * @return the identity of what built the given component.
+     * @return the tag the given component was built from, or {@code null} when no facelet built it.
      */
     static String tagOf(UIComponent component) {
-        String tagId = (String) component.getAttributes().get(ComponentSupport.MARK_CREATED);
-        return tagId != null ? tagId : component.getClass().getName();
+        return (String) component.getAttributes().get(ComponentSupport.MARK_CREATED);
     }
 
     /**
@@ -520,7 +527,10 @@ public class FaceletStateManagementStrategy extends StateManagementStrategy {
             if (target.isTransient()) {
                 return VisitResult.REJECT;
             }
-            rebuiltTags.put(target.getClientId(context1.getFacesContext()), tagOf(target));
+            String tag = tagOf(target);
+            if (tag != null) {
+                rebuiltTags.put(target.getClientId(context1.getFacesContext()), tag);
+            }
             return ACCEPT;
         });
 
@@ -653,10 +663,11 @@ public class FaceletStateManagementStrategy extends StateManagementStrategy {
                 } else {
                     stateObj = target.saveState(context1.getFacesContext());
                 }
-                if (renderedTags != null || stateObj != null) {
+                String tag = renderedTags != null ? tagOf(target) : null;
+                if (tag != null || stateObj != null) {
                     String clientId = target.getClientId(context1.getFacesContext());
-                    if (renderedTags != null) {
-                        renderedTags.put(clientId, tagOf(target));
+                    if (tag != null) {
+                        renderedTags.put(clientId, tag);
                     }
                     if (stateObj != null) {
                         stateMap.put(clientId, stateObj);
