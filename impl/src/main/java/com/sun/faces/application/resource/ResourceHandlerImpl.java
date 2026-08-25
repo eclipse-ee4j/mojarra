@@ -56,8 +56,6 @@ import jakarta.faces.context.FacesContext;
 
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.renderkit.html_basic.ScriptRenderer;
-import com.sun.faces.renderkit.html_basic.StylesheetRenderer;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.RequestStateManager;
 import com.sun.faces.util.Util;
@@ -266,19 +264,20 @@ public class ResourceHandlerImpl extends ResourceHandler {
         return rendererType;
     }
 
-    private static String getResourceType(String contentType) {
-        if (contentType == null) {
-            return null;
-        }
+    /**
+     * @see ResourceHandler#markResourceRendered(FacesContext, String, String)
+     */
+    @Override
+    public void markResourceRendered(FacesContext context, String resourceName, String libraryName) {
+        super.markResourceRendered(context, removeQueryString(resourceName), libraryName);
+    }
 
-        final String type = contentType.toLowerCase(ROOT);
-        if (type.equals(ScriptRenderer.DEFAULT_CONTENT_TYPE)) {
-            return "script";
-        } else if (type.equals(StylesheetRenderer.DEFAULT_CONTENT_TYPE)) {
-            return "style";
-        }
-
-        return null;
+    /**
+     * @see ResourceHandler#isResourceRendered(FacesContext, String, String)
+     */
+    @Override
+    public boolean isResourceRendered(FacesContext context, String resourceName, String libraryName) {
+        return super.isResourceRendered(context, removeQueryString(resourceName), libraryName);
     }
 
     /**
