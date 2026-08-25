@@ -266,6 +266,22 @@ public class ResourceHandlerImpl extends ResourceHandler {
         return rendererType;
     }
 
+    /**
+     * @see ResourceHandler#markResourceRendered(FacesContext, String, String)
+     */
+    @Override
+    public void markResourceRendered(FacesContext context, String resourceName, String libraryName) {
+        super.markResourceRendered(context, removeQueryString(resourceName), libraryName);
+    }
+
+    /**
+     * @see ResourceHandler#isResourceRendered(FacesContext, String, String)
+     */
+    @Override
+    public boolean isResourceRendered(FacesContext context, String resourceName, String libraryName) {
+        return super.isResourceRendered(context, removeQueryString(resourceName), libraryName);
+    }
+
     private static String getResourceType(String contentType) {
         if (contentType == null) {
             return null;
