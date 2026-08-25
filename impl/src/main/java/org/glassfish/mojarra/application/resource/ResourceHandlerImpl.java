@@ -224,33 +224,32 @@ public class ResourceHandlerImpl extends ResourceHandler {
 
     @Override
     public String getRendererTypeForResourceName(String resourceName) {
-        if (resourceName == null) {
-            return null;
-        }
-
-        String resourceType = getResourceType(getContentType(FacesContext.getCurrentInstance(), resourceName));
-
-        if (resourceType == null) {
-            return null;
-        }
-
-        return switch (resourceType) {
-            case "script" -> "jakarta.faces.resource.Script";
-            case "style" -> "jakarta.faces.resource.Stylesheet";
-            default -> null;
-        };
+        return getRendererType(resourceName);
     }
 
-    private static String getResourceType(String contentType) {
-        if (contentType == null) {
+    /**
+     * @param resourceName the resource name, optionally carrying a query string as specified in section 2.6.1.3
+     * "Resource Identifiers" of the Jakarta Faces Specification Document
+     * @return the renderer type of the renderer capable of rendering the resource, or <code>null</code> if there is none
+     */
+    static String getRendererType(String resourceName) {
+        String name = removeQueryString(resourceName);
+
+        if (name == null) {
             return null;
         }
 
-        return switch (contentType.toLowerCase(ROOT)) {
-            case ScriptRenderer.DEFAULT_CONTENT_TYPE -> "script";
-            case StylesheetRenderer.DEFAULT_CONTENT_TYPE -> "style";
-            default -> null;
-        };
+        String lowerCaseName = name.toLowerCase(ROOT);
+
+        if (lowerCaseName.endsWith(ScriptRenderer.FILE_EXTENSION)) {
+            return ScriptRenderer.RENDERER_TYPE;
+        }
+
+        if (lowerCaseName.endsWith(StylesheetRenderer.FILE_EXTENSION)) {
+            return StylesheetRenderer.RENDERER_TYPE;
+        }
+
+        return null;
     }
 
     /**

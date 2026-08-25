@@ -31,6 +31,10 @@ import org.glassfish.mojarra.renderkit.RenderKitUtils;
  */
 public class StylesheetRenderer extends ScriptStyleBaseRenderer {
 
+    public static final String RENDERER_TYPE = "jakarta.faces.resource.Stylesheet";
+
+    public static final String FILE_EXTENSION = ".css";
+
     public static final String DEFAULT_CONTENT_TYPE = "text/css";
 
     @Override
