@@ -31,6 +31,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -148,12 +149,15 @@ class FaceletPartialStateManagementStrategyTest {
     }
 
     /**
-     * A component no facelet built carries no tag, so it is identified by its type, which is what the restore
-     * reproduces it from.
+     * A component no facelet built - the view root, a component resource, anything added programmatically - is not
+     * compared across the two builds at all. No build time condition governs whether it is there, and one left
+     * without an id of its own is numbered from a counter which the build leaves where the previous request's state
+     * then moves it, so it holds another client id on every request and comparing it by client id would report it as
+     * vanished on every postback.
      */
     @Test
-    void aComponentBuiltByNoTagIsIdentifiedByItsType() {
-        assertEquals(UIOutput.class.getName(), tagOf(new UIOutput()));
+    void aComponentBuiltByNoTagIsNotCompared() {
+        assertNull(tagOf(new UIOutput()));
     }
 
     @Test
