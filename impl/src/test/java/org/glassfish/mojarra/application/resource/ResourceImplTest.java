@@ -165,6 +165,10 @@ public class ResourceImplTest extends JUnitFacesTestCaseBase {
     }
 
     private ResourceImpl createResource(String resourceName, String libraryName, String libraryVersion, String resourceVersion, String localePrefix, String contract) {
+        return createResource(resourceName, libraryName, libraryVersion, resourceVersion, localePrefix, contract, null);
+    }
+
+    private ResourceImpl createResource(String resourceName, String libraryName, String libraryVersion, String resourceVersion, String localePrefix, String contract, String queryString) {
         ContractInfo contractInfo = contract != null ? new ContractInfo(contract) : null;
         VersionInfo libraryVersionInfo = libraryVersion != null ? new VersionInfo(libraryVersion, null) : null;
         VersionInfo resourceVersionInfo = resourceVersion != null ? new VersionInfo(resourceVersion, extensionOf(resourceName)) : null;
@@ -177,7 +181,25 @@ public class ResourceImplTest extends JUnitFacesTestCaseBase {
             resourceInfo = new ResourceInfo(contractInfo, resourceName, resourceVersionInfo, RESOURCE_HELPER);
         }
 
-        return new ResourceImpl(resourceInfo, "text/css", 0, 0);
+        return new ResourceImpl(resourceInfo, "text/css", 0, 0, queryString);
+    }
+
+    @Test
+    public void getRequestPathStartsTheQueryStringWhenThereIsNoResourceMetaData() {
+        ResourceImpl resource = createResource("theme.css", null, null, null, null, null, "v=1");
+
+        configureRequest(MockFacesMappingSupport.mapping(PATH, "/faces/*", "theme"), "/exact", "/faces/*");
+
+        assertEquals("/app/faces/jakarta.faces.resource/theme.css?v=1", resource.getRequestPath());
+    }
+
+    @Test
+    public void getRequestPathAppendsTheQueryStringToTheResourceMetaData() {
+        ResourceImpl resource = createResource("theme.css", "layout", "1_0", null, "en", "blue", "a=1&b=2");
+
+        configureRequest(MockFacesMappingSupport.mapping(PATH, "/faces/*", "theme"), "/exact", "/faces/*");
+
+        assertEquals("/app/faces/jakarta.faces.resource/theme.css?ln=layout&v=1_0&loc=en&con=blue&a=1&b=2", resource.getRequestPath());
     }
 
     private String extensionOf(String resourceName) {

@@ -123,14 +123,16 @@ public class ResourceHandlerImpl extends ResourceHandler {
 
         FacesContext ctx = FacesContext.getCurrentInstance();
 
-        String ctype = contentType != null ? contentType : getContentType(ctx, resourceName);
-        ResourceInfo info = manager.findResource(libraryName, resourceName, ctype, ctx);
+        String name = removeQueryString(resourceName);
+        String queryString = getQueryString(resourceName);
+        String ctype = contentType != null ? contentType : getContentType(ctx, name);
+        ResourceInfo info = manager.findResource(libraryName, name, ctype, ctx);
 
         if (info == null) {
             return null;
         }
 
-        return new ResourceImpl(info, ctype, creationTime, maxAge);
+        return new ResourceImpl(info, ctype, creationTime, maxAge, queryString);
     }
 
     @Override
@@ -249,22 +251,6 @@ public class ResourceHandlerImpl extends ResourceHandler {
             case StylesheetRenderer.DEFAULT_CONTENT_TYPE -> "style";
             default -> null;
         };
-    }
-
-    /**
-     * @see ResourceHandler#markResourceRendered(FacesContext, String, String)
-     */
-    @Override
-    public void markResourceRendered(FacesContext context, String resourceName, String libraryName) {
-        super.markResourceRendered(context, removeQueryString(resourceName), libraryName);
-    }
-
-    /**
-     * @see ResourceHandler#isResourceRendered(FacesContext, String, String)
-     */
-    @Override
-    public boolean isResourceRendered(FacesContext context, String resourceName, String libraryName) {
-        return super.isResourceRendered(context, removeQueryString(resourceName), libraryName);
     }
 
     /**
@@ -545,8 +531,8 @@ public class ResourceHandlerImpl extends ResourceHandler {
     }
 
     /**
-     * @param resourceName the resource name, optionally carrying a query string as supported by
-     * {@link org.glassfish.mojarra.renderkit.html_basic.ScriptStyleBaseRenderer}
+     * @param resourceName the resource name, optionally carrying a query string as specified in section 2.6.1.3
+     * "Resource Identifiers" of the Jakarta Faces Specification Document
      * @return the resource name without its query string, as only the part before the '?' identifies the file
      */
     static String removeQueryString(String resourceName) {
@@ -556,6 +542,21 @@ public class ResourceHandlerImpl extends ResourceHandler {
 
         int queryStringIndex = resourceName.indexOf('?');
         return queryStringIndex == -1 ? resourceName : resourceName.substring(0, queryStringIndex);
+    }
+
+    /**
+     * @param resourceName the resource name, optionally carrying a query string as specified in section 2.6.1.3
+     * "Resource Identifiers" of the Jakarta Faces Specification Document
+     * @return the query string of the resource name without its introducing '?', or <code>null</code> if there is none
+     */
+    static String getQueryString(String resourceName) {
+        if (resourceName == null) {
+            return null;
+        }
+
+        int queryStringIndex = resourceName.indexOf('?');
+        return queryStringIndex == -1 || queryStringIndex == resourceName.length() - 1 ? null
+                : resourceName.substring(queryStringIndex + 1);
     }
 
     /**

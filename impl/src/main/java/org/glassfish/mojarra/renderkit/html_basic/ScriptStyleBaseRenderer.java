@@ -171,16 +171,6 @@ public abstract class ScriptStyleBaseRenderer extends Renderer<UIComponent> impl
             return;
         }
 
-        // Special case of resource names that have query strings.
-        // These resources actually use their query strings internally, not externally, so we don't need the resource to know
-        // about them.
-        int queryPos = name.indexOf("?");
-        String query = null;
-        if (queryPos > -1 && name.length() > queryPos) {
-            query = name.substring(queryPos + 1);
-            name = name.substring(0, queryPos);
-        }
-
         String library = (String) attributes.get("library");
 
         // Ensure this resource is not rendered more than once per request.
@@ -195,7 +185,7 @@ public abstract class ScriptStyleBaseRenderer extends Renderer<UIComponent> impl
         ResponseWriter writer = context.getResponseWriter();
         startExternalElement(context, writer, component);
 
-        if (library == null && name != null && ApplicationAssociate.getInstance(context).getResourceManager().isContractsResource(name)) {
+        if (library == null && ApplicationAssociate.getInstance(context).getResourceManager().isContractsResource(name)) {
             if (context.isProjectStage(ProjectStage.Development)) {
                 String msg = "Illegal path, direct contract references are not allowed: " + name;
                 context.addMessage(component.getClientId(context), new FacesMessage(FacesMessage.Severity.ERROR, msg, msg));
@@ -209,11 +199,7 @@ public abstract class ScriptStyleBaseRenderer extends Renderer<UIComponent> impl
                 context.addMessage(component.getClientId(context), new FacesMessage(FacesMessage.Severity.ERROR, msg, msg));
             }
         } else {
-            resourceUrl = resource.getRequestPath();
-            if (query != null) {
-                resourceUrl = resourceUrl + (resourceUrl.indexOf("?") > -1 ? "&amp;" : "?") + query;
-            }
-            resourceUrl = context.getExternalContext().encodeResourceURL(resourceUrl);
+            resourceUrl = context.getExternalContext().encodeResourceURL(resource.getRequestPath());
         }
 
         endExternalElement(writer, component, resourceUrl);
