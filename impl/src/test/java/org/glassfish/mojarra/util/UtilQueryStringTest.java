@@ -13,10 +13,10 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
-package org.glassfish.mojarra.application.resource;
+package org.glassfish.mojarra.util;
 
-import static org.glassfish.mojarra.application.resource.ResourceHandlerImpl.getQueryString;
-import static org.glassfish.mojarra.application.resource.ResourceHandlerImpl.removeQueryString;
+import static org.glassfish.mojarra.util.Util.getQueryString;
+import static org.glassfish.mojarra.util.Util.removeQueryString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
  * Jakarta Faces Specification Document, is split into the file identifying part, which resolves the resource, and the
  * query string, which is appended to the request path.
  */
-class ResourceHandlerImplQueryStringTest {
+class UtilQueryStringTest {
 
     @Test
     void keepsResourceNameWithoutQueryString() {

@@ -27,8 +27,10 @@ import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.WARNING;
 import static org.glassfish.mojarra.util.RequestStateManager.RESOURCE_REQUEST;
 import static org.glassfish.mojarra.util.Util.getFacesMapping;
+import static org.glassfish.mojarra.util.Util.getQueryString;
 import static org.glassfish.mojarra.util.Util.notNegative;
 import static org.glassfish.mojarra.util.Util.notNull;
+import static org.glassfish.mojarra.util.Util.removeQueryString;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -177,13 +179,14 @@ public class ResourceHandlerImpl extends ResourceHandler {
     public Resource createResourceFromId(String resourceId) {
         notNull("resourceId", resourceId);
         FacesContext ctx = FacesContext.getCurrentInstance();
-        ResourceInfo info = manager.findResource(resourceId);
-        String ctype = getContentType(ctx, resourceId);
+        String id = removeQueryString(resourceId);
+        ResourceInfo info = manager.findResource(id);
+        String ctype = getContentType(ctx, id);
         if (info == null) {
-            logMissingResource(ctx, resourceId, null);
+            logMissingResource(ctx, id, null);
             return null;
         } else {
-            return new ResourceImpl(info, ctype, creationTime, maxAge);
+            return new ResourceImpl(info, ctype, creationTime, maxAge, getQueryString(resourceId));
         }
 
     }
@@ -527,35 +530,6 @@ public class ResourceHandlerImpl extends ResourceHandler {
      */
     private String getContentType(FacesContext ctx, String resourceName) {
         return ctx.getExternalContext().getMimeType(removeQueryString(resourceName));
-    }
-
-    /**
-     * @param resourceName the resource name, optionally carrying a query string as specified in section 2.6.1.3
-     * "Resource Identifiers" of the Jakarta Faces Specification Document
-     * @return the resource name without its query string, as only the part before the '?' identifies the file
-     */
-    static String removeQueryString(String resourceName) {
-        if (resourceName == null) {
-            return null;
-        }
-
-        int queryStringIndex = resourceName.indexOf('?');
-        return queryStringIndex == -1 ? resourceName : resourceName.substring(0, queryStringIndex);
-    }
-
-    /**
-     * @param resourceName the resource name, optionally carrying a query string as specified in section 2.6.1.3
-     * "Resource Identifiers" of the Jakarta Faces Specification Document
-     * @return the query string of the resource name without its introducing '?', or <code>null</code> if there is none
-     */
-    static String getQueryString(String resourceName) {
-        if (resourceName == null) {
-            return null;
-        }
-
-        int queryStringIndex = resourceName.indexOf('?');
-        return queryStringIndex == -1 || queryStringIndex == resourceName.length() - 1 ? null
-                : resourceName.substring(queryStringIndex + 1);
     }
 
     /**

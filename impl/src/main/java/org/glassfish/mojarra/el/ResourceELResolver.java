@@ -18,6 +18,8 @@
 package org.glassfish.mojarra.el;
 
 
+import static org.glassfish.mojarra.util.Util.removeQueryString;
+
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.ELResolver;
@@ -52,6 +54,8 @@ public class ResourceELResolver extends ELResolver {
      * library name, and the content after the <code>:</code> to be the resource name and pass both to
      * {@link jakarta.faces.application.ResourceHandler#createResource(String, String)}</li>
      * <li>If <code>property</code> contains more than one <code>:</code> then throw a <code>ELException</code></li>
+     * <li>A query string carried by <code>property</code> is left out of the above: the colons are counted over the
+     * part preceding the first <code>?</code>, and the query string stays with the resource name</li>
      * <li>If one of the above steps resulted in the creation of a {@link Resource} instance, call
      * <code>ELContext.setPropertyResolved(true)</code> and return the result of
      * {@link jakarta.faces.application.Resource#getRequestPath()}</li>
@@ -69,16 +73,17 @@ public class ResourceELResolver extends ELResolver {
         if (base instanceof ResourceHandler) {
             ResourceHandler handler = (ResourceHandler) base;
             String prop = property.toString();
+            String resourceIdentifier = removeQueryString(prop);
             Resource res;
-            if (!prop.contains(":")) {
+            if (!resourceIdentifier.contains(":")) {
                 res = handler.createResource(prop);
             } else {
-                if (!isPropertyValid(prop)) {
+                if (!isPropertyValid(resourceIdentifier)) {
                     // RELEASE_PENDING i18n
                     throw new ELException("Invalid resource format.  Property " + prop + " contains more than one colon (:)");
                 }
 
-                String[] parts = Util.split(prop, ':');
+                String[] parts = Util.split(prop, ':', 2);
 
                 // If the enclosing entity for this expression is itself
                 // a resource, the "this" syntax for the library name must
