@@ -114,7 +114,7 @@ In case of WildFly/JBoss EAP, [you need to manually package `jsf-api.jar` and `j
 
 ## Testing
 
-Since Mojarra 4, tests have been moved to the [Faces project](https://github.com/jakartaee/faces/tree/master/tck).
+Since Mojarra 4, tests have been moved to the [Faces project](https://github.com/jakartaee/faces/tree/main/tck).
 
 
 ## Hello World Example
@@ -247,7 +247,7 @@ In case you want to checkout this repository and manually build from source your
 ### Jakarta Faces 4.0
 
 1. Make sure that you have JDK 11, Ant and Maven installed.
-2. Checkout branch [`master`][28].
+2. Checkout branch [`4.0`][28].
 3. Run the following commands from the root directory of the project:
 
     ```bash
@@ -308,11 +308,11 @@ In case you want to checkout to edit the source code of Mojarra with full IDE su
 
 Pull requests are accepted on following branches:
 
-- [`master`][28] (4.0.x)
+- [`4.0`][28] (4.0.x)
 - [`3.0`][29] (3.0.x)
 - [`2.3`][30] (2.3.x)
 
-Note that it's okay to send a PR to the master branch, but this one is for Faces.next and not the current 2.3.x or 3.0.x version.
+Note that it's okay to send a PR to the `4.0` branch, but that one is for 4.0.x and not the current 2.3.x or 3.0.x version.
 
 ## Releasing
 
@@ -363,7 +363,7 @@ mvn versions:set -DgroupId=* -DartifactId=* -DoldVersion=* -DgenerateBackupPoms=
   [25]: http://docs.oracle.com/javaee/7/tutorial/jsf-intro.htm
   [26]: http://arjan-tijms.omnifaces.org/p/jsf-23.html
   [27]: https://github.com/javaeekickoff/java-ee-kickoff-app
-  [28]: https://github.com/eclipse-ee4j/mojarra
+  [28]: https://github.com/eclipse-ee4j/mojarra/tree/4.0
   [29]: https://github.com/eclipse-ee4j/mojarra/tree/3.0
   [30]: https://github.com/eclipse-ee4j/mojarra/tree/2.3
   [31]: CONTEXT-PARAMS.md
