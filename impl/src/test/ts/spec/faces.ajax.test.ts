@@ -2274,3 +2274,62 @@ describe("faces.ajax.response: malformedXML parser branches", () => {
         expect(errors[0].status).toBe("malformedXML");
     });
 });
+
+// ---- Independent scripts in an update ----
+
+/**
+ * The scripts of an update run in document order, and each one with a `src` suspends the rest until it has loaded,
+ * resuming in a later task. By then the update markup is live and the `load` or `error` of any resource element in it
+ * may already have been dispatched. A script which depends on nothing around it therefore declares itself
+ * independent, and runs before the markup goes live rather than in that order.
+ */
+describe("faces.ajax.response: independent scripts", () => {
+    let form: HTMLFormElement;
+    let button: HTMLButtonElement;
+    let target: HTMLElement;
+
+    /** Records what each script saw of the markup it came with, written from the scripts under test. */
+    const recorder = () => window as unknown as { order: string[] };
+
+    const respondWithUpdate = (markup: string) => lastXHR().respond(200, "", '<?xml version="1.0" encoding="UTF-8"?>'
+        + '<partial-response id="testForm"><changes>'
+        + '<update id="target"><![CDATA[' + markup + ']]></update>'
+        + '</changes></partial-response>');
+
+    beforeEach(() => {
+        installMockXHR();
+        ({ form, button } = createAjaxForm());
+        target = document.createElement("div");
+        target.id = "target";
+        document.body.appendChild(target);
+        recorder().order = [];
+    });
+
+    afterEach(() => {
+        form?.remove();
+        target?.remove();
+        uninstallMockXHR();
+    });
+
+    test("runs an independent script before the markup goes live", () => {
+        ajax().request(button, null, { render: "target" });
+        respondWithUpdate('<div id="target">'
+            + '<script src="/suspends.js"></script>'
+            + '<script data-mojarra-independent>order.push("independent:" + !!document.getElementById("marker"))</script>'
+            + '<span id="marker"></span>'
+            + '</div>');
+
+        expect(recorder().order).toEqual(["independent:false"]);
+    });
+
+    test("runs an ordinary script only once the markup is live", () => {
+        ajax().request(button, null, { render: "target" });
+        respondWithUpdate('<div id="target">'
+            + '<script src="/suspends.js"></script>'
+            + '<script>order.push("ordinary:" + !!document.getElementById("marker"))</script>'
+            + '<span id="marker"></span>'
+            + '</div>');
+
+        expect(recorder().order).toEqual(["ordinary:true"]);
+    });
+});

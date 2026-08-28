@@ -130,6 +130,7 @@ public class OutputMessageRenderer extends HtmlBasicInputRenderer {
         }
         if (wroteSpan) {
             writer.endElement("span");
+            RenderKitUtils.flushPendingBehaviorEventListeners(context, component, null);
         }
 
     }

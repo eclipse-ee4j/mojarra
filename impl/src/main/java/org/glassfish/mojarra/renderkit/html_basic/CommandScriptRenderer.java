@@ -106,6 +106,7 @@ public class CommandScriptRenderer extends HtmlBasicRenderer {
         assert writer != null;
 
         writer.endElement("span");
+        RenderKitUtils.flushPendingBehaviorEventListeners(context, component, null);
     }
 
     @Override

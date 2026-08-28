@@ -142,6 +142,19 @@ public class HtmlResponseWriter extends ResponseWriter {
     // pending-behavior-event-listeners map. May be null if startElement was called without a component.
     private UIComponent currentComponent;
 
+    // The id attribute written on the element currently being started, if any. A deferred on* pass-through attribute
+    // is wired by mojarra.ael(), which locates its element by the component's client id, so the handler can only be
+    // deferred when the element actually carries that very id.
+    private String currentElementId;
+
+    // Name of the element currently being started, so that the delegation rule is applied to the element the
+    // pass-through attributes are written onto.
+    private String currentElementName;
+
+    // Whether the behavior event bootstrap is already in the response being written. Cleared in startDocument, so
+    // that a response which is reset and rendered anew gets the bootstrap again.
+    private boolean behaviorEventBootstrapWritten;
+
     // Internal buffer for to store the result of String.getChars() for
     // values passed to the writer as String to reduce the overhead
     // of String.charAt(). This buffer will be grown, if necessary, to
@@ -152,6 +165,10 @@ public class HtmlResponseWriter extends ResponseWriter {
 
     private Deque<String> elementNames;
 
+    private static final String SCRIPT_CDATA_START = "\n//<![CDATA[\n";
+    private static final String SCRIPT_CDATA_END = "\n//]]>\n";
+    private static final String STYLE_CDATA_START = "\n<![CDATA[\n";
+    private static final String STYLE_CDATA_END = "\n]]>\n";
     private static final String BREAKCDATA = "]]><![CDATA[";
     private static final char[] ESCAPEDSINGLEBRACKET = ("]" + BREAKCDATA).toCharArray();
     private static final char[] ESCAPEDLT = ("&lt;" + BREAKCDATA).toCharArray();
@@ -318,6 +335,7 @@ public class HtmlResponseWriter extends ResponseWriter {
                     isScriptInAttributeValueEnabled, disableUnicodeEscaping, isPartial);
             responseWriter.dontEscape = dontEscape;
             responseWriter.writingCdata = writingCdata;
+            responseWriter.behaviorEventBootstrapWritten = behaviorEventBootstrapWritten;
             return responseWriter;
 
         } catch (FacesException e) {
@@ -377,7 +395,7 @@ public class HtmlResponseWriter extends ResponseWriter {
             dontEscape = false;
         }
 
-        isXhtml = getContentType().equals(RIConstants.XHTML_CONTENT_TYPE);
+        isXhtml = RIConstants.XHTML_CONTENT_TYPE.equals(getContentType());
 
         if (isScriptOrStyle(kind) && !scriptOrStyleSrc && writer instanceof FastStringWriter) {
             String result = ((FastStringWriter) writer).getBuffer().toString();
@@ -434,15 +452,7 @@ public class HtmlResponseWriter extends ResponseWriter {
                     }
                 }
             }
-            if (isXhtml) {
-                if (!writingCdata) {
-                    if (isScript) {
-                        writer.write("\n//]]>\n");
-                    } else {
-                        writer.write("\n]]>\n");
-                    }
-                }
-            }
+            writeCdataEndIfNecessary();
         }
 
         if (!withinScript || isScript) {
@@ -505,7 +515,7 @@ public class HtmlResponseWriter extends ResponseWriter {
     @Override
     public void startDocument() throws IOException {
 
-        // do nothing;
+        behaviorEventBootstrapWritten = false;
 
     }
 
@@ -552,15 +562,26 @@ public class HtmlResponseWriter extends ResponseWriter {
         }
 
         currentComponent = componentForElement;
+        currentElementId = null;
+        Map<String, Object> passThroughAttrs = null;
+
         if (null != componentForElement) {
-            Map<String, Object> passThroughAttrs = componentForElement.getPassThroughAttributes(false);
+            passThroughAttrs = componentForElement.getPassThroughAttributes(false);
             if (null != passThroughAttrs && !passThroughAttrs.isEmpty()) {
                 considerPassThroughAttributes(passThroughAttrs);
             }
         }
 
-        writer.write('<');
+        // Resolved before anything is written, as the pass-through localName can rename the element and it is the
+        // rendered element which decides whether its handler can outrun the wiring.
         String elementName = pushElementName(name);
+        currentElementName = elementName;
+
+        if (null != passThroughAttrs && !passThroughAttrs.isEmpty()) {
+            writeBehaviorEventBootstrapIfNecessary(elementName, passThroughAttrs);
+        }
+
+        writer.write('<');
         writer.write(elementName);
 
         closeStart = true;
@@ -665,6 +686,10 @@ public class HtmlResponseWriter extends ResponseWriter {
 
         if (name.equalsIgnoreCase("src") && isScriptOrStyle()) {
             scriptOrStyleSrc = true;
+        }
+
+        if (name.equalsIgnoreCase("id")) {
+            currentElementId = value.toString();
         }
 
         Class<?> valueClass = value.getClass();
@@ -993,16 +1018,8 @@ public class HtmlResponseWriter extends ResponseWriter {
             writer.write('>');
             closeStart = false;
             if (isScriptOrStyle() && !scriptOrStyleSrc) {
-                isXhtml = getContentType().equals(RIConstants.XHTML_CONTENT_TYPE);
-                if (isXhtml) {
-                    if (!writingCdata) {
-                        if (isScript) {
-                            writer.write("\n//<![CDATA[\n");
-                        } else {
-                            writer.write("\n<![CDATA[\n");
-                        }
-                    }
-                }
+                isXhtml = RIConstants.XHTML_CONTENT_TYPE.equals(getContentType());
+                writeCdataStartIfNecessary();
                 origWriter = writer;
                 if (scriptBuffer == null) {
                     scriptBuffer = new FastStringWriter(1024);
@@ -1046,6 +1063,20 @@ public class HtmlResponseWriter extends ResponseWriter {
         writePassthroughAttributes(passthroughAttributes);
     }
 
+    /**
+     * Write the given pass-through attributes onto the currently open start tag. A behavior event attribute, whose name
+     * starts with {@code on}, is written without an inline handler where the runtime can still guarantee that its
+     * script runs on the event, in one of two ways. A delegated one is renamed to its
+     * {@value RenderKitUtils#DELEGATED_BEHAVIOR_EVENT_ATTRIBUTE_PREFIX} counterpart and picked up by the bootstrap
+     * which this writer has put ahead of it. Any other is wired afterwards by {@code mojarra.ael()}, which
+     * locates its element by the component's client id and therefore needs the element to carry that very id. An
+     * element which qualifies for neither gets the handler inline, as a handler which is dropped or attached too late
+     * is no handler at all.
+     *
+     * @param attrs the pass-through attributes to write
+     * @throws IOException if an input/output error occurs
+     * @throws IllegalStateException if there is no currently open element
+     */
     public void writePassthroughAttributes(Map<String, Object> attrs) throws IOException {
         if (attrs == null || attrs.isEmpty()) {
             return;
@@ -1054,20 +1085,107 @@ public class HtmlResponseWriter extends ResponseWriter {
             throw new IllegalStateException("Cannot write passthrough attributes when there is no currently open element");
         }
         FacesContext context = FacesContext.getCurrentInstance();
+        Map<String, String> resolved = new LinkedHashMap<>(attrs.size());
+
         for (Map.Entry<String, Object> entry : attrs.entrySet()) {
-            Object valObj = entry.getValue();
-            String val = getAttributeValue(context, valObj);
+            String val = getAttributeValue(context, entry.getValue());
+
             if (val != null) {
-                String key = entry.getKey();
-                if ("styleClass".equals(key)) {
-                    key = "class";
-                }
-                if (currentComponent != null && RenderKitUtils.isBehaviorEventAttribute(key)) {
-                    RenderKitUtils.addEventListener(context, currentComponent, key.substring(2), val);
-                } else {
-                    writeURIAttributeIgnoringPassThroughAttributes(key, val, key, true);
-                }
+                resolved.put(entry.getKey(), val);
             }
+        }
+
+        String elementId = resolved.containsKey("id") ? resolved.get("id") : currentElementId;
+        boolean elementIsAddressable = context != null && currentComponent != null && elementId != null
+                && elementId.equals(currentComponent.getClientId(context));
+        for (Map.Entry<String, String> entry : resolved.entrySet()) {
+            String key = entry.getKey();
+            String val = entry.getValue();
+
+            if ("styleClass".equals(key)) {
+                key = "class";
+            }
+
+            boolean delegated = RenderKitUtils.isDelegatedBehaviorEventAttribute(currentElementName, key);
+
+            if (delegated && behaviorEventBootstrapWritten) {
+                writeURIAttributeIgnoringPassThroughAttributes(RenderKitUtils.getDelegatedBehaviorEventAttributeName(key), val, key, true);
+            }
+            // A delegated attribute without its bootstrap goes inline: mojarra.ael() attaches after the element is
+            // parsed, which is too late for the very events which are delegated.
+            else if (!delegated && elementIsAddressable && RenderKitUtils.isBehaviorEventAttribute(key)) {
+                RenderKitUtils.addEventListener(context, currentComponent, key.substring(2), val);
+            }
+            else {
+                writeURIAttributeIgnoringPassThroughAttributes(key, val, key, true);
+            }
+        }
+    }
+
+    /**
+     * Writes the behavior event bootstrap ahead of the element being started, when that element carries a delegated
+     * behavior event attribute and the bootstrap is not already in the response. It goes out as raw markup, as the
+     * element methods of this writer would touch the bookkeeping of the element being started.
+     */
+    private void writeBehaviorEventBootstrapIfNecessary(String elementName, Map<String, Object> passThroughAttrs) throws IOException {
+        if (behaviorEventBootstrapWritten || !RenderKitUtils.hasDelegatedBehaviorEventAttribute(elementName, passThroughAttrs)) {
+            return;
+        }
+
+        behaviorEventBootstrapWritten = true;
+        FacesContext context = FacesContext.getCurrentInstance();
+        String nonce = context != null ? context.getApplication().getResourceHandler().getCurrentNonce(context) : null;
+        // Both are recomputed at each use, and are set here for the CDATA writers below.
+        boolean wasScript = isScript;
+        boolean wasXhtml = isXhtml;
+        isScript = true;
+        isXhtml = RIConstants.XHTML_CONTENT_TYPE.equals(getContentType());
+
+        writer.write("<script ");
+        writer.write(RenderKitUtils.INDEPENDENT_SCRIPT_ATTRIBUTE);
+
+        if (context != null && !RenderKitUtils.isOutputHtml5Doctype(context)) {
+            writer.write(" type=\"");
+            writer.write(ScriptRenderer.DEFAULT_CONTENT_TYPE);
+            writer.write('"');
+        }
+
+        if (nonce != null) {
+            writer.write(" nonce=\"");
+            ensureTextBufferCapacity(nonce);
+            HtmlUtils.writeAttribute(writer, escapeUnicode, escapeIso, nonce, textBuffer, isScriptInAttributeValueEnabled, isPartial);
+            writer.write('"');
+        }
+
+        writer.write('>');
+
+        // The script is written as-is, so it needs the CDATA section itself, which the buffered path gets from
+        // closeStartIfNecessary and endElement.
+        writeCdataStartIfNecessary();
+        writer.write(RenderKitUtils.getBehaviorEventBootstrap());
+        writeCdataEndIfNecessary();
+        writer.write("</script>");
+        isScript = wasScript;
+        isXhtml = wasXhtml;
+    }
+
+    /**
+     * Writes the start of the CDATA section which wraps the content of a script or style element, if the response is
+     * XML and no section is open yet.
+     */
+    private void writeCdataStartIfNecessary() throws IOException {
+        if (isXhtml && !writingCdata) {
+            writer.write(isScript ? SCRIPT_CDATA_START : STYLE_CDATA_START);
+        }
+    }
+
+    /**
+     * Writes the end of the CDATA section which {@link #writeCdataStartIfNecessary()} started, under the same
+     * condition.
+     */
+    private void writeCdataEndIfNecessary() throws IOException {
+        if (isXhtml && !writingCdata) {
+            writer.write(isScript ? SCRIPT_CDATA_END : STYLE_CDATA_END);
         }
     }
 
@@ -1120,9 +1238,8 @@ public class HtmlResponseWriter extends ResponseWriter {
     }
 
     private String getElementName(String name) {
-        // The passthrough localName applies only to the element itself, never to framework-generated
-        // <script>/<style> elements (e.g. the CSP behavior-listener script written by renderScript()
-        // for a passthrough element that holds a client behavior such as f:ajax).
+        // The passthrough localName applies only to the element itself, never to a framework-generated
+        // <script>/<style> element.
         ElementKind kind = ElementKind.of(name);
         if (kind != ElementKind.SCRIPT && kind != ElementKind.STYLE
                 && containsPassThroughAttribute(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY)) {
