@@ -19,7 +19,7 @@
 Eclipse's implementation of the Jakarta Faces 5.0 specification
 
 * Mojarra 5.0 - this branch, under development
-* [Mojarra 4.1](https://github.com/eclipse-ee4j/mojarra/blob/4.1/README.md) - stable release
+* [Mojarra 4.1](https://github.com/eclipse-ee4j/mojarra/blob/main/README.md) - stable release
 * [Mojarra 4.0](https://github.com/eclipse-ee4j/mojarra/blob/4.0/README.md) - stable release
 * [Mojarra 3.0](https://github.com/eclipse-ee4j/mojarra/blob/3.0/README.md) - legacy release
 * [Mojarra 2.3](https://github.com/eclipse-ee4j/mojarra/blob/2.3/README.md) - legacy release
@@ -110,7 +110,7 @@ You can check [`org.glassfish:mojarra`][16] repository to find the latest Mojarr
 
 ## Testing
 
-Since Mojarra 4, tests have been moved to the [Faces project](https://github.com/jakartaee/faces/tree/master/tck).
+Since Mojarra 4, tests have been moved to the [Faces project](https://github.com/jakartaee/faces/tree/main/tck).
 
 
 ## Hello World Example
