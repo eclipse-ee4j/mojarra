@@ -43,6 +43,15 @@
         <test.selenium>true</test.selenium>
         <failsafe.rerunFailingTestsCount>0</failsafe.rerunFailingTestsCount>
         <chromedriver.version>139</chromedriver.version>
+
+        <!-- The TCK util declares its test tooling optional so that it is not packaged into every war, so every
+             consumer of it declares that tooling itself. Keep these in step with faces/tck/pom.xml. -->
+        <arquillian.version>1.10.0.Final</arquillian.version>
+        <arquillian-suite-extension.version>1.2.2</arquillian-suite-extension.version>
+        <junit.version>5.13.4</junit.version>
+        <junit-platform.version>1.14.4</junit-platform.version>
+        <selenium.version>4.35.0</selenium.version>
+        <shrinkwrap-resolver.version>3.3.4</shrinkwrap-resolver.version>
         <arquillian.browser>chrome</arquillian.browser>
         <faces-api.version>5.0.0-SNAPSHOT</faces-api.version>
         <mojarra.version>${project.version}</mojarra.version>
@@ -78,6 +87,60 @@
             <groupId>org.eclipse.ee4j.tck.faces.test</groupId>
             <artifactId>util</artifactId>
             <version>${tck.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-launcher</artifactId>
+            <version>${junit-platform.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.junit5</groupId>
+            <artifactId>arquillian-junit5-container</artifactId>
+            <version>${arquillian.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>${selenium.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-chrome-driver</artifactId>
+            <version>${selenium.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-devtools-v${chromedriver.version}</artifactId>
+            <version>${selenium.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.resolver</groupId>
+            <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+            <version>${shrinkwrap-resolver.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.resolver</groupId>
+            <artifactId>shrinkwrap-resolver-impl-maven-archive</artifactId>
+            <version>${shrinkwrap-resolver.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eu.ingwar.tools</groupId>
+            <artifactId>arquillian-suite-extension</artifactId>
+            <version>${arquillian-suite-extension.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
