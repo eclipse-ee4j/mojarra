@@ -304,16 +304,6 @@ In case you want to checkout to edit the source code of Mojarra with full IDE su
 2. Right click the Mojarra project after checkout, choose Configure -> Convert to Maven Project
 
 
-## Pull Requests
-
-Pull requests are accepted on following branches:
-
-- [`4.0`][28] (4.0.x)
-- [`3.0`][29] (3.0.x)
-- [`2.3`][30] (2.3.x)
-
-Note that it's okay to send a PR to the `4.0` branch, but that one is for 4.0.x and not the current 2.3.x or 3.0.x version.
-
 ## Releasing
 
 pom.xml versions can be adjusted as follows
