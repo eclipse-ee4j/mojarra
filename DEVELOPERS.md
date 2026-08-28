@@ -9,7 +9,7 @@ In case you want to checkout this repository and manually build from source your
 ### Mojarra 5.0
 
 1. Make sure that you have JDK 17 and Maven installed.
-2. Checkout branch [`master`][28].
+2. Checkout branch [`5.0`][28].
 3. Run the following commands from the `impl` directory of the project:
 
     ```bash
@@ -22,7 +22,7 @@ In case you want to checkout this repository and manually build from source your
 ### Mojarra 4.1
 
 1. Make sure that you have JDK 17 and Maven installed.
-2. Checkout branch [`4.1`][32].
+2. Checkout branch [`main`][32].
 3. Run the following commands from the `impl` directory of the project:
 
     ```bash
@@ -55,20 +55,20 @@ In case you want to checkout to edit the source code of Mojarra with full IDE su
 
 ### Eclipse
 
-1. Checkout the desired branch ([`master`][28], [`4.1`][32], or [`4.0`][31]) using File -> Import -> Git
+1. Checkout the desired branch ([`5.0`][28], [`main`][32], or [`4.0`][31]) using File -> Import -> Git
 2. Right click the Mojarra project after checkout, choose Configure -> Convert to Maven Project
 
 ## Pull Requests
 
 Pull requests are accepted on following branches:
 
-- [`master`][28] (5.0.x)
-- [`4.1`][32] (4.1.x)
+- [`5.0`][28] (5.0.x)
+- [`main`][32] (4.1.x)
 - [`4.0`][31] (4.0.x)
 
-Note that it's okay to send a PR to the master branch, but this one is for 5.0 and not the rolling 4.1.x or 4.0.x version.
+Note that it's okay to send a PR to the `5.0` branch, but that one is for the next major version and not the rolling 4.1.x or 4.0.x version.
 
 
-  [28]: https://github.com/eclipse-ee4j/mojarra
+  [28]: https://github.com/eclipse-ee4j/mojarra/tree/5.0
   [31]: https://github.com/eclipse-ee4j/mojarra/tree/4.0
-  [32]: https://github.com/eclipse-ee4j/mojarra/tree/4.1
+  [32]: https://github.com/eclipse-ee4j/mojarra/tree/main

@@ -110,7 +110,7 @@ You can check [`org.glassfish:jakarta.faces`][16] repository to find the latest 
 
 ## Testing
 
-Since Mojarra 4, tests have been moved to the [Faces project](https://github.com/jakartaee/faces/tree/master/tck).
+Since Mojarra 4, tests have been moved to the [Faces project](https://github.com/jakartaee/faces/tree/main/tck).
 
 
 ## Hello World Example
