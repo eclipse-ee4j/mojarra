@@ -4,7 +4,7 @@
         "node": ">=22"
     },
     "scripts": {
-        "build": "rollup --config rollup.config.mjs && terser ../../../target/classes/META-INF/resources/jakarta.faces/faces-uncompressed.js --compress --mangle --ecma 2020 --comments \"/^!/\" -o ../../../target/classes/META-INF/resources/jakarta.faces/faces.js"
+        "build": "rollup --config rollup.config.mjs && terser ../../../target/classes/META-INF/resources/jakarta.faces/faces-uncompressed.js --compress --mangle --ecma 2020 --comments \"/^!/\" -o ../../../target/classes/META-INF/resources/jakarta.faces/faces.js && terser ../../../target/ts/behavior-event-bootstrap-uncompressed.js --compress --mangle --ecma 2020 --comments false -o ../../../target/classes/org/glassfish/mojarra/renderkit/behavior-event-bootstrap.js"
     },
     "devDependencies": {
         "@rollup/plugin-typescript": "^12.1.4",

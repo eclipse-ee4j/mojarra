@@ -605,16 +605,23 @@ public abstract class HtmlBasicRenderer extends Renderer<UIComponent> {
         //
         // - We have a non-auto-generated id, or...
         // - We have client behaviors, or...
-        // - The component is a UICommand (its CSP-style click listener is attached
-        //   via mojarra.ael(clientId, ...) which needs the id on the rendered element).
+        // - The component is a UICommand, or...
+        // - The component carries a behavior event attribute.
         //
+        // The last two are attached via mojarra.ael(clientId, ...) which needs the id on the rendered element.
         // We assume that if client behaviors are present, they
         // may need access to the id (AjaxBehavior certainly does).
 
-        String id;
-        return null != (id = component.getId()) && (!id.startsWith(UIViewRoot.UNIQUE_ID_PREFIX)
+        String id = component.getId();
+
+        if (id == null) {
+            return RenderKitUtils.hasBehaviorEventAttribute(component);
+        }
+
+        return !id.startsWith(UIViewRoot.UNIQUE_ID_PREFIX)
                 || component instanceof UICommand
-                || component instanceof ClientBehaviorHolder && !((ClientBehaviorHolder) component).getClientBehaviors().isEmpty());
+                || component instanceof ClientBehaviorHolder && !((ClientBehaviorHolder) component).getClientBehaviors().isEmpty()
+                || RenderKitUtils.hasBehaviorEventAttribute(component);
     }
 
     protected String writeIdAttributeIfNecessary(FacesContext context, ResponseWriter writer, UIComponent component) {

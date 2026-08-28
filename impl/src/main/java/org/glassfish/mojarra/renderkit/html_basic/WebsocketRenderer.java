@@ -94,7 +94,7 @@ public class WebsocketRenderer extends HtmlBasicRenderer implements ComponentSys
 
             RenderKitUtils.renderFacesJsIfNecessary(context);
 
-            RenderKitUtils.renderScript(context, component, clientId, String.format(SCRIPT_INIT, clientId, url, channel, functions, behaviors, connected));
+            RenderKitUtils.renderScript(context, clientId, String.format(SCRIPT_INIT, clientId, url, channel, functions, behaviors, connected));
         }
     }
 

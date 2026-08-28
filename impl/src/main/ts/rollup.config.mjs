@@ -26,20 +26,35 @@ const BANNER = `/*!
  * @description This is the standard implementation of the Faces JavaScript Library.
  */`;
 
-export default {
-    input: "index.ts",
-    output: {
-        file: "../../../target/classes/META-INF/resources/jakarta.faces/faces-uncompressed.js",
-        format: "iife",
-        banner: BANNER,
-        strict: false,
-        generatedCode: { constBindings: true },
+const plugins = () => [
+    typescript({
+        tsconfig: "./tsconfig.json",
+        noEmitOnError: true,
+        compilerOptions: { noEmit: false },
+    }),
+];
+
+export default [
+    {
+        input: "index.ts",
+        output: {
+            file: "../../../target/classes/META-INF/resources/jakarta.faces/faces-uncompressed.js",
+            format: "iife",
+            banner: BANNER,
+            strict: false,
+            generatedCode: { constBindings: true },
+        },
+        plugins: plugins(),
     },
-    plugins: [
-        typescript({
-            tsconfig: "./tsconfig.json",
-            noEmitOnError: true,
-            compilerOptions: { noEmit: false },
-        }),
-    ],
-};
+    {
+        // Rendered inline by the response writer, hence no banner and no place under the served resources.
+        input: "behavior-event-bootstrap.ts",
+        output: {
+            file: "../../../target/ts/behavior-event-bootstrap-uncompressed.js",
+            format: "iife",
+            strict: false,
+            generatedCode: { constBindings: true },
+        },
+        plugins: plugins(),
+    },
+];

@@ -12,6 +12,7 @@ declare global {
 
 export const FACES_JS_UNCOMPRESSED = path.resolve(__dirname, "../../../target/classes/META-INF/resources/jakarta.faces/faces-uncompressed.js");
 export const FACES_JS = path.resolve(__dirname, "../../../target/classes/META-INF/resources/jakarta.faces/faces.js");
+export const BEHAVIOR_EVENT_BOOTSTRAP_JS = path.resolve(__dirname, "../../../target/classes/org/glassfish/mojarra/renderkit/behavior-event-bootstrap.js");
 
 /**
  * Parse the @version JSDoc tag from faces-uncompressed.js and derive expected specversion and implversion.
@@ -45,5 +46,15 @@ export function loadFacesJs(): void {
 
     const script = document.createElement("script");
     script.textContent = evaluated;
+    document.head.appendChild(script);
+}
+
+/**
+ * Load the compressed behavior event bootstrap into jsdom, the way the response writer renders it: inline, and ahead of
+ * the elements whose events it handles. Call this in beforeAll().
+ */
+export function loadBehaviorEventBootstrap(): void {
+    const script = document.createElement("script");
+    script.textContent = fs.readFileSync(BEHAVIOR_EVENT_BOOTSTRAP_JS, "utf-8");
     document.head.appendChild(script);
 }

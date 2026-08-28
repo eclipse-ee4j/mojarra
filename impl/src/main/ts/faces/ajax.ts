@@ -205,6 +205,10 @@ export const ajax = (function () {
         // Regex to find type attribute
         const TAG_ATTRIBUTE_TYPE_REGEX = /type="([\S]*?)"/im;
 
+        // Marks a script which depends on nothing around it, so that it runs before the markup it came with goes
+        // live. Must spell the same name as RenderKitUtils.INDEPENDENT_SCRIPT_ATTRIBUTE.
+        const INDEPENDENT_SCRIPT_ATTRIBUTE_REGEX = /\sdata-mojarra-independent(\s|=|$)/im;
+
         /**
          * Get all scripts from supplied string, return them as an array for later processing.
          * @param html a String containing a portion of html
@@ -225,6 +229,41 @@ export const ajax = (function () {
                 scripts.push(scriptStr);
             }
             return scripts;
+        };
+
+        /**
+         * Extract the scripts from the given markup, running those which declare that they must run before that
+         * markup goes live and returning the rest for {@link runScripts}.
+         * @param html a String containing a portion of html
+         * @ignore
+         */
+        const extractScripts = function extractScripts(html: string): RegExpMatchArray[] {
+            const scripts = getScripts(html);
+            runIndependentScripts(scripts);
+            return scripts;
+        };
+
+        /**
+         * Run and remove the scripts which declare themselves independent of the scripts around them.
+         *
+         * {@link runScripts} suspends on every script with a src, resuming in a later task, by which time the markup
+         * is live and any load or error of its resource elements may already have been dispatched. A script which
+         * declares itself independent must observe those, so it runs before the markup goes live.
+         * @param scripts Array of script nodes, from which the independent ones are removed.
+         * @ignore
+         */
+        const runIndependentScripts = function runIndependentScripts(scripts: RegExpMatchArray[]): void {
+            const head = getHead();
+            const nonce = getNonce();
+
+            for (let index = scripts.length - 1; index >= 0; index--) {
+                const scriptStr = scripts[index];
+
+                if (INDEPENDENT_SCRIPT_ATTRIBUTE_REGEX.test(scriptStr[1]) && scriptStr[2]) {
+                    executeScriptWithNonce(head, scriptStr[2], nonce);
+                    scripts.splice(index, 1);
+                }
+            }
         };
 
         /**
@@ -408,7 +447,7 @@ export const ajax = (function () {
 
             // Get scripts from text, then strip them so innerHTML does not see them,
             // then run them after the DOM is in place.
-            const scripts = getScripts(src);
+            const scripts = extractScripts(src);
             src = removeScripts(src);
             temp.innerHTML = src;
             cloneAttributes(temp, element);
@@ -820,7 +859,7 @@ export const ajax = (function () {
                 throw new Error("jakarta.faces.ViewHead not supported - browsers cannot reliably replace the head's contents");
             } else if (id === "jakarta.faces.Resource") {
                 runStylesheets(src);
-                scripts = getScripts(src);
+                scripts = extractScripts(src);
                 runScripts(scripts);
             } else {
                 const element = getElemById(id) as HTMLElement | null;
@@ -854,7 +893,7 @@ export const ajax = (function () {
                         try {
                             runStylesheets(src);
                             // Get scripts from text
-                            scripts = getScripts(src);
+                            scripts = extractScripts(src);
                             // Remove scripts from text
                             const newSrc = removeScripts(src);
                             elementReplace(getBodyElement(newSrc) as HTMLElement, docBody);
@@ -892,7 +931,7 @@ export const ajax = (function () {
 
                     if (isTableInnerElement) {
                         // Get the scripts from the html, then strip and re-run them after insertion.
-                        scripts = getScripts(html);
+                        scripts = extractScripts(html);
                         html = removeScripts(html);
                         // enclose new html inside a table
                         newElementContainer.innerHTML = '<table>' + html + '</table>';
@@ -917,7 +956,7 @@ export const ajax = (function () {
                         deleteNode(newElementContainer);
                     } else if (html.length > 0) {
                         // Get the scripts from the text, then strip and re-run them after insertion.
-                        scripts = getScripts(html);
+                        scripts = extractScripts(html);
                         html = removeScripts(html);
                         newElementContainer.innerHTML = html;
                         const firstChild = newElementContainer.firstChild;
@@ -961,7 +1000,7 @@ export const ajax = (function () {
             const isInTable = tablePattern.test(html);
 
             // Get the scripts from the text, strip them out, then execute them.
-            const scripts = getScripts(html);
+            const scripts = extractScripts(html);
             html = removeScripts(html);
             runScripts(scripts);
             const tempElement = document.createElement('div');
