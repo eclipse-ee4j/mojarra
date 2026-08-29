@@ -4,7 +4,7 @@ Since the 5.0 line there are **two** release pipelines, on two different Jenkins
 
 | Pipeline | Jenkins job | Releases | Repo / Jenkinsfile |
 | -------- | ----------- | -------- | ------------------ |
-| **mojarra-release** | [ci.eclipse.org/mojarra](https://ci.eclipse.org/mojarra/job/mojarra-release/) | the **impl** `org.glassfish:jakarta.faces` | `eclipse-ee4j/mojarra`, [`Jenkinsfile`](https://github.com/eclipse-ee4j/mojarra/blob/master/Jenkinsfile) at the repo root |
+| **mojarra-release** | [ci.eclipse.org/mojarra](https://ci.eclipse.org/mojarra/job/mojarra-release/) | the **impl** `org.glassfish:jakarta.faces` | `eclipse-ee4j/mojarra`, [`Jenkinsfile`](https://github.com/eclipse-ee4j/mojarra/blob/5.0/Jenkinsfile) at the repo root |
 | **faces-api-release** | [ci.eclipse.org/faces](https://ci.eclipse.org/faces/job/faces-api-release/) | the standalone **API** `jakarta.faces:jakarta.faces-api` | `jakartaee/faces`, [`api/Jenkinsfile`](https://github.com/jakartaee/faces/blob/5.0/api/Jenkinsfile) |
 
 On the **4.x** lines the API spec classes are bundled inside the impl jar, so there is no standalone API artifact and only the **mojarra-release** job runs. Everything about the API job and the cross-job coordination below applies to **5.0+ only**.
@@ -125,9 +125,9 @@ Maintained in `BRANCH_CONFIG` at the top of each `Jenkinsfile`; adding a release
 | ------- | ----------- | ---------- | --------- | ------- | ----------- | ----------- | ---------- | -------- | ------- |
 | `4.0`   | `4.0`       | — (bundled) | 11 | 17 | 4.0.1 | 4.0.4 | 7.1.1 | off | 1 |
 | `4.1`   | `main`      | — (bundled) | 17 | 21 | 4.1.0 | 4.1.2 | 8.0.3 | on | 1 |
-| `5.0`   | `master`    | `5.0`       | 17 | 21 | resolved | 5.0.0-SNAPSHOT (from submodule) | 9.0.0-M2 | on | 2 |
+| `5.0`   | `5.0`       | `5.0`       | 17 | 21 | resolved | 5.0.0-SNAPSHOT (from submodule) | 9.0.0-M2 | on | 2 |
 
-- **Impl branch**: the mojarra git branch with the impl source — `master` for 5.0, since the head of development lives there, not on a `5.x` branch.
+- **Impl branch**: the mojarra git branch with the impl source; it matches the release line except for 4.1, which sits on `main`.
 - **API version**: 4.x bundles the spec into the impl jar, so this is a Central GA passed as `-Dfaces.version`. On 5.0 it is resolved from `impl/pom.xml` (a `-SNAPSHOT` resolves to the dep's own base version, milestone suffix reapplied).
 - **TCK version**: a released value downloads the zip; `-SNAPSHOT` builds the TCK from the `faces/tck` submodule.
 - **Selenium**: `on` runs BaseITNG against the agent pod's Chrome; `off` self-skips when the TCK pins a CDP major outside Selenium's range (4.0's v108).

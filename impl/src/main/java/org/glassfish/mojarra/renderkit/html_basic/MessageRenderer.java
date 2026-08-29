@@ -116,6 +116,7 @@ public class MessageRenderer extends HtmlBasicRenderer {
                 writer.startElement("span", component);
                 writeIdAttributeIfNecessary(context, writer, component);
                 writer.endElement("span");
+                RenderKitUtils.flushPendingBehaviorEventListeners(context, component, null);
             } // otherwise, return without rendering
             return;
         }
@@ -228,6 +229,7 @@ public class MessageRenderer extends HtmlBasicRenderer {
 
         if (wroteSpan || wroteTooltip) {
             writer.endElement("span");
+            RenderKitUtils.flushPendingBehaviorEventListeners(context, component, null);
         }
 
     }

@@ -27,8 +27,8 @@
 
 // ---- Per-release-line configuration ---------------------------------------
 // Same shape and same keys as BRANCH_CONFIG in the root Jenkinsfile: the map key is the MAJOR.MINOR
-// version family, which deliberately differs from the git branch (the head of development sits on
-// `master`, not on a `5.x` branch). It doubles as the MyFaces version line to resolve.
+// version family, which does not always match the git branch (the 4.1 line sits on `main`). It
+// doubles as the MyFaces version line to resolve.
 //
 // Fields:
 //   implBranch   : mojarra git branch holding the impl source for this line.
@@ -37,8 +37,8 @@
 //                  into the reactor with -Papi, and test/ is reachable only through its own pom
 //                  because the root reactor is impl-only there.
 def LINE_CONFIG = [
-    '4.1': [ implBranch: 'main',   apiSubmodule: false ],
-    '5.0': [ implBranch: 'master', apiSubmodule: true  ],
+    '4.1': [ implBranch: 'main', apiSubmodule: false ],
+    '5.0': [ implBranch: '5.0',  apiSubmodule: true  ],
 ]
 
 pipeline {

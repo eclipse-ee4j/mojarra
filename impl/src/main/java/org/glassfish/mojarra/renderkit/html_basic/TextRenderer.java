@@ -179,6 +179,7 @@ public class TextRenderer extends HtmlBasicInputRenderer {
         if (isOutput && (styleClass != null || style != null || dir != null || lang != null || title != null || hasPassthroughAttributes
                 || shouldWriteIdAttribute)) {
             writer.endElement("span");
+            RenderKitUtils.flushPendingBehaviorEventListeners(context, component, null);
         }
 
     }

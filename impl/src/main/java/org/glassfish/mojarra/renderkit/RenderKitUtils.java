@@ -24,9 +24,12 @@ import static org.glassfish.mojarra.renderkit.RenderKitUtils.PredefinedPostbackP
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.PredefinedPostbackParameter.BEHAVIOR_SOURCE_PARAM;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.PredefinedPostbackParameter.PARTIAL_EVENT_PARAM;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Writer;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,6 +38,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -152,6 +156,39 @@ public class RenderKitUtils {
     private static final String PENDING_BEHAVIOR_EVENT_LISTENERS_KEY = UIComponentBase.class.getName() + ".pendingBehaviorEventListeners";
 
     private static final String BEHAVIOR_EVENT_ATTRIBUTE_PREFIX = "on";
+
+    /**
+     * The elements whose fetch of an external resource starts as the element is parsed, and whose {@code load} and
+     * {@code error} can therefore already have been dispatched by the time any script following the element runs.
+     */
+    private static final Set<String> DELEGATED_BEHAVIOR_EVENT_ELEMENTS = Set.of("script", "link", "img", "iframe");
+
+    /**
+     * The behavior event attributes which are delegated to {@code behavior-event-bootstrap.ts} instead of being wired
+     * afterwards by {@code mojarra.ael()}. Their events are dispatched at an element whose fetch of an external
+     * resource starts as the element is parsed, so they can already have fired by the time any script following the
+     * element runs. Only a listener installed before the element is parsed observes them.
+     */
+    private static final Set<String> DELEGATED_BEHAVIOR_EVENT_ATTRIBUTES = Set.of("onload", "onerror");
+
+    /**
+     * The name prefix of the attribute which carries a delegated behavior event attribute's script to the bootstrap.
+     * The bootstrap derives the very same name from the event type, so the two must spell it identically.
+     */
+    public static final String DELEGATED_BEHAVIOR_EVENT_ATTRIBUTE_PREFIX = "data-mojarra-";
+
+    /**
+     * The name of the attribute which marks a script that depends on nothing around it. The ajax response matches this
+     * very name to run such a script before the markup it came with goes live, so the two must spell it identically.
+     */
+    public static final String INDEPENDENT_SCRIPT_ATTRIBUTE = DELEGATED_BEHAVIOR_EVENT_ATTRIBUTE_PREFIX + "independent";
+
+    /**
+     * The name of the classpath resource holding the bootstrap of the delegated behavior event attributes. It is
+     * produced from {@code behavior-event-bootstrap.ts} by the same build which produces {@code faces.js}, but is
+     * rendered inline rather than served, as it must run before the first element which can carry one is parsed.
+     */
+    private static final String BEHAVIOR_EVENT_BOOTSTRAP_RESOURCE_NAME = "behavior-event-bootstrap.js";
 
     protected static final Logger LOGGER = FacesLogger.RENDERKIT.getLogger();
 
@@ -520,7 +557,7 @@ public class RenderKitUtils {
         ClientBehaviorContext behaviorContext = ClientBehaviorContext.createClientBehaviorContext(context, component, FacesComponentEvent.action.name(), submitTarget, params);
         AjaxBehavior behavior = (AjaxBehavior) context.getApplication().createBehavior(AjaxBehavior.BEHAVIOR_ID);
         mapAttributes(component, behavior, "execute", "render", "onerror", "onevent", "resetValues");
-        renderScript(context, component, null, behavior.getScript(behaviorContext));
+        renderScript(context, null, behavior.getScript(behaviorContext));
     }
 
     private static void mapAttributes(UIComponent component, AjaxBehavior behavior, String... attributeNames) {
@@ -845,6 +882,167 @@ public class RenderKitUtils {
 
     public static boolean isBehaviorEventAttribute(String name) {
         return name.startsWith(BEHAVIOR_EVENT_ATTRIBUTE_PREFIX) && name.length() > 2;
+    }
+
+    /**
+     * Returns whether the given component carries a behavior event attribute, as a renderer specific attribute or as a
+     * pass-through attribute. All but the delegated ones are wired by {@code mojarra.ael()}, which locates its element
+     * by the component's client id, so an element carrying one must also carry that id.
+     *
+     * @param component the component to check
+     * @return whether the given component carries a behavior event attribute
+     */
+    public static boolean hasBehaviorEventAttribute(UIComponent component) {
+        Map<String, Object> passThroughAttributes = component.getPassThroughAttributes(false);
+
+        if (passThroughAttributes != null) {
+            for (String name : passThroughAttributes.keySet()) {
+                if (isBehaviorEventAttribute(name)) {
+                    return true;
+                }
+            }
+        }
+
+        if (component.getClass().getName().startsWith(OPTIMIZED_PACKAGE)) {
+            for (String name : getAttributesThatAreSet(component)) {
+                if (isSupportedBehaviorEventAttribute(component, name)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        // A component outside that package maintains no set-attributes list, and a typed on* property of it is in
+        // neither that list nor the attribute map's key set, so it is read the way the render path reads it.
+        if (component instanceof ClientBehaviorHolder clientBehaviorHolder) {
+            Collection<String> eventNames = clientBehaviorHolder.getEventNames();
+
+            if (eventNames != null) {
+                for (String eventName : eventNames) {
+                    if (component.getAttributes().get(BEHAVIOR_EVENT_ATTRIBUTE_PREFIX + eventName) != null) {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        for (String name : component.getAttributes().keySet()) {
+            if (isBehaviorEventAttribute(name)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns whether the given attribute on the given element is to be delegated to the behavior event bootstrap.
+     * Only the elements whose fetch of an external resource starts as the element is parsed qualify, as those are the
+     * ones whose event can be dispatched before any script following the element runs. On any other element the event
+     * is dispatched late enough for {@code mojarra.ael()} to have been wired, and on {@code body} the event is
+     * dispatched at the window rather than at the element, where the bootstrap would never see it.
+     *
+     * @param elementName the name of the element being written
+     * @param name the attribute name
+     * @return whether the given attribute on the given element is to be delegated
+     */
+    public static boolean isDelegatedBehaviorEventAttribute(String elementName, String name) {
+        return isDelegatedBehaviorEventElement(elementName) && DELEGATED_BEHAVIOR_EVENT_ATTRIBUTES.contains(toLowerCase(name));
+    }
+
+    /**
+     * Returns the name under which a delegated behavior event attribute is carried to the bootstrap. The bootstrap
+     * derives the very same name from the event type, which is always lower case.
+     *
+     * @param name the attribute name
+     * @return the name under which the given attribute is carried to the bootstrap
+     */
+    public static String getDelegatedBehaviorEventAttributeName(String name) {
+        return DELEGATED_BEHAVIOR_EVENT_ATTRIBUTE_PREFIX + toLowerCase(name);
+    }
+
+    /**
+     * Returns whether any of the given pass-through attributes of the given element is to be delegated, which is what
+     * tells the writer that it must put the bootstrap ahead of that element.
+     *
+     * @param elementName the name of the element being written
+     * @param passThroughAttributes the pass-through attributes of the element being written
+     * @return whether any of the given pass-through attributes of the given element is to be delegated
+     */
+    public static boolean hasDelegatedBehaviorEventAttribute(String elementName, Map<String, Object> passThroughAttributes) {
+        if (!isDelegatedBehaviorEventElement(elementName)) {
+            return false;
+        }
+
+        for (String name : passThroughAttributes.keySet()) {
+            if (DELEGATED_BEHAVIOR_EVENT_ATTRIBUTES.contains(toLowerCase(name))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static boolean isDelegatedBehaviorEventElement(String elementName) {
+        return elementName != null && DELEGATED_BEHAVIOR_EVENT_ELEMENTS.contains(toLowerCase(elementName));
+    }
+
+    private static String toLowerCase(String name) {
+        return name.toLowerCase(Locale.ROOT);
+    }
+
+    /**
+     * Returns the behavior event bootstrap, for the writer to put ahead of the first element carrying a delegated
+     * attribute.
+     *
+     * @return the behavior event bootstrap
+     */
+    public static String getBehaviorEventBootstrap() {
+        return BehaviorEventBootstrap.get();
+    }
+
+    /**
+     * Reads {@value #BEHAVIOR_EVENT_BOOTSTRAP_RESOURCE_NAME} on first use, so that a build which failed to produce it
+     * takes down only the views which need it rather than every use of this class.
+     */
+    private static final class BehaviorEventBootstrap {
+
+        private static final String SCRIPT;
+        private static final IOException FAILURE;
+
+        static {
+            String script = null;
+            IOException failure = null;
+
+            try (InputStream input = RenderKitUtils.class.getResourceAsStream(BEHAVIOR_EVENT_BOOTSTRAP_RESOURCE_NAME)) {
+                if (input == null) {
+                    throw new FileNotFoundException(BEHAVIOR_EVENT_BOOTSTRAP_RESOURCE_NAME);
+                }
+
+                script = new String(input.readAllBytes(), StandardCharsets.UTF_8);
+            }
+            catch (IOException e) {
+                failure = e;
+            }
+
+            SCRIPT = script;
+            FAILURE = failure;
+        }
+
+        /**
+         * Returns the script, or throws the failure of reading it. The failure is thrown from here rather than from
+         * the static initializer, so that every caller gets it and not only the first one.
+         */
+        private static String get() {
+            if (FAILURE != null) {
+                throw new FacesException("Cannot read " + BEHAVIOR_EVENT_BOOTSTRAP_RESOURCE_NAME, FAILURE);
+            }
+
+            return SCRIPT;
+        }
     }
 
     /**
@@ -1828,7 +2026,7 @@ public class RenderKitUtils {
         }
         else {
             renderFacesJsIfNecessary(context);
-            renderScript(context, component, null, script.toString());
+            renderScript(context, null, script.toString());
         }
     }
 
@@ -1868,10 +2066,11 @@ public class RenderKitUtils {
         out.append('\'');
     }
 
-    public static void renderScript(FacesContext context, UIComponent component, String clientId, String script) throws IOException {
+    public static void renderScript(FacesContext context, String clientId, String script) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
 
-        writer.startElement("script", component);
+        // Started without the component, so that this generated script does not inherit its pass-through attributes.
+        writer.startElement("script", null);
 
         if (clientId != null) {
             writer.writeAttribute("id", clientId, "id");
@@ -1887,7 +2086,7 @@ public class RenderKitUtils {
             writer.writeAttribute("nonce", nonce, "nonce");
         }
 
-        writer.writeText(script, component, null);
+        writer.writeText(script, null, null);
         writer.endElement("script");
     }
 

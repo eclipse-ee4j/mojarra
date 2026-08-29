@@ -104,7 +104,7 @@ public final class UIDebug extends UIComponentBase {
             writer.startElement("span", this);
             writer.writeAttribute("id", getClientId(facesContext), "id");
             
-            RenderKitUtils.renderScript(facesContext, this, null, sb.toString());
+            RenderKitUtils.renderScript(facesContext, null, sb.toString());
 
             writer.endElement("span");
         }

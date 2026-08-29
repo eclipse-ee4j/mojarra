@@ -42,8 +42,8 @@ def JDK_VERSION_CHOICES = [''] + JDK_DISTRO_BY_VERSION.keySet().toList()
 // ---- Per-branch configuration ---------------------------------------------
 // Adding a new release line = one entry here. The map key is the MAJOR.MINOR version family the
 // release line represents (also used as the path segment on download.eclipse.org/jakartaee/faces/
-// and as the required prefix for RELEASE_VERSION). It deliberately differs from the actual
-// mojarra git branch — the head of mojarra development sits on `master`, not on a `5.x` branch.
+// and as the required prefix for RELEASE_VERSION). It does not always match the actual mojarra
+// git branch — the 4.1 line sits on `main`.
 //
 // Fields:
 //   implBranch      : mojarra git branch holding the impl source for this release line.
@@ -75,9 +75,9 @@ def JDK_VERSION_CHOICES = [''] + JDK_DISTRO_BY_VERSION.keySet().toList()
 //                     stays at 1 there. The pod's cpu/memory should comfortably accommodate
 //                     this many concurrent GlassFish + test JVM pairs.
 def BRANCH_CONFIG = [
-    '4.0': [ implBranch: '4.0',    apiBranch: null,  apiVersion: '4.0.1', jdk: '11', tckJdk: '17', tckVersion: '4.0.4',          gfVersion: '7.1.1'   , seleniumEnabled: false, threadCount: 1 ],
-    '4.1': [ implBranch: 'main',   apiBranch: null,  apiVersion: '4.1.0', jdk: '17', tckJdk: '21', tckVersion: '4.1.2',          gfVersion: '8.0.3'   , seleniumEnabled: true , threadCount: 1 ],
-    '5.0': [ implBranch: 'master', apiBranch: '5.0', apiVersion: null,    jdk: '17', tckJdk: '21', tckVersion: '5.0.0-SNAPSHOT', gfVersion: '9.0.0-M2', seleniumEnabled: true , threadCount: 2 ],
+    '4.0': [ implBranch: '4.0',  apiBranch: null,  apiVersion: '4.0.1', jdk: '11', tckJdk: '17', tckVersion: '4.0.4',          gfVersion: '7.1.1'   , seleniumEnabled: false, threadCount: 1 ],
+    '4.1': [ implBranch: 'main', apiBranch: null,  apiVersion: '4.1.0', jdk: '17', tckJdk: '21', tckVersion: '4.1.2',          gfVersion: '8.0.3'   , seleniumEnabled: true , threadCount: 1 ],
+    '5.0': [ implBranch: '5.0',  apiBranch: '5.0', apiVersion: null,    jdk: '17', tckJdk: '21', tckVersion: '5.0.0-SNAPSHOT', gfVersion: '9.0.0-M2', seleniumEnabled: true , threadCount: 2 ],
 ]
 
 // Reusable shell snippet: GPG keyring import + trust. Idempotent. Required wherever the build

@@ -47,7 +47,8 @@ class Issue5970IT extends BaseITNG {
 
     /**
      * The input a <code>c:if</code> held while the response was rendered, and no longer holds while the postback is
-     * restored, is named by the report.
+     * restored, is named by the report. The webapp leaves <code>restoreBuildTimeDecisions</code> off, since replaying
+     * the condition rebuilds the input and so leaves nothing to report on.
      */
     @Test
     void testComponentDroppedByABuildTimeCondition() {
