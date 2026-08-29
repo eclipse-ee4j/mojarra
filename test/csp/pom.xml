@@ -33,7 +33,7 @@
     <properties>
         <chromedriver.version>146</chromedriver.version>
         <selenium.version>4.43.0</selenium.version>
-        <webdrivermanager.version>6.2.0</webdrivermanager.version>
+        <webdrivermanager.version>6.1.0</webdrivermanager.version>
     </properties>
 
     <dependencies>
