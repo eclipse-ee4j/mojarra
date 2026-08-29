@@ -34,6 +34,8 @@ import jakarta.faces.event.SystemEvent;
 import jakarta.faces.event.SystemEventListener;
 import jakarta.faces.push.Push;
 
+import org.glassfish.mojarra.renderkit.html_basic.ScriptRenderer;
+
 /**
  * <p class="changed_added_2_3">
  * This Faces listener for {@link UIViewRoot} ensures that the necessary JavaScript code to open or close the
@@ -108,7 +110,7 @@ public class WebsocketFacesListener implements SystemEventListener {
                     context.getPartialViewContext().getEvalScripts().add(script);
                 } else {
                     UIOutput outputScript = new UIOutput();
-                    outputScript.setRendererType("jakarta.faces.resource.Script");
+                    outputScript.setRendererType(ScriptRenderer.RENDERER_TYPE);
                     UIOutput content = new UIOutput();
                     content.setValue(script);
                     outputScript.getChildren().add(content);

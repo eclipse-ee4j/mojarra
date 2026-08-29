@@ -50,6 +50,8 @@ import org.glassfish.mojarra.facelets.FaceletContextImplBase;
 import org.glassfish.mojarra.facelets.impl.IdMapper;
 import org.glassfish.mojarra.facelets.tag.TagAttributesImpl;
 import org.glassfish.mojarra.facelets.tag.faces.core.FacetHandler;
+import org.glassfish.mojarra.renderkit.html_basic.ScriptRenderer;
+import org.glassfish.mojarra.renderkit.html_basic.StylesheetRenderer;
 import org.glassfish.mojarra.util.Util;
 
 /**
@@ -109,7 +111,7 @@ public final class ComponentSupport {
         }
 
         String rendererType = config.getRendererType();
-        return "jakarta.faces.resource.Script".equals(rendererType) || "jakarta.faces.resource.Stylesheet".equals(rendererType);
+        return ScriptRenderer.RENDERER_TYPE.equals(rendererType) || StylesheetRenderer.RENDERER_TYPE.equals(rendererType);
     }
 
     public static boolean isBuildingNewComponentTree(FacesContext context) {

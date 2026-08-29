@@ -103,6 +103,11 @@ public class ResourceImpl extends Resource implements Externalizable {
      */
     private URL resolvedUrl = null;
 
+    /**
+     * The query string carried by the resource name, without its introducing '?', or null if there is none.
+     */
+    private String queryString;
+
     // ------------------------------------------------------------ Constructors
 
     /**
@@ -119,6 +124,18 @@ public class ResourceImpl extends Resource implements Externalizable {
      * @param maxAge the resource max age
      */
     public ResourceImpl(ResourceInfo resourceInfo, String contentType, long initialTime, long maxAge) {
+        this(resourceInfo, contentType, initialTime, maxAge, null);
+    }
+
+    /**
+     * Creates a new instance of ResourceBase
+     * @param resourceInfo the resource info
+     * @param contentType the resource content type
+     * @param initialTime the resource initial time
+     * @param maxAge the resource max age
+     * @param queryString the query string carried by the resource name, without its introducing '?', may be null
+     */
+    public ResourceImpl(ResourceInfo resourceInfo, String contentType, long initialTime, long maxAge, String queryString) {
 
         this.resourceInfo = resourceInfo;
         super.setResourceName(resourceInfo.getName());
@@ -126,6 +143,7 @@ public class ResourceImpl extends Resource implements Externalizable {
         super.setContentType(contentType);
         this.initialTime = initialTime;
         this.maxAge = maxAge;
+        this.queryString = queryString;
     }
 
     @Override
@@ -318,6 +336,11 @@ public class ResourceImpl extends Resource implements Externalizable {
             queryStarted = true;
         }
 
+        if (queryString != null) {
+            uri += (queryStarted ? "&" : "?") + queryString;
+            queryStarted = true;
+        }
+
         if (FACES_SCRIPT_RESOURCE_NAME.equals(getResourceName()) && FACES_SCRIPT_LIBRARY_NAME.equals(getLibraryName())) {
             ProjectStage stage = context.getApplication().getProjectStage();
             switch (stage) {
@@ -425,6 +448,7 @@ public class ResourceImpl extends Resource implements Externalizable {
         out.writeObject(getContentType());
         out.writeLong(initialTime);
         out.writeLong(maxAge);
+        out.writeObject(queryString);
 
     }
 
@@ -436,6 +460,7 @@ public class ResourceImpl extends Resource implements Externalizable {
         setContentType((String) in.readObject());
         initialTime = in.readLong();
         maxAge = in.readLong();
+        queryString = (String) in.readObject();
     }
 
     private void initResourceInfo() {

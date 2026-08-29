@@ -1113,6 +1113,35 @@ public class Util {
     }
 
     /**
+     * @param resourceName the resource name, optionally carrying a query string as specified in section 2.6.1.3
+     * "Resource Identifiers" of the Jakarta Faces Specification Document
+     * @return the resource name without its query string, as only the part before the '?' identifies the file
+     */
+    public static String removeQueryString(String resourceName) {
+        if (resourceName == null) {
+            return null;
+        }
+
+        int queryStringIndex = resourceName.indexOf('?');
+        return queryStringIndex == -1 ? resourceName : resourceName.substring(0, queryStringIndex);
+    }
+
+    /**
+     * @param resourceName the resource name, optionally carrying a query string as specified in section 2.6.1.3
+     * "Resource Identifiers" of the Jakarta Faces Specification Document
+     * @return the query string of the resource name without its introducing '?', or <code>null</code> if there is none
+     */
+    public static String getQueryString(String resourceName) {
+        if (resourceName == null) {
+            return null;
+        }
+
+        int queryStringIndex = resourceName.indexOf('?');
+        return queryStringIndex == -1 || queryStringIndex == resourceName.length() - 1 ? null
+                : resourceName.substring(queryStringIndex + 1);
+    }
+
+    /**
      * <p>
      * Returns the URL pattern of the {@link jakarta.faces.webapp.FacesServlet} that is executing the current request. If
      * there are multiple URL patterns, the value returned by <code>HttpServletRequest.getServletPath()</code> and

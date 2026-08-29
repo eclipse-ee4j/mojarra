@@ -31,6 +31,10 @@ import org.glassfish.mojarra.renderkit.RenderKitUtils;
  */
 public class ScriptRenderer extends ScriptStyleBaseRenderer {
 
+    public static final String RENDERER_TYPE = "jakarta.faces.resource.Script";
+
+    public static final String FILE_EXTENSION = ".js";
+
     public static final String DEFAULT_CONTENT_TYPE = "text/javascript";
     
     @Override

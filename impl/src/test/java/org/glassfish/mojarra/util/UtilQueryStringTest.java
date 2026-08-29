@@ -13,20 +13,21 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
-package org.glassfish.mojarra.application.resource;
+package org.glassfish.mojarra.util;
 
-import static org.glassfish.mojarra.application.resource.ResourceHandlerImpl.removeQueryString;
+import static org.glassfish.mojarra.util.Util.getQueryString;
+import static org.glassfish.mojarra.util.Util.removeQueryString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests that a resource name carrying a query string, as supported by
- * {@link org.glassfish.mojarra.renderkit.html_basic.ScriptStyleBaseRenderer}, is reduced to the file identifying part before the
- * content type and hence the renderer type are derived from it.
+ * Tests that a resource name carrying a query string, as specified in section 2.6.1.3 "Resource Identifiers" of the
+ * Jakarta Faces Specification Document, is split into the file identifying part, which resolves the resource, and the
+ * query string, which is appended to the request path.
  */
-class ResourceHandlerImplQueryStringTest {
+class UtilQueryStringTest {
 
     @Test
     void keepsResourceNameWithoutQueryString() {
@@ -51,5 +52,30 @@ class ResourceHandlerImplQueryStringTest {
     void removesQueryStringFromFirstQuestionMarkOn() {
         assertEquals("theme.css", removeQueryString("theme.css?v=1?v=2"));
         assertEquals("", removeQueryString("?v=1"));
+    }
+
+    @Test
+    void hasNoQueryStringWithoutQuestionMark() {
+        assertNull(getQueryString(null));
+        assertNull(getQueryString(""));
+        assertNull(getQueryString("theme.css"));
+        assertNull(getQueryString("css/theme.css"));
+    }
+
+    /**
+     * A '?' in the last position introduces an empty query string, which is no query string at all.
+     */
+    @Test
+    void hasNoQueryStringWithTrailingQuestionMark() {
+        assertNull(getQueryString("theme.css?"));
+        assertNull(getQueryString("?"));
+    }
+
+    @Test
+    void keepsQueryStringWithoutItsIntroducingQuestionMark() {
+        assertEquals("v=1", getQueryString("theme.css?v=1"));
+        assertEquals("v=1", getQueryString("css/theme.css?v=1"));
+        assertEquals("first=1&second=2", getQueryString("theme.css?first=1&second=2"));
+        assertEquals("v=1?v=2", getQueryString("theme.css?v=1?v=2"));
     }
 }

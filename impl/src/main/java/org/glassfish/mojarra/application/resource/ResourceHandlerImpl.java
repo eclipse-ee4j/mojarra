@@ -27,8 +27,10 @@ import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.WARNING;
 import static org.glassfish.mojarra.util.RequestStateManager.RESOURCE_REQUEST;
 import static org.glassfish.mojarra.util.Util.getFacesMapping;
+import static org.glassfish.mojarra.util.Util.getQueryString;
 import static org.glassfish.mojarra.util.Util.notNegative;
 import static org.glassfish.mojarra.util.Util.notNull;
+import static org.glassfish.mojarra.util.Util.removeQueryString;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -123,14 +125,16 @@ public class ResourceHandlerImpl extends ResourceHandler {
 
         FacesContext ctx = FacesContext.getCurrentInstance();
 
-        String ctype = contentType != null ? contentType : getContentType(ctx, resourceName);
-        ResourceInfo info = manager.findResource(libraryName, resourceName, ctype, ctx);
+        String name = removeQueryString(resourceName);
+        String queryString = getQueryString(resourceName);
+        String ctype = contentType != null ? contentType : getContentType(ctx, name);
+        ResourceInfo info = manager.findResource(libraryName, name, ctype, ctx);
 
         if (info == null) {
             return null;
         }
 
-        return new ResourceImpl(info, ctype, creationTime, maxAge);
+        return new ResourceImpl(info, ctype, creationTime, maxAge, queryString);
     }
 
     @Override
@@ -175,13 +179,14 @@ public class ResourceHandlerImpl extends ResourceHandler {
     public Resource createResourceFromId(String resourceId) {
         notNull("resourceId", resourceId);
         FacesContext ctx = FacesContext.getCurrentInstance();
-        ResourceInfo info = manager.findResource(resourceId);
-        String ctype = getContentType(ctx, resourceId);
+        String id = removeQueryString(resourceId);
+        ResourceInfo info = manager.findResource(id);
+        String ctype = getContentType(ctx, id);
         if (info == null) {
-            logMissingResource(ctx, resourceId, null);
+            logMissingResource(ctx, id, null);
             return null;
         } else {
-            return new ResourceImpl(info, ctype, creationTime, maxAge);
+            return new ResourceImpl(info, ctype, creationTime, maxAge, getQueryString(resourceId));
         }
 
     }
@@ -222,49 +227,32 @@ public class ResourceHandlerImpl extends ResourceHandler {
 
     @Override
     public String getRendererTypeForResourceName(String resourceName) {
-        if (resourceName == null) {
-            return null;
-        }
-
-        String resourceType = getResourceType(getContentType(FacesContext.getCurrentInstance(), resourceName));
-
-        if (resourceType == null) {
-            return null;
-        }
-
-        return switch (resourceType) {
-            case "script" -> "jakarta.faces.resource.Script";
-            case "style" -> "jakarta.faces.resource.Stylesheet";
-            default -> null;
-        };
-    }
-
-    private static String getResourceType(String contentType) {
-        if (contentType == null) {
-            return null;
-        }
-
-        return switch (contentType.toLowerCase(ROOT)) {
-            case ScriptRenderer.DEFAULT_CONTENT_TYPE -> "script";
-            case StylesheetRenderer.DEFAULT_CONTENT_TYPE -> "style";
-            default -> null;
-        };
+        return getRendererType(resourceName);
     }
 
     /**
-     * @see ResourceHandler#markResourceRendered(FacesContext, String, String)
+     * @param resourceName the resource name, optionally carrying a query string as specified in section 2.6.1.3
+     * "Resource Identifiers" of the Jakarta Faces Specification Document
+     * @return the renderer type of the renderer capable of rendering the resource, or <code>null</code> if there is none
      */
-    @Override
-    public void markResourceRendered(FacesContext context, String resourceName, String libraryName) {
-        super.markResourceRendered(context, removeQueryString(resourceName), libraryName);
-    }
+    static String getRendererType(String resourceName) {
+        String name = removeQueryString(resourceName);
 
-    /**
-     * @see ResourceHandler#isResourceRendered(FacesContext, String, String)
-     */
-    @Override
-    public boolean isResourceRendered(FacesContext context, String resourceName, String libraryName) {
-        return super.isResourceRendered(context, removeQueryString(resourceName), libraryName);
+        if (name == null) {
+            return null;
+        }
+
+        String lowerCaseName = name.toLowerCase(ROOT);
+
+        if (lowerCaseName.endsWith(ScriptRenderer.FILE_EXTENSION)) {
+            return ScriptRenderer.RENDERER_TYPE;
+        }
+
+        if (lowerCaseName.endsWith(StylesheetRenderer.FILE_EXTENSION)) {
+            return StylesheetRenderer.RENDERER_TYPE;
+        }
+
+        return null;
     }
 
     /**
@@ -542,20 +530,6 @@ public class ResourceHandlerImpl extends ResourceHandler {
      */
     private String getContentType(FacesContext ctx, String resourceName) {
         return ctx.getExternalContext().getMimeType(removeQueryString(resourceName));
-    }
-
-    /**
-     * @param resourceName the resource name, optionally carrying a query string as supported by
-     * {@link org.glassfish.mojarra.renderkit.html_basic.ScriptStyleBaseRenderer}
-     * @return the resource name without its query string, as only the part before the '?' identifies the file
-     */
-    static String removeQueryString(String resourceName) {
-        if (resourceName == null) {
-            return null;
-        }
-
-        int queryStringIndex = resourceName.indexOf('?');
-        return queryStringIndex == -1 ? resourceName : resourceName.substring(0, queryStringIndex);
     }
 
     /**

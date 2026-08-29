@@ -1330,7 +1330,7 @@ public class RenderKitUtils {
     private static UIComponent createFacesJs() {
 
         UIOutput output = new UIOutput();
-        output.setRendererType("jakarta.faces.resource.Script");
+        output.setRendererType(ScriptRenderer.RENDERER_TYPE);
         output.getAttributes().put("name", FACES_SCRIPT_RESOURCE_NAME);
         output.getAttributes().put("library", FACES_SCRIPT_LIBRARY_NAME);
         return output;

@@ -52,6 +52,9 @@ import jakarta.faces.component.html.HtmlSelectOneListbox;
 import jakarta.faces.component.html.HtmlSelectOneMenu;
 import jakarta.faces.component.html.HtmlSelectOneRadio;
 
+import org.glassfish.mojarra.renderkit.html_basic.ScriptRenderer;
+import org.glassfish.mojarra.renderkit.html_basic.StylesheetRenderer;
+
 /**
  * @author Jacob Hookom
  */
@@ -115,9 +118,9 @@ public final class HtmlLibrary extends AbstractHtmlLibrary {
 
         addHtmlComponent("outputText", HtmlOutputText.COMPONENT_TYPE, "jakarta.faces.Text");
 
-        this.addComponent("outputScript", UIOutput.COMPONENT_TYPE, "jakarta.faces.resource.Script", ScriptResourceHandler.class);
+        this.addComponent("outputScript", UIOutput.COMPONENT_TYPE, ScriptRenderer.RENDERER_TYPE, ScriptResourceHandler.class);
 
-        this.addComponent("outputStylesheet", UIOutput.COMPONENT_TYPE, "jakarta.faces.resource.Stylesheet", StylesheetResourceHandler.class);
+        this.addComponent("outputStylesheet", UIOutput.COMPONENT_TYPE, StylesheetRenderer.RENDERER_TYPE, StylesheetResourceHandler.class);
 
         addHtmlComponent("panelGrid", HtmlPanelGrid.COMPONENT_TYPE, "jakarta.faces.Grid");
 
