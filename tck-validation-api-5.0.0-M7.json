@@ -1,0 +1,13 @@
+{
+  "line":       "5.0",
+  "apiVersion": "5.0.0-M7",
+  "facesSha":   "d6f114435d3a28559e3044f2de1715a7563fdcfb",
+  "mojarraSha": "d7d19a9dbd3b486fd2fc06b31a473014a5525014",
+  "mojarraTree": "b3990bcc7a52e258228d732aa7212725731e3a1c",
+  "dryRun":     true,
+  "tckVersion": "5.0.0-SNAPSHOT",
+  "gfVersion":  "9.0.0-M2",
+  "passed":     6385,
+  "buildUrl":   "https://ci.eclipse.org/mojarra/job/mojarra-release/229/",
+  "timestamp":  "2026-08-29T22:06:15Z"
+}
