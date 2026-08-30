@@ -64,12 +64,12 @@ the WAR's `WEB-INF/lib` (OpenLiberty, Tomcat).
 
 | profile         | server          | provisioned into                | version property                  |
 |-----------------|-----------------|----------------------------------|-----------------------------------|
-| *(default)*     | GlassFish       | `target/glassfish9`             | `-Dglassfish.version` (9.0.0-SNAPSHOT) |
+| *(default)*     | GlassFish       | `target/glassfish9`             | `-Dglassfish.version` (9.0.0-M3) |
 | `-Pwildfly`     | WildFly         | `target/wildfly`                | `-Dwildfly.version` (40.0.0.Final) |
 | `-Ptomee`       | TomEE Plume     | `target/apache-tomee-plume-*`   | `-Dtomee.version` (10.1.5)        |
 | `-Ppayara`      | Payara          | `target/payara7`                | `-Dpayara.version` (7.2026.5)     |
 | `-Pliberty`     | OpenLiberty     | `target/wlp`                    | `-Dliberty.version` (26.0.0.5-beta) |
-| `-Ptomcat`      | Tomcat          | `target/apache-tomcat-*`        | `-Dtomcat.version` (11.0.22)      |
+| `-Ptomcat`      | Tomcat          | `target/apache-tomcat-*`        | `-Dtomcat.version` (12.0.0-M1-SNAPSHOT) |
 
 - **WildFly**: pass extra JVM args to the managed process with
   `-Djboss.options="-Xmx8g"`.

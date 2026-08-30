@@ -61,7 +61,8 @@
         <tomee.version>10.1.5</tomee.version> <!-- https://mvnrepository.com/artifact/org.apache.tomee/apache-tomee -->
         <payara.version>7.2026.6</payara.version> <!-- https://mvnrepository.com/artifact/fish.payara.distributions/payara-web -->
         <liberty.version>26.0.0.6</liberty.version> <!-- https://mvnrepository.com/artifact/io.openliberty/openliberty-runtime -->
-        <tomcat.version>11.0.24</tomcat.version> <!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat -->
+        <tomcat.version>12.0.0-M1-SNAPSHOT</tomcat.version> <!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat -->
+        <tomcat.dirName>apache-tomcat-12.0.0-M1-dev</tomcat.dirName> <!-- No SNAPSHOT prefix. -->
 
         <!-- web.xml defaults -->
         <webapp.projectStage>Production</webapp.projectStage>
@@ -75,6 +76,20 @@
         <perf.heapSize>1g</perf.heapSize>
         <perf.jvmArguments>-Xmx${perf.heapSize}</perf.jvmArguments>
     </properties>
+
+    <repositories>
+        <!-- Tomcat 12, the first release with Servlet 6.2, has no staged release yet. -->
+        <repository>
+            <id>apache-snapshots</id>
+            <url>https://repository.apache.org/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
@@ -725,7 +740,7 @@
         <profile>
             <id>tomcat</id>
             <properties>
-                <tomcat.dir>${project.build.directory}/apache-tomcat-${tomcat.version}</tomcat.dir>
+                <tomcat.dir>${project.build.directory}/${tomcat.dirName}</tomcat.dir>
                 <weld.version>6.0.4.Final</weld.version> <!-- https://mvnrepository.com/artifact/org.jboss.weld.servlet/weld-servlet-shaded -->
                 <hibernateValidator.version>9.1.2.Final</hibernateValidator.version> <!-- https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator -->
                 <jsonp.version>2.0.1</jsonp.version> <!-- https://mvnrepository.com/artifact/org.glassfish/jakarta.json -->
@@ -821,7 +836,7 @@
                                 </goals>
                                 <configuration>
                                     <!-- Unpack into target/ (the plugin default is target/dependency) so the extracted
-                                         apache-tomcat-${tomcat.version}/ matches CATALINA_HOME (${tomcat.dir}); same as the
+                                         ${tomcat.dirName}/ matches CATALINA_HOME (${tomcat.dir}); same as the
                                          glassfish profile's unpack. -->
                                     <outputDirectory>${project.build.directory}</outputDirectory>
                                     <artifactItems>
@@ -1429,7 +1444,7 @@
         <profile>
             <id>tomcat-myfaces</id>
             <properties>
-                <tomcat.dir>${project.build.directory}/apache-tomcat-${tomcat.version}</tomcat.dir>
+                <tomcat.dir>${project.build.directory}/${tomcat.dirName}</tomcat.dir>
                 <weld.version>6.0.4.Final</weld.version>
                 <hibernateValidator.version>9.1.0.Final</hibernateValidator.version>
                 <jsonp.version>2.0.1</jsonp.version>
@@ -1527,7 +1542,7 @@
                                 </goals>
                                 <configuration>
                                     <!-- Unpack into target/ (the plugin default is target/dependency) so the extracted
-                                         apache-tomcat-${tomcat.version}/ matches CATALINA_HOME (${tomcat.dir}); same as the
+                                         ${tomcat.dirName}/ matches CATALINA_HOME (${tomcat.dir}); same as the
                                          glassfish profile's unpack. -->
                                     <outputDirectory>${project.build.directory}</outputDirectory>
                                     <artifactItems>
