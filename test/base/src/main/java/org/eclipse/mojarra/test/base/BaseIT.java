@@ -26,6 +26,7 @@ import static org.jboss.shrinkwrap.api.ShrinkWrap.create;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.net.http.HttpClient;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -99,9 +100,12 @@ public abstract class BaseIT {
         browser.get(baseURL + resource);
     }
 
+    // Java 11+ HttpClient is thread-safe and designed to be shared/reused
+    private static final HttpClient http_client = newHttpClient();
+
     protected String getResponseBody(String resource) {
         try {
-            return newHttpClient().send(newBuilder(create(baseURL + resource)).build(), ofString()).body();
+            return http_client.send(newBuilder(create(baseURL + resource)).build(), ofString()).body();
         }
         catch (InterruptedException e) {
             Thread.currentThread().interrupt();
