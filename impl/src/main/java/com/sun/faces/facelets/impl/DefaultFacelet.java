@@ -29,6 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -76,6 +77,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
 
     /** Dense per-tag counter slots, keyed by tag id. See {@link #getIdSlot(String)}. */
     private final Map<String, Integer> idSlots = new ConcurrentHashMap<>();
+    private final AtomicInteger idSlotCount = new AtomicInteger(0);
 
     /** The first id each of this Facelet's tags generates, per id prefix. See {@link #firstIds(String)}. */
     private final FirstIdCache firstIds = new FirstIdCache(this::getIdSlotCount);
@@ -231,14 +233,14 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
      * @return the tag's slot
      */
     int getIdSlot(String tagId) {
-        return idSlots.computeIfAbsent(tagId, id -> idSlots.size());
+        return idSlots.computeIfAbsent(tagId, $ -> idSlotCount.getAndIncrement());
     }
 
     /**
      * @return how many slots {@link #getIdSlot(String)} has assigned, i.e. the counter array size a build needs.
      */
     int getIdSlotCount() {
-        return idSlots.size();
+        return idSlotCount.get();
     }
 
     /**
