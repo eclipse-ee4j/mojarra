@@ -30,12 +30,6 @@
 
     <name>Mojarra ${project.version} - INTEGRATION TESTS - ${project.artifactId}</name>
 
-    <properties>
-        <chromedriver.version>146</chromedriver.version>
-        <selenium.version>4.43.0</selenium.version>
-        <webdrivermanager.version>6.2.0</webdrivermanager.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.eclipse.mojarra.test</groupId>
@@ -49,22 +43,6 @@
             <artifactId>jakarta.faces</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-chrome-driver</artifactId>
-            <version>${selenium.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-devtools-v${chromedriver.version}</artifactId>
-            <version>${selenium.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.github.bonigarcia</groupId>
-            <artifactId>webdrivermanager</artifactId>
-            <version>${webdrivermanager.version}</version>
         </dependency>
     </dependencies>
 </project>
