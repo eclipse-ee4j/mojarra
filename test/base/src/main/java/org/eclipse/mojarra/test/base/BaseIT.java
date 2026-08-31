@@ -60,6 +60,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 @TestInstance(Lifecycle.PER_CLASS)
 public abstract class BaseIT {
 
+    private static final HttpClient HTTP = newHttpClient();
+
     protected WebDriver browser;
 
     @ArquillianResource
@@ -100,12 +102,9 @@ public abstract class BaseIT {
         browser.get(baseURL + resource);
     }
 
-    // Java 11+ HttpClient is thread-safe and designed to be shared/reused
-    private static final HttpClient http_client = newHttpClient();
-
     protected String getResponseBody(String resource) {
         try {
-            return http_client.send(newBuilder(create(baseURL + resource)).build(), ofString()).body();
+            return HTTP.send(newBuilder(create(baseURL + resource)).build(), ofString()).body();
         }
         catch (InterruptedException e) {
             Thread.currentThread().interrupt();
