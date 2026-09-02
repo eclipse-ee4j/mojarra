@@ -22,6 +22,7 @@ import static com.sun.faces.application.view.FaceletPartialStateManagementStrate
 import static com.sun.faces.application.view.FaceletPartialStateManagementStrategy.REBUILT_FROM_ANOTHER_TAG_REPORT;
 import static com.sun.faces.application.view.FaceletPartialStateManagementStrategy.clientIdsNotRebuilt;
 import static com.sun.faces.application.view.FaceletPartialStateManagementStrategy.clientIdsRebuiltFromAnotherTag;
+import static com.sun.faces.application.view.FaceletPartialStateManagementStrategy.holdsStableClientId;
 import static com.sun.faces.application.view.FaceletPartialStateManagementStrategy.isViewRootOnlyState;
 import static com.sun.faces.application.view.FaceletPartialStateManagementStrategy.tagOf;
 import static com.sun.faces.application.view.FaceletPartialStateManagementStrategy.truncated;
@@ -44,8 +45,11 @@ import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.Test;
 
+import jakarta.faces.component.NamingContainer;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.context.FacesContext;
 
 /**
  * A postback rebuilds its view from the markup rather than from the response it was submitted from, so a build time
@@ -160,6 +164,80 @@ class FaceletPartialStateManagementStrategyTest {
         assertNull(tagOf(new UIOutput()));
     }
 
+    /**
+     * A naming container positioned on no row hands its children the client id they hold on every other request too.
+     */
+    @Test
+    void aComponentUnderANamingContainerPositionedOnNoRowIsCompared() {
+        UIComponent component = new UIOutput();
+        container("form:rows", "form:rows").getChildren().add(component);
+
+        assertTrue(holdsStableClientId(null, component));
+    }
+
+    /**
+     * A container left positioned on a row by a render which iterated it hands its children a client id no request
+     * which does not iterate it reproduces, the rebuild of the postback included.
+     */
+    @Test
+    void aComponentUnderANamingContainerPositionedOnARowIsNotCompared() {
+        UIComponent component = new UIOutput();
+        container("form:rows", "form:rows:1").getChildren().add(component);
+
+        assertFalse(holdsStableClientId(null, component));
+    }
+
+    /**
+     * A container nested in a positioned one is itself positioned on no row, yet holds the row of the one above it in
+     * its own client id, so the whole chain decides.
+     */
+    @Test
+    void aComponentUnderANamingContainerNestedInAPositionedOneIsNotCompared() {
+        UIComponent component = new UIOutput();
+        UIComponent nested = container("form:rows:1:group", "form:rows:1:group");
+        container("form:rows", "form:rows:1").getChildren().add(nested);
+        nested.getChildren().add(component);
+
+        assertFalse(holdsStableClientId(null, component));
+    }
+
+    /**
+     * A component which is held by nothing that can stand on a row holds the client id it holds on every request.
+     */
+    @Test
+    void aComponentHeldByNoNamingContainerIsCompared() {
+        assertTrue(holdsStableClientId(null, new UIOutput()));
+    }
+
+    /**
+     * A plain component between the two decides nothing: the container above it is the one standing on a row.
+     */
+    @Test
+    void aComponentUnderAPlainComponentUnderAPositionedNamingContainerIsNotCompared() {
+        UIComponent component = new UIOutput();
+        UIComponent plain = new UIPanel();
+        container("form:rows", "form:rows:1").getChildren().add(plain);
+        plain.getChildren().add(component);
+
+        assertFalse(holdsStableClientId(null, component));
+    }
+
+    /**
+     * A form which prepends no id hands its children the client id of the container above it rather than one
+     * extending its own, and none at all when no container holds it, so it stands on no row either way.
+     */
+    @Test
+    void aComponentUnderAFormWhichPrependsNoIdIsCompared() {
+        UIComponent underNestedForm = new UIOutput();
+        container("outer:form", "outer").getChildren().add(underNestedForm);
+
+        UIComponent underRootForm = new UIOutput();
+        container("form", null).getChildren().add(underRootForm);
+
+        assertTrue(holdsStableClientId(null, underNestedForm));
+        assertTrue(holdsStableClientId(null, underRootForm));
+    }
+
     @Test
     void stateHoldingNoComponentDeltaAtAllNeedsOnlyTheViewRootRestored() {
         assertTrue(isViewRootOnlyState("root", state()));
@@ -223,6 +301,34 @@ class FaceletPartialStateManagementStrategyTest {
 
         assertTrue(NOT_REBUILT_REPORT.contains(parameterName), NOT_REBUILT_REPORT);
         assertTrue(REBUILT_FROM_ANOTHER_TAG_REPORT.contains(parameterName), REBUILT_FROM_ANOTHER_TAG_REPORT);
+    }
+
+    private static UIComponent container(String clientId, String containerClientId) {
+        return new Container(clientId, containerClientId);
+    }
+
+    /**
+     * A naming container which is asked for its client ids alone, so that neither has to be built from a context.
+     */
+    private static class Container extends UIPanel implements NamingContainer {
+
+        private final String clientId;
+        private final String containerClientId;
+
+        private Container(String clientId, String containerClientId) {
+            this.clientId = clientId;
+            this.containerClientId = containerClientId;
+        }
+
+        @Override
+        public String getClientId(FacesContext context) {
+            return clientId;
+        }
+
+        @Override
+        public String getContainerClientId(FacesContext context) {
+            return containerClientId;
+        }
     }
 
     private static List<String> clientIds(int count) {
