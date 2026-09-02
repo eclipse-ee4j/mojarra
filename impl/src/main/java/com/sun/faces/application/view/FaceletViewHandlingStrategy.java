@@ -66,7 +66,6 @@ import java.beans.BeanInfo;
 import java.beans.PropertyDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -145,6 +144,7 @@ import com.sun.faces.facelets.tag.SavedBuildTimeDecisions;
 import com.sun.faces.facelets.tag.composite.CompositeComponentBeanInfo;
 import com.sun.faces.facelets.tag.faces.CompositeComponentTagHandler;
 import com.sun.faces.facelets.tag.ui.UIDebug;
+import com.sun.faces.io.FastStringWriter;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.renderkit.html_basic.DoctypeRenderer;
 import com.sun.faces.util.Cache;
@@ -993,7 +993,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         String encoding = Util.getResponseEncoding(context, initWriter.getCharacterEncoding());
 
         // apply them to the response
-        StringWriter contentTypeWriter = new StringWriter();
+        FastStringWriter contentTypeWriter = new FastStringWriter();
         HtmlUtils.writeTextForXML(contentTypeWriter, contentType);
         extContext.setResponseContentType(contentTypeWriter.toString().trim());
         extContext.setResponseCharacterEncoding(encoding);
