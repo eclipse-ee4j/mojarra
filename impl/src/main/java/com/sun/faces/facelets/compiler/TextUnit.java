@@ -284,7 +284,7 @@ final class TextUnit extends CompilationUnit {
             if (Character.isWhitespace(s.charAt(i))) {
                 i--;
             } else {
-                return s.substring(0,i+1);
+                return s;
             }
         }
         return "";

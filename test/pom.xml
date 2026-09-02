@@ -64,6 +64,7 @@
         <module>issue5918</module>
         <module>issue5920</module>
         <module>issue5970</module>
+        <module>issue5989</module>
         <module>perf</module>
     </modules>
 
