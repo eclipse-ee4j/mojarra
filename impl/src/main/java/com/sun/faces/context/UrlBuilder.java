@@ -63,7 +63,7 @@ class UrlBuilder {
     // ------------------------------------------------------------ Constructors
 
     public UrlBuilder(String url, String encoding) {
-        if (url == null || url.isBlank()) {
+        if (Util.trimToNull(url) == null) {
             throw new IllegalArgumentException("Url cannot be empty");
         }
         this.url = new StringBuilder(url.length() * 2);
@@ -79,7 +79,7 @@ class UrlBuilder {
     // ---------------------------------------------------------- Public Methods
 
     public UrlBuilder addParameters(String name, List<String> values) {
-        name = trimToNull(name);
+        name = Util.trimToNull(name);
         if (name == null) {
             throw new IllegalArgumentException("Parameter name cannot be empty");
         }
@@ -91,7 +91,7 @@ class UrlBuilder {
     public UrlBuilder addParameters(Map<String, List<String>> params) {
         if (params != null && !params.isEmpty()) {
             for (Map.Entry<String, List<String>> entry : params.entrySet()) {
-                String paramName = trimToNull(entry.getKey());
+                String paramName = Util.trimToNull(entry.getKey());
                 if (paramName == null) {
                     throw new IllegalArgumentException("Parameter name cannot be empty");
                 }
@@ -103,7 +103,7 @@ class UrlBuilder {
     }
 
     public UrlBuilder setPath(String path) {
-        if (path == null || path.isBlank()) {
+        if (Util.trimToNull(path) == null) {
             throw new IllegalArgumentException("Path cannot be empty");
         }
         this.path = path;
@@ -163,7 +163,7 @@ class UrlBuilder {
         for (String pair : pairs) {
             String[] nameAndValue = Util.split(pair, PARAMETER_NAME_VALUE_SEPARATOR);
             // ignore malformed pair
-            if (nameAndValue.length != 2 || nameAndValue[0].isBlank()) {
+            if (nameAndValue.length != 2 || Util.trimToNull(nameAndValue[0]) == null) {
                 continue;
             }
 
@@ -257,12 +257,12 @@ class UrlBuilder {
     }
 
     protected void addValueToParameter(String name, String value, boolean replace) {
-        final List<String> values = value == null ? emptyList() : List.of(value);
+        List<String> values = value == null ? emptyList() : List.of(value);
         addValuesToParameter(name, values, replace);
     }
 
     protected void addValuesToParameter(String name, List<String> valuesRef, boolean replace) {
-        final List<String> values = new ArrayList<>(valuesRef != null ? valuesRef.size() : 0);
+        List<String> values = new ArrayList<>(valuesRef != null ? valuesRef.size() : 0);
         if (valuesRef != null) {
             for (String string : valuesRef) {
                 if (string != null) {
@@ -279,10 +279,11 @@ class UrlBuilder {
             parameters.put(name, values);
         } else {
             List<String> oldValues = parameters.get(name);
-            // add if exists
-            if ( oldValues != null ) oldValues.addAll(values);
-            // put old+new or put only new values
-            parameters.put( name , oldValues != null ? oldValues : values );
+            if (oldValues != null) {
+                oldValues.addAll(values);
+                values = oldValues;
+            }
+            parameters.put(name, values);
         }
     }
 
@@ -307,16 +308,4 @@ class UrlBuilder {
             queryString = q.isEmpty() ? null : q;
         }
     }
-
-    // --------------------------------------------------------- Utils
-
-    public static String trimToNull(final String str) {
-        if ( str == null || str.isEmpty() ) return null;    // null or empty -> return null immediately
-        String trim = str.trim();                           // trim remove leading and trailing control chars and whitespace
-        if ( trim.isEmpty() ) return null;                  // if the trimmed input is empty -> return null
-        trim = str.strip();                                 // strip (Unicode whitespaces trim) the input
-        if ( trim.isEmpty() ) return null;                  // if the stripped input is empty -> return null
-        return trim;                                        // return the trimmed input
-    }
-
 }
