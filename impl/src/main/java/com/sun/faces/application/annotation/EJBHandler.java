@@ -40,7 +40,6 @@ class EJBHandler extends JndiHandler implements RuntimeAnnotationHandler {
         this.methodAnnotations = methodAnnotations;
     }
 
-    @SuppressWarnings({ "UnusedDeclaration" })
     @Override
     public void apply(FacesContext ctx, Object... params) {
         Object object = params[0];
@@ -55,9 +54,9 @@ class EJBHandler extends JndiHandler implements RuntimeAnnotationHandler {
 
     private void applyToField(FacesContext facesContext, Field field, EJB ejb, Object instance) {
         Object value;
-        if (ejb.lookup() != null && !"".equals(ejb.lookup().trim())) {
+        if (ejb.lookup() != null && !ejb.lookup().isBlank()) {
             value = lookup(facesContext, ejb.lookup());
-        } else if (ejb.name() != null && !"".equals(ejb.name().trim())) {
+        } else if (ejb.name() != null && !ejb.name().isBlank()) {
             value = lookup(facesContext, JAVA_COMP_ENV + ejb.name());
         } else {
             value = lookup(facesContext, JAVA_MODULE + field.getType().getSimpleName());
@@ -68,9 +67,9 @@ class EJBHandler extends JndiHandler implements RuntimeAnnotationHandler {
     private void applyToMethod(FacesContext facesContext, Method method, EJB ejb, Object instance) {
         if (method.getName().startsWith("set")) {
             Object value = null;
-            if (ejb.lookup() != null && !"".equals(ejb.lookup().trim())) {
+            if (ejb.lookup() != null && !ejb.lookup().isBlank()) {
                 value = lookup(facesContext, ejb.lookup());
-            } else if (ejb.name() != null && !"".equals(ejb.name().trim())) {
+            } else if (ejb.name() != null && !ejb.name().isBlank()) {
                 value = lookup(facesContext, JAVA_COMP_ENV + ejb.name());
             }
             invokeMethod(facesContext, method, instance, value);
