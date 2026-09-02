@@ -50,7 +50,10 @@ import com.sun.faces.util.Util;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.NamingContainer;
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIData;
+import jakarta.faces.component.UIForm;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.component.visit.VisitContext;
 import jakarta.faces.component.visit.VisitHint;
@@ -96,17 +99,30 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
             + " context parameter to true.";
 
     /**
-     * Reported for the components the rendered view held which the rebuilt one does not.
+     * Reported for the components the rendered view held which the rebuilt one does not, shared by the report which
+     * names the submitted values among them and the one which has none to name.
      */
-    static final String NOT_REBUILT_REPORT = "The view rebuilt for this postback does not hold {0} of the components the response was rendered"
-            + " from, so their state is restored into nothing: {1}. Of these, {2} carry a submitted value which is therefore decoded by"
-            + " nothing: {3}." + REMEDY;
+    private static final String NOT_REBUILT_HEAD = "The view rebuilt for this postback does not hold {0} of the components the response was"
+            + " rendered from, so {0,choice,1#its state is|1<their state is} restored into nothing: {1}.";
+
+    /**
+     * Reported for the components the rendered view held which the rebuilt one does not, when a value was submitted
+     * for none of them.
+     */
+    static final String NOT_REBUILT_REPORT = NOT_REBUILT_HEAD + REMEDY;
+
+    /**
+     * Reported for the same components, when a value was submitted for at least one of them.
+     */
+    static final String NOT_REBUILT_WITH_SUBMITTED_REPORT = NOT_REBUILT_HEAD + " Of these, {2} {2,choice,1#carries|1<carry} a submitted value"
+            + " which is therefore decoded by nothing: {3}." + REMEDY;
 
     /**
      * Reported for the client ids another tag occupies in the rebuilt view than the one that rendered them.
      */
-    static final String REBUILT_FROM_ANOTHER_TAG_REPORT = "The view rebuilt for this postback holds {0} client ids built from another tag than"
-            + " the one the response was rendered from, so the state saved by one tag is restored into the component of another: {1}. The"
+    static final String REBUILT_FROM_ANOTHER_TAG_REPORT = "The view rebuilt for this postback holds {0} {0,choice,1#client id|1<client ids}"
+            + " built from another tag than the one the response was rendered from, so the state saved by one tag is restored into the"
+            + " component of another: {1}. The"
             + " facelet may also have been edited since the response was rendered, which moves every tag." + REMEDY;
 
     /**
@@ -463,6 +479,44 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
     }
 
     /**
+     * Whether the given component holds the same client id on the two builds, which is what the comparison identifies
+     * it by.
+     *
+     * <p>
+     * A {@link NamingContainer} standing on a row hands its children a client id extending its own with that row, and
+     * it stands on none while the tree is visited with {@link VisitHint#SKIP_ITERATION}, so a container found handing
+     * out an extension of its own client id anyway was left standing on a row by a render which iterated it. Its
+     * children then hold a client id no other request reproduces, which is the render's own to fix and none of the
+     * report's business. A container which hands out anything else stands on no row: {@link UIForm} which prepends no
+     * id hands out the client id of the container above it, or none at all when there is none.
+     * </p>
+     *
+     * <p>
+     * A container which carries the row in its own client id as well, which is what {@link UIData} does, hands its
+     * children an extension of nothing and is compared as usual. Its render resets the row it stands on, so this does
+     * not have to hold it apart.
+     * </p>
+     *
+     * @param context the Faces context.
+     * @param component the component.
+     * @return true when no naming container above the given component was left standing on a row.
+     */
+    static boolean holdsStableClientId(FacesContext context, UIComponent component) {
+        for (UIComponent parent = component.getParent(); parent != null; parent = parent.getParent()) {
+            if (parent instanceof NamingContainer) {
+                String clientId = parent.getClientId(context);
+                String containerClientId = parent.getContainerClientId(context);
+
+                if (containerClientId != null && containerClientId.length() > clientId.length() && containerClientId.startsWith(clientId)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * The client ids the rendered view held which the rebuilt one does not, so that the state saved for them is
      * restored into nothing and a value submitted for them is decoded by nothing.
      *
@@ -524,7 +578,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
                 return VisitResult.REJECT;
             }
             String tag = tagOf(target);
-            if (tag != null) {
+            if (tag != null && holdsStableClientId(context1.getFacesContext(), target)) {
                 rebuiltTags.put(target.getClientId(context1.getFacesContext()), tag);
             }
             return ACCEPT;
@@ -535,8 +589,12 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
             Set<String> requestParameterNames = context.getExternalContext().getRequestParameterMap().keySet();
             List<String> submittedNotRebuilt = new ArrayList<>(notRebuilt);
             submittedNotRebuilt.retainAll(requestParameterNames);
-            LOGGER.log(Level.WARNING, NOT_REBUILT_REPORT,
-                    new Object[] { notRebuilt.size(), truncated(notRebuilt), submittedNotRebuilt.size(), truncated(submittedNotRebuilt) });
+            if (submittedNotRebuilt.isEmpty()) {
+                LOGGER.log(Level.WARNING, NOT_REBUILT_REPORT, new Object[] { notRebuilt.size(), truncated(notRebuilt) });
+            } else {
+                LOGGER.log(Level.WARNING, NOT_REBUILT_WITH_SUBMITTED_REPORT,
+                        new Object[] { notRebuilt.size(), truncated(notRebuilt), submittedNotRebuilt.size(), truncated(submittedNotRebuilt) });
+            }
         }
 
         List<String> rebuiltFromAnotherTag = clientIdsRebuiltFromAnotherTag(renderedTags, rebuiltTags);
@@ -662,7 +720,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
                 String tag = renderedTags != null ? tagOf(target) : null;
                 if (tag != null || stateObj != null) {
                     String clientId = target.getClientId(context1.getFacesContext());
-                    if (tag != null) {
+                    if (tag != null && holdsStableClientId(context1.getFacesContext(), target)) {
                         renderedTags.put(clientId, tag);
                     }
                     if (stateObj != null) {
