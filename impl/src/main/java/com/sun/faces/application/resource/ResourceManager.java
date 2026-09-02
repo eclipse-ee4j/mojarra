@@ -19,7 +19,6 @@ package com.sun.faces.application.resource;
 import static com.sun.faces.util.Util.ensureLeadingSlash;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -481,9 +480,9 @@ public class ResourceManager {
         String libraryName = null;
         String resourceName = null;
         int end = 0, start = 0;
-        if (-1 != (end = resourceId.lastIndexOf("/"))) {
+        if (-1 != (end = resourceId.lastIndexOf('/'))) {
             resourceName = resourceId.substring(end + 1);
-            if (-1 != (start = resourceId.lastIndexOf("/", end - 1))) {
+            if (-1 != (start = resourceId.lastIndexOf('/', end - 1))) {
                 libraryName = resourceId.substring(start + 1, end);
             } else {
                 libraryName = resourceId.substring(0, end);
@@ -514,9 +513,7 @@ public class ResourceManager {
      */
     private String getLocalePrefix(FacesContext context) {
 
-        String localePrefix = null;
-
-        localePrefix = context.getExternalContext().getRequestParameterMap().get("loc");
+        String localePrefix = context.getExternalContext().getRequestParameterMap().get("loc");
 
         if (localePrefix != null && !nameContainsForbiddenSequence(localePrefix)) {
             return localePrefix;
@@ -527,7 +524,7 @@ public class ResourceManager {
         String appBundleName = context.getApplication().getMessageBundle();
         if (null != appBundleName) {
 
-            Locale locale = null;
+            final Locale locale;
             if (context.getViewRoot() != null) {
                 locale = context.getViewRoot().getLocale();
             } else {
@@ -555,8 +552,8 @@ public class ResourceManager {
                 // it is a resource request. look at the parameter con=.
 
                 String param = context.getExternalContext().getRequestParameterMap().get("con");
-                if (!nameContainsForbiddenSequence(param) && param != null && param.trim().length() > 0) {
-                    return Arrays.asList(param);
+                if (param != null && !param.isBlank() && !nameContainsForbiddenSequence(param)) {
+                    return Collections.singletonList(param);
                 }
             }
             // PENDING(edburns): calculate the contracts!
@@ -597,7 +594,7 @@ public class ResourceManager {
 
         WebConfiguration config = WebConfiguration.getInstance();
         String value = config.getOptionValue(WebConfiguration.WebContextInitParameter.CompressableMimeTypes);
-        if (value != null && value.length() > 0) {
+        if (value != null && !value.isEmpty()) {
             String[] values = Util.split(value, ',');
             if (values != null) {
                 for (String s : values) {

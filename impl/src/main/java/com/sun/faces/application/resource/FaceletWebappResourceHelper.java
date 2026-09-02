@@ -201,10 +201,10 @@ public class FaceletWebappResourceHelper extends ResourceHelper {
 
     private URL findResourceUrlConsideringFlows(String resourceName, boolean[] outDoNotCache) throws IOException {
 
-        URL url;
+        final ClassLoader cl = Util.getCurrentLoader(this);
+        final Enumeration<URL> matches = cl.getResources(FLOW_IN_JAR_PREFIX + resourceName);
 
-        ClassLoader cl = Util.getCurrentLoader(this);
-        Enumeration<URL> matches = cl.getResources(FLOW_IN_JAR_PREFIX + resourceName);
+        URL url;
         try {
             url = matches.nextElement();
         } catch (NoSuchElementException nsee) {

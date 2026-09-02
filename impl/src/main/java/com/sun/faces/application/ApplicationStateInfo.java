@@ -21,7 +21,7 @@ import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.Full
 import static com.sun.faces.util.Util.notNullViewId;
 import static java.util.Arrays.asList;
 
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -31,7 +31,7 @@ import com.sun.faces.util.FacesLogger;
 import jakarta.faces.application.StateManager;
 
 /**
- * This class maintains per-application information pertaining to partail or full state saving as a whole or partial
+ * This class maintains per-application information pertaining to partial or full state saving as a whole or partial
  * state saving with some views using full state saving.
  */
 public class ApplicationStateInfo {
@@ -39,7 +39,7 @@ public class ApplicationStateInfo {
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
 
     private final boolean partialStateSaving;
-    private Set<String> fullStateViewIds;
+    private final Set<String> fullStateViewIds;
 
     // ------------------------------------------------------------ Constructors
 
@@ -50,10 +50,15 @@ public class ApplicationStateInfo {
 
         if (partialStateSaving) {
             String[] viewIds = config.getOptionValue(FullStateSavingViewIds, ',');
-            fullStateViewIds = new HashSet<>(viewIds.length, 1.0f);
-            fullStateViewIds.addAll(asList(viewIds));
+            fullStateViewIds = Set.copyOf(asList(viewIds));
+
+            if (fullStateViewIds.size() != viewIds.length) {
+                LOGGER.warning("Duplicate view IDs in '" + FullStateSavingViewIds.getQualifiedName() + "' are ignored.");
+            }
         }
         else {
+            fullStateViewIds = Collections.emptySet();
+
             LOGGER.warning("The configuration '" + StateManager.PARTIAL_STATE_SAVING_PARAM_NAME
                 + "' is deprecated as of Faces 4.1 and should not longer be used.");
         }

@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.sun.faces.RIConstants;
+
 /**
  * <p>
  * Contains an application level resource bundle name and its associated descriptions, if any.
@@ -100,7 +102,7 @@ public class ApplicationResourceBundle {
             displayName = queryMap(locale, displayNames);
         }
 
-        return coalesce(displayName, "");
+        return coalesce(displayName, RIConstants.EMPTY_STRING);
     }
 
     /**
@@ -113,7 +115,7 @@ public class ApplicationResourceBundle {
             description = queryMap(locale, descriptions);
         }
 
-        return coalesce(description, "");
+        return coalesce(description, RIConstants.EMPTY_STRING);
     }
 
     // --------------------------------------------------------- Private Methods

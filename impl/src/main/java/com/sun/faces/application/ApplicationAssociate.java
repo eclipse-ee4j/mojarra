@@ -173,7 +173,7 @@ public class ApplicationAssociate {
 
     private Map<String, List<String>> resourceLibraryContracts;
 
-    Map<String, ApplicationResourceBundle> resourceBundles = new HashMap<>();
+    private final Map<String, ApplicationResourceBundle> resourceBundles = new HashMap<>();
 
     public static void setCurrentInstance(ApplicationAssociate associate) {
         if (associate == null) {
@@ -384,7 +384,7 @@ public class ApplicationAssociate {
         Map<String, Object> applicationMap = externalContext.getApplicationMap();
         ApplicationAssociate me = (ApplicationAssociate) applicationMap.get(ASSOCIATE_KEY);
 
-        if (me != null && me.resourceBundles != null) {
+        if (me != null) {
             me.resourceBundles.clear();
         }
 
@@ -394,7 +394,7 @@ public class ApplicationAssociate {
     public static void clearInstance(ServletContext servletContext) {
         ApplicationAssociate me = (ApplicationAssociate) servletContext.getAttribute(ASSOCIATE_KEY);
 
-        if (me != null && me.resourceBundles != null) {
+        if (me != null) {
             me.resourceBundles.clear();
         }
 
@@ -416,7 +416,7 @@ public class ApplicationAssociate {
     /**
      * Obtain the PropertyEditorHelper instance for this app.
      *
-     * @return The PropertyEditorHeler instance for this app.
+     * @return The PropertyEditorHelper instance for this app.
      */
     public PropertyEditorHelper getPropertyEditorHelper() {
         return propertyEditorHelper;
@@ -517,7 +517,7 @@ public class ApplicationAssociate {
         // If there already is a case existing for the fromviewid/fromaction.fromoutcome
         // combination,
         // replace it ... (last one wins).
-        navigationMap.computeIfAbsent(navigationCase.getFromViewId(), k -> new LinkedHashSet<>()).add(navigationCase);
+        navigationMap.computeIfAbsent(navigationCase.getFromViewId(), $ -> new LinkedHashSet<>()).add(navigationCase);
     }
 
     public NamedEventManager getNamedEventManager() {

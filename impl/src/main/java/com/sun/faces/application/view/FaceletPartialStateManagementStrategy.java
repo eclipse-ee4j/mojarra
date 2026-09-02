@@ -166,7 +166,6 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
      * @param context the Faces context.
      * @param stateContext the state context.
      * @param stateMap the state.
-     * @param viewRoot the view root.
      */
     private void restoreDynamicActions(FacesContext context, StateContext stateContext, Map<String, Object> stateMap) {
         if (LOGGER.isLoggable(FINEST)) {
@@ -590,7 +589,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
         }
 
         List<ComponentStruct> actions = stateContext.getDynamicActions();
-        HashMap<String, UIComponent> componentMap = stateContext.getDynamicComponents();
+        Map<String, UIComponent> componentMap = stateContext.getDynamicComponents();
 
         if (actions != null) {
             // Actions are recorded raw (append-only) per event; collapse redundant add/remove pairs once here.
