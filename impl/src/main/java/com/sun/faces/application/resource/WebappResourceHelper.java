@@ -231,7 +231,7 @@ public class WebappResourceHelper extends ResourceHelper {
     }
 
     private String findPathConsideringContracts(LibraryInfo library, String resourceName, String localePrefix, ContractInfo[] outContract, FacesContext ctx) {
-        UIViewRoot root = ctx.getViewRoot();
+        final UIViewRoot root = ctx.getViewRoot();
         final List<String> contracts;
 
         if (library != null) {
