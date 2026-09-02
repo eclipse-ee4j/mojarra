@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import jakarta.el.CompositeELResolver;
+import jakarta.el.ELContext;
 import jakarta.el.ELContextListener;
 import jakarta.el.ELException;
 import jakarta.el.ELResolver;
@@ -123,7 +124,8 @@ public class ExpressionLanguage {
      */
     @SuppressWarnings("unchecked")
     public <T> T evaluateExpressionGet(FacesContext context, String expression, Class<? extends T> expectedType) throws ELException {
-        return (T) getExpressionFactory().createValueExpression(context.getELContext(), expression, expectedType).getValue(context.getELContext());
+        final ELContext elContext = context.getELContext();
+        return (T) getExpressionFactory().createValueExpression(elContext, expression, expectedType).getValue(elContext);
     }
 
     public CompositeELResolver getApplicationELResolvers() {

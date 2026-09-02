@@ -589,6 +589,38 @@ public class Util {
     }
 
     /**
+     * Returns the given string without any leading and trailing character which {@link String#trim()} or
+     * {@link String#strip()} would remove, or null if nothing is left. Neither of those two covers the other: trim
+     * removes every character up to and including U+0020, strip removes every {@link Character#isWhitespace(char)}
+     * character, and only their union leaves a string which is safe to write out unencoded.
+     *
+     * @param string The string to be trimmed.
+     * @return The trimmed string, or null if it is null or if nothing is left after trimming.
+     */
+    public static String trimToNull(String string) {
+        if (string == null) {
+            return null;
+        }
+
+        int start = 0;
+        int end = string.length();
+
+        while (start < end && isTrimmable(string.charAt(start))) {
+            start++;
+        }
+
+        while (end > start && isTrimmable(string.charAt(end - 1))) {
+            end--;
+        }
+
+        return start == end ? null : string.substring(start, end);
+    }
+
+    private static boolean isTrimmable(char character) {
+        return character <= ' ' || Character.isWhitespace(character);
+    }
+
+    /**
      * Returns <code>true</code> if the given array is null or is empty.
      *
      * @param array The array to be checked on emptiness.

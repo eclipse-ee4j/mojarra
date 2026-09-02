@@ -28,13 +28,14 @@ import org.glassfish.mojarra.util.Cache;
  */
 public class SystemEventInfo {
 
-    private Class<? extends SystemEvent> systemEvent;
-    private final Cache<Class<?>, EventInfo> cache = new Cache<>(arg -> new EventInfo(systemEvent, arg));
+    private final Class<? extends SystemEvent> systemEvent;
+    private final Cache<Class<?>, EventInfo> cache;
 
     // -------------------------------------------------------- Constructors
 
     public SystemEventInfo(Class<? extends SystemEvent> systemEvent) {
         this.systemEvent = systemEvent;
+        this.cache = new Cache<>(sourceClass -> new EventInfo(systemEvent, sourceClass));
     }
 
     // ------------------------------------------------------ Public Methods

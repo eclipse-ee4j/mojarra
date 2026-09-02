@@ -100,6 +100,40 @@ class ContextParamResolutionTest extends ConfigurationLoggingTestBase {
     }
 
     /**
+     * The separator trims entries and drops empty ones, so a value listed twice would otherwise reach every reader of
+     * the parameter and have the work behind it done a second time. Each one is dropped and named, and the entries
+     * which survive keep the order and the first position they were declared at.
+     */
+    @Test
+    void aValueListedMoreThanOnceIsDroppedAndReported() {
+        ServletContext servletContext = configure(ResourceHandler.RESOURCE_EXCLUDES_PARAM_NAME, ".class .jsp .class .jspx .jsp");
+
+        assertArrayEquals(new String[] { ".class", ".jsp", ".jspx" },
+                FacesContextParam.RESOURCE_EXCLUDES.getStringArray(servletContext));
+        assertEquals(List.of(".class, .jsp"), duplicatedValues());
+    }
+
+    @Test
+    void aValueListedOnceIsKeptAndNotReported() {
+        ServletContext servletContext = configure(ResourceHandler.RESOURCE_EXCLUDES_PARAM_NAME, ".class .jsp");
+
+        assertArrayEquals(new String[] { ".class", ".jsp" }, FacesContextParam.RESOURCE_EXCLUDES.getStringArray(servletContext));
+        assertEquals(List.of(), duplicatedValues());
+    }
+
+    /**
+     * A parameter whose type is not a list cannot hold a repeat, so it is never a candidate.
+     */
+    @Test
+    void aSingleValuedParameterIsNotReported() {
+        ServletContext servletContext = configure(FacesContextParam.CSP_POLICY.getName(), "script-src 'self' 'self'");
+
+        FacesContextParam.CSP_POLICY.getString(servletContext);
+
+        assertEquals(List.of(), duplicatedValues());
+    }
+
+    /**
      * A parameter read through an accessor for another type says so, rather than handing the value over to a cast
      * which fails on whichever path first reads it. The accessor is what names the type at the call site, and no
      * compiler checks that against the declaration.
@@ -182,6 +216,10 @@ class ContextParamResolutionTest extends ConfigurationLoggingTestBase {
         Object expected = param.getDefaultValue(FacesContextParam.PROJECT_STAGE.getEnum(servletContext));
 
         assertEquals(expected, WebConfiguration.getInstance(servletContext).getValue(param), param.getName());
+    }
+
+    private List<String> duplicatedValues() {
+        return loggedArguments("faces.config.webconfig.param.duplicate_values", 2);
     }
 
     private static ServletContext configure(String name, String value) {

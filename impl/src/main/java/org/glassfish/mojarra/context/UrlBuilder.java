@@ -16,6 +16,7 @@
 
 package org.glassfish.mojarra.context;
 
+import static java.util.Collections.emptyList;
 import static org.glassfish.mojarra.RIConstants.CHAR_ENCODING;
 
 import java.net.URLEncoder;
@@ -24,8 +25,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.lifecycle.ClientWindow;
@@ -64,7 +63,7 @@ class UrlBuilder {
     // ------------------------------------------------------------ Constructors
 
     public UrlBuilder(String url, String encoding) {
-        if (url == null || url.trim().length() == 0) {
+        if (Util.trimToNull(url) == null) {
             throw new IllegalArgumentException("Url cannot be empty");
         }
         this.url = new StringBuilder(url.length() * 2);
@@ -80,10 +79,11 @@ class UrlBuilder {
     // ---------------------------------------------------------- Public Methods
 
     public UrlBuilder addParameters(String name, List<String> values) {
-        if ( name == null || name.isBlank() ) {
+        name = Util.trimToNull(name);
+        if (name == null) {
             throw new IllegalArgumentException("Parameter name cannot be empty");
         }
-        addValuesToParameter(name.trim(), values, true);
+        addValuesToParameter(name, values, true);
 
         return this;
     }
@@ -91,12 +91,11 @@ class UrlBuilder {
     public UrlBuilder addParameters(Map<String, List<String>> params) {
         if (params != null && !params.isEmpty()) {
             for (Map.Entry<String, List<String>> entry : params.entrySet()) {
-                if (entry.getKey() == null || entry.getKey().trim().length() == 0) {
+                String paramName = Util.trimToNull(entry.getKey());
+                if (paramName == null) {
                     throw new IllegalArgumentException("Parameter name cannot be empty");
                 }
-                List<String> values = entry.getValue();
-                List<String> retValues = values.stream().filter(Objects::nonNull).collect(Collectors.toList());
-                addValuesToParameter(entry.getKey().trim(), retValues, true);
+                addValuesToParameter(paramName, entry.getValue(), true);
             }
         }
 
@@ -104,7 +103,7 @@ class UrlBuilder {
     }
 
     public UrlBuilder setPath(String path) {
-        if (path == null || path.trim().length() == 0) {
+        if (Util.trimToNull(path) == null) {
             throw new IllegalArgumentException("Path cannot be empty");
         }
         this.path = path;
@@ -122,7 +121,7 @@ class UrlBuilder {
     }
 
     /**
-     * The fragment is appended at the end of the url after a hash mark. It represents the fragement of the document that
+     * The fragment is appended at the end of the url after a hash mark. It represents the fragment of the document that
      * should be brought into focus when the document is rendered. Setting the fragment replaces the previous value.
      */
     public UrlBuilder setFragment(String fragment) {
@@ -164,7 +163,7 @@ class UrlBuilder {
         for (String pair : pairs) {
             String[] nameAndValue = Util.split(pair, PARAMETER_NAME_VALUE_SEPARATOR);
             // ignore malformed pair
-            if (nameAndValue.length != 2 || nameAndValue[0].trim().length() == 0) {
+            if (nameAndValue.length != 2 || Util.trimToNull(nameAndValue[0]) == null) {
                 continue;
             }
 
@@ -258,15 +257,12 @@ class UrlBuilder {
     }
 
     protected void addValueToParameter(String name, String value, boolean replace) {
-        List<String> values = new ArrayList<>(value == null ? 0 : 1);
-        if (value != null) {
-            values.add(value);
-        }
+        List<String> values = value == null ? emptyList() : List.of(value);
         addValuesToParameter(name, values, replace);
     }
 
     protected void addValuesToParameter(String name, List<String> valuesRef, boolean replace) {
-        List<String> values = new ArrayList<>();
+        List<String> values = new ArrayList<>(valuesRef != null ? valuesRef.size() : 0);
         if (valuesRef != null) {
             for (String string : valuesRef) {
                 if (string != null) {
@@ -283,10 +279,11 @@ class UrlBuilder {
             parameters.put(name, values);
         } else {
             List<String> oldValues = parameters.get(name);
-            // add if exists
-            if ( oldValues != null ) oldValues.addAll(values);
-            // put old+new or put only new values
-            parameters.put( name , oldValues != null ? oldValues : values );
+            if (oldValues != null) {
+                oldValues.addAll(values);
+                values = oldValues;
+            }
+            parameters.put(name, values);
         }
     }
 
@@ -311,5 +308,4 @@ class UrlBuilder {
             queryString = q.isEmpty() ? null : q;
         }
     }
-
 }

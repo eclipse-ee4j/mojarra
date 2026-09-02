@@ -239,7 +239,8 @@ public class ViewMetadataImpl extends ViewMetadata {
     private static class ConstantsMap extends LinkedHashMap<String, Object> {
 
         private static final long serialVersionUID = 7036447585721834948L;
-        private String type;
+
+        private final String type;
 
         public ConstantsMap(Map<String, Object> map, String type) {
             this.type = type;

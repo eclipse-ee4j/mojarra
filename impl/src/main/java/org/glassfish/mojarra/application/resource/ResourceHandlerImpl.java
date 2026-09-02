@@ -502,8 +502,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
      * to an exception, the exception provided will be logged as well.
      *
      * @param ctx the {@link FacesContext} for the current request
-     * @param resourceName the resource name
-     * @param libraryName the resource library
+     * @param resourceId the resource name
      * @param t the exception caught when attempting to find the resource
      */
     private void logMissingResource(FacesContext ctx, String resourceId, Throwable t) {
@@ -562,7 +561,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
      * @param excludedExtensions the excluded file extensions as returned by {@link #parseExcludedExtensions(String[])}
      * @param resourceId the normalized request path as returned by
      * {@link #normalizeResourceRequest(jakarta.faces.context.FacesContext)}
-     * @return <code>true</code> if the request matces an excluded resource, otherwise <code>false</code>
+     * @return <code>true</code> if the request matches an excluded resource, otherwise <code>false</code>
      */
     static boolean isExcluded(String[] excludedExtensions, String resourceId) {
         for (String excludedExtension : excludedExtensions) {

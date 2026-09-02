@@ -89,7 +89,7 @@ public abstract class Compiler {
     protected abstract FaceletHandler doCompile(URL src, String alias) throws IOException;
 
     public final TagDecorator createTagDecorator() {
-        if (decorators.size() > 0) {
+        if (!decorators.isEmpty()) {
             return new CompositeTagDecorator(decorators.toArray(new TagDecorator[decorators.size()]));
         }
         return EMPTY_DECORATOR;
@@ -139,7 +139,7 @@ public abstract class Compiler {
     }
 
     public final TagLibrary createTagLibrary(CompilationMessageHolder unit) {
-        if (libraries.size() > 0) {
+        if (!libraries.isEmpty()) {
             return new CompositeTagLibrary(libraries.toArray(new TagLibrary[libraries.size()]), unit);
         }
         return EMPTY_LIBRARY;

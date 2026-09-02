@@ -28,6 +28,7 @@ import java.util.EnumSet;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -383,11 +384,13 @@ public class WebConfiguration {
             Optional<?> resolved = param.toValue(value);
 
             if (resolved.isPresent()) {
+                Object distinct = withoutDuplicateValues(param, resolved.get());
+
                 if (!isCarriedOver(param)) {
                     report(param.getName(), value);
                 }
 
-                return resolved.get();
+                return distinct;
             }
         } catch (IllegalArgumentException e) {
             LOGGER.log(Level.WARNING, "faces.config.webconfig.boolconfig.invalidvalue",
@@ -588,6 +591,38 @@ public class WebConfiguration {
         MojarraContextParam alternate = alternateOf(param);
 
         return alternate != null && !isSet(alternate);
+    }
+
+    /**
+     * Drops the values a multi-valued parameter lists more than once, naming them. A repeat gets this far because the
+     * separator only trims entries and drops empty ones, and past here every reader of the parameter would do the work
+     * behind that value a second time. A parameter of any other type cannot hold one and is handed back untouched.
+     */
+    private Object withoutDuplicateValues(ContextParam param, Object value) {
+        if (param.getType() != String[].class) {
+            return value;
+        }
+
+        String[] values = (String[]) value;
+        Set<String> distinct = new LinkedHashSet<>();
+        Set<String> duplicated = new LinkedHashSet<>();
+
+        for (String entry : values) {
+            if (!distinct.add(entry)) {
+                duplicated.add(entry);
+            }
+        }
+
+        if (duplicated.isEmpty()) {
+            return values;
+        }
+
+        if (!isCarriedOver(param)) {
+            LOGGER.log(Level.WARNING, "faces.config.webconfig.param.duplicate_values",
+                    new Object[] { getContextName(), param.getName(), String.join(", ", duplicated) });
+        }
+
+        return distinct.toArray(String[]::new);
     }
 
     /**

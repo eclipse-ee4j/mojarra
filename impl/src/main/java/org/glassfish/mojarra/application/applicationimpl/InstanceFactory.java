@@ -42,6 +42,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -106,27 +107,30 @@ public class InstanceFactory {
     private static final String COMPONENT_TYPE = "componentType";
     private static final String COMPONENT_CLASS = "componentClass";
 
-    private static final Map<String, Class<?>[]> STANDARD_CONV_ID_TO_TYPE_MAP = new HashMap<>(8, 1.0f);
-    private static final Map<Class<?>, String> STANDARD_TYPE_TO_CONV_ID_MAP = new HashMap<>(16, 1.0f);
+    private static final Map<String, Class<?>[]> STANDARD_CONV_ID_TO_TYPE_MAP = Map.of(
+            ByteConverter.CONVERTER_ID, new Class<?>[] { Byte.TYPE, Byte.class },
+            BooleanConverter.CONVERTER_ID, new Class<?>[] { Boolean.TYPE, Boolean.class },
+            CharacterConverter.CONVERTER_ID, new Class<?>[] { Character.TYPE, Character.class },
+            ShortConverter.CONVERTER_ID, new Class<?>[] { Short.TYPE, Short.class },
+            IntegerConverter.CONVERTER_ID, new Class<?>[] { Integer.TYPE, Integer.class },
+            LongConverter.CONVERTER_ID, new Class<?>[] { Long.TYPE, Long.class },
+            FloatConverter.CONVERTER_ID, new Class<?>[] { Float.TYPE, Float.class },
+            DoubleConverter.CONVERTER_ID, new Class<?>[] { Double.TYPE, Double.class },
+            UUIDConverter.CONVERTER_ID, new Class<?>[] { UUID.class },
+            EnumConverter.CONVERTER_ID, new Class<?>[] { Enum.class }
+    );
 
+    private static final Map<Class<?>, String> STANDARD_TYPE_TO_CONV_ID_MAP;
     static {
-        STANDARD_CONV_ID_TO_TYPE_MAP.put(ByteConverter.CONVERTER_ID, new Class<?>[] { Byte.TYPE, Byte.class });
-        STANDARD_CONV_ID_TO_TYPE_MAP.put(BooleanConverter.CONVERTER_ID, new Class<?>[] { Boolean.TYPE, Boolean.class });
-        STANDARD_CONV_ID_TO_TYPE_MAP.put(CharacterConverter.CONVERTER_ID, new Class<?>[] { Character.TYPE, Character.class });
-        STANDARD_CONV_ID_TO_TYPE_MAP.put(ShortConverter.CONVERTER_ID, new Class<?>[] { Short.TYPE, Short.class });
-        STANDARD_CONV_ID_TO_TYPE_MAP.put(IntegerConverter.CONVERTER_ID, new Class<?>[] { Integer.TYPE, Integer.class });
-        STANDARD_CONV_ID_TO_TYPE_MAP.put(LongConverter.CONVERTER_ID, new Class<?>[] { Long.TYPE, Long.class });
-        STANDARD_CONV_ID_TO_TYPE_MAP.put(FloatConverter.CONVERTER_ID, new Class<?>[] { Float.TYPE, Float.class });
-        STANDARD_CONV_ID_TO_TYPE_MAP.put(DoubleConverter.CONVERTER_ID, new Class<?>[] { Double.TYPE, Double.class });
-        STANDARD_CONV_ID_TO_TYPE_MAP.put(EnumConverter.CONVERTER_ID, new Class<?>[] { Enum.class });
-        STANDARD_CONV_ID_TO_TYPE_MAP.put(UUIDConverter.CONVERTER_ID, new Class<?>[] { UUID.class });
+        Map<Class<?>,String> map = new HashMap<>(STANDARD_CONV_ID_TO_TYPE_MAP.size(), 1.0f);
         for (Map.Entry<String, Class<?>[]> entry : STANDARD_CONV_ID_TO_TYPE_MAP.entrySet()) {
             Class<?>[] types = entry.getValue();
             String key = entry.getKey();
             for (Class<?> clazz : types) {
-                STANDARD_TYPE_TO_CONV_ID_MAP.put(clazz, key);
+                map.put(clazz, key);
             }
         }
+        STANDARD_TYPE_TO_CONV_ID_MAP = Collections.unmodifiableMap(map);
     }
 
     private final String[] STANDARD_BY_TYPE_CONVERTER_CLASSES = { "java.math.BigDecimal", "java.lang.Boolean", "java.lang.Byte", "java.lang.Character",
@@ -600,7 +604,7 @@ public class InstanceFactory {
         if (defaultValidatorInfo == null) {
             synchronized (this) {
                 if (defaultValidatorInfo == null) {
-                    defaultValidatorInfo = new LinkedHashMap<>();
+                    defaultValidatorInfo = new LinkedHashMap<>(defaultValidatorIds.size(), 1.0f);
                     if (!defaultValidatorIds.isEmpty()) {
                         for (String id : defaultValidatorIds) {
                             String validatorClass;
@@ -616,9 +620,10 @@ public class InstanceFactory {
                         }
 
                     }
+
+                    defaultValidatorInfo = unmodifiableMap(defaultValidatorInfo);
                 }
             }
-            defaultValidatorInfo = unmodifiableMap(defaultValidatorInfo);
         }
 
         return defaultValidatorInfo;
@@ -680,7 +685,7 @@ public class InstanceFactory {
         UIComponent c;
 
         try {
-            c = (UIComponent) componentExpression.getValue(ctx.getELContext());
+            c = componentExpression.getValue(ctx.getELContext());
 
             if (c == null) {
                 c = this.createComponentApplyAnnotations(ctx, componentType, rendererType, applyAnnotations);
@@ -881,7 +886,7 @@ public class InstanceFactory {
      * <code>PropertyEditorManager.registerEditor()</code>, passing the <code>ConverterPropertyEditor</code> class for the
      * <code>targetClass</code> if the target class is not one of the standard by-type converter target classes.
      *
-     * @param targetClass the target class for which a PropertyEditory may or may not be created
+     * @param targetClass the target class for which a PropertyEditor may or may not be created
      */
     private void addPropertyEditorIfNecessary(Class<?> targetClass) {
 
@@ -901,7 +906,7 @@ public class InstanceFactory {
         }
 
         for (String standardClass : STANDARD_BY_TYPE_CONVERTER_CLASSES) {
-            if (standardClass.indexOf(className) != -1) {
+            if (standardClass.contains(className)) {
                 return;
             }
         }

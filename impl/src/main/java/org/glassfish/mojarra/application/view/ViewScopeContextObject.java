@@ -22,14 +22,11 @@ import java.io.Serializable;
  * An object used by ViewScopeContext to keep track of contextual and creational context.
  */
 class ViewScopeContextObject implements Serializable {
+
     private static final long serialVersionUID = 370695657651519831L;
 
-    private String passivationCapableId;
-
-    /**
-     * Stores the name.
-     */
-    private String name;
+    private final String passivationCapableId;
+    private final String name;
 
     /**
      * Constructor.
@@ -46,25 +43,8 @@ class ViewScopeContextObject implements Serializable {
         return passivationCapableId;
     }
 
-    public void setPassivationCapableId(String passivationCapableId) {
-        this.passivationCapableId = passivationCapableId;
-    }
-
-    /*
-     * Get the name.
-     *
-     * @return the name.
-     */
     public String getName() {
         return name;
     }
 
-    /**
-     * Set the name.
-     *
-     * @param name the name.
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
 }

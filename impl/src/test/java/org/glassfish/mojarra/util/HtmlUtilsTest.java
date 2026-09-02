@@ -621,6 +621,59 @@ class HtmlUtilsTest {
         assertEquals("&#55357;&#56379;&#8205;&#10052;&#65039;", writeAttributeForXML("🐻‍❄️"));
     }
 
+    // -------- Encoding checks -----------------------------------------------
+
+    @Test
+    void isUTFencoding_recognizesEveryUtfCharset() {
+        assertTrue(HtmlUtils.isUTFencoding("UTF-8"));
+        assertTrue(HtmlUtils.isUTFencoding("UTF-16"));
+        assertTrue(HtmlUtils.isUTFencoding("UTF-16BE"));
+        assertTrue(HtmlUtils.isUTFencoding("UTF-16LE"));
+        assertTrue(HtmlUtils.isUTFencoding("UTF-32"));
+        assertTrue(HtmlUtils.isUTFencoding("UTF-32BE"));
+        assertTrue(HtmlUtils.isUTFencoding("UTF-32LE"));
+    }
+
+    /**
+     * An absent encoding is treated as UTF, so unicode is not escaped by default.
+     */
+    @Test
+    void isUTFencoding_emptyStringCountsAsUtf() {
+        assertTrue(HtmlUtils.isUTFencoding(""));
+    }
+
+    /**
+     * A null or unrecognized encoding is not a UTF encoding.
+     */
+    @Test
+    void isUTFencoding_nullAndNonUtfAreFalse() {
+        assertFalse(HtmlUtils.isUTFencoding(null));
+        assertFalse(HtmlUtils.isUTFencoding("ISO-8859-1"));
+        assertFalse(HtmlUtils.isUTFencoding("US-ASCII"));
+        assertFalse(HtmlUtils.isUTFencoding("windows-1252"));
+    }
+
+    /**
+     * HtmlResponseWriter uppercases the encoding before asking, so the BOM aliases must be
+     * recognized in upper case as well as in the mixed case the JDK canonically uses.
+     */
+    @Test
+    void isUTFencoding_bomAliasesMatchInBothCases() {
+        assertTrue(HtmlUtils.isUTFencoding("x-UTF-16LE-BOM"));
+        assertTrue(HtmlUtils.isUTFencoding("X-UTF-16LE-BOM"));
+        assertTrue(HtmlUtils.isUTFencoding("X-UTF-32BE-BOM"));
+        assertTrue(HtmlUtils.isUTFencoding("X-UTF-32LE-BOM"));
+    }
+
+    @Test
+    void isISO8859_1encoding_matchesOnlyTheCanonicalName() {
+        assertTrue(HtmlUtils.isISO8859_1encoding("ISO-8859-1"));
+        assertFalse(HtmlUtils.isISO8859_1encoding(null));
+        assertFalse(HtmlUtils.isISO8859_1encoding("iso-8859-1"));
+        assertFalse(HtmlUtils.isISO8859_1encoding("latin1"));
+        assertFalse(HtmlUtils.isISO8859_1encoding("UTF-8"));
+    }
+
     // -------- Helpers -------------------------------------------------------
 
     private static String writeText(String input) throws IOException {

@@ -215,7 +215,7 @@ public class AnnotationManager {
     }
 
     /**
-     * Apply annotations relevent to {@link jakarta.faces.render.Renderer} instances.
+     * Apply annotations relevant to {@link jakarta.faces.render.Renderer} instances.
      *
      * @param ctx the {@link jakarta.faces.context.FacesContext} for the current request
      * @param r the <code>Renderer</code> to process
@@ -234,7 +234,7 @@ public class AnnotationManager {
     /**
      * @return a new <code>Map</code> which maps the types of annotations to a specific
      * <code>ConfigAnnotationHandler</code>. Note that each invocation of this method constructs a new <code>Map</code> with
-     * new <code>ConfigAnnotationhandler</code> instances as they are not thread safe.
+     * new <code>ConfigAnnotationHandler</code> instances as they are not thread safe.
      */
     private Map<Class<? extends Annotation>, ConfigAnnotationHandler> getConfigAnnotationHandlers() {
         ConfigAnnotationHandler[] handlers = {
@@ -339,18 +339,14 @@ public class AnnotationManager {
      */
     private static final class ProcessAnnotationsTask implements Callable<Map<Class<? extends Annotation>, RuntimeAnnotationHandler>> {
 
-        @SuppressWarnings("unchecked")
-        private static final Map<Class<? extends Annotation>, RuntimeAnnotationHandler> EMPTY = Collections.EMPTY_MAP;
         private final Class<?> clazz;
         private final Scanner[] scanners;
 
         // -------------------------------------------------------- Constructors
 
         public ProcessAnnotationsTask(Class<?> clazz, Scanner[] scanners) {
-
             this.clazz = clazz;
             this.scanners = scanners;
-
         }
 
         // ------------------------------------------------------ Public Methods
@@ -369,7 +365,7 @@ public class AnnotationManager {
                 }
             }
 
-            return map != null ? map : EMPTY;
+            return map != null ? map : Collections.emptyMap();
 
         }
 

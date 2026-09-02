@@ -47,9 +47,7 @@ public class ComponentConfigHandler implements ConfigAnnotationHandler {
      */
     @Override
     public Collection<Class<? extends Annotation>> getHandledAnnotations() {
-
         return HANDLES;
-
     }
 
     /**
@@ -57,17 +55,15 @@ public class ComponentConfigHandler implements ConfigAnnotationHandler {
      */
     @Override
     public void collect(Class<?> target, Annotation annotation) {
-
         if (components == null) {
             components = new HashMap<>();
         }
         String value = ((FacesComponent) annotation).value();
-        if (null == value || 0 == value.length()) {
+        if (value == null || value.isEmpty()) {
             value = target.getSimpleName();
             value = Character.toLowerCase(value.charAt(0)) + value.substring(1);
         }
         components.put(value, new FacesComponentUsage(target, (FacesComponent) annotation));
-
     }
 
     /**
@@ -75,7 +71,6 @@ public class ComponentConfigHandler implements ConfigAnnotationHandler {
      */
     @Override
     public void push(FacesContext ctx) {
-
         if (components != null) {
             Application app = ctx.getApplication();
             ApplicationAssociate appAss = ApplicationAssociate.getCurrentInstance();
@@ -86,7 +81,6 @@ public class ComponentConfigHandler implements ConfigAnnotationHandler {
                 app.addComponent(entry.getKey(), entry.getValue().getTarget().getName());
             }
         }
-
     }
 
 }

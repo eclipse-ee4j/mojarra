@@ -16,7 +16,6 @@
 
 package org.glassfish.mojarra.application;
 
-import static java.util.Arrays.asList;
 import static org.glassfish.mojarra.application.view.ViewScopeManager.ACTIVE_VIEW_MAPS;
 import static org.glassfish.mojarra.application.view.ViewScopeManager.VIEW_SCOPE_MANAGER;
 import static org.glassfish.mojarra.cdi.clientwindow.ClientWindowScopeManager.CLIENT_WINDOW_SCOPE_MANAGER;
@@ -52,6 +51,8 @@ import org.glassfish.mojarra.renderkit.StateHelper;
  * </p>
  */
 public class WebappLifecycleListener {
+
+    private static final String[] SESSION_LISTENER_ATTRIBUTE_NAMES = {VIEW_SCOPE_MANAGER, CLIENT_WINDOW_SCOPE_MANAGER};
 
     private ServletContext servletContext;
     private ApplicationAssociate applicationAssociate;
@@ -136,9 +137,8 @@ public class WebappLifecycleListener {
         activeSessions.remove(event.getSession());
         FlowCDIContext.sessionDestroyed(event);
 
-        for (HttpSessionListener listener :
-                asList((HttpSessionListener)servletContext.getAttribute(VIEW_SCOPE_MANAGER),
-                        (HttpSessionListener)servletContext.getAttribute(CLIENT_WINDOW_SCOPE_MANAGER))) {
+        for (String listenerName : SESSION_LISTENER_ATTRIBUTE_NAMES) {
+            HttpSessionListener listener = (HttpSessionListener)servletContext.getAttribute(listenerName);
             if (listener != null) {
                 listener.sessionDestroyed(event);
             }
@@ -161,7 +161,7 @@ public class WebappLifecycleListener {
      * Notification that the servlet context is about to be shut down. All servlets and filters have been destroy()ed before
      * any ServletContextListeners are notified of context destruction.
      *
-     * @param event the nofication event
+     * @param event the notification event
      */
     public void contextDestroyed(ServletContextEvent event) {
         applicationAssociate = null;

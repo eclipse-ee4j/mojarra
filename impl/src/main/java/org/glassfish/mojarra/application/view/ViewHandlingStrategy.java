@@ -45,7 +45,7 @@ public abstract class ViewHandlingStrategy extends ViewDeclarationLanguage {
 
     private static final Logger logger = FacesLogger.APPLICATION.getLogger();
 
-    protected ApplicationAssociate associate;
+    protected final ApplicationAssociate associate;
 
     // ------------------------------------------------------------ Constructors
 
@@ -118,11 +118,11 @@ public abstract class ViewHandlingStrategy extends ViewDeclarationLanguage {
         if (locale == null) {
             locale = ctx.getApplication().getViewHandler().calculateLocale(ctx);
             if (logger.isLoggable(FINE)) {
-                logger.fine("Locale for this view as determined by calculateLocale " + locale.toString());
+                logger.fine("Locale for this view as determined by calculateLocale " + locale);
             }
         } else {
             if (logger.isLoggable(FINE)) {
-                logger.fine("Using locale from previous view " + locale.toString());
+                logger.fine("Using locale from previous view " + locale);
             }
         }
 

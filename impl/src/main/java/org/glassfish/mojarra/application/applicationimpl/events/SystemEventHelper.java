@@ -30,30 +30,24 @@ public class SystemEventHelper {
     // -------------------------------------------------------- Constructors
 
     public SystemEventHelper() {
-
         systemEventInfoCache = new Cache<>(SystemEventInfo::new);
-
     }
 
     // ------------------------------------------------------ Public Methods
 
+    /**
+     * @param systemEventClass the type of the system event
+     * @param sourceClass the type of the event source
+     * @return the <code>EventInfo</code> for the given system event and source class, creating and caching it if absent
+     */
     public EventInfo getEventInfo(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass) {
-
-        EventInfo info = null;
-        SystemEventInfo systemEventInfo = systemEventInfoCache.get(systemEventClass);
-        if (systemEventInfo != null) {
-            info = systemEventInfo.getEventInfo(sourceClass);
-        }
-
-        return info;
-
+        return systemEventInfoCache.get(systemEventClass).getEventInfo(sourceClass);
     }
 
     public EventInfo getEventInfo(Class<? extends SystemEvent> systemEventClass, Object source, Class<?> sourceBaseType, boolean useSourceForLookup) {
 
         Class<?> sourceClass = useSourceForLookup ? sourceBaseType != null ? sourceBaseType : source.getClass() : Void.class;
         return getEventInfo(systemEventClass, sourceClass);
-
     }
 
-} // END SystemEventHelper
+}

@@ -45,6 +45,18 @@ class Issue5970IT extends BaseITNG {
 
     private static final String NO_REPORTS = "[]";
 
+    @FindBy(id = "show")
+    private WebElement plainShow;
+
+    @FindBy(id = "input")
+    private WebElement plainInput;
+
+    @FindBy(id = "submit")
+    private WebElement plainSubmit;
+
+    @FindBy(id = "reports")
+    private WebElement plainReports;
+
     /**
      * The input a <code>c:if</code> held while the response was rendered, and no longer holds while the postback is
      * restored, is named by the report. The webapp leaves <code>restoreBuildTimeDecisions</code> off, since replaying
@@ -60,6 +72,37 @@ class Issue5970IT extends BaseITNG {
         page.guardHttp(page.findElement(SUBMIT)::click);
         String reports = page.findElement(REPORTS).getText();
         assertTrue(reports.contains("form:input"), reports);
+    }
+
+    /**
+     * A form which prepends no id hands its children the client id of the container above it rather than one
+     * extending its own, so it stands on no row and the input a <code>c:if</code> drops is reported as it is
+     * anywhere else.
+     */
+    @Test
+    void testComponentDroppedByABuildTimeConditionInAFormWhichPrependsNoId() {
+        open("unprependedform.xhtml");
+        guardHttp(plainShow::click);
+        assertEquals("[]", plainReports.getText(), "the rebuild reproduces the view the response was rendered from");
+        plainInput.sendKeys("test");
+        guardHttp(plainSubmit::click);
+        assertTrue(plainReports.getText().contains("input"), plainReports.getText());
+    }
+
+    /**
+     * A component the render left holding the row of an iterating naming container is reported on by neither
+     * postback: it holds another client id on every request which does not iterate that container, so comparing it
+     * would report it as vanished on every postback.
+     *
+     * @see <a href="https://github.com/eclipse-ee4j/mojarra/issues/5984">GitHub issue #5984</a>
+     */
+    @Test
+    void testComponentUnderAContainerLeftPositionedOnARow() {
+        open("iterating.xhtml");
+        guardHttp(submit::click);
+        assertEquals("[]", reports.getText(), reports.getText());
+        guardAjax(ajaxSubmit::click);
+        assertEquals("[]", reports.getText(), reports.getText());
     }
 
     /**

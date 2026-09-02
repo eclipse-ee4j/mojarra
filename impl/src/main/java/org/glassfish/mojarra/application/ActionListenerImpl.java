@@ -44,7 +44,6 @@ import org.glassfish.mojarra.util.FacesLogger;
  */
 public class ActionListenerImpl implements ActionListener {
 
-    // Log instance for this class
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
 
     // --------------------------------------------- Methods From ActionListener
@@ -64,7 +63,9 @@ public class ActionListenerImpl implements ActionListener {
         context.renderResponse();
     }
 
-    private String getNavigationOutcome(FacesContext context, MethodExpression expression) {
+    // Utils -----------------------------------------------------------------------------------
+
+    private static String getNavigationOutcome(FacesContext context, MethodExpression expression) {
         if (expression == null) {
             return null;
         }
@@ -83,7 +84,7 @@ public class ActionListenerImpl implements ActionListener {
         }
     }
 
-    private void invokeNavigationHandling(FacesContext context, UIComponent source, MethodExpression expression, String outcome) {
+    private static void invokeNavigationHandling(FacesContext context, UIComponent source, MethodExpression expression, String outcome) {
         NavigationHandler navHandler = context.getApplication().getNavigationHandler();
 
         String toFlowDocumentId = (String) source.getAttributes().get(TO_FLOW_DOCUMENT_ID_ATTR_NAME);

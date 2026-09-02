@@ -43,8 +43,8 @@ class ListenerForHandler implements RuntimeAnnotationHandler {
     @Override
     public void apply(FacesContext ctx, Object... params) {
 
-        Object listener;
-        UIComponent target;
+        final Object listener;
+        final UIComponent target;
         if (params.length == 2) {
             // handling @ListenerFor on a Renderer
             listener = params[0];
@@ -60,7 +60,7 @@ class ListenerForHandler implements RuntimeAnnotationHandler {
                 target.subscribeToEvent(listenerFor.systemEventClass(), (ComponentSystemEventListener) listener);
             }
         } else if (listener instanceof SystemEventListener) {
-            Class<?> sourceClassValue = null;
+            Class<?> sourceClassValue;
             Application app = ctx.getApplication();
             for (ListenerFor listenerFor : listenersFor) {
                 sourceClassValue = listenerFor.sourceClass();
@@ -68,7 +68,6 @@ class ListenerForHandler implements RuntimeAnnotationHandler {
                     app.subscribeToEvent(listenerFor.systemEventClass(), (SystemEventListener) listener);
                 } else {
                     app.subscribeToEvent(listenerFor.systemEventClass(), listenerFor.sourceClass(), (SystemEventListener) listener);
-
                 }
             }
         }

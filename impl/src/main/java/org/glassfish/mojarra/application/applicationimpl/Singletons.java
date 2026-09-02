@@ -16,17 +16,17 @@
 
 package org.glassfish.mojarra.application.applicationimpl;
 
+import static java.util.Collections.emptyIterator;
 import static java.util.logging.Level.FINE;
 import static org.glassfish.mojarra.util.MessageUtils.ILLEGAL_ATTEMPT_SETTING_APPLICATION_ARTIFACT_ID;
 import static org.glassfish.mojarra.util.MessageUtils.getExceptionMessageString;
-import static org.glassfish.mojarra.util.Util.coalesce;
 import static org.glassfish.mojarra.util.Util.notNull;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
@@ -55,7 +55,7 @@ public class Singletons {
     private volatile ResourceHandler resourceHandler;
     private volatile StateManager stateManager;
 
-    private volatile ArrayList<Locale> supportedLocales;
+    private volatile List<Locale> supportedLocales;
     private volatile Locale defaultLocale;
     private volatile String messageBundle;
 
@@ -192,7 +192,7 @@ public class Singletons {
      * @see jakarta.faces.application.Application#getSupportedLocales()
      */
     public Iterator<Locale> getSupportedLocales() {
-        return coalesce(supportedLocales, Collections.<Locale>emptyList()).iterator();
+        return supportedLocales != null ? supportedLocales.iterator() : emptyIterator();
     }
 
     /*
