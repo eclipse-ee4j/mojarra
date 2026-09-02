@@ -339,18 +339,14 @@ public class AnnotationManager {
      */
     private static final class ProcessAnnotationsTask implements Callable<Map<Class<? extends Annotation>, RuntimeAnnotationHandler>> {
 
-        @SuppressWarnings({ "unchecked" })
-        private static final Map<Class<? extends Annotation>, RuntimeAnnotationHandler> EMPTY = Collections.EMPTY_MAP;
         private final Class<?> clazz;
         private final Scanner[] scanners;
 
         // -------------------------------------------------------- Constructors
 
         public ProcessAnnotationsTask(Class<?> clazz, Scanner[] scanners) {
-
             this.clazz = clazz;
             this.scanners = scanners;
-
         }
 
         // ------------------------------------------------------ Public Methods
@@ -369,7 +365,7 @@ public class AnnotationManager {
                 }
             }
 
-            return map != null ? map : EMPTY;
+            return map != null ? map : Collections.emptyMap();
 
         }
 
