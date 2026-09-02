@@ -21,16 +21,16 @@ import java.io.Writer;
 
 /**
  * <p>
- * This is based on {@link java.io.StringWriter} but backed by a {@link StringBuilder} instead.
+ * A {@link Writer} implementation backed by a {@link StringBuilder}.
  * </p>
- * 
+ *
  * <p>
  * This class is not thread safe.
  * </p>
  */
 public class FastStringWriter extends Writer {
 
-    protected StringBuilder builder;
+    protected final StringBuilder builder;
 
     // ------------------------------------------------------------ Constructors
 
@@ -65,20 +65,14 @@ public class FastStringWriter extends Writer {
      * <p>
      * Write a portion of an array of characters.
      * </p>
-     *
      * @param cbuf Array of characters
      * @param off Offset from which to start writing characters
      * @param len Number of characters to write
-     *
+     * @throws IndexOutOfBoundsException if <code>off</code> and <code>len</code> fall outside <code>cbuf</code>
      * @throws IOException
      */
     @Override
-    public void write(char cbuf[], int off, int len) throws IOException {
-        if (off < 0 || off > cbuf.length || len < 0 || off + len > cbuf.length || off + len < 0) {
-            throw new IndexOutOfBoundsException();
-        } else if (len == 0) {
-            return;
-        }
+    public void write(char[] cbuf, int off, int len) throws IOException {
         builder.append(cbuf, off, len);
     }
 
@@ -107,6 +101,15 @@ public class FastStringWriter extends Writer {
     // ---------------------------------------------------------- Public Methods
 
     /**
+     * Write a single character. The 16 high-order bits of <code>c</code> are ignored.
+     * @param c the character to be written
+     */
+    @Override
+    public void write(int c) throws IOException {
+        builder.append((char) c);
+    }
+
+    /**
      * Write a string.
      *
      * @param str String to be written
@@ -117,15 +120,26 @@ public class FastStringWriter extends Writer {
     }
 
     /**
+     * Write an array of characters.
+     *
+     * @param cbuf Array of characters to be written
+     */
+    @Override
+    public void write(char[] cbuf) throws IOException {
+        builder.append(cbuf);
+    }
+
+    /**
      * Write a portion of a string.
      *
      * @param str A String
      * @param off Offset from which to start writing characters
      * @param len Number of characters to write
+     * @throws IndexOutOfBoundsException if <code>off</code> and <code>len</code> fall outside <code>str</code>
      */
     @Override
     public void write(String str, int off, int len) {
-        builder.append(str.substring(off, off + len));
+        builder.append(str, off, off + len);
     }
 
     /**
@@ -145,6 +159,49 @@ public class FastStringWriter extends Writer {
 
     public void reset() {
         builder.setLength(0);
+    }
+
+
+    // ------------------------------------------------- Append Methods
+
+    /**
+     * Append a character sequence. A <code>null</code> argument appends the four characters <code>null</code>.
+     *
+     * @param csq the character sequence to append
+     * @return this writer
+     */
+    @Override
+    public Writer append(CharSequence csq) throws IOException {
+        builder.append(csq);
+        return this;
+    }
+
+    /**
+     * Append a subsequence of a character sequence. A <code>null</code> argument is appended as if it contained the
+     * four characters <code>null</code>.
+     *
+     * @param csq the character sequence to append from
+     * @param start index of the first character to append
+     * @param end index after the last character to append
+     * @return this writer
+     * @throws IndexOutOfBoundsException if <code>start</code> and <code>end</code> fall outside <code>csq</code>
+     */
+    @Override
+    public Writer append(CharSequence csq, int start, int end) throws IOException {
+        builder.append(csq, start, end);
+        return this;
+    }
+
+    /**
+     * Append a single character.
+     *
+     * @param c the character to append
+     * @return this writer
+     */
+    @Override
+    public Writer append(char c) throws IOException {
+        builder.append(c);
+        return this;
     }
 
 }
