@@ -19,7 +19,6 @@ package com.sun.faces.util;
 import static java.lang.Character.isHighSurrogate;
 import static java.lang.Character.isLowSurrogate;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -40,8 +39,10 @@ import com.sun.faces.RIConstants;
 public final class HtmlUtils {
     private HtmlUtils() {}
 
+    private static final String ISO_8859_1 = StandardCharsets.ISO_8859_1.name();
+
     private static final Set<String> UTF_CHARSET = Set.of("UTF-8", "UTF-16", "UTF-16BE", "UTF-16LE", "UTF-32", "UTF-32BE", "UTF-32LE",
-            "x-UTF-16LE-BOM", "X-UTF-32BE-BOM", "X-UTF-32LE-BOM", "");
+            "x-UTF-16LE-BOM", "X-UTF-16LE-BOM", "X-UTF-32BE-BOM", "X-UTF-32LE-BOM", "");
 
     // -------------------------------------------------
     // The following methods include the handling of
@@ -479,7 +480,7 @@ public final class HtmlUtils {
      * percent-encoding is lazily allocated on first need and shared across all encode calls in
      * a single invocation -- matching the original allocation amortization.
      */
-    static private void encodeURIString(Writer out, char[] textBuff, String encoding, int start, int end) throws IOException {
+    private static void encodeURIString(Writer out, char[] textBuff, String encoding, int start, int end) throws IOException {
         int runStart = start;
         boolean fragment = false;
         FastByteArrayOutputStream buf = null;
@@ -659,7 +660,7 @@ public final class HtmlUtils {
     // ----------------------------------------------------------
     //
     public static boolean isISO8859_1encoding(String encoding) {
-        return StandardCharsets.ISO_8859_1.name().equals(encoding);
+        return ISO_8859_1.equals(encoding);
     }
 
     // ----------------------------------------------------------
@@ -667,7 +668,7 @@ public final class HtmlUtils {
     // ----------------------------------------------------------
     //
     public static boolean isUTFencoding(String encoding) {
-        return UTF_CHARSET.contains(encoding);
+        return encoding != null && UTF_CHARSET.contains(encoding);
     }
 
     // ----------------------------------------------------------
@@ -741,20 +742,16 @@ public final class HtmlUtils {
 
     /**
      * <p>
-     * Implementation of {@link ByteArrayOutputStream} that expose the internal buffer
-     * and is not Thread-safe.
+     * Unsynchronized {@link OutputStream} that accumulates into a {@code byte[]} and hands that
+     * array out directly, so a percent-encoded character can be read back without a defensive copy.
      * </p>
      */
-    public static final class FastByteArrayOutputStream extends OutputStream {
+    private static final class FastByteArrayOutputStream extends OutputStream {
 
         private byte[] buf;
         private int count;
 
-        public FastByteArrayOutputStream() {
-            this(32);
-        }
-
-        public FastByteArrayOutputStream(int size) {
+        FastByteArrayOutputStream(int size) {
             if (size < 0) {
                 throw new IllegalArgumentException("Negative initial size: " + size);
             }
@@ -798,10 +795,6 @@ public final class HtmlUtils {
             count += len;
         }
 
-        public void writeTo(OutputStream out) throws IOException {
-            out.write(buf, 0, count);
-        }
-
         public void reset() {
             count = 0;
         }
@@ -809,9 +802,6 @@ public final class HtmlUtils {
         public int size() {
             return count;
         }
-
-        @Override
-        public void close() throws IOException {}
 
         /**
          * Obtain access to the underlying byte array to prevent unnecessary copy.
