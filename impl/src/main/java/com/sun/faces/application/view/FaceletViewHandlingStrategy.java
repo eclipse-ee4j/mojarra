@@ -55,6 +55,7 @@ import static jakarta.faces.view.AttachedObjectTarget.ATTACHED_OBJECT_TARGETS_KE
 import static jakarta.faces.view.facelets.FaceletContext.FACELET_CONTEXT_KEY;
 import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static java.lang.Boolean.TRUE;
+import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINEST;
@@ -2016,7 +2017,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     }
 
     private boolean returnAsImplicitOutCome(ViewVisitOption... options) {
-        return stream(options).filter(option -> option == RETURN_AS_MINIMAL_IMPLICIT_OUTCOME).findAny().isPresent();
+        return stream(options).anyMatch(option -> option == RETURN_AS_MINIMAL_IMPLICIT_OUTCOME);
     }
 
     private String toImplicitOutcome(String viewId) {
