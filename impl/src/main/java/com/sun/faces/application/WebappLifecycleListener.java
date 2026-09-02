@@ -54,6 +54,8 @@ import jakarta.servlet.http.HttpSessionListener;
  */
 public class WebappLifecycleListener {
 
+    private static final String[] SESSION_LISTENERS = {VIEW_SCOPE_MANAGER, CLIENT_WINDOW_SCOPE_MANAGER};
+
     private ServletContext servletContext;
     private ApplicationAssociate applicationAssociate;
     private final Set<HttpSession> activeSessions = ConcurrentHashMap.newKeySet();
@@ -139,9 +141,8 @@ public class WebappLifecycleListener {
         activeSessions.remove(event.getSession());
         FlowCDIContext.sessionDestroyed(event);
 
-        for (HttpSessionListener listener :
-                asList((HttpSessionListener)servletContext.getAttribute(VIEW_SCOPE_MANAGER),
-                        (HttpSessionListener)servletContext.getAttribute(CLIENT_WINDOW_SCOPE_MANAGER))) {
+        for (String listenerName : SESSION_LISTENERS) {
+            HttpSessionListener listener = (HttpSessionListener)servletContext.getAttribute(listenerName);
             if (listener != null) {
                 listener.sessionDestroyed(event);
             }
@@ -164,7 +165,7 @@ public class WebappLifecycleListener {
      * Notification that the servlet context is about to be shut down. All servlets and filters have been destroy()ed before
      * any ServletContextListeners are notified of context destruction.
      *
-     * @param event the nofication event
+     * @param event the notification event
      */
     public void contextDestroyed(ServletContextEvent event) {
         applicationAssociate = null;
