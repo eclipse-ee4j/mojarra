@@ -84,7 +84,7 @@ public class RenderKitConfigHandler implements ConfigAnnotationHandler {
                     try {
                         RenderKit rk = rkf.getRenderKit(ctx, ra.renderKitId());
                         if (rk == null) {
-                            throw new IllegalStateException("Error processing annotated Renderer " + ra.toString() + " on class " + rClass.getName()
+                            throw new IllegalStateException("Error processing annotated Renderer " + ra + " on class " + rClass.getName()
                                     + ".  Unable to find specified RenderKit.");
                         }
                         rk.addRenderer(ra.componentFamily(), ra.rendererType(),
@@ -97,7 +97,7 @@ public class RenderKitConfigHandler implements ConfigAnnotationHandler {
                     try {
                         RenderKit rk = rkf.getRenderKit(ctx, bra.renderKitId());
                         if (rk == null) {
-                            throw new IllegalStateException("Error processing annotated ClientBehaviorRenderer " + bra.toString() + " on class "
+                            throw new IllegalStateException("Error processing annotated ClientBehaviorRenderer " + bra + " on class "
                                     + rClass.getName() + ".  Unable to find specified RenderKit.");
                         }
                         rk.addClientBehaviorRenderer(bra.rendererType(),
