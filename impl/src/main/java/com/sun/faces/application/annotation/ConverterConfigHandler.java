@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,13 +41,7 @@ public class ConverterConfigHandler implements ConfigAnnotationHandler {
 
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
 
-    private static final Collection<Class<? extends Annotation>> HANDLES;
-
-    static {
-        Collection<Class<? extends Annotation>> handles = new ArrayList<>(1);
-        handles.add(FacesConverter.class);
-        HANDLES = Collections.unmodifiableCollection(handles);
-    }
+    private static final Collection<Class<? extends Annotation>> HANDLES = List.of(FacesConverter.class);
 
     private Map<Object, String> converters;
 
@@ -57,9 +52,7 @@ public class ConverterConfigHandler implements ConfigAnnotationHandler {
      */
     @Override
     public Collection<Class<? extends Annotation>> getHandledAnnotations() {
-
         return HANDLES;
-
     }
 
     /**
@@ -74,13 +67,13 @@ public class ConverterConfigHandler implements ConfigAnnotationHandler {
         Object key;
         FacesConverter converterAnnotation = (FacesConverter) annotation;
 
-        if (converterAnnotation.value().length() > 0 && converterAnnotation.forClass() != null && converterAnnotation.forClass() != Object.class) {
+        if ( !converterAnnotation.value().isEmpty() && converterAnnotation.forClass() != null && converterAnnotation.forClass() != Object.class) {
             if (LOGGER.isLoggable(Level.WARNING)) {
                 LOGGER.log(Level.WARNING, "@FacesConverter is using both value and forClass, only value will be applied.");
             }
         }
 
-        if (0 == converterAnnotation.value().length()) {
+        if (converterAnnotation.value().isEmpty()) {
             key = converterAnnotation.forClass();
         } else {
             key = converterAnnotation.value();
