@@ -44,6 +44,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPOutputStream;
 
+import com.sun.faces.RIConstants;
 import com.sun.faces.renderkit.html_basic.StylesheetRenderer;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
@@ -765,7 +766,7 @@ public abstract class ResourceHelper {
             expressionEvaluated = true;
             ValueExpression ve = ctx.getApplication().getExpressionFactory().createValueExpression(elContext, "#{" + expressionBody + "}", String.class);
             Object value = ve.getValue(elContext);
-            String expressionResult = value != null ? value.toString() : "";
+            String expressionResult = value != null ? value.toString() : RIConstants.EMPTY_STRING;
             buf.clear();
             for (int i = 0, len = expressionResult.length(); i < len; i++) {
                 buf.add((int) expressionResult.charAt(i));
@@ -795,8 +796,8 @@ public abstract class ResourceHelper {
     	if (!path.endsWith(".properties") || loc == null) {
     		return Collections.singletonList(path);
     	}
-    	List<String> list = new ArrayList<>();
-    	String base = path.substring(0, path.lastIndexOf(".properties"));
+    	final List<String> list = new ArrayList<>(4);
+        final String base = path.substring(0, path.lastIndexOf(".properties"));
     	if (!loc.getVariant().isEmpty()) {
     		list.add(String.format("%s_%s_%s_%s.properties", base, loc.getLanguage(), loc.getCountry(), loc.getVariant()));
     	}
