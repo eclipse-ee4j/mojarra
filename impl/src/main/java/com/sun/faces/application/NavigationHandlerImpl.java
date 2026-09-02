@@ -16,6 +16,7 @@
 
 package com.sun.faces.application;
 
+import static com.sun.faces.RIConstants.EMPTY_STRING;
 import static com.sun.faces.application.SharedUtils.evaluateExpressions;
 import static com.sun.faces.flow.FlowHandlerImpl.FLOW_RETURN_DEPTH_PARAM_NAME;
 import static com.sun.faces.util.Util.notNull;
@@ -25,14 +26,11 @@ import static jakarta.faces.flow.FlowHandler.NULL_FLOW;
 import static jakarta.faces.flow.FlowHandler.TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME;
 import static java.util.logging.Level.FINE;
 
-import java.util.AbstractCollection;
 import java.util.AbstractMap;
-import java.util.AbstractSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,8 +88,8 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
 
     public static boolean isResetFlowHandlerState(FacesContext facesContext) {
 
-        Boolean obtainingNavigationCase = (Boolean) FacesContext.getCurrentInstance().getAttributes().get(RESET_FLOW_HANDLER_STATE_KEY);
-        return obtainingNavigationCase != null && obtainingNavigationCase;
+        boolean obtainingNavigationCase = Boolean.TRUE.equals(facesContext.getAttributes().get(RESET_FLOW_HANDLER_STATE_KEY));
+        return obtainingNavigationCase;
     }
 
     public static void setResetFlowHandlerStateIfUnset(FacesContext facesContext, boolean resetFlowHandlerState) {
@@ -198,7 +196,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
 
     @Override
     public void handleNavigation(FacesContext context, String fromAction, String outcome) {
-        this.handleNavigation(context, fromAction, outcome, "");
+        this.handleNavigation(context, fromAction, outcome, EMPTY_STRING);
     }
 
     /*
@@ -207,7 +205,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
      *
      */
     private boolean flowsEqual(Flow flow1, Flow flow2) {
-        boolean result = false;
+        final boolean result;
         if (flow1 == flow2) {
             result = true;
         } else if (flow1 == null || flow2 == null) {
@@ -235,9 +233,9 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
             if (isProcessingBroadcast(context)) {
                 flash.setKeepMessages(true);
                 String viewIdBefore = context.getViewRoot().getViewId();
-                viewIdBefore = null == viewIdBefore ? "" : viewIdBefore;
+                viewIdBefore = null == viewIdBefore ? EMPTY_STRING : viewIdBefore;
                 String viewIdAfter = caseStruct.navCase.getToViewId(context);
-                viewIdAfter = null == viewIdAfter ? "" : viewIdAfter; // NOPMD
+                viewIdAfter = null == viewIdAfter ? EMPTY_STRING : viewIdAfter; // NOPMD
                 isUIViewActionBroadcastAndViewdsDiffer = !viewIdBefore.equals(viewIdAfter);
             }
 
@@ -331,8 +329,8 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
     private static final String ROOT_NAVIGATION_MAP_ID = NavigationHandlerImpl.class.getName() + ".NAVIGATION_MAP";
 
     private Map<String, Set<NavigationCase>> getRootNaviMap() {
-        Map<String, Set<NavigationCase>> result = null;
-        NavigationInfo info = null;
+        final Map<String, Set<NavigationCase>> result;
+        final NavigationInfo info;
         if (null == navigationMaps) {
             createNavigationMaps();
             result = navigationMaps.get(ROOT_NAVIGATION_MAP_ID).ruleSet;
@@ -349,7 +347,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
     }
 
     private Map<String, Set<NavigationCase>> getNavigationMap(FacesContext context) {
-        Map<String, Set<NavigationCase>> result = null;
+        final Map<String, Set<NavigationCase>> result;
         NavigationInfo info = null;
         if (null == navigationMaps) {
             createNavigationMaps();
@@ -475,10 +473,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
             if (!navRules.isEmpty() || !switches.isEmpty()) {
                 NavigationInfo info = new NavigationInfo();
                 if (!switches.isEmpty()) {
-                    info.switches = new ConcurrentHashMap<>();
-                    for (Map.Entry<String, SwitchNode> cur : switches.entrySet()) {
-                        info.switches.put(cur.getKey(), cur.getValue());
-                    }
+                    info.switches = new ConcurrentHashMap<>(switches);
                 }
                 if (!navRules.isEmpty()) {
                     info.ruleSet = new NavigationMap();
@@ -545,7 +540,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
 
         // if viewIdToTest is not null, use its value to find
         // a navigation match, otherwise look for a match
-        // based soley on the fromAction and outcome
+        // based solely on the fromAction and outcome
         CaseStruct caseStruct = null;
         Map<String, Set<NavigationCase>> navMap = getNavigationMap(ctx);
 
@@ -606,7 +601,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
         if (caseStruct == null && outcome != null && viewId != null) {
             // Treat empty string equivalent to null outcome. Faces 2.0 Rev a
             // Changelog issue C063.
-            if (0 == outcome.length()) {
+            if (outcome.isEmpty()) {
                 outcome = null;
             } else {
                 caseStruct = findImplicitMatch(ctx, viewId, fromAction, outcome, toFlowDocumentId);
@@ -619,8 +614,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
             FlowHandler flowHandler = ctx.getApplication().getFlowHandler();
             if (null != flowHandler) {
 
-                Flow currentFlow = null;
-                currentFlow = flowHandler.getCurrentFlow(ctx);
+                final Flow currentFlow = flowHandler.getCurrentFlow(ctx);
                 if (null != currentFlow) {
                     caseStruct = findRootNavigationMapAbandonedFlowMatch(ctx, viewId, fromAction, outcome, toFlowDocumentId);
                 }
@@ -714,7 +708,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
 
             // Append the trailing "*" so we can do our map lookup;
 
-            if (sb.length() != 0) {
+            if (!sb.isEmpty()) {
                 sb.delete(0, sb.length());
             }
             String wcFromViewId = sb.append(fromViewId).append('*').toString();
@@ -854,27 +848,27 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
                 Matcher m = REDIRECT_EQUALS_TRUE.matcher(queryString);
                 if (m.find()) {
                     isRedirect = true;
-                    queryString = queryString.replace(m.group(2), "");
+                    queryString = queryString.replace(m.group(2), EMPTY_STRING);
                 }
                 m = INCLUDE_VIEW_PARAMS_EQUALS_TRUE.matcher(queryString);
                 if (m.find()) {
                     isIncludeViewParams = true;
-                    queryString = queryString.replace(m.group(2), "");
+                    queryString = queryString.replace(m.group(2), EMPTY_STRING);
                 }
             }
 
-            if (queryString != null && queryString.length() > 0) {
+            if (queryString != null && !queryString.isEmpty()) {
                 String[] queryElements = QUERY_STRING_SEPARATOR.split(queryString);
                 for (String queryElement : queryElements) {
                     String[] elements = Util.split(queryElement, '=', 2);
                     if (elements.length == 2) {
                         String rightHandSide = elements[1];
-                        String sanitized = null != rightHandSide && 2 < rightHandSide.length() ? rightHandSide.trim() : "";
+                        String sanitized = null != rightHandSide && 2 < rightHandSide.length() ? rightHandSide.trim() : EMPTY_STRING;
                         if (sanitized.contains("#{") || sanitized.contains("${")) {
                             if (LOGGER.isLoggable(Level.INFO)) {
                                 LOGGER.log(Level.INFO, "faces.navigation_invalid_query_string", rightHandSide);
                             }
-                            rightHandSide = "";
+                            rightHandSide = EMPTY_STRING;
                         }
 
                         if (parameters == null) {
@@ -1080,7 +1074,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
                 // PENDING, don't hard code XHTML here, look it up from configuration
                 currentExtension = ".xhtml";
             }
-            String viewIdToTest = "/" + flow.getId() + "/" + outcome + currentExtension;
+            String viewIdToTest = '/' + flow.getId() + '/' + outcome + currentExtension;
             ViewHandler viewHandler = Util.getViewHandler(context);
             viewIdToTest = viewHandler.deriveViewId(context, viewIdToTest);
             if (null != viewIdToTest) {
@@ -1182,7 +1176,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
                             // If no CaseStruct can be synthesized, we must execute the
                             // navigation handler algorithm to try to find the CaseStruct
                             // for the start node. However, in order to do that, we
-                            // must enter the new flow. To preserve the intergity
+                            // must enter the new flow. To preserve the integrity
                             // of the state machine, we enter the flow now, and mark
                             // that we must not enter it later.
                             try {
@@ -1465,105 +1459,17 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
 
         @Override
         public Set<String> keySet() {
-            return new AbstractSet<>() {
-
-                @Override
-                public Iterator<String> iterator() {
-                    return new Iterator<>() {
-
-                        Iterator<Map.Entry<String, Set<NavigationCase>>> i = entrySet().iterator();
-
-                        @Override
-                        public boolean hasNext() {
-                            return i.hasNext();
-                        }
-
-                        @Override
-                        public String next() {
-                            return i.next().getKey();
-                        }
-
-                        @Override
-                        public void remove() {
-                            throw new UnsupportedOperationException();
-                        }
-                    };
-                }
-
-                @Override
-                public int size() {
-                    return NavigationMap.this.size();
-                }
-            };
+            return Collections.unmodifiableSet(mapToLookForNavCase.keySet());
         }
 
         @Override
         public Collection<Set<NavigationCase>> values() {
-            return new AbstractCollection<>() {
-
-                @Override
-                public Iterator<Set<NavigationCase>> iterator() {
-                    return new Iterator<>() {
-
-                        Iterator<Map.Entry<String, Set<NavigationCase>>> i = entrySet().iterator();
-
-                        @Override
-                        public boolean hasNext() {
-                            return i.hasNext();
-                        }
-
-                        @Override
-                        public Set<NavigationCase> next() {
-                            return i.next().getValue();
-                        }
-
-                        @Override
-                        public void remove() {
-                            throw new UnsupportedOperationException();
-                        }
-                    };
-                }
-
-                @Override
-                public int size() {
-                    return NavigationMap.this.size();
-                }
-            };
+            return Collections.unmodifiableCollection(mapToLookForNavCase.values());
         }
 
         @Override
         public Set<Entry<String, Set<NavigationCase>>> entrySet() {
-            return new AbstractSet<>() {
-
-                @Override
-                public Iterator<Entry<String, Set<NavigationCase>>> iterator() {
-
-                    return new Iterator<>() {
-
-                        Iterator<Entry<String, Set<NavigationCase>>> i = mapToLookForNavCase.entrySet().iterator();
-
-                        @Override
-                        public boolean hasNext() {
-                            return i.hasNext();
-                        }
-
-                        @Override
-                        public Entry<String, Set<NavigationCase>> next() {
-                            return i.next();
-                        }
-
-                        @Override
-                        public void remove() {
-                            throw new UnsupportedOperationException();
-                        }
-                    };
-                }
-
-                @Override
-                public int size() {
-                    return NavigationMap.this.size();
-                }
-            };
+            return Collections.unmodifiableSet(mapToLookForNavCase.entrySet());
         }
 
         // ----------------------------------------------------- Private Methods
