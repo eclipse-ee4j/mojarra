@@ -19,6 +19,7 @@ import static com.sun.faces.RIConstants.BUILD_TIME_DECISIONS;
 import static com.sun.faces.RIConstants.DYNAMIC_ACTIONS;
 import static com.sun.faces.RIConstants.RENDERED_TAGS;
 import static com.sun.faces.application.view.FaceletPartialStateManagementStrategy.NOT_REBUILT_REPORT;
+import static com.sun.faces.application.view.FaceletPartialStateManagementStrategy.NOT_REBUILT_WITH_SUBMITTED_REPORT;
 import static com.sun.faces.application.view.FaceletPartialStateManagementStrategy.REBUILT_FROM_ANOTHER_TAG_REPORT;
 import static com.sun.faces.application.view.FaceletPartialStateManagementStrategy.clientIdsNotRebuilt;
 import static com.sun.faces.application.view.FaceletPartialStateManagementStrategy.clientIdsRebuiltFromAnotherTag;
@@ -198,30 +199,58 @@ class FaceletPartialStateManagementStrategyTest {
      * Each report is logged with the arguments its placeholders name.
      */
     @Test
-    void everyPlaceholderOfBothReportsIsSubstituted() {
-        assertEveryPlaceholderSubstituted(NOT_REBUILT_REPORT, 2, clientIds(2), 1, clientIds(1));
+    void everyPlaceholderOfEveryReportIsSubstituted() {
+        assertEveryPlaceholderSubstituted(NOT_REBUILT_REPORT, 2, clientIds(2));
+        assertEveryPlaceholderSubstituted(NOT_REBUILT_WITH_SUBMITTED_REPORT, 2, clientIds(2), 1, clientIds(1));
         assertEveryPlaceholderSubstituted(REBUILT_FROM_ANOTHER_TAG_REPORT, 2, clientIds(2));
     }
 
     /**
-     * Both reports are {@link MessageFormat} patterns, in which a lone apostrophe quotes the text that follows it
+     * A report reads as often about one component as about many, so each count it names agrees with the words that
+     * follow it.
+     */
+    @Test
+    void everyReportAgreesWithTheCountItNames() {
+        assertReportHolds(NOT_REBUILT_REPORT, "so its state is restored", 1, clientIds(1));
+        assertReportHolds(NOT_REBUILT_REPORT, "so their state is restored", 2, clientIds(2));
+        assertReportHolds(NOT_REBUILT_WITH_SUBMITTED_REPORT, "1 carries a submitted value", 1, clientIds(1), 1, clientIds(1));
+        assertReportHolds(NOT_REBUILT_WITH_SUBMITTED_REPORT, "2 carry a submitted value", 2, clientIds(2), 2, clientIds(2));
+        assertReportHolds(REBUILT_FROM_ANOTHER_TAG_REPORT, "holds 1 client id built", 1, clientIds(1));
+        assertReportHolds(REBUILT_FROM_ANOTHER_TAG_REPORT, "holds 2 client ids built", 2, clientIds(2));
+    }
+
+    /**
+     * A component the rebuild does not produce is as often an output or a panel as it is an input, so a report which
+     * always named the submitted values among them would name a count of zero and an empty list on the majority of
+     * postbacks. Only the report logged when there is at least one holds the placeholders for them.
+     */
+    @Test
+    void onlyTheReportLoggedForASubmittedValueHoldsThePlaceholdersForOne() {
+        assertFalse(NOT_REBUILT_REPORT.contains("{2}"), NOT_REBUILT_REPORT);
+        assertTrue(NOT_REBUILT_WITH_SUBMITTED_REPORT.contains("{2}"), NOT_REBUILT_WITH_SUBMITTED_REPORT);
+    }
+
+    /**
+     * Every report is a {@link MessageFormat} pattern, in which a lone apostrophe quotes the text that follows it
      * rather than fail, so it silently swallows both the placeholders it precedes and itself.
      */
     @Test
-    void neitherReportHoldsALoneApostrophe() {
+    void noReportHoldsALoneApostrophe() {
         assertFalse(LONE_APOSTROPHE.matcher(NOT_REBUILT_REPORT).find(), NOT_REBUILT_REPORT);
+        assertFalse(LONE_APOSTROPHE.matcher(NOT_REBUILT_WITH_SUBMITTED_REPORT).find(), NOT_REBUILT_WITH_SUBMITTED_REPORT);
         assertFalse(LONE_APOSTROPHE.matcher(REBUILT_FROM_ANOTHER_TAG_REPORT).find(), REBUILT_FROM_ANOTHER_TAG_REPORT);
     }
 
     /**
-     * The remedy of either report names the parameter which replays the build time decisions of the render, taken from
+     * The remedy of every report names the parameter which replays the build time decisions of the render, taken from
      * the parameter itself so that renaming it cannot leave the report naming one which no longer exists.
      */
     @Test
-    void bothReportsNameTheParameterWhichReplaysTheBuildTimeDecisionsOfTheRender() {
+    void everyReportNamesTheParameterWhichReplaysTheBuildTimeDecisionsOfTheRender() {
         String parameterName = RestoreBuildTimeDecisions.getQualifiedName();
 
         assertTrue(NOT_REBUILT_REPORT.contains(parameterName), NOT_REBUILT_REPORT);
+        assertTrue(NOT_REBUILT_WITH_SUBMITTED_REPORT.contains(parameterName), NOT_REBUILT_WITH_SUBMITTED_REPORT);
         assertTrue(REBUILT_FROM_ANOTHER_TAG_REPORT.contains(parameterName), REBUILT_FROM_ANOTHER_TAG_REPORT);
     }
 
@@ -231,6 +260,11 @@ class FaceletPartialStateManagementStrategyTest {
             clientIds.add("form:input" + i);
         }
         return clientIds;
+    }
+
+    private static void assertReportHolds(String report, String expected, Object... arguments) {
+        String message = MessageFormat.format(report, arguments);
+        assertTrue(message.contains(expected), message);
     }
 
     private static void assertEveryPlaceholderSubstituted(String report, Object... arguments) {

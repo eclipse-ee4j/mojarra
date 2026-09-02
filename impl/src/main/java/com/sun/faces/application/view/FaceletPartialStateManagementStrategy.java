@@ -96,17 +96,30 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
             + " context parameter to true.";
 
     /**
-     * Reported for the components the rendered view held which the rebuilt one does not.
+     * Reported for the components the rendered view held which the rebuilt one does not, shared by the report which
+     * names the submitted values among them and the one which has none to name.
      */
-    static final String NOT_REBUILT_REPORT = "The view rebuilt for this postback does not hold {0} of the components the response was rendered"
-            + " from, so their state is restored into nothing: {1}. Of these, {2} carry a submitted value which is therefore decoded by"
-            + " nothing: {3}." + REMEDY;
+    private static final String NOT_REBUILT_HEAD = "The view rebuilt for this postback does not hold {0} of the components the response was"
+            + " rendered from, so {0,choice,1#its state is|1<their state is} restored into nothing: {1}.";
+
+    /**
+     * Reported for the components the rendered view held which the rebuilt one does not, when a value was submitted
+     * for none of them.
+     */
+    static final String NOT_REBUILT_REPORT = NOT_REBUILT_HEAD + REMEDY;
+
+    /**
+     * Reported for the same components, when a value was submitted for at least one of them.
+     */
+    static final String NOT_REBUILT_WITH_SUBMITTED_REPORT = NOT_REBUILT_HEAD + " Of these, {2} {2,choice,1#carries|1<carry} a submitted value"
+            + " which is therefore decoded by nothing: {3}." + REMEDY;
 
     /**
      * Reported for the client ids another tag occupies in the rebuilt view than the one that rendered them.
      */
-    static final String REBUILT_FROM_ANOTHER_TAG_REPORT = "The view rebuilt for this postback holds {0} client ids built from another tag than"
-            + " the one the response was rendered from, so the state saved by one tag is restored into the component of another: {1}. The"
+    static final String REBUILT_FROM_ANOTHER_TAG_REPORT = "The view rebuilt for this postback holds {0} {0,choice,1#client id|1<client ids}"
+            + " built from another tag than the one the response was rendered from, so the state saved by one tag is restored into the"
+            + " component of another: {1}. The"
             + " facelet may also have been edited since the response was rendered, which moves every tag." + REMEDY;
 
     /**
@@ -537,8 +550,12 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
             Set<String> requestParameterNames = context.getExternalContext().getRequestParameterMap().keySet();
             List<String> submittedNotRebuilt = new ArrayList<>(notRebuilt);
             submittedNotRebuilt.retainAll(requestParameterNames);
-            LOGGER.log(Level.WARNING, NOT_REBUILT_REPORT,
-                    new Object[] { notRebuilt.size(), truncated(notRebuilt), submittedNotRebuilt.size(), truncated(submittedNotRebuilt) });
+            if (submittedNotRebuilt.isEmpty()) {
+                LOGGER.log(Level.WARNING, NOT_REBUILT_REPORT, new Object[] { notRebuilt.size(), truncated(notRebuilt) });
+            } else {
+                LOGGER.log(Level.WARNING, NOT_REBUILT_WITH_SUBMITTED_REPORT,
+                        new Object[] { notRebuilt.size(), truncated(notRebuilt), submittedNotRebuilt.size(), truncated(submittedNotRebuilt) });
+            }
         }
 
         List<String> rebuiltFromAnotherTag = clientIdsRebuiltFromAnotherTag(renderedTags, rebuiltTags);
