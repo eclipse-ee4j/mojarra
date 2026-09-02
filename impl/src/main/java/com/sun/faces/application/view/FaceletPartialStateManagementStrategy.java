@@ -50,7 +50,10 @@ import com.sun.faces.util.Util;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.NamingContainer;
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIData;
+import jakarta.faces.component.UIForm;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.component.visit.VisitContext;
 import jakarta.faces.component.visit.VisitHint;
@@ -465,6 +468,44 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
     }
 
     /**
+     * Whether the given component holds the same client id on the two builds, which is what the comparison identifies
+     * it by.
+     *
+     * <p>
+     * A {@link NamingContainer} standing on a row hands its children a client id extending its own with that row, and
+     * it stands on none while the tree is visited with {@link VisitHint#SKIP_ITERATION}, so a container found handing
+     * out an extension of its own client id anyway was left standing on a row by a render which iterated it. Its
+     * children then hold a client id no other request reproduces, which is the render's own to fix and none of the
+     * report's business. A container which hands out anything else stands on no row: {@link UIForm} which prepends no
+     * id hands out the client id of the container above it, or none at all when there is none.
+     * </p>
+     *
+     * <p>
+     * A container which carries the row in its own client id as well, which is what {@link UIData} does, hands its
+     * children an extension of nothing and is compared as usual. Its render resets the row it stands on, so this does
+     * not have to hold it apart.
+     * </p>
+     *
+     * @param context the Faces context.
+     * @param component the component.
+     * @return true when no naming container above the given component was left standing on a row.
+     */
+    static boolean holdsStableClientId(FacesContext context, UIComponent component) {
+        for (UIComponent parent = component.getParent(); parent != null; parent = parent.getParent()) {
+            if (parent instanceof NamingContainer) {
+                String clientId = parent.getClientId(context);
+                String containerClientId = parent.getContainerClientId(context);
+
+                if (containerClientId != null && containerClientId.length() > clientId.length() && containerClientId.startsWith(clientId)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * The client ids the rendered view held which the rebuilt one does not, so that the state saved for them is
      * restored into nothing and a value submitted for them is decoded by nothing.
      *
@@ -526,7 +567,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
                 return VisitResult.REJECT;
             }
             String tag = tagOf(target);
-            if (tag != null) {
+            if (tag != null && holdsStableClientId(context1.getFacesContext(), target)) {
                 rebuiltTags.put(target.getClientId(context1.getFacesContext()), tag);
             }
             return ACCEPT;
@@ -665,7 +706,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
                 String tag = renderedTags != null ? tagOf(target) : null;
                 if (tag != null || stateObj != null) {
                     String clientId = target.getClientId(context1.getFacesContext());
-                    if (tag != null) {
+                    if (tag != null && holdsStableClientId(context1.getFacesContext(), target)) {
                         renderedTags.put(clientId, tag);
                     }
                     if (stateObj != null) {
