@@ -842,8 +842,6 @@ public class HtmlCommandLink extends UICommand implements ClientBehaviorHolder {
         handleAttribute(this, "type", type);
     }
 
-    private static final String DEFAULT_EVENT = "action";
-
     private static final Collection<String> EVENT_NAMES = List.of("blur", "click", "action", "dblclick", "focus",
             "keydown", "keypress", "keyup", "mousedown", "mousemove", "mouseout", "mouseover", "mouseup");
 
@@ -854,7 +852,7 @@ public class HtmlCommandLink extends UICommand implements ClientBehaviorHolder {
 
     @Override
     public String getDefaultEventName() {
-        return DEFAULT_EVENT;
+        return "action";
     }
 
 }

@@ -823,8 +823,6 @@ public class HtmlCommandButton extends UICommand implements ClientBehaviorHolder
         getStateHelper().put(PropertyKeys.type, type);
     }
 
-    private static final String DEFAULT_EVENT = "action";
-
     private static final Collection<String> EVENT_NAMES = List.of("blur", "change", "click", "action", "dblclick",
             "focus", "keydown", "keypress", "keyup", "mousedown", "mousemove", "mouseout", "mouseover", "mouseup", "select");
 
@@ -835,7 +833,7 @@ public class HtmlCommandButton extends UICommand implements ClientBehaviorHolder
 
     @Override
     public String getDefaultEventName() {
-        return DEFAULT_EVENT;
+        return "action";
     }
 
 }

@@ -787,8 +787,6 @@ public class HtmlSelectOneListbox extends UISelectOne implements ClientBehaviorH
         handleAttribute(this, "title", title);
     }
 
-    private static final String DEFAULT_EVENT = "valueChange";
-
     private static final Collection<String> EVENT_NAMES = List.of("blur", "change", "valueChange", "click", "dblclick",
             "focus", "keydown", "keypress", "keyup", "mousedown", "mousemove", "mouseout", "mouseover", "mouseup");
 
@@ -799,7 +797,7 @@ public class HtmlSelectOneListbox extends UISelectOne implements ClientBehaviorH
 
     @Override
     public String getDefaultEventName() {
-        return DEFAULT_EVENT;
+        return "valueChange";
     }
 
 }

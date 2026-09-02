@@ -842,8 +842,6 @@ public class HtmlOutcomeTargetLink extends UIOutcomeTarget implements ClientBeha
         handleAttribute(this, "type", type);
     }
 
-    private static final String DEFAULT_EVENT = "action";
-
     private static final Collection<String> EVENT_NAMES = List.of("blur", "click", "action", "dblclick", "focus",
             "keydown", "keypress", "keyup", "mousedown", "mousemove", "mouseout", "mouseover", "mouseup");
 
@@ -854,7 +852,7 @@ public class HtmlOutcomeTargetLink extends UIOutcomeTarget implements ClientBeha
 
     @Override
     public String getDefaultEventName() {
-        return DEFAULT_EVENT;
+        return "action";
     }
 
 }
