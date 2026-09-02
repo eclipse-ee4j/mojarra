@@ -17,6 +17,7 @@
 package com.sun.faces.application.view;
 
 import static com.sun.faces.RIConstants.DYNAMIC_COMPONENT;
+import static com.sun.faces.RIConstants.EMPTY_STRING;
 import static com.sun.faces.RIConstants.VIEW_REBUILT_AT_RENDER;
 import static com.sun.faces.RIConstants.FACELETS_ENCODING_KEY;
 import static com.sun.faces.RIConstants.FLOW_DEFINITION_ID_SUFFIX;
@@ -54,7 +55,6 @@ import static jakarta.faces.view.AttachedObjectTarget.ATTACHED_OBJECT_TARGETS_KE
 import static jakarta.faces.view.facelets.FaceletContext.FACELET_CONTEXT_KEY;
 import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static java.lang.Boolean.TRUE;
-import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINEST;
@@ -339,7 +339,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             }
             Facelet facelet = faceletFactory.getFacelet(ctx, view.getViewId());
             // Disable events from being intercepted by the StateContext by
-            // virute of re-applying the handlers.
+            // virtue of re-applying the handlers.
             try {
                 stateCtx.setTrackViewModifications(false);
                 BuildTimeDecisions.reset(ctx);
@@ -359,7 +359,9 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
         view.setViewId(view.getViewId());
 
-        LOGGER.log(FINE, () -> "Building View: " + view.getViewId());
+        if ( LOGGER.isLoggable(Level.FINE) ) {
+            LOGGER.log(FINE, "Building View: " + view.getViewId());
+        }
 
         if (faceletFactory == null) {
             faceletFactory = ApplicationAssociate.getInstance(ctx.getExternalContext()).getFaceletFactory();
@@ -576,7 +578,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      */
     @Override
     public BeanInfo getComponentMetadata(FacesContext context, Resource ccResource) {
-        DefaultFaceletFactory factory = (DefaultFaceletFactory) RequestStateManager.get(context, FACELET_FACTORY);
+        DefaultFaceletFactory factory = RequestStateManager.get(context, FACELET_FACTORY);
 
         if (factory.needsToBeRefreshed(ccResource.getURL())) {
             metadataCache.remove(ccResource);
@@ -692,7 +694,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             return;
         }
 
-        PropertyDescriptor attributes[] = componentBeanInfo.getPropertyDescriptors();
+        PropertyDescriptor[] attributes = componentBeanInfo.getPropertyDescriptors();
 
         MethodMetadataIterator allMetadata = new MethodMetadataIterator(context, attributes);
         for (CompCompInterfaceMethodMetadata metadata : allMetadata) {
@@ -713,10 +715,10 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                     if (metadata.isRequired(context)) {
                         Object location = attrs.get(VIEW_LOCATION_KEY);
                         if (location == null) {
-                            location = "";
+                            location = EMPTY_STRING;
                         }
                         throw new FacesException(
-                                location.toString() + ": Unable to find attribute with name \"" + attrName + "\" in top level component in consuming page, "
+                                location + ": Unable to find attribute with name \"" + attrName + "\" in top level component in consuming page, "
                                         + " or with default value in composite component.  " + "Page author or composite component author error.");
                     } else {
                         continue;
@@ -737,7 +739,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                         targetComp = topLevelComponent.findComponent(curTarget);
                         if (targetComp == null) {
                             throw new FacesException(
-                                    attrValue.toString() + " : Unable to re-target MethodExpression as inner component referenced by target id '" + curTarget
+                                    attrValue + " : Unable to re-target MethodExpression as inner component referenced by target id '" + curTarget
                                             + "' cannot be found.");
                         }
                         handler.retarget(context, metadata, attrValue, targetComp);
