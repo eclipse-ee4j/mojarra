@@ -39,7 +39,6 @@ class PersistenceUnitHandler extends JndiHandler implements RuntimeAnnotationHan
         this.fieldAnnotations = fieldAnnotations;
     }
 
-    @SuppressWarnings({ "UnusedDeclaration" })
     @Override
     public void apply(FacesContext ctx, Object... params) {
         Object object = params[0];
@@ -55,7 +54,7 @@ class PersistenceUnitHandler extends JndiHandler implements RuntimeAnnotationHan
     private void applyToMethod(FacesContext facesContext, Method method, PersistenceUnit unit, Object instance) {
         if (method.getName().startsWith("set")) {
             Object value = null;
-            if (unit.name() != null && !"".equals(unit.name().trim())) {
+            if (unit.name() != null && !unit.name().isBlank()) {
                 value = lookup(facesContext, JAVA_COMP_ENV + unit.name());
             }
             invokeMethod(facesContext, method, instance, value);
@@ -64,7 +63,7 @@ class PersistenceUnitHandler extends JndiHandler implements RuntimeAnnotationHan
 
     private void applyToField(FacesContext facesContext, Field field, PersistenceUnit unit, Object instance) {
         Object value;
-        if (unit.name() != null && !"".equals(unit.name().trim())) {
+        if (unit.name() != null && !unit.name().isBlank()) {
             value = lookup(facesContext, JAVA_COMP_ENV + unit.name());
         } else {
             value = lookup(facesContext, field.getType().getSimpleName());
