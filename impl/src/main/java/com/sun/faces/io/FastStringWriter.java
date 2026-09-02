@@ -21,7 +21,7 @@ import java.io.Writer;
 
 /**
  * <p>
- * This is based on {@link java.io.StringWriter} but backed by a {@link StringBuilder} instead.
+ * A {@link Writer} implementation backed by a {@link StringBuilder}.
  * </p>
  * 
  * <p>
@@ -30,7 +30,7 @@ import java.io.Writer;
  */
 public class FastStringWriter extends Writer {
 
-    protected StringBuilder builder;
+    protected final StringBuilder builder;
 
     // ------------------------------------------------------------ Constructors
 
@@ -59,27 +59,36 @@ public class FastStringWriter extends Writer {
         builder = new StringBuilder(initialCapacity);
     }
 
+    /**
+     * <p>
+     * Constructs a new <code>FastStringWriter</code> instance using the specified <code>builder</code>.
+     * </p>
+     * @param builder the builder to use as internal buffer
+     */
+    public FastStringWriter(StringBuilder builder) {
+        this.builder = builder;
+    }
+
     // ----------------------------------------------------- Methods from Writer
 
     /**
      * <p>
      * Write a portion of an array of characters.
      * </p>
-     *
-     * @param cbuf Array of characters
-     * @param off Offset from which to start writing characters
-     * @param len Number of characters to write
-     *
+     * @param str Array of characters
+     * @param off  Offset from which to start writing characters
+     * @param len  Number of characters to write
      * @throws IOException
      */
     @Override
-    public void write(char cbuf[], int off, int len) throws IOException {
-        if (off < 0 || off > cbuf.length || len < 0 || off + len > cbuf.length || off + len < 0) {
+    public void write(char[] str, int off, int len) throws IOException {
+        // this check it's implemented also in the StringBuilder class ... probably can be removed
+        if (off < 0 || off > str.length || len < 0 || off + len > str.length || off + len < 0) {
             throw new IndexOutOfBoundsException();
         } else if (len == 0) {
             return;
         }
-        builder.append(cbuf, off, len);
+        builder.append(str, off, len);
     }
 
     /**
@@ -107,12 +116,26 @@ public class FastStringWriter extends Writer {
     // ---------------------------------------------------------- Public Methods
 
     /**
+     * Write a single character.
+     * @param c the String to be written
+     */
+    @Override
+    public void write(int c) throws IOException {
+        builder.append((char)c);
+    }
+
+    /**
      * Write a string.
      *
      * @param str String to be written
      */
     @Override
     public void write(String str) {
+        builder.append(str);
+    }
+
+    @Override
+    public void write(char[] str) throws IOException {
         builder.append(str);
     }
 
@@ -125,7 +148,7 @@ public class FastStringWriter extends Writer {
      */
     @Override
     public void write(String str, int off, int len) {
-        builder.append(str.substring(off, off + len));
+        builder.append(str, off, off + len);
     }
 
     /**
@@ -145,6 +168,27 @@ public class FastStringWriter extends Writer {
 
     public void reset() {
         builder.setLength(0);
+    }
+
+
+    // ------------------------------------------------- Append Methods
+
+    @Override
+    public Writer append(CharSequence s) throws IOException {
+        builder.append(s);
+        return this;
+    }
+
+    @Override
+    public Writer append(CharSequence s, int start, int end) throws IOException {
+        builder.append(s, start, end);
+        return this;
+    }
+
+    @Override
+    public Writer append(char c) throws IOException {
+        builder.append(c);
+        return this;
     }
 
 }
