@@ -39,7 +39,6 @@ class ResourceHandler extends JndiHandler {
         this.methodAnnotations = methodAnnotations;
     }
 
-    @SuppressWarnings({ "UnusedDeclaration" })
     @Override
     public void apply(FacesContext ctx, Object... params) {
         Object object = params[0];
@@ -58,7 +57,7 @@ class ResourceHandler extends JndiHandler {
          * if (resource.lookup() != null && !"".equals(resource.lookup().trim())) { value = lookup(facesContext,
          * resource.lookup()); } else
          */
-        if (resource.name() != null && !"".equals(resource.name().trim())) {
+        if (resource.name() != null && !resource.name().isBlank()) {
             value = lookup(facesContext, JAVA_COMP_ENV + resource.name());
         } else {
             value = lookup(facesContext, field.getName());
@@ -73,7 +72,7 @@ class ResourceHandler extends JndiHandler {
              * if (resource.lookup() != null && !"".equals(resource.lookup().trim())) { value = lookup(facesContext,
              * resource.lookup()); } else
              */
-            if (resource.name() != null && !"".equals(resource.name().trim())) {
+            if (resource.name() != null && !resource.name().isBlank()) {
                 value = lookup(facesContext, JAVA_COMP_ENV + resource.name());
             }
             invokeMethod(facesContext, method, instance, value);
