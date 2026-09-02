@@ -19,9 +19,8 @@ package jakarta.faces.component.html;
 
 import static jakarta.faces.component.html.HtmlComponentUtils.handleAttribute;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 
 import jakarta.faces.component.UICommand;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
@@ -843,8 +842,10 @@ public class HtmlCommandLink extends UICommand implements ClientBehaviorHolder {
         handleAttribute(this, "type", type);
     }
 
-    private static final Collection<String> EVENT_NAMES = Collections.unmodifiableCollection(Arrays.asList("blur", "click", "action", "dblclick", "focus",
-            "keydown", "keypress", "keyup", "mousedown", "mousemove", "mouseout", "mouseover", "mouseup"));
+    private static final String DEFAULT_EVENT = "action";
+
+    private static final Collection<String> EVENT_NAMES = List.of("blur", "click", "action", "dblclick", "focus",
+            "keydown", "keypress", "keyup", "mousedown", "mousemove", "mouseout", "mouseover", "mouseup");
 
     @Override
     public Collection<String> getEventNames() {
@@ -853,7 +854,7 @@ public class HtmlCommandLink extends UICommand implements ClientBehaviorHolder {
 
     @Override
     public String getDefaultEventName() {
-        return "action";
+        return DEFAULT_EVENT;
     }
 
 }

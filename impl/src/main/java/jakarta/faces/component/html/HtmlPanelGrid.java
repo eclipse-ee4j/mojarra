@@ -19,9 +19,8 @@ package jakarta.faces.component.html;
 
 import static jakarta.faces.component.html.HtmlComponentUtils.handleAttribute;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 
 import jakarta.faces.component.UIPanel;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
@@ -960,8 +959,8 @@ public class HtmlPanelGrid extends UIPanel implements ClientBehaviorHolder {
         handleAttribute(this, "width", width);
     }
 
-    private static final Collection<String> EVENT_NAMES = Collections.unmodifiableCollection(
-            Arrays.asList("click", "dblclick", "keydown", "keypress", "keyup", "mousedown", "mousemove", "mouseout", "mouseover", "mouseup"));
+    private static final Collection<String> EVENT_NAMES = List.of(
+            "click", "dblclick", "keydown", "keypress", "keyup", "mousedown", "mousemove", "mouseout", "mouseover", "mouseup");
 
     @Override
     public Collection<String> getEventNames() {
