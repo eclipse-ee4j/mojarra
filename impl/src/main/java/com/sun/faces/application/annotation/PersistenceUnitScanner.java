@@ -20,6 +20,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.sun.faces.util.Util;
 
@@ -52,8 +53,8 @@ class PersistenceUnitScanner implements Scanner {
         Util.notNull("clazz", clazz);
         PersistenceUnitHandler handler = null;
 
-        ArrayList<PersistenceUnit> fieldAnnotations = new ArrayList<>();
-        ArrayList<Field> fields = new ArrayList<>();
+        List<PersistenceUnit> fieldAnnotations = new ArrayList<>();
+        List<Field> fields = new ArrayList<>();
 
         for (Field field : clazz.getDeclaredFields()) {
             PersistenceUnit fieldAnnotation = field.getAnnotation(PersistenceUnit.class);
@@ -63,8 +64,8 @@ class PersistenceUnitScanner implements Scanner {
             }
         }
 
-        ArrayList<PersistenceUnit> methodAnnotations = new ArrayList<>();
-        ArrayList<Method> methods = new ArrayList<>();
+        List<PersistenceUnit> methodAnnotations = new ArrayList<>();
+        List<Method> methods = new ArrayList<>();
         for (Method method : clazz.getDeclaredMethods()) {
             PersistenceUnit methodAnnotation = method.getAnnotation(PersistenceUnit.class);
             if (methodAnnotation != null) {
@@ -74,8 +75,11 @@ class PersistenceUnitScanner implements Scanner {
         }
 
         if (!fieldAnnotations.isEmpty() || !methodAnnotations.isEmpty()) {
-            handler = new PersistenceUnitHandler(methods.toArray(new Method[0]), methodAnnotations.toArray(new PersistenceUnit[0]),
-                    fields.toArray(new Field[0]), fieldAnnotations.toArray(new PersistenceUnit[0]));
+            handler = new PersistenceUnitHandler(
+                    methods.toArray(new Method[methods.size()]),
+                    methodAnnotations.toArray(new PersistenceUnit[methodAnnotations.size()]),
+                    fields.toArray(new Field[fields.size()]),
+                    fieldAnnotations.toArray(new PersistenceUnit[fieldAnnotations.size()]));
         }
         return handler;
     }
