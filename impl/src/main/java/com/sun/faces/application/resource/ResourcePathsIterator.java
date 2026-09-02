@@ -19,7 +19,9 @@ package com.sun.faces.application.resource;
 import static com.sun.faces.util.Util.startsWithOneOf;
 
 import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Iterator;
+import java.util.Set;
 
 import jakarta.faces.context.ExternalContext;
 import jakarta.servlet.ServletContext;
@@ -31,7 +33,7 @@ public class ResourcePathsIterator implements Iterator<String> {
     private final String[] extensions;
     private final String[] restrictedDirectories;
 
-    private final ArrayDeque<String> stack = new ArrayDeque<>();
+    private final Deque<String> stack = new ArrayDeque<>();
 
     private String next;
 
@@ -64,7 +66,7 @@ public class ResourcePathsIterator implements Iterator<String> {
     }
 
     private void visit(String resourcePath) {
-        java.util.Set<String> set = externalContext.getResourcePaths(resourcePath);
+        Set<String> set = externalContext.getResourcePaths(resourcePath);
         if(set != null) {
             stack.addAll(set);
         }
