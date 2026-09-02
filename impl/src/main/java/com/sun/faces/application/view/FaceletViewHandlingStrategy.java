@@ -885,11 +885,10 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     protected void initialize() {
         LOGGER.fine("Initializing FaceletViewHandlingStrategy");
 
-        final FacesContext context = FacesContext.getCurrentInstance();
-        final ExternalContext extContext = context.getExternalContext();
-        final Map<String, Object> appMap = extContext.getApplicationMap();
-
         initializeMappings();
+
+        // The context must be resolved per lookup: the cache outlives the request.
+        metadataCache = new Cache<>(ccResource -> createComponentMetadata(FacesContext.getCurrentInstance(), ccResource));
 
         try {
             responseBufferSize = Integer.parseInt(webConfig.getOptionValue(FaceletsBufferSize));
@@ -900,10 +899,10 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         refreshTransientBuildOnPSS = webConfig.isOptionEnabled(BooleanWebContextInitParameter.RefreshTransientBuildOnPSS);
 
         LOGGER.fine("Initialization Successful");
-        // note that the Cache Factory need to retrieve always the current FacesContext instance!
-        metadataCache = new Cache<>(ccResource -> createComponentMetadata(FacesContext.getCurrentInstance(), ccResource));
 
         vdlFactory = (ViewDeclarationLanguageFactory) FactoryFinder.getFactory(VIEW_DECLARATION_LANGUAGE_FACTORY);
+
+        final Map<String, Object> appMap = FacesContext.getCurrentInstance().getExternalContext().getApplicationMap();
 
         @SuppressWarnings("unchecked")
         Map<String, List<String>> contractDataStructure = (Map<String, List<String>>) appMap.remove(RESOURCE_LIBRARY_CONTRACT_DATA_STRUCTURE_KEY);
@@ -1348,13 +1347,13 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         // ------------------------------------------------------ Public Methods
 
         /**
-         * @param ctx the <code>FacesContext</code> for the current request
+         * @param context the <code>FacesContext</code> for the current request
          * @return the <code>method-signature</code> for this attribute
          */
-        public String getMethodSignature(FacesContext ctx) {
+        public String getMethodSignature(FacesContext context) {
             ValueExpression methodSignature = (ValueExpression) propertyDescriptor.getValue("method-signature");
             if (methodSignature != null) {
-                return methodSignature.getValue(ctx.getELContext());
+                return methodSignature.getValue(context.getELContext());
             }
 
             return null;
@@ -1376,21 +1375,21 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             return null;
         }
 
-        public String getTargetAttributeName(FacesContext ctx) {
+        public String getTargetAttributeName(FacesContext context) {
             ValueExpression ve = (ValueExpression) propertyDescriptor.getValue("targetAttributeName");
-            return ve != null ? (String) ve.getValue(ctx.getELContext()) : null;
+            return ve != null ? (String) ve.getValue(context.getELContext()) : null;
 
         }
 
         /**
-         * @param ctx the <code>FacesContext</code> for the current request
+         * @param context the <code>FacesContext</code> for the current request
          * @return <code>true<code> if this attribute is required to be present,
          *  otherwise, returns <code>false</code>
          */
-        public boolean isRequired(FacesContext ctx) {
+        public boolean isRequired(FacesContext context) {
 
             ValueExpression rd = (ValueExpression) propertyDescriptor.getValue("required");
-            return rd != null && Util.toBoolean(rd.getValue(ctx.getELContext()), false);
+            return rd != null && Util.toBoolean(rd.getValue(context.getELContext()), false);
 
         }
 
@@ -1426,9 +1425,9 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      */
     private static final class MethodRetargetHandlerManager {
 
-        private final Map<String,MethodRetargetHandler> handlerMap = Map.of(
+        private final Map<String, MethodRetargetHandler> handlerMap = Map.of(
                 ActionRetargetHandler.INSTANCE.getAttribute(), ActionRetargetHandler.INSTANCE,
-                ActionListenerRetargetHandler.INSTANCE.getAttribute() , ActionListenerRetargetHandler.INSTANCE,
+                ActionListenerRetargetHandler.INSTANCE.getAttribute(), ActionListenerRetargetHandler.INSTANCE,
                 ValidatorRetargetHandler.INSTANCE.getAttribute(), ValidatorRetargetHandler.INSTANCE,
                 ValueChangeListenerRetargetHandler.INSTANCE.getAttribute(), ValueChangeListenerRetargetHandler.INSTANCE
         );
@@ -2011,9 +2010,13 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     }
 
     private static boolean returnAsImplicitOutCome(ViewVisitOption... options) {
-        if ( options.length == 0 ) return false;
-        if ( options.length == 1 ) return RETURN_AS_MINIMAL_IMPLICIT_OUTCOME == options[0];
-        return EnumSet.of(options[0],options).contains(RETURN_AS_MINIMAL_IMPLICIT_OUTCOME);
+        for (ViewVisitOption option : options) {
+            if (option == RETURN_AS_MINIMAL_IMPLICIT_OUTCOME) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private String toImplicitOutcome(String viewId) {
