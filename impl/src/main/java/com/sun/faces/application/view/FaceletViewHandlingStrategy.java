@@ -360,7 +360,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
         view.setViewId(view.getViewId());
 
-        if ( LOGGER.isLoggable(Level.FINE) ) {
+        if (LOGGER.isLoggable(FINE)) {
             LOGGER.log(FINE, "Building View: " + view.getViewId());
         }
 

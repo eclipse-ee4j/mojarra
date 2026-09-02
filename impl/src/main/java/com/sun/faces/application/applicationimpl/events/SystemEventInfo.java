@@ -35,7 +35,7 @@ public class SystemEventInfo {
 
     public SystemEventInfo(Class<? extends SystemEvent> systemEvent) {
         this.systemEvent = systemEvent;
-        this.cache = new Cache<>(sourceClass -> new EventInfo(this.systemEvent, sourceClass));
+        this.cache = new Cache<>(sourceClass -> new EventInfo(systemEvent, sourceClass));
     }
 
     // ------------------------------------------------------ Public Methods

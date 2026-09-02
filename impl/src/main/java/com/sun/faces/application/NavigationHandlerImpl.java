@@ -88,8 +88,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
 
     public static boolean isResetFlowHandlerState(FacesContext facesContext) {
 
-        boolean obtainingNavigationCase = Boolean.TRUE.equals(facesContext.getAttributes().get(RESET_FLOW_HANDLER_STATE_KEY));
-        return obtainingNavigationCase;
+        return Boolean.TRUE.equals(facesContext.getAttributes().get(RESET_FLOW_HANDLER_STATE_KEY));
     }
 
     public static void setResetFlowHandlerStateIfUnset(FacesContext facesContext, boolean resetFlowHandlerState) {
@@ -1455,6 +1454,16 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
                     existing.addAll(entry.getValue());
                 }
             }
+        }
+
+        @Override
+        public Set<NavigationCase> get(Object key) {
+            return mapToLookForNavCase.get(key);
+        }
+
+        @Override
+        public boolean containsKey(Object key) {
+            return mapToLookForNavCase.containsKey(key);
         }
 
         @Override

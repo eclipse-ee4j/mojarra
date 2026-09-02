@@ -36,12 +36,12 @@ public class SystemEventHelper {
     // ------------------------------------------------------ Public Methods
 
     /**
-     * @return get the EventInfo (eventually creating a new one) associated to the systemEventClass and sourceClass
+     * @param systemEventClass the type of the system event
+     * @param sourceClass the type of the event source
+     * @return the <code>EventInfo</code> for the given system event and source class, creating and caching it if absent
      */
     public EventInfo getEventInfo(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass) {
-        SystemEventInfo systemEventInfo = systemEventInfoCache.get(systemEventClass);   // can't be null
-        EventInfo info = systemEventInfo.getEventInfo(sourceClass);                     // can't be null
-        return info;
+        return systemEventInfoCache.get(systemEventClass).getEventInfo(sourceClass);
     }
 
     public EventInfo getEventInfo(Class<? extends SystemEvent> systemEventClass, Object source, Class<?> sourceBaseType, boolean useSourceForLookup) {

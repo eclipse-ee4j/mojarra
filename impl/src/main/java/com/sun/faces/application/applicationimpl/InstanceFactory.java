@@ -619,8 +619,9 @@ public class InstanceFactory {
                         }
 
                     }
+
+                    defaultValidatorInfo = unmodifiableMap(defaultValidatorInfo);
                 }
-                defaultValidatorInfo = unmodifiableMap(defaultValidatorInfo);
             }
         }
 

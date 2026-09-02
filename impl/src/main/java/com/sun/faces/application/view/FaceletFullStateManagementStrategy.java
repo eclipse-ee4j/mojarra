@@ -21,7 +21,6 @@ import static com.sun.faces.RIConstants.DYNAMIC_ACTIONS;
 import static com.sun.faces.RIConstants.DYNAMIC_COMPONENT;
 import static com.sun.faces.util.ComponentStruct.ADD;
 import static com.sun.faces.util.ComponentStruct.REMOVE;
-import static com.sun.faces.util.Util.isAnyNull;
 import static com.sun.faces.util.Util.isEmpty;
 import static com.sun.faces.util.Util.loadClass;
 import static jakarta.faces.application.ProjectStage.Development;
@@ -40,7 +39,6 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -235,10 +233,10 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
         }
 
         try {
-            Class<?> clazz = classMap != null ? classMap.get(treeNode.componentType) : null;
+            Class<?> clazz = classMap.get(treeNode.componentType);
             if (clazz == null) {
                 clazz = loadClass(treeNode.componentType, treeNode);
-                if (!isAnyNull(clazz, classMap)) {
+                if (clazz != null) {
                     classMap.put(treeNode.componentType, clazz);
                 } else {
                     if (!isDevelopmentMode) {

@@ -19,6 +19,7 @@ package com.sun.faces.application;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.PartialStateSaving;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FullStateSavingViewIds;
 import static com.sun.faces.util.Util.notNullViewId;
+import static java.util.Arrays.asList;
 
 import java.util.Collections;
 import java.util.Set;
@@ -48,7 +49,12 @@ public class ApplicationStateInfo {
         partialStateSaving = config.isOptionEnabled(PartialStateSaving);
 
         if (partialStateSaving) {
-            fullStateViewIds = Set.of(config.getOptionValue(FullStateSavingViewIds, ','));
+            String[] viewIds = config.getOptionValue(FullStateSavingViewIds, ',');
+            fullStateViewIds = Set.copyOf(asList(viewIds));
+
+            if (fullStateViewIds.size() != viewIds.length) {
+                LOGGER.warning("Duplicate view IDs in '" + FullStateSavingViewIds.getQualifiedName() + "' are ignored.");
+            }
         }
         else {
             fullStateViewIds = Collections.emptySet();

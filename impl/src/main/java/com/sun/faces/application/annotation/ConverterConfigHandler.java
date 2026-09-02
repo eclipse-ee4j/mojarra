@@ -17,9 +17,7 @@
 package com.sun.faces.application.annotation;
 
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,7 +65,7 @@ public class ConverterConfigHandler implements ConfigAnnotationHandler {
         Object key;
         FacesConverter converterAnnotation = (FacesConverter) annotation;
 
-        if ( !converterAnnotation.value().isEmpty() && converterAnnotation.forClass() != null && converterAnnotation.forClass() != Object.class) {
+        if (!converterAnnotation.value().isEmpty() && converterAnnotation.forClass() != null && converterAnnotation.forClass() != Object.class) {
             if (LOGGER.isLoggable(Level.WARNING)) {
                 LOGGER.log(Level.WARNING, "@FacesConverter is using both value and forClass, only value will be applied.");
             }
