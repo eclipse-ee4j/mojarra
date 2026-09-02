@@ -23,7 +23,7 @@ import java.io.Writer;
  * <p>
  * A {@link Writer} implementation backed by a {@link StringBuilder}.
  * </p>
- * 
+ *
  * <p>
  * This class is not thread safe.
  * </p>
@@ -59,36 +59,21 @@ public class FastStringWriter extends Writer {
         builder = new StringBuilder(initialCapacity);
     }
 
-    /**
-     * <p>
-     * Constructs a new <code>FastStringWriter</code> instance using the specified <code>builder</code>.
-     * </p>
-     * @param builder the builder to use as internal buffer
-     */
-    public FastStringWriter(StringBuilder builder) {
-        this.builder = builder;
-    }
-
     // ----------------------------------------------------- Methods from Writer
 
     /**
      * <p>
      * Write a portion of an array of characters.
      * </p>
-     * @param str Array of characters
-     * @param off  Offset from which to start writing characters
-     * @param len  Number of characters to write
+     * @param cbuf Array of characters
+     * @param off Offset from which to start writing characters
+     * @param len Number of characters to write
+     * @throws IndexOutOfBoundsException if <code>off</code> and <code>len</code> fall outside <code>cbuf</code>
      * @throws IOException
      */
     @Override
-    public void write(char[] str, int off, int len) throws IOException {
-        // this check it's implemented also in the StringBuilder class ... probably can be removed
-        if (off < 0 || off > str.length || len < 0 || off + len > str.length || off + len < 0) {
-            throw new IndexOutOfBoundsException();
-        } else if (len == 0) {
-            return;
-        }
-        builder.append(str, off, len);
+    public void write(char[] cbuf, int off, int len) throws IOException {
+        builder.append(cbuf, off, len);
     }
 
     /**
@@ -116,12 +101,12 @@ public class FastStringWriter extends Writer {
     // ---------------------------------------------------------- Public Methods
 
     /**
-     * Write a single character.
-     * @param c the String to be written
+     * Write a single character. The 16 high-order bits of <code>c</code> are ignored.
+     * @param c the character to be written
      */
     @Override
     public void write(int c) throws IOException {
-        builder.append((char)c);
+        builder.append((char) c);
     }
 
     /**
@@ -134,9 +119,14 @@ public class FastStringWriter extends Writer {
         builder.append(str);
     }
 
+    /**
+     * Write an array of characters.
+     *
+     * @param cbuf Array of characters to be written
+     */
     @Override
-    public void write(char[] str) throws IOException {
-        builder.append(str);
+    public void write(char[] cbuf) throws IOException {
+        builder.append(cbuf);
     }
 
     /**
@@ -145,6 +135,7 @@ public class FastStringWriter extends Writer {
      * @param str A String
      * @param off Offset from which to start writing characters
      * @param len Number of characters to write
+     * @throws IndexOutOfBoundsException if <code>off</code> and <code>len</code> fall outside <code>str</code>
      */
     @Override
     public void write(String str, int off, int len) {
@@ -173,18 +164,40 @@ public class FastStringWriter extends Writer {
 
     // ------------------------------------------------- Append Methods
 
+    /**
+     * Append a character sequence. A <code>null</code> argument appends the four characters <code>null</code>.
+     *
+     * @param csq the character sequence to append
+     * @return this writer
+     */
     @Override
-    public Writer append(CharSequence s) throws IOException {
-        builder.append(s);
+    public Writer append(CharSequence csq) throws IOException {
+        builder.append(csq);
         return this;
     }
 
+    /**
+     * Append a subsequence of a character sequence. A <code>null</code> argument is appended as if it contained the
+     * four characters <code>null</code>.
+     *
+     * @param csq the character sequence to append from
+     * @param start index of the first character to append
+     * @param end index after the last character to append
+     * @return this writer
+     * @throws IndexOutOfBoundsException if <code>start</code> and <code>end</code> fall outside <code>csq</code>
+     */
     @Override
-    public Writer append(CharSequence s, int start, int end) throws IOException {
-        builder.append(s, start, end);
+    public Writer append(CharSequence csq, int start, int end) throws IOException {
+        builder.append(csq, start, end);
         return this;
     }
 
+    /**
+     * Append a single character.
+     *
+     * @param c the character to append
+     * @return this writer
+     */
     @Override
     public Writer append(char c) throws IOException {
         builder.append(c);
