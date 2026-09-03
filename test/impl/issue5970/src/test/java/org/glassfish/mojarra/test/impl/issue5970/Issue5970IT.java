@@ -43,19 +43,12 @@ class Issue5970IT extends BaseITNG {
     private static final By AJAX_SUBMIT = By.id("form:ajaxSubmit");
     private static final By REPORTS = By.id("form:reports");
 
+    private static final By PLAIN_SHOW = By.id("show");
+    private static final By PLAIN_INPUT = By.id("input");
+    private static final By PLAIN_SUBMIT = By.id("submit");
+    private static final By PLAIN_REPORTS = By.id("reports");
+
     private static final String NO_REPORTS = "[]";
-
-    @FindBy(id = "show")
-    private WebElement plainShow;
-
-    @FindBy(id = "input")
-    private WebElement plainInput;
-
-    @FindBy(id = "submit")
-    private WebElement plainSubmit;
-
-    @FindBy(id = "reports")
-    private WebElement plainReports;
 
     /**
      * The input a <code>c:if</code> held while the response was rendered, and no longer holds while the postback is
@@ -81,12 +74,14 @@ class Issue5970IT extends BaseITNG {
      */
     @Test
     void testComponentDroppedByABuildTimeConditionInAFormWhichPrependsNoId() {
-        open("unprependedform.xhtml");
-        guardHttp(plainShow::click);
-        assertEquals("[]", plainReports.getText(), "the rebuild reproduces the view the response was rendered from");
-        plainInput.sendKeys("test");
-        guardHttp(plainSubmit::click);
-        assertTrue(plainReports.getText().contains("input"), plainReports.getText());
+        WebPage page = getPage("unprependedform.xhtml");
+        page.guardHttp(page.findElement(PLAIN_SHOW)::click);
+        assertEquals(NO_REPORTS, page.findElement(PLAIN_REPORTS).getText(), "the rebuild reproduces the view the response was rendered from");
+
+        page.findElement(PLAIN_INPUT).sendKeys("test");
+        page.guardHttp(page.findElement(PLAIN_SUBMIT)::click);
+        String reports = page.findElement(PLAIN_REPORTS).getText();
+        assertTrue(reports.contains("input"), reports);
     }
 
     /**
@@ -98,11 +93,12 @@ class Issue5970IT extends BaseITNG {
      */
     @Test
     void testComponentUnderAContainerLeftPositionedOnARow() {
-        open("iterating.xhtml");
-        guardHttp(submit::click);
-        assertEquals("[]", reports.getText(), reports.getText());
-        guardAjax(ajaxSubmit::click);
-        assertEquals("[]", reports.getText(), reports.getText());
+        WebPage page = getPage("iterating.xhtml");
+        page.guardHttp(page.findElement(SUBMIT)::click);
+        assertEquals(NO_REPORTS, page.findElement(REPORTS).getText(), "no report after a full postback");
+
+        page.guardAjax(page.findElement(AJAX_SUBMIT)::click);
+        assertEquals(NO_REPORTS, page.findElement(REPORTS).getText(), "no report after an ajax postback");
     }
 
     /**
