@@ -68,6 +68,7 @@
 
    <properties>
         <mojarra.logstrings.version>${project.version}</mojarra.logstrings.version>
+        <lint.thisEscape />
     </properties>
 
    <!-- ###  D E P E N D E N C I E S  ### -->
@@ -283,7 +284,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.15.0</version>
                 <configuration>
-                    <compilerArgument>-Xlint:all,-deprecation,-removal</compilerArgument>
+                    <compilerArgument>-Xlint:all,-deprecation,-removal,-serial${lint.thisEscape}</compilerArgument>
                     <proc>none</proc>
                 </configuration>
             </plugin>
@@ -546,4 +547,17 @@
             </plugin>
         </plugins>
     </build>
+
+   <profiles>
+        <profile>
+            <id>jdk21</id>
+            <activation>
+                <jdk>[21,)</jdk>
+            </activation>
+            <properties>
+                <!-- javac 17 rejects an unknown -Xlint key as an invalid flag, so this-escape can only be disabled from JDK 21 on. -->
+                <lint.thisEscape>,-this-escape</lint.thisEscape>
+            </properties>
+        </profile>
+    </profiles>
 </project>
