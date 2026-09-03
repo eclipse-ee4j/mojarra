@@ -81,7 +81,7 @@
                 </executions>
             </plugin>
 
-            <!-- Apply code formatting (Java via Eclipse JDT, XML/XHTML whitespace, TypeScript via ESLint @stylistic in impl/src/main/ts/package.json). -->
+            <!-- Apply code formatting (Java via Eclipse JDT, CSS/JS via Biome, XML/XHTML whitespace, TypeScript via ESLint @stylistic in impl/src/main/ts/package.json). -->
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
@@ -96,14 +96,42 @@
                         <configuration>
                             <java>
                                 <eclipse>
-                                    <file>${maven.multiModuleProjectDirectory}/eclipse-formatter.xml</file>
+                                    <file>${maven.multiModuleProjectDirectory}/build/eclipse-formatter.xml</file>
                                 </eclipse>
                                 <importOrder>
-                                    <file>${maven.multiModuleProjectDirectory}/eclipse-importorder.txt</file>
+                                    <file>${maven.multiModuleProjectDirectory}/build/eclipse-importorder.txt</file>
                                 </importOrder>
                                 <removeUnusedImports />
                                 <trimTrailingWhitespace />
                             </java>
+                            <css>
+                                <includes>
+                                    <include>**/src/**/*.css</include>
+                                </includes>
+                                <excludes>
+                                    <exclude>faces/**</exclude>
+                                    <exclude>**/target/**</exclude>
+                                    <exclude>**/node_modules/**</exclude>
+                                </excludes>
+                                <biome>
+                                    <version>2.5.0</version> <!-- Spotless defaults to 1.2.0, which has no CSS formatter. -->
+                                    <configPath>${maven.multiModuleProjectDirectory}/build</configPath>
+                                </biome>
+                            </css>
+                            <javascript>
+                                <includes>
+                                    <include>**/src/**/*.js</include>
+                                </includes>
+                                <excludes>
+                                    <exclude>faces/**</exclude>
+                                    <exclude>**/target/**</exclude>
+                                    <exclude>**/node_modules/**</exclude>
+                                </excludes>
+                                <biome>
+                                    <version>2.5.0</version>
+                                    <configPath>${maven.multiModuleProjectDirectory}/build</configPath>
+                                </biome>
+                            </javascript>
                             <formats>
                                 <format>
                                     <includes>
@@ -112,7 +140,9 @@
                                         <include>**/src/**/*.xhtml</include>
                                     </includes>
                                     <excludes>
-                                        <exclude>**/src/**/node_modules/**</exclude>
+                                        <exclude>faces/**</exclude>
+                                        <exclude>**/target/**</exclude>
+                                        <exclude>**/node_modules/**</exclude>
                                     </excludes>
                                     <trimTrailingWhitespace />
                                     <endWithNewline />
