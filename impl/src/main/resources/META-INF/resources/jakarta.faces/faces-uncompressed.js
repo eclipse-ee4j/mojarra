@@ -205,18 +205,20 @@ if (!((window.faces && faces.specversion && faces.specversion >= parseInt('#{app
             const isFormElement = (element) => element instanceof HTMLFormElement;
 
             // return true if the passed form needs the view state hidden field
-            const isValidForm = (form) => form.id && form.elements && form.method === "post" && form.id.startsWith(context.namingContainerPrefix);
+            const isValidForm = (form) => form.id && form.method === "post" && form.id.startsWith(context.namingContainerPrefix);
 
             // if the passed DOM element is a form and is valid,
             // then add to the forms to update,
-            // otherwise add all the valid forms in the descendants of the specified element
+            // otherwise add all the valid forms in the descendants of the specified element.
+            // the element must belong to the current document; isFormElement is realm-sensitive.
             const add = (element) => {
                 if (element) {
                     if ( isFormElement(element) && isValidForm(element) ) {
                         formsToUpdate.add(element);
                     }
                     else {
-                        for (const form of document.forms)
+                        const forms = element.getElementsByTagName(FORM);
+                        for ( const form of forms )
                             add(form);
                     }
                 }
