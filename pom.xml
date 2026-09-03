@@ -81,7 +81,7 @@
                 </executions>
             </plugin>
 
-            <!-- Apply code formatting (Java via Eclipse JDT, XML/XHTML whitespace). -->
+            <!-- Apply code formatting (Java via Eclipse JDT, XML/XHTML whitespace, TypeScript via ESLint @stylistic in impl/src/main/ts/package.json). -->
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>

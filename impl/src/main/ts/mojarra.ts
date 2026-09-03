@@ -101,14 +101,15 @@ mojarra.ab = function ab(s, e, n, ex, re, op) {
 mojarra.l = function l(callback) {
     if (document.readyState === "complete") {
         setTimeout(callback);
-    } else {
+    }
+    else {
         window.addEventListener("load", callback);
     }
 };
 
 mojarra.ael = function ael(id, ev, scripts) {
     const el = document.getElementById(id)!;
-    el.addEventListener(ev, function (event) {
+    el.addEventListener(ev, function(event) {
         if ((window.faces.util.chain as (...args: unknown[]) => unknown)(el, event, ...scripts) === false) {
             event.preventDefault();
         }

@@ -34,7 +34,8 @@ export const chain: typeof FacesSpec.util.chain = function chain(source, event) 
         try {
             w[facesChainThis] = thisArg;
             w[facesChainEvent] = event;
-            const script = "window." + facesChainResult + " = (function(event) { " + arguments[i] + " }).call(window." + facesChainThis + ", window." + facesChainEvent + ");";
+            const script = "window." + facesChainResult + " = (function(event) { " + arguments[i] + " }).call(window." +
+                facesChainThis + ", window." + facesChainEvent + ");";
             executeScriptWithNonce(head, script, nonce);
             result = w[facesChainResult];
         }

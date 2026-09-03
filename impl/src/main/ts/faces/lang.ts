@@ -8,6 +8,6 @@ export const isNull = (value: unknown): boolean =>
 export const isNotNull = (value: unknown): boolean => !isNull(value);
 
 /** True if a string contains a substring, or an array contains a value. */
-export const contains = function (stringOrArray: string | unknown[], value: unknown): boolean {
+export const contains = function(stringOrArray: string | unknown[], value: unknown): boolean {
     return (stringOrArray as string).indexOf(value as string) !== -1;
 };

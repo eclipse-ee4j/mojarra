@@ -19,7 +19,9 @@ interface MojarraGlobal extends Partial<MojarraNamespace> {
 }
 
 const getMojarra = (): MojarraGlobal | undefined => (window as unknown as { mojarra?: MojarraGlobal }).mojarra;
-const setMojarra = (m: MojarraGlobal): void => { (window as unknown as { mojarra: MojarraGlobal }).mojarra = m; };
+const setMojarra = (m: MojarraGlobal): void => {
+    (window as unknown as { mojarra: MojarraGlobal }).mojarra = m;
+};
 
 /** Valid {@link FacesSpec.ProjectStage} literal values, used to validate the URL-encoded stage param. */
 const PROJECT_STAGES = ["Development", "UnitTest", "SystemTest", "Production"] as const;

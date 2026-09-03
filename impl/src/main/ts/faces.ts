@@ -66,13 +66,13 @@ if (!((window.faces && faces.specversion && faces.specversion >= parseInt('#{app
      * <p class="changed_added_2_2">The result of calling
      * <code>UINamingContainer.getNamingContainerSeparatorChar().</code></p>
      */
-    faces.separatorchar = '#{facesContext.namingContainerSeparatorChar}';
+    faces.separatorchar = "#{facesContext.namingContainerSeparatorChar}";
 
     /**
      * <p class="changed_added_2_3">
      * The result of calling <code>ExternalContext.getRequestContextPath()</code>.
      */
-    faces.contextpath = '#{facesContext.externalContext.requestContextPath}';
+    faces.contextpath = "#{facesContext.externalContext.requestContextPath}";
 
     /**
      * <p>An integer specifying the specification version that this file implements.

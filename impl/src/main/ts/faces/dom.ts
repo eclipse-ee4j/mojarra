@@ -49,7 +49,7 @@ export const getElemById = function getElemById(elementOrId: Element | string): 
  * @param element the DOM base element
  * @param name the value of the name attribute
  */
-export const getElementByName = function (element: Element | Document, name: string): Element | null {
+export const getElementByName = function(element: Element | Document, name: string): Element | null {
     return element.querySelector("[name='" + name + "']");
 };
 
@@ -58,11 +58,11 @@ export const getElementByName = function (element: Element | Document, name: str
  * Accesses by indexed property first (HTMLFormElement maps name → element/RadioNodeList),
  * falls back to a querySelector by name.
  */
-export const getFormInputElementByName = function (form: HTMLFormElement, inputElementName: string): Element | null {
+export const getFormInputElementByName = function(form: HTMLFormElement, inputElementName: string): Element | null {
     return inputElementName in form ? (form as any)[inputElementName] : getElementByName(form, inputElementName);
 };
 
 /** True if one of the elements contains a child whose `name` attribute equals `name`. */
-export const containsNamedChild = function (elements: Element[], name: string): boolean {
+export const containsNamedChild = function(elements: Element[], name: string): boolean {
     return elements.some(elem => !!getElementByName(elem, name));
 };

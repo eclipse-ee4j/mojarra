@@ -4,13 +4,18 @@
         "node": ">=22"
     },
     "scripts": {
-        "build": "rollup --config rollup.config.mjs && terser ../../../target/classes/META-INF/resources/jakarta.faces/faces-uncompressed.js --compress --mangle --ecma 2020 --comments \"/^!/\" -o ../../../target/classes/META-INF/resources/jakarta.faces/faces.js && terser ../../../target/ts/behavior-event-bootstrap-uncompressed.js --compress --mangle --ecma 2020 --comments false -o ../../../target/classes/org/glassfish/mojarra/renderkit/behavior-event-bootstrap.js"
+        "build": "rollup --config rollup.config.mjs && terser ../../../target/classes/META-INF/resources/jakarta.faces/faces-uncompressed.js --compress --mangle --ecma 2020 --comments \"/^!/\" -o ../../../target/classes/META-INF/resources/jakarta.faces/faces.js && terser ../../../target/ts/behavior-event-bootstrap-uncompressed.js --compress --mangle --ecma 2020 --comments false -o ../../../target/classes/org/glassfish/mojarra/renderkit/behavior-event-bootstrap.js",
+        "lint": "eslint .",
+        "lint:fix": "eslint --fix ."
     },
     "devDependencies": {
         "@rollup/plugin-typescript": "^12.1.4",
+        "@stylistic/eslint-plugin": "^5.10.0",
+        "eslint": "^10.9.0",
         "rollup": "^4.31.0",
         "terser": "^5.46.1",
         "tslib": "^2.8.1",
-        "typescript": "^5.9.3"
+        "typescript": "^5.9.3",
+        "typescript-eslint": "^8.67.0"
     }
 }

@@ -17,7 +17,7 @@ interface ReconnectingSocket {
     close(): void;
 }
 
-export const push: typeof FacesSpec.push = (function (window: WindowAsDict) {
+export const push: typeof FacesSpec.push = (function(window: WindowAsDict) {
 
     const RECONNECT_INTERVAL = 500;
     const MAX_RECONNECT_ATTEMPTS = 25;
@@ -45,14 +45,14 @@ export const push: typeof FacesSpec.push = (function (window: WindowAsDict) {
         let reconnectAttempts: number | null = null;
         const self = this;
 
-        self.open = function () {
+        self.open = function() {
             if (socket && socket.readyState === WebSocket.OPEN) {
                 return;
             }
 
             socket = new WebSocket(url);
 
-            socket.onopen = function (_event) {
+            socket.onopen = function(_event) {
                 if (reconnectAttempts == null) {
                     onopen(channel);
                 }
@@ -60,7 +60,7 @@ export const push: typeof FacesSpec.push = (function (window: WindowAsDict) {
                 reconnectAttempts = 0;
             };
 
-            socket.onmessage = function (event) {
+            socket.onmessage = function(event) {
                 const message = JSON.parse(event.data).data;
                 onmessage(message, channel, event);
                 const functions = behaviors[message];
@@ -72,7 +72,7 @@ export const push: typeof FacesSpec.push = (function (window: WindowAsDict) {
                 }
             };
 
-            socket.onclose = function (event) {
+            socket.onclose = function(event) {
                 if (!socket
                     || (event.code === 1000 && event.reason === REASON_EXPIRED)
                     || event.code === 1008
@@ -87,7 +87,7 @@ export const push: typeof FacesSpec.push = (function (window: WindowAsDict) {
             };
         };
 
-        self.close = function () {
+        self.close = function() {
             if (socket) {
                 const s = socket;
                 socket = null;
@@ -104,7 +104,7 @@ export const push: typeof FacesSpec.push = (function (window: WindowAsDict) {
             return fn;
         }
         const named = typeof fn === "string" ? window[fn] : undefined;
-        return (typeof named === "function" ? named : function () { /* NOOP */ }) as F;
+        return (typeof named === "function" ? named : function() { /* NOOP */ }) as F;
     }
 
     /**
