@@ -202,14 +202,15 @@ if (!((window.faces && faces.specversion && faces.specversion >= parseInt('#{app
             const formsToUpdate = new Set();
 
             // return true if the passed element is a form
-            const isFormElement = (element) => element.nodeName && element.nodeName.toLowerCase() === FORM;
+            const isFormElement = (element) => element instanceof HTMLFormElement;
 
             // return true if the passed form needs the view state hidden field
-            const isValidForm = (form) => form.method === "post" && form.id && form.elements && form.id.startsWith(context.namingContainerPrefix);
+            const isValidForm = (form) => form.id && form.method === "post" && form.id.startsWith(context.namingContainerPrefix);
 
             // if the passed DOM element is a form and is valid,
             // then add to the forms to update,
-            // otherwise add all the valid forms in the descendants of the specified element
+            // otherwise add all the valid forms in the descendants of the specified element.
+            // the element must belong to the current document; isFormElement is realm-sensitive.
             const add = (element) => {
                 if (element) {
                     if ( isFormElement(element) && isValidForm(element) ) {
@@ -244,9 +245,7 @@ if (!((window.faces && faces.specversion && faces.specversion >= parseInt('#{app
 
             // second pass: we have to include all the updated forms using PartialViewContext from Java
             if ( ! isRenderAll ) { // performance bonus: only if we aren't in @all case
-                const allForms = document.getElementsByTagName(FORM);
-
-                for (const form of allForms) {
+                for (const form of document.forms) {
                     if (!formsToUpdate.has(form)
                         && isValidForm(form)
                         && isNull(getHiddenStateField(form, hiddenStateFieldName, context.namingContainerPrefix))) {
