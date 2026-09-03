@@ -76,16 +76,17 @@ export const ajax = (function () {
 
             // return true if the passed element is a form
             const isFormElement = (element: Element | Document): element is HTMLFormElement =>
-                (element as Element).nodeName != null && (element as Element).nodeName.toLowerCase() === FORM;
+                element instanceof HTMLFormElement;
 
             // return true if the passed form needs the view state hidden field
             const isValidForm = (form: HTMLFormElement): boolean =>
-                form.method === "post" && !!form.id && !!form.elements
+                !!form.id && form.method === "post"
                 && (context.namingContainerPrefix == null || form.id.startsWith(context.namingContainerPrefix));
 
             // if the passed DOM element is a form and is valid,
             // then add to the forms to update,
-            // otherwise add all the valid forms in the descendants of the specified element
+            // otherwise add all the valid forms in the descendants of the specified element.
+            // the element must belong to the current document; isFormElement is realm-sensitive.
             const add = (element: Element | Document | null) => {
                 if (element) {
                     if (isFormElement(element) && isValidForm(element)) {
@@ -120,9 +121,7 @@ export const ajax = (function () {
 
             // second pass: we have to include all the updated forms using PartialViewContext from Java
             if (!isRenderAll) { // performance bonus: only if we aren't in @all case
-                const allForms = document.getElementsByTagName(FORM) as HTMLCollectionOf<HTMLFormElement>;
-
-                for (const form of Array.from(allForms)) {
+                for (const form of Array.from(document.forms)) {
                     if (!formsToUpdate.has(form)
                         && isValidForm(form)
                         && isNull(getHiddenStateField(form, hiddenStateFieldName, context.namingContainerPrefix))) {

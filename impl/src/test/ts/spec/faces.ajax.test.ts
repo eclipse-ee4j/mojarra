@@ -1178,6 +1178,56 @@ describe("faces.ajax.response", () => {
         otherForm.remove();
     });
 
+    // getFormsToUpdate() recurses into the descendants of a form which fails isValidForm().
+    // Nested <form> is illegal HTML, so that subtree is empty and the recursion terminates.
+    test("ViewState update succeeds when the document holds a form which is not a Faces form", () => {
+        const panel = document.createElement("div");
+        panel.id = "panel";
+        document.body.appendChild(panel);
+
+        const plainForm = document.createElement("form"); // no id, method defaults to get
+        document.body.appendChild(plainForm);
+
+        const errors: Record<string, unknown>[] = [];
+        ajax().request(button, null, { render: "panel", onerror: (data: Record<string, unknown>) => errors.push(data) });
+        const xml = successResponse('<update id="jakarta.faces.ViewState:0"><![CDATA[newState456]]></update>');
+        lastXHR().respond(200, "", xml);
+
+        expect(errors.map(error => error.status)).toEqual([]);
+        const field = form.querySelector<HTMLInputElement>('input[name="jakarta.faces.ViewState"]');
+        expect(field!.value).toBe("newState456");
+        plainForm.remove();
+        panel.remove();
+    });
+
+    // getFormsToUpdate() collects only the forms inside a render target.
+    test("ViewState update leaves a form outside the render target alone", () => {
+        const panel = document.createElement("div");
+        panel.id = "panel";
+        document.body.appendChild(panel);
+
+        const outsideForm = document.createElement("form");
+        outsideForm.id = "outsideForm";
+        outsideForm.method = "post";
+        const outsideField = Object.assign(document.createElement("input"), {
+            type: "hidden",
+            name: "jakarta.faces.ViewState",
+            value: "outsideState",
+        });
+        outsideForm.appendChild(outsideField);
+        document.body.appendChild(outsideForm);
+
+        ajax().request(button, null, { render: "panel" });
+        const xml = successResponse('<update id="jakarta.faces.ViewState:0"><![CDATA[newState456]]></update>');
+        lastXHR().respond(200, "", xml);
+
+        expect(outsideField.value).toBe("outsideState");
+        const field = form.querySelector<HTMLInputElement>('input[name="jakarta.faces.ViewState"]');
+        expect(field!.value).toBe("newState456");
+        outsideForm.remove();
+        panel.remove();
+    });
+
     test("redirect element returns early without firing success or error", () => {
         // jsdom's window.location is hard to mock; verify the redirect branch by
         // behavioral inference instead: that branch returns before sendEvent("success")
