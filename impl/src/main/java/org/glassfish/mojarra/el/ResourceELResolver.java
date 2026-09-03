@@ -17,7 +17,6 @@
 
 package org.glassfish.mojarra.el;
 
-
 import static org.glassfish.mojarra.util.Util.removeQueryString;
 
 import jakarta.el.ELContext;
@@ -45,20 +44,17 @@ public class ResourceELResolver extends ELResolver {
     // ------------------------------------------------- Methods from ELResolver
 
     /**
-     * If base and property are not <code>null</code> and base is an instance of {@link ResourceHandler}, perform the
-     * following:
+     * If base and property are not <code>null</code> and base is an instance of {@link ResourceHandler}, perform the following:
      * <ul>
-     * <li>If <code>property</code> doesn't contain <code>:</code> treat <code>property</code> as the resource name and pass
-     * <code>property</code> to {@link ResourceHandler#createResource(String)}</li>
-     * <li>If <code>property</code> contains a single <code>:</code> treat the content before the <code>:</code> as the
-     * library name, and the content after the <code>:</code> to be the resource name and pass both to
-     * {@link jakarta.faces.application.ResourceHandler#createResource(String, String)}</li>
+     * <li>If <code>property</code> doesn't contain <code>:</code> treat <code>property</code> as the resource name and pass <code>property</code> to
+     * {@link ResourceHandler#createResource(String)}</li>
+     * <li>If <code>property</code> contains a single <code>:</code> treat the content before the <code>:</code> as the library name, and the content after the
+     * <code>:</code> to be the resource name and pass both to {@link jakarta.faces.application.ResourceHandler#createResource(String, String)}</li>
      * <li>If <code>property</code> contains more than one <code>:</code> then throw a <code>ELException</code></li>
-     * <li>A query string carried by <code>property</code> is left out of the above: the colons are counted over the
-     * part preceding the first <code>?</code>, and the query string stays with the resource name</li>
-     * <li>If one of the above steps resulted in the creation of a {@link Resource} instance, call
-     * <code>ELContext.setPropertyResolved(true)</code> and return the result of
-     * {@link jakarta.faces.application.Resource#getRequestPath()}</li>
+     * <li>A query string carried by <code>property</code> is left out of the above: the colons are counted over the part preceding the first <code>?</code>,
+     * and the query string stays with the resource name</li>
+     * <li>If one of the above steps resulted in the creation of a {@link Resource} instance, call <code>ELContext.setPropertyResolved(true)</code> and return
+     * the result of {@link jakarta.faces.application.Resource#getRequestPath()}</li>
      * </ul>
      *
      * @see ELResolver#getValue(jakarta.el.ELContext, Object, Object)
@@ -77,7 +73,8 @@ public class ResourceELResolver extends ELResolver {
             Resource res;
             if (!resourceIdentifier.contains(":")) {
                 res = handler.createResource(prop);
-            } else {
+            }
+            else {
                 if (!isPropertyValid(resourceIdentifier)) {
                     // RELEASE_PENDING i18n
                     throw new ELException("Invalid resource format.  Property " + prop + " contains more than one colon (:)");

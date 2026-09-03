@@ -230,14 +230,20 @@ public class MockBeanManager implements BeanManager, ELAwareBeanManager {
     }
 
     @Override
-    public <T> Bean<T> createBean(BeanAttributes<T> attributes, Class<T> beanClass,
-            InjectionTargetFactory<T> injectionTargetFactory) {
+    public <T> Bean<T> createBean(
+        BeanAttributes<T> attributes, Class<T> beanClass,
+        InjectionTargetFactory<T> injectionTargetFactory
+    )
+    {
         return null;
     }
 
     @Override
-    public <T, X> Bean<T> createBean(BeanAttributes<T> attributes, Class<X> beanClass,
-            ProducerFactory<X> producerFactory) {
+    public <T, X> Bean<T> createBean(
+        BeanAttributes<T> attributes, Class<X> beanClass,
+        ProducerFactory<X> producerFactory
+    )
+    {
         return null;
     }
 

@@ -23,9 +23,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests that a resource name carrying a query string, as specified in section 2.6.1.3 "Resource Identifiers" of the
- * Jakarta Faces Specification Document, is split into the file identifying part, which resolves the resource, and the
- * query string, which is appended to the request path.
+ * Tests that a resource name carrying a query string, as specified in section 2.6.1.3 "Resource Identifiers" of the Jakarta Faces Specification Document, is
+ * split into the file identifying part, which resolves the resource, and the query string, which is appended to the request path.
  */
 class UtilQueryStringTest {
 
@@ -78,4 +77,5 @@ class UtilQueryStringTest {
         assertEquals("first=1&second=2", getQueryString("theme.css?first=1&second=2"));
         assertEquals("v=1?v=2", getQueryString("theme.css?v=1?v=2"));
     }
+
 }

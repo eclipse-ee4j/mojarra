@@ -16,7 +16,6 @@
 
 package org.glassfish.mojarra.facelets.compiler;
 
-
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -107,7 +106,8 @@ public final class SAXCompiler extends Compiler {
             Location result = null;
             if (null != locator) {
                 result = new Location(alias, locator.getLineNumber(), locator.getColumnNumber());
-            } else {
+            }
+            else {
                 if (log.isLoggable(Level.SEVERE)) {
                     log.log(Level.SEVERE, "Unable to create Location due to null locator instance variable.");
                 }
@@ -153,7 +153,8 @@ public final class SAXCompiler extends Compiler {
         public void fatalError(SAXParseException e) throws SAXException {
             if (locator != null) {
                 throw new SAXException("Error Traced[line: " + locator.getLineNumber() + "] " + e.getMessage());
-            } else {
+            }
+            else {
                 throw e;
             }
         }
@@ -169,8 +170,8 @@ public final class SAXCompiler extends Compiler {
         public InputSource resolveEntity(String publicId, String systemId) throws SAXException {
             String dtd = "org/glassfish/mojarra/xhtml/default.dtd";
             /*
-             * if ("-//W3C//DTD XHTML 1.0 Transitional//EN".equals(publicId)) { dtd = "xhtml1-transitional.dtd"; } else if (systemId
-             * != null && systemId.startsWith("file:/")) { return new InputSource(systemId); }
+             * if ("-//W3C//DTD XHTML 1.0 Transitional//EN".equals(publicId)) { dtd = "xhtml1-transitional.dtd"; } else if (systemId != null &&
+             * systemId.startsWith("file:/")) { return new InputSource(systemId); }
              */
             URL url = this.getClass().getClassLoader().getResource(dtd);
             return new InputSource(url.toString());
@@ -381,11 +382,14 @@ public final class SAXCompiler extends Compiler {
             writeXmlDecl(is, encoding, mngr);
             SAXParser parser = createSAXParser(handler, context);
             parser.parse(is, handler);
-        } catch (SAXException e) {
+        }
+        catch (SAXException e) {
             throw new FaceletException("Error Parsing " + alias + ": " + e.getMessage(), e.getCause());
-        } catch (ParserConfigurationException e) {
+        }
+        catch (ParserConfigurationException e) {
             throw new FaceletException("Error Configuring Parser " + alias + ": " + e.getMessage(), e.getCause());
-        } catch (FaceletException e) {
+        }
+        catch (FaceletException e) {
             throw e;
         }
         FaceletHandler result = new EncodingHandler(mngr.createFaceletHandler(), encoding, mngr.getCompilationMessageHolder(), mngr.isUnreproducibleBuild());
@@ -424,7 +428,8 @@ public final class SAXCompiler extends Compiler {
                     }
                 }
             }
-        } finally {
+        }
+        finally {
             is.reset();
         }
     }

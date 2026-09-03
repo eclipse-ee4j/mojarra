@@ -217,6 +217,7 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
     }
 
     private static class FlowDefinitionDocument {
+
         URI definingDocumentURI;
         Document flowDefinitions;
 
@@ -245,15 +246,19 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
 
             for (FlowDefinitionDocument flowDefinition : getSavedFlowDefinitions(facesContext)) {
                 try {
-                    processFacesFlowDefinitions(facesContext, flowDefinition.definingDocumentURI,
-                            flowDefinition.flowDefinitions);
-                } catch (XPathExpressionException ex) {
+                    processFacesFlowDefinitions(
+                        facesContext, flowDefinition.definingDocumentURI,
+                        flowDefinition.flowDefinitions
+                    );
+                }
+                catch (XPathExpressionException ex) {
                     throw new FacesException(ex);
                 }
             }
 
             clearSavedFlowDefinitions(facesContext);
         }
+
     }
 
     private void processFacesFlowDefinitions(FacesContext context, URI definingDocumentURI, Document document) throws XPathExpressionException {
@@ -287,7 +292,8 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
                 ApplicationAssociate associate = ApplicationAssociate.getInstance(context.getExternalContext());
                 try {
                     associate.relateUrlToDefiningDocumentInJar(definingDocumentURI.toURL(), nameStr);
-                } catch (MalformedURLException ex) {
+                }
+                catch (MalformedURLException ex) {
                     throw new XPathExpressionException(ex);
                 }
             }
@@ -321,10 +327,12 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
                 FlowNode startNode = toAdd.getNode(startNodeId);
                 if (null == startNode) {
                     throw new XPathExpressionException("Unable to find flow node with id " + startNodeId + " to mark as start node");
-                } else {
+                }
+                else {
                     toAdd.setStartNodeId(startNodeId);
                 }
-            } else {
+            }
+            else {
                 flowBuilder.viewNode(flowId, "/" + flowId + "/" + flowId + ".xhtml").markAsStartNode();
             }
             flowHandler.addFlow(context, flowBuilder.getFlow());
@@ -622,7 +630,8 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
                         if (null != classStr) {
                             try {
                                 clazz = ReflectionUtil.forName(classStr);
-                            } catch (ClassNotFoundException e) {
+                            }
+                            catch (ClassNotFoundException e) {
                                 clazz = Object.class;
                             }
                         }
@@ -721,11 +730,13 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
                         LOGGER.log(Level.FINEST, "Element {0} has an id attribute, but it is not declared as type xsd:id", node.getLocalName());
                     }
                 }
-            } else {
+            }
+            else {
                 localName = node.getLocalName();
                 throwException = true;
             }
-        } else {
+        }
+        else {
             localName = node.getLocalName();
             throwException = true;
         }

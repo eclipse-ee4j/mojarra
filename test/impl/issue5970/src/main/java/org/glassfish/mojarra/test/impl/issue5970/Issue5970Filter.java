@@ -33,9 +33,9 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.annotation.WebFilter;
 
 /**
- * What the state management strategy reports about the view rebuilt for a postback goes to the log and nowhere else,
- * which leaves it invisible to a test. This collects the reports of the request being served into the
- * {@value #REPORTS} request attribute, from where a view renders them for the response to be asserted against.
+ * What the state management strategy reports about the view rebuilt for a postback goes to the log and nowhere else, which leaves it invisible to a test. This
+ * collects the reports of the request being served into the {@value #REPORTS} request attribute, from where a view renders them for the response to be asserted
+ * against.
  */
 @WebFilter("/*")
 public class Issue5970Filter implements Filter {
@@ -50,8 +50,7 @@ public class Issue5970Filter implements Filter {
     private static final ThreadLocal<List<String>> CURRENT = new ThreadLocal<>();
 
     /**
-     * Held onto for as long as the handler is installed on it, since a logger nothing references is collectable
-     * along with the handlers it was given.
+     * Held onto for as long as the handler is installed on it, since a logger nothing references is collectable along with the handlers it was given.
      */
     private Logger logger;
 
@@ -77,7 +76,8 @@ public class Issue5970Filter implements Filter {
 
         try {
             chain.doFilter(request, response);
-        } finally {
+        }
+        finally {
             CURRENT.remove();
         }
     }
@@ -104,5 +104,7 @@ public class Issue5970Filter implements Filter {
         public void close() {
             // Nothing to close, the reports are collected in memory.
         }
+
     }
+
 }

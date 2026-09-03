@@ -70,6 +70,7 @@ public final class UIDebug extends UIComponentBase {
             public void add(int index, UIComponent o) {
                 throw new IllegalStateException("<ui:debug> does not support children");
             }
+
         };
     }
 
@@ -85,12 +86,13 @@ public final class UIDebug extends UIComponentBase {
             sb.append("function faceletsDebugWindow(URL) {");
             sb.append("var id = '' + new Date().getTime();");
             sb.append(
-                    "window.open(URL, id, 'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=800,height=600,left=240,top=212'); };");
+                "window.open(URL, id, 'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=800,height=600,left=240,top=212'); };"
+            );
             sb.append("(function() { if (typeof faceletsDebug === 'undefined') { var faceletsDebug = false; } if (!faceletsDebug) {");
             sb.append("var faceletsOrigKeyup = document.onkeyup;");
             sb.append("document.onkeyup = function(e) { if (window.event) e = window.event; if (String.fromCharCode(e.keyCode) == '")
-              .append(getHotkey())
-              .append("' & e.shiftKey & e.ctrlKey) faceletsDebugWindow('");
+                .append(getHotkey())
+                .append("' & e.shiftKey & e.ctrlKey) faceletsDebugWindow('");
             sb.append(actionId);
             sb.append(actionId.indexOf('?') == -1 ? '?' : '&');
             sb.append(KEY);
@@ -103,7 +105,7 @@ public final class UIDebug extends UIComponentBase {
             ResponseWriter writer = facesContext.getResponseWriter();
             writer.startElement("span", this);
             writer.writeAttribute("id", getClientId(facesContext), "id");
-            
+
             RenderKitUtils.renderScript(facesContext, null, sb.toString());
 
             writer.endElement("span");
@@ -126,6 +128,7 @@ public final class UIDebug extends UIComponentBase {
                 protected boolean removeEldestEntry(Map.Entry<String, String> eldest) {
                     return size() > 5;
                 }
+
             };
         }
         session.put(KEY, debugs);
@@ -155,13 +158,15 @@ public final class UIDebug extends UIComponentBase {
                     if (page != null) {
                         httpResp.setContentType("text/html");
                         httpResp.getWriter().write(page);
-                    } else {
+                    }
+                    else {
                         httpResp.setContentType("text/plain");
                         httpResp.getWriter().write("No Debug Output Available");
                     }
                     httpResp.flushBuffer();
                     faces.responseComplete();
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     return false;
                 }
                 return true;
@@ -177,4 +182,5 @@ public final class UIDebug extends UIComponentBase {
     public void setHotkey(String hotkey) {
         this.hotkey = hotkey != null ? hotkey.toUpperCase() : "";
     }
+
 }

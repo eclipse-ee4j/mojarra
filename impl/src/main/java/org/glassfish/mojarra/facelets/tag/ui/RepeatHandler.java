@@ -66,7 +66,8 @@ public class RepeatHandler extends ComponentHandler {
             for (int i = 0; i < ta.length; i++) {
                 if ("class".equals(ta[i].getLocalName())) {
                     s.add("styleClass");
-                } else {
+                }
+                else {
                     s.add(ta[i].getLocalName());
                 }
             }
@@ -77,7 +78,8 @@ public class RepeatHandler extends ComponentHandler {
                         s.remove(pd[i].getName());
                     }
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 if (log.isLoggable(Level.FINEST)) {
                     log.log(Level.FINEST, "Unable to get bean info", e);
                 }

@@ -37,18 +37,30 @@ import jakarta.faces.render.ResponseStateManager;
 public class MockRenderKit extends RenderKit {
 
     public MockRenderKit() {
-        addRenderer(UIData.COMPONENT_FAMILY,
-                "jakarta.faces.Table", new TestRenderer());
-        addRenderer(UIInput.COMPONENT_FAMILY,
-                "TestRenderer", new TestRenderer());
-        addRenderer(UIInput.COMPONENT_FAMILY,
-                "jakarta.faces.Text", new TestRenderer());
-        addRenderer(UIOutput.COMPONENT_FAMILY,
-                "TestRenderer", new TestRenderer());
-        addRenderer(UIOutput.COMPONENT_FAMILY,
-                "jakarta.faces.Text", new TestRenderer());
-        addRenderer(UIPanel.COMPONENT_FAMILY,
-                "jakarta.faces.Grid", new TestRenderer());
+        addRenderer(
+            UIData.COMPONENT_FAMILY,
+            "jakarta.faces.Table", new TestRenderer()
+        );
+        addRenderer(
+            UIInput.COMPONENT_FAMILY,
+            "TestRenderer", new TestRenderer()
+        );
+        addRenderer(
+            UIInput.COMPONENT_FAMILY,
+            "jakarta.faces.Text", new TestRenderer()
+        );
+        addRenderer(
+            UIOutput.COMPONENT_FAMILY,
+            "TestRenderer", new TestRenderer()
+        );
+        addRenderer(
+            UIOutput.COMPONENT_FAMILY,
+            "jakarta.faces.Text", new TestRenderer()
+        );
+        addRenderer(
+            UIPanel.COMPONENT_FAMILY,
+            "jakarta.faces.Grid", new TestRenderer()
+        );
         responseStateManager = new MockResponseStateManager();
     }
 
@@ -56,8 +68,11 @@ public class MockRenderKit extends RenderKit {
     private ResponseStateManager responseStateManager = null;
 
     @Override
-    public void addRenderer(String family, String rendererType,
-            Renderer<?> renderer) {
+    public void addRenderer(
+        String family, String rendererType,
+        Renderer<?> renderer
+    )
+    {
         if ((family == null) || (rendererType == null) || (renderer == null)) {
             throw new NullPointerException();
         }
@@ -74,9 +89,12 @@ public class MockRenderKit extends RenderKit {
     }
 
     @Override
-    public ResponseWriter createResponseWriter(Writer writer,
-            String contentTypeList,
-            String characterEncoding) {
+    public ResponseWriter createResponseWriter(
+        Writer writer,
+        String contentTypeList,
+        String characterEncoding
+    )
+    {
         return new MockResponseWriter(writer, characterEncoding);
     }
 
@@ -84,6 +102,7 @@ public class MockRenderKit extends RenderKit {
     public ResponseStream createResponseStream(OutputStream out) {
         final OutputStream os = out;
         return new ResponseStream() {
+
             @Override
             public void close() throws IOException {
                 os.close();
@@ -108,6 +127,7 @@ public class MockRenderKit extends RenderKit {
             public void write(int b) throws IOException {
                 os.write(b);
             }
+
         };
     }
 
@@ -138,27 +158,31 @@ public class MockRenderKit extends RenderKit {
             // Decode incoming request parameters
             Map<String, String> params = context.getExternalContext().getRequestParameterMap();
             if (params.containsKey(clientId)) {
-                // System.err.println("  '" + input.currentValue(context) +
-                //                    "' --> '" + params.get(clientId) + "'");
+                // System.err.println(" '" + input.currentValue(context) +
+                // "' --> '" + params.get(clientId) + "'");
                 input.setSubmittedValue(params.get(clientId));
             }
         }
 
         @Override
         public void encodeBegin(FacesContext context, UIComponent component)
-                throws IOException {
+            throws IOException
+        {
 
             if ((context == null) || (component == null)) {
                 throw new NullPointerException();
             }
             ResponseWriter writer = context.getResponseWriter();
-            writer.write("<text id='" + component.getClientId(context) + "' value='"
-                    + component.getAttributes().get("value") + "'/>\n");
+            writer.write(
+                "<text id='" + component.getClientId(context) + "' value='"
+                    + component.getAttributes().get("value") + "'/>\n"
+            );
         }
 
         @Override
         public void encodeChildren(FacesContext context, UIComponent component)
-                throws IOException {
+            throws IOException
+        {
             if ((context == null) || (component == null)) {
                 throw new NullPointerException();
             }
@@ -166,10 +190,13 @@ public class MockRenderKit extends RenderKit {
 
         @Override
         public void encodeEnd(FacesContext context, UIComponent component)
-                throws IOException {
+            throws IOException
+        {
             if ((context == null) || (component == null)) {
                 throw new NullPointerException();
             }
         }
+
     }
+
 }

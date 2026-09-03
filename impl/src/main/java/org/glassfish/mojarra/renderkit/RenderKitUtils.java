@@ -107,15 +107,14 @@ public class RenderKitUtils {
 
     /**
      * <p>
-     * An array of attributes that must be prefixed by {@link #XHTML_ATTR_PREFIX} when rendering
-     * <code>XHTML Transitional</code> content.
+     * An array of attributes that must be prefixed by {@link #XHTML_ATTR_PREFIX} when rendering <code>XHTML Transitional</code> content.
      */
     private static final String[] XHTML_PREFIX_ATTRIBUTES = { "lang" };
 
     /**
      * <p>
-     * The maximum number of content type parts. For example: for the type: "text/html; level=1; q=0.5" The parts of this
-     * type would be: "text" - type "html; level=1" - subtype "0.5" - quality value "1" - level value
+     * The maximum number of content type parts. For example: for the type: "text/html; level=1; q=0.5" The parts of this type would be: "text" - type "html;
+     * level=1" - subtype "0.5" - quality value "1" - level value
      * </p>
      */
     private final static int MAX_CONTENT_TYPE_PARTS = 4;
@@ -127,27 +126,24 @@ public class RenderKitUtils {
     private final static char CONTENT_TYPE_DELIMITER = ',';
 
     /**
-     * The character that is used to delimit the type and subtype portions of a content type in an accept String. Example:
-     * text/html
+     * The character that is used to delimit the type and subtype portions of a content type in an accept String. Example: text/html
      * </p>
      */
     private final static char CONTENT_TYPE_SUBTYPE_DELIMITER = '/';
 
     /**
-     * This represents the base package that can leverage the <code>attributesThatAreSet</code> List for optimized attribute
-     * rendering.
+     * This represents the base package that can leverage the <code>attributesThatAreSet</code> List for optimized attribute rendering.
      *
-     * IMPLEMENTATION NOTE: This must be kept in sync with UIComponentBase.STANDARD_COMPONENT_PACKAGE and the copies in
-     * HtmlComponentUtils and PassthroughElement.
+     * IMPLEMENTATION NOTE: This must be kept in sync with UIComponentBase.STANDARD_COMPONENT_PACKAGE and the copies in HtmlComponentUtils and
+     * PassthroughElement.
      *
      * Hopefully Faces X will remove the need for this.
      */
     private static final String OPTIMIZED_PACKAGE = "jakarta.faces.component.";
 
     /**
-     * IMPLEMENTATION NOTE: This must be kept in sync with UIComponentBase.ATTRIBUTES_THAT_ARE_SET and the copies in
-     * HtmlComponentUtils and PassthroughElement. Spelled out as a literal so that all of them are the same interned
-     * instance.
+     * IMPLEMENTATION NOTE: This must be kept in sync with UIComponentBase.ATTRIBUTES_THAT_ARE_SET and the copies in HtmlComponentUtils and PassthroughElement.
+     * Spelled out as a literal so that all of them are the same interned instance.
      *
      * Hopefully Faces X will remove the need for this.
      */
@@ -158,35 +154,34 @@ public class RenderKitUtils {
     private static final String BEHAVIOR_EVENT_ATTRIBUTE_PREFIX = "on";
 
     /**
-     * The elements whose fetch of an external resource starts as the element is parsed, and whose {@code load} and
-     * {@code error} can therefore already have been dispatched by the time any script following the element runs.
+     * The elements whose fetch of an external resource starts as the element is parsed, and whose {@code load} and {@code error} can therefore already have
+     * been dispatched by the time any script following the element runs.
      */
     private static final Set<String> DELEGATED_BEHAVIOR_EVENT_ELEMENTS = Set.of("script", "link", "img", "iframe");
 
     /**
-     * The behavior event attributes which are delegated to {@code behavior-event-bootstrap.ts} instead of being wired
-     * afterwards by {@code mojarra.ael()}. Their events are dispatched at an element whose fetch of an external
-     * resource starts as the element is parsed, so they can already have fired by the time any script following the
-     * element runs. Only a listener installed before the element is parsed observes them.
+     * The behavior event attributes which are delegated to {@code behavior-event-bootstrap.ts} instead of being wired afterwards by {@code mojarra.ael()}.
+     * Their events are dispatched at an element whose fetch of an external resource starts as the element is parsed, so they can already have fired by the time
+     * any script following the element runs. Only a listener installed before the element is parsed observes them.
      */
     private static final Set<String> DELEGATED_BEHAVIOR_EVENT_ATTRIBUTES = Set.of("onload", "onerror");
 
     /**
-     * The name prefix of the attribute which carries a delegated behavior event attribute's script to the bootstrap.
-     * The bootstrap derives the very same name from the event type, so the two must spell it identically.
+     * The name prefix of the attribute which carries a delegated behavior event attribute's script to the bootstrap. The bootstrap derives the very same name
+     * from the event type, so the two must spell it identically.
      */
     public static final String DELEGATED_BEHAVIOR_EVENT_ATTRIBUTE_PREFIX = "data-mojarra-";
 
     /**
-     * The name of the attribute which marks a script that depends on nothing around it. The ajax response matches this
-     * very name to run such a script before the markup it came with goes live, so the two must spell it identically.
+     * The name of the attribute which marks a script that depends on nothing around it. The ajax response matches this very name to run such a script before
+     * the markup it came with goes live, so the two must spell it identically.
      */
     public static final String INDEPENDENT_SCRIPT_ATTRIBUTE = DELEGATED_BEHAVIOR_EVENT_ATTRIBUTE_PREFIX + "independent";
 
     /**
-     * The name of the classpath resource holding the bootstrap of the delegated behavior event attributes. It is
-     * produced from {@code behavior-event-bootstrap.ts} by the same build which produces {@code faces.js}, but is
-     * rendered inline rather than served, as it must run before the first element which can carry one is parsed.
+     * The name of the classpath resource holding the bootstrap of the delegated behavior event attributes. It is produced from
+     * {@code behavior-event-bootstrap.ts} by the same build which produces {@code faces.js}, but is rendered inline rather than served, as it must run before
+     * the first element which can carry one is parsed.
      */
     private static final String BEHAVIOR_EVENT_BOOTSTRAP_RESOURCE_NAME = "behavior-event-bootstrap.js";
 
@@ -196,9 +191,8 @@ public class RenderKitUtils {
 
     /**
      * <p>
-     * Sentinel submitted value for a selection component whose request parameter was absent, so that a subsequent
-     * decode can tell "submitted with nothing selected" apart from "not submitted at all". It is not a general purpose
-     * empty string; use {@link RIConstants#EMPTY_STRING} for that.
+     * Sentinel submitted value for a selection component whose request parameter was absent, so that a subsequent decode can tell "submitted with nothing
+     * selected" apart from "not submitted at all". It is not a general purpose empty string; use {@link RIConstants#EMPTY_STRING} for that.
      * </p>
      */
     public static final String NO_VALUE = "";
@@ -208,10 +202,14 @@ public class RenderKitUtils {
      */
     public enum PredefinedPostbackParameter {
 
-        VIEW_STATE_PARAM(ResponseStateManager.VIEW_STATE_PARAM), CLIENT_WINDOW_PARAM(ResponseStateManager.CLIENT_WINDOW_PARAM),
-        RENDER_KIT_ID_PARAM(ResponseStateManager.RENDER_KIT_ID_PARAM), BEHAVIOR_SOURCE_PARAM(ClientBehaviorContext.BEHAVIOR_SOURCE_PARAM_NAME),
-        BEHAVIOR_EVENT_PARAM(ClientBehaviorContext.BEHAVIOR_EVENT_PARAM_NAME), PARTIAL_EVENT_PARAM(PartialViewContext.PARTIAL_EVENT_PARAM_NAME),
-        PARTIAL_EXECUTE_PARAM(PartialViewContext.PARTIAL_EXECUTE_PARAM_NAME), PARTIAL_RENDER_PARAM(PartialViewContext.PARTIAL_RENDER_PARAM_NAME),
+        VIEW_STATE_PARAM(ResponseStateManager.VIEW_STATE_PARAM),
+        CLIENT_WINDOW_PARAM(ResponseStateManager.CLIENT_WINDOW_PARAM),
+        RENDER_KIT_ID_PARAM(ResponseStateManager.RENDER_KIT_ID_PARAM),
+        BEHAVIOR_SOURCE_PARAM(ClientBehaviorContext.BEHAVIOR_SOURCE_PARAM_NAME),
+        BEHAVIOR_EVENT_PARAM(ClientBehaviorContext.BEHAVIOR_EVENT_PARAM_NAME),
+        PARTIAL_EVENT_PARAM(PartialViewContext.PARTIAL_EVENT_PARAM_NAME),
+        PARTIAL_EXECUTE_PARAM(PartialViewContext.PARTIAL_EXECUTE_PARAM_NAME),
+        PARTIAL_RENDER_PARAM(PartialViewContext.PARTIAL_RENDER_PARAM_NAME),
         PARTIAL_RESET_VALUES_PARAM(PartialViewContext.RESET_VALUES_PARAM_NAME);
 
         private String name;
@@ -227,6 +225,7 @@ public class RenderKitUtils {
         public String getName(FacesContext context) {
             return getParameterName(context, name);
         }
+
     }
 
     // ------------------------------------------------------------ Constructors
@@ -272,18 +271,22 @@ public class RenderKitUtils {
             RenderKitFactory factory = (RenderKitFactory) RequestStateManager.get(context, RequestStateManager.RENDER_KIT_IMPL_REQ);
             if (factory != null) {
                 renderKit = factory.getRenderKit(context, renderKitId);
-            } else {
+            }
+            else {
                 factory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
                 if (factory == null) {
                     throw new FacesException("Unable to locate RenderKitFactory for " + FactoryFinder.RENDER_KIT_FACTORY);
-                } else {
+                }
+                else {
                     RequestStateManager.set(context, RequestStateManager.RENDER_KIT_IMPL_REQ, factory);
                 }
                 renderKit = factory.getRenderKit(context, renderKitId);
                 if (renderKit == null) {
                     if (LOGGER.isLoggable(Level.SEVERE)) {
-                        LOGGER.log(Level.SEVERE, "Unable to locate renderkit " + "instance for render-kit-id {0}.  Using {1} instead.",
-                                new String[] { renderKitId, RenderKitFactory.HTML_BASIC_RENDER_KIT });
+                        LOGGER.log(
+                            Level.SEVERE, "Unable to locate renderkit " + "instance for render-kit-id {0}.  Using {1} instead.",
+                            new String[] { renderKitId, RenderKitFactory.HTML_BASIC_RENDER_KIT }
+                        );
                     }
                     renderKitId = RenderKitFactory.HTML_BASIC_RENDER_KIT;
                     UIViewRoot root = context.getViewRoot();
@@ -303,14 +306,12 @@ public class RenderKitUtils {
 
     /**
      * <p>
-     * Return a List of {@link jakarta.faces.model.SelectItem} instances representing the available options for this
-     * component, assembled from the set of {@link jakarta.faces.component.UISelectItem} and/or
-     * {@link jakarta.faces.component.UISelectItems} components that are direct children of this component. If there are no
-     * such children, an empty <code>Iterator</code> is returned.
+     * Return a List of {@link jakarta.faces.model.SelectItem} instances representing the available options for this component, assembled from the set of
+     * {@link jakarta.faces.component.UISelectItem} and/or {@link jakarta.faces.component.UISelectItems} components that are direct children of this component.
+     * If there are no such children, an empty <code>Iterator</code> is returned.
      * </p>
      *
-     * @param context The {@link jakarta.faces.context.FacesContext} for the current request. If null, the UISelectItems
-     * behavior will not work.
+     * @param context The {@link jakarta.faces.context.FacesContext} for the current request. If null, the UISelectItems behavior will not work.
      * @param component the component
      * @throws IllegalArgumentException if <code>context</code> is <code>null</code>
      * @return a List of the select items for the specified component
@@ -326,9 +327,8 @@ public class RenderKitUtils {
 
     /**
      * <p>
-     * Render any "passthru" attributes, where we simply just output the raw name and value of the attribute. This method is
-     * aware of the set of HTML4 attributes that fall into this bucket. Examples are all the javascript attributes, alt,
-     * rows, cols, etc.
+     * Render any "passthru" attributes, where we simply just output the raw name and value of the attribute. This method is aware of the set of HTML4
+     * attributes that fall into this bucket. Examples are all the javascript attributes, alt, rows, cols, etc.
      * </p>
      *
      * @param context the FacesContext for this request
@@ -357,23 +357,21 @@ public class RenderKitUtils {
 
     /**
      * <p>
-     * Render any "passthru" attributes, where we simply just output the raw name and value of the attribute. This method is
-     * aware of the set of HTML4 attributes that fall into this bucket. Examples are all the javascript attributes, alt,
-     * rows, cols, etc.
+     * Render any "passthru" attributes, where we simply just output the raw name and value of the attribute. This method is aware of the set of HTML4
+     * attributes that fall into this bucket. Examples are all the javascript attributes, alt, rows, cols, etc.
      * </p>
-     * 
-     * When rendering pass thru attributes, we need to take any attached Behaviors into account. The presence of a non-empty
-     * Behaviors map can cause us to switch from optimized pass thru attribute rendering to the unoptimized code path.
-     * However, in two very common cases - attaching action behaviors to commands and attaching value change behaviors to
-     * editable value holders - the behaviors map is populated with behaviors that are not handled by the pass thru
-     * attribute code - ie. the behaviors are handled locally by the renderer.
      *
-     * In order to optimize such cases, we check to see whether the component's behaviors map actually contains behaviors
-     * only for these non-pass thru attributes. If so, we can pass a null behavior map into renderPassThruAttributesInternal(), thus
-     * ensuring that we can take advantage of the optimized pass thru rendering logic.
+     * When rendering pass thru attributes, we need to take any attached Behaviors into account. The presence of a non-empty Behaviors map can cause us to
+     * switch from optimized pass thru attribute rendering to the unoptimized code path. However, in two very common cases - attaching action behaviors to
+     * commands and attaching value change behaviors to editable value holders - the behaviors map is populated with behaviors that are not handled by the pass
+     * thru attribute code - ie. the behaviors are handled locally by the renderer.
      *
-     * Note that in all cases where we use this method, we actually have two behavior events that we want to check for - a
-     * low-level/dom event (eg. "click", or "change") plus a high-level component event (eg. "action", or "valueChange").
+     * In order to optimize such cases, we check to see whether the component's behaviors map actually contains behaviors only for these non-pass thru
+     * attributes. If so, we can pass a null behavior map into renderPassThruAttributesInternal(), thus ensuring that we can take advantage of the optimized
+     * pass thru rendering logic.
+     *
+     * Note that in all cases where we use this method, we actually have two behavior events that we want to check for - a low-level/dom event (eg. "click", or
+     * "change") plus a high-level component event (eg. "action", or "valueChange").
      *
      * @param context the FacesContext for this request
      * @param writer writer the {@link jakarta.faces.context.ResponseWriter} to be used when writing the attributes
@@ -384,8 +382,11 @@ public class RenderKitUtils {
      * @param defaultComponentEvent the name of the default component-level event of this component
      * @throws IOException if an error occurs writing the attributes
      */
-    public static void renderPassThruAttributes(FacesContext context, ResponseWriter writer, UIComponent component, String clientId, boolean incExec,
-            Attributes attributes, HtmlElementEvent defaultDomEvent, FacesComponentEvent defaultComponentEvent) throws IOException {
+    public static void renderPassThruAttributes(
+        FacesContext context, ResponseWriter writer, UIComponent component, String clientId, boolean incExec,
+        Attributes attributes, HtmlElementEvent defaultDomEvent, FacesComponentEvent defaultComponentEvent
+    ) throws IOException
+    {
 
         Map<String, List<ClientBehavior>> behaviors = null;
         boolean hasValueChangeBehavior = false;
@@ -403,7 +404,8 @@ public class RenderKitUtils {
                 // If the behavior map only contains behaviors for non-pass thru attributes, set behaviors to null
                 if (size == 1 && (hasDomBehavior || hasComponentBehavior) || size == 2 && hasDomBehavior && hasComponentBehavior) {
                     behaviors = null;
-                } else {
+                }
+                else {
                     behaviors = allBehaviors;
                 }
 
@@ -416,13 +418,18 @@ public class RenderKitUtils {
         renderPassThruAttributesInternal(context, writer, component, attributes, behaviors, domEventName);
 
         if (defaultComponentEvent == FacesComponentEvent.valueChange) {
-            renderValueChangeEventListener(context, component, clientId, defaultDomEvent, componentEventName,
-                                          domEventName, hasValueChangeBehavior, incExec);
+            renderValueChangeEventListener(
+                context, component, clientId, defaultDomEvent, componentEventName,
+                domEventName, hasValueChangeBehavior, incExec
+            );
         }
     }
 
-    private static void renderPassThruAttributesInternal(FacesContext context, ResponseWriter writer, UIComponent component,
-            Attributes attributes, Map<String, List<ClientBehavior>> behaviors, String defaultDomEvent) throws IOException {
+    private static void renderPassThruAttributesInternal(
+        FacesContext context, ResponseWriter writer, UIComponent component,
+        Attributes attributes, Map<String, List<ClientBehavior>> behaviors, String defaultDomEvent
+    ) throws IOException
+    {
 
         assert null != writer;
         assert null != component;
@@ -443,7 +450,8 @@ public class RenderKitUtils {
             // Iterates only the attributes actually set (none => renders nothing but the optional single behavior),
             // instead of the unoptimized path's reflective read of every known attribute.
             renderPassThruAttributesOptimized(context, writer, component, attributes, setAttributes, behaviors, excludedEventAttribute);
-        } else {
+        }
+        else {
             // this block should only be hit by custom components leveraging
             // the RI's rendering code, or in cases where we have behaviors
             // attached to multiple events. We make no assumptions and loop through
@@ -452,11 +460,10 @@ public class RenderKitUtils {
     }
 
     /**
-     * Returns the names of the attributes that have been explicitly set on the given component, either as a literal value
-     * or as a value expression, or an empty list when none have been set. This is the same list that
-     * {@link #renderPassThruAttributes} consults to skip reflective reads of attributes that were never set. Its writer,
-     * {@code HtmlComponentUtils.handleAttribute}, keeps it in natural order, which is therefore the order in which the
-     * attributes are emitted.
+     * Returns the names of the attributes that have been explicitly set on the given component, either as a literal value or as a value expression, or an empty
+     * list when none have been set. This is the same list that {@link #renderPassThruAttributes} consults to skip reflective reads of attributes that were
+     * never set. Its writer, {@code HtmlComponentUtils.handleAttribute}, keeps it in natural order, which is therefore the order in which the attributes are
+     * emitted.
      */
     @SuppressWarnings("unchecked")
     public static List<String> getAttributesThatAreSet(UIComponent component) {
@@ -467,12 +474,11 @@ public class RenderKitUtils {
     /**
      * Returns the value of the named attribute, avoiding a reflective property read for an attribute that was never set.
      * <p>
-     * This is only safe for attributes whose setters record into {@code setAttributes} and only for the standard
-     * components that maintain that list (those in {@code jakarta.faces.component}); for any other component the value
-     * is read directly, mirroring the fall-back in {@link #renderPassThruAttributes}. {@code styleClass} qualifies:
-     * although it is rendered inline as {@code class} rather than through the pass-through loop, its setter records into
-     * {@code setAttributes} like the pass-through attributes do, so it may be read through here to skip the reflective
-     * getter when it was never set -- the common case on large views.
+     * This is only safe for attributes whose setters record into {@code setAttributes} and only for the standard components that maintain that list (those in
+     * {@code jakarta.faces.component}); for any other component the value is read directly, mirroring the fall-back in {@link #renderPassThruAttributes}.
+     * {@code styleClass} qualifies: although it is rendered inline as {@code class} rather than through the pass-through loop, its setter records into
+     * {@code setAttributes} like the pass-through attributes do, so it may be read through here to skip the reflective getter when it was never set -- the
+     * common case on large views.
      */
     public static Object getAttributeIfSet(UIComponent component, List<String> setAttributes, String name) {
         if (component.getClass().getName().startsWith(OPTIMIZED_PACKAGE)) {
@@ -482,27 +488,29 @@ public class RenderKitUtils {
     }
 
     /**
-     * Convenience variant of {@link #getAttributeIfSet(UIComponent, List, String)} for a single read; callers reading
-     * several attributes should fetch {@link #getAttributesThatAreSet} once and use the three-argument form instead.
+     * Convenience variant of {@link #getAttributeIfSet(UIComponent, List, String)} for a single read; callers reading several attributes should fetch
+     * {@link #getAttributesThatAreSet} once and use the three-argument form instead.
      */
     public static Object getAttributeIfSet(UIComponent component, String name) {
         return getAttributeIfSet(component, getAttributesThatAreSet(component), name);
     }
 
     /**
-     * Returns the boolean value of the named component attribute, coerced via {@link Util#toBoolean}: an absent
-     * attribute yields {@code defaultValue}, an already-{@code Boolean} value is returned directly (no
-     * {@code Boolean -> String -> boolean} round-trip), and a non-{@code Boolean} (e.g. a literal String on a non-typed
-     * component) is parsed. Use this in a renderer fallback when the concrete {@code Html*} type whose typed getter
-     * would return the {@code boolean} directly is not known.
+     * Returns the boolean value of the named component attribute, coerced via {@link Util#toBoolean}: an absent attribute yields {@code defaultValue}, an
+     * already-{@code Boolean} value is returned directly (no {@code Boolean -> String -> boolean} round-trip), and a non-{@code Boolean} (e.g. a literal String
+     * on a non-typed component) is parsed. Use this in a renderer fallback when the concrete {@code Html*} type whose typed getter would return the
+     * {@code boolean} directly is not known.
      */
     public static boolean attributeIsTrue(UIComponent component, String name, boolean defaultValue) {
         return Util.toBoolean(component.getAttributes().get(name), defaultValue);
     }
 
-    private static void renderValueChangeEventListener(FacesContext context, UIComponent component, String clientId,
-            HtmlElementEvent defaultDomEvent, String componentEventName, String domEventName,
-            boolean hasBehaviorForDefaultEvent, boolean incExec) throws IOException {
+    private static void renderValueChangeEventListener(
+        FacesContext context, UIComponent component, String clientId,
+        HtmlElementEvent defaultDomEvent, String componentEventName, String domEventName,
+        boolean hasBehaviorForDefaultEvent, boolean incExec
+    ) throws IOException
+    {
 
         String handlerName = BEHAVIOR_EVENT_ATTRIBUTE_PREFIX + domEventName;
         Object userHandler = component.getAttributes().get(handlerName);
@@ -526,8 +534,11 @@ public class RenderKitUtils {
     // Renders the onclick event listener for command buttons. Handles
     // chaining together the user-provided onclick handler, any
     // Behavior scripts, plus the default button submit script.
-    public static void renderOnclickEventListener(FacesContext context, UIComponent component, Collection<ClientBehaviorContext.Parameter> params, String submitTarget,
-            boolean needsSubmit) throws IOException {
+    public static void renderOnclickEventListener(
+        FacesContext context, UIComponent component, Collection<ClientBehaviorContext.Parameter> params, String submitTarget,
+        boolean needsSubmit
+    ) throws IOException
+    {
 
         final String handlerName = "onclick";
         final Object userHandler = component.getAttributes().get(handlerName);
@@ -542,7 +553,8 @@ public class RenderKitUtils {
                 List<ClientBehavior> clickBehaviors = behaviors.get(domEventName);
                 clickBehaviors.addAll(actionBehaviors);
                 actionBehaviors.clear();
-            } else if (null != behaviors && behaviors.containsKey(domEventName)) {
+            }
+            else if (null != behaviors && behaviors.containsKey(domEventName)) {
                 behaviorEventName = domEventName;
             }
         }
@@ -552,9 +564,11 @@ public class RenderKitUtils {
 
     // Renders the script element with the function for command scripts.
     public static void renderFunction(FacesContext context, UIComponent component, Collection<ClientBehaviorContext.Parameter> params, String submitTarget)
-            throws IOException {
+        throws IOException
+    {
 
-        ClientBehaviorContext behaviorContext = ClientBehaviorContext.createClientBehaviorContext(context, component, FacesComponentEvent.action.name(), submitTarget, params);
+        ClientBehaviorContext behaviorContext = ClientBehaviorContext
+            .createClientBehaviorContext(context, component, FacesComponentEvent.action.name(), submitTarget, params);
         AjaxBehavior behavior = (AjaxBehavior) context.getApplication().createBehavior(AjaxBehavior.BEHAVIOR_ID);
         mapAttributes(component, behavior, "execute", "render", "onerror", "onevent", "resetValues");
         renderScript(context, null, behavior.getScript(behaviorContext));
@@ -586,10 +600,12 @@ public class RenderKitUtils {
         if (isXhtml) {
             if (Arrays.binarySearch(XHTML_PREFIX_ATTRIBUTES, attrName) > -1) {
                 return XHTML_ATTR_PREFIX + attrName;
-            } else {
+            }
+            else {
                 return attrName;
             }
-        } else {
+        }
+        else {
             return attrName;
         }
 
@@ -597,8 +613,7 @@ public class RenderKitUtils {
 
     /**
      * <p>
-     * Renders the attributes from {@link #BOOLEAN_ATTRIBUTES} using <code>XHMTL</code> semantics (i.e.,
-     * disabled="disabled").
+     * Renders the attributes from {@link #BOOLEAN_ATTRIBUTES} using <code>XHMTL</code> semantics (i.e., disabled="disabled").
      * </p>
      *
      * @param writer writer the {@link ResponseWriter} to be used when writing the attributes
@@ -617,8 +632,7 @@ public class RenderKitUtils {
 
     /**
      * <p>
-     * Renders the attributes from {@link #BOOLEAN_ATTRIBUTES} using <code>XHMTL</code> semantics (i.e.,
-     * disabled="disabled").
+     * Renders the attributes from {@link #BOOLEAN_ATTRIBUTES} using <code>XHMTL</code> semantics (i.e., disabled="disabled").
      * </p>
      *
      * @param writer writer the {@link ResponseWriter} to be used when writing the attributes
@@ -650,9 +664,8 @@ public class RenderKitUtils {
 
     /**
      * <p>
-     * Given an accept String from the client, and a <code>String</code> of server supported content types, determine the
-     * best qualified content type for the client. If no match is found, or either of the arguments are <code>null</code>,
-     * <code>null</code> is returned.
+     * Given an accept String from the client, and a <code>String</code> of server supported content types, determine the best qualified content type for the
+     * client. If no match is found, or either of the arguments are <code>null</code>, <code>null</code> is returned.
      * </p>
      *
      * @param accept The client accept String
@@ -687,15 +700,15 @@ public class RenderKitUtils {
      */
     public static boolean isXml(String contentType) {
         return RIConstants.XHTML_CONTENT_TYPE.equals(contentType) || RIConstants.APPLICATION_XML_CONTENT_TYPE.equals(contentType)
-                || RIConstants.TEXT_XML_CONTENT_TYPE.equals(contentType);
+            || RIConstants.TEXT_XML_CONTENT_TYPE.equals(contentType);
     }
 
     // --------------------------------------------------------- Private Methods
 
     /**
      * @param component the UIComponent in question
-     * @return <code>true</code> if the component is within the <code>jakarta.faces.component</code> or
-     * <code>jakarta.faces.component.html</code> packages, otherwise return <code>false</code>
+     * @return <code>true</code> if the component is within the <code>jakarta.faces.component</code> or <code>jakarta.faces.component.html</code> packages,
+     * otherwise return <code>false</code>
      */
     private static boolean canBeOptimized(UIComponent component, Map<String, List<ClientBehavior>> behaviors) {
         assert component != null;
@@ -716,8 +729,8 @@ public class RenderKitUtils {
 
     /**
      * <p>
-     * For each attribute in <code>setAttributes</code>, look it up among <code>knownAttributes</code>. If it is one of
-     * them and the value is not <code>null</code>, render the attribute.
+     * For each attribute in <code>setAttributes</code>, look it up among <code>knownAttributes</code>. If it is one of them and the value is not
+     * <code>null</code>, render the attribute.
      *
      * @param context the {@link FacesContext} of the current request
      * @param writer the current writer
@@ -727,8 +740,11 @@ public class RenderKitUtils {
      * @param behaviors the non-null behaviors map for this request.
      * @throws IOException if an error occurs during the write
      */
-    private static void renderPassThruAttributesOptimized(FacesContext context, ResponseWriter writer, UIComponent component, Attributes knownAttributes,
-            List<String> setAttributes, Map<String, List<ClientBehavior>> behaviors, String excludedEventAttribute) throws IOException {
+    private static void renderPassThruAttributesOptimized(
+        FacesContext context, ResponseWriter writer, UIComponent component, Attributes knownAttributes,
+        List<String> setAttributes, Map<String, List<ClientBehavior>> behaviors, String excludedEventAttribute
+    ) throws IOException
+    {
 
         // We should only come in here if we've got zero or one behavior event
         assert behaviors != null && behaviors.size() < 2;
@@ -754,7 +770,8 @@ public class RenderKitUtils {
                         if (eventName.equals(behaviorEventName)) {
                             renderedBehavior = true;
                         }
-                    } else {
+                    }
+                    else {
                         writer.writeAttribute(prefixAttribute(name, isXhtml), value, name);
                     }
                 }
@@ -788,7 +805,9 @@ public class RenderKitUtils {
                 }
             }
 
-            renderPassthruAttribute(context, writer, component, behaviors, isXhtml, attrMap, BEHAVIOR_EVENT_ATTRIBUTE_PREFIX + behaviorEventName, behaviorEventName);
+            renderPassthruAttribute(
+                context, writer, component, behaviors, isXhtml, attrMap, BEHAVIOR_EVENT_ATTRIBUTE_PREFIX + behaviorEventName, behaviorEventName
+            );
         }
     }
 
@@ -804,8 +823,11 @@ public class RenderKitUtils {
      * @param behaviors the non-null behaviors map for this request.
      * @throws IOException if an error occurs during the write
      */
-    private static void renderPassThruAttributesUnoptimized(FacesContext context, ResponseWriter writer, UIComponent component, Attributes knownAttributes,
-            List<String> setAttributes, Map<String, List<ClientBehavior>> behaviors, String excludedEventAttribute) throws IOException {
+    private static void renderPassThruAttributesUnoptimized(
+        FacesContext context, ResponseWriter writer, UIComponent component, Attributes knownAttributes,
+        List<String> setAttributes, Map<String, List<ClientBehavior>> behaviors, String excludedEventAttribute
+    ) throws IOException
+    {
 
         boolean isXhtml = RIConstants.XHTML_CONTENT_TYPE.equals(writer.getContentType());
 
@@ -815,7 +837,8 @@ public class RenderKitUtils {
         behaviorEventNames.addAll(behaviors.keySet());
 
         if (setAttributes != null) {
-            setAttributes.stream().filter(name -> isSupportedBehaviorEventAttribute(component, name)).map(a -> a.substring(BEHAVIOR_EVENT_ATTRIBUTE_PREFIX.length())).forEach(behaviorEventNames::add);
+            setAttributes.stream().filter(name -> isSupportedBehaviorEventAttribute(component, name))
+                .map(a -> a.substring(BEHAVIOR_EVENT_ATTRIBUTE_PREFIX.length())).forEach(behaviorEventNames::add);
         }
 
         for (Attribute attribute : knownAttributes) {
@@ -839,9 +862,12 @@ public class RenderKitUtils {
         }
     }
 
-    private static void renderPassthruAttribute(FacesContext context, ResponseWriter writer, UIComponent component,
-            Map<String, List<ClientBehavior>> behaviors, boolean isXhtml, Map<String, Object> attrMap, String attrName,
-            String eventName) throws IOException {
+    private static void renderPassthruAttribute(
+        FacesContext context, ResponseWriter writer, UIComponent component,
+        Map<String, List<ClientBehavior>> behaviors, boolean isXhtml, Map<String, Object> attrMap, String attrName,
+        String eventName
+    ) throws IOException
+    {
         boolean hasBehavior = eventName != null && behaviors.containsKey(eventName);
 
         Object value = attrMap.get(attrName);
@@ -850,17 +876,17 @@ public class RenderKitUtils {
 
         if (hasBehavior || (hasValue && isBehaviorEventAttribute(attrName))) {
             addBehaviorEventListener(context, component, null, null, attrName, value, eventName, eventName, null, false, false);
-        } else if (hasValue) {
+        }
+        else if (hasValue) {
             writer.writeAttribute(prefixAttribute(attrName, isXhtml), value, attrName);
         }
     }
 
     /**
      * <p>
-     * A behavior event attribute is only rendered when the component names the event after "on" in
-     * {@link ClientBehaviorHolder#getEventNames()}, as required by the behavior event attribute rule of the standard
-     * HTML render kit. A component which is no {@link ClientBehaviorHolder} has no such list to check against, so its
-     * behavior event attributes are all rendered.
+     * A behavior event attribute is only rendered when the component names the event after "on" in {@link ClientBehaviorHolder#getEventNames()}, as required by
+     * the behavior event attribute rule of the standard HTML render kit. A component which is no {@link ClientBehaviorHolder} has no such list to check
+     * against, so its behavior event attributes are all rendered.
      * </p>
      *
      * @param component the component whose attribute is being rendered
@@ -885,9 +911,9 @@ public class RenderKitUtils {
     }
 
     /**
-     * Returns whether the given component carries a behavior event attribute, as a renderer specific attribute or as a
-     * pass-through attribute. All but the delegated ones are wired by {@code mojarra.ael()}, which locates its element
-     * by the component's client id, so an element carrying one must also carry that id.
+     * Returns whether the given component carries a behavior event attribute, as a renderer specific attribute or as a pass-through attribute. All but the
+     * delegated ones are wired by {@code mojarra.ael()}, which locates its element by the component's client id, so an element carrying one must also carry
+     * that id.
      *
      * @param component the component to check
      * @return whether the given component carries a behavior event attribute
@@ -939,11 +965,10 @@ public class RenderKitUtils {
     }
 
     /**
-     * Returns whether the given attribute on the given element is to be delegated to the behavior event bootstrap.
-     * Only the elements whose fetch of an external resource starts as the element is parsed qualify, as those are the
-     * ones whose event can be dispatched before any script following the element runs. On any other element the event
-     * is dispatched late enough for {@code mojarra.ael()} to have been wired, and on {@code body} the event is
-     * dispatched at the window rather than at the element, where the bootstrap would never see it.
+     * Returns whether the given attribute on the given element is to be delegated to the behavior event bootstrap. Only the elements whose fetch of an external
+     * resource starts as the element is parsed qualify, as those are the ones whose event can be dispatched before any script following the element runs. On
+     * any other element the event is dispatched late enough for {@code mojarra.ael()} to have been wired, and on {@code body} the event is dispatched at the
+     * window rather than at the element, where the bootstrap would never see it.
      *
      * @param elementName the name of the element being written
      * @param name the attribute name
@@ -954,8 +979,8 @@ public class RenderKitUtils {
     }
 
     /**
-     * Returns the name under which a delegated behavior event attribute is carried to the bootstrap. The bootstrap
-     * derives the very same name from the event type, which is always lower case.
+     * Returns the name under which a delegated behavior event attribute is carried to the bootstrap. The bootstrap derives the very same name from the event
+     * type, which is always lower case.
      *
      * @param name the attribute name
      * @return the name under which the given attribute is carried to the bootstrap
@@ -965,8 +990,8 @@ public class RenderKitUtils {
     }
 
     /**
-     * Returns whether any of the given pass-through attributes of the given element is to be delegated, which is what
-     * tells the writer that it must put the bootstrap ahead of that element.
+     * Returns whether any of the given pass-through attributes of the given element is to be delegated, which is what tells the writer that it must put the
+     * bootstrap ahead of that element.
      *
      * @param elementName the name of the element being written
      * @param passThroughAttributes the pass-through attributes of the element being written
@@ -995,8 +1020,7 @@ public class RenderKitUtils {
     }
 
     /**
-     * Returns the behavior event bootstrap, for the writer to put ahead of the first element carrying a delegated
-     * attribute.
+     * Returns the behavior event bootstrap, for the writer to put ahead of the first element carrying a delegated attribute.
      *
      * @return the behavior event bootstrap
      */
@@ -1005,8 +1029,8 @@ public class RenderKitUtils {
     }
 
     /**
-     * Reads {@value #BEHAVIOR_EVENT_BOOTSTRAP_RESOURCE_NAME} on first use, so that a build which failed to produce it
-     * takes down only the views which need it rather than every use of this class.
+     * Reads {@value #BEHAVIOR_EVENT_BOOTSTRAP_RESOURCE_NAME} on first use, so that a build which failed to produce it takes down only the views which need it
+     * rather than every use of this class.
      */
     private static final class BehaviorEventBootstrap {
 
@@ -1033,8 +1057,8 @@ public class RenderKitUtils {
         }
 
         /**
-         * Returns the script, or throws the failure of reading it. The failure is thrown from here rather than from
-         * the static initializer, so that every caller gets it and not only the first one.
+         * Returns the script, or throws the failure of reading it. The failure is thrown from here rather than from the static initializer, so that every
+         * caller gets it and not only the first one.
          */
         private static String get() {
             if (FAILURE != null) {
@@ -1043,6 +1067,7 @@ public class RenderKitUtils {
 
             return SCRIPT;
         }
+
     }
 
     /**
@@ -1051,28 +1076,36 @@ public class RenderKitUtils {
      * </p>
      *
      * @param attributeVal the attribute value
-     * @return <code>true</code> if and only if #attributeVal is an instance of a wrapper for a primitive type and its value
-     * is equal to the default value for that type as given in the specification.
+     * @return <code>true</code> if and only if #attributeVal is an instance of a wrapper for a primitive type and its value is equal to the default value for
+     * that type as given in the specification.
      */
     private static boolean shouldRenderAttribute(Object attributeVal) {
 
         if (attributeVal instanceof String) {
             return true;
-        } else if (attributeVal instanceof Boolean && Boolean.FALSE.equals(attributeVal)) {
+        }
+        else if (attributeVal instanceof Boolean && Boolean.FALSE.equals(attributeVal)) {
             return false;
-        } else if (attributeVal instanceof Integer && (Integer) attributeVal == Integer.MIN_VALUE) {
+        }
+        else if (attributeVal instanceof Integer && (Integer) attributeVal == Integer.MIN_VALUE) {
             return false;
-        } else if (attributeVal instanceof Double && (Double) attributeVal == Double.MIN_VALUE) {
+        }
+        else if (attributeVal instanceof Double && (Double) attributeVal == Double.MIN_VALUE) {
             return false;
-        } else if (attributeVal instanceof Character && (Character) attributeVal == Character.MIN_VALUE) {
+        }
+        else if (attributeVal instanceof Character && (Character) attributeVal == Character.MIN_VALUE) {
             return false;
-        } else if (attributeVal instanceof Float && (Float) attributeVal == Float.MIN_VALUE) {
+        }
+        else if (attributeVal instanceof Float && (Float) attributeVal == Float.MIN_VALUE) {
             return false;
-        } else if (attributeVal instanceof Short && (Short) attributeVal == Short.MIN_VALUE) {
+        }
+        else if (attributeVal instanceof Short && (Short) attributeVal == Short.MIN_VALUE) {
             return false;
-        } else if (attributeVal instanceof Byte && (Byte) attributeVal == Byte.MIN_VALUE) {
+        }
+        else if (attributeVal instanceof Byte && (Byte) attributeVal == Byte.MIN_VALUE) {
             return false;
-        } else if (attributeVal instanceof Long && (Long) attributeVal == Long.MIN_VALUE) {
+        }
+        else if (attributeVal instanceof Long && (Long) attributeVal == Long.MIN_VALUE) {
             return false;
         }
         return true;
@@ -1081,10 +1114,9 @@ public class RenderKitUtils {
 
     /**
      * <p>
-     * This method expects a <code>List</code> of attribute names that are to be excluded from rendering. A
-     * <code>Renderer</code> may include an attribute name in this list for exclusion. For example, <code>h:link</code> may
-     * use the <code>disabled</code> attribute with a value of <code>true</code>. However we don't want
-     * <code>disabled</code> passed through and rendered on the <code>span</code> element as it is invalid HTML.
+     * This method expects a <code>List</code> of attribute names that are to be excluded from rendering. A <code>Renderer</code> may include an attribute name
+     * in this list for exclusion. For example, <code>h:link</code> may use the <code>disabled</code> attribute with a value of <code>true</code>. However we
+     * don't want <code>disabled</code> passed through and rendered on the <code>span</code> element as it is invalid HTML.
      * </p>
      *
      * @param attributeName the attribute name that is to be tested for exclusion
@@ -1103,9 +1135,8 @@ public class RenderKitUtils {
 
     /**
      * <p>
-     * This method builds a two element array structure as follows: Example: Given the following accept string: text/html;
-     * level=1, text/plain; q=0.5 [0][0] 1 (quality is 1 if none specified) [0][1] "text" (type) [0][2] "html; level=1"
-     * (subtype) [0][3] 1 (level, if specified; null if not)
+     * This method builds a two element array structure as follows: Example: Given the following accept string: text/html; level=1, text/plain; q=0.5 [0][0] 1
+     * (quality is 1 if none specified) [0][1] "text" (type) [0][2] "html; level=1" (subtype) [0][3] 1 (level, if specified; null if not)
      *
      * [1][0] .5 [1][1] "text" [1][2] "plain" [1][3] (level, if specified; null if not)
      *
@@ -1151,19 +1182,22 @@ public class RenderKitUtils {
                         if (level.equalsIgnoreCase("level")) {
                             level = levelParts[1].trim();
                         }
-                    } else {
+                    }
+                    else {
                         quality = token;
                         String[] qualityParts = Util.split(quality, '=');
                         quality = qualityParts[0].trim();
                         if (quality.equalsIgnoreCase("q")) {
                             quality = qualityParts[1].trim();
                             break;
-                        } else {
+                        }
+                        else {
                             quality = "not set"; // to identifiy that no quality was supplied
                         }
                     }
                 }
-            } else {
+            }
+            else {
                 typeSubType = new StringBuilder(token);
                 quality = "not set"; // to identifiy that no quality was supplied
             }
@@ -1177,15 +1211,18 @@ public class RenderKitUtils {
                 if (typeSubTypeParts.length == 1) {
                     type = typeSubTypeParts[0].trim();
                     subtype = "*";
-                } else if (typeSubTypeParts.length == 0) {
+                }
+                else if (typeSubTypeParts.length == 0) {
                     type = typeSubType.toString();
                     subtype = "";
-                } else {
+                }
+                else {
                     type = typeSubTypeParts[0].trim();
                     subtype = typeSubTypeParts[1].trim();
                 }
 
-            } else {
+            }
+            else {
                 type = typeSubType.toString();
                 subtype = "";
             }
@@ -1193,11 +1230,14 @@ public class RenderKitUtils {
             if ("not set".equals(quality)) {
                 if (type.equals("*") && subtype.equals("*")) {
                     quality = "0.01";
-                } else if (!type.equals("*") && subtype.equals("*")) {
+                }
+                else if (!type.equals("*") && subtype.equals("*")) {
                     quality = "0.02";
-                } else if (type.equals("*") && subtype.length() == 0) {
+                }
+                else if (type.equals("*") && subtype.length() == 0) {
                     quality = "0.01";
-                } else {
+                }
+                else {
                     quality = "1";
                 }
             }
@@ -1211,18 +1251,16 @@ public class RenderKitUtils {
 
     /**
      * <p>
-     * For each server supported type, compare client (browser) specified types. If a match is found, keep track of the
-     * highest quality factor. The end result is that for all matches, only the one with the highest quality will be
-     * returned.
+     * For each server supported type, compare client (browser) specified types. If a match is found, keep track of the highest quality factor. The end result
+     * is that for all matches, only the one with the highest quality will be returned.
      * </p>
      *
-     * @param clientContentTypes An <code>array</code> of accept <code>String</code> information for the client built
-     * from @{link #buildTypeArrayFromString}.
-     * @param serverSupportedContentTypes An <code>array</code> of accept <code>String</code> information for the server
-     * supported types built from @{link #buildTypeArrayFromString}.
+     * @param clientContentTypes An <code>array</code> of accept <code>String</code> information for the client built from @{link #buildTypeArrayFromString}.
+     * @param serverSupportedContentTypes An <code>array</code> of accept <code>String</code> information for the server supported types built from @{link
+     * #buildTypeArrayFromString}.
      * @param preferredContentType An <code>array</code> of preferred content type information.
-     * @return An <code>array</code> containing the parts of the preferred content type for the client. The information is
-     * stored as outlined in @{link #buildTypeArrayFromString}.
+     * @return An <code>array</code> containing the parts of the preferred content type for the client. The information is stored as outlined in @{link
+     * #buildTypeArrayFromString}.
      */
     private static String[][] findMatch(String[][] clientContentTypes, String[][] serverSupportedContentTypes, String[][] preferredContentType) {
 
@@ -1243,8 +1281,10 @@ public class RenderKitUtils {
                         // compare them and check for wildcard
                         if (browserType.equalsIgnoreCase(serverType) || browserType.equals("*")) {
                             // types are equal or browser type is wildcard - compare subtypes
-                            if (clientContentTypes[cidx][2].equalsIgnoreCase(serverSupportedContentTypes[sidx][2])
-                                    || clientContentTypes[cidx][2].equals("*")) {
+                            if (
+                                clientContentTypes[cidx][2].equalsIgnoreCase(serverSupportedContentTypes[sidx][2])
+                                    || clientContentTypes[cidx][2].equals("*")
+                            ) {
                                 // subtypes are equal or browser subtype is wildcard
                                 // found match: multiplicate qualities and add to result array
                                 // if there was a level associated, this gets higher precedence, so
@@ -1270,7 +1310,8 @@ public class RenderKitUtils {
                                     // return type and subtype (wildcard)
                                     curResult[1] = clientContentTypes[cidx][1];
                                     curResult[2] = clientContentTypes[cidx][2];
-                                } else {
+                                }
+                                else {
                                     // return server type and subtype
                                     curResult[1] = serverSupportedContentTypes[sidx][1];
                                     curResult[2] = serverSupportedContentTypes[sidx][2];
@@ -1295,8 +1336,10 @@ public class RenderKitUtils {
             BigDecimal highestQual = BigDecimal.valueOf(highestQFactor);
             for (int i = 0, len = resultList.size(); i < len; i++) {
                 String[] result = resultList.get(i);
-                if (BigDecimal.valueOf(Double.parseDouble(result[0])).compareTo(highestQual) == 0 && result[1].equals(preferredContentType[0][1])
-                        && result[2].equals(preferredContentType[0][2])) {
+                if (
+                    BigDecimal.valueOf(Double.parseDouble(result[0])).compareTo(highestQual) == 0 && result[1].equals(preferredContentType[0][1])
+                        && result[2].equals(preferredContentType[0][2])
+                ) {
                     match[0][0] = result[0];
                     match[0][1] = result[1];
                     match[0][2] = result[2];
@@ -1338,8 +1381,7 @@ public class RenderKitUtils {
 
     /**
      * <p>
-     * Only install the Faces script resource if it doesn't exist. The resource component will be installed with the target
-     * "head".
+     * Only install the Faces script resource if it doesn't exist. The resource component will be installed with the target "head".
      *
      * @param context the <code>FacesContext</code> for the current request
      */
@@ -1419,12 +1461,14 @@ public class RenderKitUtils {
             try {
                 messagesRenderer.encodeBegin(ctx, messages);
                 messagesRenderer.encodeEnd(ctx, messages);
-            } catch (IOException ioe) {
+            }
+            catch (IOException ioe) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE, ioe.toString(), ioe);
                 }
             }
-        } else {
+        }
+        else {
             Iterator<String> clientIds = ctx.getClientIdsWithMessages();
             int messageCount = 0;
             if (clientIds.hasNext()) {
@@ -1465,17 +1509,20 @@ public class RenderKitUtils {
                 Writer w = extContext.getResponseOutputWriter();
                 if (ctx.isProjectStage(ProjectStage.Development)) {
                     DevTools.debugHtml(w, ctx, fe.getCause());
-                } else {
+                }
+                else {
                     w.write("Please see your server log for the actual error");
                 }
                 w.flush();
-            } catch (IOException ioe) {
+            }
+            catch (IOException ioe) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE, "Unable to generate Facelets error page.", ioe);
                 }
             }
             ctx.responseComplete();
-        } else {
+        }
+        else {
             if (LOGGER.isLoggable(Level.WARNING)) {
                 LOGGER.log(Level.WARNING, "faces.facelets.error.page.response.committed");
             }
@@ -1592,11 +1639,13 @@ public class RenderKitUtils {
                     context.addMessage(component.getClientId(context), new FacesMessage(FacesMessage.Severity.ERROR, msg, msg));
                 }
                 return "RES_NOT_FOUND";
-            } else {
+            }
+            else {
                 String requestPath = res.getRequestPath();
                 return context.getExternalContext().encodeResourceURL(requestPath);
             }
-        } else {
+        }
+        else {
 
             String value = (String) component.getAttributes().get(attrName);
             if (value == null || value.isEmpty()) {
@@ -1612,7 +1661,8 @@ public class RenderKitUtils {
 
             if (handler.isResourceURL(value)) {
                 return value;
-            } else {
+            }
+            else {
                 value = context.getApplication().getViewHandler().getResourceURL(context, value);
                 return context.getExternalContext().encodeResourceURL(value);
             }
@@ -1633,6 +1683,7 @@ public class RenderKitUtils {
 
     /**
      * Returns <code>true</code> if the view root associated with the given faces context will be rendered with a HTML5 doctype.
+     *
      * @param context Involved faces context.
      * @return <code>true</code> if the view root associated with the given faces context will be rendered with a HTML5 doctype.
      */
@@ -1699,9 +1750,11 @@ public class RenderKitUtils {
 
         if (value == null) {
             builder.append("''");
-        } else if (quoteValue) {
+        }
+        else if (quoteValue) {
             RenderKitUtils.appendQuotedValue(builder, value.toString());
-        } else {
+        }
+        else {
             builder.append(value.toString());
         }
     }
@@ -1728,8 +1781,11 @@ public class RenderKitUtils {
     }
 
     // Appends one or more behavior scripts a faces.util.chain() call
-    private static boolean appendBehaviorsToChain(StringBuilder builder, FacesContext context, UIComponent component, List<ClientBehavior> behaviors,
-            String behaviorEventName, Collection<ClientBehaviorContext.Parameter> params) {
+    private static boolean appendBehaviorsToChain(
+        StringBuilder builder, FacesContext context, UIComponent component, List<ClientBehavior> behaviors,
+        String behaviorEventName, Collection<ClientBehaviorContext.Parameter> params
+    )
+    {
 
         if (behaviors == null || behaviors.isEmpty()) {
             return false;
@@ -1809,8 +1865,11 @@ public class RenderKitUtils {
 
     // Returns a submit handler - ie. a script that calls
     // mojara.cljs()
-    private static String getSubmitHandler(FacesContext context, UIComponent component, Collection<ClientBehaviorContext.Parameter> params, String submitTarget,
-            boolean preventDefault) {
+    private static String getSubmitHandler(
+        FacesContext context, UIComponent component, Collection<ClientBehaviorContext.Parameter> params, String submitTarget,
+        boolean preventDefault
+    )
+    {
 
         StringBuilder builder = new StringBuilder(256);
 
@@ -1846,8 +1905,11 @@ public class RenderKitUtils {
 
     // Chains together a number of Behavior scripts with a user handler
     // script.
-    private static String getChainedHandler(FacesContext context, UIComponent component, List<ClientBehavior> behaviors,
-            Collection<ClientBehaviorContext.Parameter> params, String behaviorEventName, String userHandler, String submitTarget, boolean needsSubmit) {
+    private static String getChainedHandler(
+        FacesContext context, UIComponent component, List<ClientBehavior> behaviors,
+        Collection<ClientBehaviorContext.Parameter> params, String behaviorEventName, String userHandler, String submitTarget, boolean needsSubmit
+    )
+    {
 
         // Hard to pre-compute builder initial capacity
         StringBuilder builder = new StringBuilder(100);
@@ -1886,8 +1948,11 @@ public class RenderKitUtils {
     }
 
     // Returns the script for a single Behavior
-    private static String getSingleBehaviorHandler(FacesContext context, UIComponent component, ClientBehavior behavior,
-            Collection<ClientBehaviorContext.Parameter> params, String behaviorEventName, String submitTarget, boolean needsSubmit) {
+    private static String getSingleBehaviorHandler(
+        FacesContext context, UIComponent component, ClientBehavior behavior,
+        Collection<ClientBehaviorContext.Parameter> params, String behaviorEventName, String submitTarget, boolean needsSubmit
+    )
+    {
 
         ClientBehaviorContext bContext = createClientBehaviorContext(context, component, behaviorEventName, params);
 
@@ -1899,7 +1964,8 @@ public class RenderKitUtils {
             if (needsSubmit) {
                 script = getSubmitHandler(context, component, params, submitTarget, preventDefault);
             }
-        } else if (preventDefault) {
+        }
+        else if (preventDefault) {
             script = script + ";event.preventDefault()";
         }
 
@@ -1907,8 +1973,11 @@ public class RenderKitUtils {
     }
 
     // Creates a ClientBehaviorContext with the specified properties.
-    private static ClientBehaviorContext createClientBehaviorContext(FacesContext context, UIComponent component, String behaviorEventName,
-            Collection<ClientBehaviorContext.Parameter> params) {
+    private static ClientBehaviorContext createClientBehaviorContext(
+        FacesContext context, UIComponent component, String behaviorEventName,
+        Collection<ClientBehaviorContext.Parameter> params
+    )
+    {
 
         return ClientBehaviorContext.createClientBehaviorContext(context, component, behaviorEventName, null, params);
     }
@@ -1919,25 +1988,25 @@ public class RenderKitUtils {
     }
 
     /**
-     * Renders a handler script, which may require chaining together the user-specified event handler, any scripts required
-     * by attached Behaviors, and also possibly the mojarra.cljs() "submit" script.
+     * Renders a handler script, which may require chaining together the user-specified event handler, any scripts required by attached Behaviors, and also
+     * possibly the mojarra.cljs() "submit" script.
      *
      * @param context the FacesContext for this request.
      * @param component the UIComponent that we are rendering
      * @param params any parameters that should be included by "submitting" scripts.
      * @param handlerName the name of the handler attribute to render (eg. "onclick" or "ommouseover")
      * @param handlerValue the user-specified value for the handler attribute
-     * @param behaviorEventName the name of the behavior event that corresponds to this handler (eg. "action" or
-     * "mouseover").
-     * @param domEventName the name of the DOM event that corresponds to this handler (eg. "click" or
-     * "change").
-     * @param needsSubmit indicates whether the mojarra.cljs() "submit" script is required by the component. Most
-     * components do not need this, either because they submit themselves (eg. commandButton), or because they do not
-     * perform submits (eg. non-command components). This flag is mainly here for the commandLink case, where we need to
-     * render the submit script to make the link submit.
+     * @param behaviorEventName the name of the behavior event that corresponds to this handler (eg. "action" or "mouseover").
+     * @param domEventName the name of the DOM event that corresponds to this handler (eg. "click" or "change").
+     * @param needsSubmit indicates whether the mojarra.cljs() "submit" script is required by the component. Most components do not need this, either because
+     * they submit themselves (eg. commandButton), or because they do not perform submits (eg. non-command components). This flag is mainly here for the
+     * commandLink case, where we need to render the submit script to make the link submit.
      */
-    private static void addBehaviorEventListener(FacesContext context, UIComponent component, String clientId, Collection<ClientBehaviorContext.Parameter> params, String handlerName,
-            Object handlerValue, String behaviorEventName, String domEventName, String submitTarget, boolean needsSubmit, boolean includeExec) throws IOException {
+    private static void addBehaviorEventListener(
+        FacesContext context, UIComponent component, String clientId, Collection<ClientBehaviorContext.Parameter> params, String handlerName,
+        Object handlerValue, String behaviorEventName, String domEventName, String submitTarget, boolean needsSubmit, boolean includeExec
+    ) throws IOException
+    {
 
         String userHandler = getNonEmptyUserHandler(handlerValue);
         List<ClientBehavior> behaviors = getClientBehaviors(component, behaviorEventName);
@@ -1953,23 +2022,23 @@ public class RenderKitUtils {
         String handler = null;
         switch (getHandlerType(behaviors, params, userHandler, needsSubmit, includeExec)) {
 
-        case USER_HANDLER_ONLY:
-            handler = userHandler;
-            break;
+            case USER_HANDLER_ONLY :
+                handler = userHandler;
+                break;
 
-        case SINGLE_BEHAVIOR_ONLY:
-            handler = getSingleBehaviorHandler(context, component, behaviors.get(0), params, behaviorEventName, submitTarget, needsSubmit);
-            break;
+            case SINGLE_BEHAVIOR_ONLY :
+                handler = getSingleBehaviorHandler(context, component, behaviors.get(0), params, behaviorEventName, submitTarget, needsSubmit);
+                break;
 
-        case SUBMIT_ONLY:
-            handler = getSubmitHandler(context, component, params, submitTarget, true);
-            break;
+            case SUBMIT_ONLY :
+                handler = getSubmitHandler(context, component, params, submitTarget, true);
+                break;
 
-        case CHAIN:
-            handler = getChainedHandler(context, component, behaviors, params, behaviorEventName, userHandler, submitTarget, needsSubmit);
-            break;
-        default:
-            assert false;
+            case CHAIN :
+                handler = getChainedHandler(context, component, behaviors, params, behaviorEventName, userHandler, submitTarget, needsSubmit);
+                break;
+            default :
+                assert false;
         }
 
         if (handler != null) {
@@ -1995,9 +2064,8 @@ public class RenderKitUtils {
     }
 
     /**
-     * Emit all pending behavior event listeners for the given component as a single batched script.
-     * Each parked handler becomes one {@code mojarra.ael('clientId','event',['script'])} call. Insertion
-     * order across both events and handlers within each event is preserved.
+     * Emit all pending behavior event listeners for the given component as a single batched script. Each parked handler becomes one
+     * {@code mojarra.ael('clientId','event',['script'])} call. Insertion order across both events and handlers within each event is preserved.
      */
     public static void flushPendingBehaviorEventListeners(FacesContext context, UIComponent component, String clientId) throws IOException {
         var pending = getPendingBehaviorEventListeners(component, true);
@@ -2031,11 +2099,9 @@ public class RenderKitUtils {
     }
 
     /**
-     * Park a single event listener on the component's pending behavior listeners map. Emission is
-     * deferred until {@link #flushPendingBehaviorEventListeners(FacesContext, UIComponent, String)}
-     * runs, so multiple listeners on the same component coalesce into one {@code <script>} tag. The
-     * client id used in the emitted {@code mojarra.ael(...)} call is taken from the flush call, not
-     * captured here.
+     * Park a single event listener on the component's pending behavior listeners map. Emission is deferred until
+     * {@link #flushPendingBehaviorEventListeners(FacesContext, UIComponent, String)} runs, so multiple listeners on the same component coalesce into one
+     * {@code <script>} tag. The client id used in the emitted {@code mojarra.ael(...)} call is taken from the flush call, not captured here.
      */
     public static void addEventListener(FacesContext context, UIComponent component, String domEventName, String function) {
         getPendingBehaviorEventListeners(component, false)
@@ -2044,23 +2110,37 @@ public class RenderKitUtils {
     }
 
     /**
-     * Append {@code str} to {@code out} as a single-quoted JavaScript string literal, escaping the
-     * characters that would otherwise alter the string's contents (quote, backslash) or terminate
-     * a hosting {@code <script>} element ('{@code <}').
+     * Append {@code str} to {@code out} as a single-quoted JavaScript string literal, escaping the characters that would otherwise alter the string's contents
+     * (quote, backslash) or terminate a hosting {@code <script>} element ('{@code <}').
      */
     private static void appendJsStringLiteral(StringBuilder out, String str) {
         out.append('\'');
         for (int i = 0; i < str.length(); i++) {
             char c = str.charAt(i);
             switch (c) {
-                case '\\': out.append("\\\\"); break;
-                case '\'': out.append("\\'"); break;
-                case '\n': out.append("\\n"); break;
-                case '\r': out.append("\\r"); break;
-                case '<':  out.append("\\x3C"); break;
-                case '\u2028': out.append("\\u2028"); break;
-                case '\u2029': out.append("\\u2029"); break;
-                default: out.append(c);
+                case '\\' :
+                    out.append("\\\\");
+                    break;
+                case '\'' :
+                    out.append("\\'");
+                    break;
+                case '\n' :
+                    out.append("\\n");
+                    break;
+                case '\r' :
+                    out.append("\\r");
+                    break;
+                case '<' :
+                    out.append("\\x3C");
+                    break;
+                case '\u2028' :
+                    out.append("\\u2028");
+                    break;
+                case '\u2029' :
+                    out.append("\\u2029");
+                    break;
+                default :
+                    out.append(c);
             }
         }
         out.append('\'');
@@ -2081,7 +2161,7 @@ public class RenderKitUtils {
         }
 
         String nonce = context.getApplication().getResourceHandler().getCurrentNonce(context);
-        
+
         if (nonce != null) {
             writer.writeAttribute("nonce", nonce, "nonce");
         }
@@ -2092,8 +2172,11 @@ public class RenderKitUtils {
 
     // Determines the type of handler to render based on what sorts of
     // scripts we need to render/chain.
-    private static HandlerType getHandlerType(List<ClientBehavior> behaviors, Collection<ClientBehaviorContext.Parameter> params, String userHandler,
-            boolean needsSubmit, boolean includeExec) {
+    private static HandlerType getHandlerType(
+        List<ClientBehavior> behaviors, Collection<ClientBehaviorContext.Parameter> params, String userHandler,
+        boolean needsSubmit, boolean includeExec
+    )
+    {
 
         if (behaviors == null || behaviors.isEmpty()) {
 

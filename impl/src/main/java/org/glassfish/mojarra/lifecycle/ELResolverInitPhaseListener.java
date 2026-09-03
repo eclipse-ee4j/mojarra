@@ -31,13 +31,11 @@ import org.glassfish.mojarra.application.ApplicationAssociate;
  * This class is used to register the Faces <code>ELResolver</code> stack with the Jakarta Server Pages container.
  *
  * <p>
- * We overload it a bit to set a bit on the ApplicationAssociate stating we've processed a request to indicate the
- * appliation is fully initialized.
+ * We overload it a bit to set a bit on the ApplicationAssociate stating we've processed a request to indicate the appliation is fully initialized.
  * </p>
  *
  * <p>
- * After the first request, this <code>PhaseListener</code> will remove itself from all registered lifecycle instances
- * registered with the application.
+ * After the first request, this <code>PhaseListener</code> will remove itself from all registered lifecycle instances registered with the application.
  * </p>
  *
  * @since 1.2
@@ -56,8 +54,7 @@ public class ELResolverInitPhaseListener implements PhaseListener {
      * </p>
      *
      * <p>
-     * When invoked, this phase listener will remove itself as a registered <code>PhaseListener</code> with all
-     * <code>Lifecycle</code> instances.
+     * When invoked, this phase listener will remove itself as a registered <code>PhaseListener</code> with all <code>Lifecycle</code> instances.
      */
     @Override
     public synchronized void afterPhase(PhaseEvent event) {
@@ -90,10 +87,9 @@ public class ELResolverInitPhaseListener implements PhaseListener {
 
     /**
      * <p>
-     * Return the identifier of the request processing phase during which this listener is interested in processing
-     * {@link jakarta.faces.event.PhaseEvent} events. Legal values are the singleton instances defined by the
-     * {@link jakarta.faces.event.PhaseId} class, including <code>PhaseId.ANY_PHASE</code> to indicate an interest in being
-     * notified for all standard phases.
+     * Return the identifier of the request processing phase during which this listener is interested in processing {@link jakarta.faces.event.PhaseEvent}
+     * events. Legal values are the singleton instances defined by the {@link jakarta.faces.event.PhaseId} class, including <code>PhaseId.ANY_PHASE</code> to
+     * indicate an interest in being notified for all standard phases.
      * </p>
      *
      * <p>
@@ -105,7 +101,6 @@ public class ELResolverInitPhaseListener implements PhaseListener {
     }
 
     // ------------------------------------------------------- Protected Methods
-
 
     public static void removeELResolverInitPhaseListener() {
         LifecycleFactory factory = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);

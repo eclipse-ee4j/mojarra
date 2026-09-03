@@ -103,4 +103,5 @@ public class UISelectItemsTestCase extends UIComponentBaseTestCase {
         component.setRendererType(null);
         return component;
     }
+
 }

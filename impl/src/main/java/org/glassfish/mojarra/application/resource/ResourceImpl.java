@@ -61,9 +61,8 @@ import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.MojarraVersion;
 
 /**
- * Default implementation of {@link jakarta.faces.application.Resource}. The ResourceImpl instance itself has the same
- * lifespan as the request, however, the ResourceInfo instances that back this object are cached by the ResourceManager
- * to reduce the time spent scanning for resources.
+ * Default implementation of {@link jakarta.faces.application.Resource}. The ResourceImpl instance itself has the same lifespan as the request, however, the
+ * ResourceInfo instances that back this object are cached by the ResourceManager to reduce the time spent scanning for resources.
  */
 public class ResourceImpl extends Resource implements Externalizable {
 
@@ -98,8 +97,8 @@ public class ResourceImpl extends Resource implements Externalizable {
     private long maxAge;
 
     /**
-     * The URL of this {@link ResourceImpl} object is valid exactly as long as this {@link ResourceImpl} object itself is valid.
-     * Therefore, resolve the URL only once and re-use the already resolved URL value for subsequent calls to {@link ResourceImpl#getURL()}.
+     * The URL of this {@link ResourceImpl} object is valid exactly as long as this {@link ResourceImpl} object itself is valid. Therefore, resolve the URL only
+     * once and re-use the already resolved URL value for subsequent calls to {@link ResourceImpl#getURL()}.
      */
     private URL resolvedUrl = null;
 
@@ -118,6 +117,7 @@ public class ResourceImpl extends Resource implements Externalizable {
 
     /**
      * Creates a new instance of ResourceBase
+     *
      * @param resourceInfo the resource info
      * @param contentType the resource content type
      * @param initialTime the resource initial time
@@ -129,6 +129,7 @@ public class ResourceImpl extends Resource implements Externalizable {
 
     /**
      * Creates a new instance of ResourceBase
+     *
      * @param resourceInfo the resource info
      * @param contentType the resource content type
      * @param initialTime the resource initial time
@@ -197,10 +198,9 @@ public class ResourceImpl extends Resource implements Externalizable {
 
     /**
      * <p>
-     * Implementation note. Any values added to getResponseHeaders() will only be visible across multiple calls to this
-     * method when servicing a resource request (i.e.
-     * {@link ResourceHandler#isResourceRequest(jakarta.faces.context.FacesContext)} returns <code>true</code>). If we're
-     * not servicing a resource request, an empty Map will be returned and the values added are effectively thrown away.
+     * Implementation note. Any values added to getResponseHeaders() will only be visible across multiple calls to this method when servicing a resource request
+     * (i.e. {@link ResourceHandler#isResourceRequest(jakarta.faces.context.FacesContext)} returns <code>true</code>). If we're not servicing a resource
+     * request, an empty Map will be returned and the values added are effectively thrown away.
      * </p>
      *
      * @see jakarta.faces.application.Resource#getResponseHeaders()
@@ -215,8 +215,9 @@ public class ResourceImpl extends Resource implements Externalizable {
 
             if (FacesContext.getCurrentInstance().isProjectStage(Development)) {
                 responseHeaders.put("Cache-Control", "no-store, must-revalidate");
-            } else {
-                responseHeaders.put("Cache-Control", "max-age=" + (maxAge/1000));
+            }
+            else {
+                responseHeaders.put("Cache-Control", "max-age=" + (maxAge / 1000));
             }
 
             URL url = getURL();
@@ -237,15 +238,18 @@ public class ResourceImpl extends Resource implements Externalizable {
                 if (lastModified != 0 && contentLength != -1) {
                     responseHeaders.put("ETag", "W/\"" + contentLength + '-' + lastModified + '"');
                 }
-            } catch (IOException ioe) {
+            }
+            catch (IOException ioe) {
                 if (LOGGER.isLoggable(FINEST)) {
                     LOGGER.log(FINEST, "Closing stream", ioe);
                 }
-            } finally {
+            }
+            finally {
                 if (in != null) {
                     try {
                         in.close();
-                    } catch (IOException ioe) {
+                    }
+                    catch (IOException ioe) {
                         if (LOGGER.isLoggable(FINEST)) {
                             LOGGER.log(FINEST, "Closing stream", ioe);
                         }
@@ -253,7 +257,8 @@ public class ResourceImpl extends Resource implements Externalizable {
                 }
             }
             return responseHeaders;
-        } else {
+        }
+        else {
             return emptyMap();
         }
     }
@@ -274,7 +279,8 @@ public class ResourceImpl extends Resource implements Externalizable {
             // Check if the FacesServlet is exact mapped to the resource
             if (isResourceExactMappedToFacesServlet(context.getExternalContext(), resource)) {
                 uri = resource;
-            } else {
+            }
+            else {
                 // No exact mapping for the requested resource, see if Facelets servlet is mapped to
                 // e.g. /faces/* or *.xhtml and take that mapping
                 mapping = getFirstWildCardMappingToFacesServlet(context.getExternalContext());
@@ -284,8 +290,10 @@ public class ResourceImpl extends Resource implements Externalizable {
                     // If there are only exact mappings and the resource is not exact mapped,
                     // we can't serve this resource
 
-                    throw new IllegalStateException("No suitable mapping for FacesServlet found. To serve resources "
-                            + "FacesServlet should have at least one prefix or suffix mapping.");
+                    throw new IllegalStateException(
+                        "No suitable mapping for FacesServlet found. To serve resources "
+                            + "FacesServlet should have at least one prefix or suffix mapping."
+                    );
                 }
             }
         }
@@ -294,7 +302,8 @@ public class ResourceImpl extends Resource implements Externalizable {
             if (mapping.getMappingMatch() == PATH) {
                 // If it is prefix/path mapped, e.g /faces/* -> /faces/jakarta.faces.resource/name
                 uri = mapping.getPattern().replace("/*", RESOURCE_IDENTIFIER) + '/' + getResourceName();
-            } else {
+            }
+            else {
                 // If it is prefix/path mapped, e.g *.xhtml -> /jakarta.faces.resource/name.xhtml
                 uri = RESOURCE_IDENTIFIER + '/' + mapping.getPattern().replace("*", getResourceName());
             }
@@ -344,17 +353,17 @@ public class ResourceImpl extends Resource implements Externalizable {
         if (FACES_SCRIPT_RESOURCE_NAME.equals(getResourceName()) && FACES_SCRIPT_LIBRARY_NAME.equals(getLibraryName())) {
             ProjectStage stage = context.getApplication().getProjectStage();
             switch (stage) {
-            case Development:
-                uri += queryStarted ? "&stage=Development" : "?stage=Development";
-                break;
-            case SystemTest:
-                uri += queryStarted ? "&stage=SystemTest" : "?stage=SystemTest";
-                break;
-            case UnitTest:
-                uri += queryStarted ? "&stage=UnitTest" : "?stage=UnitTest";
-                break;
-            default:
-                assert stage.equals(Production);
+                case Development :
+                    uri += queryStarted ? "&stage=Development" : "?stage=Development";
+                    break;
+                case SystemTest :
+                    uri += queryStarted ? "&stage=SystemTest" : "?stage=SystemTest";
+                    break;
+                case UnitTest :
+                    uri += queryStarted ? "&stage=UnitTest" : "?stage=UnitTest";
+                    break;
+                default :
+                    assert stage.equals(Production);
             }
         }
 
@@ -391,15 +400,16 @@ public class ResourceImpl extends Resource implements Externalizable {
         if (requestHeaders.containsKey(IF_MODIFIED_SINCE)) {
             initResourceInfo();
             /*
-             * Make sure that we strip the milliseconds out of what comes back from the getLastModified call for a resource as the
-             * 'If-Modified-Since' header does not use milliseconds.
+             * Make sure that we strip the milliseconds out of what comes back from the getLastModified call for a resource as the 'If-Modified-Since' header
+             * does not use milliseconds.
              */
             long lastModifiedOfResource = ((ClientResourceInfo) resourceInfo).getLastModified(context) / 1000 * 1000;
             long lastModifiedHeader = getIfModifiedHeader(context.getExternalContext());
             if (0 == lastModifiedOfResource) {
                 long startupTime = ApplicationAssociate.getInstance(context.getExternalContext()).getTimeOfInstantiation();
                 return startupTime > lastModifiedHeader;
-            } else {
+            }
+            else {
                 return lastModifiedOfResource > lastModifiedHeader;
             }
         }
@@ -421,15 +431,19 @@ public class ResourceImpl extends Resource implements Externalizable {
             // which is more than likely more performant than SimpleDateFormat
             // (otherwise, why would it be there?).
             return ((HttpServletRequest) request).getDateHeader(IF_MODIFIED_SINCE);
-        } else {
+        }
+        else {
             SimpleDateFormat format = new SimpleDateFormat(RFC1123_DATE_PATTERN, Locale.US);
             try {
                 Date ifModifiedSinceDate = format.parse(extcontext.getRequestHeaderMap().get(IF_MODIFIED_SINCE));
                 return ifModifiedSinceDate.getTime();
-            } catch (ParseException ex) {
+            }
+            catch (ParseException ex) {
                 if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.log(Level.WARNING, "faces.application.resource.invalid_if_modified_since_header",
-                            new Object[] { extcontext.getRequestHeaderMap().get(IF_MODIFIED_SINCE) });
+                    LOGGER.log(
+                        Level.WARNING, "faces.application.resource.invalid_if_modified_since_header",
+                        new Object[] { extcontext.getRequestHeaderMap().get(IF_MODIFIED_SINCE) }
+                    );
                     LOGGER.log(Level.WARNING, "", ex);
                 }
                 return -1;

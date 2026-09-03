@@ -40,9 +40,9 @@ public abstract class TagHandlerImpl extends TagHandler {
     }
 
     /**
-     * Mark the current view build unreproducible, so its facelet is re-applied on every (re)build. A handler calls
-     * this when what it contributes to the view follows from something no decision can express; the skip of the
-     * redundant render-time re-apply is then denied for the whole build (see {@code refreshTransientBuild}).
+     * Mark the current view build unreproducible, so its facelet is re-applied on every (re)build. A handler calls this when what it contributes to the view
+     * follows from something no decision can express; the skip of the redundant render-time re-apply is then denied for the whole build (see
+     * {@code refreshTransientBuild}).
      *
      * @param ctx the {@link FaceletContext} for the current build
      */
@@ -51,8 +51,8 @@ public abstract class TagHandlerImpl extends TagHandler {
     }
 
     /**
-     * Record the decision this handler took: the expression it evaluated and the value it got. Re-applying the facelet
-     * is then known to reproduce what this build produced as long as that expression still evaluates to that value.
+     * Record the decision this handler took: the expression it evaluated and the value it got. Re-applying the facelet is then known to reproduce what this
+     * build produced as long as that expression still evaluates to that value.
      *
      * @param ctx the {@link FaceletContext} for the current build
      * @param decision the expression this handler decided on
@@ -63,8 +63,8 @@ public abstract class TagHandlerImpl extends TagHandler {
     }
 
     /**
-     * Record the decision this handler took on the given tag attribute: the value it evaluated to during this build.
-     * A literal attribute cannot evaluate to anything else and is therefore no decision at all, as is an absent one.
+     * Record the decision this handler took on the given tag attribute: the value it evaluated to during this build. A literal attribute cannot evaluate to
+     * anything else and is therefore no decision at all, as is an absent one.
      *
      * @param ctx the {@link FaceletContext} for the current build
      * @param attribute the attribute this handler decided on, may be {@code null}
@@ -77,9 +77,8 @@ public abstract class TagHandlerImpl extends TagHandler {
     }
 
     /**
-     * Record the decision this handler took on the given tag attribute, whose value this handler has already
-     * evaluated. Recording that value rather than evaluating the attribute again keeps the decision the one the build
-     * acted on, and spares an evaluation of an expression that may not be free.
+     * Record the decision this handler took on the given tag attribute, whose value this handler has already evaluated. Recording that value rather than
+     * evaluating the attribute again keeps the decision the one the build acted on, and spares an evaluation of an expression that may not be free.
      *
      * @param ctx the {@link FaceletContext} for the current build
      * @param attribute the attribute this handler decided on, may be {@code null}
@@ -93,9 +92,8 @@ public abstract class TagHandlerImpl extends TagHandler {
     }
 
     /**
-     * Record the decision this handler took as a supplier of the value it must still yield, for what an expression
-     * cannot answer: whether the value this build applied is still the one in effect, which the state restored over
-     * the tree can replace, and whether a comparison over more than one input still holds.
+     * Record the decision this handler took as a supplier of the value it must still yield, for what an expression cannot answer: whether the value this build
+     * applied is still the one in effect, which the state restored over the tree can replace, and whether a comparison over more than one input still holds.
      *
      * @param ctx the {@link FaceletContext} for the current build
      * @param decision the supplier of the value this handler decided on
@@ -106,9 +104,9 @@ public abstract class TagHandlerImpl extends TagHandler {
     }
 
     /**
-     * The key under which this handler's decision is saved and replayed, or {@code null} when decisions are not saved
-     * at all. The id the tag generates for this build is unique per tag and stable across the builds of one view,
-     * which is what lets the build restoring a view find back what the build which rendered it decided here.
+     * The key under which this handler's decision is saved and replayed, or {@code null} when decisions are not saved at all. The id the tag generates for this
+     * build is unique per tag and stable across the builds of one view, which is what lets the build restoring a view find back what the build which rendered
+     * it decided here.
      *
      * @param ctx the {@link FaceletContext} for the current build
      * @return the key under which this handler's decision is saved and replayed
@@ -118,8 +116,8 @@ public abstract class TagHandlerImpl extends TagHandler {
     }
 
     /**
-     * The value the build which rendered the view decided on here, or {@code null} when this build is not the one
-     * restoring that view or when there is nothing to replay.
+     * The value the build which rendered the view decided on here, or {@code null} when this build is not the one restoring that view or when there is nothing
+     * to replay.
      *
      * @param ctx the {@link FaceletContext} for the current build
      * @param key the key of the decision, as returned by {@link #buildTimeDecisionKey(FaceletContext)}
@@ -130,10 +128,9 @@ public abstract class TagHandlerImpl extends TagHandler {
     }
 
     /**
-     * The value the build which rendered the view decided on here, of the given type, or {@code null} when this build
-     * is not the one restoring that view, when there is nothing to replay, or when what is there is of another type.
-     * The keys of the decisions of a facelet edited since the response was rendered name other decisions than they did,
-     * so a handler must read back what it saved rather than whatever stands under its key.
+     * The value the build which rendered the view decided on here, of the given type, or {@code null} when this build is not the one restoring that view, when
+     * there is nothing to replay, or when what is there is of another type. The keys of the decisions of a facelet edited since the response was rendered name
+     * other decisions than they did, so a handler must read back what it saved rather than whatever stands under its key.
      *
      * @param <T> the type of the decision.
      * @param ctx the {@link FaceletContext} for the current build.
@@ -147,10 +144,9 @@ public abstract class TagHandlerImpl extends TagHandler {
     }
 
     /**
-     * Saves the decision this handler took with the state of the view, so that the build which restores it reproduces
-     * what this build produced. Only a value of a type the JDK declares may be saved, since a runtime which does not
-     * know this state entry must still be able to deserialize the state that carries it. A {@code null} decision is
-     * not saved at all, since that is what a build which has nothing to replay reads back.
+     * Saves the decision this handler took with the state of the view, so that the build which restores it reproduces what this build produced. Only a value of
+     * a type the JDK declares may be saved, since a runtime which does not know this state entry must still be able to deserialize the state that carries it. A
+     * {@code null} decision is not saved at all, since that is what a build which has nothing to replay reads back.
      *
      * @param ctx the {@link FaceletContext} for the current build
      * @param key the key of the decision, as returned by {@link #buildTimeDecisionKey(FaceletContext)}
@@ -163,8 +159,7 @@ public abstract class TagHandlerImpl extends TagHandler {
     }
 
     /**
-     * Whether the given attribute can evaluate to something other than what it evaluated to before, which an absent or
-     * literal attribute cannot.
+     * Whether the given attribute can evaluate to something other than what it evaluated to before, which an absent or literal attribute cannot.
      *
      * @param attribute the attribute to test, may be {@code null}
      * @return whether the given attribute can evaluate to something other than what it evaluated to before
@@ -174,8 +169,8 @@ public abstract class TagHandlerImpl extends TagHandler {
     }
 
     /**
-     * Searches child handlers, starting at the 'nextHandler' for all instances of the passed type. This process will stop
-     * searching a branch if an instance is found.
+     * Searches child handlers, starting at the 'nextHandler' for all instances of the passed type. This process will stop searching a branch if an instance is
+     * found.
      *
      * @param type Class type to search for
      * @return iterator over instances of FaceletHandlers of the matching type
@@ -188,7 +183,8 @@ public abstract class TagHandlerImpl extends TagHandler {
         List<T> found = new ArrayList<>();
         if (type.isAssignableFrom(nextHandler.getClass())) {
             found.add(type.cast(nextHandler));
-        } else if (nextHandler instanceof CompositeFaceletHandler) {
+        }
+        else if (nextHandler instanceof CompositeFaceletHandler) {
             FaceletHandler[] h = ((CompositeFaceletHandler) nextHandler).getHandlers();
             for (FaceletHandler handler : h) {
                 if (type.isAssignableFrom(handler.getClass())) {

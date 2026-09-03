@@ -54,9 +54,11 @@ final class BeanPropertyTagRule extends MetaRule {
             }
             try {
                 method.invoke(instance, value);
-            } catch (InvocationTargetException e) {
+            }
+            catch (InvocationTargetException e) {
                 throw new TagAttributeException(attribute, e.getCause());
-            } catch (IllegalAccessException | IllegalArgumentException e) {
+            }
+            catch (IllegalAccessException | IllegalArgumentException e) {
                 throw new TagAttributeException(attribute, e);
             }
         }
@@ -81,12 +83,15 @@ final class BeanPropertyTagRule extends MetaRule {
         public void applyMetadata(FaceletContext ctx, Object instance) {
             try {
                 method.invoke(instance, attribute.getObject(ctx, type));
-            } catch (InvocationTargetException e) {
+            }
+            catch (InvocationTargetException e) {
                 throw new TagAttributeException(attribute, e.getCause());
-            } catch (IllegalAccessException | IllegalArgumentException e) {
+            }
+            catch (IllegalAccessException | IllegalArgumentException e) {
                 throw new TagAttributeException(attribute, e);
             }
         }
+
     }
 
     public final static BeanPropertyTagRule Instance = new BeanPropertyTagRule();
@@ -105,11 +110,13 @@ final class BeanPropertyTagRule extends MetaRule {
             // package, in which case the normal per-invoke access check simply remains.
             try {
                 m.setAccessible(true);
-            } catch (RuntimeException accessNotSuppressed) {
+            }
+            catch (RuntimeException accessNotSuppressed) {
             }
             if (attribute.isLiteral()) {
                 return new LiteralPropertyMetadata(m, attribute);
-            } else {
+            }
+            else {
                 return new DynamicPropertyMetadata(m, attribute);
             }
         }

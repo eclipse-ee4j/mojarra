@@ -31,15 +31,13 @@ import jakarta.faces.context.FlashFactory;
 
 /**
  * <p>
- * Provide a feature semantically identical to the
- * <a target="_" href="http://api.rubyonrails.com/classes/ActionController/Flash.html"> "flash" concept in Ruby on
- * Rails</a>.
+ * Provide a feature semantically identical to the <a target="_" href="http://api.rubyonrails.com/classes/ActionController/Flash.html"> "flash" concept in Ruby
+ * on Rails</a>.
  * </p>
  *
  * <p>
- * The feature is exposed to users via a custom <code>ELResolver</code> which introduces a new implicit object,
- * <code>flash</code>. The flash functions as <code>Map</code> and can be used in <code>getValue( )</code> or
- * <code>setValue(
+ * The feature is exposed to users via a custom <code>ELResolver</code> which introduces a new implicit object, <code>flash</code>. The flash functions as
+ * <code>Map</code> and can be used in <code>getValue( )</code> or <code>setValue(
  * )</code> expressions.
  * </p>
  *
@@ -48,11 +46,10 @@ import jakarta.faces.context.FlashFactory;
  * </p>
  *
  * <p>
- * Consider three Faces views: viewA, viewB, and viewC. The user first views viewA, then clicks a button and is shown
- * viewB, where she clicks a button and is shown viewC. If values are stored into the flash during the rendering or
- * postback phases of viewA, they are available to during the rendering phase of viewB, but are not available during the
- * rendering or postback phases of viewC. In other words, values stored into the flash on "this" request are accessible
- * for the "next" request, but not thereafter.
+ * Consider three Faces views: viewA, viewB, and viewC. The user first views viewA, then clicks a button and is shown viewB, where she clicks a button and is
+ * shown viewC. If values are stored into the flash during the rendering or postback phases of viewA, they are available to during the rendering phase of viewB,
+ * but are not available during the rendering or postback phases of viewC. In other words, values stored into the flash on "this" request are accessible for the
+ * "next" request, but not thereafter.
  * </p>
  *
  * <p>
@@ -60,13 +57,10 @@ import jakarta.faces.context.FlashFactory;
  * </p>
  *
  * <ol>
- *   <li>
- *     Using an Expression Language Expression, such as using <code>#{flash.foo}</code> as the value of an attribute in a page.
- *   </li>
- *   <li>
- *     Using the EL API, such as:
+ * <li>Using an Expression Language Expression, such as using <code>#{flash.foo}</code> as the value of an attribute in a page.</li>
+ * <li>Using the EL API, such as:
  *
- *     <p>
+ * <p>
  * <code>
  * FacesContext context = FacesContext.getCurrentInstance();
  * ValueExpression flashExpression = context.getApplication().
@@ -74,27 +68,27 @@ import jakarta.faces.context.FlashFactory;
  *                          null, Object.class);
  * flashExpression.setValue(context.getELContext(), "Foo's new value");
  * </code>
- *     </p>
+ * </p>
  *
- *   </li>
- *   <li>
- *     <p>
- *       Using getting the {@link ELFlash} directly, such as:
- *     </p>
+ * </li>
+ * <li>
+ * <p>
+ * Using getting the {@link ELFlash} directly, such as:
+ * </p>
  *
- *     <p>
+ * <p>
  * <code>
  * Map&lt;String,Object&gt; flash = ELFlash.getFlash();
  * flash.put("foo", "Foo's new value");
  * </code>
- *     </p>
- *   </li>
+ * </p>
+ * </li>
  * </ol>
  *
  * <p>
  * The main entry point to this feature is the first one. This library includes a simple custom tag, <code><a target="_"
- * href="../../../../tlddoc/jsfExt/set.html">jsfExt:set</a></code>, that evaluates an expression and sets its value into
- * another expression. <code>jsfExt:set</code> can be used to store values into the flash from JSP pages, like this:
+ * href="../../../../tlddoc/jsfExt/set.html">jsfExt:set</a></code>, that evaluates an expression and sets its value into another expression.
+ * <code>jsfExt:set</code> can be used to store values into the flash from JSP pages, like this:
  * </p>
  *
  * <p>
@@ -133,8 +127,8 @@ import jakarta.faces.context.FlashFactory;
  * </p>
  *
  * <ul>
- *   <li><code>FlashELResolver</code></li>
- *   <li><code>{@link ELFlash}</code></li>
+ * <li><code>FlashELResolver</code></li>
+ * <li><code>{@link ELFlash}</code></li>
  * </ul>
  */
 public class FlashELResolver extends ELResolver {
@@ -161,13 +155,11 @@ public class FlashELResolver extends ELResolver {
 
     /**
      * <p>
-     * Hook into the EL resolution process to introduce the <code>flash</code> implicit object. If <code>property</code> is
-     * <code>null</code>, take no action and return <code>null</code>. if <code>base</code> is null, return null. If
-     * <code>base</code> is an instance of <code>ELFlash</code> and property is the literal string "keep", set a ThreadLocal
-     * property that will be inspected by the flash on the next link in the resolution chain and return the
-     * <code>ELFlash</code> instance. If <code>base</code> is an instance of <code>ELFlash</code> and <code>property</code>
-     * is the literal string "now", return the result of calling <code>getRequestMap( )</code> on the
-     * <code>ExternalContext</code> for the <code>FacesContext</code> for this request. Call
+     * Hook into the EL resolution process to introduce the <code>flash</code> implicit object. If <code>property</code> is <code>null</code>, take no action
+     * and return <code>null</code>. if <code>base</code> is null, return null. If <code>base</code> is an instance of <code>ELFlash</code> and property is the
+     * literal string "keep", set a ThreadLocal property that will be inspected by the flash on the next link in the resolution chain and return the
+     * <code>ELFlash</code> instance. If <code>base</code> is an instance of <code>ELFlash</code> and <code>property</code> is the literal string "now", return
+     * the result of calling <code>getRequestMap( )</code> on the <code>ExternalContext</code> for the <code>FacesContext</code> for this request. Call
      * <code>setPropertyResolved(true)</code> on the <code>ELContext</code> where appropriate.
      * </p>
      *
@@ -193,31 +185,31 @@ public class FlashELResolver extends ELResolver {
 
             // and the property argument is "keep"...
             switch (property.toString()) {
-            // Otherwise, if base is the flash, and property is "now"...
-            case FLASH_KEEP_VARIABLE_NAME:
-                elContext.setPropertyResolved(true);
-                // then this is a request to promote the value
-                // "property", which is assumed to have been previously
-                // stored in request scope via the "flash.now"
-                // expression, to flash scope.
-                result = base;
-                // Set a flag so the flash itself can look in the request
-                // and promote the value to the next request
-                FlashFactory ff = (FlashFactory) FactoryFinder.getFactory(FactoryFinder.FLASH_FACTORY);
-                ff.getFlash(true);
-                ELFlash.setKeepFlag(facesContext);
-                break;
-            case FLASH_NOW_VARIABLE_NAME:
-                // PENDING(edburns): use FacesContext.getAttributes() instead of
-                // request scope.
-                Map<String, Object> requestMap = extCtx.getRequestMap();
-                requestMap.put(ELFlash.FLASH_NOW_REQUEST_KEY, property);
-                elContext.setPropertyResolved(true);
-                result = requestMap;
-                break;
-            default:
-                result = null;
-                break;
+                // Otherwise, if base is the flash, and property is "now"...
+                case FLASH_KEEP_VARIABLE_NAME :
+                    elContext.setPropertyResolved(true);
+                    // then this is a request to promote the value
+                    // "property", which is assumed to have been previously
+                    // stored in request scope via the "flash.now"
+                    // expression, to flash scope.
+                    result = base;
+                    // Set a flag so the flash itself can look in the request
+                    // and promote the value to the next request
+                    FlashFactory ff = (FlashFactory) FactoryFinder.getFactory(FactoryFinder.FLASH_FACTORY);
+                    ff.getFlash(true);
+                    ELFlash.setKeepFlag(facesContext);
+                    break;
+                case FLASH_NOW_VARIABLE_NAME :
+                    // PENDING(edburns): use FacesContext.getAttributes() instead of
+                    // request scope.
+                    Map<String, Object> requestMap = extCtx.getRequestMap();
+                    requestMap.put(ELFlash.FLASH_NOW_REQUEST_KEY, property);
+                    elContext.setPropertyResolved(true);
+                    result = requestMap;
+                    break;
+                default :
+                    result = null;
+                    break;
             }
         }
 
@@ -226,8 +218,8 @@ public class FlashELResolver extends ELResolver {
 
     /**
      * <p>
-     * Return the valid <code>Class</code> for a future set operation, which will always be <code>null</code> because sets
-     * happen via the <code>MapELResolver</code> operating on the {@link ELFlash} instance as a <code>Map</code>.
+     * Return the valid <code>Class</code> for a future set operation, which will always be <code>null</code> because sets happen via the
+     * <code>MapELResolver</code> operating on the {@link ELFlash} instance as a <code>Map</code>.
      * </p>
      *
      * @throws PropertyNotFoundException if property is <code>null</code>.
@@ -252,20 +244,17 @@ public class FlashELResolver extends ELResolver {
 
     /**
      * <p>
-     * This method will throw <code>PropertyNotWritableException</code> if called with a <code>null</code> <code>base</code>
-     * and a <code>property</code> value equal to the literal string "flash". This is because set operations normally go
-     * through the <code>MapELResolver</code> via the <code>ELFlash</code> <code>Map</code>.
+     * This method will throw <code>PropertyNotWritableException</code> if called with a <code>null</code> <code>base</code> and a <code>property</code> value
+     * equal to the literal string "flash". This is because set operations normally go through the <code>MapELResolver</code> via the <code>ELFlash</code>
+     * <code>Map</code>.
      * </p>
      *
      * <p>
-     * In other words, do not call this method directly to set a value into the flash! The only way to access the flash is
-     * via the EL API.
+     * In other words, do not call this method directly to set a value into the flash! The only way to access the flash is via the EL API.
      * </p>
      *
-     * @throws PropertyNotFoundException if <code>base</code> is <code>null</code> and <code>property</code> is
-     * <code>null</code>.
-     * @throws PropertyNotWritableException if <code>base</code> is <code>null</code> and <code>property</code> is the
-     * literal string "flash".
+     * @throws PropertyNotFoundException if <code>base</code> is <code>null</code> and <code>property</code> is <code>null</code>.
+     * @throws PropertyNotWritableException if <code>base</code> is <code>null</code> and <code>property</code> is the literal string "flash".
      */
     @Override
     public void setValue(ELContext elContext, Object base, Object property, Object value) {
@@ -286,12 +275,10 @@ public class FlashELResolver extends ELResolver {
 
     /**
      * <p>
-     * Returns <code>true</code> because write operations take place via the <code>MapELResolver</code> on the actual
-     * {@link ELFlash} instance.
+     * Returns <code>true</code> because write operations take place via the <code>MapELResolver</code> on the actual {@link ELFlash} instance.
      * </p>
      *
-     * @throws PropertyNotFoundException if <code>base</code> is <code>null</code> and <code>property</code> is
-     * <code>null</code>.
+     * @throws PropertyNotFoundException if <code>base</code> is <code>null</code> and <code>property</code> is <code>null</code>.
      */
     @Override
     public boolean isReadOnly(ELContext elContext, Object base, Object property) {

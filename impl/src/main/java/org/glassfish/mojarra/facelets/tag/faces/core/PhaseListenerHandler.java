@@ -66,7 +66,8 @@ public class PhaseListenerHandler extends TagHandlerImpl {
             if (instance == null && type != null) {
                 try {
                     instance = (PhaseListener) ReflectionUtil.forName(type).getDeclaredConstructor().newInstance();
-                } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
+                }
+                catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
                     throw new AbortProcessingException("Couldn't Lazily instantiate PhaseListener", e);
                 }
                 if (binding != null) {
@@ -148,12 +149,14 @@ public class PhaseListenerHandler extends TagHandlerImpl {
                 FacesContext context = FacesContext.getCurrentInstance();
                 FaceletContext ctx = (FaceletContext) context.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
                 stringType = (String) typeAttribute.getValueExpression(ctx, String.class).getValue(ctx);
-            } else {
+            }
+            else {
                 stringType = typeAttribute.getValue();
             }
             checkType(stringType);
             listenerType = stringType;
-        } else {
+        }
+        else {
             listenerType = null;
         }
     }
@@ -182,7 +185,8 @@ public class PhaseListenerHandler extends TagHandlerImpl {
     private void checkType(String type) {
         try {
             ReflectionUtil.forName(type);
-        } catch (ClassNotFoundException e) {
+        }
+        catch (ClassNotFoundException e) {
             throw new TagAttributeException(typeAttribute, "Couldn't qualify ActionListener", e);
         }
     }

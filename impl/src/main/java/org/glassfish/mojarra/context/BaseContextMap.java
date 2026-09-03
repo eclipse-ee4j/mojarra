@@ -159,6 +159,7 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
         public boolean remove(Object o) {
             return o instanceof String && removeKey(o);
         }
+
     }
 
     class ValueCollection extends AbstractCollection<V> {
@@ -181,6 +182,7 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
         public boolean remove(Object o) {
             return removeValue(o);
         }
+
     }
 
     abstract static class BaseIterator<E> implements Iterator<E> {
@@ -203,6 +205,7 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
             currentKey = e.nextElement();
             return currentKey;
         }
+
     }
 
     class EntryIterator extends BaseIterator<Map.Entry<String, V>> {
@@ -216,7 +219,8 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
             if (currentKey != null && !removeCalled) {
                 removeCalled = true;
                 removeKey(currentKey);
-            } else {
+            }
+            else {
                 throw new IllegalStateException();
             }
         }
@@ -226,6 +230,7 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
             nextKey();
             return new Entry<>(currentKey, get(currentKey));
         }
+
     }
 
     class KeyIterator extends BaseIterator<String> {
@@ -239,7 +244,8 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
             if (currentKey != null && !removeCalled) {
                 removeCalled = true;
                 removeKey(currentKey);
-            } else {
+            }
+            else {
                 throw new IllegalStateException();
             }
         }
@@ -248,6 +254,7 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
         public String next() {
             return nextKey();
         }
+
     }
 
     class ValueIterator extends BaseIterator<V> {
@@ -261,7 +268,8 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
             if (currentKey != null && !removeCalled) {
                 removeCalled = true;
                 removeValue(get(currentKey));
-            } else {
+            }
+            else {
                 throw new IllegalStateException();
             }
         }
@@ -271,6 +279,7 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
             nextKey();
             return get(currentKey);
         }
+
     }
 
     static class Entry<V> implements Map.Entry<String, V> {
@@ -308,17 +317,18 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
         @Override
         @SuppressWarnings("unchecked")
         public boolean equals(Object obj) {
-            if ( !(obj instanceof Map.Entry) ) {
+            if (!(obj instanceof Map.Entry)) {
                 return false;
             }
 
-            Map.Entry<String,V> input = (Map.Entry<String,V>) obj;
+            Map.Entry<String, V> input = (Map.Entry<String, V>) obj;
             Object key = input.getKey();
             Object value = input.getValue();
 
             return Objects.equals(key, this.key) &&
-                   Objects.equals(value, this.value);
+                Objects.equals(value, this.value);
         }
+
     }
 
 }

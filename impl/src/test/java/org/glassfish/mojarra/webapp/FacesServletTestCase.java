@@ -52,9 +52,12 @@ public class FacesServletTestCase extends JUnitFacesTestCaseBase {
         RenderKitFactory renderKitFactory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
         RenderKit renderKit = new MockRenderKit();
         try {
-            renderKitFactory.addRenderKit(RenderKitFactory.HTML_BASIC_RENDER_KIT,
-                    renderKit);
-        } catch (IllegalArgumentException e) {
+            renderKitFactory.addRenderKit(
+                RenderKitFactory.HTML_BASIC_RENDER_KIT,
+                renderKit
+            );
+        }
+        catch (IllegalArgumentException e) {
         }
     }
 
@@ -204,8 +207,8 @@ public class FacesServletTestCase extends JUnitFacesTestCaseBase {
     }
 
     /**
-     * Going through WebConfiguration rather than reading the init parameter directly is what makes the legacy
-     * com.sun.faces spelling work here, as it does for every other Mojarra context parameter.
+     * Going through WebConfiguration rather than reading the init parameter directly is what makes the legacy com.sun.faces spelling work here, as it does for
+     * every other Mojarra context parameter.
      */
     @Test
     public void testAllowedHttpMethodsHonorsLegacyPrefix() throws Exception {
@@ -220,8 +223,8 @@ public class FacesServletTestCase extends JUnitFacesTestCaseBase {
     }
 
     /**
-     * An OPTIONS request is answered by the servlet itself, with the methods it accepts, and never reaches the
-     * lifecycle. Rendering a view would hand the page content to a request which did not ask for it.
+     * An OPTIONS request is answered by the servlet itself, with the methods it accepts, and never reaches the lifecycle. Rendering a view would hand the page
+     * content to a request which did not ask for it.
      */
     @Test
     public void testOptionsIsAnsweredWithAllowHeaderAndEmptyBody() throws Exception {
@@ -251,9 +254,9 @@ public class FacesServletTestCase extends JUnitFacesTestCaseBase {
     }
 
     /**
-     * The protected path check must not depend on the default locale of the deploying JVM. Under a Turkish or Azeri
-     * locale {@code i} uppercases to dotted capital {@code I} (U+0130), which would let the lowercase spellings of
-     * {@code /WEB-INF} and {@code /META-INF} through a guard that uppercases with the default locale.
+     * The protected path check must not depend on the default locale of the deploying JVM. Under a Turkish or Azeri locale {@code i} uppercases to dotted
+     * capital {@code I} (U+0130), which would let the lowercase spellings of {@code /WEB-INF} and {@code /META-INF} through a guard that uppercases with the
+     * default locale.
      */
     @Test
     public void testProtectedPathsAreRejectedRegardlessOfDefaultLocale() throws Exception {
@@ -273,7 +276,8 @@ public class FacesServletTestCase extends JUnitFacesTestCaseBase {
                 this.sendRequest(me, "GET", "/view.xhtml");
                 assertEquals(HttpServletResponse.SC_OK, response.getStatus(), locale + " must accept an ordinary view");
             }
-        } finally {
+        }
+        finally {
             Locale.setDefault(defaultLocale);
         }
     }
@@ -287,4 +291,5 @@ public class FacesServletTestCase extends JUnitFacesTestCaseBase {
         request.setPathElements("/test", "/test", pathInfo, "");
         me.service(request, response);
     }
+
 }

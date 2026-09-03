@@ -62,7 +62,8 @@ public class MetadataHandler extends TagHandlerImpl {
             if (ctx.getAttribute(IncludeHandler.INCLUDED_KEY) == Boolean.TRUE) {
                 handleInvalidMetadataLocation(tag, root);
             }
-        } else {
+        }
+        else {
             root = ctx.getFacesContext().getViewRoot();
             if (root != null) {
                 handleInvalidMetadataLocation(tag, root);
@@ -83,7 +84,8 @@ public class MetadataHandler extends TagHandlerImpl {
             root.getAttributes().put(FacetHandler.KEY, UIViewRoot.METADATA_FACET_NAME);
             try {
                 nextHandler.apply(ctx, root);
-            } finally {
+            }
+            finally {
                 root.getAttributes().remove(FacetHandler.KEY);
             }
             facetComponent = root.getFacets().get(UIViewRoot.METADATA_FACET_NAME);
@@ -101,7 +103,10 @@ public class MetadataHandler extends TagHandlerImpl {
     }
 
     public static void handleInvalidMetadataLocation(Tag tag, UIViewRoot root) {
-        throw new TagException(tag, "The metadata facet must be a direct child of the UIViewRoot in viewId " + root.getViewId() + "."
-                + " It is not allowed inside other components or in templates, includes, tag files, or composite components.");
+        throw new TagException(
+            tag, "The metadata facet must be a direct child of the UIViewRoot in viewId " + root.getViewId() + "."
+                + " It is not allowed inside other components or in templates, includes, tag files, or composite components."
+        );
     }
+
 }

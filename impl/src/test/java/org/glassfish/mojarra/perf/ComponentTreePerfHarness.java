@@ -48,34 +48,27 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 /**
- * Manual performance harness for the component-tree hot paths exercised during
- * Restore View and Render Response: {@code visitTree}, {@code processSaveState},
+ * Manual performance harness for the component-tree hot paths exercised during Restore View and Render Response: {@code visitTree}, {@code processSaveState},
  * {@code processRestoreState}, and {@code encodeAll} (the full encode walk).
  *
- * <p>Builds representative synthetic view trees with the actual Mojarra
- * {@link UIComponent} implementations (no facelets needed -- works against
- * {@link org.glassfish.mojarra.mock.MockFacesContext} from the existing test infra).
- * Each scenario reports the median ns/op over {@value #RUNS} measurement runs
- * of {@value #ITERATIONS} iterations each (after {@value #WARMUP} warmup
- * iterations).
+ * <p>
+ * Builds representative synthetic view trees with the actual Mojarra {@link UIComponent} implementations (no facelets needed -- works against
+ * {@link org.glassfish.mojarra.mock.MockFacesContext} from the existing test infra). Each scenario reports the median ns/op over {@value #RUNS} measurement
+ * runs of {@value #ITERATIONS} iterations each (after {@value #WARMUP} warmup iterations).
  *
- * <p>Disabled by default. To run:
- * {@code mvn -pl impl test -Dtest=ComponentTreePerfHarness -Dperf=true}.
- * Output goes to stdout in a tabular form; paste into a JIRA/PR comment to
- * track before/after numbers for each phase of the perf rework.
+ * <p>
+ * Disabled by default. To run: {@code mvn -pl impl test -Dtest=ComponentTreePerfHarness -Dperf=true}. Output goes to stdout in a tabular form; paste into a
+ * JIRA/PR comment to track before/after numbers for each phase of the perf rework.
  *
- * <p>Scenarios:
+ * <p>
+ * Scenarios:
  * <ul>
- *   <li><b>flat</b> &mdash; UIViewRoot with N {@link UIOutput} children, no
- *       NamingContainers. Exercises base {@code visitTree}/iteration overhead.</li>
- *   <li><b>form_inputs</b> &mdash; UIViewRoot &gt; UIForm with N {@link UIInput}
- *       children. Exercises NamingContainer-aware {@code getClientId} and EVH
- *       processing.</li>
- *   <li><b>deep_panels</b> &mdash; UIViewRoot &gt; UIForm &gt; nested UIPanel
- *       structure. Exercises deep tree traversal.</li>
- *   <li><b>uidata</b> &mdash; UIViewRoot &gt; UIForm &gt; {@link UIData} with R
- *       rows x C columns of {@link UIInput}. Exercises per-row state save/restore
- *       on the iteration component.</li>
+ * <li><b>flat</b> &mdash; UIViewRoot with N {@link UIOutput} children, no NamingContainers. Exercises base {@code visitTree}/iteration overhead.</li>
+ * <li><b>form_inputs</b> &mdash; UIViewRoot &gt; UIForm with N {@link UIInput} children. Exercises NamingContainer-aware {@code getClientId} and EVH
+ * processing.</li>
+ * <li><b>deep_panels</b> &mdash; UIViewRoot &gt; UIForm &gt; nested UIPanel structure. Exercises deep tree traversal.</li>
+ * <li><b>uidata</b> &mdash; UIViewRoot &gt; UIForm &gt; {@link UIData} with R rows x C columns of {@link UIInput}. Exercises per-row state save/restore on the
+ * iteration component.</li>
  * </ul>
  */
 @EnabledIfSystemProperty(named = "perf", matches = "true")
@@ -93,8 +86,10 @@ public class ComponentTreePerfHarness extends JUnitFacesTestCaseBase {
         super.setUp();
         // The mock factory finder does not register a VisitContextFactory by default;
         // VisitContext.createVisitContext() needs one. Use the real Mojarra impl.
-        jakarta.faces.FactoryFinder.setFactory(jakarta.faces.FactoryFinder.VISIT_CONTEXT_FACTORY,
-                "org.glassfish.mojarra.component.visit.VisitContextFactoryImpl");
+        jakarta.faces.FactoryFinder.setFactory(
+            jakarta.faces.FactoryFinder.VISIT_CONTEXT_FACTORY,
+            "org.glassfish.mojarra.component.visit.VisitContextFactoryImpl"
+        );
         // Register a no-op render kit so encodeAll has somewhere to dispatch.
         RenderKit renderKit = new MockRenderKit();
         renderKit.addRenderer(UIOutput.COMPONENT_FAMILY, "jakarta.faces.Text", new NoOpRenderer());
@@ -105,20 +100,25 @@ public class ComponentTreePerfHarness extends JUnitFacesTestCaseBase {
         // UIColumn has no rendererType by default; nothing to register for it.
         facesContext.getApplication(); // ensure Application is initialized
         org.glassfish.mojarra.mock.MockRenderKitFactory rkf = (org.glassfish.mojarra.mock.MockRenderKitFactory) jakarta.faces.FactoryFinder
-                .getFactory(jakarta.faces.FactoryFinder.RENDER_KIT_FACTORY);
+            .getFactory(jakarta.faces.FactoryFinder.RENDER_KIT_FACTORY);
         try {
             rkf.addRenderKit(jakarta.faces.render.RenderKitFactory.HTML_BASIC_RENDER_KIT, renderKit);
-        } catch (IllegalArgumentException alreadyAdded) {
+        }
+        catch (IllegalArgumentException alreadyAdded) {
             // ignore -- shared across tests
         }
         if (!headerPrinted) {
             System.out.println();
             System.out.println("ComponentTreePerfHarness (warmup=" + WARMUP + ", iterations=" + ITERATIONS + ", runs=" + RUNS + ")");
             System.out.println();
-            System.out.printf("%-55s %12s %12s %12s %12s%n",
-                    "Scenario", "visitTree", "saveState", "restoreState", "encodeAll");
-            System.out.printf("%-55s %12s %12s %12s %12s%n",
-                    "-".repeat(55), "-".repeat(12), "-".repeat(12), "-".repeat(12), "-".repeat(12));
+            System.out.printf(
+                "%-55s %12s %12s %12s %12s%n",
+                "Scenario", "visitTree", "saveState", "restoreState", "encodeAll"
+            );
+            System.out.printf(
+                "%-55s %12s %12s %12s %12s%n",
+                "-".repeat(55), "-".repeat(12), "-".repeat(12), "-".repeat(12), "-".repeat(12)
+            );
             headerPrinted = true;
         }
     }
@@ -168,8 +168,10 @@ public class ComponentTreePerfHarness extends JUnitFacesTestCaseBase {
 
     @Test
     void uidata_100_rows_5_cols_readonly() {
-        runScenario("UIData (100 rows x 5 cols, UIOutput / read-only)",
-                () -> buildUIDataTreeReadOnly(100, 5));
+        runScenario(
+            "UIData (100 rows x 5 cols, UIOutput / read-only)",
+            () -> buildUIDataTreeReadOnly(100, 5)
+        );
     }
 
     @Test
@@ -186,8 +188,10 @@ public class ComponentTreePerfHarness extends JUnitFacesTestCaseBase {
         };
         warmUp(cycle);
         long median = medianRun(cycle);
-        System.out.printf("%-55s %12s %12s %12s %12s%n",
-                "UIData setRowIndex cycle read-only (100 rows)", "-", "-", "-", median);
+        System.out.printf(
+            "%-55s %12s %12s %12s %12s%n",
+            "UIData setRowIndex cycle read-only (100 rows)", "-", "-", "-", median
+        );
     }
 
     @Test
@@ -211,10 +215,9 @@ public class ComponentTreePerfHarness extends JUnitFacesTestCaseBase {
     }
 
     /**
-     * Compares the pre-Phase-F walk (recurses into every node, including Facelets-compiled
-     * UILeaf wrappers for static text) against the patched walk that skips
-     * UntargetableComponent descendants. Models a realistic Facelets-compiled view where
-     * every line of whitespace and every literal text fragment between tags becomes a UILeaf.
+     * Compares the pre-Phase-F walk (recurses into every node, including Facelets-compiled UILeaf wrappers for static text) against the patched walk that skips
+     * UntargetableComponent descendants. Models a realistic Facelets-compiled view where every line of whitespace and every literal text fragment between tags
+     * becomes a UILeaf.
      */
     @Test
     void checkIdUniqueness_50_real_x_4_uileaf_each() {
@@ -222,18 +225,24 @@ public class ComponentTreePerfHarness extends JUnitFacesTestCaseBase {
         facesContext.setViewRoot(view);
 
         Runnable rawWalk = () -> rawCheckIdUniqueness(
-                facesContext, view, new java.util.HashSet<>(view.getChildCount() << 1));
+            facesContext, view, new java.util.HashSet<>(view.getChildCount() << 1)
+        );
         Runnable patchedWalk = () -> org.glassfish.mojarra.util.Util.checkIdUniqueness(
-                facesContext, view, new java.util.HashSet<>(64));
+            facesContext, view, new java.util.HashSet<>(64)
+        );
 
         warmUp(rawWalk);
         warmUp(patchedWalk);
         long rawMedian = medianRun(rawWalk);
         long patchedMedian = medianRun(patchedWalk);
-        System.out.printf("%-55s %12s %12s %12s %12s%n",
-                "checkIdUniqueness (raw walk)", "-", rawMedian, "-", "-");
-        System.out.printf("%-55s %12s %12s %12s %12s%n",
-                "checkIdUniqueness (patched)", "-", patchedMedian, "-", "-");
+        System.out.printf(
+            "%-55s %12s %12s %12s %12s%n",
+            "checkIdUniqueness (raw walk)", "-", rawMedian, "-", "-"
+        );
+        System.out.printf(
+            "%-55s %12s %12s %12s %12s%n",
+            "checkIdUniqueness (patched)", "-", patchedMedian, "-", "-"
+        );
     }
 
     /** Pre-Phase-F reproduction of Util.checkIdUniqueness without the UILeaf skip. */
@@ -284,17 +293,17 @@ public class ComponentTreePerfHarness extends JUnitFacesTestCaseBase {
         };
         warmUp(cycle);
         long median = medianRun(cycle);
-        System.out.printf("%-55s %12s %12s %12s %12s%n",
-                "UIData setRowIndex cycle (100 rows)", "-", "-", "-", median);
+        System.out.printf(
+            "%-55s %12s %12s %12s %12s%n",
+            "UIData setRowIndex cycle (100 rows)", "-", "-", "-", median
+        );
     }
 
     // -------- Workload builders --------------------------------------------
 
     /**
-     * SKIP_ITERATION matches what Mojarra's own state-management strategies pass to
-     * visitTree (see FaceletStateManagementStrategy), so the visitTree
-     * measurement reflects what production state save/restore actually sees rather
-     * than the worst-case full row iteration on UIData.
+     * SKIP_ITERATION matches what Mojarra's own state-management strategies pass to visitTree (see FaceletStateManagementStrategy), so the visitTree
+     * measurement reflects what production state save/restore actually sees rather than the worst-case full row iteration on UIData.
      */
     private static final Set<VisitHint> STATE_VISIT_HINTS = EnumSet.of(VisitHint.SKIP_ITERATION);
 
@@ -309,7 +318,8 @@ public class ComponentTreePerfHarness extends JUnitFacesTestCaseBase {
         Runnable encodeAll = () -> {
             try {
                 view.encodeAll(facesContext);
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 throw new RuntimeException(e);
             }
         };
@@ -337,8 +347,10 @@ public class ComponentTreePerfHarness extends JUnitFacesTestCaseBase {
         long restoreMedian = medianRun(restoreState);
         long encodeMedian = medianRun(encodeAll);
 
-        System.out.printf("%-55s %12d %12d %12d %12d%n",
-                label, visitMedian, saveMedian, restoreMedian, encodeMedian);
+        System.out.printf(
+            "%-55s %12d %12d %12d %12d%n",
+            label, visitMedian, saveMedian, restoreMedian, encodeMedian
+        );
     }
 
     private UIViewRoot buildFlatTree(int childCount) {
@@ -458,10 +470,8 @@ public class ComponentTreePerfHarness extends JUnitFacesTestCaseBase {
     }
 
     /**
-     * Measures full row-iteration cost: visits the tree with iteration enabled (no
-     * SKIP_ITERATION hint), so UIRepeat actually calls setIndex per row and triggers
-     * the per-row save/restore machinery. The visit callback is a no-op so the
-     * measurement isolates iteration overhead from rendering.
+     * Measures full row-iteration cost: visits the tree with iteration enabled (no SKIP_ITERATION hint), so UIRepeat actually calls setIndex per row and
+     * triggers the per-row save/restore machinery. The visit callback is a no-op so the measurement isolates iteration overhead from rendering.
      */
     private void measureRowIteration(UIViewRoot view, String label) {
         facesContext.setViewRoot(view);
@@ -498,6 +508,7 @@ public class ComponentTreePerfHarness extends JUnitFacesTestCaseBase {
     // -------- No-op renderer ------------------------------------------------
 
     private static final class NoOpRenderer extends Renderer<UIComponent> {
+
         @Override
         public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
             // no-op
@@ -522,6 +533,7 @@ public class ComponentTreePerfHarness extends JUnitFacesTestCaseBase {
         public boolean getRendersChildren() {
             return true;
         }
+
     }
 
 }

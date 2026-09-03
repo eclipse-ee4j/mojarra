@@ -32,9 +32,8 @@ import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.Util;
 
 /**
- * This {@link FacesContextFactory} is responsible for injecting the default {@link FacesContext} instance into the
- * top-level {@link FacesContext} as configured by the runtime. Doing this allows us to preserve backwards compatibility
- * as the API evolves without having the API rely on implementation specific details.
+ * This {@link FacesContextFactory} is responsible for injecting the default {@link FacesContext} instance into the top-level {@link FacesContext} as configured
+ * by the runtime. Doing this allows us to preserve backwards compatibility as the API evolves without having the API rely on implementation specific details.
  */
 public class InjectionFacesContextFactory extends FacesContextFactory {
 
@@ -52,11 +51,13 @@ public class InjectionFacesContextFactory extends FacesContextFactory {
         try {
             defaultFacesContext = FacesContext.class.getDeclaredField("defaultFacesContext");
             defaultFacesContext.setAccessible(true);
-        } catch (NoSuchFieldException nsfe) {
+        }
+        catch (NoSuchFieldException nsfe) {
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.log(Level.FINE, "Unable to find private field named 'defaultFacesContext' in jakarta.faces.context.FacesContext.");
             }
-        } catch (SecurityException e) {
+        }
+        catch (SecurityException e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, e.toString(), e);
             }
@@ -65,11 +66,13 @@ public class InjectionFacesContextFactory extends FacesContextFactory {
         try {
             defaultExternalContext = ExternalContext.class.getDeclaredField("defaultExternalContext");
             defaultExternalContext.setAccessible(true);
-        } catch (NoSuchFieldException nsfe) {
+        }
+        catch (NoSuchFieldException nsfe) {
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.log(Level.FINE, "Unable to find private field named 'defaultExternalContext' in jakarta.faces.context.ExternalContext.");
             }
-        } catch (SecurityException e) {
+        }
+        catch (SecurityException e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, e.toString(), e);
             }
@@ -86,8 +89,10 @@ public class InjectionFacesContextFactory extends FacesContextFactory {
         FacesContext ctx = getWrapped().getFacesContext(context, request, response, lifecycle);
         if (ctx == null) {
             // No i18n here
-            String message = MessageFormat.format("Delegate FacesContextFactory, {0}, returned null when calling getFacesContext().",
-                    getWrapped().getClass().getName());
+            String message = MessageFormat.format(
+                "Delegate FacesContextFactory, {0}, returned null when calling getFacesContext().",
+                getWrapped().getClass().getName()
+            );
             throw new IllegalStateException(message);
         }
         injectDefaults(ctx, request);
@@ -104,7 +109,8 @@ public class InjectionFacesContextFactory extends FacesContextFactory {
             if (defaultFC != null) {
                 try {
                     defaultFacesContext.set(target, defaultFC);
-                } catch (IllegalAccessException e) {
+                }
+                catch (IllegalAccessException e) {
                     if (LOGGER.isLoggable(Level.SEVERE)) {
                         LOGGER.log(Level.SEVERE, e.toString(), e);
                     }
@@ -123,7 +129,8 @@ public class InjectionFacesContextFactory extends FacesContextFactory {
             if (defaultExtContext != null) {
                 try {
                     defaultExternalContext.set(target.getExternalContext(), defaultExtContext);
-                } catch (IllegalAccessException e) {
+                }
+                catch (IllegalAccessException e) {
                     if (LOGGER.isLoggable(Level.SEVERE)) {
                         LOGGER.log(Level.SEVERE, e.toString(), e);
                     }

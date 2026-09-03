@@ -53,9 +53,10 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
-
 /**
- * <p>Create and configure DocumentBuilderFactory instances.</p>
+ * <p>
+ * Create and configure DocumentBuilderFactory instances.
+ * </p>
  */
 public class DbfFactory {
 
@@ -76,10 +77,7 @@ public class DbfFactory {
      */
     public static final FacesErrorHandler FACES_ERROR_HANDLER = new FacesErrorHandler();
 
-
-
     // ---------------------------------------------------------- Public Methods
-
 
     public static DocumentBuilderFactory getFactory() {
         DocumentBuilderFactory factory = createDocumentBuilderFactory();
@@ -90,22 +88,16 @@ public class DbfFactory {
         return factory;
     }
 
-
     // ----------------------------------------------------------- Inner Classes
-
-
 
     private static class FacesEntityResolver extends DefaultHandler implements LSResourceResolver {
 
-
         /**
-         * Contains mapping between grammar name and the local URL to the
-         * physical resource.
+         * Contains mapping between grammar name and the local URL to the physical resource.
          */
         private HashMap<String, String> entities = new HashMap<>(12, 1.0f);
 
         // -------------------------------------------------------- Constructors
-
 
         public FacesEntityResolver() {
 
@@ -127,7 +119,8 @@ public class DbfFactory {
                         if (schemaFile.exists()) {
                             try {
                                 schemaUrl = schemaFile.toURI().toURL();
-                            } catch (MalformedURLException mue) {
+                            }
+                            catch (MalformedURLException mue) {
                                 LOGGER.log(SEVERE, mue, mue::toString);
                             }
 
@@ -135,27 +128,27 @@ public class DbfFactory {
                                 if (LOGGER.isLoggable(FINE)) {
                                     LOGGER.log(FINE, "faces.config.cannot_resolve_entities", new Object[] { schemaInfo[1], schemaInfo[2] });
                                 }
-                            } else {
+                            }
+                            else {
                                 entities.put(schemaInfo[0], schemaUrl.toString());
                             }
                         }
 
                     }
-                } else {
+                }
+                else {
                     entities.put(schemaInfo[0], schemaUrl.toString());
                 }
             }
         }
 
-
         // ----------------------------------------- Methods from DefaultHandler
-
 
         /**
          * <p>
-         * Resolves the physical resource using the last segment of the <code>systemId</code> (e.g.
-         * http://java.sun.com/dtds/web-facesconfig_1_1.dtd, the last segment would be web-facesconfig_1_1.dtd). If a mapping
-         * cannot be found for the segment, then defer to the <code>DefaultHandler</code> for resolution.
+         * Resolves the physical resource using the last segment of the <code>systemId</code> (e.g. http://java.sun.com/dtds/web-facesconfig_1_1.dtd, the last
+         * segment would be web-facesconfig_1_1.dtd). If a mapping cannot be found for the segment, then defer to the <code>DefaultHandler</code> for
+         * resolution.
          * </p>
          */
         @Override
@@ -169,7 +162,8 @@ public class DbfFactory {
                 InputSource result;
                 try {
                     result = super.resolveEntity(publicId, null);
-                } catch (IOException | SAXException e) {
+                }
+                catch (IOException | SAXException e) {
                     throw new SAXException(e);
                 }
                 return result;
@@ -186,15 +180,18 @@ public class DbfFactory {
 
                 try {
                     source = super.resolveEntity(publicId, systemId);
-                } catch (IOException | SAXException e) {
+                }
+                catch (IOException | SAXException e) {
                     throw new SAXException(e);
                 }
 
-            } else {
+            }
+            else {
 
                 try {
                     source = new InputSource(new URL(entityURL).openStream());
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     LOGGER.log(Level.WARNING, "faces.config.cannot_create_inputsource", entityURL);
                     source = null;
                 }
@@ -211,24 +208,26 @@ public class DbfFactory {
             }
 
             return source;
-       }
+        }
 
-       @Override
-       public LSInput resolveResource(String type, String namespaceURI, String publicId, String systemId, String baseURI) {
-           try {
-               InputSource source = resolveEntity(publicId, systemId);
-               if (source != null) {
-                   return new Input(source.getByteStream());
-               }
-           } catch (Exception e) {
-               throw new ConfigurationException(e);
-           }
-           return null;
-       }
+        @Override
+        public LSInput resolveResource(String type, String namespaceURI, String publicId, String systemId, String baseURI) {
+            try {
+                InputSource source = resolveEntity(publicId, systemId);
+                if (source != null) {
+                    return new Input(source.getByteStream());
+                }
+            }
+            catch (Exception e) {
+                throw new ConfigurationException(e);
+            }
+            return null;
+        }
+
     }
 
-
     private static class FacesErrorHandler implements ErrorHandler {
+
         @Override
         public void warning(SAXParseException exception) throws SAXException {
             // do nothing
@@ -243,21 +242,25 @@ public class DbfFactory {
         public void fatalError(SAXParseException exception) throws SAXException {
             throw exception;
         }
+
     }
 
-
     private static final class Input implements LSInput {
+
         InputStream in;
+
         public Input(InputStream in) {
-           this.in = in;
+            this.in = in;
         }
+
         @Override
         public Reader getCharacterStream() {
             return null;
         }
 
         @Override
-        public void setCharacterStream(Reader characterStream) { }
+        public void setCharacterStream(Reader characterStream) {
+        }
 
         @Override
         public InputStream getByteStream() {
@@ -265,7 +268,8 @@ public class DbfFactory {
         }
 
         @Override
-        public void setByteStream(InputStream byteStream) { }
+        public void setByteStream(InputStream byteStream) {
+        }
 
         @Override
         public String getStringData() {
@@ -273,7 +277,8 @@ public class DbfFactory {
         }
 
         @Override
-        public void setStringData(String stringData) { }
+        public void setStringData(String stringData) {
+        }
 
         @Override
         public String getSystemId() {
@@ -281,7 +286,8 @@ public class DbfFactory {
         }
 
         @Override
-        public void setSystemId(String systemId) { }
+        public void setSystemId(String systemId) {
+        }
 
         @Override
         public String getPublicId() {
@@ -289,7 +295,8 @@ public class DbfFactory {
         }
 
         @Override
-        public void setPublicId(String publicId) { }
+        public void setPublicId(String publicId) {
+        }
 
         @Override
         public String getBaseURI() {
@@ -297,7 +304,8 @@ public class DbfFactory {
         }
 
         @Override
-        public void setBaseURI(String baseURI) { }
+        public void setBaseURI(String baseURI) {
+        }
 
         @Override
         public String getEncoding() {
@@ -305,7 +313,8 @@ public class DbfFactory {
         }
 
         @Override
-        public void setEncoding(String encoding) { }
+        public void setEncoding(String encoding) {
+        }
 
         @Override
         public boolean getCertifiedText() {
@@ -313,7 +322,9 @@ public class DbfFactory {
         }
 
         @Override
-        public void setCertifiedText(boolean certifiedText) { }
+        public void setCertifiedText(boolean certifiedText) {
+        }
+
     }
 
     /**
@@ -388,4 +399,5 @@ public class DbfFactory {
             return factory.newSchema(new StreamSource(in));
         }
     }
+
 }

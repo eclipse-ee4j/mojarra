@@ -27,8 +27,8 @@ import org.glassfish.mojarra.component.CompositeComponentStackManager;
 
 /**
  * <p>
- * This {@link ELResolver} will handle the resolution of <code>#{cc}</code>.
- * The {@link CompositeComponentAttributesELResolver} will in turn handle the resolution of <code>#{cc.attrs}</code>.
+ * This {@link ELResolver} will handle the resolution of <code>#{cc}</code>. The {@link CompositeComponentAttributesELResolver} will in turn handle the
+ * resolution of <code>#{cc.attrs}</code>.
  * </p>
  */
 public class CompositeComponentELResolver extends ELResolver {
@@ -49,7 +49,7 @@ public class CompositeComponentELResolver extends ELResolver {
 
             return currentCompositeComponent;
         }
-        
+
         return null;
     }
 
@@ -87,4 +87,5 @@ public class CompositeComponentELResolver extends ELResolver {
 
         return null;
     }
+
 }

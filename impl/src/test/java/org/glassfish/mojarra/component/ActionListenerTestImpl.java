@@ -76,7 +76,8 @@ public class ActionListenerTestImpl implements ActionListener, StateHolder {
     public static void trace(String text) {
         if (text == null) {
             trace.setLength(0);
-        } else {
+        }
+        else {
             trace.append('/');
             trace.append(text);
         }
@@ -108,4 +109,5 @@ public class ActionListenerTestImpl implements ActionListener, StateHolder {
     @Override
     public void setTransient(boolean newT) {
     }
+
 }

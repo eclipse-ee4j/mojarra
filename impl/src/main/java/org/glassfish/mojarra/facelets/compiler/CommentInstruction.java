@@ -25,6 +25,7 @@ import jakarta.faces.context.FacesContext;
 import org.glassfish.mojarra.facelets.el.ELText;
 
 final class CommentInstruction implements Instruction {
+
     private final ELText text;
 
     public CommentInstruction(ELText text) {
@@ -47,4 +48,5 @@ final class CommentInstruction implements Instruction {
     public boolean isLiteral() {
         return false;
     }
+
 }

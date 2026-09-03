@@ -23,6 +23,7 @@ import jakarta.el.ExpressionFactory;
 import jakarta.faces.context.FacesContext;
 
 final class StartElementInstruction implements Instruction {
+
     private final String element;
 
     public StartElementInstruction(String element) {
@@ -43,4 +44,5 @@ final class StartElementInstruction implements Instruction {
     public boolean isLiteral() {
         return true;
     }
+
 }

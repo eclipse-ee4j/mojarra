@@ -133,8 +133,7 @@ public class AnnotationManager {
      *
      * @param ctx FacesContext available during application initialization
      * @param annotationType the involved annotation type
-     * @param annotatedClasses <code>Collection</code> of class names known to contain one or more Faces configuration
-     * annotations
+     * @param annotatedClasses <code>Collection</code> of class names known to contain one or more Faces configuration annotations
      */
     public void applyConfigAnnotations(FacesContext ctx, Class<? extends Annotation> annotationType, Set<? extends Class<?>> annotatedClasses) {
         if (annotatedClasses != null && !annotatedClasses.isEmpty()) {
@@ -232,18 +231,17 @@ public class AnnotationManager {
     // --------------------------------------------------------- Private Methods
 
     /**
-     * @return a new <code>Map</code> which maps the types of annotations to a specific
-     * <code>ConfigAnnotationHandler</code>. Note that each invocation of this method constructs a new <code>Map</code> with
-     * new <code>ConfigAnnotationHandler</code> instances as they are not thread safe.
+     * @return a new <code>Map</code> which maps the types of annotations to a specific <code>ConfigAnnotationHandler</code>. Note that each invocation of this
+     * method constructs a new <code>Map</code> with new <code>ConfigAnnotationHandler</code> instances as they are not thread safe.
      */
     private Map<Class<? extends Annotation>, ConfigAnnotationHandler> getConfigAnnotationHandlers() {
         ConfigAnnotationHandler[] handlers = {
-                new ComponentConfigHandler(),
-                new ConverterConfigHandler(),
-                new ValidatorConfigHandler(),
-                new BehaviorConfigHandler(),
-                new RenderKitConfigHandler(),
-                new NamedEventConfigHandler() };
+            new ComponentConfigHandler(),
+            new ConverterConfigHandler(),
+            new ValidatorConfigHandler(),
+            new BehaviorConfigHandler(),
+            new RenderKitConfigHandler(),
+            new NamedEventConfigHandler() };
 
         Map<Class<? extends Annotation>, ConfigAnnotationHandler> handlerMap = new HashMap<>();
         for (ConfigAnnotationHandler handler : handlers) {
@@ -288,8 +286,8 @@ public class AnnotationManager {
     }
 
     /**
-     * The parameter array is built only once a handler is known to exist. Nearly every component, renderer, converter
-     * and validator carries no runtime annotation at all, and its handler map is empty.
+     * The parameter array is built only once a handler is known to exist. Nearly every component, renderer, converter and validator carries no runtime
+     * annotation at all, and its handler map is empty.
      */
     private static void applyHandlers(FacesContext ctx, Map<Class<? extends Annotation>, RuntimeAnnotationHandler> map, Object[] params) {
         for (RuntimeAnnotationHandler handler : map.values()) {
@@ -319,12 +317,14 @@ public class AnnotationManager {
             }
             try {
                 return f.get();
-            } catch (CancellationException | InterruptedException ce) {
+            }
+            catch (CancellationException | InterruptedException ce) {
                 if (LOGGER.isLoggable(Level.FINEST)) {
                     LOGGER.log(Level.FINEST, ce.toString(), ce);
                 }
                 cache.remove(targetClass);
-            } catch (ExecutionException ee) {
+            }
+            catch (ExecutionException ee) {
                 throw new FacesException(ee);
             }
         }
@@ -334,8 +334,8 @@ public class AnnotationManager {
     // ----------------------------------------------------------- Inner Classes
 
     /**
-     * This <code>Callable</code> will leverage the provided <code>Scanner</code>s to build a mapping between a particular
-     * annotation type and an <code>AnnotationHandler</code> for that type.
+     * This <code>Callable</code> will leverage the provided <code>Scanner</code>s to build a mapping between a particular annotation type and an
+     * <code>AnnotationHandler</code> for that type.
      */
     private static final class ProcessAnnotationsTask implements Callable<Map<Class<? extends Annotation>, RuntimeAnnotationHandler>> {
 
@@ -370,4 +370,5 @@ public class AnnotationManager {
         }
 
     } // END ProcessAnnotationsTask
+
 }

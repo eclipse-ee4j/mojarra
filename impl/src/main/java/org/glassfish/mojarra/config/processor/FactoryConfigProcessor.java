@@ -139,11 +139,13 @@ public class FactoryConfigProcessor extends AbstractConfigProcessor {
     /**
      * <code>Array of Factory names for post-configuration validation.</code>
      */
-    private final List<String> factoryNames = asList(FactoryFinder.FACES_SERVLET_FACTORY, FactoryFinder.APPLICATION_FACTORY, FactoryFinder.CLIENT_WINDOW_FACTORY,
-            FactoryFinder.EXCEPTION_HANDLER_FACTORY, FactoryFinder.EXTERNAL_CONTEXT_FACTORY, FactoryFinder.FACES_CONTEXT_FACTORY, FactoryFinder.FLASH_FACTORY,
-            FactoryFinder.LIFECYCLE_FACTORY, FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY, FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY,
-            FactoryFinder.RENDER_KIT_FACTORY, FactoryFinder.VISIT_CONTEXT_FACTORY, FactoryFinder.FACELET_CACHE_FACTORY,
-            FactoryFinder.TAG_HANDLER_DELEGATE_FACTORY, FactoryFinder.FLOW_HANDLER_FACTORY, FactoryFinder.SEARCH_EXPRESSION_CONTEXT_FACTORY);
+    private final List<String> factoryNames = asList(
+        FactoryFinder.FACES_SERVLET_FACTORY, FactoryFinder.APPLICATION_FACTORY, FactoryFinder.CLIENT_WINDOW_FACTORY,
+        FactoryFinder.EXCEPTION_HANDLER_FACTORY, FactoryFinder.EXTERNAL_CONTEXT_FACTORY, FactoryFinder.FACES_CONTEXT_FACTORY, FactoryFinder.FLASH_FACTORY,
+        FactoryFinder.LIFECYCLE_FACTORY, FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY, FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY,
+        FactoryFinder.RENDER_KIT_FACTORY, FactoryFinder.VISIT_CONTEXT_FACTORY, FactoryFinder.FACELET_CACHE_FACTORY,
+        FactoryFinder.TAG_HANDLER_DELEGATE_FACTORY, FactoryFinder.FLOW_HANDLER_FACTORY, FactoryFinder.SEARCH_EXPRESSION_CONTEXT_FACTORY
+    );
 
     private boolean validateFactories = true;
 
@@ -208,56 +210,56 @@ public class FactoryConfigProcessor extends AbstractConfigProcessor {
             for (int c = 0, csize = children.getLength(); c < csize; c++) {
                 Node childNode = children.item(c);
                 switch (childNode.getLocalName()) {
-                case FACES_SERVLET_FACTORY:
-                    setFactory(FactoryFinder.FACES_SERVLET_FACTORY, getNodeText(childNode));
-                    break;
-                case APPLICATION_FACTORY:
-                    appCount.incrementAndGet();
-                    setFactory(FactoryFinder.APPLICATION_FACTORY, getNodeText(childNode));
-                    break;
-                case EXCEPTION_HANDLER_FACTORY:
-                    setFactory(FactoryFinder.EXCEPTION_HANDLER_FACTORY, getNodeText(childNode));
-                    break;
-                case VISIT_CONTEXT_FACTORY:
-                    setFactory(FactoryFinder.VISIT_CONTEXT_FACTORY, getNodeText(childNode));
-                    break;
-                case LIFECYCLE_FACTORY:
-                    setFactory(FactoryFinder.LIFECYCLE_FACTORY, getNodeText(childNode));
-                    break;
-                case FLASH_FACTORY:
-                    setFactory(FactoryFinder.FLASH_FACTORY, getNodeText(childNode));
-                    break;
-                case CLIENT_WINDOW_FACTORY:
-                    setFactory(FactoryFinder.CLIENT_WINDOW_FACTORY, getNodeText(childNode));
-                    break;
-                case FACES_CONTEXT_FACTORY:
-                    fcCount.incrementAndGet();
-                    setFactory(FactoryFinder.FACES_CONTEXT_FACTORY, getNodeText(childNode));
-                    break;
-                case RENDER_KIT_FACTORY:
-                    setFactory(FactoryFinder.RENDER_KIT_FACTORY, getNodeText(childNode));
-                    break;
-                case VIEW_DECLARATION_LANGUAGE_FACTORY:
-                    setFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY, getNodeText(childNode));
-                    break;
-                case TAG_HANDLER_DELEGATE_FACTORY:
-                    setFactory(FactoryFinder.TAG_HANDLER_DELEGATE_FACTORY, getNodeText(childNode));
-                    break;
-                case FACELET_CACHE_FACTORY:
-                    setFactory(FactoryFinder.FACELET_CACHE_FACTORY, getNodeText(childNode));
-                    break;
-                case EXTERNAL_CONTEXT_FACTORY:
-                    setFactory(FactoryFinder.EXTERNAL_CONTEXT_FACTORY, getNodeText(childNode));
-                    break;
-                case PARTIAL_VIEW_CONTEXT_FACTORY:
-                    setFactory(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY, getNodeText(childNode));
-                    break;
-                case FLOW_HANDLER_FACTORY:
-                    setFactory(FactoryFinder.FLOW_HANDLER_FACTORY, getNodeText(childNode));
-                    break;
-                case SEARCH_EXPRESSION_CONTEXT_FACTORY:
-                    setFactory(FactoryFinder.SEARCH_EXPRESSION_CONTEXT_FACTORY, getNodeText(childNode));
-                    break;
+                    case FACES_SERVLET_FACTORY :
+                        setFactory(FactoryFinder.FACES_SERVLET_FACTORY, getNodeText(childNode));
+                        break;
+                    case APPLICATION_FACTORY :
+                        appCount.incrementAndGet();
+                        setFactory(FactoryFinder.APPLICATION_FACTORY, getNodeText(childNode));
+                        break;
+                    case EXCEPTION_HANDLER_FACTORY :
+                        setFactory(FactoryFinder.EXCEPTION_HANDLER_FACTORY, getNodeText(childNode));
+                        break;
+                    case VISIT_CONTEXT_FACTORY :
+                        setFactory(FactoryFinder.VISIT_CONTEXT_FACTORY, getNodeText(childNode));
+                        break;
+                    case LIFECYCLE_FACTORY :
+                        setFactory(FactoryFinder.LIFECYCLE_FACTORY, getNodeText(childNode));
+                        break;
+                    case FLASH_FACTORY :
+                        setFactory(FactoryFinder.FLASH_FACTORY, getNodeText(childNode));
+                        break;
+                    case CLIENT_WINDOW_FACTORY :
+                        setFactory(FactoryFinder.CLIENT_WINDOW_FACTORY, getNodeText(childNode));
+                        break;
+                    case FACES_CONTEXT_FACTORY :
+                        fcCount.incrementAndGet();
+                        setFactory(FactoryFinder.FACES_CONTEXT_FACTORY, getNodeText(childNode));
+                        break;
+                    case RENDER_KIT_FACTORY :
+                        setFactory(FactoryFinder.RENDER_KIT_FACTORY, getNodeText(childNode));
+                        break;
+                    case VIEW_DECLARATION_LANGUAGE_FACTORY :
+                        setFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY, getNodeText(childNode));
+                        break;
+                    case TAG_HANDLER_DELEGATE_FACTORY :
+                        setFactory(FactoryFinder.TAG_HANDLER_DELEGATE_FACTORY, getNodeText(childNode));
+                        break;
+                    case FACELET_CACHE_FACTORY :
+                        setFactory(FactoryFinder.FACELET_CACHE_FACTORY, getNodeText(childNode));
+                        break;
+                    case EXTERNAL_CONTEXT_FACTORY :
+                        setFactory(FactoryFinder.EXTERNAL_CONTEXT_FACTORY, getNodeText(childNode));
+                        break;
+                    case PARTIAL_VIEW_CONTEXT_FACTORY :
+                        setFactory(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY, getNodeText(childNode));
+                        break;
+                    case FLOW_HANDLER_FACTORY :
+                        setFactory(FactoryFinder.FLOW_HANDLER_FACTORY, getNodeText(childNode));
+                        break;
+                    case SEARCH_EXPRESSION_CONTEXT_FACTORY :
+                        setFactory(FactoryFinder.SEARCH_EXPRESSION_CONTEXT_FACTORY, getNodeText(childNode));
+                        break;
                 }
             }
         }
@@ -289,15 +291,18 @@ public class FactoryConfigProcessor extends AbstractConfigProcessor {
 
                     try {
                         FactoryFinder.getFactory(e);
-                    } catch (Exception exception) {
+                    }
+                    catch (Exception exception) {
                         exception.printStackTrace();
                         exceptions.add(new ConfigurationException(format("Factory ''{0}'' was not configured properly.", e), exception));
-                    } finally {
+                    }
+                    finally {
                         Thread.currentThread().setContextClassLoader(null);
                     }
 
                 });
-            } finally {
+            }
+            finally {
                 Thread.currentThread().setContextClassLoader(contextClassLoader);
             }
 
@@ -318,8 +323,8 @@ public class FactoryConfigProcessor extends AbstractConfigProcessor {
 
     /**
      * Add the InjectionApplicationFactory as the top-level ApplicationFactory so that the default instances, provided by
-     * {@link org.glassfish.mojarra.application.ApplicationFactoryImpl} can be injected into the actual top-level FacesContext
-     * instance (that which is returned by the InjectionFacesContextFactory's delegate).
+     * {@link org.glassfish.mojarra.application.ApplicationFactoryImpl} can be injected into the actual top-level FacesContext instance (that which is returned
+     * by the InjectionFacesContextFactory's delegate).
      */
     private void addInjectionApplicationFactory() {
         FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, InjectionApplicationFactory.class.getName());
@@ -327,8 +332,8 @@ public class FactoryConfigProcessor extends AbstractConfigProcessor {
 
     /**
      * Add the InjectionFacesContextFactory as the top-level FacesContextFactory so that the default instances, provided by
-     * {@link org.glassfish.mojarra.context.FacesContextFactoryImpl} can be injected into the actual top-level FacesContext instance
-     * (that which is returned by the InjectionFacesContextFactory's delegate).
+     * {@link org.glassfish.mojarra.context.FacesContextFactoryImpl} can be injected into the actual top-level FacesContext instance (that which is returned by
+     * the InjectionFacesContextFactory's delegate).
      */
     private void addInjectionFacesContextFactory() {
         FactoryFinder.setFactory(FactoryFinder.FACES_CONTEXT_FACTORY, InjectionFacesContextFactory.class.getName());

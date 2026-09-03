@@ -96,8 +96,8 @@ public class MultiViewHandlerTest extends JUnitFacesTestCaseBase {
     // --- convertViewId ---
 
     /**
-     * Builds a view handler whose configured Facelets suffixes are the given ones. The suffixes are read once, when
-     * the view handler is constructed, so the parameter has to be in place before that.
+     * Builds a view handler whose configured Facelets suffixes are the given ones. The suffixes are read once, when the view handler is constructed, so the
+     * parameter has to be in place before that.
      */
     private MultiViewHandler viewHandlerWithFaceletsSuffixes(String faceletsSuffixes) {
         externalContext.addInitParameter(ViewHandler.FACELETS_SUFFIX_PARAM_NAME, faceletsSuffixes);
@@ -132,8 +132,8 @@ public class MultiViewHandlerTest extends JUnitFacesTestCaseBase {
     }
 
     /**
-     * A single configured suffix admits no alternative, so the candidate is returned without consulting the physical
-     * resource, which keeps the common case free of that lookup.
+     * A single configured suffix admits no alternative, so the candidate is returned without consulting the physical resource, which keeps the common case free
+     * of that lookup.
      *
      * @see https://github.com/eclipse-ee4j/mojarra/issues/5918
      */

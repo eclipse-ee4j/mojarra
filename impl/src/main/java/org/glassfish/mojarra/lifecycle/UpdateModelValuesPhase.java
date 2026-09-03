@@ -27,8 +27,7 @@ import jakarta.faces.event.PhaseId;
 import org.glassfish.mojarra.util.FacesLogger;
 
 /**
- * UpdateModelValuesPhase executes <code>processUpdates</code> on each component in the tree so that it may have a
- * chance to update its model value.
+ * UpdateModelValuesPhase executes <code>processUpdates</code> on each component in the tree so that it may have a chance to update its model value.
  */
 public class UpdateModelValuesPhase extends Phase {
 
@@ -48,7 +47,8 @@ public class UpdateModelValuesPhase extends Phase {
 
         try {
             component.processUpdates(facesContext);
-        } catch (RuntimeException re) {
+        }
+        catch (RuntimeException re) {
             String exceptionMessage = re.getMessage();
             if (null != exceptionMessage) {
                 if (LOGGER.isLoggable(Level.FINE)) {
@@ -71,6 +71,6 @@ public class UpdateModelValuesPhase extends Phase {
 
     }
 
-// The testcase for this class is TestUpdateModelValuesPhase.java
+    // The testcase for this class is TestUpdateModelValuesPhase.java
 
 } // end of class UpdateModelValuesPhase

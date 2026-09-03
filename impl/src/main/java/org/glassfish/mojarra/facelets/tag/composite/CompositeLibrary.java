@@ -16,7 +16,6 @@
 
 package org.glassfish.mojarra.facelets.tag.composite;
 
-
 import java.util.Set;
 
 import org.glassfish.mojarra.facelets.tag.AbstractTagLibrary;
@@ -56,4 +55,5 @@ public final class CompositeLibrary extends AbstractTagLibrary {
         addTagHandler("insertFacet", InsertFacetHandler.class);
         this.addComponent("renderFacet", "jakarta.faces.Output", "jakarta.faces.CompositeFacet", RenderFacetHandler.class);
     }
+
 }

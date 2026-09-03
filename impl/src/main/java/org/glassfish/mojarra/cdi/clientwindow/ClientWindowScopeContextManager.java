@@ -136,8 +136,8 @@ public class ClientWindowScopeContextManager {
             Object session = externalContext.getSession(create);
 
             if (session != null) {
-                Map<Object, Map<String, ClientWindowScopeContextObject<?>>> clientWindowScopeContexts = (Map<Object, Map<String, ClientWindowScopeContextObject<?>>>)
-                    sessionMap.get(CLIENT_WINDOW_CONTEXTS);
+                Map<Object, Map<String, ClientWindowScopeContextObject<?>>> clientWindowScopeContexts = (Map<Object, Map<String, ClientWindowScopeContextObject<?>>>) sessionMap
+                    .get(CLIENT_WINDOW_CONTEXTS);
                 String clientWindowId = getCurrentClientWindowId(facesContext);
 
                 if (clientWindowScopeContexts == null && create) {
@@ -151,8 +151,10 @@ public class ClientWindowScopeContextManager {
                 if (clientWindowScopeContexts != null && clientWindowId != null && create) {
                     synchronized (clientWindowScopeContexts) {
                         if (!clientWindowScopeContexts.containsKey(clientWindowId)) {
-                            clientWindowScopeContexts.put(clientWindowId,
-                                    new ConcurrentHashMap<>());
+                            clientWindowScopeContexts.put(
+                                clientWindowId,
+                                new ConcurrentHashMap<>()
+                            );
                             if (distributable) {
                                 // If we are distributable, this will result in a dirtying of the
                                 // session data, forcing replication. If we are not distributable,
@@ -185,16 +187,16 @@ public class ClientWindowScopeContextManager {
 
         HttpSession session = httpSessionEvent.getSession();
 
-        Map<Object, Map<String, ClientWindowScopeContextObject<?>>> clientWindowScopeContexts = (Map<Object, Map<String, ClientWindowScopeContextObject<?>>>)
-                session.getAttribute(CLIENT_WINDOW_CONTEXTS);
+        Map<Object, Map<String, ClientWindowScopeContextObject<?>>> clientWindowScopeContexts = (Map<Object, Map<String, ClientWindowScopeContextObject<?>>>) session
+            .getAttribute(CLIENT_WINDOW_CONTEXTS);
         if (clientWindowScopeContexts != null) {
             clientWindowScopeContexts.clear();
             session.removeAttribute(CLIENT_WINDOW_CONTEXTS);
         }
     }
 
-    protected String getCurrentClientWindowId(FacesContext facesContext)
-    {
+    protected String getCurrentClientWindowId(FacesContext facesContext) {
         return facesContext.getExternalContext().getClientWindow().getId();
     }
+
 }

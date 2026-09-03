@@ -26,8 +26,7 @@ import jakarta.faces.view.facelets.TagAttribute;
 import org.junit.jupiter.api.Test;
 
 /**
- * A tag singles out its pass-through attributes when it is compiled, because every applied component tag is asked for
- * them and almost none has any.
+ * A tag singles out its pass-through attributes when it is compiled, because every applied component tag is asked for them and almost none has any.
  */
 class TagAttributesImplTest {
 
@@ -44,8 +43,10 @@ class TagAttributesImplTest {
 
     @Test
     void passthroughAttributesAreCollectedInDeclarationOrder() {
-        TagAttributesImpl attributes = tag(attribute(PASSTHROUGH, "data-row"), attribute(HTML, "styleClass"),
-                attribute(PASSTHROUGH, "data-col"));
+        TagAttributesImpl attributes = tag(
+            attribute(PASSTHROUGH, "data-row"), attribute(HTML, "styleClass"),
+            attribute(PASSTHROUGH, "data-col")
+        );
 
         assertArrayEquals(new String[] { "data-row", "data-col" }, localNames(attributes));
     }
@@ -68,4 +69,5 @@ class TagAttributesImplTest {
     private static TagAttribute attribute(String namespace, String localName) {
         return new TagAttributeImpl(new Location("test.xhtml", 1, 1), namespace, localName, localName, "value");
     }
+
 }

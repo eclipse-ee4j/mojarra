@@ -43,7 +43,8 @@ class SessionHelper implements Serializable, HttpSessionActivationListener {
             Map<String, Map<String, Object>> flashInnerMap = (Map<String, Map<String, Object>>) sessionMap.get(FLASH_INNER_MAP_KEY);
             flash.setFlashInnerMap(flashInnerMap);
             didPassivate = false;
-        } else {
+        }
+        else {
             sessionMap.put(FLASH_SESSIONACTIVATIONLISTENER_ATTRIBUTE_NAME, this);
             sessionMap.put(FLASH_INNER_MAP_KEY, flash.getFlashInnerMap());
         }

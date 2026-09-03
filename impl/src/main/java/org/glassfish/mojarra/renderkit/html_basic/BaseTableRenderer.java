@@ -73,8 +73,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
     protected abstract void renderRow(FacesContext context, UIComponent table, UIComponent row, ResponseWriter writer) throws IOException;
 
     /**
-     * Renders the start of a table and applies the value of <code>styleClass</code> if available and renders any pass
-     * through attributes that may be specified.
+     * Renders the start of a table and applies the value of <code>styleClass</code> if available and renders any pass through attributes that may be specified.
      *
      * @param context the <code>FacesContext</code> for the current request
      * @param table the table that's being rendered
@@ -109,8 +108,8 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
     }
 
     /**
-     * Renders the caption of the table applying the values of <code>captionClass</code> as the class and
-     * <code>captionStyle</code> as the style if either are present.
+     * Renders the caption of the table applying the values of <code>captionClass</code> as the class and <code>captionStyle</code> as the style if either are
+     * present.
      *
      * @param context the <code>FacesContext</code> for the current request
      * @param table the table that's being rendered
@@ -121,10 +120,12 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
 
         UIComponent caption = getFacet(table, "caption");
         if (caption != null) {
-            String captionClass = table instanceof HtmlDataTable t ? t.getCaptionClass()
-                    : table instanceof HtmlPanelGrid g ? g.getCaptionClass() : (String) table.getAttributes().get("captionClass");
-            String captionStyle = table instanceof HtmlDataTable t ? t.getCaptionStyle()
-                    : table instanceof HtmlPanelGrid g ? g.getCaptionStyle() : (String) table.getAttributes().get("captionStyle");
+            String captionClass = table instanceof HtmlDataTable t
+                ? t.getCaptionClass()
+                : table instanceof HtmlPanelGrid g ? g.getCaptionClass() : (String) table.getAttributes().get("captionClass");
+            String captionStyle = table instanceof HtmlDataTable t
+                ? t.getCaptionStyle()
+                : table instanceof HtmlPanelGrid g ? g.getCaptionStyle() : (String) table.getAttributes().get("captionStyle");
             writer.startElement("caption", table);
             if (captionClass != null) {
                 writer.writeAttribute("class", captionClass, "captionClass");
@@ -182,8 +183,9 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
         writer.startElement("tr", table);
 
         final String tableRowClass = info.rowClasses.length > 0 ? info.getCurrentRowClass() : null;
-        final String rowClass = table instanceof HtmlDataTable t ? t.getRowClass()
-                : table instanceof HtmlPanelGrid g ? g.getRowClass() : (String) table.getAttributes().get("rowClass");
+        final String rowClass = table instanceof HtmlDataTable t
+            ? t.getRowClass()
+            : table instanceof HtmlPanelGrid g ? g.getRowClass() : (String) table.getAttributes().get("rowClass");
 
         if (tableRowClass != null) {
             if (rowClass != null) {
@@ -219,8 +221,8 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
     }
 
     /**
-     * Returns a <code>TableMetaInfo</code> object containing details such as row and column classes, columns, and a
-     * mechanism for scrolling through the row/column classes.
+     * Returns a <code>TableMetaInfo</code> object containing details such as row and column classes, columns, and a mechanism for scrolling through the
+     * row/column classes.
      *
      * @param context the <code>FacesContext</code> for the current request
      * @param table the table that's being rendered
@@ -302,8 +304,8 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
         }
 
         /**
-         * Obtain the column class based on the current counter. Calling this method automatically moves the pointer to the next
-         * style. If the counter is larger than the number of total classes, the counter will be reset.
+         * Obtain the column class based on the current counter. Calling this method automatically moves the pointer to the next style. If the counter is larger
+         * than the number of total classes, the counter will be reset.
          *
          * @return the current style
          */
@@ -318,8 +320,8 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
         }
 
         /**
-         * Obtain the row class based on the current counter. Calling this method automatically moves the pointer to the next
-         * style. If the counter is larger than the number of total classes, the counter will be reset.
+         * Obtain the row class based on the current counter. Calling this method automatically moves the pointer to the next style. If the counter is larger
+         * than the number of total classes, the counter will be reset.
          *
          * @return the current style
          */
@@ -335,8 +337,8 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
 
         /**
          * <p>
-         * Return an array of stylesheet classes to be applied to each column in the table in the order specified. Every column
-         * may or may not have a stylesheet.
+         * Return an array of stylesheet classes to be applied to each column in the table in the order specified. Every column may or may not have a
+         * stylesheet.
          * </p>
          *
          * @param table {@link jakarta.faces.component.UIComponent} component being rendered
@@ -345,8 +347,9 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
          */
         private static String[] getColumnClasses(UIComponent table) {
 
-            String values = table instanceof HtmlDataTable t ? t.getColumnClasses()
-                    : table instanceof HtmlPanelGrid g ? g.getColumnClasses() : (String) table.getAttributes().get("columnClasses");
+            String values = table instanceof HtmlDataTable t
+                ? t.getColumnClasses()
+                : table instanceof HtmlPanelGrid g ? g.getColumnClasses() : (String) table.getAttributes().get("columnClasses");
             if (values == null) {
                 return EMPTY_STRING_ARRAY;
             }
@@ -356,8 +359,8 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
 
         /**
          * <p>
-         * Return an Iterator over the <code>UIColumn</code> children of the specified <code>UIData</code> that have a
-         * <code>rendered</code> property of <code>true</code>.
+         * Return an Iterator over the <code>UIColumn</code> children of the specified <code>UIData</code> that have a <code>rendered</code> property of
+         * <code>true</code>.
          * </p>
          *
          * @param table the table from which to extract children
@@ -376,14 +379,17 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
                         }
                     }
                     return results;
-                } else {
+                }
+                else {
                     return Collections.emptyList();
                 }
-            } else {
+            }
+            else {
                 int count;
                 if (table instanceof HtmlPanelGrid g) {
                     count = g.getColumns();
-                } else {
+                }
+                else {
                     Object value = table.getAttributes().get("columns");
                     count = value instanceof Integer integer ? integer : 2;
                 }
@@ -401,8 +407,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
 
         /**
          * <p>
-         * Return the number of child <code>UIColumn</code> components nested in the specified <code>UIData</code> that have a
-         * facet with the specified name.
+         * Return the number of child <code>UIColumn</code> components nested in the specified <code>UIData</code> that have a facet with the specified name.
          * </p>
          *
          * @param name Name of the facet being analyzed
@@ -427,8 +432,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
 
         /**
          * <p>
-         * Return an array of stylesheet classes to be applied to each row in the table, in the order specified. Every row may
-         * or may not have a stylesheet.
+         * Return an array of stylesheet classes to be applied to each row in the table, in the order specified. Every row may or may not have a stylesheet.
          * </p>
          *
          * @param table {@link jakarta.faces.component.UIComponent} component being rendered
@@ -437,8 +441,9 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
          */
         private static String[] getRowClasses(UIComponent table) {
 
-            String values = table instanceof HtmlDataTable t ? t.getRowClasses()
-                    : table instanceof HtmlPanelGrid g ? g.getRowClasses() : (String) table.getAttributes().get("rowClasses");
+            String values = table instanceof HtmlDataTable t
+                ? t.getRowClasses()
+                : table instanceof HtmlPanelGrid g ? g.getRowClasses() : (String) table.getAttributes().get("rowClasses");
             if (values == null) {
                 return EMPTY_STRING_ARRAY;
             }
@@ -447,4 +452,5 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
         }
 
     } // END UIDataMetaInfo
+
 }

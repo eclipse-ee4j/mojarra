@@ -104,15 +104,15 @@ public class ConverterConfigProcessor extends AbstractConfigProcessor {
             for (int c = 0, csize = children.getLength(); c < csize; c++) {
                 Node n = children.item(c);
                 switch (n.getLocalName()) {
-                case CONVERTER_ID:
-                    converterId = getNodeText(n);
-                    break;
-                case CONVERTER_CLASS:
-                    converterClass = getNodeText(n);
-                    break;
-                case CONVERTER_FOR_CLASS:
-                    converterForClass = getNodeText(n);
-                    break;
+                    case CONVERTER_ID :
+                        converterId = getNodeText(n);
+                        break;
+                    case CONVERTER_CLASS :
+                        converterClass = getNodeText(n);
+                        break;
+                    case CONVERTER_FOR_CLASS :
+                        converterForClass = getNodeText(n);
+                        break;
                 }
             }
 
@@ -124,7 +124,8 @@ public class ConverterConfigProcessor extends AbstractConfigProcessor {
                     verifier.validateObject(Verifier.ObjectType.CONVERTER, converterClass, Converter.class);
                 }
                 application.addConverter(converterId, converterClass);
-            } else if (converterClass != null && converterForClass != null) {
+            }
+            else if (converterClass != null && converterForClass != null) {
                 try {
                     Class<?> cfcClass = Util.loadClass(converterForClass, this.getClass());
                     if (LOGGER.isLoggable(FINE)) {
@@ -134,7 +135,8 @@ public class ConverterConfigProcessor extends AbstractConfigProcessor {
                         verifier.validateObject(Verifier.ObjectType.CONVERTER, converterClass, Converter.class);
                     }
                     application.addConverter(cfcClass, converterClass);
-                } catch (ClassNotFoundException cnfe) {
+                }
+                catch (ClassNotFoundException cnfe) {
                     throw new ConfigurationException(cnfe);
                 }
             }

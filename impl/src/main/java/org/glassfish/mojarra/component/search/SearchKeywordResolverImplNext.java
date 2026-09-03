@@ -41,7 +41,8 @@ public class SearchKeywordResolverImplNext extends SearchKeywordResolver {
                     if (!(children.get(index) instanceof UntargetableComponent)) {
                         nextIndex = index;
                     }
-                } while (nextIndex == -1 && index < parent.getChildCount() - 1);
+                }
+                while (nextIndex == -1 && index < parent.getChildCount() - 1);
 
                 if (nextIndex != -1) {
                     searchKeywordContext.invokeContextCallback(children.get(nextIndex));

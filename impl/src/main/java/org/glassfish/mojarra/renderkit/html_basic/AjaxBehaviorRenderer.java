@@ -122,9 +122,11 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer {
 
         if (ajaxBehavior.isImmediateSet()) {
             immediate = ajaxBehavior.isImmediate();
-        } else if (component instanceof EditableValueHolder) {
+        }
+        else if (component instanceof EditableValueHolder) {
             immediate = ((EditableValueHolder) component).isImmediate();
-        } else if (component instanceof ActionSource) {
+        }
+        else if (component instanceof ActionSource) {
             immediate = ((ActionSource) component).isImmediate();
         }
 
@@ -171,7 +173,8 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer {
             try {
                 // And since this is a hack, we now try to remove the param
                 params.remove(foundparam);
-            } catch (UnsupportedOperationException uoe) {
+            }
+            catch (UnsupportedOperationException uoe) {
                 if (logger.isLoggable(Level.FINEST)) {
                     logger.log(Level.FINEST, "Unsupported operation", uoe);
                 }
@@ -197,7 +200,8 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer {
 
                 if (paramValue == null) {
                     ajaxCommand.append("null");
-                } else {
+                }
+                else {
                     RenderKitUtils.appendQuotedValue(ajaxCommand, paramValue.toString());
                 }
 
@@ -211,7 +215,8 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer {
 
         if (sourceId == null) {
             ajaxCommand.append("this");
-        } else {
+        }
+        else {
             ajaxCommand.append("'");
             ajaxCommand.append(sourceId);
             ajaxCommand.append("'");
@@ -250,7 +255,8 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer {
             if (!params.isEmpty()) {
                 if (commandScript != null) {
                     RenderKitUtils.appendProperty(ajaxCommand, "params", params.iterator().next().getName(), false);
-                } else {
+                }
+                else {
                     RenderKitUtils.appendProperty(ajaxCommand, "params", "{", false);
 
                     for (ClientBehaviorContext.Parameter param : params) {
@@ -278,11 +284,16 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer {
         return ajaxCommand.toString();
     }
 
-    private static final Set<SearchExpressionHint> EXPRESSION_HINTS = EnumSet.of(SearchExpressionHint.RESOLVE_CLIENT_SIDE,
-            SearchExpressionHint.RESOLVE_SINGLE_COMPONENT);
+    private static final Set<SearchExpressionHint> EXPRESSION_HINTS = EnumSet.of(
+        SearchExpressionHint.RESOLVE_CLIENT_SIDE,
+        SearchExpressionHint.RESOLVE_SINGLE_COMPONENT
+    );
 
     // Appends an ids argument to the ajax command
-    private static void appendIds(FacesContext facesContext, UIComponent component, AjaxBehavior ajaxBehavior, StringBuilder builder, Collection<String> idsOrNull) {
+    private static void appendIds(
+        FacesContext facesContext, UIComponent component, AjaxBehavior ajaxBehavior, StringBuilder builder, Collection<String> idsOrNull
+    )
+    {
 
         if (idsOrNull == null) {
             builder.append('0');
@@ -319,20 +330,26 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer {
             }
             if (!first) {
                 builder.append(' ');
-            } else {
+            }
+            else {
                 first = false;
             }
 
-            boolean clientResolveableExpression = expression.equals("@all") || expression.equals("@none") || expression.equals("@form") || expression.equals("@this");
+            boolean clientResolveableExpression = expression.equals("@all") || expression.equals("@none") || expression.equals("@form")
+                || expression.equals("@this");
 
-            if (composite != null && (ajaxBehavior instanceof RetargetedAjaxBehavior) && (expression.equals("@this") || expression.startsWith("@this" + separatorChar))) {
+            if (
+                composite != null && (ajaxBehavior instanceof RetargetedAjaxBehavior)
+                    && (expression.equals("@this") || expression.startsWith("@this" + separatorChar))
+            ) {
                 expression = separatorChar + composite.getClientId(facesContext) + expression.substring("@this".length());
                 clientResolveableExpression = false;
             }
 
             if (clientResolveableExpression) {
                 builder.append(expression);
-            } else {
+            }
+            else {
                 if (searchExpressionContext == null) {
                     searchExpressionContext = SearchExpressionContext.createSearchExpressionContext(facesContext, component, EXPRESSION_HINTS, null);
                 }
@@ -342,16 +359,22 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer {
                 String resolvedClientId = null;
                 try {
                     resolvedClientId = handler.resolveClientId(searchExpressionContext, expression);
-                } catch (ComponentNotFoundException cnfe) {
-                    if (composite != null && !expression.startsWith(separatorChar) && composite.getParent() != null && composite.getParent().getNamingContainer() != null) {
+                }
+                catch (ComponentNotFoundException cnfe) {
+                    if (
+                        composite != null && !expression.startsWith(separatorChar) && composite.getParent() != null
+                            && composite.getParent().getNamingContainer() != null
+                    ) {
                         expression = composite.getParent().getNamingContainer().getClientId(facesContext) + separatorChar + expression;
 
                         try {
                             resolvedClientId = handler.resolveClientId(searchExpressionContext, expression);
-                        } catch (ComponentNotFoundException ignore) {
+                        }
+                        catch (ComponentNotFoundException ignore) {
                             resolvedClientId = getResolvedId(component, expression);
                         }
-                    } else {
+                    }
+                    else {
                         resolvedClientId = getResolvedId(component, expression);
                     }
                 }
@@ -374,4 +397,5 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer {
 
         return resolvedComponent.getClientId();
     }
+
 }

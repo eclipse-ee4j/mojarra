@@ -69,16 +69,22 @@ public class MockApplication extends Application {
     private final ComponentSystemEventHelper compSysEventHelper = new ComponentSystemEventHelper();
 
     public MockApplication() {
-        addComponent("TestNamingContainer",
-                "jakarta.faces.webapp.TestNamingContainer");
+        addComponent(
+            "TestNamingContainer",
+            "jakarta.faces.webapp.TestNamingContainer"
+        );
         addComponent("TestComponent", "jakarta.faces.webapp.TestComponent");
         addComponent("TestInput", "jakarta.faces.component.UIInput");
         addComponent("TestOutput", "jakarta.faces.component.UIOutput");
         addConverter("Integer", "jakarta.faces.convert.IntegerConverter");
-        addConverter("jakarta.faces.Number",
-                "jakarta.faces.convert.NumberConverter");
-        addConverter("jakarta.faces.Long",
-                "jakarta.faces.convert.LongConverter");
+        addConverter(
+            "jakarta.faces.Number",
+            "jakarta.faces.convert.NumberConverter"
+        );
+        addConverter(
+            "jakarta.faces.Long",
+            "jakarta.faces.convert.LongConverter"
+        );
         addValidator("Length", "jakarta.faces.validator.LengthValidator");
     }
 
@@ -89,6 +95,7 @@ public class MockApplication extends Application {
     public ActionListener getActionListener() {
         if (null == actionListener) {
             actionListener = new ActionListener() {
+
                 @Override
                 public void processAction(ActionEvent e) {
                     processActionCalled = true;
@@ -115,6 +122,7 @@ public class MockApplication extends Application {
                 public int hashCode() {
                     return 1;
                 }
+
             };
         }
 
@@ -172,9 +180,12 @@ public class MockApplication extends Application {
     }
 
     @Override
-    public <T> T evaluateExpressionGet(FacesContext context,
-            String expression,
-            Class<? extends T> expectedType) throws ELException {
+    public <T> T evaluateExpressionGet(
+        FacesContext context,
+        String expression,
+        Class<? extends T> expectedType
+    ) throws ELException
+    {
         ValueExpression ve = getExpressionFactory().createValueExpression(context.getELContext(), expression, expectedType);
         return ve.getValue(context.getELContext());
     }
@@ -222,16 +233,20 @@ public class MockApplication extends Application {
         try {
             Class<?> clazz = Class.forName(componentClass);
             return ((UIComponent) clazz.getDeclaredConstructor().newInstance());
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new FacesException(e);
         }
     }
 
     @Override
-    public UIComponent createComponent(ValueExpression componentExpression,
-            FacesContext context,
-            String componentType)
-            throws FacesException {
+    public UIComponent createComponent(
+        ValueExpression componentExpression,
+        FacesContext context,
+        String componentType
+    )
+        throws FacesException
+    {
         throw new FacesException(new UnsupportedOperationException());
     }
 
@@ -259,7 +274,8 @@ public class MockApplication extends Application {
         try {
             Class<?> clazz = Class.forName(converterClass);
             return (Converter<T>) clazz.getDeclaredConstructor().newInstance();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new FacesException(e);
         }
     }
@@ -305,7 +321,8 @@ public class MockApplication extends Application {
         try {
             Class<?> clazz = Class.forName(validatorClass);
             return (Validator<T>) clazz.getDeclaredConstructor().newInstance();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new FacesException(e);
         }
     }
@@ -337,8 +354,10 @@ public class MockApplication extends Application {
     @Override
     public ELContextListener[] getELContextListeners() {
         // PENDING(edburns): maybe implement
-        return (ELContextListener[]) java.lang.reflect.Array.newInstance(ELContextListener.class,
-                0);
+        return (ELContextListener[]) java.lang.reflect.Array.newInstance(
+            ELContextListener.class,
+            0
+        );
     }
 
     @Override
@@ -365,102 +384,103 @@ public class MockApplication extends Application {
     }
 
     /**
-     * <p class="changed_added_2_0">If there are one or more listeners for
-     * events of the type represented by <code>systemEventClass</code>, call
-     * those listeners, passing <code>source</code> as the source of the event.
-     * The implementation should be as fast as possible in determining whether
-     * or not a listener for the given <code>systemEventClass</code> and
-     * <code>source</code> has been installed, and should return immediately
-     * once such a determination has been made. The implementation of
-     * <code>publishEvent</code> must honor the requirements stated in
-     * {@link #subscribeToEvent} regarding the storage and retrieval of listener
-     * instances.</p>
+     * <p class="changed_added_2_0">
+     * If there are one or more listeners for events of the type represented by <code>systemEventClass</code>, call those listeners, passing <code>source</code>
+     * as the source of the event. The implementation should be as fast as possible in determining whether or not a listener for the given
+     * <code>systemEventClass</code> and <code>source</code> has been installed, and should return immediately once such a determination has been made. The
+     * implementation of <code>publishEvent</code> must honor the requirements stated in {@link #subscribeToEvent} regarding the storage and retrieval of
+     * listener instances.
+     * </p>
      *
      * <div class="changed_added_2_0">
      *
      * <p>
-     * The default implementation must implement an algorithm semantically
-     * equivalent to the following to locate listener instances and to invoke
-     * them.</p>
+     * The default implementation must implement an algorithm semantically equivalent to the following to locate listener instances and to invoke them.
+     * </p>
      *
      * <ul>
      *
-     * <li><p>
-     * If the <code>source</code> argument implements {@link
-     * jakarta.faces.event.SystemEventListenerHolder}, call {@link
-     * jakarta.faces.event.SystemEventListenerHolder#getListenersForEventClass} on
-     * it, passing the <code>systemEventClass</code> argument. If the list is
-     * not empty, perform algorithm
-     * <em>traverseListenerList</em> on the list.</p></li>
+     * <li>
+     * <p>
+     * If the <code>source</code> argument implements {@link jakarta.faces.event.SystemEventListenerHolder}, call
+     * {@link jakarta.faces.event.SystemEventListenerHolder#getListenersForEventClass} on it, passing the <code>systemEventClass</code> argument. If the list is
+     * not empty, perform algorithm <em>traverseListenerList</em> on the list.
+     * </p>
+     * </li>
      *
-     * <li><p>
-     * If any <code>Application</code> level listeners have been installed by
-     * previous calls to {@link
-     * #subscribeToEvent(Class, Class,
-     *     jakarta.faces.event.SystemEventListener)}, perform algorithm
-     * <em>traverseListenerList</em> on the list.</p></li>
+     * <li>
+     * <p>
+     * If any <code>Application</code> level listeners have been installed by previous calls to
+     * {@link #subscribeToEvent(Class, Class, jakarta.faces.event.SystemEventListener)}, perform algorithm <em>traverseListenerList</em> on the list.
+     * </p>
+     * </li>
      *
-     * <li><p>
-     * If any <code>Application</code> level listeners have been installed by
-     * previous calls to {@link
-     * #subscribeToEvent(Class, jakarta.faces.event.SystemEventListener)}, perform
-     * algorithm <em>traverseListenerList</em> on the list.</p></li>
+     * <li>
+     * <p>
+     * If any <code>Application</code> level listeners have been installed by previous calls to
+     * {@link #subscribeToEvent(Class, jakarta.faces.event.SystemEventListener)}, perform algorithm <em>traverseListenerList</em> on the list.
+     * </p>
+     * </li>
      *
      * </ul>
      *
      * <p>
-     * If the act of invoking the <code>processListener</code> method causes an
-     * {@link jakarta.faces.event.AbortProcessingException} to be thrown,
-     * processing of the listeners must be aborted.</p>
+     * If the act of invoking the <code>processListener</code> method causes an {@link jakarta.faces.event.AbortProcessingException} to be thrown, processing of
+     * the listeners must be aborted.
+     * </p>
      *
-     * RELEASE_PENDING (edburns,rogerk) it may be prudent to specify how the
-     * abortprocessingexception should be handled. Logged or thrown?
+     * RELEASE_PENDING (edburns,rogerk) it may be prudent to specify how the abortprocessingexception should be handled. Logged or thrown?
      *
      * <p>
-     * Algorithm <em>traverseListenerList</em>: For each listener in the
-     * list,</p>
+     * Algorithm <em>traverseListenerList</em>: For each listener in the list,
+     * </p>
      *
      * <ul>
      *
-     * <li><p>
-     * Call {@link
-     * jakarta.faces.event.SystemEventListener#isListenerForSource}, passing the
-     * <code>source</code> argument. If this returns <code>false</code>, take no
-     * action on the listener.</p></li>
+     * <li>
+     * <p>
+     * Call {@link jakarta.faces.event.SystemEventListener#isListenerForSource}, passing the <code>source</code> argument. If this returns <code>false</code>,
+     * take no action on the listener.
+     * </p>
+     * </li>
      *
-     * <li><p>
-     * Otherwise, if the event to be passed to the listener instances has not
-     * yet been constructed, construct the event, passing <code>source</code> as
-     * the argument to the one-argument constructor that takes an
-     * <code>Object</code>. This same event instance must be passed to all
-     * listener instances.</p></li>
+     * <li>
+     * <p>
+     * Otherwise, if the event to be passed to the listener instances has not yet been constructed, construct the event, passing <code>source</code> as the
+     * argument to the one-argument constructor that takes an <code>Object</code>. This same event instance must be passed to all listener instances.
+     * </p>
+     * </li>
      *
-     * <li><p>
-     * Call {@link jakarta.faces.event.SystemEvent#isAppropriateListener}, passing
-     * the listener instance as the argument. If this returns
-     * <code>false</code>, take no action on the listener.</p></li>
+     * <li>
+     * <p>
+     * Call {@link jakarta.faces.event.SystemEvent#isAppropriateListener}, passing the listener instance as the argument. If this returns <code>false</code>,
+     * take no action on the listener.
+     * </p>
+     * </li>
      *
-     * <li><p>
-     * Call {@link jakarta.faces.event.SystemEvent#processListener}, passing the
-     * listener instance. </p></li>
+     * <li>
+     * <p>
+     * Call {@link jakarta.faces.event.SystemEvent#processListener}, passing the listener instance.
+     * </p>
+     * </li>
      *
      * </ul>
      * </div>
      *
-     * @param systemEventClass The <code>Class</code> of event that is being
-     * published.
-     * @param source The source for the event of type
-     * <code>systemEventClass</code>.
+     * @param systemEventClass The <code>Class</code> of event that is being published.
+     * @param source The source for the event of type <code>systemEventClass</code>.
      *
-     * @throws NullPointerException if either <code>systemEventClass</code> or
-     * <code>source</code> is <code>null</code>
+     * @throws NullPointerException if either <code>systemEventClass</code> or <code>source</code> is <code>null</code>
      *
      * @since 2.0
      */
     @Override
-    public void publishEvent(FacesContext context,
-            Class<? extends SystemEvent> systemEventClass,
-            Object source) {
+    public void publishEvent(
+        FacesContext context,
+        Class<? extends SystemEvent> systemEventClass,
+        Object source
+    )
+    {
 
         if (systemEventClass == null) {
             throw new NullPointerException("systemEventClass");
@@ -472,7 +492,7 @@ public class MockApplication extends Application {
         try {
             // The side-effect of calling invokeListenersFor
             // will create a SystemEvent object appropriate to event/source
-            // combination.  This event will be passed on subsequent invocations
+            // combination. This event will be passed on subsequent invocations
             // of invokeListenersFor
             SystemEvent event;
 
@@ -485,62 +505,55 @@ public class MockApplication extends Application {
 
             // look for and invoke any listeners not specific to the source class
             invokeListenersFor(systemEventClass, event, source, false);
-        } catch (AbortProcessingException ape) {
+        }
+        catch (AbortProcessingException ape) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.log(Level.SEVERE,
-                        ape.getMessage(),
-                        ape);
+                LOGGER.log(
+                    Level.SEVERE,
+                    ape.getMessage(),
+                    ape
+                );
             }
         }
     }
 
     /**
-     * <p class="changed_added_2_0">Install the listener instance referenced by
-     * argument <code>listener</code> into the application as a listener for
-     * events of type <code>systemEventClass</code> that originate from objects
-     * of type <code>sourceClass</code>.</p>
+     * <p class="changed_added_2_0">
+     * Install the listener instance referenced by argument <code>listener</code> into the application as a listener for events of type
+     * <code>systemEventClass</code> that originate from objects of type <code>sourceClass</code>.
+     * </p>
      *
      * <div class="changed_added_2_0">
      *
      * <p>
-     * If argument <code>sourceClass</code> is non-<code>null</code>,
-     * <code>sourceClass</code> and <code>systemEventClass</code> must be used
-     * to store the argument <code>listener</code> in the application in such a
-     * way that the <code>listener</code> can be quickly looked up by the
-     * implementation of
-     * {@link jakarta.faces.application.Application#publishEvent} given
-     * <code>systemEventClass</code> and an instance of the <code>Class</code>
-     * referenced by <code>sourceClass</code>. If argument
-     * <code>sourceClass</code> is <code>null</code>, the <code>listener</code>
-     * must be discoverable by the implementation of
-     * {@link jakarta.faces.application.Application#publishEvent} given only
-     * <code>systemEventClass</code>.
+     * If argument <code>sourceClass</code> is non-<code>null</code>, <code>sourceClass</code> and <code>systemEventClass</code> must be used to store the
+     * argument <code>listener</code> in the application in such a way that the <code>listener</code> can be quickly looked up by the implementation of
+     * {@link jakarta.faces.application.Application#publishEvent} given <code>systemEventClass</code> and an instance of the <code>Class</code> referenced by
+     * <code>sourceClass</code>. If argument <code>sourceClass</code> is <code>null</code>, the <code>listener</code> must be discoverable by the implementation
+     * of {@link jakarta.faces.application.Application#publishEvent} given only <code>systemEventClass</code>.
      * </p>
      *
      * </div>
      *
-     * @param systemEventClass the <code>Class</code> of event for which
-     * <code>listener</code> must be fired.
+     * @param systemEventClass the <code>Class</code> of event for which <code>listener</code> must be fired.
      *
-     * @param sourceClass the <code>Class</code> of the instance which causes
-     * events of type <code>systemEventClass</code> to be fired. May be
+     * @param sourceClass the <code>Class</code> of the instance which causes events of type <code>systemEventClass</code> to be fired. May be
      * <code>null</code>.
      *
-     * @param listener the implementation of {@link
-     * jakarta.faces.event.SystemEventListener} whose {@link
-     * jakarta.faces.event.SystemEventListener#processEvent} method must be called
-     * when events of type <code>systemEventClass</code> are fired.
+     * @param listener the implementation of {@link jakarta.faces.event.SystemEventListener} whose {@link jakarta.faces.event.SystemEventListener#processEvent}
+     * method must be called when events of type <code>systemEventClass</code> are fired.
      *
-     * @throws NullPointerException if any combination of
-     * <code>systemEventClass</code>, or <code>listener</code> are
-     * <code>null</code>.
+     * @throws NullPointerException if any combination of <code>systemEventClass</code>, or <code>listener</code> are <code>null</code>.
      *
      * @since 2.0
      */
     @Override
-    public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass,
-            Class<?> sourceClass,
-            SystemEventListener listener) {
+    public void subscribeToEvent(
+        Class<? extends SystemEvent> systemEventClass,
+        Class<?> sourceClass,
+        SystemEventListener listener
+    )
+    {
 
         if (systemEventClass == null) {
             throw new NullPointerException("systemEventClass");
@@ -549,70 +562,62 @@ public class MockApplication extends Application {
             throw new NullPointerException("listener");
         }
 
-        Set<SystemEventListener> listeners
-                = getListeners(systemEventClass, sourceClass);
+        Set<SystemEventListener> listeners = getListeners(systemEventClass, sourceClass);
         listeners.add(listener);
 
     }
 
     /**
-     * <p class="changed_added_2_0">Install the listener instance referenced by
-     * argument <code>listener</code> into application as a listener for events
-     * of type <code>systemEventClass</code>. The default implementation simply
-     * calls through to
-     * {@link #subscribeToEvent(Class, Class, jakarta.faces.event.SystemEventListener)}
-     * passing <code>null</code> as the <code>sourceClass</code> argument</p>
+     * <p class="changed_added_2_0">
+     * Install the listener instance referenced by argument <code>listener</code> into application as a listener for events of type
+     * <code>systemEventClass</code>. The default implementation simply calls through to
+     * {@link #subscribeToEvent(Class, Class, jakarta.faces.event.SystemEventListener)} passing <code>null</code> as the <code>sourceClass</code> argument
+     * </p>
      *
-     * @param systemEventClass the <code>Class</code> of event for which
-     * <code>listener</code> must be fired.
+     * @param systemEventClass the <code>Class</code> of event for which <code>listener</code> must be fired.
      *
-     * @param listener the implementation of {@link
-     * jakarta.faces.event.SystemEventListener} whose {@link
-     * jakarta.faces.event.SystemEventListener#processEvent} method must be called
-     * when events of type <code>systemEventClass</code> are fired.
+     * @param listener the implementation of {@link jakarta.faces.event.SystemEventListener} whose {@link jakarta.faces.event.SystemEventListener#processEvent}
+     * method must be called when events of type <code>systemEventClass</code> are fired.
      *
-     * @throws NullPointerException if any combination of
-     * <code>systemEventClass</code>, or <code>listener</code> are
-     * <code>null</code>.
+     * @throws NullPointerException if any combination of <code>systemEventClass</code>, or <code>listener</code> are <code>null</code>.
      *
      * @since 2.0
      */
     @Override
-    public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass,
-            SystemEventListener listener) {
+    public void subscribeToEvent(
+        Class<? extends SystemEvent> systemEventClass,
+        SystemEventListener listener
+    )
+    {
 
         subscribeToEvent(systemEventClass, null, listener);
 
     }
 
     /**
-     * <p class="changed_added_2_0">Remove the listener instance referenced by
-     * argument <code>listener</code> from the application as a listener for
-     * events of type <code>systemEventClass</code> that originate from objects
-     * of type <code>sourceClass</code>. See {@link
-     * #subscribeToEvent(Class, Class,
-     * jakarta.faces.event.SystemEventListener)} for the specification of how the
-     * listener is stored, and therefore, how it must be removed.</p>
+     * <p class="changed_added_2_0">
+     * Remove the listener instance referenced by argument <code>listener</code> from the application as a listener for events of type
+     * <code>systemEventClass</code> that originate from objects of type <code>sourceClass</code>. See
+     * {@link #subscribeToEvent(Class, Class, jakarta.faces.event.SystemEventListener)} for the specification of how the listener is stored, and therefore, how
+     * it must be removed.
+     * </p>
      *
-     * @param systemEventClass the <code>Class</code> of event for which
-     * <code>listener</code> must be fired.
+     * @param systemEventClass the <code>Class</code> of event for which <code>listener</code> must be fired.
      *
-     * @param sourceClass the <code>Class</code> of the instance which causes
-     * events of type <code>systemEventClass</code> to be fired. May be
+     * @param sourceClass the <code>Class</code> of the instance which causes events of type <code>systemEventClass</code> to be fired. May be
      * <code>null</code>.
      *
-     * @param listener the implementation of {@link
-     * jakarta.faces.event.SystemEventListener} to remove from the internal data
-     * structure.
+     * @param listener the implementation of {@link jakarta.faces.event.SystemEventListener} to remove from the internal data structure.
      *
-     * @throws NullPointerException if any combination of
-     * <code>context</code>, <code>systemEventClass</code>, or
-     * <code>listener</code> are <code>null</code>.
+     * @throws NullPointerException if any combination of <code>context</code>, <code>systemEventClass</code>, or <code>listener</code> are <code>null</code>.
      */
     @Override
-    public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass,
-            Class<?> sourceClass,
-            SystemEventListener listener) {
+    public void unsubscribeFromEvent(
+        Class<? extends SystemEvent> systemEventClass,
+        Class<?> sourceClass,
+        SystemEventListener listener
+    )
+    {
 
         if (systemEventClass == null) {
             throw new NullPointerException("systemEventClass");
@@ -621,8 +626,7 @@ public class MockApplication extends Application {
             throw new NullPointerException("listener");
         }
 
-        Set<SystemEventListener> listeners
-                = getListeners(systemEventClass, sourceClass);
+        Set<SystemEventListener> listeners = getListeners(systemEventClass, sourceClass);
         if (listeners != null) {
             listeners.remove(listener);
         }
@@ -630,42 +634,40 @@ public class MockApplication extends Application {
     }
 
     /**
-     * <p class="changed_added_2_0">Remove the listener instance referenced by
-     * argument <code>listener</code> from the application as a listener for
-     * events of type <code>systemEventClass</code>. The default implementation
-     * simply calls through to
-     * {@link #unsubscribeFromEvent(Class, jakarta.faces.event.SystemEventListener)}
-     * passing <code>null</code> as the <code>sourceClass</code> argument</p>
+     * <p class="changed_added_2_0">
+     * Remove the listener instance referenced by argument <code>listener</code> from the application as a listener for events of type
+     * <code>systemEventClass</code>. The default implementation simply calls through to
+     * {@link #unsubscribeFromEvent(Class, jakarta.faces.event.SystemEventListener)} passing <code>null</code> as the <code>sourceClass</code> argument
+     * </p>
      *
-     * @param systemEventClass the <code>Class</code> of event for which
-     * <code>listener</code> must be fired.
+     * @param systemEventClass the <code>Class</code> of event for which <code>listener</code> must be fired.
      *
-     * @param listener the implementation of {@link
-     * jakarta.faces.event.SystemEventListener} to remove from the internal data
-     * structure.
+     * @param listener the implementation of {@link jakarta.faces.event.SystemEventListener} to remove from the internal data structure.
      *
-     * @throws NullPointerException if any combination of
-     * <code>context</code>, <code>systemEventClass</code>, or
-     * <code>listener</code> are <code>null</code>.
+     * @throws NullPointerException if any combination of <code>context</code>, <code>systemEventClass</code>, or <code>listener</code> are <code>null</code>.
      */
     @Override
-    public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass,
-            SystemEventListener listener) {
+    public void unsubscribeFromEvent(
+        Class<? extends SystemEvent> systemEventClass,
+        SystemEventListener listener
+    )
+    {
 
         unsubscribeFromEvent(systemEventClass, null, listener);
 
     }
 
     /**
-     * @return the SystemEventListeners that should be used for the provided
-     * combination of SystemEvent and source.
+     * @return the SystemEventListeners that should be used for the provided combination of SystemEvent and source.
      */
-    private Set<SystemEventListener> getListeners(Class<? extends SystemEvent> systemEvent,
-            Class<?> sourceClass) {
+    private Set<SystemEventListener> getListeners(
+        Class<? extends SystemEvent> systemEvent,
+        Class<?> sourceClass
+    )
+    {
 
         Set<SystemEventListener> listeners = null;
-        EventInfo sourceInfo
-                = systemEventHelper.getEventInfo(systemEvent, sourceClass);
+        EventInfo sourceInfo = systemEventHelper.getEventInfo(systemEvent, sourceClass);
         if (sourceInfo != null) {
             listeners = sourceInfo.getListeners();
         }
@@ -675,42 +677,50 @@ public class MockApplication extends Application {
     }
 
     /**
-     * @return process any listeners for the specified SystemEventListenerHolder
-     * and return any SystemEvent that may have been created as a side-effect of
+     * @return process any listeners for the specified SystemEventListenerHolder and return any SystemEvent that may have been created as a side-effect of
      * processing the listeners.
      */
-    private SystemEvent invokeComponentListenersFor(Class<? extends SystemEvent> systemEventClass,
-            Object source) {
+    private SystemEvent invokeComponentListenersFor(
+        Class<? extends SystemEvent> systemEventClass,
+        Object source
+    )
+    {
 
         if (source instanceof SystemEventListenerHolder) {
-            EventInfo eventInfo
-                    = compSysEventHelper.getEventInfo(systemEventClass,
-                            source.getClass());
-            return processListeners(((SystemEventListenerHolder) source).getListenersForEventClass(systemEventClass),
-                    null,
-                    source,
-                    eventInfo);
+            EventInfo eventInfo = compSysEventHelper.getEventInfo(
+                systemEventClass,
+                source.getClass()
+            );
+            return processListeners(
+                ((SystemEventListenerHolder) source).getListenersForEventClass(systemEventClass),
+                null,
+                source,
+                eventInfo
+            );
         }
         return null;
 
     }
 
     /**
-     * Traverse the <code>List</code> of listeners and invoke any that are
-     * relevent for the specified source.
+     * Traverse the <code>List</code> of listeners and invoke any that are relevent for the specified source.
      *
-     * @throws jakarta.faces.event.AbortProcessingException propagated from the
-     * listener invocation
+     * @throws jakarta.faces.event.AbortProcessingException propagated from the listener invocation
      */
-    private SystemEvent invokeListenersFor(Class<? extends SystemEvent> systemEventClass,
-            SystemEvent event,
-            Object source,
-            boolean useSourceLookup)
-            throws AbortProcessingException {
+    private SystemEvent invokeListenersFor(
+        Class<? extends SystemEvent> systemEventClass,
+        SystemEvent event,
+        Object source,
+        boolean useSourceLookup
+    )
+        throws AbortProcessingException
+    {
 
-        EventInfo eventInfo = systemEventHelper.getEventInfo(systemEventClass,
-                source,
-                useSourceLookup);
+        EventInfo eventInfo = systemEventHelper.getEventInfo(
+            systemEventClass,
+            source,
+            useSourceLookup
+        );
         if (eventInfo != null) {
             Set<SystemEventListener> listeners = eventInfo.getListeners();
             event = processListeners(listeners, event, source, eventInfo);
@@ -721,13 +731,15 @@ public class MockApplication extends Application {
     }
 
     /**
-     * Iterate through and invoke the listeners. If the passed event was
-     * <code>null</code>, create the event, and return it.
+     * Iterate through and invoke the listeners. If the passed event was <code>null</code>, create the event, and return it.
      */
-    private SystemEvent processListeners(Collection<SystemEventListener> listeners,
-            SystemEvent event,
-            Object source,
-            EventInfo eventInfo) {
+    private SystemEvent processListeners(
+        Collection<SystemEventListener> listeners,
+        SystemEvent event,
+        Object source,
+        EventInfo eventInfo
+    )
+    {
 
         if (listeners != null && !listeners.isEmpty()) {
             for (SystemEventListener curListener : listeners) {
@@ -757,22 +769,27 @@ public class MockApplication extends Application {
         // -------------------------------------------------------- Constructors
         public SystemEventHelper() {
 
-            systemEventInfoCache
-                    = new Cache<>(
-                            new Factory<Class<? extends SystemEvent>, SystemEventInfo>() {
-                                @Override
-                                public SystemEventInfo newInstance(final Class<? extends SystemEvent> arg)
-                                throws InterruptedException {
-                                    return new SystemEventInfo(arg);
-                                }
-                            }
-                    );
+            systemEventInfoCache = new Cache<>(
+                new Factory<Class<? extends SystemEvent>, SystemEventInfo>() {
+
+                    @Override
+                    public SystemEventInfo newInstance(final Class<? extends SystemEvent> arg)
+                        throws InterruptedException
+                {
+                        return new SystemEventInfo(arg);
+                    }
+
+                }
+            );
 
         }
 
         // ------------------------------------------------------ Public Methods
-        public EventInfo getEventInfo(Class<? extends SystemEvent> systemEventClass,
-                Class<?> sourceClass) {
+        public EventInfo getEventInfo(
+            Class<? extends SystemEvent> systemEventClass,
+            Class<?> sourceClass
+        )
+        {
 
             EventInfo info = null;
             SystemEventInfo systemEventInfo = systemEventInfoCache.get(systemEventClass);
@@ -784,12 +801,14 @@ public class MockApplication extends Application {
 
         }
 
-        public EventInfo getEventInfo(Class<? extends SystemEvent> systemEventClass,
-                Object source,
-                boolean useSourceForLookup) {
+        public EventInfo getEventInfo(
+            Class<? extends SystemEvent> systemEventClass,
+            Object source,
+            boolean useSourceForLookup
+        )
+        {
 
-            Class<?> sourceClass
-                    = ((useSourceForLookup) ? source.getClass() : Void.class);
+            Class<?> sourceClass = ((useSourceForLookup) ? source.getClass() : Void.class);
             return getEventInfo(systemEventClass, sourceClass);
 
         }
@@ -797,8 +816,7 @@ public class MockApplication extends Application {
     } // END SystemEventHelper
 
     /**
-     * Utility class for dealing with {@link jakarta.faces.component.UIComponent}
-     * events.
+     * Utility class for dealing with {@link jakarta.faces.component.UIComponent} events.
      */
     private static class ComponentSystemEventHelper {
 
@@ -809,33 +827,40 @@ public class MockApplication extends Application {
 
             // Initialize the 'sources' cache for, ahem, readability...
             // ~generics++
-            Factory<Class<?>, Cache<Class<? extends SystemEvent>, EventInfo>> eventCacheFactory
-                    = new Factory<>() {
+            Factory<Class<?>, Cache<Class<? extends SystemEvent>, EventInfo>> eventCacheFactory = new Factory<>() {
+
+                @Override
+                public Cache<Class<? extends SystemEvent>, EventInfo> newInstance(
+                    final Class<?> sourceClass
+                )
+                    throws InterruptedException
+                {
+                    Factory<Class<? extends SystemEvent>, EventInfo> eventInfoFactory = new Factory<>() {
+
                         @Override
-                        public Cache<Class<? extends SystemEvent>, EventInfo> newInstance(
-                                final Class<?> sourceClass)
-                        throws InterruptedException {
-                            Factory<Class<? extends SystemEvent>, EventInfo> eventInfoFactory
-                            = new Factory<>() {
-                                @Override
-                                public EventInfo newInstance(final Class<? extends SystemEvent> systemEventClass)
-                                throws InterruptedException {
-                                    return new EventInfo(systemEventClass, sourceClass);
-                                }
-                            };
-                            return new Cache<>(eventInfoFactory);
+                        public EventInfo newInstance(final Class<? extends SystemEvent> systemEventClass)
+                            throws InterruptedException
+                        {
+                            return new EventInfo(systemEventClass, sourceClass);
                         }
+
                     };
+                    return new Cache<>(eventInfoFactory);
+                }
+
+            };
             sourceCache = new Cache<>(eventCacheFactory);
 
         }
 
         // ------------------------------------------------------ Public Methods
-        public EventInfo getEventInfo(Class<? extends SystemEvent> systemEvent,
-                Class<?> sourceClass) {
+        public EventInfo getEventInfo(
+            Class<? extends SystemEvent> systemEvent,
+            Class<?> sourceClass
+        )
+        {
 
-            Cache<Class<? extends SystemEvent>, EventInfo> eventsCache
-                    = sourceCache.get(sourceClass);
+            Cache<Class<? extends SystemEvent>, EventInfo> eventsCache = sourceCache.get(sourceClass);
             return eventsCache.get(systemEvent);
 
         }
@@ -843,20 +868,22 @@ public class MockApplication extends Application {
     } // END ComponentSystemEventHelper
 
     /**
-     * Simple wrapper class for application level SystemEvents. It provides the
-     * structure to map a single SystemEvent to multiple sources which are
-     * represented by <code>SourceInfo</code> instances.
+     * Simple wrapper class for application level SystemEvents. It provides the structure to map a single SystemEvent to multiple sources which are represented
+     * by <code>SourceInfo</code> instances.
      */
     private static class SystemEventInfo {
 
         private Cache<Class<?>, EventInfo> cache = new Cache<>(
-                new Factory<Class<?>, EventInfo>() {
-                    @Override
-                    public EventInfo newInstance(Class<?> arg)
-                    throws InterruptedException {
-                        return new EventInfo(systemEvent, arg);
-                    }
+            new Factory<Class<?>, EventInfo>() {
+
+                @Override
+                public EventInfo newInstance(Class<?> arg)
+                    throws InterruptedException
+            {
+                    return new EventInfo(systemEvent, arg);
                 }
+
+            }
         );
         private Class<? extends SystemEvent> systemEvent;
 
@@ -878,9 +905,8 @@ public class MockApplication extends Application {
     } // END SystemEventInfo
 
     /**
-     * Represent a logical association between a SystemEvent and a Source. This
-     * call will contain the Listeners specific to this association as well as
-     * provide a method to construct new SystemEvents as required.
+     * Represent a logical association between a SystemEvent and a Source. This call will contain the Listeners specific to this association as well as provide
+     * a method to construct new SystemEvents as required.
      */
     private static class EventInfo {
 
@@ -891,8 +917,11 @@ public class MockApplication extends Application {
         private Map<Class<?>, Constructor<? extends SystemEvent>> constructorMap;
 
         // -------------------------------------------------------- Constructors
-        public EventInfo(Class<? extends SystemEvent> systemEvent,
-                Class<?> sourceClass) {
+        public EventInfo(
+            Class<? extends SystemEvent> systemEvent,
+            Class<?> sourceClass
+        )
+        {
 
             this.systemEvent = systemEvent;
             this.sourceClass = sourceClass;
@@ -917,7 +946,8 @@ public class MockApplication extends Application {
             if (toInvoke != null) {
                 try {
                     return toInvoke.newInstance(source);
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     throw new FacesException(e);
                 }
             }
@@ -930,7 +960,8 @@ public class MockApplication extends Application {
 
             if (eventConstructor != null) {
                 return eventConstructor;
-            } else {
+            }
+            else {
                 Constructor<? extends SystemEvent> c = constructorMap.get(source);
                 if (c == null) {
                     c = getEventConstructor(source);
@@ -949,7 +980,8 @@ public class MockApplication extends Application {
             Constructor<? extends SystemEvent> ctor = null;
             try {
                 return systemEvent.getDeclaredConstructor(source);
-            } catch (NoSuchMethodException ignored) {
+            }
+            catch (NoSuchMethodException ignored) {
                 Constructor<?>[] ctors = systemEvent.getConstructors();
                 if (ctors != null) {
                     for (Constructor<?> c : ctors) {
@@ -964,9 +996,11 @@ public class MockApplication extends Application {
                 }
                 if (eventConstructor == null) {
                     if (LOGGER.isLoggable(Level.FINE)) {
-                        LOGGER.log(Level.FINE,
-                                "Unable to find Constructor within {0} that accepts {1} instances.",
-                                new Object[]{systemEvent.getName(), sourceClass.getName()});
+                        LOGGER.log(
+                            Level.FINE,
+                            "Unable to find Constructor within {0} that accepts {1} instances.",
+                            new Object[] { systemEvent.getName(), sourceClass.getName() }
+                        );
                     }
                 }
             }
@@ -1007,13 +1041,9 @@ public class MockApplication extends Application {
 
         // ------------------------------------------------------ Public Methods
         /**
-         * If a value isn't associated with the specified key, a new
-         * {@link java.util.concurrent.Callable} will be created wrapping the
-         * <code>Factory</code> specified via the constructor and passed to a
-         * {@link java.util.concurrent.FutureTask}. This task will be passed to
-         * the backing ConcurrentMap. When
-         * {@link java.util.concurrent.FutureTask#get()} is invoked, the Factory
-         * will return the new Value which will be cached by the
+         * If a value isn't associated with the specified key, a new {@link java.util.concurrent.Callable} will be created wrapping the <code>Factory</code>
+         * specified via the constructor and passed to a {@link java.util.concurrent.FutureTask}. This task will be passed to the backing ConcurrentMap. When
+         * {@link java.util.concurrent.FutureTask#get()} is invoked, the Factory will return the new Value which will be cached by the
          * {@link java.util.concurrent.FutureTask}.
          *
          * @param key the key the value is associated with
@@ -1025,16 +1055,18 @@ public class MockApplication extends Application {
                 Future<V> f = cache.get(key);
                 if (f == null) {
                     Callable<V> callable = new Callable<>() {
+
                         @Override
                         public V call() throws Exception {
                             return factory.newInstance(key);
                         }
+
                     };
                     FutureTask<V> ft = new FutureTask<>(callable);
                     // here is the real beauty of the concurrent utilities.
-                    // 1.  putIfAbsent() is atomic
-                    // 2.  putIfAbsent() will return the value already associated
-                    //     with the specified key
+                    // 1. putIfAbsent() is atomic
+                    // 2. putIfAbsent() will return the value already associated
+                    // with the specified key
                     // So, if multiple threads make it to this point
                     // they will all be calling f.get() on the same
                     // FutureTask instance, so this guarantees that the instances
@@ -1047,21 +1079,28 @@ public class MockApplication extends Application {
                 }
                 try {
                     return f.get();
-                } catch (CancellationException ce) {
+                }
+                catch (CancellationException ce) {
                     if (LOGGER.isLoggable(Level.FINEST)) {
-                        LOGGER.log(Level.FINEST,
-                                ce.toString(),
-                                ce);
+                        LOGGER.log(
+                            Level.FINEST,
+                            ce.toString(),
+                            ce
+                        );
                     }
                     cache.remove(key);
-                } catch (InterruptedException ie) {
+                }
+                catch (InterruptedException ie) {
                     if (LOGGER.isLoggable(Level.FINEST)) {
-                        LOGGER.log(Level.FINEST,
-                                ie.toString(),
-                                ie);
+                        LOGGER.log(
+                            Level.FINEST,
+                            ie.toString(),
+                            ie
+                        );
                     }
                     cache.remove(key);
-                } catch (ExecutionException ee) {
+                }
+                catch (ExecutionException ee) {
                     throw new FacesException(ee);
                 }
             }
@@ -1090,4 +1129,5 @@ public class MockApplication extends Application {
     public void setSearchKeywordResolver(SearchKeywordResolver searchKeywordResolver) {
         this.searchKeywordResolver = searchKeywordResolver;
     }
+
 }

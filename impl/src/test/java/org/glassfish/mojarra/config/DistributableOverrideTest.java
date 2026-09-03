@@ -30,11 +30,9 @@ import org.glassfish.mojarra.mock.MockServletContext;
 import org.junit.jupiter.api.Test;
 
 /**
- * A <code>&lt;distributable/&gt;</code> in <code>web.xml</code> turns on
- * <code>org.glassfish.mojarra.enableDistributable</code> without the parameter itself being declared, which
- * {@link ConfigureListener} applies by overriding what the parameter resolved to. A reader which goes to the servlet
- * context for the declared value instead of asking this configuration therefore misses it, and the session map is
- * silently not the replicating one.
+ * A <code>&lt;distributable/&gt;</code> in <code>web.xml</code> turns on <code>org.glassfish.mojarra.enableDistributable</code> without the parameter itself
+ * being declared, which {@link ConfigureListener} applies by overriding what the parameter resolved to. A reader which goes to the servlet context for the
+ * declared value instead of asking this configuration therefore misses it, and the session map is silently not the replicating one.
  */
 class DistributableOverrideTest {
 
@@ -55,11 +53,14 @@ class DistributableOverrideTest {
     }
 
     private static Object sessionMapOf(MockServletContext servletContext) {
-        ExternalContextImpl externalContext = new ExternalContextImpl(servletContext, new MockHttpServletRequest(new MockHttpSession()),
-                new MockHttpServletResponse());
+        ExternalContextImpl externalContext = new ExternalContextImpl(
+            servletContext, new MockHttpServletRequest(new MockHttpSession()),
+            new MockHttpServletResponse()
+        );
         MockFacesContext facesContext = new MockFacesContext(externalContext);
         facesContext.setApplication(new MockApplication());
 
         return externalContext.getSessionMap();
     }
+
 }

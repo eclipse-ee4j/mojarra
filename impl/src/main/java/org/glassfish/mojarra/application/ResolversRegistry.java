@@ -33,6 +33,7 @@ import org.glassfish.mojarra.el.ResourceELResolver;
 import org.glassfish.mojarra.el.ScopedAttributeELResolver;
 
 public class ResolversRegistry {
+
     public final BeanELResolver BEAN_RESOLVER = new BeanELResolver();
     public final OptionalELResolver OPTIONAL_RESOLVER = new OptionalELResolver();
     public final RecordELResolver RECORD_RESOLVER = new RecordELResolver();

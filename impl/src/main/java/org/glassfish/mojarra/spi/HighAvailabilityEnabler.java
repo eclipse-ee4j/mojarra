@@ -24,5 +24,7 @@ import jakarta.servlet.ServletContext;
  * @author sheetalv
  */
 public interface HighAvailabilityEnabler {
+
     void enableHighAvailability(ServletContext ctx);
+
 }

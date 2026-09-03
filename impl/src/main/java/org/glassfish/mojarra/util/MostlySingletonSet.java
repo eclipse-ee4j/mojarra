@@ -45,7 +45,8 @@ public class MostlySingletonSet<E> implements Set<E>, Serializable {
         boolean result = true;
         if (null == inner) {
             inner = Collections.singleton(e);
-        } else {
+        }
+        else {
             // If we need to transition from one to more-than-one
             if (1 == inner.size()) {
                 HashSet<E> newSet = new HashSet<>();
@@ -64,7 +65,8 @@ public class MostlySingletonSet<E> implements Set<E>, Serializable {
 
         if (null == inner && 1 == c.size()) {
             inner = Collections.singleton(c.iterator().next());
-        } else {
+        }
+        else {
             // If we need to transition from one to more-than-one
             if (1 == inner.size()) {
                 HashSet<E> newSet = new HashSet<>();
@@ -98,14 +100,16 @@ public class MostlySingletonSet<E> implements Set<E>, Serializable {
                 // If our element is not null, and the argument is not null
                 if (null != e && null != o) {
                     didRemove = e.equals(o);
-                } else {
+                }
+                else {
                     didRemove = null == o;
                 }
                 if (didRemove) {
                     inner = null;
                 }
 
-            } else {
+            }
+            else {
                 didRemove = inner.remove(o);
                 if (didRemove && 1 == inner.size()) {
                     Set<E> newInner = Collections.singleton(inner.iterator().next());
@@ -138,7 +142,8 @@ public class MostlySingletonSet<E> implements Set<E>, Serializable {
                         if (result = oneAndOnlyElement.equals(cur)) {
                             break;
                         }
-                    } else {
+                    }
+                    else {
                         // oneAndOnlyElement is null
                         if (result = cur == null) {
                             break;
@@ -148,7 +153,8 @@ public class MostlySingletonSet<E> implements Set<E>, Serializable {
                 if (result) {
                     inner = null;
                 }
-            } else {
+            }
+            else {
                 result = inner.removeAll(c);
                 if (result && 0 == inner.size()) {
                     inner = null;
@@ -179,7 +185,8 @@ public class MostlySingletonSet<E> implements Set<E>, Serializable {
                         if (found = oneAndOnlyElement.equals(cur)) {
                             break;
                         }
-                    } else {
+                    }
+                    else {
                         if (found = cur == null) {
                             break;
                         }
@@ -189,7 +196,8 @@ public class MostlySingletonSet<E> implements Set<E>, Serializable {
                     inner = null;
                 }
 
-            } else {
+            }
+            else {
                 didModify = inner.retainAll(c);
             }
         }
@@ -252,15 +260,18 @@ public class MostlySingletonSet<E> implements Set<E>, Serializable {
                 final MostlySingletonSet<E> other = (MostlySingletonSet<E>) obj;
                 if (this.inner != other.inner && (this.inner == null || !this.inner.equals(other.inner))) {
                     result = false;
-                } else {
+                }
+                else {
                     result = true;
                 }
-            } else if (obj instanceof Collection) {
+            }
+            else if (obj instanceof Collection) {
                 Collection<?> otherCollection = (Collection<?>) obj;
 
                 if (null != inner) {
                     result = inner.equals(otherCollection);
-                } else {
+                }
+                else {
                     result = otherCollection.isEmpty();
                 }
 
@@ -295,7 +306,8 @@ public class MostlySingletonSet<E> implements Set<E>, Serializable {
 
         if (null != inner) {
             result = inner.iterator();
-        } else {
+        }
+        else {
             result = Collections.<E>emptySet().iterator();
         }
 

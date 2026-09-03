@@ -65,6 +65,7 @@ public class FastStringWriter extends Writer {
      * <p>
      * Write a portion of an array of characters.
      * </p>
+     *
      * @param cbuf Array of characters
      * @param off Offset from which to start writing characters
      * @param len Number of characters to write
@@ -102,6 +103,7 @@ public class FastStringWriter extends Writer {
 
     /**
      * Write a single character. The 16 high-order bits of <code>c</code> are ignored.
+     *
      * @param c the character to be written
      */
     @Override
@@ -161,7 +163,6 @@ public class FastStringWriter extends Writer {
         builder.setLength(0);
     }
 
-
     // ------------------------------------------------- Append Methods
 
     /**
@@ -177,8 +178,7 @@ public class FastStringWriter extends Writer {
     }
 
     /**
-     * Append a subsequence of a character sequence. A <code>null</code> argument is appended as if it contained the
-     * four characters <code>null</code>.
+     * Append a subsequence of a character sequence. A <code>null</code> argument is appended as if it contained the four characters <code>null</code>.
      *
      * @param csq the character sequence to append from
      * @param start index of the first character to append

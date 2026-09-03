@@ -47,4 +47,5 @@ public class ViewParamBean {
     public Row getRow() {
         return row;
     }
+
 }

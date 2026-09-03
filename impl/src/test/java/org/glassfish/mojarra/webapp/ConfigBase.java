@@ -48,7 +48,6 @@ public class ConfigBase {
         this.navigationHandler = navigationHandler;
     }
 
-
     // ------------------------------------------------------------ <component>
     private Map<String, ConfigComponent> components = null;
 
@@ -62,7 +61,8 @@ public class ConfigBase {
     public Map<String, ConfigComponent> getComponents() {
         if (components == null) {
             return (Collections.emptyMap());
-        } else {
+        }
+        else {
             return (this.components);
         }
     }
@@ -80,7 +80,8 @@ public class ConfigBase {
     public Map<String, ConfigConverter> getConverters() {
         if (converters == null) {
             return (Collections.emptyMap());
-        } else {
+        }
+        else {
             return (this.converters);
         }
     }
@@ -98,8 +99,10 @@ public class ConfigBase {
     public Map<String, ConfigValidator> getValidators() {
         if (validators == null) {
             return (Collections.emptyMap());
-        } else {
+        }
+        else {
             return (this.validators);
         }
     }
+
 }

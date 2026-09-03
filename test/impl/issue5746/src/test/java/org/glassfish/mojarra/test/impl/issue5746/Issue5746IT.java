@@ -37,9 +37,9 @@ import org.openqa.selenium.devtools.v139.network.model.ResponseReceivedEarlyHint
 import ee.jakarta.tck.faces.util.selenium.BaseITNG;
 
 /**
- * The head resources of a Facelets page must be announced as {@code Link: <url>;rel=preload} headers in a 103 interim
- * response sent before the final 200 response. The specification does not mandate Early Hints: whether to send a 103 at
- * all, which resources to advertise, and how, is left entirely to the implementation.
+ * The head resources of a Facelets page must be announced as {@code Link: <url>;rel=preload} headers in a 103 interim response sent before the final 200
+ * response. The specification does not mandate Early Hints: whether to send a 103 at all, which resources to advertise, and how, is left entirely to the
+ * implementation.
  */
 class Issue5746IT extends BaseITNG {
 
@@ -48,9 +48,8 @@ class Issue5746IT extends BaseITNG {
     private static final List<String> HEAD_RESOURCES = List.of("style1.css", "style2.css", "script1.js", "script2.js", "script3.js");
 
     /**
-     * On a regular (non-conditional) request, the server must emit a 103 interim response that preloads every head
-     * resource, ahead of the final 200 response. Asserted at the wire level because {@link java.net.http.HttpClient}
-     * silently discards 1xx interim responses.
+     * On a regular (non-conditional) request, the server must emit a 103 interim response that preloads every head resource, ahead of the final 200 response.
+     * Asserted at the wire level because {@link java.net.http.HttpClient} silently discards 1xx interim responses.
      */
     @Test
     void earlyHintsArePreloadedBeforeFinalResponse() throws IOException {
@@ -82,9 +81,9 @@ class Issue5746IT extends BaseITNG {
     }
 
     /**
-     * Verifies that a real browser actually receives the 103 interim response, captured via the Chrome DevTools
-     * {@code Network.responseReceivedEarlyHints} event. Chrome only acts on Early Hints over HTTP/2, hence this
-     * navigates to the TLS (HTTP/2) listener instead of the plaintext HTTP/1.1 one used by the wire checks above.
+     * Verifies that a real browser actually receives the 103 interim response, captured via the Chrome DevTools {@code Network.responseReceivedEarlyHints}
+     * event. Chrome only acts on Early Hints over HTTP/2, hence this navigates to the TLS (HTTP/2) listener instead of the plaintext HTTP/1.1 one used by the
+     * wire checks above.
      */
     @Test
     void browserReceivesEarlyHints() {
@@ -97,8 +96,8 @@ class Issue5746IT extends BaseITNG {
 
         assertFalse(received.isEmpty(), "The browser should have received a 103 Early Hints response");
         boolean preloadsResources = received.stream()
-                .flatMap(hints -> hints.getHeaders().entrySet().stream())
-                .anyMatch(header -> "link".equalsIgnoreCase(header.getKey()) && String.valueOf(header.getValue()).contains("rel=preload"));
+            .flatMap(hints -> hints.getHeaders().entrySet().stream())
+            .anyMatch(header -> "link".equalsIgnoreCase(header.getKey()) && String.valueOf(header.getValue()).contains("rel=preload"));
         assertTrue(preloadsResources, "The early hints received by the browser must contain Link rel=preload headers");
     }
 
@@ -130,10 +129,12 @@ class Issue5746IT extends BaseITNG {
         while (!condition.getAsBoolean() && System.currentTimeMillis() < deadline) {
             try {
                 Thread.sleep(100);
-            } catch (InterruptedException e) {
+            }
+            catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 return;
             }
         }
     }
+
 }

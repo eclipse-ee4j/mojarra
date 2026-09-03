@@ -43,8 +43,7 @@ import jakarta.servlet.http.HttpSession;
 
 /**
  * <p class="changed_added_2_3">
- * This web socket channel manager holds all application and session scoped web socket channel identifiers registered by
- * <code>&lt;f:websocket&gt;</code>.
+ * This web socket channel manager holds all application and session scoped web socket channel identifiers registered by <code>&lt;f:websocket&gt;</code>.
  *
  * @author Bauke Scholtz
  * @see Push
@@ -58,10 +57,10 @@ public class WebsocketChannelManager implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private static final String ERROR_INVALID_SCOPE = "f:websocket 'scope' attribute '%s' does not represent a valid scope. It may not be an EL expression and allowed"
-            + " values are 'application', 'session' and 'view', case insensitive. The default is 'application'. When"
-            + " 'user' attribute is specified, then scope defaults to 'session' and may not be 'application'.";
+        + " values are 'application', 'session' and 'view', case insensitive. The default is 'application'. When"
+        + " 'user' attribute is specified, then scope defaults to 'session' and may not be 'application'.";
     private static final String ERROR_DUPLICATE_CHANNEL = "f:websocket channel '%s' is already registered on a different scope. Choose an unique channel name for a"
-            + " different channel (or shutdown all browsers and restart the server if you were just testing).";
+        + " different channel (or shutdown all browsers and restart the server if you were just testing).";
 
     private static final int ESTIMATED_CHANNELS_PER_APPLICATION = 1;
     private static final int ESTIMATED_CHANNELS_PER_SESSION = 1;
@@ -74,7 +73,10 @@ public class WebsocketChannelManager implements Serializable {
     private static final String SESSION_SCOPE_CHANNEL_IDS = "org.glassfish.mojarra.push.SESSION_SCOPE_CHANNEL_IDS";
 
     private enum Scope {
-        APPLICATION, SESSION, VIEW;
+
+        APPLICATION,
+        SESSION,
+        VIEW;
 
         static Scope of(String value, Serializable user) {
             if (value == null) {
@@ -89,6 +91,7 @@ public class WebsocketChannelManager implements Serializable {
 
             throw new IllegalArgumentException(String.format(ERROR_INVALID_SCOPE, value));
         }
+
     }
 
     // Properties -----------------------------------------------------------------------------------------------------
@@ -110,24 +113,23 @@ public class WebsocketChannelManager implements Serializable {
      *
      * @param context The involved faces context.
      * @param channel The web socket channel.
-     * @param scope The web socket scope. Supported values are <code>application</code>, <code>session</code> and
-     * <code>view</code>, case insensitive. If <code>null</code>, the default is <code>application</code>.
-     * @param user The user object representing the owner of the given channel. If not <code>null</code>, then scope may not
-     * be <code>application</code>.
+     * @param scope The web socket scope. Supported values are <code>application</code>, <code>session</code> and <code>view</code>, case insensitive. If
+     * <code>null</code>, the default is <code>application</code>.
+     * @param user The user object representing the owner of the given channel. If not <code>null</code>, then scope may not be <code>application</code>.
      * @return The web socket URL.
      * @throws IllegalArgumentException When the scope is invalid or when channel already exists on a different scope.
      */
     @SuppressWarnings("unchecked")
     public String register(FacesContext context, String channel, String scope, Serializable user) {
         switch (Scope.of(scope, user)) {
-        case APPLICATION:
-            return register(context, null, channel, APPLICATION_SCOPE, sessionScope, getViewScope(false));
-        case SESSION:
-            return register(context, user, channel, sessionScope, APPLICATION_SCOPE, getViewScope(false));
-        case VIEW:
-            return register(context, user, channel, getViewScope(true), APPLICATION_SCOPE, sessionScope);
-        default:
-            throw new UnsupportedOperationException();
+            case APPLICATION :
+                return register(context, null, channel, APPLICATION_SCOPE, sessionScope, getViewScope(false));
+            case SESSION :
+                return register(context, user, channel, sessionScope, APPLICATION_SCOPE, getViewScope(false));
+            case VIEW :
+                return register(context, user, channel, getViewScope(true), APPLICATION_SCOPE, sessionScope);
+            default :
+                throw new UnsupportedOperationException();
         }
     }
 
@@ -183,8 +185,8 @@ public class WebsocketChannelManager implements Serializable {
     }
 
     /**
-     * When current session scope is about to be destroyed, deregister all session scope channels and explicitly close any
-     * open web sockets associated with it to avoid stale websockets. If any, also deregister session users.
+     * When current session scope is about to be destroyed, deregister all session scope channels and explicitly close any open web sockets associated with it
+     * to avoid stale websockets. If any, also deregister session users.
      */
     @PreDestroy
     protected void deregisterSessionScope() {
@@ -198,8 +200,7 @@ public class WebsocketChannelManager implements Serializable {
     // Nested classes -------------------------------------------------------------------------------------------------
 
     /**
-     * This helps the web socket channel manager to hold view scoped web socket channel identifiers registered by
-     * <code>&lt;f:websocket&gt;</code>.
+     * This helps the web socket channel manager to hold view scoped web socket channel identifiers registered by <code>&lt;f:websocket&gt;</code>.
      *
      * @author Bauke Scholtz
      * @see WebsocketChannelManager
@@ -212,8 +213,8 @@ public class WebsocketChannelManager implements Serializable {
         private ConcurrentMap<String, String> viewScope = new ConcurrentHashMap<>(ESTIMATED_CHANNELS_PER_VIEW);
 
         /**
-         * When current view scope is about to be destroyed, deregister all view scope channels and explicitly close any open
-         * web sockets associated with it to avoid stale websockets.
+         * When current view scope is about to be destroyed, deregister all view scope channels and explicitly close any open web sockets associated with it to
+         * avoid stale websockets.
          */
         @PreDestroy
         protected void deregisterViewScope() {
@@ -225,16 +226,16 @@ public class WebsocketChannelManager implements Serializable {
     // Internal (static because package private methods in CDI beans are subject to memory leaks) ---------------------
 
     /**
-     * For internal usage only. This makes it possible to remember session scope channel IDs during injection time of
-     * {@link WebsocketPushContext} (the CDI session scope is not necessarily active during push send time).
+     * For internal usage only. This makes it possible to remember session scope channel IDs during injection time of {@link WebsocketPushContext} (the CDI
+     * session scope is not necessarily active during push send time).
      */
     static Map<String, String> getSessionScope() {
         return getBeanInstance(WebsocketChannelManager.class, true).sessionScope;
     }
 
     /**
-     * For internal usage only. This makes it possible to remember view scope channel IDs during injection time of
-     * {@link WebsocketPushContext} (the CDI view scope is not necessarily active during push send time).
+     * For internal usage only. This makes it possible to remember view scope channel IDs during injection time of {@link WebsocketPushContext} (the CDI view
+     * scope is not necessarily active during push send time).
      */
     static Map<String, String> getViewScope(boolean create) {
         ViewScope bean = getBeanInstance(ViewScope.class, create);
@@ -242,8 +243,7 @@ public class WebsocketChannelManager implements Serializable {
     }
 
     /**
-     * For internal usage only. This makes it possible to resolve the session and view scope channel ID during push send
-     * time in {@link WebsocketPushContext}.
+     * For internal usage only. This makes it possible to resolve the session and view scope channel ID during push send time in {@link WebsocketPushContext}.
      */
     static String getChannelId(String channel, Map<String, String> sessionScope, Map<String, String> viewScope) {
         String channelId = viewScope.get(channel);
@@ -260,17 +260,16 @@ public class WebsocketChannelManager implements Serializable {
     }
 
     /**
-     * For internal usage only. This makes it possible for {@link WebsocketEndpoint.Configurator} to determine whether
-     * the given channel identifier represents an application scoped channel, which is by design not bound to any HTTP
-     * session.
+     * For internal usage only. This makes it possible for {@link WebsocketEndpoint.Configurator} to determine whether the given channel identifier represents
+     * an application scoped channel, which is by design not bound to any HTTP session.
      */
     static boolean isApplicationScopedChannelId(String channelId) {
         return channelId != null && APPLICATION_SCOPE.containsValue(channelId);
     }
 
     /**
-     * For internal usage only. This makes it possible for {@link WebsocketEndpoint.Configurator} to determine whether
-     * the given session or view scoped channel identifier was registered by the given HTTP session.
+     * For internal usage only. This makes it possible for {@link WebsocketEndpoint.Configurator} to determine whether the given session or view scoped channel
+     * identifier was registered by the given HTTP session.
      */
     static boolean isChannelIdRegisteredInSession(HttpSession httpSession, String channelId) {
         if (httpSession == null) {

@@ -92,6 +92,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
     protected boolean expectedRendersChildren = false;
 
     private Map.Entry<String, UIComponent> bogusEntry = new Map.Entry<>() {
+
         @Override
         public boolean equals(Object r) {
             return false;
@@ -140,7 +141,8 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         RenderKit renderKit = new MockRenderKit();
         try {
             renderKitFactory.addRenderKit(RenderKitFactory.HTML_BASIC_RENDER_KIT, renderKit);
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
         }
 
         component = new ComponentTestImpl(expectedId);
@@ -244,19 +246,22 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         try {
             attributes.put(null, "dummy");
             fail("Should have thrown NullPointerException");
-        } catch (NullPointerException e) {
+        }
+        catch (NullPointerException e) {
             // Expected result
         }
         try {
             attributes.put("rendersChildren", null); // Primitive property
             fail("Should have thrown IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             // Expected result
         }
         try {
             attributes.put("rendersChildren", Boolean.TRUE); // Write-only
             fail("Should have thrown IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             // Expected result
         }
         attributes.put("id", "newvalue");
@@ -274,7 +279,8 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         try {
             attributes.remove("id");
             fail("Should have thrown IllegalArgumentException()");
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             // Expected result
         }
 
@@ -288,7 +294,8 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         try {
             component.getAttributes().get(null);
             fail("should have thrown NullPointerException");
-        } catch (NullPointerException e) {
+        }
+        catch (NullPointerException e) {
             // Expected result
         }
 
@@ -296,7 +303,8 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         try {
             component.getAttributes().put(null, "bar");
             fail("should have thrown NullPointerException");
-        } catch (NullPointerException e) {
+        }
+        catch (NullPointerException e) {
             // Expected result
         }
 
@@ -576,14 +584,16 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         try {
             component.getChildren().listIterator(-1);
             fail("Should throw IndexOutOfBoundsException on index -1");
-        } catch (IndexOutOfBoundsException e) {
+        }
+        catch (IndexOutOfBoundsException e) {
             // Expected result
         }
 
         try {
             component.getChildren().listIterator(component.getChildren().size() + 1);
             fail("Should throw IndexOutOfBoundsException on index = size() + 1");
-        } catch (IndexOutOfBoundsException e) {
+        }
+        catch (IndexOutOfBoundsException e) {
             // Expected result
         }
 
@@ -621,7 +631,8 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         try {
             children.add(null);
             fail("Should have thrown NullPointerException");
-        } catch (NullPointerException e) {
+        }
+        catch (NullPointerException e) {
             // Expected result
         }
         checkChildCount(component, 3);
@@ -634,7 +645,8 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         try {
             children.add(-1, comp3);
             fail("Should have thrown IndexOutOfBoundsException low");
-        } catch (IndexOutOfBoundsException e) {
+        }
+        catch (IndexOutOfBoundsException e) {
             // Expected result
         }
         checkChildCount(component, 3);
@@ -647,7 +659,8 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         try {
             children.add(4, comp3);
             fail("Should have thrown IndexOutOfBoundsException high");
-        } catch (IndexOutOfBoundsException e) {
+        }
+        catch (IndexOutOfBoundsException e) {
             // Expected result
         }
         checkChildCount(component, 3);
@@ -660,7 +673,8 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         try {
             children.add(1, null);
             fail("Should have thrown NullPointerException");
-        } catch (NullPointerException e) {
+        }
+        catch (NullPointerException e) {
             // Expected result
         }
         checkChildCount(component, 3);
@@ -673,7 +687,8 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         try {
             children.set(-1, comp3);
             fail("Should have thrown IndexOutOfBoundsException low");
-        } catch (IndexOutOfBoundsException e) {
+        }
+        catch (IndexOutOfBoundsException e) {
             // Expected result
         }
         checkChildCount(component, 3);
@@ -686,7 +701,8 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         try {
             children.set(4, comp3);
             fail("Should have thrown IndexOutOfBoundsException high");
-        } catch (IndexOutOfBoundsException e) {
+        }
+        catch (IndexOutOfBoundsException e) {
             // Expected result
         }
         checkChildCount(component, 3);
@@ -699,7 +715,8 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         try {
             children.set(1, null);
             fail("Should have thrown NullPointerException");
-        } catch (NullPointerException e) {
+        }
+        catch (NullPointerException e) {
             // Expected result
         }
         checkChildCount(component, 3);
@@ -930,7 +947,8 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         try {
             entrySet.add(bogusEntry);
             fail("Should have thrown UnsupportedOperationExcepton");
-        } catch (UnsupportedOperationException e) {
+        }
+        catch (UnsupportedOperationException e) {
             // Expected result
         }
 
@@ -1271,7 +1289,8 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         try {
             values.add(new ComponentTestImpl("facet0"));
             fail("Should have thrown UnsupportedOperationExcepton");
-        } catch (UnsupportedOperationException e) {
+        }
+        catch (UnsupportedOperationException e) {
             // Expected result
         }
 
@@ -1283,7 +1302,8 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         try {
             values.addAll(preload.values());
             fail("Should have thrown UnsupportedOperationExcepton");
-        } catch (UnsupportedOperationException e) {
+        }
+        catch (UnsupportedOperationException e) {
             // Expected result
         }
 
@@ -1441,7 +1461,8 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         try {
             facets.put(null, facet3);
             fail("Should have thrown NullPointerException");
-        } catch (NullPointerException e) {
+        }
+        catch (NullPointerException e) {
             // Expected result
         }
         checkFacetCount(component, 2);
@@ -1453,7 +1474,8 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         try {
             facets.put("facet3", null);
             fail("Should have thrown NullPointerException");
-        } catch (NullPointerException e) {
+        }
+        catch (NullPointerException e) {
             // Expected result
         }
         checkFacetCount(component, 2);
@@ -1580,7 +1602,8 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         try {
             component.setId("");
             fail("should have thrown IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             // Expected result
         }
 
@@ -1588,7 +1611,8 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         try {
             component.setId("1abc");
             fail("should have thrown IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             // Expected result
         }
 
@@ -1596,7 +1620,8 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         try {
             component.setId("a*c");
             fail("should have thrown IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             // Expected result
         }
 
@@ -1604,7 +1629,8 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         try {
             component.setId(" abc");
             fail("should have thrown IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             // Expected result
         }
 
@@ -1612,7 +1638,8 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         try {
             component.setId("-abc");
             fail("should have thrown IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             // Expected result
         }
 
@@ -1719,7 +1746,8 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         assertEquals(count, component.getChildCount());
         if (count == 0) {
             assertTrue(component.getChildren().isEmpty());
-        } else {
+        }
+        else {
             assertTrue(!component.getChildren().isEmpty());
         }
     }
@@ -1752,7 +1780,8 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         assertEquals(count, component.getFacets().size());
         if (count == 0) {
             assertTrue(component.getFacets().isEmpty());
-        } else {
+        }
+        else {
             assertTrue(!component.getFacets().isEmpty());
         }
     }
@@ -1841,7 +1870,8 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
                 if (e.getKey() != null) {
                     return false;
                 }
-            } else {
+            }
+            else {
                 if (!key.equals(e.getKey())) {
                     return false;
                 }
@@ -1850,7 +1880,8 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
                 if (e.getValue() != null) {
                     return false;
                 }
-            } else {
+            }
+            else {
                 if (!value.equals(e.getValue())) {
                     return false;
                 }
@@ -1900,6 +1931,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         public String getResults() {
             return sb.toString();
         }
+
     }
 
     public static class ValidationSignal implements Validator<Object> {
@@ -1910,6 +1942,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
             component.getAttributes().put("vCalled", Boolean.TRUE);
 
         }
+
     }
 
 }

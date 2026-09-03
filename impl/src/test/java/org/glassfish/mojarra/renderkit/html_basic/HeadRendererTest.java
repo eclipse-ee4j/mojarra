@@ -59,14 +59,14 @@ public class HeadRendererTest {
         Doctype doctype = Mockito.mock(Doctype.class);
         HeadRenderer headRenderer = new HeadRenderer();
         HtmlHead htmlHead = new HtmlHead();
-        
+
         when(facesContext.getResponseWriter()).thenReturn(testResponseWriter);
         when(facesContext.getViewRoot()).thenReturn(viewRoot);
         when(viewRoot.getDoctype()).thenReturn(doctype);
         when(doctype.getRootElement()).thenReturn("html");
         when(doctype.getPublic()).thenReturn(null);
         when(doctype.getSystem()).thenReturn(null);
-        
+
         headRenderer.encodeBegin(facesContext, htmlHead);
         String html = writer.toString();
         assertTrue(html.contains("<head"));
@@ -87,9 +87,7 @@ public class HeadRendererTest {
      * Test encodeEnd method.
      *
      * <p>
-     * TODO: Note we are not testing the rendering of the component resources as
-     * the underlying code is too complex for unit testing and needs to be
-     * simplified.
+     * TODO: Note we are not testing the rendering of the component resources as the underlying code is too complex for unit testing and needs to be simplified.
      * </p>
      *
      * @throws Exception when a serious error occurs.
@@ -111,4 +109,5 @@ public class HeadRendererTest {
         String html = writer.toString();
         assertTrue(html.contains("</head>"));
     }
+
 }

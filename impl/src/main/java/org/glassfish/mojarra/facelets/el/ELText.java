@@ -34,8 +34,7 @@ import org.glassfish.mojarra.util.HtmlUtils;
 import org.glassfish.mojarra.util.MessageUtils;
 
 /**
- * Handles parsing EL Strings in accordance with the EL-API Specification. The parser accepts either <code>${..}</code>
- * or <code>#{..}</code>.
+ * Handles parsing EL Strings in accordance with the EL-API Specification. The parser accepts either <code>${..}</code> or <code>#{..}</code>.
  *
  * @author Jacob Hookom
  * @version $Id$
@@ -99,6 +98,7 @@ public class ELText {
     }
 
     private static final class ELTextComposite extends ELText {
+
         private final ELText[] txt;
 
         public ELTextComposite(ELText[] txt) {
@@ -130,8 +130,8 @@ public class ELText {
         }
 
         /*
-         * public String toString(ELContext ctx) { StringBuffer sb = new StringBuffer(); for (int i = 0; i < this.txt.length;
-         * i++) { sb.append(this.txt[i].toString(ctx)); } return sb.toString(); }
+         * public String toString(ELContext ctx) { StringBuffer sb = new StringBuffer(); for (int i = 0; i < this.txt.length; i++) {
+         * sb.append(this.txt[i].toString(ctx)); } return sb.toString(); }
          */
 
         @Override
@@ -157,9 +157,11 @@ public class ELText {
             }
             return new ELTextComposite(nt);
         }
+
     }
 
     private static final class ELTextVariable extends ELText {
+
         private final ValueExpression ve;
 
         public ELTextVariable(ValueExpression ve) {
@@ -177,7 +179,8 @@ public class ELText {
             ELText result = null;
             if (ve instanceof ContextualCompositeValueExpression) {
                 result = new ELTextVariable(ve);
-            } else {
+            }
+            else {
                 result = new ELTextVariable(factory.createValueExpression(ctx, ve.getExpressionString(), String.class));
             }
 
@@ -209,6 +212,7 @@ public class ELText {
                 out.writeText(v.toString(), null);
             }
         }
+
     }
 
     protected final String literal;
@@ -282,8 +286,8 @@ public class ELText {
 
     /**
      * Factory method for creating an unvalidated ELText instance. NOTE: All expressions in the passed String are treated as
-     * {@link org.glassfish.mojarra.facelets.el.ELText.LiteralValueExpression}, with one exception: composite component expressions.
-     * These are treated as ContextualCompositeValueExpressions.
+     * {@link org.glassfish.mojarra.facelets.el.ELText.LiteralValueExpression}, with one exception: composite component expressions. These are treated as
+     * ContextualCompositeValueExpressions.
      *
      * @param in String to parse
      * @return ELText instance that knows if the String was literal or not
@@ -302,9 +306,9 @@ public class ELText {
     }
 
     /**
-     * Factory method for creating a validated ELText instance. When an Expression is hit, it will use the ExpressionFactory
-     * to create a ValueExpression instance, resolving any functions at that time.
-     * 
+     * Factory method for creating a validated ELText instance. When an Expression is hit, it will use the ExpressionFactory to create a ValueExpression
+     * instance, resolving any functions at that time.
+     *
      * Variables and properties will not be evaluated.
      *
      * @param fact ExpressionFactory to use
@@ -336,7 +340,8 @@ public class ELText {
                     i++;
                     continue;
                 }
-            } else if (!esc && ('$' == c || '#' == c)) {
+            }
+            else if (!esc && ('$' == c || '#' == c)) {
                 if (i < end) {
                     if ('{' == ca[i + 1]) {
                         if (buff.length() > 0) {
@@ -347,7 +352,8 @@ public class ELText {
                         if (ctx != null && fact != null) {
                             ve = fact.createValueExpression(ctx, new String(ca, i, vlen), String.class);
                             t = new ELTextVariable(ve);
-                        } else {
+                        }
+                        else {
                             String expr = new String(ca, i, vlen);
                             if (null != alias && ELUtils.isCompositeComponentExpr(expr)) {
                                 if (ELUtils.isCompositeComponentLookupWithArgs(expr)) {
@@ -360,7 +366,8 @@ public class ELText {
                                 Location location = new Location(alias, -1, -1);
                                 ve = new ContextualCompositeValueExpression(location, delegate);
 
-                            } else {
+                            }
+                            else {
                                 ve = new LiteralValueExpression(expr);
                             }
                             t = new ELTextVariable(ve);
@@ -383,9 +390,11 @@ public class ELText {
 
         if (text.isEmpty()) {
             return new ELText("");
-        } else if (text.size() == 1) {
+        }
+        else if (text.size() == 1) {
             return text.get(0);
-        } else {
+        }
+        else {
             ELText[] ta = text.toArray(new ELText[text.size()]);
             return new ELTextComposite(ta);
         }
@@ -402,23 +411,29 @@ public class ELText {
             c = ca[i];
             if ('\\' == c && i < len - 1) {
                 i++;
-            } else if ('\'' == c || '"' == c) {
+            }
+            else if ('\'' == c || '"' == c) {
                 if (str == c) {
                     insideString = false;
                     str = 0;
-                } else {
+                }
+                else {
                     insideString = true;
                     str = c;
                 }
-            } else if ('{' == c && !insideString) {
+            }
+            else if ('{' == c && !insideString) {
                 nested++;
-            } else if (str == 0 && '}' == c) {
+            }
+            else if (str == 0 && '}' == c) {
                 if (nested > 1) {
                     nested--;
-                } else {
+                }
+                else {
                     return i - s + 1;
                 }
-            } else if ('}' == c && !insideString) {
+            }
+            else if ('}' == c && !insideString) {
                 nested--;
             }
             i++;

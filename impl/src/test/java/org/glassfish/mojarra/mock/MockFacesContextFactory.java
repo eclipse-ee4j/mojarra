@@ -30,33 +30,38 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 
 public class MockFacesContextFactory extends FacesContextFactory {
+
     public MockFacesContextFactory(FacesContextFactory oldImpl) {
         super(oldImpl);
         System.setProperty(FactoryFinder.FACES_CONTEXT_FACTORY, this.getClass().getName());
     }
-    public MockFacesContextFactory() {}
-    
+
+    public MockFacesContextFactory() {
+    }
 
     @Override
-    public FacesContext getFacesContext(Object context, Object request,
-					Object response,
-					Lifecycle lifecycle) throws FacesException {
-	MockFacesContext result = new MockFacesContext();
+    public FacesContext getFacesContext(
+        Object context, Object request,
+        Object response,
+        Lifecycle lifecycle
+    ) throws FacesException
+    {
+        MockFacesContext result = new MockFacesContext();
 
-        ExternalContext externalContext =
-                new MockExternalContext((ServletContext) context,
-                (ServletRequest) request, (ServletResponse) response);
+        ExternalContext externalContext = new MockExternalContext(
+            (ServletContext) context,
+            (ServletRequest) request, (ServletResponse) response
+        );
         result.setExternalContext(externalContext);
-        ApplicationFactory applicationFactory = (ApplicationFactory)
-                FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
+        ApplicationFactory applicationFactory = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
         Application application = applicationFactory.getApplication();
         result.setApplication(application);
 
-	ELContext elContext = new MockELContext(new MockELResolver());
-	elContext.putContext(FacesContext.class, result);
+        ELContext elContext = new MockELContext(new MockELResolver());
+        elContext.putContext(FacesContext.class, result);
         result.setELContext(elContext);
 
         return result;
     }
-}
 
+}

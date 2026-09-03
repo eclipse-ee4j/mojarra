@@ -24,11 +24,10 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 /**
- * Row data for the table ({@code h:dataTable}), repeat ({@code ui:repeat}), composite and foreach
- * ({@code c:forEach items}) scenarios. Scenarios group into five size tiers, each a single tunable constant below:
- * {@link #getReadonlyRows() readonly} rows, {@link #getInputRows() input} rows (also the tier the flat forms match),
- * {@link #getForeachRows() foreach} rows, nested {@link #getGroups() groups}, and {@link #getWideRows() wide} rows.
- * Each getter builds its list lazily so a view generates only the rows it renders.
+ * Row data for the table ({@code h:dataTable}), repeat ({@code ui:repeat}), composite and foreach ({@code c:forEach items}) scenarios. Scenarios group into
+ * five size tiers, each a single tunable constant below: {@link #getReadonlyRows() readonly} rows, {@link #getInputRows() input} rows (also the tier the flat
+ * forms match), {@link #getForeachRows() foreach} rows, nested {@link #getGroups() groups}, and {@link #getWideRows() wide} rows. Each getter builds its list
+ * lazily so a view generates only the rows it renders.
  */
 @Named
 @ViewScoped
@@ -69,8 +68,8 @@ public class DataBean implements Serializable {
     }
 
     /**
-     * Rows for the wide (many-column) table, e.g. {@code #{dataBean.wideRows}}. Deliberately few: the
-     * facet cost that scenario isolates is fixed per column, so every extra row only dilutes it.
+     * Rows for the wide (many-column) table, e.g. {@code #{dataBean.wideRows}}. Deliberately few: the facet cost that scenario isolates is fixed per column, so
+     * every extra row only dilutes it.
      */
     public List<Row> getWideRows() {
         if (wideRows == null) {
@@ -104,18 +103,24 @@ public class DataBean implements Serializable {
     }
 
     public static class Group implements Serializable {
+
         private static final long serialVersionUID = 1L;
         private final String name;
         private final List<Row> rows;
+
         public Group(String name, List<Row> rows) {
             this.name = name;
             this.rows = rows;
         }
+
         public String getName() {
             return name;
         }
+
         public List<Row> getRows() {
             return rows;
         }
+
     }
+
 }

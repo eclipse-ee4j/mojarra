@@ -16,7 +16,6 @@
 
 package org.glassfish.mojarra.facelets.tag.faces;
 
-
 import java.util.Set;
 
 import org.glassfish.mojarra.facelets.tag.AbstractTagLibrary;
@@ -32,4 +31,5 @@ public final class PassThroughAttributeLibrary extends AbstractTagLibrary {
     public PassThroughAttributeLibrary(String namespace) {
         super(namespace);
     }
+
 }

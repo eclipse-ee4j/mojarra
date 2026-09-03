@@ -46,7 +46,8 @@ class ListenerForScanner implements Scanner {
         ListenerFor listenerFor = clazz.getAnnotation(ListenerFor.class);
         if (listenerFor != null) {
             handler = new ListenerForHandler(new ListenerFor[] { listenerFor });
-        } else {
+        }
+        else {
             ListenersFor listenersFor = clazz.getAnnotation(ListenersFor.class);
             if (listenersFor != null) {
                 handler = new ListenerForHandler(listenersFor.value());

@@ -24,9 +24,8 @@ import jakarta.el.ValueExpression;
 import jakarta.el.VariableMapper;
 
 /**
- * Utility class for wrapping another VariableMapper with a new context, represented by a {@link java.util.Map Map}.
- * Modifications occur to the Map instance, but resolve against the wrapped VariableMapper if the Map doesn't contain
- * the ValueExpression requested.
+ * Utility class for wrapping another VariableMapper with a new context, represented by a {@link java.util.Map Map}. Modifications occur to the Map instance,
+ * but resolve against the wrapped VariableMapper if the Map doesn't contain the ValueExpression requested.
  *
  * @author Jacob Hookom
  * @version $Id$
@@ -35,7 +34,7 @@ public class VariableMapperWrapper extends VariableMapper {
 
     private final VariableMapper target;
 
-    private Map<String,ValueExpression> vars;
+    private Map<String, ValueExpression> vars;
 
     /**
      * @param orig the original variable mapper to be wrapped
@@ -74,4 +73,5 @@ public class VariableMapperWrapper extends VariableMapper {
         }
         return vars.put(variable, expression);
     }
+
 }

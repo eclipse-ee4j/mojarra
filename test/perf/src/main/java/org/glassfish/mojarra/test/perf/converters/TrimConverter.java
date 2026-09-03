@@ -21,9 +21,10 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.FacesConverter;
 
-/** CDI-managed converter looked up by id.
- *  {@code @Dependent} is the bean-defining annotation that makes this class
- *  discoverable under the CDI 4.0 default {@code bean-discovery-mode=annotated}. */
+/**
+ * CDI-managed converter looked up by id. {@code @Dependent} is the bean-defining annotation that makes this class discoverable under the CDI 4.0 default
+ * {@code bean-discovery-mode=annotated}.
+ */
 @FacesConverter(value = "trimConverter", managed = true)
 @Dependent
 public class TrimConverter implements Converter<String> {
@@ -37,4 +38,5 @@ public class TrimConverter implements Converter<String> {
     public String getAsString(FacesContext context, UIComponent component, String value) {
         return value == null ? "" : value.trim();
     }
+
 }

@@ -34,25 +34,22 @@ import org.glassfish.mojarra.util.RequestStateManager;
 
 /**
  * <p>
- * This class is responsible for adding default validators and/or validators that wrap multiple
- * <code>EditableValueHolder</code> instances within the view.
+ * This class is responsible for adding default validators and/or validators that wrap multiple <code>EditableValueHolder</code> instances within the view.
  * </p>
  */
 public class ComponentValidators {
 
     /**
-     * Key within the <code>FacesContext</code>'s attribute map under which a single <code>ComponentValidators</code>
-     * instance will be stored.
+     * Key within the <code>FacesContext</code>'s attribute map under which a single <code>ComponentValidators</code> instance will be stored.
      */
     private static final String COMPONENT_VALIDATORS = "jakarta.faces.component.ComponentValidators";
 
     /**
      * Stack of <code>ValidatorInfo<code> instances.  Each instance represents
      * a particular nesting level within the view.  As a nesting level is encountered,
-     * a <code>ValidatorInfo</code> will be pushed to the stack and all <code>EditableValueHolder</code> instances will be
-     * configured based on all <code>ValidatorInfo</code>s on the stack. When the current nesting level is closed, the
-     * <code>ValidatorInfo</code> instance will be popped and thus have no impact on other
-     * <code>EditableValueHolder</code>s.
+     * a <code>ValidatorInfo</code> will be pushed to the stack and all <code>EditableValueHolder</code> instances will be configured based on all
+     * <code>ValidatorInfo</code>s on the stack. When the current nesting level is closed, the <code>ValidatorInfo</code> instance will be popped and thus have
+     * no impact on other <code>EditableValueHolder</code>s.
      */
     private List<ValidatorInfo> validatorStack = null;
 
@@ -68,11 +65,9 @@ public class ComponentValidators {
 
     /**
      * @param context the <code>FacesContext</code> for the current request
-     * @param createIfNull flag indicating whether or not a <code>ComponentValidators</code> instance should be created or
-     * not
-     * @return a <code>ComponentValidators</code> instance for processing a view request. If <code>createIfNull</code> is
-     * <code>false</code> and no <code>ComponentValidators</code> has been created, this method will return
-     * <code>null</code>
+     * @param createIfNull flag indicating whether or not a <code>ComponentValidators</code> instance should be created or not
+     * @return a <code>ComponentValidators</code> instance for processing a view request. If <code>createIfNull</code> is <code>false</code> and no
+     * <code>ComponentValidators</code> has been created, this method will return <code>null</code>
      */
     public static ComponentValidators getValidators(FacesContext context, boolean createIfNull) {
 
@@ -89,9 +84,8 @@ public class ComponentValidators {
 
     /**
      * <p>
-     * Creates and installs default validators, if any, into the argument <code>EditableValueHolder</code>. This method is
-     * merely a utility method to be called when there is no <code>ComponentValidators</code> available, or there are no
-     * <code>ValidatorInfo</code> instances on the stack.
+     * Creates and installs default validators, if any, into the argument <code>EditableValueHolder</code>. This method is merely a utility method to be called
+     * when there is no <code>ComponentValidators</code> available, or there are no <code>ValidatorInfo</code> instances on the stack.
      * </p>
      *
      * @param ctx the <code>FacesContext</code> for the current request
@@ -117,8 +111,8 @@ public class ComponentValidators {
 
     /**
      * <p>
-     * Based on the <code>ValidatorInfo</code> instances present on the stack, configure the argument
-     * <code>EditableValueHolder</code> with <code>Validator</code>s created from the available info.
+     * Based on the <code>ValidatorInfo</code> instances present on the stack, configure the argument <code>EditableValueHolder</code> with
+     * <code>Validator</code>s created from the available info.
      * </p>
      *
      * @param ctx the <code>FacesContext</code> for the current request
@@ -145,7 +139,8 @@ public class ComponentValidators {
             ValidatorInfo info = validatorStack.get(i);
             if (!info.isEnabled() || disabledIds != null && disabledIds.contains(info.getValidatorId())) {
                 validatorIds.remove(info.getValidatorId());
-            } else {
+            }
+            else {
                 if (!validatorIds.contains(info.getValidatorId())) {
                     validatorIds.add(info.getValidatorId());
                 }
@@ -196,8 +191,11 @@ public class ComponentValidators {
      * @param editableValueHolder the target component to which the validators installed
      * @param validatorStack current stack of ValidatorInfo instances
      */
-    private static void addValidatorsToComponent(FacesContext ctx, Collection<String> validatorIds, EditableValueHolder editableValueHolder,
-            List<ValidatorInfo> validatorStack) {
+    private static void addValidatorsToComponent(
+        FacesContext ctx, Collection<String> validatorIds, EditableValueHolder editableValueHolder,
+        List<ValidatorInfo> validatorStack
+    )
+    {
 
         if (validatorIds == null || validatorIds.isEmpty()) {
             return;

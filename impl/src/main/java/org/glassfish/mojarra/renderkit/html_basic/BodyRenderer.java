@@ -30,8 +30,8 @@ import org.glassfish.mojarra.renderkit.RenderKitUtils;
 
 /**
  * <p>
- * This <code>Renderer</code> is responsible for rendering the standard HTML body element as well as rendering any
- * resources that should be output before the <code>body</code> tag is closed.
+ * This <code>Renderer</code> is responsible for rendering the standard HTML body element as well as rendering any resources that should be output before the
+ * <code>body</code> tag is closed.
  * </p>
  */
 public class BodyRenderer extends HtmlBasicRenderer {
@@ -89,4 +89,5 @@ public class BodyRenderer extends HtmlBasicRenderer {
     public boolean getRendersChildren() {
         return false;
     }
+
 }

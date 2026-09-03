@@ -82,7 +82,8 @@ public class SetHandler extends TagHandlerImpl {
 
         if (value != null) {
             veObj = value.getValueExpression(ctx, Object.class);
-        } else {
+        }
+        else {
 
             veObj = ctx.getExpressionFactory().createValueExpression(ctx.getFacesContext().getELContext(), bodyValue.toString(), Object.class);
         }
@@ -99,7 +100,8 @@ public class SetHandler extends TagHandlerImpl {
 
                 if (scope.isLiteral()) {
                     scopeStr = scope.getValue();
-                } else {
+                }
+                else {
                     scopeStr = scope.getValue(ctx);
                 }
                 if (scopeStr.equals("page")) {
@@ -118,17 +120,21 @@ public class SetHandler extends TagHandlerImpl {
                 recordBuildTimeDecision(ctx, var);
                 recordBuildTimeDecision(ctx, scope);
                 recordWrite(ctx, veObj, lhs, scopedValue);
-            } else {
+            }
+            else {
                 // The variable is mapped to the expression itself, so what this build produced does not depend on its
                 // value at all; only on the name under which the rest of the build captured it.
                 recordBuildTimeDecision(ctx, var);
                 ctx.getVariableMapper().setVariable(varStr, veObj);
             }
-        } else {
+        }
+        else {
 
             // Otherwise, target, property and value must be set
-            if (null == target || null == target.getValue() || target.getValue().length() <= 0
-                    || null == property || null == property.getValue() || property.getValue().length() <= 0 || !valSet) {
+            if (
+                null == target || null == target.getValue() || target.getValue().length() <= 0
+                    || null == property || null == property.getValue() || property.getValue().length() <= 0 || !valSet
+            ) {
 
                 throw new TagException(tag, "when using this tag either one of var and value, or (target, property, value) must be set.");
             }
@@ -140,7 +146,8 @@ public class SetHandler extends TagHandlerImpl {
             String propertyStr = null;
             if (property.isLiteral()) {
                 propertyStr = property.getValue();
-            } else {
+            }
+            else {
                 propertyStr = property.getValue(ctx);
             }
             ValueExpression targetVe = target.getValueExpression(ctx, Object.class);
@@ -158,9 +165,8 @@ public class SetHandler extends TagHandlerImpl {
     }
 
     /**
-     * Records the write this build performed: the value it wrote, and that value still being the one at the location it
-     * wrote it to. The second is what a write the application performed after this build breaks, which re-applying
-     * would put back.
+     * Records the write this build performed: the value it wrote, and that value still being the one at the location it wrote it to. The second is what a write
+     * the application performed after this build breaks, which re-applying would put back.
      */
     private static void recordWrite(FaceletContext ctx, ValueExpression valueExpression, ValueExpression location, Object value) {
         ELContext elContext = ctx.getFacesContext().getELContext();
@@ -171,4 +177,5 @@ public class SetHandler extends TagHandlerImpl {
     // Swallow children - if they're text, we've already handled them.
     protected void applyNextHandler(FaceletContext ctx, UIComponent c) {
     }
+
 }

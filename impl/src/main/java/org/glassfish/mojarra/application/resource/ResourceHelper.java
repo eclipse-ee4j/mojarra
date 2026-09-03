@@ -72,8 +72,7 @@ public abstract class ResourceHelper {
     private static final Pattern LIBRARY_VERSION_PATTERN = Pattern.compile("^(\\d+)(_\\d+)+");
 
     /**
-     * This pattern represents a version for a resource. Examples: 1_1.jpg 1_11.323 1_11_1.gif 1_11_1_2.txt 1_1 1_11 1_11_1
-     * 1_11_1_2
+     * This pattern represents a version for a resource. Examples: 1_1.jpg 1_11.323 1_11_1.gif 1_11_1_2.txt 1_1 1_11 1_11_1 1_11_1_2
      *
      * The extension is optional.
      */
@@ -109,12 +108,11 @@ public abstract class ResourceHelper {
     /**
      * <p>
      * If the resource is compressable, return an InputStream to read the compressed content, otherwise, call
-     * {@link #getNonCompressedInputStream(ResourceInfo, jakarta.faces.context.FacesContext)} to return the content of the
-     * original resource.
+     * {@link #getNonCompressedInputStream(ResourceInfo, jakarta.faces.context.FacesContext)} to return the content of the original resource.
      * </p>
      * <p>
-     * Implementation Note: If any exception occurs trying to return a stream to the compressed content, log the exception,
-     * and instead try to return a stream to the original content.
+     * Implementation Note: If any exception occurs trying to return a stream to the compressed content, log the exception, and instead try to return a stream
+     * to the original content.
      * </p>
      *
      * @param toStream the resource to obtain an InputStream to
@@ -143,9 +141,9 @@ public abstract class ResourceHelper {
             }
 
         }
-//        else {
-//            // PENDING(edburns): get the input stream from the facelet ResourceInfo.
-//        }
+        // else {
+        // // PENDING(edburns): get the input stream from the facelet ResourceInfo.
+        // }
         return in;
 
     }
@@ -158,7 +156,8 @@ public abstract class ResourceHelper {
                 try {
                     String path = resource.getCompressedPath();
                     in = new BufferedInputStream(new FileInputStream(path + File.separatorChar + COMPRESSED_CONTENT_FILENAME));
-                } catch (IOException ioe) {
+                }
+                catch (IOException ioe) {
                     if (LOGGER.isLoggable(Level.SEVERE)) {
                         LOGGER.log(Level.SEVERE, ioe.getMessage(), ioe);
                     }
@@ -166,12 +165,15 @@ public abstract class ResourceHelper {
                     // the non-compressed content
                     in = null;
                 }
-            } else {
+            }
+            else {
                 byte[] buf = new byte[512];
 
-                try (InputStream temp = new BufferedInputStream(new ELEvaluatingInputStream(ctx, resource, getNonCompressedInputStream(resource, ctx)));
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream(512);
-                        OutputStream out = new GZIPOutputStream(baos);) {
+                try (
+                    InputStream temp = new BufferedInputStream(new ELEvaluatingInputStream(ctx, resource, getNonCompressedInputStream(resource, ctx)));
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream(512);
+                    OutputStream out = new GZIPOutputStream(baos);
+                ) {
                     // using dynamic compression here
 
                     for (int read = temp.read(buf); read != -1; read = temp.read(buf)) {
@@ -179,7 +181,8 @@ public abstract class ResourceHelper {
                     }
                     in = new BufferedInputStream(new ByteArrayInputStream(baos.toByteArray()));
 
-                } catch (IOException ioe) {
+                }
+                catch (IOException ioe) {
                     if (LOGGER.isLoggable(Level.SEVERE)) {
                         LOGGER.log(Level.SEVERE, ioe.getMessage(), ioe);
                     }
@@ -190,7 +193,8 @@ public abstract class ResourceHelper {
         if (in == null) {
             if (resource.supportsEL()) {
                 return new BufferedInputStream(new ELEvaluatingInputStream(ctx, resource, getNonCompressedInputStream(resource, ctx)));
-            } else {
+            }
+            else {
                 in = getNonCompressedInputStream(resource, ctx);
             }
         }
@@ -208,42 +212,37 @@ public abstract class ResourceHelper {
      * Search for the specified library/localPrefix combination in an implementation dependent manner.
      *
      * @param libraryName the name of the library
-     * @param localePrefix the logicial identifier for a locale specific library. if no localePrefix is configured, pass
-     * <code>null</code>
+     * @param localePrefix the logicial identifier for a locale specific library. if no localePrefix is configured, pass <code>null</code>
      * @param contract the name of the contract
-     * @param ctx the {@link jakarta.faces.context.FacesContext} for the current request @return a {@link LibraryInfo} if a
-     * matching library based off the inputs can be found, otherwise returns <code>null</code>
+     * @param ctx the {@link jakarta.faces.context.FacesContext} for the current request @return a {@link LibraryInfo} if a matching library based off the
+     * inputs can be found, otherwise returns <code>null</code>
      * @return library info
      */
     public abstract LibraryInfo findLibrary(String libraryName, String localePrefix, String contract, FacesContext ctx);
 
     /**
      * <p>
-     * Search for the specified resource based in the library/localePrefix/resourceName combination in an implementation
-     * dependent manner.
+     * Search for the specified resource based in the library/localePrefix/resourceName combination in an implementation dependent manner.
      * </p>
      * <p>
-     * If the resource is found, and is compressable, call
-     * {@link #handleCompression(org.glassfish.mojarra.application.resource.ClientResourceInfo)} to compress the content.
+     * If the resource is found, and is compressable, call {@link #handleCompression(org.glassfish.mojarra.application.resource.ClientResourceInfo)} to compress
+     * the content.
      * </p>
      *
-     * @param library the library this resource should be a part of. If the the resource that is being searched for isn't
-     * part of a library, then pass <code>null</code>
-     * @param resourceName the name of the resource that is being searched for
-     * @param localePrefix the logicial identifier for a locale specific library. if no localePrefix is configured, pass
+     * @param library the library this resource should be a part of. If the the resource that is being searched for isn't part of a library, then pass
      * <code>null</code>
+     * @param resourceName the name of the resource that is being searched for
+     * @param localePrefix the logicial identifier for a locale specific library. if no localePrefix is configured, pass <code>null</code>
      * @param compressable <code>true</code> if the resource can be compressed
      * @param ctx the {@link jakarta.faces.context.FacesContext} for the current request
-     * @return a {@link ResourceInfo} if a matching resource based off the inputs can be found, otherwise returns
-     * <code>null</code>
+     * @return a {@link ResourceInfo} if a matching resource based off the inputs can be found, otherwise returns <code>null</code>
      */
     public abstract ResourceInfo findResource(LibraryInfo library, String resourceName, String localePrefix, boolean compressable, FacesContext ctx);
 
     /**
      * <p>
-     * The default implementation of this method will call through to
-     * {@link ResourceHelper#getURL(ResourceInfo, jakarta.faces.context.FacesContext)} and leverage the URL to obtain the
-     * date information of the resource and return the value of <code>URLConnection.getLastModified()</code>
+     * The default implementation of this method will call through to {@link ResourceHelper#getURL(ResourceInfo, jakarta.faces.context.FacesContext)} and
+     * leverage the URL to obtain the date information of the resource and return the value of <code>URLConnection.getLastModified()</code>
      * </p>
      *
      * @param resource the resource in question
@@ -264,9 +263,8 @@ public abstract class ResourceHelper {
     // ------------------------------------------------------- Protected Methods
 
     /**
-     * If a {@link ResourceInfo} is not compressable,
-     * {@link #getInputStream(ResourceInfo, jakarta.faces.context.FacesContext)} will call this method to return a stream to
-     * the actual resource.
+     * If a {@link ResourceInfo} is not compressable, {@link #getInputStream(ResourceInfo, jakarta.faces.context.FacesContext)} will call this method to return
+     * a stream to the actual resource.
      *
      * @param info the resource to obtain an InputStream to
      * @param ctx the {@link FacesContext} for the current request
@@ -284,13 +282,12 @@ public abstract class ResourceHelper {
      *   1.1, scripts, images, 1.2
      * </pre>
      * <p>
-     * this method will pick out the directories that represent a library or resource version and return the latest version
-     * found, if any.
+     * this method will pick out the directories that represent a library or resource version and return the latest version found, if any.
      * </p>
      *
      * @param resourcePaths a collection of paths (consisting of single path elements)
-     * @param isResource <code>true</code> if the version being looked up is for a reource, otherwise, pass
-     * <code>false</code> if the version is a library version
+     * @param isResource <code>true</code> if the version being looked up is for a reource, otherwise, pass <code>false</code> if the version is a library
+     * version
      * @return the latest version or if no version can be detected, otherwise this method returns <code>null</code>
      */
     protected VersionInfo getVersion(Collection<String> resourcePaths, boolean isResource) {
@@ -316,8 +313,7 @@ public abstract class ResourceHelper {
      * {@link org.glassfish.mojarra.application.resource.ClientResourceInfo#getCompressedPath()}.
      *
      * @param info the resource to be compressed
-     * @return <code>true</code> if compression succeeded <em>and</em> the compressed result is smaller than the original
-     * content, otherwise <code>false</code>
+     * @return <code>true</code> if compression succeeded <em>and</em> the compressed result is smaller than the original content, otherwise <code>false</code>
      * @throws IOException if any error occur reading/writing
      */
     protected boolean compressContent(ClientResourceInfo info) throws IOException {
@@ -341,7 +337,8 @@ public abstract class ResourceHelper {
             dest.flush();
             try {
                 dest.close();
-            } catch (IOException ioe) {
+            }
+            catch (IOException ioe) {
                 if (LOGGER.isLoggable(Level.FINEST)) {
                     LOGGER.log(Level.FINEST, "Closing stream", ioe);
                 }
@@ -355,11 +352,13 @@ public abstract class ResourceHelper {
                 return true;
             }
             return false;
-        } finally {
+        }
+        finally {
             if (source != null) {
                 try {
                     source.close();
-                } catch (IOException ioe) {
+                }
+                catch (IOException ioe) {
                     if (LOGGER.isLoggable(Level.FINEST)) {
                         LOGGER.log(Level.FINEST, "Closing stream", ioe);
                     }
@@ -368,7 +367,8 @@ public abstract class ResourceHelper {
             if (dest != null) {
                 try {
                     dest.close();
-                } catch (IOException ioe) {
+                }
+                catch (IOException ioe) {
                     if (LOGGER.isLoggable(Level.FINEST)) {
                         LOGGER.log(Level.FINEST, "Closing stream", ioe);
                     }
@@ -379,19 +379,17 @@ public abstract class ResourceHelper {
 
     /**
      * <p>
-     * This method attempt to verify that the user agent can accept a gzip encoded response by interrogating the
-     * <code>Accept-Encoding</code> requester header. If it is determined safe to send a gzip encoded response, send the
-     * <code>Content-Encoding</code> header with a value of <code>gzip</code>.
+     * This method attempt to verify that the user agent can accept a gzip encoded response by interrogating the <code>Accept-Encoding</code> requester header.
+     * If it is determined safe to send a gzip encoded response, send the <code>Content-Encoding</code> header with a value of <code>gzip</code>.
      * </p>
      *
      * <p>
-     * See http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html RFC 2616, sec. 14 for details on the
-     * accept-encoding header.
+     * See http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html RFC 2616, sec. 14 for details on the accept-encoding header.
      * </p>
      *
      * <p>
-     * Implementation Note: It is safe to cast to a <code>HttpServletResponse</code> as this method will only be called when
-     * handling a resource request. Resource serving is outside of the Faces and Portlet lifecycle.
+     * Implementation Note: It is safe to cast to a <code>HttpServletResponse</code> as this method will only be called when handling a resource request.
+     * Resource serving is outside of the Faces and Portlet lifecycle.
      * </p>
      *
      * @param ctx the {@link FacesContext} for the current request
@@ -440,13 +438,12 @@ public abstract class ResourceHelper {
      * </p>
      *
      * <p>
-     * Implmentation Note: If an exception occurs while compressing the content, log the IOException and rebuilt the
-     * {@link ResourceInfo} as non-compressable.
+     * Implmentation Note: If an exception occurs while compressing the content, log the IOException and rebuilt the {@link ResourceInfo} as non-compressable.
      * </p>
      *
      * @param resource the resource to compression
-     * @return the ResourceInfo after compression is complete. If compression was successful, this should be the same
-     * instance. If compression was not successful, it will be a different instance than what was passed.
+     * @return the ResourceInfo after compression is complete. If compression was successful, this should be the same instance. If compression was not
+     * successful, it will be a different instance than what was passed.
      */
     protected ClientResourceInfo handleCompression(ClientResourceInfo resource) {
 
@@ -454,7 +451,8 @@ public abstract class ResourceHelper {
             if (!resource.supportsEL() && !compressContent(resource)) {
                 resource = rebuildAsNonCompressed(resource);
             }
-        } catch (IOException ioe) {
+        }
+        catch (IOException ioe) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, ioe.getMessage(), ioe);
             }
@@ -469,7 +467,7 @@ public abstract class ResourceHelper {
         ExternalContext extContext = ctx.getExternalContext();
         String contentType = extContext.getMimeType(resourceName);
         boolean result = contentType != null && Arrays.binarySearch(EL_CONTENT_TYPES, contentType) >= 0 || null != resourceName && null != libraryName
-                && FACES_SCRIPT_LIBRARY_NAME.equals(libraryName) && FACES_SCRIPT_RESOURCE_NAME.equals(resourceName);
+            && FACES_SCRIPT_LIBRARY_NAME.equals(libraryName) && FACES_SCRIPT_RESOURCE_NAME.equals(resourceName);
         return result;
 
     }
@@ -481,7 +479,8 @@ public abstract class ResourceHelper {
     protected static String trimLeadingSlash(String s) {
         if (s.charAt(0) == '/') {
             return s.substring(1);
-        } else {
+        }
+        else {
             return s;
         }
     }
@@ -493,11 +492,16 @@ public abstract class ResourceHelper {
         LibraryInfo library = resource.getLibraryInfo();
         ClientResourceInfo ret;
         if (library != null) {
-            ret = new ClientResourceInfo(resource.library, resource.contract, resource.name, resource.version, false, resource.supportsEL, resource.isDevStage,
-                    resource.cacheTimestamp);
-        } else {
-            ret = new ClientResourceInfo(resource.contract, resource.name, resource.version, resource.localePrefix, this, false, resource.supportsEL,
-                    resource.isDevStage, resource.cacheTimestamp);
+            ret = new ClientResourceInfo(
+                resource.library, resource.contract, resource.name, resource.version, false, resource.supportsEL, resource.isDevStage,
+                resource.cacheTimestamp
+            );
+        }
+        else {
+            ret = new ClientResourceInfo(
+                resource.contract, resource.name, resource.version, resource.localePrefix, this, false, resource.supportsEL,
+                resource.isDevStage, resource.cacheTimestamp
+            );
         }
         return ret;
 
@@ -505,10 +509,9 @@ public abstract class ResourceHelper {
 
     /**
      * @param pathElement the path element to verify
-     * @param isResource <code>true</code> if the version being looked up is for a reource, otherwise, pass
-     * <code>false</code> if the version is a library version
-     * @return <code>true</code> if this path element represents a version (i.e. matches {@link #LIBRARY_VERSION_PATTERN}),
-     * otherwise returns <code>false</code>
+     * @param isResource <code>true</code> if the version being looked up is for a reource, otherwise, pass <code>false</code> if the version is a library
+     * version
+     * @return <code>true</code> if this path element represents a version (i.e. matches {@link #LIBRARY_VERSION_PATTERN}), otherwise returns <code>false</code>
      */
     private VersionInfo getVersion(String pathElement, boolean isResource) {
 
@@ -519,7 +522,8 @@ public abstract class ResourceHelper {
         if (isResource) {
             Matcher m = RESOURCE_VERSION_PATTERN.matcher(path);
             return m.matches() ? new VersionInfo(m.group(1), m.group(2)) : null;
-        } else {
+        }
+        else {
             return LIBRARY_VERSION_PATTERN.matcher(path).matches() ? new VersionInfo(path, extension) : null;
         }
 
@@ -568,14 +572,17 @@ public abstract class ResourceHelper {
                 i = nextRead;
                 nextRead = -1;
                 failedExpressionTest = false;
-            } else if (writingExpression) {
+            }
+            else if (writingExpression) {
                 if (!buf.isEmpty()) {
                     i = buf.remove(0);
-                } else {
+                }
+                else {
                     writingExpression = false;
                     i = readInner();
                 }
-            } else {
+            }
+            else {
                 // Read a character.
                 i = readInner();
                 c = (char) i;
@@ -594,7 +601,8 @@ public abstract class ResourceHelper {
                         writingExpression = true;
                         // Make sure to swallow the '{'.
                         i = this.read();
-                    } else {
+                    }
+                    else {
                         // It's not an expression, we need to return '#',
                         i = '#';
                         // then return whatever we just read, on the
@@ -613,9 +621,8 @@ public abstract class ResourceHelper {
         }
 
         /**
-         * Copies through the bytes up to the next '#', which only the single byte state machine may interpret. Bytes are
-         * copied straight out of the buffer that {@link #readInner} fills, so a run without any '#' costs one bulk read on
-         * inner instead of one call per byte.
+         * Copies through the bytes up to the next '#', which only the single byte state machine may interpret. Bytes are copied straight out of the buffer that
+         * {@link #readInner} fills, so a run without any '#' costs one bulk read on inner instead of one call per byte.
          */
         @Override
         public int read(byte[] b, int off, int len) throws IOException {
@@ -686,7 +693,8 @@ public abstract class ResourceHelper {
             // evaluation for it.
             do {
                 read = inner.read(innerBuf, 0, innerBuf.length);
-            } while (read == 0);
+            }
+            while (read == 0);
 
             if (read < 0) {
                 return false;
@@ -707,15 +715,17 @@ public abstract class ResourceHelper {
                 c = (char) i;
                 if (c == '}') {
                     evaluateExpressionIntoBuffer();
-                } else {
+                }
+                else {
                     buf.add(i);
                 }
-            } while (c != '}' && i != -1);
+            }
+            while (c != '}' && i != -1);
         }
 
         /*
-         * At this point, we know that getBuf() returns a List<Integer> that contains the bytes of the expression. Turn it into
-         * a String, turn the String into a ValueExpression, evaluate it, store the toString() of it in expressionResult;
+         * At this point, we know that getBuf() returns a List<Integer> that contains the bytes of the expression. Turn it into a String, turn the String into a
+         * ValueExpression, evaluate it, store the toString() of it in expressionResult;
          */
         private void evaluateExpressionIntoBuffer() {
             char[] chars = new char[buf.size()];
@@ -746,9 +756,11 @@ public abstract class ResourceHelper {
                         LibraryInfo libInfo = info.getLibraryInfo();
                         if (null != libInfo) {
                             parts[0] = libInfo.getName();
-                        } else if (null != info.getContract()) {
+                        }
+                        else if (null != info.getContract()) {
                             parts[0] = info.getContract();
-                        } else {
+                        }
+                        else {
                             throw new NullPointerException("Resource expression is not a library or resource library contract");
                         }
 
@@ -756,7 +768,8 @@ public abstract class ResourceHelper {
                         parts[1] = parts[1].substring(0, mark);
                         expressionBody = "resource[" + quoteMark + parts[0] + ":" + parts[1] + quoteMark + "]";
                     }
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     String message = MessageUtils.getExceptionMessageString(MessageUtils.INVALID_RESOURCE_FORMAT_ERROR, expressionBody);
                     throw new ELException(message);
 
@@ -792,23 +805,23 @@ public abstract class ResourceHelper {
     } // END ELEvaluatingInputStream
 
     protected List<String> getLocalizedPaths(String path, FacesContext ctx) {
-    	Locale loc = (ctx != null && ctx.getViewRoot() != null) ? ctx.getViewRoot().getLocale() : null;
-    	if (!path.endsWith(".properties") || loc == null) {
-    		return Collections.singletonList(path);
-    	}
-    	final List<String> list = new ArrayList<>(4);
+        Locale loc = (ctx != null && ctx.getViewRoot() != null) ? ctx.getViewRoot().getLocale() : null;
+        if (!path.endsWith(".properties") || loc == null) {
+            return Collections.singletonList(path);
+        }
+        final List<String> list = new ArrayList<>(4);
         final String base = path.substring(0, path.lastIndexOf(".properties"));
-    	if (!loc.getVariant().isEmpty()) {
-    		list.add(String.format("%s_%s_%s_%s.properties", base, loc.getLanguage(), loc.getCountry(), loc.getVariant()));
-    	}
-    	if (!loc.getCountry().isEmpty()) {
-    		list.add(String.format("%s_%s_%s.properties", base, loc.getLanguage(), loc.getCountry()));
-    	}
-    	if (!loc.getLanguage().isEmpty()) {
-    		list.add(String.format("%s_%s.properties", base, loc.getLanguage()));
-    	}
-    	list.add(path);
-    	return list;
+        if (!loc.getVariant().isEmpty()) {
+            list.add(String.format("%s_%s_%s_%s.properties", base, loc.getLanguage(), loc.getCountry(), loc.getVariant()));
+        }
+        if (!loc.getCountry().isEmpty()) {
+            list.add(String.format("%s_%s_%s.properties", base, loc.getLanguage(), loc.getCountry()));
+        }
+        if (!loc.getLanguage().isEmpty()) {
+            list.add(String.format("%s_%s.properties", base, loc.getLanguage()));
+        }
+        list.add(path);
+        return list;
     }
 
 }

@@ -22,8 +22,7 @@ import java.util.Collection;
 import jakarta.faces.context.FacesContext;
 
 /**
- * Implementations of the interface will be called during application initialization to process any configuration
- * annotations within the web application.
+ * Implementations of the interface will be called during application initialization to process any configuration annotations within the web application.
  */
 public interface ConfigAnnotationHandler {
 
@@ -50,6 +49,7 @@ public interface ConfigAnnotationHandler {
 
     /**
      * <code>Push</code> the configuration based on the collected metadata to the current application.
+     *
      * @param ctx the involved faces context
      */
     void push(FacesContext ctx);

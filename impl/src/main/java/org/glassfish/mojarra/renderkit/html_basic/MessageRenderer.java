@@ -199,8 +199,9 @@ public class MessageRenderer extends HtmlBasicRenderer {
 
         }
 
-        boolean isTooltip = htmlMessage != null ? htmlMessage.isTooltip()
-                : RenderKitUtils.attributeIsTrue(component, "tooltip", false);
+        boolean isTooltip = htmlMessage != null
+            ? htmlMessage.isTooltip()
+            : RenderKitUtils.attributeIsTrue(component, "tooltip", false);
 
         boolean wroteTooltip = false;
         if ((showSummary || showDetail) && isTooltip) {
@@ -214,7 +215,8 @@ public class MessageRenderer extends HtmlBasicRenderer {
             writer.flush();
             writer.writeText("\t", component, null);
             wroteTooltip = true;
-        } else if (wroteSpan) {
+        }
+        else if (wroteSpan) {
             writer.flush();
         }
 

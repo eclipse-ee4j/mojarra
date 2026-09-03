@@ -29,4 +29,5 @@ public class SelectManyTestImpl extends UISelectMany {
     public boolean compareValues(Object previous, Object value) {
         return super.compareValues(previous, value);
     }
+
 }

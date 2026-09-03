@@ -54,4 +54,5 @@ public class DataBeanTestImpl implements Serializable {
     public void setOutput(String output) {
         this.output = output;
     }
+
 }

@@ -42,4 +42,5 @@ public class SearchKeywordResolverImplNone extends AbstractSearchKeywordResolver
     public boolean isLeaf(SearchExpressionContext searchExpressionContext, String keyword) {
         return true;
     }
+
 }

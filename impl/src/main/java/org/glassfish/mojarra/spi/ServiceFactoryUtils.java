@@ -62,8 +62,11 @@ final class ServiceFactoryUtils {
                 throw new FacesException("Unable to find constructor accepting arguments: " + Arrays.toString(arguments));
             }
             return c.newInstance(arguments);
-        } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException e) {
+        }
+        catch (
+            ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException
+            | InvocationTargetException e
+        ) {
             throw new FacesException(e);
         }
 
@@ -81,7 +84,8 @@ final class ServiceFactoryUtils {
         String serviceName = "META-INF/services/" + key;
         try {
             urls = loader.getResources(serviceName);
-        } catch (IOException ioe) {
+        }
+        catch (IOException ioe) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, ioe.toString(), ioe);
             }
@@ -102,7 +106,8 @@ final class ServiceFactoryUtils {
                     if (input != null) {
                         try {
                             reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
-                        } catch (Exception e) {
+                        }
+                        catch (Exception e) {
                             // The DM_DEFAULT_ENCODING warning is acceptable here
                             // because we explicitly *want* to use the Java runtime's
                             // default encoding.
@@ -117,16 +122,19 @@ final class ServiceFactoryUtils {
                             }
                         }
                     }
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     if (LOGGER.isLoggable(Level.SEVERE)) {
                         LOGGER.log(Level.SEVERE, "faces.spi.provider.cannot_read_service", new Object[] { serviceName });
                         LOGGER.log(Level.SEVERE, e.toString(), e);
                     }
-                } finally {
+                }
+                finally {
                     if (input != null) {
                         try {
                             input.close();
-                        } catch (Exception e) {
+                        }
+                        catch (Exception e) {
                             if (LOGGER.isLoggable(Level.FINEST)) {
                                 LOGGER.log(Level.FINEST, "Closing stream", e);
                             }
@@ -135,7 +143,8 @@ final class ServiceFactoryUtils {
                     if (reader != null) {
                         try {
                             reader.close();
-                        } catch (Exception e) {
+                        }
+                        catch (Exception e) {
                             if (LOGGER.isLoggable(Level.FINEST)) {
                                 LOGGER.log(Level.FINEST, "Closing stream", e);
                             }
@@ -152,10 +161,8 @@ final class ServiceFactoryUtils {
     /**
      * Cleans line in service file by processing comments and trimming.
      *
-     * @param line
-     *         Line to clean.
-     * @return The cleaned line, if it isn't empty after removing the comment and trimming,
-     *         otherwise <code>null</code>.
+     * @param line Line to clean.
+     * @return The cleaned line, if it isn't empty after removing the comment and trimming, otherwise <code>null</code>.
      */
     private static String cleanupServiceLine(String line) {
         // Process comments, starting at '#'.
@@ -163,15 +170,18 @@ final class ServiceFactoryUtils {
         if (commentIndex == 0) {
             // The whole line is a comment, no need to process it.
             return null;
-        } else if (commentIndex > 0) {
+        }
+        else if (commentIndex > 0) {
             // Cut everything of after '#'.
             line = line.substring(0, commentIndex);
         }
         line = line.trim();
         if (line.isEmpty()) {
             return null;
-        } else {
+        }
+        else {
             return line;
         }
     }
+
 }

@@ -41,8 +41,7 @@ import org.glassfish.mojarra.push.WebsocketFacesListener;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 
 /**
- * <b>WebsocketRenderer</b> is a class that renders the <code>faces.push.init()</code> script and decodes any client
- * behaviors triggered by {@link UIWebsocket}.
+ * <b>WebsocketRenderer</b> is a class that renders the <code>faces.push.init()</code> script and decodes any client behaviors triggered by {@link UIWebsocket}.
  *
  * @author Bauke Scholtz
  * @since 2.3

@@ -69,7 +69,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
 
     private static final String CURRENT_NONCE = ResourceHandlerImpl.class.getName() + ".currentNonce";
-    
+
     ResourceManager manager;
     private String[] excludedExtensions;
     private long creationTime;
@@ -185,7 +185,8 @@ public class ResourceHandlerImpl extends ResourceHandler {
         if (info == null) {
             logMissingResource(ctx, id, null);
             return null;
-        } else {
+        }
+        else {
             return new ResourceImpl(info, ctype, creationTime, maxAge, getQueryString(resourceId));
         }
 
@@ -231,8 +232,8 @@ public class ResourceHandlerImpl extends ResourceHandler {
     }
 
     /**
-     * @param resourceName the resource name, optionally carrying a query string as specified in section 2.6.1.3
-     * "Resource Identifiers" of the Jakarta Faces Specification Document
+     * @param resourceName the resource name, optionally carrying a query string as specified in section 2.6.1.3 "Resource Identifiers" of the Jakarta Faces
+     * Specification Document
      * @return the renderer type of the renderer capable of rendering the resource, or <code>null</code> if there is none
      */
     static String getRendererType(String resourceName) {
@@ -292,7 +293,8 @@ public class ResourceHandlerImpl extends ResourceHandler {
                     send404(context, resourceName, libraryName, true);
                     return;
                 }
-            } else {
+            }
+            else {
                 createResource = true;
             }
             if (createResource) {
@@ -328,7 +330,8 @@ public class ResourceHandlerImpl extends ResourceHandler {
                         size += thisRead;
                         do {
                             totalWritten += out.write(buf);
-                        } while (totalWritten < size);
+                        }
+                        while (totalWritten < size);
                         buf.clear();
                     }
 
@@ -336,17 +339,21 @@ public class ResourceHandlerImpl extends ResourceHandler {
                         extContext.setResponseContentLength(size);
                     }
 
-                } catch (IOException ioe) {
+                }
+                catch (IOException ioe) {
                     if (Util.isConnectionAbort(ioe)) { // to be removed, when the exception is standardised in servlet.
                         send404(context, resourceName, libraryName, false);
-                    } else {
+                    }
+                    else {
                         send404(context, resourceName, libraryName, ioe, true);
                     }
-                } finally {
+                }
+                finally {
                     if (out != null) {
                         try {
                             out.close();
-                        } catch (IOException ignored) {
+                        }
+                        catch (IOException ignored) {
                             // Maybe log a warning here?
                         }
                     }
@@ -354,11 +361,13 @@ public class ResourceHandlerImpl extends ResourceHandler {
                         resourceChannel.close();
                     }
                 }
-            } else {
+            }
+            else {
                 send304(context);
             }
 
-        } else {
+        }
+        else {
             // already logged elsewhere
             send404(context, resourceName, libraryName, true);
         }
@@ -371,21 +380,21 @@ public class ResourceHandlerImpl extends ResourceHandler {
 
         result = !(libraryName.startsWith(".") ||
 
-                libraryName.startsWith("/") || libraryName.contains("/") ||
+            libraryName.startsWith("/") || libraryName.contains("/") ||
 
-                libraryName.startsWith("\\") || libraryName.contains("\\") ||
+            libraryName.startsWith("\\") || libraryName.contains("\\") ||
 
-                libraryName.startsWith("%2e") ||
+            libraryName.startsWith("%2e") ||
 
-                libraryName.startsWith("%2f") || libraryName.contains("%2f") ||
+            libraryName.startsWith("%2f") || libraryName.contains("%2f") ||
 
-                libraryName.startsWith("%5c") || libraryName.contains("%5c") ||
+            libraryName.startsWith("%5c") || libraryName.contains("%5c") ||
 
-                libraryName.startsWith("\\u002e") ||
+            libraryName.startsWith("\\u002e") ||
 
-                libraryName.startsWith("\\u002f") || libraryName.contains("\\u002f") ||
+            libraryName.startsWith("\\u002f") || libraryName.contains("\\u002f") ||
 
-                libraryName.startsWith("\\u005c") || libraryName.contains("\\u005c"));
+            libraryName.startsWith("\\u005c") || libraryName.contains("\\u005c"));
 
         return result;
     }
@@ -441,8 +450,8 @@ public class ResourceHandlerImpl extends ResourceHandler {
     // ------------------------------------------------- Package Private Methods
 
     /**
-     * This method is leveraged by {@link ResourceImpl} to detemine if a resource has been upated. In short, a resource has
-     * been updated if the timestamp is newer than the timestamp of the ResourceHandler creation time.
+     * This method is leveraged by {@link ResourceImpl} to detemine if a resource has been upated. In short, a resource has been updated if the timestamp is
+     * newer than the timestamp of the ResourceHandler creation time.
      *
      * @return the time when the ResourceHandler was instantiated (in milliseconds)
      */
@@ -462,8 +471,8 @@ public class ResourceHandlerImpl extends ResourceHandler {
     // --------------------------------------------------------- Private Methods
 
     /**
-     * Log a message indicating a particular resource (reference by name and/or library) could not be found. If this was due
-     * to an exception, the exception provided will be logged as well.
+     * Log a message indicating a particular resource (reference by name and/or library) could not be found. If this was due to an exception, the exception
+     * provided will be logged as well.
      *
      * @param ctx the {@link FacesContext} for the current request
      * @param resourceName the resource name
@@ -475,7 +484,8 @@ public class ResourceHandlerImpl extends ResourceHandler {
         Level level;
         if (ctx.isProjectStage(Development)) {
             level = WARNING;
-        } else {
+        }
+        else {
             level = t != null ? WARNING : FINE;
         }
 
@@ -486,7 +496,8 @@ public class ResourceHandlerImpl extends ResourceHandler {
                     LOGGER.log(level, "", t);
                 }
             }
-        } else {
+        }
+        else {
             if (LOGGER.isLoggable(level)) {
                 LOGGER.log(level, "faces.application.resource.unable_to_serve", new Object[] { resourceName });
                 if (t != null) {
@@ -498,8 +509,8 @@ public class ResourceHandlerImpl extends ResourceHandler {
     }
 
     /**
-     * Log a message indicating a particular resource (reference by name and/or library) could not be found. If this was due
-     * to an exception, the exception provided will be logged as well.
+     * Log a message indicating a particular resource (reference by name and/or library) could not be found. If this was due to an exception, the exception
+     * provided will be logged as well.
      *
      * @param ctx the {@link FacesContext} for the current request
      * @param resourceId the resource name
@@ -509,7 +520,8 @@ public class ResourceHandlerImpl extends ResourceHandler {
         Level level;
         if (ctx.isProjectStage(Development)) {
             level = WARNING;
-        } else {
+        }
+        else {
             level = t != null ? WARNING : FINE;
         }
 
@@ -523,8 +535,8 @@ public class ResourceHandlerImpl extends ResourceHandler {
     }
 
     /**
-     * @param resourceName the resource of interest. The resourceName in question may consist of zero or more path elements
-     * such that resourceName could be something like path1/path2/resource.jpg or resource.jpg
+     * @param resourceName the resource of interest. The resourceName in question may consist of zero or more path elements such that resourceName could be
+     * something like path1/path2/resource.jpg or resource.jpg
      * @return the content type for this resource
      */
     private String getContentType(FacesContext ctx, String resourceName) {
@@ -535,12 +547,10 @@ public class ResourceHandlerImpl extends ResourceHandler {
      * Normalize the request path to exclude Faces invocation information.
      *
      * <P>
-     * If the FacesServlet servicing this request was
-     * extension mapped, then the extension will be trimmed off.
+     * If the FacesServlet servicing this request was extension mapped, then the extension will be trimmed off.
      *
      * <p>
-     * If the FacesServlet servicing this request was
-     * prefix mapped, then the path to the FacesServlet will be removed.
+     * If the FacesServlet servicing this request was prefix mapped, then the path to the FacesServlet will be removed.
      *
      * @param context the <code>FacesContext</code> for the current request
      * @return the request path without Faces invocation information
@@ -559,8 +569,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
 
     /**
      * @param excludedExtensions the excluded file extensions as returned by {@link #parseExcludedExtensions(String[])}
-     * @param resourceId the normalized request path as returned by
-     * {@link #normalizeResourceRequest(jakarta.faces.context.FacesContext)}
+     * @param resourceId the normalized request path as returned by {@link #normalizeResourceRequest(jakarta.faces.context.FacesContext)}
      * @return <code>true</code> if the request matches an excluded resource, otherwise <code>false</code>
      */
     static boolean isExcluded(String[] excludedExtensions, String resourceId) {

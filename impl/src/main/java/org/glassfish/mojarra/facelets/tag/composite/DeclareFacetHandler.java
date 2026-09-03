@@ -74,7 +74,8 @@ public class DeclareFacetHandler extends TagHandlerImpl {
         PropertyDescriptor propertyDescriptor;
         try {
             propertyDescriptor = new PropertyDescriptor(strValue, null, null);
-        } catch (IntrospectionException ex) {
+        }
+        catch (IntrospectionException ex) {
             throw new TagException(tag, "Unable to create property descriptor for facet" + strValue, ex);
         }
         facetDescriptors.put(strValue, propertyDescriptor);

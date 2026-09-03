@@ -24,9 +24,8 @@ import java.util.Map;
 import jakarta.servlet.ServletContext;
 
 /**
- * @deprecated Since 5.0. Annotation scanning is now handled via CDI bean discovery.
- * This interface is retained only so that an {@link InjectionProvider} which still implements it is recognized and
- * warned about by {@link InjectionProviderFactory}.
+ * @deprecated Since 5.0. Annotation scanning is now handled via CDI bean discovery. This interface is retained only so that an {@link InjectionProvider} which
+ * still implements it is recognized and warned about by {@link InjectionProviderFactory}.
  */
 @Deprecated(since = "5.0", forRemoval = true)
 public interface AnnotationScanner {
@@ -40,4 +39,5 @@ public interface AnnotationScanner {
         String getFullyQualifiedClassName();
 
     }
+
 }

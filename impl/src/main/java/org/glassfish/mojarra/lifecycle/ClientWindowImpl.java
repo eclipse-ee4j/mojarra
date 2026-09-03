@@ -77,4 +77,5 @@ public class ClientWindowImpl extends ClientWindow {
     public String getId() {
         return id;
     }
+
 }

@@ -21,8 +21,7 @@ public class ConfigurationResourceProviderFactoryTest {
      * <p>
      * It tests the correct parsing of the service file with empty lines and comments.
      *
-     * @throws FileNotFoundException
-     *         Thrown when the test service file can't be written.
+     * @throws FileNotFoundException Thrown when the test service file can't be written.
      */
     @Test
     public void testCreateProvidersSuccessful() throws FileNotFoundException {
@@ -48,11 +47,10 @@ public class ConfigurationResourceProviderFactoryTest {
     /**
      * Test creating configuration resource providers from a service file.
      * <p>
-     * It tests the correct parsing of the service file with a comment and if it correctly denies the attempt to load
-     * the wrong class ({@link MockConfigurationResourceProvider}) for the given {@link ProviderType}.
+     * It tests the correct parsing of the service file with a comment and if it correctly denies the attempt to load the wrong class
+     * ({@link MockConfigurationResourceProvider}) for the given {@link ProviderType}.
      *
-     * @throws FileNotFoundException
-     *         Thrown when the test service file can't be written.
+     * @throws FileNotFoundException Thrown when the test service file can't be written.
      */
     @Test
     public void testCreateProvidersWrongService() throws FileNotFoundException {
@@ -61,14 +59,17 @@ public class ConfigurationResourceProviderFactoryTest {
         File servicesFile = prepareServiceFile(facesConfig);
 
         try (PrintWriter writer = new PrintWriter(servicesFile)) {
-            writer.println("org.glassfish.mojarra.spi.MockConfigurationResourceProvider"
-                    + "   # This should fail, since this is the wrong class for this ProviderType");
+            writer.println(
+                "org.glassfish.mojarra.spi.MockConfigurationResourceProvider"
+                    + "   # This should fail, since this is the wrong class for this ProviderType"
+            );
             writer.flush();
         }
 
         try {
             assertThrows(IllegalStateException.class, () -> ConfigurationResourceProviderFactory.createProviders(facesConfig));
-        } finally {
+        }
+        finally {
             servicesFile.delete();
         }
     }
@@ -99,4 +100,5 @@ public class ConfigurationResourceProviderFactoryTest {
         }
         return servicesFile;
     }
+
 }

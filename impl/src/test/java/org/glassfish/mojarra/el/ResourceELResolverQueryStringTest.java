@@ -34,9 +34,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
- * A resource name may carry a query string, as specified in section 2.6.1.3 "Resource Identifiers" of the Jakarta
- * Faces Specification Document. The colon separating the library name is therefore the one preceding the first '?',
- * and the query string, which may hold colons of its own, stays with the resource name.
+ * A resource name may carry a query string, as specified in section 2.6.1.3 "Resource Identifiers" of the Jakarta Faces Specification Document. The colon
+ * separating the library name is therefore the one preceding the first '?', and the query string, which may hold colons of its own, stays with the resource
+ * name.
  */
 class ResourceELResolverQueryStringTest {
 

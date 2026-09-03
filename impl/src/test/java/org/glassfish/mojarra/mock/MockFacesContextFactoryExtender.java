@@ -25,8 +25,11 @@ public class MockFacesContextFactoryExtender extends MockFacesContextFactory {
     }
 
     public MockFacesContextFactoryExtender(FacesContextFactory oldImpl) {
-        System.setProperty(FactoryFinder.FACES_CONTEXT_FACTORY,
-                this.getClass().getName());
+        System.setProperty(
+            FactoryFinder.FACES_CONTEXT_FACTORY,
+            this.getClass().getName()
+        );
         System.setProperty("oldImpl", oldImpl.getClass().getName());
     }
+
 }

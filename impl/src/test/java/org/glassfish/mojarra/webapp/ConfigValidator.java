@@ -18,7 +18,8 @@ package org.glassfish.mojarra.webapp;
 
 /**
  * <p>
- * Config Bean for a Validator.</p>
+ * Config Bean for a Validator.
+ * </p>
  */
 public class ConfigValidator extends ConfigFeature {
 
@@ -41,4 +42,5 @@ public class ConfigValidator extends ConfigFeature {
     public void setValidatorClass(String validatorClass) {
         this.validatorClass = validatorClass;
     }
+
 }

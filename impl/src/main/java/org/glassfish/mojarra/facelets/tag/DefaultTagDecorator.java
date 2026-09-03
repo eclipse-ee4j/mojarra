@@ -38,34 +38,49 @@ import org.glassfish.mojarra.util.Util;
 class DefaultTagDecorator implements TagDecorator {
 
     private enum Mapper {
-        a(new ElementConverter("h:commandLink", "faces:action"), new ElementConverter("h:commandLink", "faces:actionListener"),
-                new ElementConverter("h:outputLink", "faces:value"), new ElementConverter("h:link", "faces:outcome")),
 
-        img("h:graphicImage"), body("h:body"), head("h:head"), label("h:outputLabel"), script("h:outputScript"), link("h:outputStylesheet"),
+        a(
+            new ElementConverter("h:commandLink", "faces:action"), new ElementConverter("h:commandLink", "faces:actionListener"),
+            new ElementConverter("h:outputLink", "faces:value"), new ElementConverter("h:link", "faces:outcome")
+        ),
 
-        form("h:form"), textarea("h:inputTextarea"),
+        img("h:graphicImage"),
+        body("h:body"),
+        head("h:head"),
+        label("h:outputLabel"),
+        script("h:outputScript"),
+        link("h:outputStylesheet"),
+
+        form("h:form"),
+        textarea("h:inputTextarea"),
         // TODO if we want the name of the button to become the id, we have to do .id("name")
         button(new ElementConverter("h:button", "faces:outcome"), new ElementConverter("h:commandButton")),
 
-        select(new ElementConverter("h:selectManyListbox", "multiple").id("name"),
-                // TODO this is a little bit ugly to handle the name as if it were faces:id. we should not support this
-                new ElementConverter("h:selectOneListbox").id("name")),
+        select(
+            new ElementConverter("h:selectManyListbox", "multiple").id("name"),
+            // TODO this is a little bit ugly to handle the name as if it were faces:id. we should not support this
+            new ElementConverter("h:selectOneListbox").id("name")
+        ),
 
-        input(new ElementConverter("h:inputText", "type")
+        input(
+            new ElementConverter("h:inputText", "type")
                 // TODO this is a little bit ugly to handle the name as if it were faces:id. we should not support this
                 .id("name").map("hidden", "inputHidden").map("password", "inputSecret").map("number", "inputText").map("search", "inputText")
                 .map("email", "inputText").map("datetime", "inputText").map("date", "inputText").map("month", "inputText").map("week", "inputText")
                 .map("time", "inputText").map("datetime-local", "inputText").map("range", "inputText").map("color", "inputText").map("url", "inputText")
                 .map("checkbox", "selectBooleanCheckbox").map("file", "inputFile").map("submit", "commandButton").map("reset", "commandButton")
-                .map("button", "button"));
+                .map("button", "button")
+        );
 
         private ElementConverter elementConverter;
 
         private Mapper(final ElementConverter... elementConverters) {
             if (elementConverters.length == 1) {
                 elementConverter = elementConverters[0];
-            } else {
+            }
+            else {
                 elementConverter = new ElementConverter() {
+
                     @Override
                     public Tag decorate(Tag tag) {
                         for (ElementConverter converter : elementConverters) {
@@ -76,6 +91,7 @@ class DefaultTagDecorator implements TagDecorator {
                         }
                         return null;
                     }
+
                 };
             }
         }
@@ -83,16 +99,21 @@ class DefaultTagDecorator implements TagDecorator {
         private Mapper(String faceletTag) {
             elementConverter = new ElementConverter(faceletTag);
         }
+
     }
 
     private enum Namespace {
-        p(PassThroughAttributeLibrary.DEFAULT_NAMESPACE), faces(PassThroughElementLibrary.DEFAULT_NAMESPACE), h(HtmlLibrary.DEFAULT_NAMESPACE);
+
+        p(PassThroughAttributeLibrary.DEFAULT_NAMESPACE),
+        faces(PassThroughElementLibrary.DEFAULT_NAMESPACE),
+        h(HtmlLibrary.DEFAULT_NAMESPACE);
 
         private String uri;
 
         Namespace(String uri) {
             this.uri = uri;
         }
+
     }
 
     private ElementConverter defaultElementConverter = new ElementConverter("faces:element");
@@ -106,9 +127,12 @@ class DefaultTagDecorator implements TagDecorator {
         }
         // we only handle html tags!
         if (!("".equals(ns) || "http://www.w3.org/1999/xhtml".equals(ns))) {
-            throw new FaceletException("Elements with namespace " + ns + " may not have attributes in namespace " + Namespace.faces.uri + "." + " Namespace "
-                    + Namespace.faces.uri + " is intended for otherwise non-Faces-aware markup, such as <input type=\"text\" " + Namespace.faces.name() + ":id >"
-                    + " It is not valid to have <h:commandButton faces:id=\"button\" />.");
+            throw new FaceletException(
+                "Elements with namespace " + ns + " may not have attributes in namespace " + Namespace.faces.uri + "." + " Namespace "
+                    + Namespace.faces.uri + " is intended for otherwise non-Faces-aware markup, such as <input type=\"text\" " + Namespace.faces.name()
+                    + ":id >"
+                    + " It is not valid to have <h:commandButton faces:id=\"button\" />."
+            );
         }
         for (Mapper mapper : Mapper.values()) {
             if (tag.getLocalName().equals(mapper.name())) {
@@ -129,6 +153,7 @@ class DefaultTagDecorator implements TagDecorator {
     }
 
     private static class ElementConverter implements TagDecorator {
+
         private String localName;
         private Namespace namespace;
         private String arbiterAttributeName;
@@ -247,7 +272,8 @@ class DefaultTagDecorator implements TagDecorator {
                 // make this a component attribute
                 qName = myLocalName;
                 ns = "";
-            } else {
+            }
+            else {
                 if (ns.length() != 0 && !ns.equals(attribute.getTag().getNamespace())) {
                     // the attribute has a different namespace than the tag. preserve it.
                     return attribute;
@@ -256,7 +282,8 @@ class DefaultTagDecorator implements TagDecorator {
                     // special case for input name
                     qName = "id";
                     myLocalName = "id";
-                } else {
+                }
+                else {
                     // make this a pass through attribute
                     qName = "p:" + myLocalName;
                     ns = Namespace.p.uri;
@@ -264,6 +291,7 @@ class DefaultTagDecorator implements TagDecorator {
             }
             return new TagAttributeImpl(location, ns, myLocalName, qName, value);
         }
+
     }
 
 }

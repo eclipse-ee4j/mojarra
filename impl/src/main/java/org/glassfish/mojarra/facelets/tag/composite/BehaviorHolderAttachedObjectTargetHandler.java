@@ -44,7 +44,8 @@ public class BehaviorHolderAttachedObjectTargetHandler extends AttachedObjectTar
                 ctx = (FaceletContext) facesContext.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
                 String eventStr = (String) event.getValueExpression(ctx, String.class).getValue(ctx);
                 target.setEvent(eventStr);
-            } else {
+            }
+            else {
                 target.setEvent(event.getValue());
             }
         }

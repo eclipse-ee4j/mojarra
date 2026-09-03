@@ -55,4 +55,5 @@ public final class ChooseWhenHandler extends TagHandlerImpl {
     boolean isDynamicTest() {
         return isDynamic(test);
     }
+
 }

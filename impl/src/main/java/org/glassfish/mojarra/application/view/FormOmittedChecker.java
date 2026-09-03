@@ -68,7 +68,8 @@ class FormOmittedChecker {
 
                 if (isForm(component)) {
                     result = VisitResult.REJECT;
-                } else if (isInNeedOfForm(component)) {
+                }
+                else if (isInNeedOfForm(component)) {
                     addFormOmittedMessage(finalContext, component);
                 }
                 return result;
@@ -80,9 +81,8 @@ class FormOmittedChecker {
      * Is the component a form.
      *
      * <p>
-     * Note normally a form inherits from UIForm, but there might be some component libraries out there that might not honor
-     * that. So we check the component family to avoid warning in cases where 3rd party form component that does not extend
-     * UIForm (eg. tr:form) is used.
+     * Note normally a form inherits from UIForm, but there might be some component libraries out there that might not honor that. So we check the component
+     * family to avoid warning in cases where 3rd party form component that does not extend UIForm (eg. tr:form) is used.
      * </p>
      *
      * @param component the UI component.
@@ -126,4 +126,5 @@ class FormOmittedChecker {
             context.addMessage(null, message);
         }
     }
+
 }

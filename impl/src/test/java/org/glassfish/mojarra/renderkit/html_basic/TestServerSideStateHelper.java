@@ -22,78 +22,78 @@ import org.mockito.MockedStatic;
 
 public class TestServerSideStateHelper {
 
-	private FacesContext mockedFacesContext;
-	private ExternalContext mockedExternalContext;
-	private MockedStatic<FacesContext> mockedStaticFacesContext;
+    private FacesContext mockedFacesContext;
+    private ExternalContext mockedExternalContext;
+    private MockedStatic<FacesContext> mockedStaticFacesContext;
 
-	@BeforeEach
-	public void setup() {
-		ServletContext mockedServletContext = mock(ServletContext.class);
-		when(mockedServletContext.getInitParameterNames()).thenReturn(emptyEnumeration());
-		mockedExternalContext = mock(ExternalContext.class);
-		when(mockedExternalContext.getContext()).thenReturn(mockedServletContext);
-		mockedFacesContext = mock(FacesContext.class);
-		when(mockedFacesContext.getExternalContext()).thenReturn(mockedExternalContext);
-		when(mockedFacesContext.getViewRoot()).thenReturn(new UIViewRoot());
-		mockedStaticFacesContext = mockStatic(FacesContext.class);
-		mockedStaticFacesContext.when(FacesContext::getCurrentInstance).thenReturn(mockedFacesContext);
-	}
+    @BeforeEach
+    public void setup() {
+        ServletContext mockedServletContext = mock(ServletContext.class);
+        when(mockedServletContext.getInitParameterNames()).thenReturn(emptyEnumeration());
+        mockedExternalContext = mock(ExternalContext.class);
+        when(mockedExternalContext.getContext()).thenReturn(mockedServletContext);
+        mockedFacesContext = mock(FacesContext.class);
+        when(mockedFacesContext.getExternalContext()).thenReturn(mockedExternalContext);
+        when(mockedFacesContext.getViewRoot()).thenReturn(new UIViewRoot());
+        mockedStaticFacesContext = mockStatic(FacesContext.class);
+        mockedStaticFacesContext.when(FacesContext::getCurrentInstance).thenReturn(mockedFacesContext);
+    }
 
-	@AfterEach
-	public void teardown() {
-		mockedStaticFacesContext.close();
-	}
+    @AfterEach
+    public void teardown() {
+        mockedStaticFacesContext.close();
+    }
 
-	private void prepareViewStateParam(String viewStateParam) {
-		when(mockedExternalContext.getRequestParameterMap()).thenReturn(Map.of(VIEW_STATE_PARAM, viewStateParam));
-	}
+    private void prepareViewStateParam(String viewStateParam) {
+        when(mockedExternalContext.getRequestParameterMap()).thenReturn(Map.of(VIEW_STATE_PARAM, viewStateParam));
+    }
 
-	@Test
-	void testViewStateParam1() {
-		prepareViewStateParam("1");
-		assertDoesNotThrow(() -> new ServerSideStateHelper().getState(mockedFacesContext, null));
-	}
+    @Test
+    void testViewStateParam1() {
+        prepareViewStateParam("1");
+        assertDoesNotThrow(() -> new ServerSideStateHelper().getState(mockedFacesContext, null));
+    }
 
-	@Test
-	void testViewStateParam2() {
-		prepareViewStateParam("-1");
-		assertDoesNotThrow(() -> new ServerSideStateHelper().getState(mockedFacesContext, null));
-	}
+    @Test
+    void testViewStateParam2() {
+        prepareViewStateParam("-1");
+        assertDoesNotThrow(() -> new ServerSideStateHelper().getState(mockedFacesContext, null));
+    }
 
-	@Test
-	void testViewStateParam3() {
-		prepareViewStateParam("");
-		assertDoesNotThrow(() -> new ServerSideStateHelper().getState(mockedFacesContext, null));
-	}
+    @Test
+    void testViewStateParam3() {
+        prepareViewStateParam("");
+        assertDoesNotThrow(() -> new ServerSideStateHelper().getState(mockedFacesContext, null));
+    }
 
-	@Test
-	void testViewStateParam4() {
-		prepareViewStateParam("1:");
-		assertDoesNotThrow(() -> new ServerSideStateHelper().getState(mockedFacesContext, null));
-	}
+    @Test
+    void testViewStateParam4() {
+        prepareViewStateParam("1:");
+        assertDoesNotThrow(() -> new ServerSideStateHelper().getState(mockedFacesContext, null));
+    }
 
-	@Test
-	void testViewStateParam5() {
-		prepareViewStateParam(":");
-		assertDoesNotThrow(() -> new ServerSideStateHelper().getState(mockedFacesContext, null));
-	}
+    @Test
+    void testViewStateParam5() {
+        prepareViewStateParam(":");
+        assertDoesNotThrow(() -> new ServerSideStateHelper().getState(mockedFacesContext, null));
+    }
 
-	@Test
-	void testViewStateParam6() {
-		prepareViewStateParam(":1");
-		assertDoesNotThrow(() -> new ServerSideStateHelper().getState(mockedFacesContext, null));
-	}
+    @Test
+    void testViewStateParam6() {
+        prepareViewStateParam(":1");
+        assertDoesNotThrow(() -> new ServerSideStateHelper().getState(mockedFacesContext, null));
+    }
 
-	@Test
-	void testViewStateParam7() {
-		prepareViewStateParam("1:1");
-		assertDoesNotThrow(() -> new ServerSideStateHelper().getState(mockedFacesContext, null));
-	}
+    @Test
+    void testViewStateParam7() {
+        prepareViewStateParam("1:1");
+        assertDoesNotThrow(() -> new ServerSideStateHelper().getState(mockedFacesContext, null));
+    }
 
-	@Test
-	void testViewStateParam8() {
-		prepareViewStateParam("stateless");
-		assertDoesNotThrow(() -> new ServerSideStateHelper().getState(mockedFacesContext, null));
-	}
+    @Test
+    void testViewStateParam8() {
+        prepareViewStateParam("stateless");
+        assertDoesNotThrow(() -> new ServerSideStateHelper().getState(mockedFacesContext, null));
+    }
 
 }

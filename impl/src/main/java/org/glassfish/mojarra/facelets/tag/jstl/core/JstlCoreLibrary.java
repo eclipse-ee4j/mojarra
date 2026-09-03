@@ -16,7 +16,6 @@
 
 package org.glassfish.mojarra.facelets.tag.jstl.core;
 
-
 import java.util.Set;
 
 import org.glassfish.mojarra.facelets.tag.AbstractTagLibrary;
@@ -40,8 +39,8 @@ public final class JstlCoreLibrary extends AbstractTagLibrary {
      * Constructor.
      *
      * <p>
-     * This constructor is used to allow the namespace 'http://java.sun.com/jstl/core' to be used as another way to resolve
-     * to the JSTL c library. This is used for backwards compatibility.
+     * This constructor is used to allow the namespace 'http://java.sun.com/jstl/core' to be used as another way to resolve to the JSTL c library. This is used
+     * for backwards compatibility.
      * </p>
      *
      * @param namespace the namespace.
@@ -56,4 +55,5 @@ public final class JstlCoreLibrary extends AbstractTagLibrary {
         addTagHandler("otherwise", ChooseOtherwiseHandler.class);
         addTagHandler("set", SetHandler.class);
     }
+
 }

@@ -40,10 +40,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
- * The jakarta.faces.partial.render / .execute request parameters are bounded before they reach PartialVisitContext:
- * any whitespace separates ids, empty tokens are dropped, duplicates collapse, ids beyond the length limit are
- * rejected and the id count is capped. These bounds keep a single request from expanding into a disproportionately
- * large PartialVisitContext and stay well clear of legitimate ajax traffic.
+ * The jakarta.faces.partial.render / .execute request parameters are bounded before they reach PartialVisitContext: any whitespace separates ids, empty tokens
+ * are dropped, duplicates collapse, ids beyond the length limit are rejected and the id count is capped. These bounds keep a single request from expanding into
+ * a disproportionately large PartialVisitContext and stay well clear of legitimate ajax traffic.
  */
 class RenderExecuteClientIdBoundsTest {
 
@@ -58,8 +57,9 @@ class RenderExecuteClientIdBoundsTest {
         FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, "org.glassfish.mojarra.mock.MockApplicationFactory");
         request = new MockHttpServletRequest();
         facesContext = new FacesContextImpl(
-                new ExternalContextImpl(new MockServletContext(), request, new MockHttpServletResponse()),
-                new LifecycleImpl());
+            new ExternalContextImpl(new MockServletContext(), request, new MockHttpServletResponse()),
+            new LifecycleImpl()
+        );
 
         RenderKitFactory renderKitFactory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
         renderKitFactory.addRenderKit(RenderKitFactory.HTML_BASIC_RENDER_KIT, new MockRenderKit());
@@ -112,4 +112,5 @@ class RenderExecuteClientIdBoundsTest {
         }
         assertEquals(256, renderIds(value.toString()).size());
     }
+
 }

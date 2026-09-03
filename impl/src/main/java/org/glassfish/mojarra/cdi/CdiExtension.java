@@ -71,16 +71,16 @@ import org.glassfish.mojarra.util.FacesLogger;
 public class CdiExtension implements Extension {
 
     /**
-     * Array of Mojarra impl specific CDI managed bean classes to add to CDI.
-     * This is necessary in case Mojarra is provided by server instead of by webapp as is often the case in Jakarta EE environments.
+     * Array of Mojarra impl specific CDI managed bean classes to add to CDI. This is necessary in case Mojarra is provided by server instead of by webapp as is
+     * often the case in Jakarta EE environments.
      */
     private static final Class<?>[] MOJARRA_MANAGED_BEANS = {
-            WebsocketUserManager.class,
-            WebsocketSessionManager.class,
-            WebsocketChannelManager.class,
-            WebsocketChannelManager.ViewScope.class,
-            InjectionPointGenerator.class,
-            WebsocketPushContextProducer.class
+        WebsocketUserManager.class,
+        WebsocketSessionManager.class,
+        WebsocketChannelManager.class,
+        WebsocketChannelManager.ViewScope.class,
+        InjectionPointGenerator.class,
+        WebsocketPushContextProducer.class
     };
 
     /**
@@ -99,16 +99,15 @@ public class CdiExtension implements Extension {
     private final Set<Type> managedPropertyTargetTypes = new HashSet<>();
 
     /**
-     * Observed types of every CDI observer that observes a Faces {@link SystemEvent} (sub)type. Lets
-     * {@code Events#publishEvent} skip the per-component CDI event dispatch when no observer can receive a
-     * given system event (the common case — see {@link #processSystemEventObserver(ProcessObserverMethod)}).
+     * Observed types of every CDI observer that observes a Faces {@link SystemEvent} (sub)type. Lets {@code Events#publishEvent} skip the per-component CDI
+     * event dispatch when no observer can receive a given system event (the common case — see {@link #processSystemEventObserver(ProcessObserverMethod)}).
      */
     private final Set<Class<?>> observedSystemEventTypes = ConcurrentHashMap.newKeySet();
 
     /**
-     * Whether any CDI observer observes a Faces {@link PhaseEvent}. Lets {@code Phase} skip the four CDI phase
-     * event dispatches (and their qualifier allocations) it would otherwise fire before and after every phase
-     * when no observer can receive them (the common case — see {@link #processPhaseEventObserver(ProcessObserverMethod)}).
+     * Whether any CDI observer observes a Faces {@link PhaseEvent}. Lets {@code Phase} skip the four CDI phase event dispatches (and their qualifier
+     * allocations) it would otherwise fire before and after every phase when no observer can receive them (the common case — see
+     * {@link #processPhaseEventObserver(ProcessObserverMethod)}).
      */
     private volatile boolean phaseEventObserved;
 
@@ -118,15 +117,15 @@ public class CdiExtension implements Extension {
     private static final Logger LOGGER = FacesLogger.APPLICATION_VIEW.getLogger();
 
     // As per CDI spec this is the invocation order:
-    //  1. BeforeBeanDiscovery
-    //  2. ProcessAnnotatedType and ProcessSyntheticAnnotatedType
-    //  3. AfterTypeDiscovery
-    //  4. ProcessInjectionTarget and ProcessProducer
-    //  5. ProcessInjectionPoint
-    //  6. ProcessBeanAttributes
-    //  7. ProcessBean, ProcessManagedBean, ProcessSessionBean, ProcessProducerMethod, ProcessProducerField and ProcessSyntheticBean
-    //  8. ProcessObserverMethod and ProcessSyntheticObserverMethod
-    //  9. AfterBeanDiscovery
+    // 1. BeforeBeanDiscovery
+    // 2. ProcessAnnotatedType and ProcessSyntheticAnnotatedType
+    // 3. AfterTypeDiscovery
+    // 4. ProcessInjectionTarget and ProcessProducer
+    // 5. ProcessInjectionPoint
+    // 6. ProcessBeanAttributes
+    // 7. ProcessBean, ProcessManagedBean, ProcessSessionBean, ProcessProducerMethod, ProcessProducerField and ProcessSyntheticBean
+    // 8. ProcessObserverMethod and ProcessSyntheticObserverMethod
+    // 9. AfterBeanDiscovery
     // 10. AfterDeploymentValidation
 
     /**
@@ -152,17 +151,23 @@ public class CdiExtension implements Extension {
      * @param event the process annotated type event
      */
     public <T> void processAnnotatedType(
-            @Observes @WithAnnotations({
+        @Observes @WithAnnotations(
+            {
                 FacesComponent.class, FacesConverter.class, FacesValidator.class,
                 FacesRenderer.class, FacesBehaviorRenderer.class, FacesBehavior.class, NamedEvent.class
-            }) ProcessAnnotatedType<T> event) {
+            }
+        ) ProcessAnnotatedType<T> event
+    )
+    {
         Class<?> clazz = event.getAnnotatedType().getJavaClass();
         for (Annotation annotation : clazz.getAnnotations()) {
             Class<? extends Annotation> annotationType = annotation.annotationType();
-            if (annotationType == FacesComponent.class || annotationType == FacesConverter.class
+            if (
+                annotationType == FacesComponent.class || annotationType == FacesConverter.class
                     || annotationType == FacesValidator.class || annotationType == FacesRenderer.class
                     || annotationType == FacesBehaviorRenderer.class || annotationType == FacesBehavior.class
-                    || annotationType == NamedEvent.class) {
+                    || annotationType == NamedEvent.class
+            ) {
                 annotatedClasses.computeIfAbsent(annotationType, k -> new HashSet<>()).add(clazz);
             }
         }
@@ -181,7 +186,8 @@ public class CdiExtension implements Extension {
     @SuppressWarnings("unchecked")
     public <T extends DataModel<?>> void processBean(@Observes ProcessBean<T> processBeanEvent, BeanManager beanManager) {
         try {
-            ProcessBean<T> event = processBeanEvent; // JDK8 u60 workaround - https://web.archive.org/web/20161007164846/http://mail.openjdk.java.net/pipermail/lambda-dev/2015-August/012146.html/012146.html
+            ProcessBean<T> event = processBeanEvent; // JDK8 u60 workaround -
+                                                     // https://web.archive.org/web/20161007164846/http://mail.openjdk.java.net/pipermail/lambda-dev/2015-August/012146.html/012146.html
 
             getAnnotation(beanManager, event.getAnnotated(), FacesDataModel.class)
                 .ifPresent(model -> forClassToDataModelClass.put(model.forClass(), (Class<T>) event.getBean().getBeanClass()));
@@ -230,11 +236,9 @@ public class CdiExtension implements Extension {
      * <li>record the observed type of every observer that observes a Faces {@link SystemEvent} (sub)type
      * </ul>
      * <p>
-     * Faces publishes system events per component per phase (Pre/PostValidateEvent, PostAddToViewEvent,
-     * PreRenderComponentEvent, ...), each of which is also dispatched as a CDI event. Collecting the observed
-     * types here lets {@code Events#publishEvent} skip that dispatch entirely for event types no observer
-     * listens to. Observers must observe a {@code SystemEvent} (sub)type to receive Faces system events as CDI
-     * events, which is the contract of the feature.
+     * Faces publishes system events per component per phase (Pre/PostValidateEvent, PostAddToViewEvent, PreRenderComponentEvent, ...), each of which is also
+     * dispatched as a CDI event. Collecting the observed types here lets {@code Events#publishEvent} skip that dispatch entirely for event types no observer
+     * listens to. Observers must observe a {@code SystemEvent} (sub)type to receive Faces system events as CDI events, which is the contract of the feature.
      *
      * @param <T> the observed system event type
      * @param event the process observer method event
@@ -243,7 +247,8 @@ public class CdiExtension implements Extension {
         Type observedType = event.getObserverMethod().getObservedType();
         if (observedType instanceof Class<?> observedClass) {
             observedSystemEventTypes.add(observedClass);
-        } else if (observedType instanceof ParameterizedType parameterizedType && parameterizedType.getRawType() instanceof Class<?> rawClass) {
+        }
+        else if (observedType instanceof ParameterizedType parameterizedType && parameterizedType.getRawType() instanceof Class<?> rawClass) {
             observedSystemEventTypes.add(rawClass);
         }
     }
@@ -254,11 +259,9 @@ public class CdiExtension implements Extension {
      * <li>record whether any observer observes a Faces {@link PhaseEvent}
      * </ul>
      * <p>
-     * Faces dispatches a CDI {@link PhaseEvent} (qualified with {@link jakarta.faces.event.BeforePhase} and
-     * {@link jakarta.faces.event.AfterPhase}) before and after every lifecycle phase. Recording their presence
-     * here lets {@code Phase} skip that dispatch entirely when no observer listens for them. Observers must
-     * observe a {@code PhaseEvent} (or subtype) to receive Faces phase events as CDI events, which is the
-     * contract of the feature.
+     * Faces dispatches a CDI {@link PhaseEvent} (qualified with {@link jakarta.faces.event.BeforePhase} and {@link jakarta.faces.event.AfterPhase}) before and
+     * after every lifecycle phase. Recording their presence here lets {@code Phase} skip that dispatch entirely when no observer listens for them. Observers
+     * must observe a {@code PhaseEvent} (or subtype) to receive Faces phase events as CDI events, which is the contract of the feature.
      *
      * @param event the process observer method event
      */
@@ -345,14 +348,16 @@ public class CdiExtension implements Extension {
                     sortedForDataModelClasses.add(i, clazz);
                     added = true;
                     break;
-                } else if (clazz.isAssignableFrom(sortedForDataModelClasses.get(i))) {
+                }
+                else if (clazz.isAssignableFrom(sortedForDataModelClasses.get(i))) {
                     highestSuper = i;
                 }
             }
             if (!added) {
                 if (highestSuper > -1) {
                     sortedForDataModelClasses.add(highestSuper + 1, clazz);
-                } else {
+                }
+                else {
                     sortedForDataModelClasses.add(clazz);
                 }
             }
@@ -370,10 +375,9 @@ public class CdiExtension implements Extension {
     }
 
     /**
-     * BeforeShutdown: drop this application's cached CDI bean resolutions so a redeployment that
-     * reuses the BeanManager identity does not resolve against {@link jakarta.enterprise.inject.spi.Bean}
-     * instances left over from the now-defunct deployment (which fails with a
-     * {@code ContextNotActiveException} on first use).
+     * BeforeShutdown: drop this application's cached CDI bean resolutions so a redeployment that reuses the BeanManager identity does not resolve against
+     * {@link jakarta.enterprise.inject.spi.Bean} instances left over from the now-defunct deployment (which fails with a {@code ContextNotActiveException} on
+     * first use).
      *
      * @param event the before shutdown event
      * @param beanManager the current bean manager
@@ -415,4 +419,5 @@ public class CdiExtension implements Extension {
     public boolean isPhaseEventObserved() {
         return phaseEventObserved;
     }
+
 }

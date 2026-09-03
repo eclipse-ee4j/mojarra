@@ -49,8 +49,7 @@ import org.glassfish.mojarra.renderkit.RenderKitUtils;
 // Mock Object for FacesContext
 public class MockFacesContext extends FacesContext {
 
-    private static final String POST_BACK_MARKER
-            = MockFacesContext.class.getName() + "_POST_BACK";
+    private static final String POST_BACK_MARKER = MockFacesContext.class.getName() + "_POST_BACK";
 
     private Severity maxSeverity;
 
@@ -286,7 +285,8 @@ public class MockFacesContext extends FacesContext {
             RenderKit rk = this.getRenderKit();
             if (rk != null) {
                 postback = rk.getResponseStateManager().isPostback(this);
-            } else {
+            }
+            else {
                 // ViewRoot hasn't been set yet, so calculate the RK
                 ViewHandler vh = this.getApplication().getViewHandler();
                 String rkId = vh.calculateRenderKitId(this);
@@ -324,7 +324,8 @@ public class MockFacesContext extends FacesContext {
         }
         if (maxSeverity == null) {
             maxSeverity = message.getSeverity();
-        } else {
+        }
+        else {
             Severity sev = message.getSeverity();
             if (sev.getOrdinal() > maxSeverity.getOrdinal()) {
                 maxSeverity = sev;
@@ -383,4 +384,5 @@ public class MockFacesContext extends FacesContext {
     public boolean isValidationFailed() {
         return validationFailed;
     }
+
 }

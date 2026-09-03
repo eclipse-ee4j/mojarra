@@ -74,9 +74,12 @@ class EJBScanner implements Scanner {
             }
         }
         if (!fieldAnnotations.isEmpty() || !methodAnnotations.isEmpty()) {
-            handler = new EJBHandler(fields.toArray(new Field[0]), fieldAnnotations.toArray(new EJB[0]), methods.toArray(new Method[0]),
-                    methodAnnotations.toArray(new EJB[0]));
+            handler = new EJBHandler(
+                fields.toArray(new Field[0]), fieldAnnotations.toArray(new EJB[0]), methods.toArray(new Method[0]),
+                methodAnnotations.toArray(new EJB[0])
+            );
         }
         return handler;
     }
+
 }

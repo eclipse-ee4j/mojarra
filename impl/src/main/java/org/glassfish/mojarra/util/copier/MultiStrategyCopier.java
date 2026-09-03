@@ -35,8 +35,10 @@ import java.util.List;
  */
 public class MultiStrategyCopier implements Copier {
 
-    private static final List<Copier> COPIERS = List.of( // Note: copier instances used here must be thread-safe!
-            new SerializationCopier(), new CloneCopier(), new CopyCtorCopier(), new NewInstanceCopier());
+    private static final List<Copier> COPIERS = List.of(
+        // Note: copier instances used here must be thread-safe!
+        new SerializationCopier(), new CloneCopier(), new CopyCtorCopier(), new NewInstanceCopier()
+    );
 
     @Override
     public Object copy(Object object) {
@@ -45,7 +47,8 @@ public class MultiStrategyCopier implements Copier {
 
             try {
                 return copier.copy(object);
-            } catch (Exception ignore) {
+            }
+            catch (Exception ignore) {
                 continue;
             }
 

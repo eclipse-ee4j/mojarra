@@ -143,7 +143,8 @@ final class CompilationManager {
         TextUnit unit;
         if (currentUnit() instanceof TextUnit) {
             unit = (TextUnit) currentUnit();
-        } else {
+        }
+        else {
             unit = new TextUnit(alias, nextTagId());
             startUnit(unit);
         }
@@ -164,7 +165,8 @@ final class CompilationManager {
         TextUnit unit;
         if (currentUnit() instanceof TextUnit) {
             unit = (TextUnit) currentUnit();
-        } else {
+        }
+        else {
             unit = new TextUnit(alias, nextTagId());
             startUnit(unit);
         }
@@ -188,7 +190,8 @@ final class CompilationManager {
         TextUnit unit;
         if (currentUnit() instanceof TextUnit) {
             unit = (TextUnit) currentUnit();
-        } else {
+        }
+        else {
             unit = new TextUnit(alias, nextTagId());
             startUnit(unit);
         }
@@ -237,7 +240,8 @@ final class CompilationManager {
             if (log.isLoggable(Level.FINE)) {
                 log.fine("New Namespace and [Trimmed] TagUnit pushed");
             }
-        } else if (isImplementation(qname[0], qname[1])) {
+        }
+        else if (isImplementation(qname[0], qname[1])) {
             if (log.isLoggable(Level.FINE)) {
                 log.fine("Composite Component Implementation Found, Popping Parent Tags");
             }
@@ -258,23 +262,29 @@ final class CompilationManager {
                 log.fine("New Namespace and ImplementationUnit pushed");
             }
 
-        } else if (isRemove(qname[0], qname[1])) {
+        }
+        else if (isRemove(qname[0], qname[1])) {
             units.add(new RemoveUnit());
-        } else if (tagLibrary.containsTagHandler(qname[0], qname[1])) {
+        }
+        else if (tagLibrary.containsTagHandler(qname[0], qname[1])) {
             if (isInterface(qname[0], qname[1])) {
                 InterfaceUnit iface = new InterfaceUnit(this, tagLibrary, qname[0], qname[1], t, nextTagId());
                 setInterfaceUnit(iface);
                 startUnit(iface);
-            } else {
+            }
+            else {
                 startUnit(new TagUnit(this, tagLibrary, qname[0], qname[1], t, nextTagId()));
             }
-        } else if (tagLibrary.containsNamespace(qname[0], t)) {
+        }
+        else if (tagLibrary.containsNamespace(qname[0], t)) {
             throw new TagException(orig, "Tag Library supports namespace: " + qname[0] + ", but no tag was defined for name: " + qname[1]);
-        } else {
+        }
+        else {
             TextUnit unit;
             if (currentUnit() instanceof TextUnit) {
                 unit = (TextUnit) currentUnit();
-            } else {
+            }
+            else {
                 unit = new TextUnit(alias, nextTagId());
                 startUnit(unit);
             }
@@ -294,7 +304,8 @@ final class CompilationManager {
             TextUnit t = (TextUnit) unit;
             if (t.isClosed()) {
                 finishUnit();
-            } else {
+            }
+            else {
                 t.endTag();
                 return;
             }
@@ -327,21 +338,25 @@ final class CompilationManager {
         }
 
         boolean alreadyPresent = namespaceManager.getNamespace(prefix) != null;
-        
+
         if (alreadyPresent) {
             return;
         }
 
         var replacement = DeprecatedNamespacesChecker.shouldWarnAboutForDeprecatedNamespace(uri);
         if (replacement != null && log.isLoggable(Level.WARNING)) {
-            log.warning("The namespace '" + uri + "' is DEPRECATED and will be removed in a future version of Jakarta Faces. Applications should migrate to '" + replacement + "' instead.");
+            log.warning(
+                "The namespace '" + uri + "' is DEPRECATED and will be removed in a future version of Jakarta Faces. Applications should migrate to '"
+                    + replacement + "' instead."
+            );
         }
 
         namespaceManager.pushNamespace(prefix, uri);
         NamespaceUnit unit;
         if (currentUnit() instanceof NamespaceUnit) {
             unit = (NamespaceUnit) currentUnit();
-        } else {
+        }
+        else {
             unit = new NamespaceUnit(tagLibrary);
             startUnit(unit);
         }
@@ -349,10 +364,9 @@ final class CompilationManager {
     }
 
     /**
-     * Whether this facelet holds a tag handler that decides what it contributes to the view by means this
-     * implementation cannot know, in which case its build cannot be proven reproducible and the redundant render-time
-     * re-apply is performed rather than skipped. Set while the handlers are created, so read it after
-     * {@link #createFaceletHandler()}.
+     * Whether this facelet holds a tag handler that decides what it contributes to the view by means this implementation cannot know, in which case its build
+     * cannot be proven reproducible and the redundant render-time re-apply is performed rather than skipped. Set while the handlers are created, so read it
+     * after {@link #createFaceletHandler()}.
      *
      * @return whether this facelet holds a handler that leaves the build unreproducible
      */
@@ -384,16 +398,16 @@ final class CompilationManager {
         }
     }
 
-//    private CompilationUnit searchUnits(Class type) {
-//        CompilationUnit unit = null;
-//        int i = this.units.size();
-//        while (unit == null && --i >= 0) {
-//            if (type.isAssignableFrom(this.units.get(i).getClass())) {
-//                unit = (CompilationUnit) this.units.get(i);
-//            }
-//        }
-//        return unit;
-//    }
+    // private CompilationUnit searchUnits(Class type) {
+    // CompilationUnit unit = null;
+    // int i = this.units.size();
+    // while (unit == null && --i >= 0) {
+    // if (type.isAssignableFrom(this.units.get(i).getClass())) {
+    // unit = (CompilationUnit) this.units.get(i);
+    // }
+    // }
+    // return unit;
+    // }
 
     private void startUnit(CompilationUnit unit) {
 
@@ -420,19 +434,19 @@ final class CompilationManager {
     // extra content above and below the tag.
     protected static boolean isTrimmed(String ns, String name) {
         boolean matchInUILibrary = UILibrary.NAMESPACES.contains(ns)
-                && (CompositionHandler.Name.equals(name) || ComponentRefHandler.Name.equals(name));
+            && (CompositionHandler.Name.equals(name) || ComponentRefHandler.Name.equals(name));
         return matchInUILibrary;
     }
 
     protected static boolean isImplementation(String ns, String name) {
         boolean matchInCompositeLibrary = CompositeLibrary.NAMESPACES.contains(ns)
-                && ImplementationHandler.Name.equals(name);
+            && ImplementationHandler.Name.equals(name);
         return matchInCompositeLibrary;
     }
 
     protected static boolean isInterface(String ns, String name) {
         boolean matchInCompositeLibrary = CompositeLibrary.NAMESPACES.contains(ns)
-                && InterfaceHandler.Name.equals(name);
+            && InterfaceHandler.Name.equals(name);
         return matchInCompositeLibrary;
     }
 
@@ -448,7 +462,8 @@ final class CompilationManager {
             if (c == -1) {
                 namespace = namespaceManager.getNamespace("");
                 localName = value;
-            } else {
+            }
+            else {
                 String prefix = value.substring(0, c);
                 namespace = namespaceManager.getNamespace(prefix);
                 if (namespace == null) {
@@ -457,7 +472,8 @@ final class CompilationManager {
                 localName = value.substring(c + 1);
             }
             return new String[] { namespace, localName };
-        } else {
+        }
+        else {
             return new String[] { tag.getNamespace(), tag.getLocalName() };
         }
     }
@@ -491,7 +507,8 @@ final class CompilationManager {
         }
         if (remove == 0) {
             return tag;
-        } else {
+        }
+        else {
             List<TagAttribute> attrList = new ArrayList<>(attr.length);
             int p = 0;
             for (int i = 0; i < attr.length; i++) {
@@ -525,4 +542,5 @@ final class CompilationManager {
         }
         return result;
     }
+
 }

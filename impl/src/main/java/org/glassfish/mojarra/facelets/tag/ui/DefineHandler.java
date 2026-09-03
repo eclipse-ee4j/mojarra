@@ -43,7 +43,8 @@ public final class DefineHandler extends TagHandlerImpl {
             FacesContext context = FacesContext.getCurrentInstance();
             FaceletContext ctx = (FaceletContext) context.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
             name = (String) attr.getValueExpression(ctx, String.class).getValue(ctx);
-        } else {
+        }
+        else {
             name = attr.getValue();
         }
     }
@@ -66,4 +67,5 @@ public final class DefineHandler extends TagHandlerImpl {
     public String getName() {
         return name;
     }
+
 }

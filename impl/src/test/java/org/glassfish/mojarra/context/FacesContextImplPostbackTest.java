@@ -38,9 +38,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
- * Whether a request is a postback is asked once per component tag while a view is being built, so the answer is
- * resolved once and reused for the lifetime of the {@link FacesContext}. It therefore has to stay stable even when the
- * request state it was derived from changes afterwards.
+ * Whether a request is a postback is asked once per component tag while a view is being built, so the answer is resolved once and reused for the lifetime of
+ * the {@link FacesContext}. It therefore has to stay stable even when the request state it was derived from changes afterwards.
  */
 class FacesContextImplPostbackTest {
 
@@ -55,8 +54,9 @@ class FacesContextImplPostbackTest {
         FactoryFinder.setFactory(FactoryFinder.RENDER_KIT_FACTORY, "org.glassfish.mojarra.mock.MockRenderKitFactory");
         request = new MockHttpServletRequest();
         facesContext = new FacesContextImpl(
-                new ExternalContextImpl(new MockServletContext(), request, new MockHttpServletResponse()),
-                new LifecycleImpl());
+            new ExternalContextImpl(new MockServletContext(), request, new MockHttpServletResponse()),
+            new LifecycleImpl()
+        );
 
         RenderKitFactory renderKitFactory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
         renderKitFactory.addRenderKit(RenderKitFactory.HTML_BASIC_RENDER_KIT, new MockRenderKit());
@@ -94,4 +94,5 @@ class FacesContextImplPostbackTest {
 
         assertTrue(facesContext.isPostback());
     }
+
 }

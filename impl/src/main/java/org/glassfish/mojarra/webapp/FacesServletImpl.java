@@ -64,17 +64,16 @@ import org.glassfish.mojarra.config.MojarraContextParam;
 
 /**
  * <p>
- * <strong class="changed_modified_2_0 changed_modified_2_0_rev_a changed_modified_2_1 changed_modified_2_2
- * changed_modified_2_3">FacesServlet</strong> is a Jakarta Servlet servlet that manages the request processing
- * lifecycle for web applications that are utilizing Jakarta Faces to construct the user interface.
+ * <strong class="changed_modified_2_0 changed_modified_2_0_rev_a changed_modified_2_1 changed_modified_2_2 changed_modified_2_3">FacesServlet</strong> is a
+ * Jakarta Servlet servlet that manages the request processing lifecycle for web applications that are utilizing Jakarta Faces to construct the user interface.
  * </p>
  *
  * <div class="changed_added_2_1">
  *
  * <p>
- * If the application is running in a Jakarta Servlet 3.0 (and beyond) container, the runtime must provide an
- * implementation of the {@link jakarta.servlet.ServletContainerInitializer} interface that declares the following
- * classes in its {@link jakarta.servlet.annotation.HandlesTypes} annotation.
+ * If the application is running in a Jakarta Servlet 3.0 (and beyond) container, the runtime must provide an implementation of the
+ * {@link jakarta.servlet.ServletContainerInitializer} interface that declares the following classes in its {@link jakarta.servlet.annotation.HandlesTypes}
+ * annotation.
  * </p>
  *
  * <ul>
@@ -110,8 +109,8 @@ import org.glassfish.mojarra.config.MojarraContextParam;
  * </ul>
  *
  * <p>
- * This Jakarta Servlet servlet must automatically be mapped if it is <strong>not</strong> explicitly mapped in
- * <code>web.xml</code> or <code>web-fragment.xml</code> and one or more of the following conditions are true.
+ * This Jakarta Servlet servlet must automatically be mapped if it is <strong>not</strong> explicitly mapped in <code>web.xml</code> or
+ * <code>web-fragment.xml</code> and one or more of the following conditions are true.
  * </p>
  *
  * <ul>
@@ -124,37 +123,32 @@ import org.glassfish.mojarra.config.MojarraContextParam;
  *
  * <li>
  * <p>
- * A <code>faces-config.xml</code> file is found in the <code>META-INF</code> directory of a jar in the application's
- * classpath.
+ * A <code>faces-config.xml</code> file is found in the <code>META-INF</code> directory of a jar in the application's classpath.
  * </p>
  * </li>
  *
  * <li>
  * <p>
- * A filename ending in <code>.faces-config.xml</code> is found in the <code>META-INF</code> directory of a jar in the
- * application's classpath.
+ * A filename ending in <code>.faces-config.xml</code> is found in the <code>META-INF</code> directory of a jar in the application's classpath.
  * </p>
  * </li>
  *
  * <li>
  * <p>
- * The <code>jakarta.faces.CONFIG_FILES</code> context param is declared in <code>web.xml</code> or
- * <code>web-fragment.xml</code>.
+ * The <code>jakarta.faces.CONFIG_FILES</code> context param is declared in <code>web.xml</code> or <code>web-fragment.xml</code>.
  * </p>
  * </li>
  *
  * <li>
  * <p>
- * The <code>Set</code> of classes passed to the <code>onStartup()</code> method of the
- * <code>ServletContainerInitializer</code> implementation is not empty.
+ * The <code>Set</code> of classes passed to the <code>onStartup()</code> method of the <code>ServletContainerInitializer</code> implementation is not empty.
  * </p>
  * </li>
  *
  * </ul>
  *
  * <p>
- * If the runtime determines that the servlet must be automatically mapped, it must be mapped to the following
- * &lt;<code>url-pattern</code>&gt; entries.
+ * If the runtime determines that the servlet must be automatically mapped, it must be mapped to the following &lt;<code>url-pattern</code>&gt; entries.
  * </p>
  *
  * <ul>
@@ -167,15 +161,14 @@ import org.glassfish.mojarra.config.MojarraContextParam;
  * </div>
  *
  * <p class="changed_added_2_3">
- * Note that the automatic mapping to {@code *.xhtml} can be disabled with the context param
- * {@link FacesServlet#DISABLE_FACESSERVLET_TO_XHTML_PARAM_NAME}.
+ * Note that the automatic mapping to {@code *.xhtml} can be disabled with the context param {@link FacesServlet#DISABLE_FACESSERVLET_TO_XHTML_PARAM_NAME}.
  * </p>
  *
  * <div class="changed_added_2_2">
  *
  * <p>
- * This class must be annotated with {@code jakarta.servlet.annotation.MultipartConfig}. This causes the Jakarta Servlet
- * container in which the Jakarta Faces implementation is running to correctly handle multipart form data.
+ * This class must be annotated with {@code jakarta.servlet.annotation.MultipartConfig}. This causes the Jakarta Servlet container in which the Jakarta Faces
+ * implementation is running to correctly handle multipart form data.
  * </p>
  *
  * <p>
@@ -183,10 +176,9 @@ import org.glassfish.mojarra.config.MojarraContextParam;
  * </p>
  *
  * <p>
- * The topic of web application security is a cross-cutting concern and every aspect of the specification address it.
- * However, as with any framework, the application developer needs to pay careful attention to security. Please consider
- * these topics among the rest of the security concerns for the application. This is by no means a complete list of
- * security concerns, and is no substitute for a thorough application level security review.
+ * The topic of web application security is a cross-cutting concern and every aspect of the specification address it. However, as with any framework, the
+ * application developer needs to pay careful attention to security. Please consider these topics among the rest of the security concerns for the application.
+ * This is by no means a complete list of security concerns, and is no substitute for a thorough application level security review.
  * </p>
  *
  * <blockquote>
@@ -197,11 +189,9 @@ import org.glassfish.mojarra.config.MojarraContextParam;
  *
  * <p>
  * If the <code>FacesServlet</code> is mapped using a prefix <code>&lt;url-pattern&gt;</code>, such as
- * <code>&lt;url-pattern&gt;/faces/*&lt;/url-pattern&gt;</code>, something must be done to prevent access to the view
- * source without its first being processed by the <code>FacesServlet</code>. One common approach is to apply a
- * &lt;security-constraint&gt; to all facelet files and flow definition files. Please see the <strong>Deployment
- * Descriptor</strong> chapter of the Jakarta Servlet Specification for more information the use of
- * &lt;security-constraint&gt;.
+ * <code>&lt;url-pattern&gt;/faces/*&lt;/url-pattern&gt;</code>, something must be done to prevent access to the view source without its first being processed
+ * by the <code>FacesServlet</code>. One common approach is to apply a &lt;security-constraint&gt; to all facelet files and flow definition files. Please see
+ * the <strong>Deployment Descriptor</strong> chapter of the Jakarta Servlet Specification for more information the use of &lt;security-constraint&gt;.
  * </p>
  *
  * <p>
@@ -209,11 +199,9 @@ import org.glassfish.mojarra.config.MojarraContextParam;
  * </p>
  *
  * <p>
- * The Jakarta Faces Specification only requires the use of the GET and POST http methods. If your web
- * application does not require any other http methods, such as PUT and DELETE, please consider restricting the
- * allowable http methods using the &lt;http-method&gt; and &lt;http-method-omission&gt; elements. Please see the
- * <strong>Security</strong> sections of the Jakarta Servlet Specification for more information about the use of these
- * elements.
+ * The Jakarta Faces Specification only requires the use of the GET and POST http methods. If your web application does not require any other http methods, such
+ * as PUT and DELETE, please consider restricting the allowable http methods using the &lt;http-method&gt; and &lt;http-method-omission&gt; elements. Please see
+ * the <strong>Security</strong> sections of the Jakarta Servlet Specification for more information about the use of these elements.
  * </p>
  *
  *
@@ -234,7 +222,14 @@ public final class FacesServletImpl implements Servlet {
 
     private enum HttpMethod {
 
-        OPTIONS("OPTIONS"), GET("GET"), HEAD("HEAD"), POST("POST"), PUT("PUT"), DELETE("DELETE"), TRACE("TRACE"), CONNECT("CONNECT");
+        OPTIONS("OPTIONS"),
+        GET("GET"),
+        HEAD("HEAD"),
+        POST("POST"),
+        PUT("PUT"),
+        DELETE("DELETE"),
+        TRACE("TRACE"),
+        CONNECT("CONNECT");
 
         private final String name;
 
@@ -288,8 +283,8 @@ public final class FacesServletImpl implements Servlet {
      * Acquire the factory instances we will require.
      * </p>
      *
-     * @throws ServletException if, for any reason, the startup of this Faces application failed. This includes errors in
-     * the config file that is parsed before or during the processing of this <code>init()</code> method.
+     * @throws ServletException if, for any reason, the startup of this Faces application failed. This includes errors in the config file that is parsed before
+     * or during the processing of this <code>init()</code> method.
      */
     @Override
     public void init(ServletConfig servletConfig) throws ServletException {
@@ -308,22 +303,20 @@ public final class FacesServletImpl implements Servlet {
 
     /**
      * <p class="changed_modified_2_0">
-     * <span class="changed_modified_2_2">Process</span> an incoming request, and create the corresponding response
-     * according to the following specification.
+     * <span class="changed_modified_2_2">Process</span> an incoming request, and create the corresponding response according to the following specification.
      * </p>
      *
      * <div class="changed_modified_2_0">
      *
      * <p>
-     * If the <code>request</code> and <code>response</code> arguments to this method are not instances of
-     * <code>HttpServletRequest</code> and <code>HttpServletResponse</code>, respectively, the results of invoking this
-     * method are undefined.
+     * If the <code>request</code> and <code>response</code> arguments to this method are not instances of <code>HttpServletRequest</code> and
+     * <code>HttpServletResponse</code>, respectively, the results of invoking this method are undefined.
      * </p>
      *
      * <p>
-     * This method must respond to requests that <span class="changed_modified_2_2">contain</span> the following strings by
-     * invoking the <code>sendError</code> method on the response argument (cast to <code>HttpServletResponse</code>),
-     * passing the code <code>HttpServletResponse.SC_NOT_FOUND</code> as the argument.
+     * This method must respond to requests that <span class="changed_modified_2_2">contain</span> the following strings by invoking the <code>sendError</code>
+     * method on the response argument (cast to <code>HttpServletResponse</code>), passing the code <code>HttpServletResponse.SC_NOT_FOUND</code> as the
+     * argument.
      * </p>
      *
      * <pre>
@@ -336,8 +329,8 @@ public final class FacesServletImpl implements Servlet {
      * </pre>
      *
      * <p>
-     * If none of the cases described above in the specification for this method apply to the servicing of this request, the
-     * following action must be taken to service the request.
+     * If none of the cases described above in the specification for this method apply to the servicing of this request, the following action must be taken to
+     * service the request.
      * </p>
      *
      * <p>
@@ -345,31 +338,27 @@ public final class FacesServletImpl implements Servlet {
      * </p>
      *
      * <p>
-     * Acquire the <code>ResourceHandler</code> for this request by calling
-     * {@link jakarta.faces.application.Application#getResourceHandler}. Call
+     * Acquire the <code>ResourceHandler</code> for this request by calling {@link jakarta.faces.application.Application#getResourceHandler}. Call
      * {@link jakarta.faces.application.ResourceHandler#isResourceRequest}.
      *
      * If this returns <code>true</code> call {@link jakarta.faces.application.ResourceHandler#handleResourceRequest}.
      *
-     * If this returns <code>false</code>, <span class="changed_added_2_2">call
-     * {@link jakarta.faces.lifecycle.Lifecycle#attachWindow} followed by </span>
+     * If this returns <code>false</code>, <span class="changed_added_2_2">call {@link jakarta.faces.lifecycle.Lifecycle#attachWindow} followed by </span>
      * {@link jakarta.faces.lifecycle.Lifecycle#execute} followed by {@link jakarta.faces.lifecycle.Lifecycle#render}.
      *
-     * If a {@link jakarta.faces.FacesException} is thrown in either case, extract the cause from the
-     * <code>FacesException</code>.
+     * If a {@link jakarta.faces.FacesException} is thrown in either case, extract the cause from the <code>FacesException</code>.
      *
-     * If the cause is <code>null</code> extract the message from the <code>FacesException</code>, put it inside of a new
-     * <code>ServletException</code> instance, and pass the <code>FacesException</code> instance as the root cause, then
-     * rethrow the <code>ServletException</code> instance. If the cause is an instance of <code>ServletException</code>,
-     * rethrow the cause. If the cause is an instance of <code>IOException</code>, rethrow the cause.
+     * If the cause is <code>null</code> extract the message from the <code>FacesException</code>, put it inside of a new <code>ServletException</code>
+     * instance, and pass the <code>FacesException</code> instance as the root cause, then rethrow the <code>ServletException</code> instance. If the cause is
+     * an instance of <code>ServletException</code>, rethrow the cause. If the cause is an instance of <code>IOException</code>, rethrow the cause.
      *
-     * Otherwise, create a new <code>ServletException</code> instance, passing the message from the cause, as the first
-     * argument, and the cause itself as the second argument.
+     * Otherwise, create a new <code>ServletException</code> instance, passing the message from the cause, as the first argument, and the cause itself as the
+     * second argument.
      * </p>
      *
      * <p class="changed_modified_2_0_rev_a">
-     * The implementation must make it so {@link jakarta.faces.context.FacesContext#release} is called within a finally
-     * block as late as possible in the processing for the Jakarta Faces related portion of this request.
+     * The implementation must make it so {@link jakarta.faces.context.FacesContext#release} is called within a finally block as late as possible in the
+     * processing for the Jakarta Faces related portion of this request.
      * </p>
      *
      * </div>
@@ -411,7 +400,8 @@ public final class FacesServletImpl implements Servlet {
         // Execute the request processing lifecycle for this request
         try {
             executeLifecyle(context);
-        } finally {
+        }
+        finally {
             // Release the FacesContext instance for this request
             context.release();
         }
@@ -455,7 +445,8 @@ public final class FacesServletImpl implements Servlet {
     private FacesContextFactory acquireFacesContextFactory() throws UnavailableException {
         try {
             return (FacesContextFactory) FactoryFinder.getFactory(FACES_CONTEXT_FACTORY);
-        } catch (FacesException e) {
+        }
+        catch (FacesException e) {
             String msg = LOGGER.getResourceBundle().getString("severe.webapp.facesservlet.init_failed");
             LOGGER.log(SEVERE, msg, e.getCause() != null ? e.getCause() : e);
 
@@ -476,7 +467,8 @@ public final class FacesServletImpl implements Servlet {
 
             return lifecycleFactory.getLifecycle(lifecycleId);
 
-        } catch (FacesException e) {
+        }
+        catch (FacesException e) {
             Throwable rootCause = e.getCause();
             if (rootCause == null) {
                 throw e;
@@ -493,11 +485,13 @@ public final class FacesServletImpl implements Servlet {
     private void initHttpMethodValidityVerificationWithCatch() throws ServletException {
         try {
             initHttpMethodValidityVerification();
-        } catch (FacesException e) {
+        }
+        catch (FacesException e) {
             Throwable rootCause = e.getCause();
             if (rootCause == null) {
                 throw e;
-            } else {
+            }
+            else {
                 throw new ServletException(e.getMessage(), rootCause);
             }
         }
@@ -531,7 +525,8 @@ public final class FacesServletImpl implements Servlet {
 
                     // we use a Set to prevent duplicates
                     allowedUnknownHttpMethods.add(httpMethod);
-                } else {
+                }
+                else {
                     // prevent duplicates
                     if (!allowedKnownHttpMethodsStringList.contains(httpMethod)) {
                         allowedKnownHttpMethodsStringList.add(httpMethod);
@@ -546,27 +541,40 @@ public final class FacesServletImpl implements Servlet {
 
     private void initializeAllowedKnownHttpMethods(List<String> allowedKnownHttpMethodsStringList) {
         if (5 == allowedKnownHttpMethodsStringList.size()) {
-            allowedKnownHttpMethods = EnumSet.of(HttpMethod.valueOf(allowedKnownHttpMethodsStringList.get(0)),
-                    HttpMethod.valueOf(allowedKnownHttpMethodsStringList.get(1)), HttpMethod.valueOf(allowedKnownHttpMethodsStringList.get(2)),
-                    HttpMethod.valueOf(allowedKnownHttpMethodsStringList.get(3)), HttpMethod.valueOf(allowedKnownHttpMethodsStringList.get(4)));
+            allowedKnownHttpMethods = EnumSet.of(
+                HttpMethod.valueOf(allowedKnownHttpMethodsStringList.get(0)),
+                HttpMethod.valueOf(allowedKnownHttpMethodsStringList.get(1)), HttpMethod.valueOf(allowedKnownHttpMethodsStringList.get(2)),
+                HttpMethod.valueOf(allowedKnownHttpMethodsStringList.get(3)), HttpMethod.valueOf(allowedKnownHttpMethodsStringList.get(4))
+            );
 
-        } else if (4 == allowedKnownHttpMethodsStringList.size()) {
-            allowedKnownHttpMethods = EnumSet.of(HttpMethod.valueOf(allowedKnownHttpMethodsStringList.get(0)),
-                    HttpMethod.valueOf(allowedKnownHttpMethodsStringList.get(1)), HttpMethod.valueOf(allowedKnownHttpMethodsStringList.get(2)),
-                    HttpMethod.valueOf(allowedKnownHttpMethodsStringList.get(3)));
+        }
+        else if (4 == allowedKnownHttpMethodsStringList.size()) {
+            allowedKnownHttpMethods = EnumSet.of(
+                HttpMethod.valueOf(allowedKnownHttpMethodsStringList.get(0)),
+                HttpMethod.valueOf(allowedKnownHttpMethodsStringList.get(1)), HttpMethod.valueOf(allowedKnownHttpMethodsStringList.get(2)),
+                HttpMethod.valueOf(allowedKnownHttpMethodsStringList.get(3))
+            );
 
-        } else if (3 == allowedKnownHttpMethodsStringList.size()) {
-            allowedKnownHttpMethods = EnumSet.of(HttpMethod.valueOf(allowedKnownHttpMethodsStringList.get(0)),
-                    HttpMethod.valueOf(allowedKnownHttpMethodsStringList.get(1)), HttpMethod.valueOf(allowedKnownHttpMethodsStringList.get(2)));
+        }
+        else if (3 == allowedKnownHttpMethodsStringList.size()) {
+            allowedKnownHttpMethods = EnumSet.of(
+                HttpMethod.valueOf(allowedKnownHttpMethodsStringList.get(0)),
+                HttpMethod.valueOf(allowedKnownHttpMethodsStringList.get(1)), HttpMethod.valueOf(allowedKnownHttpMethodsStringList.get(2))
+            );
 
-        } else if (2 == allowedKnownHttpMethodsStringList.size()) {
-            allowedKnownHttpMethods = EnumSet.of(HttpMethod.valueOf(allowedKnownHttpMethodsStringList.get(0)),
-                    HttpMethod.valueOf(allowedKnownHttpMethodsStringList.get(1)));
+        }
+        else if (2 == allowedKnownHttpMethodsStringList.size()) {
+            allowedKnownHttpMethods = EnumSet.of(
+                HttpMethod.valueOf(allowedKnownHttpMethodsStringList.get(0)),
+                HttpMethod.valueOf(allowedKnownHttpMethodsStringList.get(1))
+            );
 
-        } else if (1 == allowedKnownHttpMethodsStringList.size()) {
+        }
+        else if (1 == allowedKnownHttpMethodsStringList.size()) {
             allowedKnownHttpMethods = EnumSet.of(HttpMethod.valueOf(allowedKnownHttpMethodsStringList.get(0)));
 
-        } else {
+        }
+        else {
             List<HttpMethod> restList = new ArrayList<>(allowedKnownHttpMethodsStringList.size() - 1);
 
             for (int i = 1; i < allowedKnownHttpMethodsStringList.size() - 1; i++) {
@@ -603,7 +611,8 @@ public final class FacesServletImpl implements Servlet {
         try {
             HttpMethod.valueOf(httpMethod);
             return true;
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             return false;
         }
     }
@@ -636,12 +645,14 @@ public final class FacesServletImpl implements Servlet {
             ResourceHandler handler = context.getApplication().getResourceHandler();
             if (handler.isResourceRequest(context)) {
                 handler.handleResourceRequest(context);
-            } else {
+            }
+            else {
                 lifecycle.attachWindow(context);
                 lifecycle.execute(context);
                 lifecycle.render(context);
             }
-        } catch (FacesException e) {
+        }
+        catch (FacesException e) {
             Throwable t = e.getCause();
 
             if (t == null) {
@@ -678,19 +689,22 @@ public final class FacesServletImpl implements Servlet {
         boolean result = false;
         if (allowAllMethods) {
             result = true;
-        } else {
+        }
+        else {
             String requestMethodString = request.getMethod();
             HttpMethod requestMethod = null;
             boolean isKnownHttpMethod;
             try {
                 requestMethod = HttpMethod.valueOf(requestMethodString);
                 isKnownHttpMethod = true;
-            } catch (IllegalArgumentException e) {
+            }
+            catch (IllegalArgumentException e) {
                 isKnownHttpMethod = false;
             }
             if (isKnownHttpMethod) {
                 result = allowedKnownHttpMethods.contains(requestMethod);
-            } else {
+            }
+            else {
                 result = allowedUnknownHttpMethods.contains(requestMethodString);
             }
 
@@ -701,9 +715,8 @@ public final class FacesServletImpl implements Servlet {
 
     /**
      * <p>
-     * Answers an <code>OPTIONS</code> request with the methods this servlet accepts, as required by RFC 9110 section
-     * 9.3.7, without running the lifecycle. A Faces view has nothing to contribute to the answer, and rendering one
-     * would hand the page content to a request which did not ask for it.
+     * Answers an <code>OPTIONS</code> request with the methods this servlet accepts, as required by RFC 9110 section 9.3.7, without running the lifecycle. A
+     * Faces view has nothing to contribute to the answer, and rendering one would hand the page content to a request which did not ask for it.
      * </p>
      */
     private void respondToOptions(HttpServletResponse response) {

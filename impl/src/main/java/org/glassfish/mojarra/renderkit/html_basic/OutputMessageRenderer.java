@@ -74,7 +74,8 @@ public class OutputMessageRenderer extends HtmlBasicInputRenderer {
 
                 parameterList.add(((UIParameter) kid).getValue());
             }
-        } else {
+        }
+        else {
             parameterList = Collections.emptyList();
         }
 
@@ -84,7 +85,8 @@ public class OutputMessageRenderer extends HtmlBasicInputRenderer {
         if (parameterList.size() > 0) {
             MessageFormat fmt = new MessageFormat(currentValue, context.getViewRoot().getLocale());
             message = fmt.format(parameterList.toArray());
-        } else {
+        }
+        else {
             message = currentValue;
         }
 
@@ -120,12 +122,14 @@ public class OutputMessageRenderer extends HtmlBasicInputRenderer {
             }
         }
 
-        boolean escape = component instanceof HtmlOutputFormat format ? format.isEscape()
-                : RenderKitUtils.attributeIsTrue(component, "escape", false);
+        boolean escape = component instanceof HtmlOutputFormat format
+            ? format.isEscape()
+            : RenderKitUtils.attributeIsTrue(component, "escape", false);
 
         if (escape) {
             writer.writeText(message, component, "value");
-        } else {
+        }
+        else {
             writer.write(message);
         }
         if (wroteSpan) {

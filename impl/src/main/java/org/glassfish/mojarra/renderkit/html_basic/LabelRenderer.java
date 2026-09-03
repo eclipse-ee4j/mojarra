@@ -50,8 +50,10 @@ public class LabelRenderer extends HtmlBasicInputRenderer {
 
     // ---------------------------------------------------------- Public Methods
 
-    private static final Set<SearchExpressionHint> EXPRESSION_HINTS = EnumSet.of(SearchExpressionHint.RESOLVE_SINGLE_COMPONENT,
-            SearchExpressionHint.IGNORE_NO_RESULT);
+    private static final Set<SearchExpressionHint> EXPRESSION_HINTS = EnumSet.of(
+        SearchExpressionHint.RESOLVE_SINGLE_COMPONENT,
+        SearchExpressionHint.IGNORE_NO_RESULT
+    );
 
     @Override
     public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
@@ -66,8 +68,9 @@ public class LabelRenderer extends HtmlBasicInputRenderer {
         assert writer != null;
 
         String forClientId = null;
-        String forValue = component instanceof HtmlOutputLabel label ? label.getFor()
-                : (String) component.getAttributes().get("for");
+        String forValue = component instanceof HtmlOutputLabel label
+            ? label.getFor()
+            : (String) component.getAttributes().get("for");
         if (forValue != null) {
             SearchExpressionContext searchExpressionContext = SearchExpressionContext.createSearchExpressionContext(context, component, EXPRESSION_HINTS, null);
 
@@ -98,12 +101,14 @@ public class LabelRenderer extends HtmlBasicInputRenderer {
             logger.fine("Value to be rendered " + value);
         }
         if (value != null && value.length() != 0) {
-            boolean escape = component instanceof HtmlOutputLabel label ? label.isEscape()
-                    : RenderKitUtils.attributeIsTrue(component, "escape", false);
+            boolean escape = component instanceof HtmlOutputLabel label
+                ? label.isEscape()
+                : RenderKitUtils.attributeIsTrue(component, "escape", false);
 
             if (escape) {
                 writer.writeText(value, component, "value");
-            } else {
+            }
+            else {
                 writer.write(value);
             }
         }
@@ -135,8 +140,8 @@ public class LabelRenderer extends HtmlBasicInputRenderer {
     // ------------------------------------------------------- Private Methods
 
     /**
-     * Builds and returns the clientId of the component that is represented by the forValue. Since the component has not
-     * been created yet, invoking <code>getClientId(context)</code> is not possible.
+     * Builds and returns the clientId of the component that is represented by the forValue. Since the component has not been created yet, invoking
+     * <code>getClientId(context)</code> is not possible.
      *
      * @param component UIComponent that represents the label
      * @param context FacesContext for this request

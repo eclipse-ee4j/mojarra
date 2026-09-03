@@ -124,8 +124,7 @@ public class GroupRenderer extends HtmlBasicRenderer {
     }
 
     /**
-     * @return the element name to wrap this group in, which is a {@code div} when its layout is {@code block} and a
-     * {@code span} otherwise.
+     * @return the element name to wrap this group in, which is a {@code div} when its layout is {@code block} and a {@code span} otherwise.
      */
     private static String getElementName(UIComponent component) {
 

@@ -22,8 +22,8 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * Copier that copies an object using its copy constructor.
  * <p>
- * A copy constructor is a constructor that takes an object of the same type as the object that's to be constructed.
- * This constructor then initializes itself using the values of this other instance.
+ * A copy constructor is a constructor that takes an object of the same type as the object that's to be constructed. This constructor then initializes itself
+ * using the values of this other instance.
  *
  * @since 2.3
  * @author Arjan Tijms
@@ -39,8 +39,11 @@ public class CopyCtorCopier implements Copier {
 
             return copyConstructor.newInstance(object);
 
-        } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException e) {
+        }
+        catch (
+            NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException
+            | InvocationTargetException e
+        ) {
             throw new IllegalStateException(e);
         }
 

@@ -27,12 +27,11 @@ import jakarta.faces.view.facelets.TagException;
 import org.glassfish.mojarra.facelets.tag.TagHandlerImpl;
 
 /**
- * Sets the specified name and attribute on the parent UIComponent. If the "value" specified is not a literal, it will
- * instead set the ValueExpression on the UIComponent.
- * 
+ * Sets the specified name and attribute on the parent UIComponent. If the "value" specified is not a literal, it will instead set the ValueExpression on the
+ * UIComponent.
+ *
  * <p>
- * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/attribute.html">tag
- * documentation</a>.
+ * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/attribute.html">tag documentation</a>.
  *
  * @see jakarta.faces.component.UIComponent#getAttributes()
  * @see jakarta.faces.component.UIComponent#setValueExpression(java.lang.String, jakarta.el.ValueExpression)
@@ -70,7 +69,8 @@ public final class AttributeHandler extends TagHandlerImpl implements jakarta.fa
             if (!parent.getAttributes().containsKey(n)) {
                 if (value.isLiteral()) {
                     parent.getAttributes().put(n, value.getValue());
-                } else {
+                }
+                else {
                     parent.setValueExpression(n, value.getValueExpression(ctx, Object.class));
                 }
             }
@@ -83,4 +83,5 @@ public final class AttributeHandler extends TagHandlerImpl implements jakarta.fa
     public String getAttributeName(FaceletContext ctxt) {
         return name.getValue(ctxt);
     }
+
 }

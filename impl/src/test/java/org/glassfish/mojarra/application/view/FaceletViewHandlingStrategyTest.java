@@ -43,10 +43,11 @@ import org.mockito.MockedStatic;
 class FaceletViewHandlingStrategyTest {
 
     /**
-     * A view root that records whether its subtree was walked, and how the visit was configured. It does not walk:
-     * these tests turn on whether a walk happens and how it is set up, not on what it finds.
+     * A view root that records whether its subtree was walked, and how the visit was configured. It does not walk: these tests turn on whether a walk happens
+     * and how it is set up, not on what it finds.
      */
     private static final class RecordingViewRoot extends UIViewRoot {
+
         boolean visited;
         Set<VisitHint> hints;
 
@@ -56,16 +57,17 @@ class FaceletViewHandlingStrategyTest {
             hints = context.getHints();
             return false;
         }
+
     }
 
     /**
-     * Regression guard for the dynamic-action restore O(n) fix (PR #5783). A postback with no dynamic
-     * add/remove must not build the {@code clientId -> component} index, i.e. must not walk the view.
+     * Regression guard for the dynamic-action restore O(n) fix (PR #5783). A postback with no dynamic add/remove must not build the
+     * {@code clientId -> component} index, i.e. must not walk the view.
      *
-     * <p>Once the {@code AddRemoveListener} is installed (every postback),
-     * {@code getDynamicActions()} returns a non-null <em>empty</em> list and {@code pruneDynamicActions}
-     * preserves that, so the guard in {@code reapplyDynamicActions} must be {@code !isEmpty(actions)} —
-     * a bare {@code actions != null} walks the whole tree on every postback for nothing.
+     * <p>
+     * Once the {@code AddRemoveListener} is installed (every postback), {@code getDynamicActions()} returns a non-null <em>empty</em> list and
+     * {@code pruneDynamicActions} preserves that, so the guard in {@code reapplyDynamicActions} must be {@code !isEmpty(actions)} — a bare
+     * {@code actions != null} walks the whole tree on every postback for nothing.
      */
     @Test
     void reapplyDynamicActionsSkipsTreeWalkWhenNoDynamicActions() throws Exception {
@@ -79,7 +81,7 @@ class FaceletViewHandlingStrategyTest {
         // Constructor-free instance: the real constructor wires up webConfig/factories we don't need here.
         FaceletViewHandlingStrategy strategy = mock(FaceletViewHandlingStrategy.class);
         Method reapplyDynamicActions = FaceletViewHandlingStrategy.class
-                .getDeclaredMethod("reapplyDynamicActions", FacesContext.class);
+            .getDeclaredMethod("reapplyDynamicActions", FacesContext.class);
         reapplyDynamicActions.setAccessible(true);
 
         try (MockedStatic<StateContext> mocked = mockStatic(StateContext.class)) {
@@ -94,25 +96,23 @@ class FaceletViewHandlingStrategyTest {
     }
 
     /**
-     * Regression guard for #5864. When there are dynamic actions to replay the view does get indexed, and that
-     * walk must skip iteration.
+     * Regression guard for #5864. When there are dynamic actions to replay the view does get indexed, and that walk must skip iteration.
      *
-     * <p>A visit without {@link VisitHint#SKIP_ITERATION} sets the row index on every iterating component it
-     * passes, which components observe: a data table backed by a lazily loaded model fetches a page of data per
-     * iteration, so the walk provokes a duplicate query on every postback which renders one. Indexing exists to
-     * find components by client id and has no business iterating anything to do it.
+     * <p>
+     * A visit without {@link VisitHint#SKIP_ITERATION} sets the row index on every iterating component it passes, which components observe: a data table backed
+     * by a lazily loaded model fetches a page of data per iteration, so the walk provokes a duplicate query on every postback which renders one. Indexing
+     * exists to find components by client id and has no business iterating anything to do it.
      *
-     * <p>The guard above is not a substitute for this one: it only holds when the view has no dynamic actions at
-     * all, and every view relocates its component resources to the head, so in practice there is always an action
-     * to replay and this walk always runs.
+     * <p>
+     * The guard above is not a substitute for this one: it only holds when the view has no dynamic actions at all, and every view relocates its component
+     * resources to the head, so in practice there is always an action to replay and this walk always runs.
      *
-     * <p>This lives here rather than in the TCK because the spec does not mandate it. The spec defines what
-     * {@code SKIP_ITERATION} means for a visit, but says nothing about how the runtime may go looking for a
-     * component by client id, and dynamic-action replay is entirely an implementation concern -- no spec type is
-     * involved. The invariant is nonetheless real and cross-implementation: a component which loads data per row
-     * cannot defend itself against a walk it never asked for, and both implementations honoured this until
-     * PR #5783 stopped honouring it here. A TCK test would have to assert a row-access count, which the spec
-     * leaves free, so it belongs to the implementation which made the promise.
+     * <p>
+     * This lives here rather than in the TCK because the spec does not mandate it. The spec defines what {@code SKIP_ITERATION} means for a visit, but says
+     * nothing about how the runtime may go looking for a component by client id, and dynamic-action replay is entirely an implementation concern -- no spec
+     * type is involved. The invariant is nonetheless real and cross-implementation: a component which loads data per row cannot defend itself against a walk it
+     * never asked for, and both implementations honoured this until PR #5783 stopped honouring it here. A TCK test would have to assert a row-access count,
+     * which the spec leaves free, so it belongs to the implementation which made the promise.
      */
     @Test
     void reapplyDynamicActionsIndexesTheViewWithoutIteratingRows() throws Exception {
@@ -128,11 +128,13 @@ class FaceletViewHandlingStrategyTest {
 
         FaceletViewHandlingStrategy strategy = mock(FaceletViewHandlingStrategy.class);
         Method reapplyDynamicActions = FaceletViewHandlingStrategy.class
-                .getDeclaredMethod("reapplyDynamicActions", FacesContext.class);
+            .getDeclaredMethod("reapplyDynamicActions", FacesContext.class);
         reapplyDynamicActions.setAccessible(true);
 
-        try (MockedStatic<StateContext> mocked = mockStatic(StateContext.class);
-                MockedStatic<VisitContext> visitContexts = mockStatic(VisitContext.class)) {
+        try (
+            MockedStatic<StateContext> mocked = mockStatic(StateContext.class);
+            MockedStatic<VisitContext> visitContexts = mockStatic(VisitContext.class)
+        ) {
             mocked.when(() -> StateContext.getStateContext(context)).thenReturn(stateContext);
             mocked.when(() -> StateContext.pruneDynamicActions(any())).thenCallRealMethod();
             // Hand back the hints the caller asked for: the real factory would need a CDI-backed FactoryFinder,
@@ -153,16 +155,17 @@ class FaceletViewHandlingStrategyTest {
         }
 
         assertTrue(viewRoot.visited, "reapplyDynamicActions did not index the view despite having a dynamic action");
-        assertTrue(viewRoot.hints.contains(VisitHint.SKIP_ITERATION),
-                "reapplyDynamicActions indexed the view with a visit which iterates rows");
+        assertTrue(
+            viewRoot.hints.contains(VisitHint.SKIP_ITERATION),
+            "reapplyDynamicActions indexed the view with a visit which iterates rows"
+        );
     }
 
     // --- handlesByPrefixOrSuffix ---
 
     /**
-     * Asks whether Facelets handles the given view ID, for a strategy configured with the given Facelet resource
-     * suffixes and view mapping prefixes. The real constructor reads both from the web configuration, which is not
-     * what these tests vary, so they are planted directly.
+     * Asks whether Facelets handles the given view ID, for a strategy configured with the given Facelet resource suffixes and view mapping prefixes. The real
+     * constructor reads both from the web configuration, which is not what these tests vary, so they are planted directly.
      */
     private static boolean handles(String viewId, String[] faceletResourceSuffixes, String[] prefixes) throws Exception {
         FaceletViewHandlingStrategy strategy = mock(FaceletViewHandlingStrategy.class);
@@ -170,7 +173,7 @@ class FaceletViewHandlingStrategyTest {
         setField(strategy, "prefixesArray", prefixes);
 
         Method handlesByPrefixOrSuffix = FaceletViewHandlingStrategy.class
-                .getDeclaredMethod("handlesByPrefixOrSuffix", String.class);
+            .getDeclaredMethod("handlesByPrefixOrSuffix", String.class);
         handlesByPrefixOrSuffix.setAccessible(true);
 
         return (boolean) handlesByPrefixOrSuffix.invoke(strategy, viewId);
@@ -195,8 +198,7 @@ class FaceletViewHandlingStrategyTest {
     }
 
     /**
-     * A view mapping prefix widens what Facelets handles, so a view ID below it is handled whatever suffix it
-     * carries.
+     * A view mapping prefix widens what Facelets handles, so a view ID below it is handled whatever suffix it carries.
      */
     @Test
     void handlesAViewIdBelowAConfiguredPrefix() throws Exception {
@@ -205,9 +207,9 @@ class FaceletViewHandlingStrategyTest {
     }
 
     /**
-     * Declaring view mappings must not take the Facelet suffixes out of play: both widen the set of view IDs which
-     * Facelets handles and neither withdraws what the other admits. The runtime resolves a view ID carrying the
-     * default suffix during startup, so a strategy which stops answering for it fails the whole deployment.
+     * Declaring view mappings must not take the Facelet suffixes out of play: both widen the set of view IDs which Facelets handles and neither withdraws what
+     * the other admits. The runtime resolves a view ID carrying the default suffix during startup, so a strategy which stops answering for it fails the whole
+     * deployment.
      *
      * @see https://github.com/eclipse-ee4j/mojarra/issues/5920
      */
@@ -221,4 +223,5 @@ class FaceletViewHandlingStrategyTest {
     void handlesAFlowDefinitionRegardlessOfConfiguration() throws Exception {
         assertTrue(handles("/foo-flow.xml", new String[] { ".xhtml" }, null));
     }
+
 }

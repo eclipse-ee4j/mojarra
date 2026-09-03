@@ -45,7 +45,8 @@ public final class CatchHandler extends TagHandlerImpl {
         markUnreproducibleBuild(ctx);
         try {
             nextHandler.apply(ctx, parent);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             if (var != null) {
                 ctx.setAttribute(var.getValue(ctx), e);
             }

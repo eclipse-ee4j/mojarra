@@ -25,12 +25,11 @@ import jakarta.faces.event.ValueChangeEvent;
 import jakarta.inject.Named;
 
 /**
- * Backs the {@code flat-allattrs} scenario, which sets every attribute the HTML taglib declares on every component it
- * declares. The attributes that cannot take a literal need a target here: a value of the type each component expects,
- * and a method for each listener signature.
+ * Backs the {@code flat-allattrs} scenario, which sets every attribute the HTML taglib declares on every component it declares. The attributes that cannot take
+ * a literal need a target here: a value of the type each component expects, and a method for each listener signature.
  * <p>
- * Application scoped and immutable, so reading any of it costs one CDI lookup and no state: what the scenario measures
- * is the attribute machinery, not the beans behind it.
+ * Application scoped and immutable, so reading any of it costs one CDI lookup and no state: what the scenario measures is the attribute machinery, not the
+ * beans behind it.
  */
 @Named("allAttrs")
 @ApplicationScoped
@@ -41,8 +40,8 @@ public class AllAttrsBean implements Serializable {
     private static final List<String> ITEMS = List.of("alpha", "beta", "gamma");
 
     /**
-     * Backs every {@code rendered} attribute. An expression rather than a literal on purpose: a literal is folded at
-     * tag-compile time, so it would never reach the per-component expression path the scenario exists to exercise.
+     * Backs every {@code rendered} attribute. An expression rather than a literal on purpose: a literal is folded at tag-compile time, so it would never reach
+     * the per-component expression path the scenario exists to exercise.
      */
     public boolean isRendered() {
         return true;
@@ -79,4 +78,5 @@ public class AllAttrsBean implements Serializable {
     public void valueChanged(ValueChangeEvent event) {
         // no-op: see actionListener
     }
+
 }

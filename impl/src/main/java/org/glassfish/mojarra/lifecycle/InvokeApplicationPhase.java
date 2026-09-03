@@ -54,7 +54,8 @@ public class InvokeApplicationPhase extends Phase {
 
         try {
             root.processApplication(facesContext);
-        } catch (RuntimeException re) {
+        }
+        catch (RuntimeException re) {
             String exceptionMessage = re.getMessage();
             if (null != exceptionMessage) {
                 if (LOGGER.isLoggable(Level.FINE)) {
@@ -77,6 +78,6 @@ public class InvokeApplicationPhase extends Phase {
 
     }
 
-// The testcase for this class is TestInvokeApplicationPhase.java
+    // The testcase for this class is TestInvokeApplicationPhase.java
 
 } // end of class InvokeApplicationPhase

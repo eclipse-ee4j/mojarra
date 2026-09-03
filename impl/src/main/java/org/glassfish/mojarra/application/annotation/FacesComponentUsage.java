@@ -19,6 +19,7 @@ package org.glassfish.mojarra.application.annotation;
 import jakarta.faces.component.FacesComponent;
 
 public class FacesComponentUsage {
+
     private final Class<?> target;
     private final FacesComponent annotation;
 

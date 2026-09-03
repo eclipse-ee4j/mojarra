@@ -16,7 +16,6 @@
 
 package org.glassfish.mojarra.facelets.tag.faces.core;
 
-
 import java.util.Set;
 
 import jakarta.faces.component.UIImportConstants;
@@ -43,8 +42,7 @@ import org.glassfish.mojarra.renderkit.html_basic.ImportConstantsRenderer;
 import org.glassfish.mojarra.renderkit.html_basic.WebsocketRenderer;
 
 /**
- * For Tag details, see Faces Core
- * <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/tld-summary.html">taglib
+ * For Tag details, see Faces Core <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/tld-summary.html">taglib
  * documentation</a>.
  *
  * @author Jacob Hookom
@@ -136,4 +134,5 @@ public final class CoreLibrary extends AbstractTagLibrary {
 
         this.addComponent("importConstants", UIImportConstants.COMPONENT_TYPE, ImportConstantsRenderer.RENDERER_TYPE);
     }
+
 }

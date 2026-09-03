@@ -26,9 +26,8 @@ import jakarta.faces.event.ViewMapListener;
  * The ViewScope event listener.
  *
  * <p>
- * To make it so the UIViewRoot.getViewMap is as independent as possible from implementation specific code we need to
- * get notified when a view map is created or destroyed. This ViewMapListener is registered so we get notified of these
- * events.
+ * To make it so the UIViewRoot.getViewMap is as independent as possible from implementation specific code we need to get notified when a view map is created or
+ * destroyed. This ViewMapListener is registered so we get notified of these events.
  * </p>
  *
  * <p>
@@ -58,4 +57,5 @@ public class ViewScopeEventListener implements ViewMapListener {
     public boolean isListenerForSource(Object source) {
         return source instanceof UIViewRoot;
     }
+
 }

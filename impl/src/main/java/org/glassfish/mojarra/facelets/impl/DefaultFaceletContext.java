@@ -48,8 +48,8 @@ import org.glassfish.mojarra.facelets.el.DefaultVariableMapper;
 /**
  * Default FaceletContext implementation.
  *
- * A single FaceletContext is used for all Facelets involved in an invocation of
- * {@link org.glassfish.mojarra.facelets.Facelet#apply(FacesContext, UIComponent) Facelet#apply(FacesContext, UIComponent)}.
+ * A single FaceletContext is used for all Facelets involved in an invocation of {@link org.glassfish.mojarra.facelets.Facelet#apply(FacesContext, UIComponent)
+ * Facelet#apply(FacesContext, UIComponent)}.
  *
  * @author Jacob Hookom
  * @version $Id: DefaultFaceletContext.java,v 1.4.4.3 2006/03/25 01:01:53 jhook Exp $
@@ -72,25 +72,25 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
 
     private final Map<String, Integer> ids;
     /**
-     * Per-tag unique-id counters for this build, one {@code int[]} per Facelet, indexed by the slot a tag handler
-     * reserved through {@link DefaultFacelet#getIdSlot(String)}. Shared across the whole context chain (like
-     * {@link #ids}) so a Facelet included twice in one build keeps counting where the first inclusion left off.
+     * Per-tag unique-id counters for this build, one {@code int[]} per Facelet, indexed by the slot a tag handler reserved through
+     * {@link DefaultFacelet#getIdSlot(String)}. Shared across the whole context chain (like {@link #ids}) so a Facelet included twice in one build keeps
+     * counting where the first inclusion left off.
      */
     private final Map<DefaultFacelet, int[]> idCounters;
     /** {@link #facelet}'s entry in {@link #idCounters}, resolved on first use. See {@link #localCounters()}. */
     private int[] localCounters;
     /**
-     * {@link #facelet}'s first ids for the prefix this context generates under, resolved on first use, or
-     * {@link #NOT_CACHED} once resolved to a Facelet holding none for that prefix. See {@link #localIds(String)}.
+     * {@link #facelet}'s first ids for the prefix this context generates under, resolved on first use, or {@link #NOT_CACHED} once resolved to a Facelet
+     * holding none for that prefix. See {@link #localIds(String)}.
      */
     private String[] localIds;
     private final Map<Integer, Integer> prefixes;
     private String prefix;
     private final StringBuilder uniqueIdBuilder = new StringBuilder(30);
     /**
-     * The {@link IdMapper} in effect for this build, or {@code null} when ids are not aliased. {@link DefaultFacelet}
-     * installs the outermost Facelet's mapper before it constructs the outermost context and removes it only once the
-     * whole build is done, so it does not change while any context in the chain is alive.
+     * The {@link IdMapper} in effect for this build, or {@code null} when ids are not aliased. {@link DefaultFacelet} installs the outermost Facelet's mapper
+     * before it constructs the outermost context and removes it only once the whole build is done, so it does not change while any context in the chain is
+     * alive.
      */
     private final IdMapper idMapper;
 
@@ -241,7 +241,8 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
         if (cnt == null) {
             ids.put(base, 0);
             return buildUniqueId(base, 0);
-        } else {
+        }
+        else {
             int i = cnt.intValue() + 1;
             ids.put(base, i);
             return buildUniqueId(base, i);
@@ -259,10 +260,9 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
     }
 
     /**
-     * Slot-based counterpart of {@link #generateUniqueId(String)}: same id, but the counter for {@code base} is read
-     * from {@code owner}'s counter array at {@code slot} rather than looked up by tag id in a map. A tag handler
-     * reserves its slot once and reuses it for every build, which is what keeps the per-component build cost of a
-     * view free of map inserts.
+     * Slot-based counterpart of {@link #generateUniqueId(String)}: same id, but the counter for {@code base} is read from {@code owner}'s counter array at
+     * {@code slot} rather than looked up by tag id in a map. A tag handler reserves its slot once and reuses it for every build, which is what keeps the
+     * per-component build cost of a view free of map inserts.
      *
      * @param base the tag id, as passed to {@link #generateUniqueId(String)}
      * @param owner the Facelet the slot was reserved from
@@ -293,9 +293,9 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
     }
 
     /**
-     * Returns the id {@code base} generates the first time it is applied under {@code prefix}, from the Facelet being
-     * applied when it caches one and by building it otherwise. Taking the prefix as an argument rather than reading the
-     * field keeps this callable only once the prefix exists, which is what selects the right cache entry.
+     * Returns the id {@code base} generates the first time it is applied under {@code prefix}, from the Facelet being applied when it caches one and by
+     * building it otherwise. Taking the prefix as an argument rather than reading the field keeps this callable only once the prefix exists, which is what
+     * selects the right cache entry.
      */
     private String firstUniqueId(String base, int slot, String prefix) {
         String[] ids = localIds(prefix);
@@ -320,8 +320,8 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
     }
 
     /**
-     * Returns the Facelet being applied's first ids for {@code prefix}, holding onto it so that the common case -- a
-     * tag generating its first id in its own Facelet -- costs an array index rather than a map lookup per component.
+     * Returns the Facelet being applied's first ids for {@code prefix}, holding onto it so that the common case -- a tag generating its first id in its own
+     * Facelet -- costs an array index rather than a map lookup per component.
      */
     private String[] localIds(String prefix) {
         if (localIds == null) {
@@ -332,8 +332,8 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
     }
 
     /**
-     * Returns the counter array of the Facelet this context is applying, holding onto it so that the common case --
-     * a tag counting ids in its own Facelet -- costs an array index rather than a map lookup per component.
+     * Returns the counter array of the Facelet this context is applying, holding onto it so that the common case -- a tag counting ids in its own Facelet --
+     * costs an array index rather than a map lookup per component.
      */
     private int[] localCounters() {
         if (localCounters == null) {
@@ -347,8 +347,8 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
     }
 
     /**
-     * Resizes {@code owner}'s counter array to its current slot count, for when it handed out more slots since the
-     * array was sized -- a Facelet applied for the first time reserves its slots as its tags are first applied.
+     * Resizes {@code owner}'s counter array to its current slot count, for when it handed out more slots since the array was sized -- a Facelet applied for the
+     * first time reserves its slots as its tags are first applied.
      */
     private int[] grow(DefaultFacelet owner, int[] counters) {
         int[] grown = Arrays.copyOf(counters, owner.getIdSlotCount());
@@ -377,7 +377,8 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
             if (cnt == null) {
                 prefixes.put(prefixInt, 0);
                 prefix = prefixInt.toString();
-            } else {
+            }
+            else {
                 int i = cnt.intValue() + 1;
                 prefixes.put(prefixInt, i);
                 prefix = prefixInt + "_" + i;
@@ -425,7 +426,8 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
         if (varMapper != null) {
             if (value == null) {
                 varMapper.setVariable(name, null);
-            } else {
+            }
+            else {
                 varMapper.setVariable(name, facelet.getExpressionFactory().createValueExpression(value, Object.class));
             }
         }
@@ -489,6 +491,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
     }
 
     private final static class TemplateManager implements TemplateClient {
+
         private final DefaultFacelet owner;
 
         private final TemplateClient target;
@@ -506,7 +509,8 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
             String testName = name != null ? name : "facelets._NULL_DEF_";
             if (names.contains(testName)) {
                 return false;
-            } else {
+            }
+            else {
                 names.add(testName);
                 boolean found = target.apply(new DefaultFaceletContext((DefaultFaceletContext) ctx, owner), parent, name);
                 names.remove(testName);
@@ -518,6 +522,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
         boolean wraps(Object o) {
             return owner == o || target == o;
         }
+
     }
 
     @Override
@@ -529,4 +534,5 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
     public void setPropertyResolved(boolean resolved) {
         ctx.setPropertyResolved(resolved);
     }
+
 }

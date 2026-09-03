@@ -24,9 +24,8 @@ import org.glassfish.mojarra.config.FacesContextParam;
 import org.junit.jupiter.api.Test;
 
 /**
- * {@link jakarta.faces.application.ViewHandler#FACELETS_SUFFIX_PARAM_NAME} takes a space separated list of extensions
- * since 4.0, of which the first one resolving to an existing file wins, so it has to resolve to every extension
- * declared rather than to the value as written.
+ * {@link jakarta.faces.application.ViewHandler#FACELETS_SUFFIX_PARAM_NAME} takes a space separated list of extensions since 4.0, of which the first one
+ * resolving to an existing file wins, so it has to resolve to every extension declared rather than to the value as written.
  */
 class FaceletsSuffixTest {
 
@@ -45,8 +44,8 @@ class FaceletsSuffixTest {
     }
 
     /**
-     * The default is the single extension the specification names, in the same shape, so that a consumer does not have
-     * to tell a declared value apart from an absent one.
+     * The default is the single extension the specification names, in the same shape, so that a consumer does not have to tell a declared value apart from an
+     * absent one.
      */
     @Test
     void theDefaultIsTheOneSuffixTheSpecificationNames() {
@@ -54,4 +53,5 @@ class FaceletsSuffixTest {
 
         assertArrayEquals(new String[] { ".xhtml" }, suffixes);
     }
+
 }

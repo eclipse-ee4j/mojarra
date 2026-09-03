@@ -52,7 +52,8 @@ public class ParseXMLTestCase {
                 SAXParser saxParser = factory.newSAXParser();
 
                 saxParser.parse(new InputSource(new FileInputStream(file.toString())), new XHTMLResolvingHandler());
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 fail("Parse error for " + file.toString() + ": " + e.toString());
             }
         }

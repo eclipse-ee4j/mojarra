@@ -32,7 +32,8 @@ public class DelegatedPersistenceUnitScanner implements Scanner {
     public DelegatedPersistenceUnitScanner() {
         try {
             delegate = new PersistenceUnitScanner();
-        } catch (Throwable throwable) {
+        }
+        catch (Throwable throwable) {
             throwable.printStackTrace(System.err);
         }
     }
@@ -63,4 +64,5 @@ public class DelegatedPersistenceUnitScanner implements Scanner {
         }
         return null;
     }
+
 }

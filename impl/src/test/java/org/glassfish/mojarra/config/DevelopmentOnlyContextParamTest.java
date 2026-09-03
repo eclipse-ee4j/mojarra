@@ -33,9 +33,8 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.EnumSource.Mode;
 
 /**
- * A parameter which only makes debugging easier weakens the deployment anywhere else, so it is honored in Development
- * alone. Note the two covered here have opposite polarity, which is why reverting to the default is the rule rather
- * than forcing a particular value.
+ * A parameter which only makes debugging easier weakens the deployment anywhere else, so it is honored in Development alone. Note the two covered here have
+ * opposite polarity, which is why reverting to the default is the rule rather than forcing a particular value.
  */
 class DevelopmentOnlyContextParamTest extends ConfigurationLoggingTestBase {
 
@@ -58,14 +57,14 @@ class DevelopmentOnlyContextParamTest extends ConfigurationLoggingTestBase {
         assertFalse(MojarraContextParam.ENABLE_CLIENT_STATE_DEBUGGING.isEnabled(servletContext), "client state debugging");
         assertTrue(MojarraContextParam.GENERATE_UNIQUE_SERVER_STATE_IDS.isEnabled(servletContext), "unique server state ids");
         assertEquals(
-                List.of(MojarraContextParam.ENABLE_CLIENT_STATE_DEBUGGING.getName(), MojarraContextParam.GENERATE_UNIQUE_SERVER_STATE_IDS.getName()),
-                revertedParameterNames().stream().sorted().toList(),
-                "silently dropping a setting which weakens the deployment would be worse than honoring it");
+            List.of(MojarraContextParam.ENABLE_CLIENT_STATE_DEBUGGING.getName(), MojarraContextParam.GENERATE_UNIQUE_SERVER_STATE_IDS.getName()),
+            revertedParameterNames().stream().sorted().toList(),
+            "silently dropping a setting which weakens the deployment would be worse than honoring it"
+        );
     }
 
     /**
-     * The deprecated parameter it replaces hands its value over, so an application which has not migrated keeps its
-     * setting rather than silently losing it.
+     * The deprecated parameter it replaces hands its value over, so an application which has not migrated keeps its setting rather than silently losing it.
      */
     @Test
     void disableClientStateEncryptionStillEnablesClientStateDebugging() {
@@ -73,9 +72,8 @@ class DevelopmentOnlyContextParamTest extends ConfigurationLoggingTestBase {
     }
 
     /**
-     * And it is gated exactly like the parameter it was carried into. The value arrives under a name the application
-     * never declared, so a gate which asks whether the replacement was set would let this one straight through and drop
-     * the ByteArrayGuard in a deployed application.
+     * And it is gated exactly like the parameter it was carried into. The value arrives under a name the application never declared, so a gate which asks
+     * whether the replacement was set would let this one straight through and drop the ByteArrayGuard in a deployed application.
      */
     @ParameterizedTest
     @EnumSource(value = ProjectStage.class, names = "Development", mode = Mode.EXCLUDE)
@@ -109,4 +107,5 @@ class DevelopmentOnlyContextParamTest extends ConfigurationLoggingTestBase {
     private List<String> revertedParameterNames() {
         return loggedArguments(DEVELOPMENT_ONLY, 1);
     }
+
 }

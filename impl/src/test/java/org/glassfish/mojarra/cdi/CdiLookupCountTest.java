@@ -40,14 +40,13 @@ import org.glassfish.mojarra.mock.MockBeanManager;
 import org.junit.jupiter.api.Test;
 
 /**
- * Measures the number of {@link jakarta.enterprise.inject.spi.BeanManager} lookups that
- * {@link CdiUtils} performs per {@code createConverter}/{@code createValidator}/{@code createBehavior}
- * call when no matching CDI bean is registered &mdash; the common case for built-in Faces IDs such as
- * {@code jakarta.faces.Integer} or {@code jakarta.faces.Required}.
+ * Measures the number of {@link jakarta.enterprise.inject.spi.BeanManager} lookups that {@link CdiUtils} performs per
+ * {@code createConverter}/{@code createValidator}/{@code createBehavior} call when no matching CDI bean is registered &mdash; the common case for built-in
+ * Faces IDs such as {@code jakarta.faces.Integer} or {@code jakarta.faces.Required}.
  *
- * <p>Each {@code beanManager.getBeans(type, qualifiers)} call forces the CDI implementation
- * (typically Weld) to walk the bean registry and match types + qualifiers. The numbers below
- * quantify the per-call cost and act as a regression guard against an uncached lookup path.
+ * <p>
+ * Each {@code beanManager.getBeans(type, qualifiers)} call forces the CDI implementation (typically Weld) to walk the bean registry and match types +
+ * qualifiers. The numbers below quantify the per-call cost and act as a regression guard against an uncached lookup path.
  */
 public class CdiLookupCountTest {
 
@@ -144,17 +143,16 @@ public class CdiLookupCountTest {
     }
 
     /**
-     * Simulates a typical render of one input bound to an Integer property: the renderer calls
-     * {@code application.createConverter(Integer.class)} per render, plus
-     * {@code application.createConverter("jakarta.faces.Integer")} when the component declares
-     * {@code converter="jakarta.faces.Integer"}. Together this is what a single component costs.
+     * Simulates a typical render of one input bound to an Integer property: the renderer calls {@code application.createConverter(Integer.class)} per render,
+     * plus {@code application.createConverter("jakarta.faces.Integer")} when the component declares {@code converter="jakarta.faces.Integer"}. Together this is
+     * what a single component costs.
      */
     @Test
     public void typicalIntegerInputRender_costPerComponent() {
         CountingBeanManager bm = new CountingBeanManager();
 
-        CdiUtils.createConverter(bm, Integer.class);          // by-class walk (Integer -> Number) = 4
-        CdiUtils.createConverter(bm, "jakarta.faces.Integer"); // by-id                            = 2
+        CdiUtils.createConverter(bm, Integer.class); // by-class walk (Integer -> Number) = 4
+        CdiUtils.createConverter(bm, "jakarta.faces.Integer"); // by-id = 2
 
         assertEquals(6, bm.getBeansByType.get(), "Total getBeans calls for one Integer input component");
     }
@@ -183,17 +181,21 @@ public class CdiLookupCountTest {
     }
 
     /**
-     * A {@link jakarta.faces.annotation.View} facelet may be request scoped, so caching the resolution must
-     * not cache the instance: the reference is obtained per call and its scope decides what that yields.
+     * A {@link jakarta.faces.annotation.View} facelet may be request scoped, so caching the resolution must not cache the instance: the reference is obtained
+     * per call and its scope decides what that yields.
      */
     @Test
     public void getViewFacelet_matchingBean_resolutionCachedButReferenceCalledEveryTime() {
         final Facelet dummyFacelet = new Facelet() {
+
             @Override
-            public void apply(FacesContext facesContext, UIComponent parent) { }
+            public void apply(FacesContext facesContext, UIComponent parent) {
+            }
+
         };
         final Bean<Facelet> matchingBean = new StubBean<>(dummyFacelet);
         CountingBeanManager bm = new CountingBeanManager() {
+
             @Override
             @SuppressWarnings({ "unchecked", "rawtypes" })
             public Set<Bean<?>> getBeans(Type beanType, Annotation... qualifiers) {
@@ -213,6 +215,7 @@ public class CdiLookupCountTest {
                 references.incrementAndGet();
                 return dummyFacelet;
             }
+
         };
 
         for (int i = 0; i < 10; i++) {
@@ -306,20 +309,23 @@ public class CdiLookupCountTest {
         // First N racing threads may all miss the cache before any of them writes; bound the total.
         // Strict upper bound = threads x 2 (each thread loses every race). Realistic: <= 2 + a few.
         int total = bm.getBeansByType.get();
-        assertTrue(total >= 2 && total <= threads * 2,
-                "getBeans calls under contention should land between 2 and " + (threads * 2) + " but was " + total);
+        assertTrue(
+            total >= 2 && total <= threads * 2,
+            "getBeans calls under contention should land between 2 and " + (threads * 2) + " but was " + total
+        );
     }
 
     /**
-     * Even when a bean does match, the resolution is cached. Only {@code getReference} is called
-     * per invocation &mdash; that's intentional, because it produces correctly-scoped references via
-     * a fresh {@link CreationalContext} on every call.
+     * Even when a bean does match, the resolution is cached. Only {@code getReference} is called per invocation &mdash; that's intentional, because it produces
+     * correctly-scoped references via a fresh {@link CreationalContext} on every call.
      */
     @Test
     public void createBehavior_byId_matchingBean_resolutionCachedButReferenceCalledEveryTime() {
-        final Behavior dummyBehavior = new BehaviorBase() {};
+        final Behavior dummyBehavior = new BehaviorBase() {
+        };
         final Bean<Behavior> matchingBean = new StubBean<>(dummyBehavior);
         CountingBeanManager bm = new CountingBeanManager() {
+
             @Override
             @SuppressWarnings({ "unchecked", "rawtypes" })
             public Set<Bean<?>> getBeans(Type beanType, Annotation... qualifiers) {
@@ -339,6 +345,7 @@ public class CdiLookupCountTest {
                 references.incrementAndGet();
                 return dummyBehavior;
             }
+
         };
 
         for (int i = 0; i < 10; i++) {
@@ -381,20 +388,66 @@ public class CdiLookupCountTest {
             references.incrementAndGet();
             return null;
         }
+
     }
 
     private static final class StubBean<T> implements Bean<T> {
+
         private final T instance;
-        StubBean(T instance) { this.instance = instance; }
-        @Override public Set<Type> getTypes() { return Collections.singleton(instance.getClass()); }
-        @Override public Set<Annotation> getQualifiers() { return Collections.emptySet(); }
-        @Override public Class<? extends Annotation> getScope() { return jakarta.enterprise.context.Dependent.class; }
-        @Override public String getName() { return null; }
-        @Override public Set<Class<? extends Annotation>> getStereotypes() { return Collections.emptySet(); }
-        @Override public Class<?> getBeanClass() { return instance.getClass(); }
-        @Override public boolean isAlternative() { return false; }
-        @Override public T create(CreationalContext<T> ctx) { return instance; }
-        @Override public void destroy(T instance, CreationalContext<T> ctx) { }
-        @Override public Set<InjectionPoint> getInjectionPoints() { return Collections.emptySet(); }
+
+        StubBean(T instance) {
+            this.instance = instance;
+        }
+
+        @Override
+        public Set<Type> getTypes() {
+            return Collections.singleton(instance.getClass());
+        }
+
+        @Override
+        public Set<Annotation> getQualifiers() {
+            return Collections.emptySet();
+        }
+
+        @Override
+        public Class<? extends Annotation> getScope() {
+            return jakarta.enterprise.context.Dependent.class;
+        }
+
+        @Override
+        public String getName() {
+            return null;
+        }
+
+        @Override
+        public Set<Class<? extends Annotation>> getStereotypes() {
+            return Collections.emptySet();
+        }
+
+        @Override
+        public Class<?> getBeanClass() {
+            return instance.getClass();
+        }
+
+        @Override
+        public boolean isAlternative() {
+            return false;
+        }
+
+        @Override
+        public T create(CreationalContext<T> ctx) {
+            return instance;
+        }
+
+        @Override
+        public void destroy(T instance, CreationalContext<T> ctx) {
+        }
+
+        @Override
+        public Set<InjectionPoint> getInjectionPoints() {
+            return Collections.emptySet();
+        }
+
     }
+
 }

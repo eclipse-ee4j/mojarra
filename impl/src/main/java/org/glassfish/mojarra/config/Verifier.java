@@ -26,8 +26,8 @@ import org.glassfish.mojarra.util.MessageUtils;
 import org.glassfish.mojarra.util.Util;
 
 /**
- * Provides basic validation of the Components, Converters and Validators named in the configuration, which runs at
- * startup in every project stage other than <code>Production</code>.
+ * Provides basic validation of the Components, Converters and Validators named in the configuration, which runs at startup in every project stage other than
+ * <code>Production</code>.
  */
 public class Verifier {
 
@@ -40,7 +40,10 @@ public class Verifier {
      * Represent the current Faces object types we validate.
      */
     public enum ObjectType {
-        COMPONENT, CONVERTER, VALIDATOR, BEHAVIOR,
+        COMPONENT,
+        CONVERTER,
+        VALIDATOR,
+        BEHAVIOR,
     }
 
     /**
@@ -60,8 +63,7 @@ public class Verifier {
     // ------------------------------------------------- Public Methods
 
     /**
-     * @return a <code>Verifier</code> for the current web application when the project stage is not
-     * <code>Production</code>, otherwise <code>null</code>
+     * @return a <code>Verifier</code> for the current web application when the project stage is not <code>Production</code>, otherwise <code>null</code>
      */
     public static Verifier getCurrentInstance() {
         return VERIFIER.get();
@@ -75,7 +77,8 @@ public class Verifier {
     public static void setCurrentInstance(Verifier verifier) {
         if (verifier == null) {
             VERIFIER.remove();
-        } else {
+        }
+        else {
             VERIFIER.set(verifier);
         }
     }
@@ -97,9 +100,9 @@ public class Verifier {
     /**
      * Validate the specified faces object by:
      * <ul>
-     *   <li>Ensure the class can be found and loaded
-     *   <li>Ensure the object has a public, no-argument constructor
-     *   <li> Ensure the object is an instance of the class represented by <code>assignableTo</code>
+     * <li>Ensure the class can be found and loaded
+     * <li>Ensure the object has a public, no-argument constructor
+     * <li>Ensure the object is an instance of the class represented by <code>assignableTo</code>
      * </ul>
      * If any of these tests fail, queue a message to be displayed at a later point in time.
      *
@@ -118,9 +121,11 @@ public class Verifier {
         Class<?> c = null;
         try {
             c = Util.loadClass(className, this);
-        } catch (ClassNotFoundException cnfe) {
+        }
+        catch (ClassNotFoundException cnfe) {
             messages.add(MessageUtils.getExceptionMessageString(MessageUtils.VERIFIER_CLASS_NOT_FOUND_ID, type, className));
-        } catch (NoClassDefFoundError ncdfe) {
+        }
+        catch (NoClassDefFoundError ncdfe) {
             messages.add(MessageUtils.getExceptionMessageString(MessageUtils.VERIFIER_CLASS_MISSING_DEP_ID, type, className, ncdfe.getMessage()));
         }
 
@@ -130,7 +135,8 @@ public class Verifier {
                 if (!Modifier.isPublic(ctor.getModifiers())) {
                     messages.add(MessageUtils.getExceptionMessageString(MessageUtils.VERIFIER_CTOR_NOT_PUBLIC_ID, type, className));
                 }
-            } catch (NoSuchMethodException nsme) {
+            }
+            catch (NoSuchMethodException nsme) {
                 messages.add(MessageUtils.getExceptionMessageString(MessageUtils.VERIFIER_NO_DEF_CTOR_ID, type, className));
             }
             if (!assignableTo.isAssignableFrom(c)) {

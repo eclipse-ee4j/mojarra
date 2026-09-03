@@ -34,8 +34,8 @@ import org.glassfish.mojarra.renderkit.RenderKitUtils;
 
 public class PassthroughRenderer extends HtmlBasicRenderer {
 
-// We are purposely piggy backing off the PANELGROUP attributes since they are
-// identical for this renderer.
+    // We are purposely piggy backing off the PANELGROUP attributes since they are
+    // identical for this renderer.
     private static final Attributes ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.PANELGROUP);
 
     @Override
@@ -63,8 +63,10 @@ public class PassthroughRenderer extends HtmlBasicRenderer {
         // client behaviors through so non-default DOM events (e.g. mouseover) are rendered here, and
         // render the default click/action behavior separately - both are queued as CSP-safe event
         // listeners that encodeEnd() flushes via flushPendingBehaviorEventListeners().
-        RenderKitUtils.renderPassThruAttributes(context, writer, component, null, false, ATTRIBUTES,
-                HtmlElementEvent.click, FacesComponentEvent.action);
+        RenderKitUtils.renderPassThruAttributes(
+            context, writer, component, null, false, ATTRIBUTES,
+            HtmlElementEvent.click, FacesComponentEvent.action
+        );
         RenderKitUtils.renderOnclickEventListener(context, component, null, null, false);
 
     }

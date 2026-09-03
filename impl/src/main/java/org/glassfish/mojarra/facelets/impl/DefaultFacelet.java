@@ -125,8 +125,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
     }
 
     /**
-     * @see jakarta.faces.view.facelets.Facelet#apply(jakarta.faces.context.FacesContext,
-     *      jakarta.faces.component.UIComponent)
+     * @see jakarta.faces.view.facelets.Facelet#apply(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent)
      */
     @Override
     public void apply(FacesContext facesContext, UIComponent parent) throws IOException {
@@ -166,8 +165,10 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
                         if (token != null && token.time < createTime && token.alias.equals(alias)) {
                             if (log.isLoggable(Level.INFO)) {
                                 DateFormat df = SimpleDateFormat.getTimeInstance();
-                                log.info("Facelet[" + alias + "] was modified @ " + df.format(new Date(createTime))
-                                        + ", flushing component applied @ " + df.format(new Date(token.time)));
+                                log.info(
+                                    "Facelet[" + alias + "] was modified @ " + df.format(new Date(createTime))
+                                        + ", flushing component applied @ " + df.format(new Date(token.time))
+                                );
                             }
                             cl.remove(sz);
                         }
@@ -187,8 +188,10 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
                         if (token != null && token.time < createTime && token.alias.equals(alias)) {
                             if (log.isLoggable(Level.INFO)) {
                                 DateFormat df = SimpleDateFormat.getTimeInstance();
-                                log.info("Facelet[" + alias + "] was modified @ " + df.format(new Date(createTime))
-                                        + ", flushing component applied @ " + df.format(new Date(token.time)));
+                                log.info(
+                                    "Facelet[" + alias + "] was modified @ " + df.format(new Date(createTime))
+                                        + ", flushing component applied @ " + df.format(new Date(token.time))
+                                );
                             }
                             itr.remove();
                         }
@@ -224,12 +227,11 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
     }
 
     /**
-     * Returns this Facelet's unique-id counter slot for the given tag, assigning the next free one if the tag has
-     * none yet, for a tag handler to hold onto for as long as this (application-scoped) Facelet lives. Slots are
-     * dense per Facelet, so a build can keep its per-tag id counters in an {@code int[]} of {@link #getIdSlotCount()}
-     * entries instead of a map keyed by tag id. Keying by tag id rather than handing out a fresh slot per call keeps
-     * a tag on one slot even if it asks twice, which two handler delegates racing to resolve the same tag would
-     * otherwise turn into two counters, and so into a duplicate id.
+     * Returns this Facelet's unique-id counter slot for the given tag, assigning the next free one if the tag has none yet, for a tag handler to hold onto for
+     * as long as this (application-scoped) Facelet lives. Slots are dense per Facelet, so a build can keep its per-tag id counters in an {@code int[]} of
+     * {@link #getIdSlotCount()} entries instead of a map keyed by tag id. Keying by tag id rather than handing out a fresh slot per call keeps a tag on one
+     * slot even if it asks twice, which two handler delegates racing to resolve the same tag would otherwise turn into two counters, and so into a duplicate
+     * id.
      *
      * @param tagId the tag id to assign a slot to
      * @return the tag's slot
@@ -246,9 +248,8 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
     }
 
     /**
-     * Returns the first id each of this Facelet's tags generates under {@code prefix}, indexed by counter slot, for a
-     * build to reuse instead of building the same strings again, or {@code null} when nothing is cached for this
-     * prefix.
+     * Returns the first id each of this Facelet's tags generates under {@code prefix}, indexed by counter slot, for a build to reuse instead of building the
+     * same strings again, or {@code null} when nothing is cached for this prefix.
      *
      * @param prefix the id prefix the calling build is generating under
      * @return the per-slot first ids, or {@code null} when this Facelet caches no more prefixes
@@ -258,8 +259,8 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
     }
 
     /**
-     * Returns {@code prefix}'s first ids resized to hold every slot handed out so far, for a build that reached a slot
-     * past the end of what {@link #firstIds(String)} returned.
+     * Returns {@code prefix}'s first ids resized to hold every slot handed out so far, for a build that reached a slot past the end of what
+     * {@link #firstIds(String)} returned.
      *
      * @param prefix the id prefix the calling build is generating under
      * @param ids the array to grow
@@ -324,16 +325,16 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
         try {
             ctx.setAttribute(INCLUDED_KEY, true); // to signal MetataHandler that we're basically in a template.
             root.apply(new DefaultFaceletContext(ctx, this), parent);
-        } finally {
+        }
+        finally {
             ctx.setAttribute(INCLUDED_KEY, included);
         }
         markApplied(parent);
     }
 
     /**
-     * Used for delegation by the DefaultFaceletContext. First validates that the path does not represent
-     * a contracts resource, then pulls the URL from {@link #resolveURL(String)}, then calls
-     * {@link #include(DefaultFaceletContext, jakarta.faces.component.UIComponent, String)}.
+     * Used for delegation by the DefaultFaceletContext. First validates that the path does not represent a contracts resource, then pulls the URL from
+     * {@link #resolveURL(String)}, then calls {@link #include(DefaultFaceletContext, jakarta.faces.component.UIComponent, String)}.
      *
      * @see FaceletContext#includeFacelet(UIComponent, String)
      * @param ctx FaceletContext to pass to the included Facelet
@@ -353,10 +354,12 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
                 if (url == null) {
                     url = getErrorFacelet(Util.getCurrentLoader(this));
                 }
-            } else {
+            }
+            else {
                 return;
             }
-        } else {
+        }
+        else {
             if (factory.isContractsResourceAccessDenied(src, relativePath)) {
                 throw new IOException("Contract resources cannot be accessed this way");
             }
@@ -383,6 +386,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
     }
 
     private static class ApplyToken implements Externalizable {
+
         private static final long serialVersionUID = 1L;
 
         public String alias;
@@ -408,6 +412,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
             out.writeUTF(alias);
             out.writeLong(time);
         }
+
     }
 
     @Override
@@ -450,4 +455,5 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
         return loader.getResource("META-INF/error-include.xhtml");
 
     }
+
 }

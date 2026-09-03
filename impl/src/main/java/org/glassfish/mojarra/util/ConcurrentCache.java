@@ -21,17 +21,15 @@ import java.util.concurrent.ExecutionException;
 /**
  * Defines a concurrent cache with a factory for creating new object instances.
  *
- * This (combined with ExpiringConcurrentCache) offers functionality similar to org.glassfish.mojarra.util.Cache. Two
- * differences:
+ * This (combined with ExpiringConcurrentCache) offers functionality similar to org.glassfish.mojarra.util.Cache. Two differences:
  *
- * 1. Cache is concrete/assumes a particular implementation. ConcurrentCache is abstract/allows subclasses to provide
- * the implementation. This facilitates alternative implementations, such as DefaultFaceletCache's NoCache. 2.
- * ConcurrentCache does not provide remove() as part of its contract, since remove behavior may be subclass-specific.
- * For example, ExpiringConcurentCache automatically removes items by checking for expiration rather than requiring
- * manual removes.
+ * 1. Cache is concrete/assumes a particular implementation. ConcurrentCache is abstract/allows subclasses to provide the implementation. This facilitates
+ * alternative implementations, such as DefaultFaceletCache's NoCache. 2. ConcurrentCache does not provide remove() as part of its contract, since remove
+ * behavior may be subclass-specific. For example, ExpiringConcurentCache automatically removes items by checking for expiration rather than requiring manual
+ * removes.
  *
- * We should consider consolidating Cache and ConcurrentCache + ExpiringConcurrentCache into a single class hierarchy so
- * that we do not need to duplicate the JCIP scalable result cache code.
+ * We should consider consolidating Cache and ConcurrentCache + ExpiringConcurrentCache into a single class hierarchy so that we do not need to duplicate the
+ * JCIP scalable result cache code.
  */
 public abstract class ConcurrentCache<K, V> {
 
@@ -39,7 +37,9 @@ public abstract class ConcurrentCache<K, V> {
      * Factory interface for creating various cacheable objects.
      */
     public interface Factory<K, V> {
+
         V newInstance(final K arg) throws Exception;
+
     }
 
     /**
@@ -52,8 +52,8 @@ public abstract class ConcurrentCache<K, V> {
     }
 
     /**
-     * Retrieves a value for the specified key. If the value is not already present in the cache, a new instance will be
-     * allocated using the <code>Factory</code> interface
+     * Retrieves a value for the specified key. If the value is not already present in the cache, a new instance will be allocated using the
+     * <code>Factory</code> interface
      *
      * @param key the key the value is associated with
      * @return the value for the specified key
@@ -78,4 +78,5 @@ public abstract class ConcurrentCache<K, V> {
     }
 
     private final Factory<K, V> _f;
+
 }

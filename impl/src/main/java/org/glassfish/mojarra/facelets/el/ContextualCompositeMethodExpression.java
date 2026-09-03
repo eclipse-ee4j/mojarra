@@ -39,16 +39,14 @@ import org.glassfish.mojarra.util.FacesLogger;
 
 /**
  * <p>
- * This specialized <code>MethodExpression</code> enables the evaluation of composite component expressions. Instances
- * of this expression will be created when
- * {@link org.glassfish.mojarra.facelets.tag.TagAttributeImpl#getValueExpression(jakarta.faces.view.facelets.FaceletContext, Class)}
- * is invoked and the expression represents a composite component expression (i.e. #{cc.[properties]}).
+ * This specialized <code>MethodExpression</code> enables the evaluation of composite component expressions. Instances of this expression will be created when
+ * {@link org.glassfish.mojarra.facelets.tag.TagAttributeImpl#getValueExpression(jakarta.faces.view.facelets.FaceletContext, Class)} is invoked and the
+ * expression represents a composite component expression (i.e. #{cc.[properties]}).
  * </p>
  *
  * <p>
- * It's important to note that these <code>MethodExpression</code>s are context sensitive in that they leverage the
- * location in which they were referenced in order to push the proper composite component to the evaluation context
- * prior to evaluating the expression itself.
+ * It's important to note that these <code>MethodExpression</code>s are context sensitive in that they leverage the location in which they were referenced in
+ * order to push the proper composite component to the evaluation context prior to evaluating the expression itself.
  * </p>
  *
  * Here's an example:
@@ -78,18 +76,15 @@ import org.glassfish.mojarra.util.FacesLogger;
  * &lt;/composite:implementation&gt;
  * </pre>
  *
- * When <code>commandButton</code> is clicked, the <code>ContextualCompositeMethodExpression</code> first is looked up
- * by {@link org.glassfish.mojarra.facelets.tag.TagAttributeImpl.AttributeLookupMethodExpression} which results an instance of
- * <code>ContextualCompositeMethodExpression</code>. When this
- * <code>ContextualCompositeMethodExpression</code> is invoked, the {@link jakarta.faces.view.Location}
- * object necessary to find the proper composite component will be derived from
- * source <code>ValueExpression</code> provided at construction time. 
- * 
- * Using the derived
- * {@link jakarta.faces.view.Location}, we can find the composite component that matches 'owns' the template in which
- * the expression was defined in by comparing the path of the Location with the name and library of the
- * {@link jakarta.faces.application.Resource} instance associated with each composite component. If a matching composite
- * component is found, it will be made available to the EL by calling
+ * When <code>commandButton</code> is clicked, the <code>ContextualCompositeMethodExpression</code> first is looked up by
+ * {@link org.glassfish.mojarra.facelets.tag.TagAttributeImpl.AttributeLookupMethodExpression} which results an instance of
+ * <code>ContextualCompositeMethodExpression</code>. When this <code>ContextualCompositeMethodExpression</code> is invoked, the
+ * {@link jakarta.faces.view.Location} object necessary to find the proper composite component will be derived from source <code>ValueExpression</code> provided
+ * at construction time.
+ *
+ * Using the derived {@link jakarta.faces.view.Location}, we can find the composite component that matches 'owns' the template in which the expression was
+ * defined in by comparing the path of the Location with the name and library of the {@link jakarta.faces.application.Resource} instance associated with each
+ * composite component. If a matching composite component is found, it will be made available to the EL by calling
  * {@link CompositeComponentStackManager#push(jakarta.faces.component.UIComponent)}.
  */
 public class ContextualCompositeMethodExpression extends MethodExpression {
@@ -138,12 +133,14 @@ public class ContextualCompositeMethodExpression extends MethodExpression {
             boolean pushed = pushCompositeComponent(ctx);
             try {
                 return delegate.invoke(elContext, objects);
-            } finally {
+            }
+            finally {
                 if (pushed) {
                     popCompositeComponent(ctx);
                 }
             }
-        } catch (ELException ele) {
+        }
+        catch (ELException ele) {
             /*
              * If we got a validator exception it is actually correct to immediately bubble it up.
              */
@@ -164,7 +161,8 @@ public class ContextualCompositeMethodExpression extends MethodExpression {
 
                     }
 
-                } catch (ELException ex) {
+                }
+                catch (ELException ex) {
 
                     /*
                      * If we got a validator exception it is actually correct to immediately bubble it up.
@@ -175,8 +173,10 @@ public class ContextualCompositeMethodExpression extends MethodExpression {
 
                     if (LOGGER.isLoggable(Level.WARNING)) {
                         LOGGER.log(Level.WARNING, ele.toString());
-                        LOGGER.log(Level.WARNING, "faces.facelets.el.method.expression.invoke.error: {0} {1}",
-                                new Object[] { ex.toString(), source.getExpressionString() });
+                        LOGGER.log(
+                            Level.WARNING, "faces.facelets.el.method.expression.invoke.error: {0} {1}",
+                            new Object[] { ex.toString(), source.getExpressionString() }
+                        );
                     }
 
                     if (!(ex instanceof MethodNotFoundException)) {
@@ -220,7 +220,8 @@ public class ContextualCompositeMethodExpression extends MethodExpression {
 
         if (location != null) {
             foundCc = manager.findCompositeComponentUsingLocation(ctx, location);
-        } else {
+        }
+        else {
             // We need to obtain the Location of the source expression in order
             // to find the composite component that needs to be available within
             // the evaluation stack.
@@ -258,6 +259,7 @@ public class ContextualCompositeMethodExpression extends MethodExpression {
             ccME.ccClientId = event.getComponent().getClientId();
             event.getComponent().unsubscribeFromEvent(PostAddToViewEvent.class, this);
         }
+
     }
 
 }

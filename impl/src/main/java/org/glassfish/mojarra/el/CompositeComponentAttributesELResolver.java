@@ -40,8 +40,7 @@ import org.glassfish.mojarra.component.CompositeComponentStackManager;
 
 /**
  * <p>
- * This {@link ELResolver} will handle the resolution of <code>attrs</code> when processing a composite component
- * instance.
+ * This {@link ELResolver} will handle the resolution of <code>attrs</code> when processing a composite component instance.
  * </p>
  */
 public class CompositeComponentAttributesELResolver extends ELResolver {
@@ -65,19 +64,18 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
 
     /**
      * <p>
-     * If <code>base</code> is a composite component and <code>property</code> is <code>attrs</code>, return a new
-     * <code>ExpressionEvalMap</code> which wraps the composite component's attributes map.
+     * If <code>base</code> is a composite component and <code>property</code> is <code>attrs</code>, return a new <code>ExpressionEvalMap</code> which wraps
+     * the composite component's attributes map.
      * </p>
      *
      * <p>
-     * The <code>ExpressionEvalMap</code> simple evaluates any {@link ValueExpression} instances stored in the composite
-     * component's attribute map and returns the result.
+     * The <code>ExpressionEvalMap</code> simple evaluates any {@link ValueExpression} instances stored in the composite component's attribute map and returns
+     * the result.
      * </p>
      *
      * <p>
-     * If <code>base</code> is a composite component and <code>property</code> is <code>parent</code> attempt to resolve the
-     * composite componet parent of the current composite component by calling
-     * {@link UIComponent#getCompositeComponentParent(jakarta.faces.component.UIComponent)}) and returning that value.
+     * If <code>base</code> is a composite component and <code>property</code> is <code>parent</code> attempt to resolve the composite componet parent of the
+     * current composite component by calling {@link UIComponent#getCompositeComponentParent(jakarta.faces.component.UIComponent)}) and returning that value.
      * </p>
      *
      * @see jakarta.el.ELResolver#getValue(jakarta.el.ELContext, Object, Object)
@@ -212,8 +210,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
 
     /**
      * <p>
-     * Creates (if necessary) and caches an <code>ExpressionEvalMap</code> instance associated with the owning
-     * {@link UIComponent}
+     * Creates (if necessary) and caches an <code>ExpressionEvalMap</code> instance associated with the owning {@link UIComponent}
      * </p>
      *
      * @param c the owning {@link UIComponent}
@@ -231,12 +228,14 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
             ctxAttributes.put(EVAL_MAP_KEY, topMap);
             evalMap = new ExpressionEvalMap(ctx, c);
             topMap.put(c, evalMap);
-        } else {
+        }
+        else {
             evalMap = topMap.get(c);
             if (evalMap == null) {
                 evalMap = new ExpressionEvalMap(ctx, c);
                 topMap.put(c, evalMap);
-            } else {
+            }
+            else {
                 // JAVASERVERFACES-2508 - running as Portlet2 FacesContext must be updated for rendering, or
                 // ExpressionEvalMap would have to be reconstructed for the second Portlet phase
                 ((ExpressionEvalMap) evalMap).updateFacesContext(ctx);
@@ -250,8 +249,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
     // ---------------------------------------------------------- Nested Classes
 
     /**
-     * Simple Map implementation to evaluate any <code>ValueExpression</code> stored directly within the provided attributes
-     * map.
+     * Simple Map implementation to evaluate any <code>ValueExpression</code> stored directly within the provided attributes map.
      */
     private static final class ExpressionEvalMap implements Map<String, Object>, CompositeComponentExpressionHolder {
 
@@ -334,7 +332,8 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
             ValueExpression ve = cc.getValueExpression(key);
             if (ve != null) {
                 ve.setValue(ctx.getELContext(), value);
-            } else {
+            }
+            else {
                 attributesMap.put(key, value);
             }
             return null;
@@ -391,7 +390,8 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
                     // put null into the cache for future lookups.
                     declaredDefaultValues.put(key, null);
                 }
-            } else {
+            }
+            else {
                 // It's in the cache, just return the value.
                 result = declaredDefaultValues.get(key);
             }
@@ -404,5 +404,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
                 this.ctx = ctx;
             }
         }
+
     }
+
 }

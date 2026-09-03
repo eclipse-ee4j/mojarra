@@ -29,9 +29,8 @@ import jakarta.faces.context.FacesContext;
 import org.junit.jupiter.api.Test;
 
 /**
- * A build aliases every generated id through the {@link IdMapper} the outermost Facelet installed, so the alias a tag
- * gets may not depend on which Facelet in the build is applying it, nor on the context resolving the mapper again for
- * every tag.
+ * A build aliases every generated id through the {@link IdMapper} the outermost Facelet installed, so the alias a tag gets may not depend on which Facelet in
+ * the build is applying it, nor on the context resolving the mapper again for every tag.
  */
 class FaceletContextIdMapperTest {
 
@@ -69,4 +68,5 @@ class FaceletContextIdMapperTest {
 
         assertEquals("j_id7", context.getAliasedId("j_id7"));
     }
+
 }

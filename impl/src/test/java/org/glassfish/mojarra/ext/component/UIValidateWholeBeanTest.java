@@ -27,9 +27,8 @@ import jakarta.faces.component.UIPanel;
 import org.junit.jupiter.api.Test;
 
 /**
- * {@code f:validateWholeBean} validates a bean whose properties the inputs before it have already applied, so a
- * rendered input placed after it would not be part of what it validates. It rejects that at render time by walking the
- * form backwards from the last child until it reaches itself.
+ * {@code f:validateWholeBean} validates a bean whose properties the inputs before it have already applied, so a rendered input placed after it would not be
+ * part of what it validates. It rejects that at render time by walking the form backwards from the last child until it reaches itself.
  */
 class UIValidateWholeBeanTest {
 
@@ -72,8 +71,8 @@ class UIValidateWholeBeanTest {
     }
 
     /**
-     * A container holding exactly one child is the case a reverse walk is most likely to get wrong off by one, and it
-     * is a common panelGroup/panelGrid shape, so it gets its own test rather than relying on the nested case above.
+     * A container holding exactly one child is the case a reverse walk is most likely to get wrong off by one, and it is a common panelGroup/panelGrid shape,
+     * so it gets its own test rather than relying on the nested case above.
      */
     @Test
     void aSingleChildContainerAfterTheValidatorIsStillWalked() {
@@ -119,4 +118,5 @@ class UIValidateWholeBeanTest {
 
         assertThrows(IllegalArgumentException.class, () -> validator.encodeBegin(null));
     }
+
 }

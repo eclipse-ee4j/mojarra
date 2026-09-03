@@ -23,8 +23,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
 
 /**
- * Lightweight singleton used as a target of EL bean resolution on every page,
- * so CDI bean-resolution caching benefits show up in the numbers.
+ * Lightweight singleton used as a target of EL bean resolution on every page, so CDI bean-resolution caching benefits show up in the numbers.
  */
 @Named
 @ApplicationScoped
@@ -44,8 +43,7 @@ public class AppConfig {
     }
     private static final List<String> CATEGORIES = List.of("Books", "Music", "Movies", "Games", "Other");
     private static final List<String> LANGUAGES = List.of("NL", "EN", "DE", "FR", "JP");
-    private static final List<String> TIMEZONES =
-            List.of("Europe/Amsterdam", "Europe/London", "America/New_York", "Asia/Tokyo");
+    private static final List<String> TIMEZONES = List.of("Europe/Amsterdam", "Europe/London", "America/New_York", "Asia/Tokyo");
     private static final List<String> THEMES = List.of("Light", "Dark", "System");
 
     public Map<String, String> getCountries() {
@@ -71,4 +69,5 @@ public class AppConfig {
     public String getAppName() {
         return "Faces Perf Bench";
     }
+
 }

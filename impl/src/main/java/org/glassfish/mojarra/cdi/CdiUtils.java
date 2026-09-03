@@ -78,75 +78,64 @@ public final class CdiUtils {
     private static final Logger LOGGER = FacesLogger.APPLICATION_VIEW.getLogger();
 
     private final static Type CONVERTER_TYPE = new TypeLiteral<Converter<?>>() {
+
         private static final long serialVersionUID = 1L;
+
     }.getType();
 
     private final static Type VALIDATOR_TYPE = new TypeLiteral<Validator<?>>() {
+
         private static final long serialVersionUID = 1L;
+
     }.getType();
 
     /**
-     * Cache of resolved {@code (type, beanName, qualifiers) -> Bean<?>} lookups per {@link BeanManager}.
-     * Post-bootstrap the set of beans is immutable for the application lifetime, so {@code getBeans} +
-     * {@code resolve} (the expensive part: type/qualifier matching over the whole bean registry) is a
-     * pure function of its arguments. {@link BeanManager#getReference(Bean, Type, CreationalContext)}
-     * is intentionally kept out of the cache to preserve scope semantics &mdash; that call is cheap.
-     * Negative results are cached as {@link #NO_BEAN}; built-in Faces IDs such as
-     * {@code jakarta.faces.Integer} are not CDI beans, so caching the miss avoids repeated registry
-     * walks on every component creation.
+     * Cache of resolved {@code (type, beanName, qualifiers) -> Bean<?>} lookups per {@link BeanManager}. Post-bootstrap the set of beans is immutable for the
+     * application lifetime, so {@code getBeans} + {@code resolve} (the expensive part: type/qualifier matching over the whole bean registry) is a pure function
+     * of its arguments. {@link BeanManager#getReference(Bean, Type, CreationalContext)} is intentionally kept out of the cache to preserve scope semantics
+     * &mdash; that call is cheap. Negative results are cached as {@link #NO_BEAN}; built-in Faces IDs such as {@code jakarta.faces.Integer} are not CDI beans,
+     * so caching the miss avoids repeated registry walks on every component creation.
      *
-     * <p>Caveat: this assumes the {@link BeanManager} is fully bootstrapped when first observed.
-     * If a transient/incomplete BeanManager were probed here, negative entries against that
-     * identity would persist after bootstrap completes. Today the only callers are public
-     * {@code Application#create*} methods invoked during request processing, after CDI is ready.
+     * <p>
+     * Caveat: this assumes the {@link BeanManager} is fully bootstrapped when first observed. If a transient/incomplete BeanManager were probed here, negative
+     * entries against that identity would persist after bootstrap completes. Today the only callers are public {@code Application#create*} methods invoked
+     * during request processing, after CDI is ready.
      *
-     * <p>The outer map uses weak keys to release the inner cache when a BeanManager becomes
-     * otherwise unreachable. Note that cached {@link Bean} instances may transitively hold a
-     * reference back to their owning BeanManager (Weld does), in which case reclamation only
-     * happens once those {@code Bean} references themselves are no longer reachable.
+     * <p>
+     * The outer map uses weak keys to release the inner cache when a BeanManager becomes otherwise unreachable. Note that cached {@link Bean} instances may
+     * transitively hold a reference back to their owning BeanManager (Weld does), in which case reclamation only happens once those {@code Bean} references
+     * themselves are no longer reachable.
      */
-    private static final Map<BeanManager, ConcurrentMap<BeanLookupKey, Bean<?>>> RESOLVED_BEANS =
-            synchronizedMap(new WeakHashMap<>());
+    private static final Map<BeanManager, ConcurrentMap<BeanLookupKey, Bean<?>>> RESOLVED_BEANS = synchronizedMap(new WeakHashMap<>());
 
     /**
-     * Parallel cache for the {@link FacesContextImpl} release path: the single
-     * {@link FacesContextProducer}-typed {@link FacesContext} bean per {@link BeanManager}.
-     * Held separately because the lookup filters by {@code bean.getTypes().contains(...)}
-     * rather than by a CDI qualifier, so it does not fit the {@link BeanLookupKey} shape.
+     * Parallel cache for the {@link FacesContextImpl} release path: the single {@link FacesContextProducer}-typed {@link FacesContext} bean per
+     * {@link BeanManager}. Held separately because the lookup filters by {@code bean.getTypes().contains(...)} rather than by a CDI qualifier, so it does not
+     * fit the {@link BeanLookupKey} shape.
      */
-    private static final Map<BeanManager, Bean<?>> FACES_CONTEXT_PRODUCER_BEANS =
-            synchronizedMap(new WeakHashMap<>());
+    private static final Map<BeanManager, Bean<?>> FACES_CONTEXT_PRODUCER_BEANS = synchronizedMap(new WeakHashMap<>());
 
     /**
-     * Target-class / id / view-id keyed caches of the resolved managed converter, validator, behavior and
-     * {@link View} facelet {@link Bean}s per {@link BeanManager}. The by-class converter lookup otherwise walks
-     * the superclass chain building a {@link FacesConverter} qualifier + {@link BeanLookupKey} at each level (and
-     * the by-id paths build two to four such keys) on every call -- per cell during render, and per facelet
-     * lookup for the view path. Keying directly on the target {@code Class}, id or view id collapses that to a
-     * single cheap map lookup. The resolved {@link Bean} is stable post-bootstrap;
-     * {@link BeanManager#getReference} stays per-call so scope semantics are preserved. Misses are cached as
-     * {@link #NO_BEAN}. Cleared on shutdown together with {@link #RESOLVED_BEANS} (same stale-Bean concern).
+     * Target-class / id / view-id keyed caches of the resolved managed converter, validator, behavior and {@link View} facelet {@link Bean}s per
+     * {@link BeanManager}. The by-class converter lookup otherwise walks the superclass chain building a {@link FacesConverter} qualifier +
+     * {@link BeanLookupKey} at each level (and the by-id paths build two to four such keys) on every call -- per cell during render, and per facelet lookup for
+     * the view path. Keying directly on the target {@code Class}, id or view id collapses that to a single cheap map lookup. The resolved {@link Bean} is
+     * stable post-bootstrap; {@link BeanManager#getReference} stays per-call so scope semantics are preserved. Misses are cached as {@link #NO_BEAN}. Cleared
+     * on shutdown together with {@link #RESOLVED_BEANS} (same stale-Bean concern).
      */
-    private static final Map<BeanManager, ConcurrentMap<Object, Bean<?>>> CONVERTER_BEANS_BY_KEY =
-            synchronizedMap(new WeakHashMap<>());
-    private static final Map<BeanManager, ConcurrentMap<Object, Bean<?>>> VALIDATOR_BEANS_BY_KEY =
-            synchronizedMap(new WeakHashMap<>());
-    private static final Map<BeanManager, ConcurrentMap<Object, Bean<?>>> BEHAVIOR_BEANS_BY_KEY =
-            synchronizedMap(new WeakHashMap<>());
-    private static final Map<BeanManager, ConcurrentMap<Object, Bean<?>>> VIEW_FACELET_BEANS_BY_KEY =
-            synchronizedMap(new WeakHashMap<>());
+    private static final Map<BeanManager, ConcurrentMap<Object, Bean<?>>> CONVERTER_BEANS_BY_KEY = synchronizedMap(new WeakHashMap<>());
+    private static final Map<BeanManager, ConcurrentMap<Object, Bean<?>>> VALIDATOR_BEANS_BY_KEY = synchronizedMap(new WeakHashMap<>());
+    private static final Map<BeanManager, ConcurrentMap<Object, Bean<?>>> BEHAVIOR_BEANS_BY_KEY = synchronizedMap(new WeakHashMap<>());
+    private static final Map<BeanManager, ConcurrentMap<Object, Bean<?>>> VIEW_FACELET_BEANS_BY_KEY = synchronizedMap(new WeakHashMap<>());
 
     private static final Bean<?> NO_BEAN = new NoBean();
 
     /**
-     * Clears the bean-resolution caches. Invoked from {@link CdiExtension} on {@code BeforeShutdown}:
-     * a {@link Bean} transitively references its owning BeanManager (Weld does), which keeps the
-     * {@link WeakHashMap} entry reachable well past application undeployment. Leaving it would let a
-     * redeployment resolve against stale {@code Bean} instances whose context is gone, which surfaces
-     * as a {@code ContextNotActiveException} on first use. The caches are keyed by the (possibly
-     * wrapped) BeanManager, so a defunct deployment's entry cannot be reliably matched by the raw
-     * BeanManager handed to {@code BeforeShutdown}; clearing wholesale is correct because the entries
-     * repopulate lazily on next resolve.
+     * Clears the bean-resolution caches. Invoked from {@link CdiExtension} on {@code BeforeShutdown}: a {@link Bean} transitively references its owning
+     * BeanManager (Weld does), which keeps the {@link WeakHashMap} entry reachable well past application undeployment. Leaving it would let a redeployment
+     * resolve against stale {@code Bean} instances whose context is gone, which surfaces as a {@code ContextNotActiveException} on first use. The caches are
+     * keyed by the (possibly wrapped) BeanManager, so a defunct deployment's entry cannot be reliably matched by the raw BeanManager handed to
+     * {@code BeforeShutdown}; clearing wholesale is correct because the entries repopulate lazily on next resolve.
      */
     public static void clearCaches() {
         RESOLVED_BEANS.clear();
@@ -171,8 +160,10 @@ public final class CdiUtils {
      * @return the converter, or null if we could not match one.
      */
     public static Converter<?> createConverter(BeanManager beanManager, String value) {
-        Bean<?> bean = cachedBean(CONVERTER_BEANS_BY_KEY, beanManager, value,
-                () -> resolveConverterBean(beanManager, FacesConverter.Literal.of(value, Object.class, false)));
+        Bean<?> bean = cachedBean(
+            CONVERTER_BEANS_BY_KEY, beanManager, value,
+            () -> resolveConverterBean(beanManager, FacesConverter.Literal.of(value, Object.class, false))
+        );
 
         if (bean == null) {
             return null;
@@ -193,8 +184,10 @@ public final class CdiUtils {
      * @return the converter, or null if we could not match one.
      */
     public static Converter<?> createConverter(BeanManager beanManager, Class<?> forClass) {
-        Bean<?> bean = cachedBean(CONVERTER_BEANS_BY_KEY, beanManager, forClass,
-                () -> resolveConverterBeanForClass(beanManager, forClass));
+        Bean<?> bean = cachedBean(
+            CONVERTER_BEANS_BY_KEY, beanManager, forClass,
+            () -> resolveConverterBeanForClass(beanManager, forClass)
+        );
 
         if (bean == null) {
             return null;
@@ -209,7 +202,7 @@ public final class CdiUtils {
 
     private static Bean<?> resolveConverterBeanForClass(BeanManager beanManager, Class<?> forClass) {
         for (Class<?> forClassOrSuperclass = forClass; forClassOrSuperclass != null
-                && forClassOrSuperclass != Object.class; forClassOrSuperclass = forClassOrSuperclass.getSuperclass()) {
+            && forClassOrSuperclass != Object.class; forClassOrSuperclass = forClassOrSuperclass.getSuperclass()) {
             Bean<?> bean = resolveConverterBean(beanManager, FacesConverter.Literal.of("", forClassOrSuperclass, false));
             if (bean != null) {
                 return bean;
@@ -228,12 +221,14 @@ public final class CdiUtils {
     }
 
     /**
-     * Returns the resolved managed {@link Bean} for {@code key}, computing it via {@code resolver} and caching
-     * the outcome (a miss as {@link #NO_BEAN}) on first use. {@code getReference} is left to the caller so
-     * scope stays per-invocation.
+     * Returns the resolved managed {@link Bean} for {@code key}, computing it via {@code resolver} and caching the outcome (a miss as {@link #NO_BEAN}) on
+     * first use. {@code getReference} is left to the caller so scope stays per-invocation.
      */
-    private static Bean<?> cachedBean(Map<BeanManager, ConcurrentMap<Object, Bean<?>>> cacheByManager,
-            BeanManager beanManager, Object key, Supplier<Bean<?>> resolver) {
+    private static Bean<?> cachedBean(
+        Map<BeanManager, ConcurrentMap<Object, Bean<?>>> cacheByManager,
+        BeanManager beanManager, Object key, Supplier<Bean<?>> resolver
+    )
+    {
         ConcurrentMap<Object, Bean<?>> cache = cacheByManager.computeIfAbsent(beanManager, k -> new ConcurrentHashMap<>());
         Bean<?> cached = cache.get(key);
         if (cached != null) {
@@ -256,8 +251,10 @@ public final class CdiUtils {
      * @return the behavior, or null if we could not match one.
      */
     public static Behavior createBehavior(BeanManager beanManager, String value) {
-        Bean<?> bean = cachedBean(BEHAVIOR_BEANS_BY_KEY, beanManager, value,
-                () -> resolveBean(beanManager, Behavior.class, FacesBehavior.Literal.of(value, false)));
+        Bean<?> bean = cachedBean(
+            BEHAVIOR_BEANS_BY_KEY, beanManager, value,
+            () -> resolveBean(beanManager, Behavior.class, FacesBehavior.Literal.of(value, false))
+        );
 
         if (bean == null) {
             return null;
@@ -274,8 +271,10 @@ public final class CdiUtils {
      * @return the facelet, or null if the application declares none for that view id.
      */
     public static Facelet getViewFacelet(BeanManager beanManager, String viewId) {
-        Bean<?> bean = cachedBean(VIEW_FACELET_BEANS_BY_KEY, beanManager, viewId,
-                () -> resolveBean(beanManager, Facelet.class, View.Literal.of(viewId)));
+        Bean<?> bean = cachedBean(
+            VIEW_FACELET_BEANS_BY_KEY, beanManager, viewId,
+            () -> resolveBean(beanManager, Facelet.class, View.Literal.of(viewId))
+        );
 
         if (bean == null) {
             return null;
@@ -292,8 +291,10 @@ public final class CdiUtils {
      * @return the validator, or null if we could not match one.
      */
     public static Validator<?> createValidator(BeanManager beanManager, String value) {
-        Bean<?> bean = cachedBean(VALIDATOR_BEANS_BY_KEY, beanManager, value,
-                () -> resolveValidatorBean(beanManager, value));
+        Bean<?> bean = cachedBean(
+            VALIDATOR_BEANS_BY_KEY, beanManager, value,
+            () -> resolveValidatorBean(beanManager, value)
+        );
 
         if (bean == null) {
             return null;
@@ -380,18 +381,16 @@ public final class CdiUtils {
     }
 
     /**
-     * Resolves the {@link Bean} for the given required type and qualifiers using the application's
-     * cache. Returns {@code null} if no bean matches. Unlike {@link #getBeanReference}, this does
-     * not invoke {@code getReference} -- the caller is responsible for that when an instance is
-     * needed, so scope semantics remain correct on each invocation.
+     * Resolves the {@link Bean} for the given required type and qualifiers using the application's cache. Returns {@code null} if no bean matches. Unlike
+     * {@link #getBeanReference}, this does not invoke {@code getReference} -- the caller is responsible for that when an instance is needed, so scope semantics
+     * remain correct on each invocation.
      */
     public static Bean<?> resolveBean(BeanManager beanManager, Type type, Annotation... qualifiers) {
         return resolveBean(beanManager, type, null, qualifiers);
     }
 
     /**
-     * Resolves the {@link Bean} for the given EL name using the application's cache.
-     * Returns {@code null} if no bean has that name.
+     * Resolves the {@link Bean} for the given EL name using the application's cache. Returns {@code null} if no bean has that name.
      */
     public static Bean<?> resolveBeanByName(BeanManager beanManager, String name) {
         ConcurrentMap<BeanLookupKey, Bean<?>> cache = RESOLVED_BEANS.computeIfAbsent(beanManager, k -> new ConcurrentHashMap<>());
@@ -406,10 +405,9 @@ public final class CdiUtils {
     }
 
     /**
-     * Resolves and caches the {@link FacesContextProducer}-typed {@link FacesContext} bean
-     * once per {@link BeanManager}. Used by the per-request {@link FacesContext#release()}
-     * destruction path: the producer is registered exactly once per application, so re-running
-     * the type-containment filter on every request is wasted work.
+     * Resolves and caches the {@link FacesContextProducer}-typed {@link FacesContext} bean once per {@link BeanManager}. Used by the per-request
+     * {@link FacesContext#release()} destruction path: the producer is registered exactly once per application, so re-running the type-containment filter on
+     * every request is wasted work.
      */
     public static Bean<?> resolveFacesContextProducerBean(BeanManager beanManager) {
         Bean<?> cached = FACES_CONTEXT_PRODUCER_BEANS.get(beanManager);
@@ -425,6 +423,7 @@ public final class CdiUtils {
     }
 
     private static final class BeanLookupKey {
+
         private final Type type;
         private final String beanName;
         private final Set<Annotation> qualifiers;
@@ -447,31 +446,72 @@ public final class CdiUtils {
             }
             BeanLookupKey k = (BeanLookupKey) other;
             return hash == k.hash && Objects.equals(type, k.type)
-                    && Objects.equals(beanName, k.beanName) && qualifiers.equals(k.qualifiers);
+                && Objects.equals(beanName, k.beanName) && qualifiers.equals(k.qualifiers);
         }
 
         @Override
         public int hashCode() {
             return hash;
         }
+
     }
 
     /**
-     * Sentinel for "no bean resolves for this key". Cannot be a {@code null} value because
-     * {@link ConcurrentHashMap} forbids null values, and we want to distinguish "cached miss"
-     * from "not yet cached" without a second containsKey call.
+     * Sentinel for "no bean resolves for this key". Cannot be a {@code null} value because {@link ConcurrentHashMap} forbids null values, and we want to
+     * distinguish "cached miss" from "not yet cached" without a second containsKey call.
      */
     private static final class NoBean implements Bean<Object> {
-        @Override public Set<Type> getTypes() { throw new UnsupportedOperationException(); }
-        @Override public Set<Annotation> getQualifiers() { throw new UnsupportedOperationException(); }
-        @Override public Class<? extends Annotation> getScope() { throw new UnsupportedOperationException(); }
-        @Override public String getName() { throw new UnsupportedOperationException(); }
-        @Override public Set<Class<? extends Annotation>> getStereotypes() { throw new UnsupportedOperationException(); }
-        @Override public Class<?> getBeanClass() { throw new UnsupportedOperationException(); }
-        @Override public boolean isAlternative() { throw new UnsupportedOperationException(); }
-        @Override public Object create(CreationalContext<Object> ctx) { throw new UnsupportedOperationException(); }
-        @Override public void destroy(Object instance, CreationalContext<Object> ctx) { throw new UnsupportedOperationException(); }
-        @Override public Set<InjectionPoint> getInjectionPoints() { throw new UnsupportedOperationException(); }
+
+        @Override
+        public Set<Type> getTypes() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Set<Annotation> getQualifiers() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Class<? extends Annotation> getScope() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String getName() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Set<Class<? extends Annotation>> getStereotypes() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Class<?> getBeanClass() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean isAlternative() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Object create(CreationalContext<Object> ctx) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void destroy(Object instance, CreationalContext<Object> ctx) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Set<InjectionPoint> getInjectionPoints() {
+            throw new UnsupportedOperationException();
+        }
+
     }
 
     private static String getBeanName(Bean<?> bean) {
@@ -504,10 +544,12 @@ public final class CdiUtils {
 
             if (create) {
                 return context.get(bean, beanManager.createCreationalContext(bean));
-            } else {
+            }
+            else {
                 return context.get(bean);
             }
-        } else {
+        }
+        else {
             return null;
         }
     }
@@ -519,8 +561,7 @@ public final class CdiUtils {
      * @param beanManager the current bean manager
      * @param annotated the Annotated in which to search
      * @param annotationType the type of the annotation to search for
-     * @return An Optional that contains an instance of annotation type for which was searched if the annotated contained
-     * this.
+     * @return An Optional that contains an instance of annotation type for which was searched if the annotated contained this.
      */
     public static <A extends Annotation> Optional<A> getAnnotation(BeanManager beanManager, Annotated annotated, Class<A> annotationType) {
 
@@ -547,7 +588,8 @@ public final class CdiUtils {
                 if (beanManager.isStereotype(annotation.annotationType())) {
                     annotations.addAll(beanManager.getStereotypeDefinition(annotation.annotationType()));
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 // Log and continue, if it's not allowed to test if it's a stereo type
                 // we're unlikely to be interested in this annotation
                 if (LOGGER.isLoggable(Level.WARNING)) {
@@ -568,11 +610,12 @@ public final class CdiUtils {
         // we're looking for a DataModel is the closest match, since the Map is sorted on inheritance relation
         getDataModelClassesMap(cdi).entrySet().stream().filter(e -> e.getKey().isAssignableFrom(forClass)).findFirst().ifPresent(
 
-                // Get the bean from CDI which is of the class type that we found during annotation scanning
-                // and has the @FacesDataModel annotation, with the "forClass" attribute set to the closest
-                // super class of our target class.
+            // Get the bean from CDI which is of the class type that we found during annotation scanning
+            // and has the @FacesDataModel annotation, with the "forClass" attribute set to the closest
+            // super class of our target class.
 
-                e -> dataModel.add(cdi.select(e.getValue(), FacesDataModel.Literal.of(e.getKey())).get()));
+            e -> dataModel.add(cdi.select(e.getValue(), FacesDataModel.Literal.of(e.getKey())).get())
+        );
 
         return dataModel.isEmpty() ? null : dataModel.get(0);
     }
@@ -590,6 +633,7 @@ public final class CdiUtils {
 
     /**
      * Returns the current injection point.
+     *
      * @param beanManager the involved bean manager
      * @param creationalContext the involved creational context
      * @return the current injection point
@@ -608,7 +652,8 @@ public final class CdiUtils {
 
     /**
      * Returns the qualifier annotation of the given qualifier class from the given injection point.
-     * @param <A> the type of given qualifier class 
+     *
+     * @param <A> the type of given qualifier class
      * @param injectionPoint the injection point
      * @param qualifierClass the qualifier class to be filtered
      * @return the qualifier annotation
@@ -625,6 +670,7 @@ public final class CdiUtils {
 
     /**
      * Returns true if given scope is active in current context.
+     *
      * @param <S> the type of given scope
      * @param scope the scope to be checked
      * @return whether given scope is active
@@ -635,7 +681,8 @@ public final class CdiUtils {
         try {
             Context context = beanManager.getContext(scope);
             return context.isActive();
-        } catch (ContextNotActiveException ignore) {
+        }
+        catch (ContextNotActiveException ignore) {
             return false;
         }
     }

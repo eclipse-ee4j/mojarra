@@ -43,21 +43,25 @@ public class SearchKeywordResolverImplId extends AbstractSearchKeywordResolverIm
             // Avoid visit tree because in this case we need real component instances.
             // This means components inside UIData will not be scanned.
             findWithId(facesContext, id, current, searchKeywordContext.getCallback());
-        } else {
-            current.visitTree(VisitContext.createVisitContext(facesContext, null, searchKeywordContext.getSearchExpressionContext().getVisitHints()),
-                    (context, target) -> {
-                        if (id.equals(target.getId())) {
-                            searchKeywordContext.invokeContextCallback(target);
+        }
+        else {
+            current.visitTree(
+                VisitContext.createVisitContext(facesContext, null, searchKeywordContext.getSearchExpressionContext().getVisitHints()),
+                (context, target) -> {
+                    if (id.equals(target.getId())) {
+                        searchKeywordContext.invokeContextCallback(target);
 
-                            if (isHintSet(searchKeywordContext.getSearchExpressionContext(), SearchExpressionHint.RESOLVE_SINGLE_COMPONENT)) {
-                                return VisitResult.COMPLETE;
-                            }
-
-                            return VisitResult.ACCEPT;
-                        } else {
-                            return VisitResult.ACCEPT;
+                        if (isHintSet(searchKeywordContext.getSearchExpressionContext(), SearchExpressionHint.RESOLVE_SINGLE_COMPONENT)) {
+                            return VisitResult.COMPLETE;
                         }
-                    });
+
+                        return VisitResult.ACCEPT;
+                    }
+                    else {
+                        return VisitResult.ACCEPT;
+                    }
+                }
+            );
         }
 
         searchKeywordContext.setKeywordResolved(true);
@@ -70,7 +74,8 @@ public class SearchKeywordResolverImplId extends AbstractSearchKeywordResolverIm
             try {
                 Matcher matcher = PATTERN.matcher(keyword);
                 return matcher.matches();
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 return false;
             }
         }
@@ -82,7 +87,8 @@ public class SearchKeywordResolverImplId extends AbstractSearchKeywordResolverIm
         Matcher matcher = PATTERN.matcher(expression);
         if (matcher.matches()) {
             return matcher.group(1);
-        } else {
+        }
+        else {
             throw new FacesException("Expression does not match following pattern @id(id). Expression: \"" + expression + "\"");
         }
     }
@@ -106,4 +112,5 @@ public class SearchKeywordResolverImplId extends AbstractSearchKeywordResolverIm
             }
         }
     }
+
 }

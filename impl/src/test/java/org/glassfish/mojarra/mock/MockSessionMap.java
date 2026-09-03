@@ -156,9 +156,11 @@ final class MockSessionMap implements Map<String, Object> {
     private String key(Object key) {
         if (key == null) {
             throw new IllegalArgumentException();
-        } else if (key instanceof String) {
+        }
+        else if (key instanceof String) {
             return (String) key;
-        } else {
+        }
+        else {
             return key.toString();
         }
     }

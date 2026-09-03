@@ -85,17 +85,21 @@ public abstract class HtmlBasicInputRenderer extends HtmlBasicRenderer {
             Class<?> converterType;
             try {
                 converterType = valueExpression.getType(context.getELContext());
-            } catch (PropertyNotFoundException e) {
+            }
+            catch (PropertyNotFoundException e) {
                 if (submittedValue == null) {
                     if (logger.isLoggable(Level.FINE)) {
-                        logger.log(Level.FINE,
-                                   "Property of value expression {0} of component {1} could not be found, but submitted value is null in first place, so not attempting to convert",
-                                   new Object[]{
-                                         valueExpression.getExpressionString(),
-                                         component.getId() });
+                        logger.log(
+                            Level.FINE,
+                            "Property of value expression {0} of component {1} could not be found, but submitted value is null in first place, so not attempting to convert",
+                            new Object[] {
+                                valueExpression.getExpressionString(),
+                                component.getId() }
+                        );
                     }
                     converterType = null; // See issue 4734.
-                } else {
+                }
+                else {
                     throw e;
                 }
             }
@@ -123,17 +127,21 @@ public abstract class HtmlBasicInputRenderer extends HtmlBasicRenderer {
                 Application application = context.getApplication();
                 converter = application.createConverter(converterType);
                 if (logger.isLoggable(Level.FINE)) {
-                    logger.log(Level.FINE, "Created converter ({0}) for type {1} for component {2}.",
-                            new Object[] { converter.getClass().getName(), converterType.getClass().getName(), component.getId() });
+                    logger.log(
+                        Level.FINE, "Created converter ({0}) for type {1} for component {2}.",
+                        new Object[] { converter.getClass().getName(), converterType.getClass().getName(), component.getId() }
+                    );
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 if (logger.isLoggable(Level.SEVERE)) {
                     logger.log(Level.SEVERE, "Could not instantiate converter for type {0}: {1}", new Object[] { converterType, e.toString() });
                     logger.log(Level.SEVERE, "", e);
                 }
                 return null;
             }
-        } else if (converter == null) {
+        }
+        else if (converter == null) {
             // if there is no valueExpression and converter attribute set,
             // assume the modelType as "String" since we have no way of
             // figuring out the type. So for the selectOne and
@@ -151,7 +159,8 @@ public abstract class HtmlBasicInputRenderer extends HtmlBasicRenderer {
             // make sure our special ConverterPropertyEditor knows about this value.
             RequestStateManager.set(context, RequestStateManager.TARGET_COMPONENT_ATTRIBUTE_NAME, component);
             return converter.getAsObject(context, component, newValue);
-        } else {
+        }
+        else {
             // throw converter exception.
             Object[] params = { newValue, "null Converter" };
 

@@ -92,9 +92,7 @@ public class BodyRendererTest {
      * Test encodeEnd method.
      *
      * <p>
-     * TODO: Note we are not testing the rendering of the component resources as
-     * the underlying code is too complex for unit testing and needs to be
-     * simplified.
+     * TODO: Note we are not testing the rendering of the component resources as the underlying code is too complex for unit testing and needs to be simplified.
      * </p>
      *
      * @throws Exception when a serious error occurs.
@@ -131,4 +129,5 @@ public class BodyRendererTest {
         BodyRenderer bodyRenderer = new BodyRenderer();
         assertFalse(bodyRenderer.getRendersChildren());
     }
+
 }

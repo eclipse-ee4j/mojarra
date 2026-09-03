@@ -26,16 +26,21 @@ import jakarta.faces.lifecycle.LifecycleFactory;
 public class MockLifecycleFactory extends LifecycleFactory {
 
     public MockLifecycleFactory(LifecycleFactory oldImpl) {
-        System.setProperty(FactoryFinder.LIFECYCLE_FACTORY,
-                this.getClass().getName());
+        System.setProperty(
+            FactoryFinder.LIFECYCLE_FACTORY,
+            this.getClass().getName()
+        );
     }
 
     public MockLifecycleFactory() {
     }
 
     @Override
-    public void addLifecycle(String lifecycleId,
-            Lifecycle lifecycle) {
+    public void addLifecycle(
+        String lifecycleId,
+        Lifecycle lifecycle
+    )
+    {
     }
 
     @Override
@@ -49,4 +54,5 @@ public class MockLifecycleFactory extends LifecycleFactory {
         result.add(LifecycleFactory.DEFAULT_LIFECYCLE);
         return result.iterator();
     }
+
 }

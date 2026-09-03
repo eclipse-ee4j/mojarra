@@ -42,6 +42,7 @@ public class HtmlResponseWriterTest {
 
     /**
      * Test cloneWithWriter method.
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -66,6 +67,7 @@ public class HtmlResponseWriterTest {
 
     /**
      * Test cloneWithWriter method.
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -90,6 +92,7 @@ public class HtmlResponseWriterTest {
 
     /**
      * Test CDATA.
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -117,7 +120,7 @@ public class HtmlResponseWriterTest {
         assertEquals(expected, stringWriter.toString());
         responseWriter.close();
 
-        // Case 3 start is /* */  end is /* */
+        // Case 3 start is /* */ end is /* */
         stringWriter = new StringWriter();
         responseWriter = new HtmlResponseWriter(stringWriter, "application/xhtml+xml", "UTF-8");
         responseWriter.startElement("script", componentForElement);
@@ -127,7 +130,7 @@ public class HtmlResponseWriterTest {
         assertEquals(expected, stringWriter.toString());
         responseWriter.close();
 
-        // Case 4 start is /* */  end is //
+        // Case 4 start is /* */ end is //
         stringWriter = new StringWriter();
         responseWriter = new HtmlResponseWriter(stringWriter, "application/xhtml+xml", "UTF-8");
         responseWriter.startElement("script", componentForElement);
@@ -137,7 +140,7 @@ public class HtmlResponseWriterTest {
         assertEquals(expected, stringWriter.toString());
         responseWriter.close();
 
-        // Case 5 start is /* */  end is //
+        // Case 5 start is /* */ end is //
         stringWriter = new StringWriter();
         responseWriter = new HtmlResponseWriter(stringWriter, "application/xhtml+xml", "UTF-8");
         responseWriter.startElement("script", componentForElement);
@@ -194,11 +197,9 @@ public class HtmlResponseWriterTest {
     }
 
     /**
-     * Wire ordering invariant: regular attributes appear FIRST, pass-through attributes appear
-     * LAST within a single start tag. The Jakarta Faces spec does not mandate this -- HTML
-     * treats attribute order within a tag as semantically irrelevant -- but consistent ordering
-     * matters for byte-equivalent caching, snapshot tests, and downstream consumers that pattern-
-     * match the rendered output.
+     * Wire ordering invariant: regular attributes appear FIRST, pass-through attributes appear LAST within a single start tag. The Jakarta Faces spec does not
+     * mandate this -- HTML treats attribute order within a tag as semantically irrelevant -- but consistent ordering matters for byte-equivalent caching,
+     * snapshot tests, and downstream consumers that pattern- match the rendered output.
      */
     @Test
     public void testRegularAttributesPrecedePassThroughAttributes() throws Exception {
@@ -221,8 +222,8 @@ public class HtmlResponseWriterTest {
     }
 
     /**
-     * A regular writeAttribute whose name collides with a pass-through attribute must be
-     * suppressed (the pass-through value wins). Locks in the containsPassThroughAttribute check.
+     * A regular writeAttribute whose name collides with a pass-through attribute must be suppressed (the pass-through value wins). Locks in the
+     * containsPassThroughAttribute check.
      */
     @Test
     public void testRegularAttributeWithPassThroughNameIsSuppressed() throws Exception {
@@ -243,8 +244,7 @@ public class HtmlResponseWriterTest {
     }
 
     /**
-     * Empty elements (e.g. {@code <input/>}) still emit pass-through attributes followed by the
-     * self-closing {@code " />"} sequence.
+     * Empty elements (e.g. {@code <input/>}) still emit pass-through attributes followed by the self-closing {@code " />"} sequence.
      */
     @Test
     public void testEmptyElementEmitsPassThroughThenSelfClose() throws Exception {
@@ -262,8 +262,8 @@ public class HtmlResponseWriterTest {
     }
 
     /**
-     * Empty elements with both regular and pass-through attributes follow the same ordering as
-     * non-empty elements: regular first, pass-through last, then {@code " />"}.
+     * Empty elements with both regular and pass-through attributes follow the same ordering as non-empty elements: regular first, pass-through last, then
+     * {@code " />"}.
      */
     @Test
     public void testEmptyElementWithMixedAttributesPreservesOrder() throws Exception {
@@ -282,8 +282,8 @@ public class HtmlResponseWriterTest {
     }
 
     /**
-     * Pass-through attributes are emitted in the order they were set on the component, so a view renders
-     * byte-identically across requests and JVMs rather than in a hash order.
+     * Pass-through attributes are emitted in the order they were set on the component, so a view renders byte-identically across requests and JVMs rather than
+     * in a hash order.
      */
     @Test
     public void testPassThroughAttributesAreEmittedInTheOrderTheyWereSet() throws Exception {
@@ -304,8 +304,8 @@ public class HtmlResponseWriterTest {
     }
 
     /**
-     * Rendering must not mutate the component's own pass-through attribute map: the writer reads it in place, and a
-     * component renders more than once (ajax re-render, a second view of the same tree).
+     * Rendering must not mutate the component's own pass-through attribute map: the writer reads it in place, and a component renders more than once (ajax
+     * re-render, a second view of the same tree).
      */
     @Test
     public void testRenderingLeavesTheComponentPassThroughAttributesIntact() throws Exception {
@@ -325,8 +325,8 @@ public class HtmlResponseWriterTest {
     }
 
     /**
-     * The {@code elementName} pass-through attribute renames the element and is itself never emitted as an attribute,
-     * whichever other pass-through attributes accompany it.
+     * The {@code elementName} pass-through attribute renames the element and is itself never emitted as an attribute, whichever other pass-through attributes
+     * accompany it.
      */
     @Test
     public void testElementNameRenamesTheElementAndIsNotEmitted() throws Exception {
@@ -384,4 +384,5 @@ public class HtmlResponseWriterTest {
         assertEquals(expectedStart + expectedEnd, stringWriter.toString());
         responseWriter.close();
     }
+
 }

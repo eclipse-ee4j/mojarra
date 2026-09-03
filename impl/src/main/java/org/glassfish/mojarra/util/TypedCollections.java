@@ -36,8 +36,8 @@ public class TypedCollections {
     }
 
     /**
-     * Dynamically check that the members of the collection are all instances of the given type (or null), and that the
-     * collection itself is of the given collection type.
+     * Dynamically check that the members of the collection are all instances of the given type (or null), and that the collection itself is of the given
+     * collection type.
      *
      * @param <E> the collection's element type
      * @param c the collection to cast
@@ -106,4 +106,5 @@ public class TypedCollections {
 
         return (Map<K, V>) map;
     }
+
 }

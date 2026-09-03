@@ -58,9 +58,8 @@ abstract class CdiProducer<T> implements Bean<T>, PassivationCapable, Serializab
     /**
      * Get the ID of this particular instantiation of the producer.
      * <p>
-     * This is an implementation detail of CDI, where it wants to relocate a particular producer in order to re-inject a
-     * value. This is typically used in combination with passivation. Note that this is NOT about the value we're producing,
-     * but about the producer itself.
+     * This is an implementation detail of CDI, where it wants to relocate a particular producer in order to re-inject a value. This is typically used in
+     * combination with passivation. Note that this is NOT about the value we're producing, but about the producer itself.
      *
      * @return the ID of this particular instantiation of the producer
      */
@@ -108,8 +107,8 @@ abstract class CdiProducer<T> implements Bean<T>, PassivationCapable, Serializab
      * Destroy the instance.
      *
      * <p>
-     * Since most artifact that the sub classes are producing are artifacts that the Faces runtime really is managing the
-     * destroy method here does not need to do anything.
+     * Since most artifact that the sub classes are producing are artifacts that the Faces runtime really is managing the destroy method here does not need to
+     * do anything.
      * </p>
      *
      * @param instance the instance.
@@ -167,7 +166,8 @@ abstract class CdiProducer<T> implements Bean<T>, PassivationCapable, Serializab
     protected CdiProducer<T> beanClass(BeanManager beanManager, Class<?> beanClass) {
         if (CdiUtils.isWeld(beanManager)) {
             this.beanClass = CdiExtension.class; // See #5457 and #5157
-        } else {
+        }
+        else {
             this.beanClass = beanClass;
         }
 

@@ -196,18 +196,18 @@ public class UIRepeat extends UINamingContainer {
     }
 
     /**
-     * Returns the begin index actually used by the iteration loop. For a synthetic integer-range model (no {@code value},
-     * only {@code begin}/{@code end}) this is always {@code 0} (an array index), not the user-supplied {@code begin}.
-     * For a value-bound model this falls back to {@link #getBegin()} (typically {@code null}, which the loop treats as {@code 0}).
+     * Returns the begin index actually used by the iteration loop. For a synthetic integer-range model (no {@code value}, only {@code begin}/{@code end}) this
+     * is always {@code 0} (an array index), not the user-supplied {@code begin}. For a value-bound model this falls back to {@link #getBegin()} (typically
+     * {@code null}, which the loop treats as {@code 0}).
      */
     private Integer getIterationBegin() {
         return effectiveBegin != null ? effectiveBegin : getBegin();
     }
 
     /**
-     * Returns the end index actually used by the iteration loop. For a synthetic integer-range model (no {@code value},
-     * only {@code begin}/{@code end}) this is the array length, not the user-supplied {@code end}. For a value-bound
-     * model this falls back to {@link #getEnd()} (typically {@code null}, which the loop treats as {@code rowCount}).
+     * Returns the end index actually used by the iteration loop. For a synthetic integer-range model (no {@code value}, only {@code begin}/{@code end}) this is
+     * the array length, not the user-supplied {@code end}. For a value-bound model this falls back to {@link #getEnd()} (typically {@code null}, which the loop
+     * treats as {@code rowCount}).
      */
     private Integer getIterationEnd() {
         return effectiveEnd != null ? effectiveEnd : getEnd();
@@ -215,14 +215,14 @@ public class UIRepeat extends UINamingContainer {
 
     /**
      * <p class="changed_added_4_1">
-     * Boolean flag directing how the per-row component state of {@link EditableValueHolder} children should be handled across requests on the same view.
-     * If set to {@code true}, then state for {@link EditableValueHolder} components in each row will not be discarded before a new row is rendered.
-     * If not specified, the default value is {@code false}.
+     * Boolean flag directing how the per-row component state of {@link EditableValueHolder} children should be handled across requests on the same view. If set
+     * to {@code true}, then state for {@link EditableValueHolder} components in each row will not be discarded before a new row is rendered. If not specified,
+     * the default value is {@code false}.
      * </p>
      * <p>
-     * This attribute should be set only when the current repeat component contains {@link UIForm} children which in turn contains {@link EditableValueHolder} children.
-     * This will only work reliably when the data model of the current repeat component does not change across requests on the same view by e.g. sorting, adding or removing rows.
-     * The alternative is to use <code>c:forEach</code> instead.
+     * This attribute should be set only when the current repeat component contains {@link UIForm} children which in turn contains {@link EditableValueHolder}
+     * children. This will only work reliably when the data model of the current repeat component does not change across requests on the same view by e.g.
+     * sorting, adding or removing rows. The alternative is to use <code>c:forEach</code> instead.
      * </p>
      *
      * @param rowStatePreserved Whether to preserve row state while rendering
@@ -253,8 +253,8 @@ public class UIRepeat extends UINamingContainer {
     }
 
     /**
-     * A value expression cannot name the variable this component exports, since the body of the tag resolves that name
-     * as it is written. One is therefore rejected rather than accepted and then ignored.
+     * A value expression cannot name the variable this component exports, since the body of the tag resolves that name as it is written. One is therefore
+     * rejected rather than accepted and then ignored.
      *
      * @throws IllegalArgumentException when the given name is {@code var} or {@code varStatus}
      */
@@ -297,7 +297,7 @@ public class UIRepeat extends UINamingContainer {
     private DataModel<?> getDataModel() {
         if (model == null) {
             Object val = getValue();
-            
+
             if (val != null) {
                 if (getBegin() != null) {
                     throw new FacesException("UIRepeat: when 'value' attribute is set, you need 'offset' attribute instead of 'begin' attribute");
@@ -320,7 +320,7 @@ public class UIRepeat extends UINamingContainer {
                 if (getSize() != null) {
                     throw new FacesException("UIRepeat: when 'value' attribute is not set, you need 'end' attribute instead of 'size' attribute");
                 }
-                
+
                 Integer begin = getBegin();
                 Integer end = getEnd();
 
@@ -328,7 +328,8 @@ public class UIRepeat extends UINamingContainer {
                     model = EMPTY_MODEL;
                     effectiveBegin = null;
                     effectiveEnd = null;
-                } else {
+                }
+                else {
                     int b = begin == null ? 0 : begin;
                     int e = end == null ? 0 : end;
                     int d = b < e ? 1 : b > e ? -1 : 0;
@@ -343,24 +344,32 @@ public class UIRepeat extends UINamingContainer {
                     effectiveBegin = 0;
                     effectiveEnd = s;
                 }
-            } else if (val instanceof DataModel) {
+            }
+            else if (val instanceof DataModel) {
                 model = (DataModel<Object>) val;
-            } else if (val instanceof List) {
+            }
+            else if (val instanceof List) {
                 model = new ListDataModel<>((List<Object>) val);
-            } else if (Object[].class.isAssignableFrom(val.getClass())) {
+            }
+            else if (Object[].class.isAssignableFrom(val.getClass())) {
                 model = new ArrayDataModel<>((Object[]) val);
-            } else if (val instanceof ResultSet) {
+            }
+            else if (val instanceof ResultSet) {
                 model = new ResultSetDataModel((ResultSet) val);
-            } else if (val instanceof Iterable) {
+            }
+            else if (val instanceof Iterable) {
                 model = new IterableDataModel<>((Iterable<?>) val);
-            } else if (val instanceof Map) {
+            }
+            else if (val instanceof Map) {
                 model = new IterableDataModel<>(((Map<?, ?>) val).entrySet());
-            } else {
+            }
+            else {
                 DataModel<?> dataModel = createDataModel(val.getClass());
                 if (dataModel != null) {
                     dataModel.setWrappedData(val);
                     model = dataModel;
-                } else {
+                }
+                else {
                     model = new ScalarDataModel<>(val);
                 }
 
@@ -423,14 +432,16 @@ public class UIRepeat extends UINamingContainer {
             if (var != null) {
                 if (origValueOfVar != null) {
                     attrs.put(var, origValueOfVar);
-                } else {
+                }
+                else {
                     attrs.remove(var);
                 }
             }
             if (varStatus != null) {
                 if (origValueOfVarStatus != null) {
                     attrs.put(varStatus, origValueOfVarStatus);
-                } else {
+                }
+                else {
                     attrs.remove(varStatus);
                 }
             }
@@ -448,13 +459,11 @@ public class UIRepeat extends UINamingContainer {
     private Map<String, SavedState[]> childState;
 
     /**
-     * Per-iteration cache of the descendants the per-row save/restore walks act on, collected by
-     * {@link #ensureIterationLists()} on first need and cleared when iteration ends
-     * ({@link #setIndex} to {@code -1}) so the next iteration re-evaluates the tree shape.
-     * {@code iterationResetList} is every descendant -- all need their cached clientId reset each
-     * row; {@code iterationStatefulList} is the {@link EditableValueHolder} subset carrying per-row
-     * state. {@code null} means not yet collected. Iterating these flat lists replaces the previous
-     * per-row recursive tree walk; a read-only repeat has an empty stateful list, so save is a no-op.
+     * Per-iteration cache of the descendants the per-row save/restore walks act on, collected by {@link #ensureIterationLists()} on first need and cleared when
+     * iteration ends ({@link #setIndex} to {@code -1}) so the next iteration re-evaluates the tree shape. {@code iterationResetList} is every descendant -- all
+     * need their cached clientId reset each row; {@code iterationStatefulList} is the {@link EditableValueHolder} subset carrying per-row state. {@code null}
+     * means not yet collected. Iterating these flat lists replaces the previous per-row recursive tree walk; a read-only repeat has an empty stateful list, so
+     * save is a no-op.
      */
     private transient List<UIComponent> iterationResetList;
     private transient List<UIComponent> iterationStatefulList;
@@ -467,9 +476,8 @@ public class UIRepeat extends UINamingContainer {
     }
 
     /**
-     * The key this repeat's per-row child state is stored under: its own clientId, which carries the row indices of
-     * any enclosing iterating components, plus its current index. Nesting therefore yields distinct keys where the
-     * bare index would collide.
+     * The key this repeat's per-row child state is stored under: its own clientId, which carries the row indices of any enclosing iterating components, plus
+     * its current index. Nesting therefore yields distinct keys where the bare index would collide.
      */
     private String getRowStateKey(FacesContext ctx) {
         // Deliberately super.getClientId(): this repeat's own getClientId() appends the index and
@@ -484,11 +492,10 @@ public class UIRepeat extends UINamingContainer {
     }
 
     /**
-     * Collects, once per iteration, the descendants the per-row save/restore walks act on, so those
-     * walks become flat-list iterations instead of recursive tree traversals re-done every row.
-     * {@code iterationResetList} is every descendant (each needs its cached clientId reset per row);
-     * {@code iterationStatefulList} is the {@link EditableValueHolder} subset. Cleared on
-     * {@code setIndex(-1)} so the next iteration re-evaluates the tree shape.
+     * Collects, once per iteration, the descendants the per-row save/restore walks act on, so those walks become flat-list iterations instead of recursive tree
+     * traversals re-done every row. {@code iterationResetList} is every descendant (each needs its cached clientId reset per row);
+     * {@code iterationStatefulList} is the {@link EditableValueHolder} subset. Cleared on {@code setIndex(-1)} so the next iteration re-evaluates the tree
+     * shape.
      */
     private void ensureIterationLists() {
         if (iterationResetList != null) {
@@ -541,7 +548,8 @@ public class UIRepeat extends UINamingContainer {
                 }
                 if (c instanceof UIForm) {
                     ss.populate((UIForm) c);
-                } else {
+                }
+                else {
                     ss.populate((EditableValueHolder) c);
                 }
             }
@@ -574,7 +582,8 @@ public class UIRepeat extends UINamingContainer {
             SavedState ss = rowState != null && i < rowState.length ? rowState[i] : null;
             if (c instanceof UIForm) {
                 (ss != null ? ss : NULL_STATE).apply((UIForm) c);
-            } else {
+            }
+            else {
                 (ss != null ? ss : NULL_STATE).apply((EditableValueHolder) c);
             }
         }
@@ -596,7 +605,8 @@ public class UIRepeat extends UINamingContainer {
     private void setIndex(FacesContext ctx, int index) {
         if (isRowStatePreserved() && initialDescendantFullComponentState != null) {
             setRowIndexWithRowStatePreserved(ctx, index);
-        } else {
+        }
+        else {
             setRowIndexWithoutRowStatePreserved(ctx, index);
         }
     }
@@ -644,17 +654,20 @@ public class UIRepeat extends UINamingContainer {
             if (rowState == null) {
                 // Restore as original
                 restoreFullDescendantComponentStates(ctx, getChildren().iterator(), initialDescendantFullComponentState, false);
-            } else {
+            }
+            else {
                 // Restore first original and then delta
                 restoreFullDescendantComponentDeltaStates(ctx, getChildren().iterator(), rowState, initialDescendantFullComponentState, false);
             }
             if (this.index == -1) {
                 restoreTransientDescendantComponentStates(ctx, getChildren().iterator(), null, false);
-            } else {
+            }
+            else {
                 rowState = transientRowStates.get(getContainerClientId(ctx));
                 if (rowState == null) {
                     restoreTransientDescendantComponentStates(ctx, getChildren().iterator(), null, false);
-                } else {
+                }
+                else {
                     restoreTransientDescendantComponentStates(ctx, getChildren().iterator(), (Map<String, Object>) rowState, false);
                 }
             }
@@ -674,7 +687,8 @@ public class UIRepeat extends UINamingContainer {
         // save child state
         if (this.index != -1 && localModel.isRowAvailable()) {
             this.saveChildState(ctx);
-        } else if (this.index >= 0 && childState != null) {
+        }
+        else if (this.index >= 0 && childState != null) {
             this.removeChildState(ctx);
         }
 
@@ -773,17 +787,21 @@ public class UIRepeat extends UINamingContainer {
 
                     if (PhaseId.RENDER_RESPONSE.equals(phase) && renderer != null) {
                         renderer.encodeChildren(faces, this);
-                    } else {
+                    }
+                    else {
                         itr = getChildren().iterator();
                         while (itr.hasNext()) {
                             c = itr.next();
                             if (PhaseId.APPLY_REQUEST_VALUES.equals(phase)) {
                                 c.processDecodes(faces);
-                            } else if (PhaseId.PROCESS_VALIDATIONS.equals(phase)) {
+                            }
+                            else if (PhaseId.PROCESS_VALIDATIONS.equals(phase)) {
                                 c.processValidators(faces);
-                            } else if (PhaseId.UPDATE_MODEL_VALUES.equals(phase)) {
+                            }
+                            else if (PhaseId.UPDATE_MODEL_VALUES.equals(phase)) {
                                 c.processUpdates(faces);
-                            } else if (PhaseId.RENDER_RESPONSE.equals(phase)) {
+                            }
+                            else if (PhaseId.RENDER_RESPONSE.equals(phase)) {
                                 c.encodeAll(faces);
                             }
                         }
@@ -793,9 +811,11 @@ public class UIRepeat extends UINamingContainer {
                     updateIterationStatus(faces, new IterationStatus(false, i + s >= e, i, begin, end, step));
                 }
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new FacesException(e);
-        } finally {
+        }
+        finally {
             setIndex(faces, -1);
             restoreOrigValue(faces);
         }
@@ -824,11 +844,13 @@ public class UIRepeat extends UINamingContainer {
             pushComponentToEL(faces, this);
             try {
                 callback.invokeContextCallback(faces, this);
-            } finally {
+            }
+            finally {
                 popComponentFromEL(faces);
             }
             return true;
-        } else if (clientId.startsWith(id)) {
+        }
+        else if (clientId.startsWith(id)) {
             int prevIndex = index;
             int idxStart = clientId.indexOf(getSeparatorChar(faces), id.length());
             if (idxStart != -1 && Character.isDigit(clientId.charAt(idxStart + 1))) {
@@ -842,13 +864,15 @@ public class UIRepeat extends UINamingContainer {
                         if (isIndexAvailable()) {
                             found = super.invokeOnComponent(faces, clientId, callback);
                         }
-                    } finally {
+                    }
+                    finally {
                         setIndex(faces, prevIndex);
                         restoreOrigValue(faces);
                     }
                     return found;
                 }
-            } else {
+            }
+            else {
                 return super.invokeOnComponent(faces, clientId, callback);
             }
         }
@@ -901,13 +925,15 @@ public class UIRepeat extends UINamingContainer {
                             return true;
                         }
                     }
-                } else {
+                }
+                else {
                     if (visitChildren(context, callback)) {
                         return true;
                     }
                 }
             }
-        } finally {
+        }
+        finally {
             // Clean up - pop EL and restore old row index
             popComponentFromEL(facesContext);
             if (visitRows) {
@@ -961,7 +987,9 @@ public class UIRepeat extends UINamingContainer {
             throw new FacesException("UIRepeat: 'size' attribute may not be less than 0");
         }
         if (end > rowCount) {
-            throw new FacesException("UIRepeat: " + (getOffset() != null ? "'offset' plus " : "") + "'size' attribute may not be greater than the number of available rows");
+            throw new FacesException(
+                "UIRepeat: " + (getOffset() != null ? "'offset' plus " : "") + "'size' attribute may not be greater than the number of available rows"
+            );
         }
     }
 
@@ -1110,7 +1138,8 @@ public class UIRepeat extends UINamingContainer {
                 if (owner.isIndexAvailable()) {
                     target.processListener(listener);
                 }
-            } finally {
+            }
+            finally {
                 owner.setIndex(ctx, prevIndex);
             }
         }
@@ -1160,7 +1189,8 @@ public class UIRepeat extends UINamingContainer {
                     source.broadcast(target);
 
                 }
-            } finally {
+            }
+            finally {
                 source.popComponentFromEL(ctx);
                 if (compositeParent != null) {
                     compositeParent.popComponentFromEL(ctx);
@@ -1170,7 +1200,8 @@ public class UIRepeat extends UINamingContainer {
                     setIndex(ctx, prevIndex);
                 }
             }
-        } else {
+        }
+        else {
             super.broadcast(event);
         }
     }
@@ -1182,13 +1213,11 @@ public class UIRepeat extends UINamingContainer {
 
     /**
      * <p class="changed_added_4_1">
-     * Override the base class method to take special action if the method is being invoked when
-     * {@link StateManager#IS_BUILDING_INITIAL_STATE} is true <strong>and</strong> the <code>rowStatePreserved</code>
-     * property for this instance is <code>true</code>.
+     * Override the base class method to take special action if the method is being invoked when {@link StateManager#IS_BUILDING_INITIAL_STATE} is true
+     * <strong>and</strong> the <code>rowStatePreserved</code> property for this instance is <code>true</code>.
      * </p>
      * <p>
-     * The additional action taken is to traverse the descendents and save their state without regard to any particular row
-     * value.
+     * The additional action taken is to traverse the descendents and save their state without regard to any particular row value.
      * </p>
      *
      * @since 4.1
@@ -1267,4 +1296,5 @@ public class UIRepeat extends UINamingContainer {
         }
         return true;
     }
+
 }

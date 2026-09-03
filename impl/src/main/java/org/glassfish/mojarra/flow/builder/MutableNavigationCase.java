@@ -28,9 +28,8 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_0">
- * <strong class="changed_modified_2_2"> NavigationCase</strong> represents a <code>&lt;navigation-case&gt;</code> in
- * the navigation rule base, as well as the <span class="changed_modified_2_2"><code>&lt;from-view-id&gt;</code> with
- * which this <code>&lt;navigation-case&gt;</code> is a sibling</span>.
+ * <strong class="changed_modified_2_2"> NavigationCase</strong> represents a <code>&lt;navigation-case&gt;</code> in the navigation rule base, as well as the
+ * <span class="changed_modified_2_2"><code>&lt;from-view-id&gt;</code> with which this <code>&lt;navigation-case&gt;</code> is a sibling</span>.
  * </p>
  *
  * @since 2.0
@@ -59,8 +58,11 @@ public class MutableNavigationCase extends NavigationCase {
         parameters = new ConcurrentHashMap<>();
     }
 
-    public MutableNavigationCase(String fromViewId, String fromAction, String fromOutcome, String condition, String toViewId, String toFlowDocumentId,
-            Map<String, List<String>> parameters, String fragment, boolean redirect, boolean includeViewParams) {
+    public MutableNavigationCase(
+        String fromViewId, String fromAction, String fromOutcome, String condition, String toViewId, String toFlowDocumentId,
+        Map<String, List<String>> parameters, String fragment, boolean redirect, boolean includeViewParams
+    )
+    {
         super(fromViewId, fromAction, fromOutcome, condition, toViewId, toFlowDocumentId, parameters, fragment, redirect, includeViewParams);
 
         this.fromViewId = fromViewId;
@@ -76,8 +78,11 @@ public class MutableNavigationCase extends NavigationCase {
 
     }
 
-    public MutableNavigationCase(String fromViewId, String fromAction, String fromOutcome, String condition, String toViewId, String toFlowDocumentId,
-            boolean redirect, boolean includeViewParams) {
+    public MutableNavigationCase(
+        String fromViewId, String fromAction, String fromOutcome, String condition, String toViewId, String toFlowDocumentId,
+        boolean redirect, boolean includeViewParams
+    )
+    {
         super(fromViewId, fromAction, fromOutcome, condition, toViewId, toFlowDocumentId, Collections.emptyMap(), null, redirect, includeViewParams);
 
         this.fromViewId = fromViewId;
@@ -199,11 +204,11 @@ public class MutableNavigationCase extends NavigationCase {
     public String getFragment() {
         return fragment;
     }
-    
+
     public void setFragment(String fragment) {
         this.fragment = fragment;
     }
-    
+
     @Override
     public boolean isRedirect() {
 

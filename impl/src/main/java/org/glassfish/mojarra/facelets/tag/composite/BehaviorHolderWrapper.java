@@ -212,8 +212,7 @@ public class BehaviorHolderWrapper extends UIComponent implements ClientBehavior
     }
 
     /**
-     * @see jakarta.faces.component.UIComponent#invokeOnComponent(jakarta.faces.context.FacesContext, java.lang.String,
-     * jakarta.faces.component.ContextCallback)
+     * @see jakarta.faces.component.UIComponent#invokeOnComponent(jakarta.faces.context.FacesContext, java.lang.String, jakarta.faces.component.ContextCallback)
      */
     @Override
     public boolean invokeOnComponent(FacesContext context, String clientId, ContextCallback callback) throws FacesException {
@@ -371,8 +370,7 @@ public class BehaviorHolderWrapper extends UIComponent implements ClientBehavior
     }
 
     /**
-     * @see jakarta.faces.component.UIComponent#subscribeToEvent(java.lang.Class,
-     * jakarta.faces.event.ComponentSystemEventListener)
+     * @see jakarta.faces.component.UIComponent#subscribeToEvent(java.lang.Class, jakarta.faces.event.ComponentSystemEventListener)
      */
     @Override
     public void subscribeToEvent(Class<? extends SystemEvent> eventClass, ComponentSystemEventListener componentListener) {
@@ -380,8 +378,7 @@ public class BehaviorHolderWrapper extends UIComponent implements ClientBehavior
     }
 
     /**
-     * @see jakarta.faces.component.UIComponent#unsubscribeFromEvent(java.lang.Class,
-     * jakarta.faces.event.ComponentSystemEventListener)
+     * @see jakarta.faces.component.UIComponent#unsubscribeFromEvent(java.lang.Class, jakarta.faces.event.ComponentSystemEventListener)
      */
     @Override
     public void unsubscribeFromEvent(Class<? extends SystemEvent> eventClass, ComponentSystemEventListener componentListener) {
@@ -389,8 +386,7 @@ public class BehaviorHolderWrapper extends UIComponent implements ClientBehavior
     }
 
     /**
-     * @see jakarta.faces.component.UIComponent#visitTree(jakarta.faces.component.visit.VisitContext,
-     * jakarta.faces.component.visit.VisitCallback)
+     * @see jakarta.faces.component.UIComponent#visitTree(jakarta.faces.component.visit.VisitContext, jakarta.faces.component.visit.VisitCallback)
      */
     @Override
     public boolean visitTree(VisitContext context, VisitCallback callback) {
@@ -429,7 +425,8 @@ public class BehaviorHolderWrapper extends UIComponent implements ClientBehavior
             if (virtualEvent.equals(eventName)) {
                 parentHolder.addClientBehavior(event, behavior);
             }
-        } else {
+        }
+        else {
             throw new FacesException("Unable to attach behavior to non-ClientBehaviorHolder parent:" + parent);
         }
 
@@ -441,10 +438,10 @@ public class BehaviorHolderWrapper extends UIComponent implements ClientBehavior
             ClientBehaviorHolder parentHolder = (ClientBehaviorHolder) parent;
             Map<String, List<ClientBehavior>> behaviors = new HashMap<>(1);
             behaviors.put(virtualEvent, parentHolder.getClientBehaviors().get(event));
-            
+
             return unmodifiableMap(behaviors);
-        } 
-        
+        }
+
         throw new FacesException("Unable to get behaviors from non-ClientBehaviorHolder parent:" + parent);
     }
 
@@ -457,7 +454,7 @@ public class BehaviorHolderWrapper extends UIComponent implements ClientBehavior
     public Collection<String> getEventNames() {
         return Collections.singleton(virtualEvent);
     }
-    
+
     public ValueExpression getTargets() {
         return targets;
     }

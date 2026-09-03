@@ -37,8 +37,11 @@ public class SearchExpressionContextFactoryImpl extends SearchExpressionContextF
     }
 
     @Override
-    public SearchExpressionContext getSearchExpressionContext(FacesContext context, UIComponent source, Set<SearchExpressionHint> expressionHints,
-            Set<VisitHint> visitHints) {
+    public SearchExpressionContext getSearchExpressionContext(
+        FacesContext context, UIComponent source, Set<SearchExpressionHint> expressionHints,
+        Set<VisitHint> visitHints
+    )
+    {
 
         SearchExpressionContextImpl searchExpressionContext = new SearchExpressionContextImpl(context);
         searchExpressionContext.setSource(source);

@@ -19,8 +19,7 @@ package org.glassfish.mojarra.application.view;
 import jakarta.faces.FacesException;
 
 /**
- * Indicates that no {@link org.glassfish.mojarra.application.view.ViewHandlingStrategy} instances were found appropriate to a
- * particular view ID.
+ * Indicates that no {@link org.glassfish.mojarra.application.view.ViewHandlingStrategy} instances were found appropriate to a particular view ID.
  */
 public class ViewHandlingStrategyNotFoundException extends FacesException {
 

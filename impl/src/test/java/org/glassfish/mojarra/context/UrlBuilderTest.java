@@ -40,9 +40,9 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests for {@link UrlBuilder}.
  *
- * <p>Covers how a seed URL is split into path, query string and fragment, how each segment is normalized (trimmed,
- * leading separator stripped, empty reduced to absent), and how the segments are reassembled by {@code createUrl}
- * together with any added parameters.
+ * <p>
+ * Covers how a seed URL is split into path, query string and fragment, how each segment is normalized (trimmed, leading separator stripped, empty reduced to
+ * absent), and how the segments are reassembled by {@code createUrl} together with any added parameters.
  */
 class UrlBuilderTest {
 
@@ -82,8 +82,8 @@ class UrlBuilderTest {
     }
 
     /**
-     * The fragment is split off before the query string, so a question mark inside the fragment stays part of the
-     * fragment and does not become a query string of its own.
+     * The fragment is split off before the query string, so a question mark inside the fragment stays part of the fragment and does not become a query string
+     * of its own.
      */
     @Test
     void seedUrl_questionMarkInsideFragmentIsNotAQueryString() {
@@ -93,8 +93,8 @@ class UrlBuilderTest {
     }
 
     /**
-     * Blank covers both flavors: characters which {@link String#trim()} removes, such as the control characters below
-     * U+0020, and characters which only {@link String#strip()} removes, such as the Unicode spaces above U+007F.
+     * Blank covers both flavors: characters which {@link String#trim()} removes, such as the control characters below U+0020, and characters which only
+     * {@link String#strip()} removes, such as the Unicode spaces above U+007F.
      */
     @Test
     void seedUrl_emptyOrBlankIsRejected() {
@@ -108,8 +108,8 @@ class UrlBuilderTest {
     // -------- empty segments (issue 5904) -----------------------------------
 
     /**
-     * A seed URL ending in a bare hash mark leaves an empty fragment behind, which must be dropped rather than throw a
-     * {@link StringIndexOutOfBoundsException} while stripping the leading hash mark.
+     * A seed URL ending in a bare hash mark leaves an empty fragment behind, which must be dropped rather than throw a {@link StringIndexOutOfBoundsException}
+     * while stripping the leading hash mark.
      */
     @Test
     void seedUrl_trailingFragmentSeparatorIsDropped() {
@@ -118,8 +118,8 @@ class UrlBuilderTest {
     }
 
     /**
-     * A seed URL ending in a bare question mark leaves an empty query string behind, which must be dropped rather than
-     * throw a {@link StringIndexOutOfBoundsException} while stripping the leading question mark.
+     * A seed URL ending in a bare question mark leaves an empty query string behind, which must be dropped rather than throw a
+     * {@link StringIndexOutOfBoundsException} while stripping the leading question mark.
      */
     @Test
     void seedUrl_trailingQueryStringSeparatorIsDropped() {
@@ -139,8 +139,7 @@ class UrlBuilderTest {
     }
 
     /**
-     * Only one leading hash mark is stripped, so a doubled one at the end of the seed URL reduces to an empty fragment
-     * and is dropped altogether.
+     * Only one leading hash mark is stripped, so a doubled one at the end of the seed URL reduces to an empty fragment and is dropped altogether.
      */
     @Test
     void seedUrl_doubledTrailingFragmentSeparatorIsDropped() {
@@ -164,8 +163,7 @@ class UrlBuilderTest {
     }
 
     /**
-     * Reproduces the reported failure in its original shape: {@code ExternalContext#encodeRedirectURL} on a base URL
-     * that ends in a bare hash mark.
+     * Reproduces the reported failure in its original shape: {@code ExternalContext#encodeRedirectURL} on a base URL that ends in a bare hash mark.
      */
     @Test
     void seedUrl_trailingFragmentSeparatorWithParameters() {
@@ -314,8 +312,7 @@ class UrlBuilderTest {
     }
 
     /**
-     * Parameter names are written into the URL unencoded, so everything {@link String#trim()} removes must be gone
-     * before the name reaches the query string.
+     * Parameter names are written into the URL unencoded, so everything {@link String#trim()} removes must be gone before the name reaches the query string.
      */
     @Test
     void addParameters_nameIsTrimmed() {
@@ -355,4 +352,5 @@ class UrlBuilderTest {
         parameters.put(name, value == null ? null : singletonList(value));
         return parameters;
     }
+
 }

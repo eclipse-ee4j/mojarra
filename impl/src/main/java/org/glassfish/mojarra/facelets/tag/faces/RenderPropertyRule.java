@@ -29,6 +29,7 @@ import jakarta.faces.view.facelets.TagAttribute;
 public final class RenderPropertyRule extends MetaRule {
 
     final static class HideNoSelectionLiteralMetadata extends Metadata {
+
         private final String hideOption;
 
         public HideNoSelectionLiteralMetadata(String hideOption) {
@@ -40,9 +41,11 @@ public final class RenderPropertyRule extends MetaRule {
             Map<String, Object> attributes = ((UIInput) instance).getAttributes();
             attributes.put("hideNoSelectionOption", Boolean.valueOf(hideOption));
         }
+
     }
 
     final static class HideNoSelectionExpressionMetadata extends Metadata {
+
         private final TagAttribute attr;
 
         public HideNoSelectionExpressionMetadata(TagAttribute attr) {
@@ -53,6 +56,7 @@ public final class RenderPropertyRule extends MetaRule {
         public void applyMetadata(FaceletContext ctx, Object instance) {
             ((UIComponent) instance).setValueExpression("hideNoSelectionOption", attr.getValueExpression(ctx, Boolean.class));
         }
+
     }
 
     public final static RenderPropertyRule Instance = new RenderPropertyRule();
@@ -63,7 +67,8 @@ public final class RenderPropertyRule extends MetaRule {
         if ("hideNoSelectionOption".equals(name)) {
             if (attribute.isLiteral()) {
                 return new HideNoSelectionLiteralMetadata(attribute.getValue());
-            } else {
+            }
+            else {
                 return new HideNoSelectionExpressionMetadata(attribute);
             }
         }

@@ -24,8 +24,7 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_3">
- * The ResourceHandlerProducer is the CDI producer that allows you to inject the ResourceHandler and to do EL resolving
- * of #{resource}
+ * The ResourceHandlerProducer is the CDI producer that allows you to inject the ResourceHandler and to do EL resolving of #{resource}
  * </p>
  *
  * @since 2.3

@@ -26,7 +26,8 @@ import jakarta.servlet.ServletResponse;
 
 /**
  * <p>
- * Mock <strong>Servlet</strong> for unit tests.</p>
+ * Mock <strong>Servlet</strong> for unit tests.
+ * </p>
  */
 public class MockServlet implements Servlet {
 
@@ -60,7 +61,9 @@ public class MockServlet implements Servlet {
 
     @Override
     public void service(ServletRequest request, ServletResponse response)
-            throws IOException, ServletException {
+        throws IOException, ServletException
+    {
         throw new UnsupportedOperationException();
     }
+
 }

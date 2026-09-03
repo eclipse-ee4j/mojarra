@@ -317,4 +317,5 @@ public class UISelectOneTestCase extends UIInputTestCase {
         options.add(new SelectItem("A3"));
         return options;
     }
+
 }

@@ -52,6 +52,7 @@ import jakarta.faces.validator.ValidatorException;
 import jakarta.validation.ConstraintViolation;
 
 class WholeBeanValidator implements Validator<Object> {
+
     private static final Logger LOGGER = Logger.getLogger("jakarta.faces.validator", "jakarta.faces.LogStrings");
 
     private static final String ERROR_MISSING_FORM = "f:validateWholeBean must be nested directly in an UIForm.";
@@ -60,8 +61,7 @@ class WholeBeanValidator implements Validator<Object> {
 
     /**
      * <p class="changed_added_2_3">
-     * Special value to indicate the proposed value for a property failed field-level validation. This prevents any attempt
-     * to perform class level validation.
+     * Special value to indicate the proposed value for a property failed field-level validation. This prevents any attempt to perform class level validation.
      * </p>
      */
     static final String FAILED_FIELD_LEVEL_VALIDATION = VALIDATOR_ID + ".FAILED_FIELD_LEVEL_VALIDATION";
@@ -101,9 +101,11 @@ class WholeBeanValidator implements Validator<Object> {
         }
 
         // Perform the actual bean validation on a copy of the whole bean
-        Set<ConstraintViolation<?>> violations = doBeanValidation(getBeanValidator(context),
-                copyBeanAndPopulateWithCandidateValues(context, wholeBeanVE, wholeBean, copierType, validationCandidate), component.getValidationGroupsArray(),
-                wholeBeanVE);
+        Set<ConstraintViolation<?>> violations = doBeanValidation(
+            getBeanValidator(context),
+            copyBeanAndPopulateWithCandidateValues(context, wholeBeanVE, wholeBean, copierType, validationCandidate), component.getValidationGroupsArray(),
+            wholeBeanVE
+        );
 
         // If there are any violations, transform them into a Faces validator exception
         if (violations != null && !violations.isEmpty()) {
@@ -112,7 +114,8 @@ class WholeBeanValidator implements Validator<Object> {
             if (violations.size() == 1) {
                 ConstraintViolation<?> violation = violations.iterator().next();
                 toThrow = new ValidatorException(getMessage(context, MESSAGE_ID, violation.getMessage(), getLabel(context, component)));
-            } else {
+            }
+            else {
                 Set<FacesMessage> messages = new LinkedHashSet<>(violations.size());
                 for (ConstraintViolation<?> violation : violations) {
                     messages.add(getMessage(context, MESSAGE_ID, violation.getMessage(), getLabel(context, component)));
@@ -166,8 +169,11 @@ class WholeBeanValidator implements Validator<Object> {
         return false;
     }
 
-    private Object copyBeanAndPopulateWithCandidateValues(FacesContext context, ValueExpression wholeBeanVE, Object wholeBean, String copierType,
-            Map<String, Map<String, Object>> candidate) {
+    private Object copyBeanAndPopulateWithCandidateValues(
+        FacesContext context, ValueExpression wholeBeanVE, Object wholeBean, String copierType,
+        Map<String, Map<String, Object>> candidate
+    )
+    {
 
         // Populate the bean copy with the validated values from the candidate
         Map<String, Object> propertiesToSet = new HashMap<>();
@@ -189,17 +195,23 @@ class WholeBeanValidator implements Validator<Object> {
         return wholeBeanCopy;
     }
 
-    private Set<ConstraintViolation<?>> doBeanValidation(jakarta.validation.Validator beanValidator, Object wholeBeanCopy, Class<?>[] validationGroupArray,
-            ValueExpression wholeBeanVE) {
+    private Set<ConstraintViolation<?>> doBeanValidation(
+        jakarta.validation.Validator beanValidator, Object wholeBeanCopy, Class<?>[] validationGroupArray,
+        ValueExpression wholeBeanVE
+    )
+    {
 
         @SuppressWarnings("rawtypes")
         Set violationsRaw = null;
 
         try {
             violationsRaw = beanValidator.validate(wholeBeanCopy, validationGroupArray);
-        } catch (IllegalArgumentException iae) {
-            LOGGER.fine("Unable to validate expression " + wholeBeanVE.getExpressionString() + " using Bean Validation.  Unable to get value of expression. "
-                    + " Message from Bean Validation: " + iae.getMessage());
+        }
+        catch (IllegalArgumentException iae) {
+            LOGGER.fine(
+                "Unable to validate expression " + wholeBeanVE.getExpressionString() + " using Bean Validation.  Unable to get value of expression. "
+                    + " Message from Bean Validation: " + iae.getMessage()
+            );
         }
 
         @SuppressWarnings("unchecked")
@@ -250,13 +262,13 @@ class WholeBeanValidator implements Validator<Object> {
 
             return inputComponent.getSubmittedValue() != null ? inputComponent.getSubmittedValue() : inputComponent.getLocalValue();
         }
+
     }
 
     /*
-     * <p class="changed_added_2_3">Returns a data structure that stores the information necessary to perform class-level
-     * validation by <code>&lt;f:validateWholeBean &gt;</code> components elsewhere in the tree. The lifetime of this data
-     * structure does not extend beyond the current {@code FacesContext}. The data structure must conform to the following
-     * specification.</p>
+     * <p class="changed_added_2_3">Returns a data structure that stores the information necessary to perform class-level validation by
+     * <code>&lt;f:validateWholeBean &gt;</code> components elsewhere in the tree. The lifetime of this data structure does not extend beyond the current {@code
+     * FacesContext}. The data structure must conform to the following specification.</p>
      *
      * <div class="changed_added_2_3">
      *
@@ -264,13 +276,12 @@ class WholeBeanValidator implements Validator<Object> {
      *
      * <li><p>It is a non-thread-safe {@code Map}.</p></li>
      *
-     * <li><p>Keys are CDI bean instances that are referenced by the {@code value} attribute of
-     * <code>&lt;f:validateWholeBean &gt;</code> components.</p></li>
+     * <li><p>Keys are CDI bean instances that are referenced by the {@code value} attribute of <code>&lt;f:validateWholeBean &gt;</code> components.</p></li>
      *
      * <li>
      *
-     * <p>Values are {@code Map}s that represent the properties to be stored on the CDI bean instance that is the current
-     * key. The inner {@code Map} must conform to the following specification.</p>
+     * <p>Values are {@code Map}s that represent the properties to be stored on the CDI bean instance that is the current key. The inner {@code Map} must
+     * conform to the following specification.</p>
      *
      * <ul>
      *
@@ -296,8 +307,8 @@ class WholeBeanValidator implements Validator<Object> {
      *
      * @param context the {@link FacesContext} for this request
      *
-     * @param create if {@code true}, the data structure must be created if not present. If {@code false} the data structure
-     * must not be created and {@code Collections.emptyMap()} must be returned.
+     * @param create if {@code true}, the data structure must be created if not present. If {@code false} the data structure must not be created and {@code
+     * Collections.emptyMap()} must be returned.
      *
      * @return the data structure representing the multi-field validation candidates
      *
@@ -307,12 +318,14 @@ class WholeBeanValidator implements Validator<Object> {
         Map<Object, Object> attrs = context.getAttributes();
 
         @SuppressWarnings("unchecked")
-        Map<Object, Map<String, Map<String, Object>>> multiFieldValidationCandidates = (Map<Object, Map<String, Map<String, Object>>>) attrs.get(MULTI_FIELD_VALIDATION_CANDIDATES);
+        Map<Object, Map<String, Map<String, Object>>> multiFieldValidationCandidates = (Map<Object, Map<String, Map<String, Object>>>) attrs
+            .get(MULTI_FIELD_VALIDATION_CANDIDATES);
         if (multiFieldValidationCandidates == null) {
             if (create) {
                 multiFieldValidationCandidates = new HashMap<>();
                 attrs.put(MULTI_FIELD_VALIDATION_CANDIDATES, multiFieldValidationCandidates);
-            } else {
+            }
+            else {
                 multiFieldValidationCandidates = emptyMap();
             }
         }

@@ -93,11 +93,15 @@ public class ProtectedViewsConfigProcessor extends AbstractConfigProcessor {
                 String urlPattern = null;
                 if (URL_PATTERN.equals(n.getLocalName())) {
                     urlPattern = getNodeText(n);
-                } else {
+                }
+                else {
                     if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.log(Level.WARNING, MessageFormat.format(
+                        LOGGER.log(
+                            Level.WARNING, MessageFormat.format(
                                 "Processing protected-views elements for document: ''{0}'', encountered unexpected configuration ''{1}'', ignoring and continuing",
-                                info.getSourceURI(), getNodeText(n)));
+                                info.getSourceURI(), getNodeText(n)
+                            )
+                        );
                     }
                 }
 
@@ -112,11 +116,16 @@ public class ProtectedViewsConfigProcessor extends AbstractConfigProcessor {
 
                     viewHandler.addProtectedView(urlPattern);
 
-                } else {
+                }
+                else {
                     if (LOGGER.isLoggable(WARNING)) {
-                        LOGGER.log(WARNING,
-                                format("Processing protected-views elements for document: ''{0}'', encountered <url-pattern> element without expected children",
-                                        info.getSourceURI()));
+                        LOGGER.log(
+                            WARNING,
+                            format(
+                                "Processing protected-views elements for document: ''{0}'', encountered <url-pattern> element without expected children",
+                                info.getSourceURI()
+                            )
+                        );
                     }
                 }
             }

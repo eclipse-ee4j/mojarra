@@ -43,8 +43,8 @@ import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.Util;
 
 /**
- * This class is used to lookup {@link ResourceInfo} instances and cache any that are successfully looked up to reduce
- * the computational overhead with the scanning/version checking.
+ * This class is used to lookup {@link ResourceInfo} instances and cache any that are successfully looked up to reduce the computational overhead with the
+ * scanning/version checking.
  *
  * @since 2.0
  */
@@ -83,8 +83,8 @@ public class ResourceManager {
     private List<Pattern> compressableTypes;
 
     /**
-     * This lock is used to ensure the lookup of compressable {@link ResourceInfo} instances are atomic to prevent theading
-     * issues when writing the compressed content during a lookup.
+     * This lock is used to ensure the lookup of compressable {@link ResourceInfo} instances are atomic to prevent theading issues when writing the compressed
+     * content during a lookup.
      */
     private final ReentrantLock lock = new ReentrantLock();
 
@@ -100,8 +100,9 @@ public class ResourceManager {
     }
 
     /**
-     * Constructs a new <code>ResourceManager</code>. Note: if the current {@link ProjectStage} is
-     * {@link ProjectStage#Development} caching or {@link ResourceInfo} instances will not occur.
+     * Constructs a new <code>ResourceManager</code>. Note: if the current {@link ProjectStage} is {@link ProjectStage#Development} caching or
+     * {@link ResourceInfo} instances will not occur.
+     *
      * @param appMap the application map
      * @param cache the resource cache
      */
@@ -118,13 +119,11 @@ public class ResourceManager {
      * </p>
      *
      * <p>
-     * Implementation Note: Synchronization is necessary when looking up compressed resources. This ensures the atomicity of
-     * the content being compressed. As such, the cost of doing this is low as once the resource is in the cache, the lookup
-     * won't be performed again until the cache is cleared. That said, it's not a good idea to have caching disabled in a
-     * production environment if leveraging compression.
+     * Implementation Note: Synchronization is necessary when looking up compressed resources. This ensures the atomicity of the content being compressed. As
+     * such, the cost of doing this is low as once the resource is in the cache, the lookup won't be performed again until the cache is cleared. That said, it's
+     * not a good idea to have caching disabled in a production environment if leveraging compression.
      *
-     * If the resource isn't compressable, then we don't worry about creating a few extra copies of ResourceInfo until the
-     * cache is populated.
+     * If the resource isn't compressable, then we don't worry about creating a few extra copies of ResourceInfo until the cache is populated.
      * </p>
      *
      * @param libraryName the name of the library (if any)
@@ -132,8 +131,7 @@ public class ResourceManager {
      * @param contentType the content type of the resource. This will be used to determine if the resource is compressable
      * @param ctx the {@link jakarta.faces.context.FacesContext} for the current request
      *
-     * @return a {@link ResourceInfo} if a resource if found matching the provided arguments, otherwise, return
-     * <code>null</code>
+     * @return a {@link ResourceInfo} if a resource if found matching the provided arguments, otherwise, return <code>null</code>
      */
     public ResourceInfo findResource(String libraryName, String resourceName, String contentType, FacesContext ctx) {
         return findResource(libraryName, resourceName, contentType, false, ctx);
@@ -148,7 +146,8 @@ public class ResourceManager {
         if (info == null) {
             if (isCompressable(contentType, facesContext)) {
                 info = findResourceCompressed(null, resourceName, true, localePrefix, contracts, facesContext);
-            } else {
+            }
+            else {
                 info = findResourceNonCompressed(null, resourceName, true, localePrefix, contracts, facesContext);
             }
         }
@@ -166,7 +165,8 @@ public class ResourceManager {
         if (info == null) {
             if (isCompressable(contentType, ctx)) {
                 info = findResourceCompressed(libraryName, resourceName, isViewResource, localePrefix, contracts, ctx);
-            } else {
+            }
+            else {
                 info = findResourceNonCompressed(libraryName, resourceName, isViewResource, localePrefix, contracts, ctx);
             }
         }
@@ -177,7 +177,7 @@ public class ResourceManager {
     public Stream<String> getViewResources(FacesContext facesContext, String path, int maxDepth, ResourceVisitOption... options) {
         return faceletWebappResourceHelper.getViewResources(facesContext, path, maxDepth, options);
     }
-    
+
     public String getBaseContractsPath() {
         return faceletWebappResourceHelper.getBaseContractsPath();
     }
@@ -188,8 +188,11 @@ public class ResourceManager {
 
     // ----------------------------------------------------- Private Methods
 
-    private ResourceInfo findResourceCompressed(String libraryName, String resourceName, boolean isViewResource, String localePrefix, List<String> contracts,
-            FacesContext ctx) {
+    private ResourceInfo findResourceCompressed(
+        String libraryName, String resourceName, boolean isViewResource, String localePrefix, List<String> contracts,
+        FacesContext ctx
+    )
+    {
 
         ResourceInfo info = null;
 
@@ -202,15 +205,19 @@ public class ResourceManager {
                     addToCache(info, contracts);
                 }
             }
-        } finally {
+        }
+        finally {
             lock.unlock();
         }
 
         return info;
     }
 
-    private ResourceInfo findResourceNonCompressed(String libraryName, String resourceName, boolean isViewResource, String localePrefix, List<String> contracts,
-            FacesContext ctx) {
+    private ResourceInfo findResourceNonCompressed(
+        String libraryName, String resourceName, boolean isViewResource, String localePrefix, List<String> contracts,
+        FacesContext ctx
+    )
+    {
         ResourceInfo info = doLookup(libraryName, resourceName, localePrefix, false, isViewResource, contracts, ctx);
 
         if (info == null && contracts != null) {
@@ -247,11 +254,13 @@ public class ResourceManager {
      * @param contracts the contracts to consider
      * @param ctx the {@link jakarta.faces.context.FacesContext} for the current request
      *
-     * @return a {@link ResourceInfo} if a resource if found matching the provided arguments, otherwise, return
-     * <code>null</code>
+     * @return a {@link ResourceInfo} if a resource if found matching the provided arguments, otherwise, return <code>null</code>
      */
-    private ResourceInfo doLookup(String libraryName, String resourceName, String localePrefix, boolean compressable, boolean isViewResource,
-            List<String> contracts, FacesContext ctx) {
+    private ResourceInfo doLookup(
+        String libraryName, String resourceName, String localePrefix, boolean compressable, boolean isViewResource,
+        List<String> contracts, FacesContext ctx
+    )
+    {
 
         // Loop over the contracts as described in deriveResourceIdConsideringLocalePrefixAndContracts in the spec
         for (String contract : contracts) {
@@ -264,8 +273,11 @@ public class ResourceManager {
         return getResourceInfo(libraryName, resourceName, localePrefix, null, compressable, isViewResource, ctx, null);
     }
 
-    private ResourceInfo getResourceInfo(String libraryName, String resourceName, String localePrefix, String contract, boolean compressable,
-            boolean isViewResource, FacesContext ctx, LibraryInfo library) {
+    private ResourceInfo getResourceInfo(
+        String libraryName, String resourceName, String localePrefix, String contract, boolean compressable,
+        boolean isViewResource, FacesContext ctx, LibraryInfo library
+    )
+    {
         if (libraryName != null && !nameContainsForbiddenSequence(libraryName)) {
             library = findLibrary(libraryName, localePrefix, contract, ctx);
 
@@ -288,7 +300,8 @@ public class ResourceManager {
                     return null;
                 }
             }
-        } else if (nameContainsForbiddenSequence(libraryName)) {
+        }
+        else if (nameContainsForbiddenSequence(libraryName)) {
             return null;
         }
 
@@ -315,11 +328,14 @@ public class ResourceManager {
                 VersionInfo altVersion = altLibrary.getVersion();
                 if (originalVersion == null && altVersion == null) {
                     library = altLibrary;
-                } else if (originalVersion == null && altVersion != null) {
+                }
+                else if (originalVersion == null && altVersion != null) {
                     library = null;
-                } else if (originalVersion != null && altVersion == null) {
+                }
+                else if (originalVersion != null && altVersion == null) {
                     library = null;
-                } else if (originalVersion.compareTo(altVersion) == 0) {
+                }
+                else if (originalVersion.compareTo(altVersion) == 0) {
                     library = altLibrary;
                 }
 
@@ -345,7 +361,8 @@ public class ResourceManager {
     private String trimLeadingSlash(String s) {
         if (s.charAt(0) == '/') {
             return s.substring(1);
-        } else {
+        }
+        else {
             return s;
         }
     }
@@ -356,12 +373,12 @@ public class ResourceManager {
             name = name.toLowerCase(Locale.ROOT);
 
             result = name.startsWith(".") || name.contains("../") || name.contains("..\\") || name.startsWith("/") || name.startsWith("\\")
-                    || name.endsWith("/") ||
+                || name.endsWith("/") ||
 
-                    name.contains("..%2f") || name.contains("..%5c") || name.startsWith("%2f") || name.startsWith("%5c") || name.endsWith("%2f") ||
+                name.contains("..%2f") || name.contains("..%5c") || name.startsWith("%2f") || name.startsWith("%5c") || name.endsWith("%2f") ||
 
-                    name.contains("..\\u002f") || name.contains("..\\u005c") || name.startsWith("\\u002f") || name.startsWith("\\u005c")
-                    || name.endsWith("\\u002f")
+                name.contains("..\\u002f") || name.contains("..\\u005c") || name.startsWith("\\u002f") || name.startsWith("\\u005c")
+                || name.endsWith("\\u002f")
 
             ;
         }
@@ -402,16 +419,14 @@ public class ResourceManager {
     /**
      * <p>
      * Attempt to lookup and return a {@link LibraryInfo} based on the specified <code>arguments</code>.
-     * 
+     *
      * <p>
-     * The lookup process will first search the file system of the web application *within the resources directory*. If the
-     * library is not found, then it processed to searching the classpath, if not found there, search from the webapp root
-     * *excluding* the resources directory.
+     * The lookup process will first search the file system of the web application *within the resources directory*. If the library is not found, then it
+     * processed to searching the classpath, if not found there, search from the webapp root *excluding* the resources directory.
      * </p>
-     * 
+     *
      * <p>
-     * If a library is found, this method will return a {@link LibraryInfo} instance that contains the name, version, and
-     * {@link ResourceHelper}.
+     * If a library is found, this method will return a {@link LibraryInfo} instance that contains the name, version, and {@link ResourceHelper}.
      * </p>
      *
      *
@@ -445,15 +460,13 @@ public class ResourceManager {
     /**
      * <p>
      * Attempt to lookup and return a {@link ResourceInfo} based on the specified <code>arguments</code>.
-     * 
+     *
      * <p>
-     * The lookup process will first search the file system of the web application. If the library is not found, then it
-     * processed to searching the classpath.
+     * The lookup process will first search the file system of the web application. If the library is not found, then it processed to searching the classpath.
      * </p>
-     * 
+     *
      * <p>
-     * If a library is found, this method will return a {@link LibraryInfo} instance that contains the name, version, and
-     * {@link ResourceHelper}.
+     * If a library is found, this method will return a {@link LibraryInfo} instance that contains the name, version, and {@link ResourceHelper}.
      * </p>
      *
      * @param library the library the resource should be found in
@@ -464,12 +477,16 @@ public class ResourceManager {
      *
      * @return the Library instance for the specified library
      */
-    private ResourceInfo findResource(LibraryInfo library, String resourceName, String localePrefix, boolean compressable, boolean skipToFaceletResourceHelper,
-            FacesContext ctx) {
+    private ResourceInfo findResource(
+        LibraryInfo library, String resourceName, String localePrefix, boolean compressable, boolean skipToFaceletResourceHelper,
+        FacesContext ctx
+    )
+    {
 
         if (library != null) {
             return library.getHelper().findResource(library, resourceName, localePrefix, compressable, ctx);
-        } else {
+        }
+        else {
             ResourceInfo resource = null;
 
             if (!skipToFaceletResourceHelper) {
@@ -495,7 +512,8 @@ public class ResourceManager {
             resourceName = resourceId.substring(end + 1);
             if (-1 != (start = resourceId.lastIndexOf('/', end - 1))) {
                 libraryName = resourceId.substring(start + 1, end);
-            } else {
+            }
+            else {
                 libraryName = resourceId.substring(0, end);
             }
         }
@@ -508,15 +526,13 @@ public class ResourceManager {
 
     /**
      * <p>
-     * Obtains the application configured message resources for the current request locale. If a ResourceBundle is found and
-     * contains the key <code>jakarta.faces.resource.localePrefix</code>, use the value associated with that key as the
-     * prefix for locale specific resources.
+     * Obtains the application configured message resources for the current request locale. If a ResourceBundle is found and contains the key
+     * <code>jakarta.faces.resource.localePrefix</code>, use the value associated with that key as the prefix for locale specific resources.
      * </p>
      *
      * <p>
-     * For example, say the request locale is en_US, and <code>jakarta.faces.resourceLocalePrefix</code> is found with a
-     * value of <code>en</code>, a resource path within a web application might look like
-     * <code>/resources/en/corp/images/greetings.jpg</code>
+     * For example, say the request locale is en_US, and <code>jakarta.faces.resourceLocalePrefix</code> is found with a value of <code>en</code>, a resource
+     * path within a web application might look like <code>/resources/en/corp/images/greetings.jpg</code>
      * </p>
      *
      * @param context the {@link FacesContext} for the current request
@@ -528,7 +544,8 @@ public class ResourceManager {
 
         if (localePrefix != null && !nameContainsForbiddenSequence(localePrefix)) {
             return localePrefix;
-        } else {
+        }
+        else {
             localePrefix = null;
         }
 
@@ -538,14 +555,16 @@ public class ResourceManager {
             final Locale locale;
             if (context.getViewRoot() != null) {
                 locale = context.getViewRoot().getLocale();
-            } else {
+            }
+            else {
                 locale = context.getApplication().getViewHandler().calculateLocale(context);
             }
 
             try {
                 ResourceBundle appBundle = ResourceBundle.getBundle(appBundleName, locale, Util.getCurrentLoader(ResourceManager.class));
                 localePrefix = appBundle.getString(ResourceHandler.LOCALE_PREFIX);
-            } catch (MissingResourceException mre) {
+            }
+            catch (MissingResourceException mre) {
                 if (LOGGER.isLoggable(Level.FINEST)) {
                     LOGGER.log(Level.FINEST, "Ignoring missing resource", mre);
                 }
@@ -583,7 +602,8 @@ public class ResourceManager {
         // No compression when developing.
         if (contentType == null || ctx.isProjectStage(ProjectStage.Development)) {
             return false;
-        } else {
+        }
+        else {
             if (compressableTypes != null && !compressableTypes.isEmpty()) {
                 for (Pattern p : compressableTypes) {
                     boolean matches = p.matcher(contentType).matches();
@@ -620,7 +640,8 @@ public class ResourceManager {
             }
             try {
                 compressableTypes.add(Pattern.compile(pattern));
-            } catch (PatternSyntaxException pse) {
+            }
+            catch (PatternSyntaxException pse) {
                 if (LOGGER.isLoggable(Level.WARNING)) {
                     // PENDING i18n
                     LOGGER.log(Level.WARNING, "faces.resource.mime.type.configration.invalid", new Object[] { pattern, pse.getPattern() });

@@ -54,8 +54,8 @@ public class ButtonRenderer extends HtmlBasicRenderer {
         if (component instanceof HtmlCommandButton button) {
             return button.isDisabled() || button.isReadonly();
         }
-        if (component instanceof  HtmlOutcomeTargetButton button) {
-        	return button.isDisabled();
+        if (component instanceof HtmlOutcomeTargetButton button) {
+            return button.isDisabled();
         }
         return super.isDisabledOrReadonly(component);
     }
@@ -104,13 +104,13 @@ public class ButtonRenderer extends HtmlBasicRenderer {
         }
 
         /*
-         * If we have any parameters and the button type is submit or button, then render Javascript to use later.
-         * RELEASE_PENDING this logic is slightly wrong - we should buffer the user onclick, and use it later. Leaving it for
-         * when we decide how to do script injection.
+         * If we have any parameters and the button type is submit or button, then render Javascript to use later. RELEASE_PENDING this logic is slightly wrong
+         * - we should buffer the user onclick, and use it later. Leaving it for when we decide how to do script injection.
          */
 
-        String imageSrc = component instanceof HtmlCommandButton button ? button.getImage()
-                : (String) component.getAttributes().get("image");
+        String imageSrc = component instanceof HtmlCommandButton button
+            ? button.getImage()
+            : (String) component.getAttributes().get("image");
         writer.startElement("input", component);
         writeIdAttributeIfNecessary(context, writer, component);
         String clientId = component.getClientId(context);
@@ -126,7 +126,8 @@ public class ButtonRenderer extends HtmlBasicRenderer {
             else if (writer.getContentType().equals(RIConstants.XHTML_CONTENT_TYPE)) {
                 writer.writeAttribute("alt", "", "alt"); // write out an empty alt as it is required by HTML spec.
             }
-        } else {
+        }
+        else {
             writer.writeAttribute("type", type, "type");
             writer.writeAttribute("name", clientId, "clientId");
             writer.writeAttribute("value", label, "value");
@@ -191,7 +192,8 @@ public class ButtonRenderer extends HtmlBasicRenderer {
 
         if (context.getPartialViewContext().isAjaxRequest()) {
             return RenderKitUtils.isPartialOrBehaviorAction(context, clientId);
-        } else {
+        }
+        else {
             Map<String, String> requestParameterMap = context.getExternalContext().getRequestParameterMap();
 
             if (requestParameterMap.get(clientId) == null) {
@@ -218,16 +220,16 @@ public class ButtonRenderer extends HtmlBasicRenderer {
 
     /**
      * <p>
-     * If the component's type attribute is null or not equal to <code>reset</code>, <code>submit</code> or
-     * <code>button</code>, default to <code>submit</code>.
+     * If the component's type attribute is null or not equal to <code>reset</code>, <code>submit</code> or <code>button</code>, default to <code>submit</code>.
      *
      * @param component the component of interest
      * @return the type for this button
      */
     private static String getButtonType(UIComponent component) {
 
-        String type = component instanceof HtmlCommandButton button ? button.getType()
-                : (String) component.getAttributes().get("type");
+        String type = component instanceof HtmlCommandButton button
+            ? button.getType()
+            : (String) component.getAttributes().get("type");
         if (type == null || !"reset".equals(type) && !"submit".equals(type) && !"button".equals(type)) {
             type = "submit";
             // This is needed in the decode method

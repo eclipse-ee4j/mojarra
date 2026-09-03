@@ -60,7 +60,8 @@ public final class AttributesHandler extends TagHandlerImpl implements jakarta.f
 
                     if (curVal instanceof ValueExpression) {
                         parent.setValueExpression(n, (ValueExpression) curVal);
-                    } else {
+                    }
+                    else {
                         parent.getAttributes().put(n, curVal);
                     }
 
@@ -76,4 +77,5 @@ public final class AttributesHandler extends TagHandlerImpl implements jakarta.f
     public String getAttributeName(FaceletContext ctxt) {
         return "value";
     }
+
 }

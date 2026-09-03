@@ -55,7 +55,7 @@ public class ApplicationMap extends BaseContextMap<Object> {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void putAll(Map map) {
         Util.notNull("map", map);
-        map.forEach( (key, value) -> servletContext.setAttribute((String) key, value));
+        map.forEach((key, value) -> servletContext.setAttribute((String) key, value));
     }
 
     @Override
@@ -96,7 +96,7 @@ public class ApplicationMap extends BaseContextMap<Object> {
     @Override
     public int hashCode() {
         int hashCode = 7 * servletContext.hashCode();
-        for (Map.Entry<String,Object> entry : entrySet()) {
+        for (Map.Entry<String, Object> entry : entrySet()) {
             hashCode += entry.hashCode();
         }
         return hashCode;

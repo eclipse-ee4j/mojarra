@@ -26,8 +26,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 /**
- * Every schema version which a <code>faces-config.xml</code> on a supported classpath may declare has to resolve, and
- * the resource it names has to be present and compile.
+ * Every schema version which a <code>faces-config.xml</code> on a supported classpath may declare has to resolve, and the resource it names has to be present
+ * and compile.
  */
 class FacesSchemaTest {
 
@@ -56,4 +56,5 @@ class FacesSchemaTest {
     void resolvesTheVersionMojarraSynthesizes() {
         assertEquals(FacesSchema.FACES_50, FacesSchema.fromDocumentId(CURRENT_NAMESPACE, CURRENT_VERSION, "faces-config"));
     }
+
 }

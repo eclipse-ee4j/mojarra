@@ -107,13 +107,18 @@ public class FacesConfigExtensionProcessor extends AbstractConfigProcessor {
                         Node childOfInterset = faceletsProcessingChildren.item(fp);
                         if (null == fileExtension && FILE_EXTENSION.equals(childOfInterset.getLocalName())) {
                             fileExtension = getNodeText(childOfInterset);
-                        } else if (null == processAs && PROCESS_AS.equals(childOfInterset.getLocalName())) {
+                        }
+                        else if (null == processAs && PROCESS_AS.equals(childOfInterset.getLocalName())) {
                             processAs = getNodeText(childOfInterset);
-                        } else {
+                        }
+                        else {
                             if (LOGGER.isLoggable(WARNING)) {
-                                LOGGER.log(WARNING, format(
+                                LOGGER.log(
+                                    WARNING, format(
                                         "Processing faces-config-extension elements for document: ''{0}'', encountered unexpected configuration ''{1}'', ignoring and continuing",
-                                        info.getSourceURI(), getNodeText(childOfInterset)));
+                                        info.getSourceURI(), getNodeText(childOfInterset)
+                                    )
+                                );
                             }
                         }
 
@@ -125,11 +130,15 @@ public class FacesConfigExtensionProcessor extends AbstractConfigProcessor {
                         }
                         faceletsConfig.addProcessingMapping(fileExtension, processAs);
 
-                    } else {
+                    }
+                    else {
                         if (LOGGER.isLoggable(WARNING)) {
-                            LOGGER.log(WARNING, MessageFormat.format(
+                            LOGGER.log(
+                                WARNING, MessageFormat.format(
                                     "Processing faces-config-extension elements for document: ''{0}'', encountered <facelets-processing> elemnet without expected children",
-                                    info.getSourceURI()));
+                                    info.getSourceURI()
+                                )
+                            );
                         }
                     }
                 }

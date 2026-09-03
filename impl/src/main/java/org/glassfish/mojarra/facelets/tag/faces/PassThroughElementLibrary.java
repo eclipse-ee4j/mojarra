@@ -16,7 +16,6 @@
 
 package org.glassfish.mojarra.facelets.tag.faces;
 
-
 import java.util.Set;
 
 import org.glassfish.mojarra.facelets.tag.AbstractTagLibrary;
@@ -34,4 +33,5 @@ public final class PassThroughElementLibrary extends AbstractTagLibrary {
 
         this.addComponent("element", "jakarta.faces.Panel", "jakarta.faces.passthrough.Element", PassThroughElementComponentHandler.class);
     }
+
 }

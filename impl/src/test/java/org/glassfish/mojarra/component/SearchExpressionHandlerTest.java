@@ -86,7 +86,8 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         RenderKit renderKit = new MockRenderKit();
         try {
             renderKitFactory.addRenderKit(RenderKitFactory.HTML_BASIC_RENDER_KIT, renderKit);
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
         }
 
         FactoryFinder.setFactory(FactoryFinder.SEARCH_EXPRESSION_CONTEXT_FACTORY, SearchExpressionContextFactoryImpl.class.getName());
@@ -119,8 +120,10 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
 
     private UIComponent resolveComponent(UIComponent source, String expression, SearchExpressionHint... hints) {
 
-        SearchExpressionContext searchContext = SearchExpressionContext.createSearchExpressionContext(facesContext, source, new HashSet<>(Arrays.asList(hints)),
-                null);
+        SearchExpressionContext searchContext = SearchExpressionContext.createSearchExpressionContext(
+            facesContext, source, new HashSet<>(Arrays.asList(hints)),
+            null
+        );
 
         ResolveComponentCallback callback = new ResolveComponentCallback();
 
@@ -132,12 +135,14 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
     }
 
     private static class ResolveComponentCallback implements ContextCallback {
+
         public UIComponent component;
 
         @Override
         public void invokeContextCallback(FacesContext context, UIComponent target) {
             component = target;
         }
+
     }
 
     private String resolveClientId(UIComponent source, String expression) {
@@ -159,12 +164,14 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
     }
 
     private static class ResolveComponentsCallback implements ContextCallback {
+
         public List<UIComponent> components = new ArrayList<>();
 
         @Override
         public void invokeContextCallback(FacesContext context, UIComponent target) {
             components.add(target);
         }
+
     }
 
     @Test
@@ -690,7 +697,8 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         try {
             resolveComponent(command3, " @next");
             fail("This should actually raise an exception");
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             assertEquals(ComponentNotFoundException.class, e.getClass());
         }
     }
@@ -718,14 +726,16 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         try {
             resolveComponent(command2, " @next:@next");
             fail("This should actually raise an exception");
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             assertEquals(ComponentNotFoundException.class, e.getClass());
         }
 
         try {
             resolveComponent(command3, " @next:@next");
             fail("This should actually raise an exception");
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             assertEquals(ComponentNotFoundException.class, e.getClass());
         }
     }
@@ -754,7 +764,8 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         try {
             resolveComponent(command1, " @previous");
             fail("This should actually raise an exception");
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             assertEquals(ComponentNotFoundException.class, e.getClass());
         }
     }
@@ -979,8 +990,8 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
     }
 
     /**
-     * The SearchExpression API was inspired by PrimeFaces. This test only tests, if PFS (PrimeFaces Selectors -> jQuery
-     * like selectors; like @(#myId > .myStyle)) can be correctly handled by the API+IMPL as a passthrough expression.
+     * The SearchExpression API was inspired by PrimeFaces. This test only tests, if PFS (PrimeFaces Selectors -> jQuery like selectors; like @(#myId >
+     * .myStyle)) can be correctly handled by the API+IMPL as a passthrough expression.
      */
     @Test
     public void test_PFS() {
@@ -1006,6 +1017,7 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
             public boolean isLeaf(SearchExpressionContext searchExpressionContext, String keyword) {
                 return true;
             }
+
         });
 
         UIComponent root = new UIPanel();
@@ -1046,10 +1058,12 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
     }
 
     class CustomSearchKeywordResolverImplForm extends SearchKeywordResolverImplForm {
+
         @Override
         public void resolve(SearchKeywordContext searchKeywordContext, UIComponent current, String keyword) {
             searchKeywordContext.invokeContextCallback(current);
         }
+
     }
 
     @Test
@@ -1061,8 +1075,10 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         try {
             resolveComponent(root, " @none:myId");
             fail("This should actually raise an exception");
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             assertEquals(FacesException.class, e.getClass());
         }
     }
+
 }

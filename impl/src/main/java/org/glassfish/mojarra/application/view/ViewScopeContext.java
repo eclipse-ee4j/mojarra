@@ -54,9 +54,9 @@ public class ViewScopeContext implements Context, Serializable {
     }
 
     /**
-     * Returns the current FacesContext, asserting the context is active (its view root is present) and otherwise
-     * throwing {@link ContextNotActiveException}. Resolving it once per {@code get} avoids the repeated thread-local
-     * lookups that a separate {@code assertNotReleased()} plus {@link #isActive()} would each incur.
+     * Returns the current FacesContext, asserting the context is active (its view root is present) and otherwise throwing {@link ContextNotActiveException}.
+     * Resolving it once per {@code get} avoids the repeated thread-local lookups that a separate {@code assertNotReleased()} plus {@link #isActive()} would
+     * each incur.
      *
      * @return the active FacesContext.
      */
@@ -145,4 +145,5 @@ public class ViewScopeContext implements Context, Serializable {
 
         return result;
     }
+
 }

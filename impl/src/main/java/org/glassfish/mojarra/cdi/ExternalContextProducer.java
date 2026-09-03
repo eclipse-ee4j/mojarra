@@ -23,8 +23,7 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_3">
- * The ExternalContextProducer is the CDI producer that allows injection of the ExternalContext using @Inject and allows
- * EL resolving of #{externalContext}
+ * The ExternalContextProducer is the CDI producer that allows injection of the ExternalContext using @Inject and allows EL resolving of #{externalContext}
  * </p>
  *
  * @since 2.3

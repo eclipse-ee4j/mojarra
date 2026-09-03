@@ -42,4 +42,5 @@ public class ConfigurationException extends FacesException {
     public ConfigurationException(String message, Throwable t) {
         super(message, t);
     }
+
 }

@@ -80,4 +80,5 @@ public class MockCDI<T> extends CDI<T> {
     public T get() {
         throw new UnsupportedOperationException();
     }
+
 }

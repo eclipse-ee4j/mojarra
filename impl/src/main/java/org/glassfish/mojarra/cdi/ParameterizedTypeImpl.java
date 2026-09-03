@@ -23,8 +23,7 @@ import java.util.Objects;
 
 /**
  * <p class="changed_added_2_3">
- * ParameterizedTypeImpl is a basic implementation of the ParameterizedType interface. It is used by the dynamic CDI
- * producers that produce generic types.
+ * ParameterizedTypeImpl is a basic implementation of the ParameterizedType interface. It is used by the dynamic CDI producers that produce generic types.
  * </p>
  *
  * @since 2.3
@@ -119,9 +118,10 @@ public class ParameterizedTypeImpl implements ParameterizedType {
      * @return true if instances equal, false otherwise.
      */
     public boolean equals(ParameterizedType other) {
-        return this == other ? true
-                : Objects.equals(getOwnerType(), other.getOwnerType()) && Objects.equals(getRawType(), other.getRawType())
-                        && Arrays.equals(getActualTypeArguments(), other.getActualTypeArguments());
+        return this == other
+            ? true
+            : Objects.equals(getOwnerType(), other.getOwnerType()) && Objects.equals(getRawType(), other.getRawType())
+                && Arrays.equals(getActualTypeArguments(), other.getActualTypeArguments());
     }
 
     /**
@@ -133,4 +133,5 @@ public class ParameterizedTypeImpl implements ParameterizedType {
     public int hashCode() {
         return Objects.hashCode(getOwnerType()) ^ Objects.hashCode(getRawType()) ^ Arrays.hashCode(getActualTypeArguments());
     }
+
 }

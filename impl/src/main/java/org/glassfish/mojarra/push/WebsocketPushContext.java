@@ -40,8 +40,7 @@ import org.glassfish.mojarra.util.Json;
 
 /**
  * <p class="changed_added_2_3">
- * This is a concrete implementation of {@link PushContext} interface which is to be injected by
- * <code>&#64;</code>{@link Push}.
+ * This is a concrete implementation of {@link PushContext} interface which is to be injected by <code>&#64;</code>{@link Push}.
  *
  * @author Bauke Scholtz
  * @see Push
@@ -64,9 +63,8 @@ public class WebsocketPushContext implements PushContext {
     // Constructors ---------------------------------------------------------------------------------------------------
 
     /**
-     * Creates a socket push context whereby the mutable map of session and view scope channel identifiers is referenced, so
-     * it's still available when another thread invokes {@link #send(Object)} during which the session and view scope is not
-     * necessarily active anymore.
+     * Creates a socket push context whereby the mutable map of session and view scope channel identifiers is referenced, so it's still available when another
+     * thread invokes {@link #send(Object)} during which the session and view scope is not necessarily active anymore.
      */
     public WebsocketPushContext(String channel, WebsocketSessionManager socketSessions, WebsocketUserManager socketUsers) {
         this.channel = channel;

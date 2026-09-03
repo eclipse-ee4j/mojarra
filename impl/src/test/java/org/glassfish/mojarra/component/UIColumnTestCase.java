@@ -64,4 +64,5 @@ public class UIColumnTestCase extends UIComponentBaseTestCase {
         component.setRendererType(null);
         return component;
     }
+
 }

@@ -34,9 +34,8 @@ import org.glassfish.mojarra.facelets.tag.faces.CompositeComponentTagHandler;
 
 /**
  * Register an ActionListener instance on the UIComponent associated with the closest parent UIComponent custom action.
- * 
- * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/actionListener.html">tag
- * documentation</a>.
+ *
+ * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/actionListener.html">tag documentation</a>.
  *
  * @author Jacob Hookom
  * @see jakarta.faces.event.ActionListener
@@ -64,7 +63,8 @@ public abstract class ActionListenerHandlerBase extends TagHandlerImpl implement
 
         if (parent instanceof ActionSource) {
             applyAttachedObject(ctx.getFacesContext(), parent);
-        } else if (parent.getAttributes().containsKey(Resource.COMPONENT_RESOURCE_KEY)) {
+        }
+        else if (parent.getAttributes().containsKey(Resource.COMPONENT_RESOURCE_KEY)) {
             if (null == getFor()) {
                 // PENDING(): I18N
                 throw new TagException(tag, "actionListener tags nested within composite components must have a non-null \"for\" attribute");
@@ -73,7 +73,8 @@ public abstract class ActionListenerHandlerBase extends TagHandlerImpl implement
             // component.
             CompositeComponentTagHandler.getAttachedObjectHandlers(parent).add(this);
 
-        } else {
+        }
+        else {
             throw new TagException(tag, "Parent is not of type ActionSource, type is: " + parent);
         }
     }
@@ -89,7 +90,8 @@ public abstract class ActionListenerHandlerBase extends TagHandlerImpl implement
         if (null != attr) {
             if (attr.isLiteral()) {
                 result = attr.getValue();
-            } else {
+            }
+            else {
                 FacesContext context = FacesContext.getCurrentInstance();
                 FaceletContext ctx = (FaceletContext) context.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
                 result = (String) attr.getValueExpression(ctx, String.class).getValue(ctx);

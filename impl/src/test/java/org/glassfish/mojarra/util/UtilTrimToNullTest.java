@@ -23,10 +23,9 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import org.junit.jupiter.api.Test;
 
 /**
- * Util.trimToNull answers with the trimmed string, or with null when nothing is left. Two distinct sets of characters
- * count as trimmable: the control characters below U+0020, which only {@link String#trim()} removes, and the Unicode
- * spaces above U+007F, which only {@link String#strip()} removes. Callers write the answer into a URL unencoded, so
- * neither set may be left at either end of the returned string, whatever the string holds in between.
+ * Util.trimToNull answers with the trimmed string, or with null when nothing is left. Two distinct sets of characters count as trimmable: the control
+ * characters below U+0020, which only {@link String#trim()} removes, and the Unicode spaces above U+007F, which only {@link String#strip()} removes. Callers
+ * write the answer into a URL unencoded, so neither set may be left at either end of the returned string, whatever the string holds in between.
  */
 class UtilTrimToNullTest {
 
@@ -90,4 +89,5 @@ class UtilTrimToNullTest {
     void alreadyTrimmedIsUnchanged() {
         assertEquals("foo", trimToNull("foo"));
     }
+
 }

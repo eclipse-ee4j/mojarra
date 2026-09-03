@@ -140,9 +140,8 @@ public class UIValidateWholeBean extends UIInput implements PartialStateHolder {
     }
 
     /**
-     * Walks the form backwards looking for a rendered input placed after this component, which whole-bean validation
-     * cannot see the submitted value of, and stops as soon as it reaches this component itself: everything before it is
-     * in the right place by definition.
+     * Walks the form backwards looking for a rendered input placed after this component, which whole-bean validation cannot see the submitted value of, and
+     * stops as soon as it reaches this component itself: everything before it is in the right place by definition.
      *
      * @return whether this component was reached, which ends the walk for the caller too
      * @throws IllegalArgumentException when a rendered input sits after this component
@@ -208,7 +207,8 @@ public class UIValidateWholeBean extends UIInput implements PartialStateHolder {
 
             if (className.equals(Default.class.getName())) {
                 validationGroupsList.add(Default.class);
-            } else {
+            }
+            else {
                 validationGroupsList.add(classForName(className));
             }
         }
@@ -282,10 +282,12 @@ public class UIValidateWholeBean extends UIInput implements PartialStateHolder {
     private Class<?> classForName(String className) {
         try {
             return Class.forName(className, false, Thread.currentThread().getContextClassLoader());
-        } catch (ClassNotFoundException e1) {
+        }
+        catch (ClassNotFoundException e1) {
             try {
                 return Class.forName(className);
-            } catch (ClassNotFoundException e2) {
+            }
+            catch (ClassNotFoundException e2) {
                 throw new FacesException("Validation group not found: " + className);
             }
         }

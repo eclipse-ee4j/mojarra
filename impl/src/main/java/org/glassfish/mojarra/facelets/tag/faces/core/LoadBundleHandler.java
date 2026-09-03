@@ -40,11 +40,9 @@ import org.glassfish.mojarra.facelets.tag.faces.ComponentSupport;
 import org.glassfish.mojarra.util.Util;
 
 /**
- * Load a resource bundle localized for the Locale of the current view, and expose it (as a Map) in the request
- * attributes of the current request.
- * 
- * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/loadBundle.html">tag
- * documentation</a>.
+ * Load a resource bundle localized for the Locale of the current view, and expose it (as a Map) in the request attributes of the current request.
+ *
+ * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/loadBundle.html">tag documentation</a>.
  *
  * @author Jacob Hookom
  * @version $Id$
@@ -93,10 +91,9 @@ public final class LoadBundleHandler extends TagHandlerImpl {
     }
 
     /**
-     * Records what this build resolved the bundle from, so the redundant render-time re-apply is skipped as long as
-     * it would resolve the same bundle under the same name, and performed when it would not, which is what re-resolves
-     * it (see {@code refreshTransientBuild}). The view locale takes a decision even for a literal basename, since
-     * a locale changed after this build resolves a different bundle from the very same basename.
+     * Records what this build resolved the bundle from, so the redundant render-time re-apply is skipped as long as it would resolve the same bundle under the
+     * same name, and performed when it would not, which is what re-resolves it (see {@code refreshTransientBuild}). The view locale takes a decision even for a
+     * literal basename, since a locale changed after this build resolves a different bundle from the very same basename.
      */
     private void recordDecisions(FaceletContext ctx, UIViewRoot root, String basename, String var) {
         recordBuildTimeDecision(ctx, this.basename, String.class, basename);
@@ -109,7 +106,7 @@ public final class LoadBundleHandler extends TagHandlerImpl {
 
     // ResourceBundleMap ---------------------------------------------------------------------
 
-    private final static class ResourceBundleMap implements Map<String,Object> {
+    private final static class ResourceBundleMap implements Map<String, Object> {
 
         private static final String MISSING_RESOURCE_PLACEHOLDER = "???";
 
@@ -126,7 +123,7 @@ public final class LoadBundleHandler extends TagHandlerImpl {
 
         @Override
         public boolean containsKey(Object key) {
-            return key != null && bundle.containsKey((String)key);
+            return key != null && bundle.containsKey((String) key);
         }
 
         @Override
@@ -135,9 +132,9 @@ public final class LoadBundleHandler extends TagHandlerImpl {
         }
 
         @Override
-        public Set<Map.Entry<String,Object>> entrySet() {
+        public Set<Map.Entry<String, Object>> entrySet() {
             Set<String> keys = keySet();
-            Set<Map.Entry<String,Object>> set = new HashSet<>(Util.calculateMapCapacity(keys.size()));
+            Set<Map.Entry<String, Object>> set = new HashSet<>(Util.calculateMapCapacity(keys.size()));
             for (String key : keys) {
                 set.add(Map.entry(key, bundle.getObject(key)));
             }
@@ -148,7 +145,8 @@ public final class LoadBundleHandler extends TagHandlerImpl {
         public Object get(Object key) {
             try {
                 return bundle.getObject((String) key);
-            } catch (MissingResourceException mre) {
+            }
+            catch (MissingResourceException mre) {
                 return MISSING_RESOURCE_PLACEHOLDER + key + MISSING_RESOURCE_PLACEHOLDER;
             }
         }

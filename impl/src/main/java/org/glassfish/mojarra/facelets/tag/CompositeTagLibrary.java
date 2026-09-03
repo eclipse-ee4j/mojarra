@@ -34,8 +34,8 @@ import org.glassfish.mojarra.facelets.tag.faces.LazyTagLibrary;
 import org.glassfish.mojarra.util.Util;
 
 /**
- * A TagLibrary that is composed of 1 or more TagLibrary children. Uses the chain of responsibility pattern to stop
- * searching as soon as one of the children handles the requested method.
+ * A TagLibrary that is composed of 1 or more TagLibrary children. Uses the chain of responsibility pattern to stop searching as soon as one of the children
+ * handles the requested method.
  *
  * @author Jacob Hookom
  * @version $Id$
@@ -66,7 +66,8 @@ public final class CompositeTagLibrary implements TagLibrary {
         for (int i = 0; i < libraries.length; i++) {
             if (libraries[i].containsNamespace(ns, null)) {
                 if (libraries[i] instanceof TagLibraryImpl) {
-                    containsNamespace = true; // In this case, we need to add FacesComponentTagLibrary to libraries as well because it can share the same namespace. 
+                    containsNamespace = true; // In this case, we need to add FacesComponentTagLibrary to libraries as well because it can share the same
+                                              // namespace.
                 }
                 else {
                     return true;
@@ -93,7 +94,8 @@ public final class CompositeTagLibrary implements TagLibrary {
             }
             libraries = librariesPlusOne;
             return true;
-        } else {
+        }
+        else {
             FacesContext context = FacesContext.getCurrentInstance();
             if (context.isProjectStage(ProjectStage.Development)) {
                 if (null != t && !ns.equals("http://www.w3.org/1999/xhtml")) {
@@ -105,8 +107,13 @@ public final class CompositeTagLibrary implements TagLibrary {
                     String prefix = getPrefixFromTag(t);
                     if (null != prefix) {
                         List<FacesMessage> prefixMessages = messageHolder.getNamespacePrefixMessages(context, prefix);
-                        prefixMessages.add(new FacesMessage(FacesMessage.Severity.WARN, "Warning: This page calls for XML namespace " + ns
-                                + " declared with prefix " + prefix + " but no taglibrary exists for that namespace.", ""));
+                        prefixMessages.add(
+                            new FacesMessage(
+                                FacesMessage.Severity.WARN, "Warning: This page calls for XML namespace " + ns
+                                    + " declared with prefix " + prefix + " but no taglibrary exists for that namespace.",
+                                ""
+                            )
+                        );
                     }
                 }
             }
@@ -143,8 +150,7 @@ public final class CompositeTagLibrary implements TagLibrary {
     /*
      * (non-Javadoc)
      *
-     * @see com.sun.facelets.tag.TagLibrary#createTagHandler(java.lang.String, java.lang.String,
-     * com.sun.facelets.tag.TagConfig)
+     * @see com.sun.facelets.tag.TagLibrary#createTagHandler(java.lang.String, java.lang.String, com.sun.facelets.tag.TagConfig)
      */
     @Override
     public TagHandler createTagHandler(String ns, String localName, TagConfig tag) throws FacesException {
@@ -185,4 +191,5 @@ public final class CompositeTagLibrary implements TagLibrary {
         }
         return null;
     }
+
 }

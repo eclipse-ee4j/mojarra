@@ -100,8 +100,9 @@ public class MessagesRenderer extends HtmlBasicRenderer {
         }
 
         HtmlMessages htmlMessages = component instanceof HtmlMessages ? (HtmlMessages) component : null;
-        String layout = htmlMessages != null ? htmlMessages.getLayout()
-                : (String) component.getAttributes().get("layout");
+        String layout = htmlMessages != null
+            ? htmlMessages.getLayout()
+            : (String) component.getAttributes().get("layout");
         boolean showSummary = messages.isShowSummary();
         boolean showDetail = messages.isShowDetail();
 
@@ -113,7 +114,8 @@ public class MessagesRenderer extends HtmlBasicRenderer {
         if (layout != null && layout.equals("table")) {
             writer.startElement("table", component);
             wroteTable = true;
-        } else {
+        }
+        else {
             writer.startElement("ul", component);
         }
 
@@ -149,7 +151,8 @@ public class MessagesRenderer extends HtmlBasicRenderer {
 
             if (wroteTable) {
                 writer.startElement("tr", component);
-            } else {
+            }
+            else {
                 writer.startElement("li", component);
             }
 
@@ -164,8 +167,9 @@ public class MessagesRenderer extends HtmlBasicRenderer {
                 writer.startElement("td", component);
             }
 
-            boolean isTooltip = htmlMessages != null ? htmlMessages.isTooltip()
-                    : RenderKitUtils.attributeIsTrue(component, "tooltip", false);
+            boolean isTooltip = htmlMessages != null
+                ? htmlMessages.isTooltip()
+                : RenderKitUtils.attributeIsTrue(component, "tooltip", false);
 
             boolean wroteTooltip = false;
             if (isTooltip) {
@@ -196,7 +200,8 @@ public class MessagesRenderer extends HtmlBasicRenderer {
             if (wroteTable) {
                 writer.endElement("td");
                 writer.endElement("tr");
-            } else {
+            }
+            else {
                 writer.endElement("li");
             }
 
@@ -205,7 +210,8 @@ public class MessagesRenderer extends HtmlBasicRenderer {
         // close table if present
         if (wroteTable) {
             writer.endElement("table");
-        } else {
+        }
+        else {
             writer.endElement("ul");
         }
 

@@ -60,7 +60,8 @@ public class ValueChangeListenerTestImpl implements ValueChangeListener<Object>,
     public static void trace(String text) {
         if (text == null) {
             trace.setLength(0);
-        } else {
+        }
+        else {
             trace.append('/');
             trace.append(text);
         }
@@ -109,4 +110,5 @@ public class ValueChangeListenerTestImpl implements ValueChangeListener<Object>,
     @Override
     public void setTransient(boolean newT) {
     }
+
 }

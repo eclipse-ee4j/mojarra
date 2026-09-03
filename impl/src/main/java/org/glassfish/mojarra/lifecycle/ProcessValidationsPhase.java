@@ -47,7 +47,8 @@ public class ProcessValidationsPhase extends Phase {
 
         try {
             component.processValidators(facesContext);
-        } catch (RuntimeException re) {
+        }
+        catch (RuntimeException re) {
             String exceptionMessage = re.getMessage();
             if (null != exceptionMessage) {
                 if (LOGGER.isLoggable(Level.FINE)) {
@@ -69,6 +70,6 @@ public class ProcessValidationsPhase extends Phase {
 
     }
 
-// The testcase for this class is TestProcessValidationsPhase.java
+    // The testcase for this class is TestProcessValidationsPhase.java
 
 } // end of class ProcessValidationsPhase

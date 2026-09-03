@@ -61,42 +61,39 @@ import org.glassfish.mojarra.util.FacesLogger;
  * <li><code>/WEB-INF/faces-config.xml</code> exists</li>
  * </ul>
  *
- * If it is met, and the <code>FacesServlet</code> has not been explicitly mapped,
- * then add mappings <em>*.xhtml</em>, <em>/faces</em>, <em>*.jsf</em>, and <em>*.faces</em> for the FacesServlet.
+ * If it is met, and the <code>FacesServlet</code> has not been explicitly mapped, then add mappings <em>*.xhtml</em>, <em>/faces</em>, <em>*.jsf</em>, and
+ * <em>*.faces</em> for the FacesServlet.
  *
  * <p>
- * The {@link HandlesTypes @HandlesTypes} annotation lists the Faces annotation types whose presence in the application
- * indicates that Jakarta Faces should be initialized. The actual registration of annotated classes with the Faces
- * runtime is handled by CDI via {@link org.glassfish.mojarra.cdi.CdiExtension}; these types are only used here as a boolean
- * check to auto-detect Faces applications. The list contains:
+ * The {@link HandlesTypes @HandlesTypes} annotation lists the Faces annotation types whose presence in the application indicates that Jakarta Faces should be
+ * initialized. The actual registration of annotated classes with the Faces runtime is handled by CDI via {@link org.glassfish.mojarra.cdi.CdiExtension}; these
+ * types are only used here as a boolean check to auto-detect Faces applications. The list contains:
  *
  * <ul>
- * <li>Faces configuration annotations ({@link FacesBehavior}, {@link FacesBehaviorRenderer}, {@link FacesComponent},
- * {@link FacesConverter}, {@link FacesDataModel}, {@link FacesRenderer}, {@link FacesValidator}, {@link NamedEvent})
- * &mdash; the primary indicators that an application defines Faces artifacts.</li>
- * <li>{@link FacesConfig} &mdash; the annotation-based alternative to <code>faces-config.xml</code> for activating
- * Faces.</li>
- * <li>Faces CDI scopes and qualifiers ({@link ViewScoped}, {@link FlowScoped}, {@link ClientWindowScoped},
- * {@link Push}) &mdash; these may be present in applications that use Faces CDI integration without any of the above
- * configuration annotations or <code>faces-config.xml</code>.</li>
+ * <li>Faces configuration annotations ({@link FacesBehavior}, {@link FacesBehaviorRenderer}, {@link FacesComponent}, {@link FacesConverter},
+ * {@link FacesDataModel}, {@link FacesRenderer}, {@link FacesValidator}, {@link NamedEvent}) &mdash; the primary indicators that an application defines Faces
+ * artifacts.</li>
+ * <li>{@link FacesConfig} &mdash; the annotation-based alternative to <code>faces-config.xml</code> for activating Faces.</li>
+ * <li>Faces CDI scopes and qualifiers ({@link ViewScoped}, {@link FlowScoped}, {@link ClientWindowScoped}, {@link Push}) &mdash; these may be present in
+ * applications that use Faces CDI integration without any of the above configuration annotations or <code>faces-config.xml</code>.</li>
  * </ul>
  *
  * <p>
- * Notably excluded are Faces API interfaces and abstract classes (such as <code>UIComponent</code>,
- * <code>Converter</code>, <code>Validator</code>, <code>Renderer</code>, <code>DataModel</code>, and
- * <code>PhaseListener</code>) as well as non-configuration annotations (such as <code>ListenerFor</code>,
- * <code>ResourceDependency</code>, <code>FlowDefinition</code>, and <code>FlowBuilderParameter</code>). In previous
- * versions these were included for two reasons: to broaden Faces auto-detection, and to collect annotated classes for
- * registration via class scanning. Since Faces 5.0, annotation discovery is handled entirely by CDI, so the collected
- * classes are no longer used for registration. As for auto-detection, any application that implements these interfaces
- * or uses these annotations will in practice also have at least one of the types listed above, a
- * <code>faces-config.xml</code>, or an explicit <code>FacesServlet</code> mapping.
+ * Notably excluded are Faces API interfaces and abstract classes (such as <code>UIComponent</code>, <code>Converter</code>, <code>Validator</code>,
+ * <code>Renderer</code>, <code>DataModel</code>, and <code>PhaseListener</code>) as well as non-configuration annotations (such as <code>ListenerFor</code>,
+ * <code>ResourceDependency</code>, <code>FlowDefinition</code>, and <code>FlowBuilderParameter</code>). In previous versions these were included for two
+ * reasons: to broaden Faces auto-detection, and to collect annotated classes for registration via class scanning. Since Faces 5.0, annotation discovery is
+ * handled entirely by CDI, so the collected classes are no longer used for registration. As for auto-detection, any application that implements these
+ * interfaces or uses these annotations will in practice also have at least one of the types listed above, a <code>faces-config.xml</code>, or an explicit
+ * <code>FacesServlet</code> mapping.
  */
-@HandlesTypes({
-    ClientWindowScoped.class, FacesBehavior.class, FacesBehaviorRenderer.class, FacesComponent.class, FacesConfig.class,
-    FacesConverter.class, FacesDataModel.class, FacesRenderer.class, FacesValidator.class, FlowScoped.class,
-    NamedEvent.class, Push.class, ViewScoped.class,
-})
+@HandlesTypes(
+    {
+        ClientWindowScoped.class, FacesBehavior.class, FacesBehaviorRenderer.class, FacesComponent.class, FacesConfig.class,
+        FacesConverter.class, FacesDataModel.class, FacesRenderer.class, FacesValidator.class, FlowScoped.class,
+        NamedEvent.class, Push.class, ViewScoped.class,
+    }
+)
 public class FacesInitializer implements ServletContainerInitializer {
 
     // NOTE: Logging should not be used with this class.
@@ -193,7 +190,10 @@ public class FacesInitializer implements ServletContainerInitializer {
             }
             catch (Exception | LinkageError e) {
                 // Weld is being used but it failed for unclear reason while CDI should be enabled. That's not OK, so rethrow as ServletException.
-                throw new ServletException("Reinitializing Weld failed - giving up, please make sure your project contains at least one bean class with a bean defining annotation and retry", e);
+                throw new ServletException(
+                    "Reinitializing Weld failed - giving up, please make sure your project contains at least one bean class with a bean defining annotation and retry",
+                    e
+                );
             }
         }
     }

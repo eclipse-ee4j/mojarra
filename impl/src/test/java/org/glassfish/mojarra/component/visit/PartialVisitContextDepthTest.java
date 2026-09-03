@@ -33,10 +33,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 /**
- * The number of naming-container separators in a client id equals its naming-container nesting depth, which real
- * views keep to a handful. PartialVisitContext registers one ancestor-subtree entry per separator, so the registered
- * depth is bounded to keep an id built from many separators from growing the map out of proportion, while the full
- * client id itself is still kept for the visit.
+ * The number of naming-container separators in a client id equals its naming-container nesting depth, which real views keep to a handful. PartialVisitContext
+ * registers one ancestor-subtree entry per separator, so the registered depth is bounded to keep an id built from many separators from growing the map out of
+ * proportion, while the full client id itself is still kept for the visit.
  */
 class PartialVisitContextDepthTest {
 
@@ -69,8 +68,10 @@ class PartialVisitContextDepthTest {
         String clientId = String.valueOf(UINamingContainer.SEPARATOR_CHAR).repeat(SEPARATORS);
         PartialVisitContext visitContext = new PartialVisitContext(contextWithDefaultSeparator(), List.of(clientId));
 
-        assertEquals(MAX_REGISTERED_DEPTH, subtreeClientIds(visitContext).size(),
-                "registered ancestor-subtree depth must stay bounded");
+        assertEquals(
+            MAX_REGISTERED_DEPTH, subtreeClientIds(visitContext).size(),
+            "registered ancestor-subtree depth must stay bounded"
+        );
         assertTrue(visitContext.getIdsToVisit().contains(clientId), "the full client id must still be kept");
     }
 
@@ -82,4 +83,5 @@ class PartialVisitContextDepthTest {
 
         assertEquals(3, subtreeClientIds(visitContext).size());
     }
+
 }

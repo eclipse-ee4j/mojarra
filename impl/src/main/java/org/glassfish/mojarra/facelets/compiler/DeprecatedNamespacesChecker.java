@@ -30,7 +30,7 @@ import org.glassfish.mojarra.facelets.util.FunctionLibrary;
 
 /**
  * Utility class for checking and reporting deprecated namespace usage.
- * 
+ *
  * @since 5.0
  */
 final class DeprecatedNamespacesChecker {
@@ -61,12 +61,9 @@ final class DeprecatedNamespacesChecker {
     }
 
     /**
-     * If given namespace is null, return null.
-     * If FacesContext is null, return null.
-     * If ProjectStage is not Development, return null.
-     * If given namespace was already previously checked, return null.
-     * If given namespace is not deprecated, return null.
-     * If given namespace is deprecated, return replacement namespace.
+     * If given namespace is null, return null. If FacesContext is null, return null. If ProjectStage is not Development, return null. If given namespace was
+     * already previously checked, return null. If given namespace is not deprecated, return null. If given namespace is deprecated, return replacement
+     * namespace.
      */
     static String shouldWarnAboutForDeprecatedNamespace(String namespace) {
         if (namespace == null || foundNamespaces.contains(namespace)) {
@@ -74,7 +71,7 @@ final class DeprecatedNamespacesChecker {
         }
 
         var context = FacesContext.getCurrentInstance();
-        
+
         if (context == null || context.getApplication().getProjectStage() != ProjectStage.Development) {
             return null;
         }
@@ -82,4 +79,5 @@ final class DeprecatedNamespacesChecker {
         foundNamespaces.add(namespace);
         return DEPRECATED_NAMESPACE_REPLACEMENTS.get(namespace);
     }
+
 }

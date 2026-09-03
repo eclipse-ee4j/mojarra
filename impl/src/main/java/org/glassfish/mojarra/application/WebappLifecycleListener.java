@@ -46,18 +46,16 @@ import org.glassfish.mojarra.renderkit.StateHelper;
  * Central location for web application lifecycle events.
  * </p>
  * <p>
- * The main purpose of this class is detect when we should be invoking methods marked with the <code>@PreDestroy</code>
- * annotation.
+ * The main purpose of this class is detect when we should be invoking methods marked with the <code>@PreDestroy</code> annotation.
  * </p>
  */
 public class WebappLifecycleListener {
 
-    private static final String[] SESSION_LISTENER_ATTRIBUTE_NAMES = {VIEW_SCOPE_MANAGER, CLIENT_WINDOW_SCOPE_MANAGER};
+    private static final String[] SESSION_LISTENER_ATTRIBUTE_NAMES = { VIEW_SCOPE_MANAGER, CLIENT_WINDOW_SCOPE_MANAGER };
 
     private ServletContext servletContext;
     private ApplicationAssociate applicationAssociate;
     private final Set<HttpSession> activeSessions = ConcurrentHashMap.newKeySet();
-
 
     // ------------------------------------------------------------ Constructors
 
@@ -69,7 +67,6 @@ public class WebappLifecycleListener {
     }
 
     // ---------------------------------------------------------- Public Methods
-
 
     /**
      * The request is about to come into scope of the web application.
@@ -86,7 +83,6 @@ public class WebappLifecycleListener {
         ApplicationAssociate.setCurrentInstance(getAssociate());
     }
 
-
     /**
      * The request is about to go out of scope of the web application.
      *
@@ -101,12 +97,14 @@ public class WebappLifecycleListener {
                     session.setAttribute(ACTIVE_VIEW_MAPS, session.getAttribute(ACTIVE_VIEW_MAPS));
                 }
             }
-        } catch (Throwable t) {
+        }
+        catch (Throwable t) {
             FacesContext context = new InitFacesContext(event.getServletContext());
             context.getApplication()
-                   .publishEvent(context, ExceptionQueuedEvent.class, new ExceptionQueuedEventContext(context, t));
+                .publishEvent(context, ExceptionQueuedEvent.class, new ExceptionQueuedEventContext(context, t));
             context.getExceptionHandler().handle();
-        } finally {
+        }
+        finally {
             ApplicationAssociate.setCurrentInstance(null);
         }
     }
@@ -138,7 +136,7 @@ public class WebappLifecycleListener {
         FlowCDIContext.sessionDestroyed(event);
 
         for (String listenerName : SESSION_LISTENER_ATTRIBUTE_NAMES) {
-            HttpSessionListener listener = (HttpSessionListener)servletContext.getAttribute(listenerName);
+            HttpSessionListener listener = (HttpSessionListener) servletContext.getAttribute(listenerName);
             if (listener != null) {
                 listener.sessionDestroyed(event);
             }
@@ -146,8 +144,8 @@ public class WebappLifecycleListener {
     }
 
     /**
-     * Notification that the web application initialization process is starting. All ServletContextListeners are notified of
-     * context initialization before any filter or servlet in the web application is initialized.
+     * Notification that the web application initialization process is starting. All ServletContextListeners are notified of context initialization before any
+     * filter or servlet in the web application is initialized.
      *
      * @param event the notification event
      */
@@ -158,8 +156,8 @@ public class WebappLifecycleListener {
     }
 
     /**
-     * Notification that the servlet context is about to be shut down. All servlets and filters have been destroy()ed before
-     * any ServletContextListeners are notified of context destruction.
+     * Notification that the servlet context is about to be shut down. All servlets and filters have been destroy()ed before any ServletContextListeners are
+     * notified of context destruction.
      *
      * @param event the notification event
      */
@@ -170,7 +168,6 @@ public class WebappLifecycleListener {
     public List<HttpSession> getActiveSessions() {
         return new ArrayList<>(activeSessions);
     }
-
 
     // --------------------------------------------------------- Private Methods
 
@@ -193,4 +190,5 @@ public class WebappLifecycleListener {
     private boolean haveProtectedViews(ApplicationAssociate associate) {
         return !associate.getApplication().getViewHandler().getProtectedViewsUnmodifiable().isEmpty();
     }
+
 }

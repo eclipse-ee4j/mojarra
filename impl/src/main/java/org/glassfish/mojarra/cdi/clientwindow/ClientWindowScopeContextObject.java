@@ -22,6 +22,7 @@ import java.io.Serializable;
  * An object used by ClientWindowScopeContext to keep track of contextual and creational context.
  */
 class ClientWindowScopeContextObject<T> implements Serializable {
+
     private static final long serialVersionUID = 302829795078365733L;
 
     private String passivationCapableId;
@@ -51,4 +52,5 @@ class ClientWindowScopeContextObject<T> implements Serializable {
     public void setContextualInstance(T contextualInstance) {
         this.contextualInstance = contextualInstance;
     }
+
 }

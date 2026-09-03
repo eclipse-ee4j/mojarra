@@ -22,11 +22,9 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * Build-time identity of this Mojarra build, derived from {@code mojarra.properties}
- * which is token-substituted by maven-resources-plugin at build time. The properties
- * file is shipped on the impl classpath at {@code /org/glassfish/mojarra/mojarra.properties}.
- * Reading it via the classpath survives exploded WARs and IDE test runs where the
- * JAR MANIFEST is not available.
+ * Build-time identity of this Mojarra build, derived from {@code mojarra.properties} which is token-substituted by maven-resources-plugin at build time. The
+ * properties file is shipped on the impl classpath at {@code /org/glassfish/mojarra/mojarra.properties}. Reading it via the classpath survives exploded WARs
+ * and IDE test runs where the JAR MANIFEST is not available.
  */
 public final class MojarraVersion {
 
@@ -59,7 +57,8 @@ public final class MojarraVersion {
                 return null;
             }
             props.load(in);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             return null;
         }
         return props.getProperty("version");
@@ -85,7 +84,8 @@ public final class MojarraVersion {
             int major = parts.length > 0 ? Integer.parseInt(parts[0]) : 0;
             int minor = parts.length > 1 ? Integer.parseInt(parts[1]) : 0;
             return major * 10000 + minor * 100;
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             return 0;
         }
     }
@@ -97,25 +97,27 @@ public final class MojarraVersion {
         try {
             String[] parts = v.split(VERSION_SEPARATOR);
             return parts.length > 2 ? Integer.parseInt(parts[2]) : 0;
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             return 0;
         }
     }
 
     /**
-     * Returns an immutable map of {@code version} / {@code specversion} / {@code implversion}
-     * suitable for publishing as an application-scoped attribute so EL can read it. {@code version}
-     * falls back to {@code "DEV-SNAPSHOT"} when {@link #IMPLEMENTATION_VERSION} is {@code null}
-     * (i.e. {@code mojarra.properties} was not loadable from the classpath).
+     * Returns an immutable map of {@code version} / {@code specversion} / {@code implversion} suitable for publishing as an application-scoped attribute so EL
+     * can read it. {@code version} falls back to {@code "DEV-SNAPSHOT"} when {@link #IMPLEMENTATION_VERSION} is {@code null} (i.e. {@code mojarra.properties}
+     * was not loadable from the classpath).
      */
     public static Map<String, Object> toMap() {
         return Map.of(
             "version", IMPLEMENTATION_VERSION != null ? IMPLEMENTATION_VERSION : "DEV-SNAPSHOT",
             "specversion", SPECIFICATION_VERSION_INT,
-            "implversion", IMPLEMENTATION_VERSION_INT);
+            "implversion", IMPLEMENTATION_VERSION_INT
+        );
     }
 
     private MojarraVersion() {
         throw new AssertionError();
     }
+
 }

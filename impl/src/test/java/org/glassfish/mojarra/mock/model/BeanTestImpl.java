@@ -18,7 +18,8 @@ package org.glassfish.mojarra.mock.model;
 
 /**
  * <p>
- * JavaBean for data model tests.</p>
+ * JavaBean for data model tests.
+ * </p>
  */
 public class BeanTestImpl {
 
@@ -174,4 +175,5 @@ public class BeanTestImpl {
     public void setWriteOnlyProperty(String writeOnlyProperty) {
         this.writeOnlyProperty = writeOnlyProperty;
     }
+
 }

@@ -42,8 +42,7 @@ import org.glassfish.mojarra.renderkit.RenderKitUtils;
 import org.glassfish.mojarra.util.RequestStateManager;
 
 /**
- * <B>SelectManyCheckboxListRenderer</B> is a class that renders the current value of <code>UISelectMany</code> component
- * as a list of checkboxes.
+ * <B>SelectManyCheckboxListRenderer</B> is a class that renders the current value of <code>UISelectMany</code> component as a list of checkboxes.
  */
 
 public class SelectManyCheckboxListRenderer extends MenuRenderer {
@@ -69,8 +68,9 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
         Boolean newTableRow = false;
         int border = 0;
 
-        alignStr = component instanceof HtmlSelectManyCheckbox checkbox ? checkbox.getLayout()
-                : (String) component.getAttributes().get("layout");
+        alignStr = component instanceof HtmlSelectManyCheckbox checkbox
+            ? checkbox.getLayout()
+            : (String) component.getAttributes().get("layout");
         if (null != alignStr) {
             if (alignStr.equalsIgnoreCase("list")) {
                 newTableRow = null;
@@ -136,7 +136,8 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
                     writer.endElement("tr");
                     writer.writeText("\n", component, null);
                 }
-            } else {
+            }
+            else {
                 renderOption(context, component, converter, curItem, currentSelections, submittedValues, newTableRow, idx, optionInfo);
             }
         }
@@ -162,7 +163,8 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
         String actualBehaviorId;
         if (behaviorSourceId.lastIndexOf(sepChar) != -1) {
             actualBehaviorId = behaviorSourceId.substring(0, behaviorSourceId.lastIndexOf(sepChar));
-        } else {
+        }
+        else {
             actualBehaviorId = behaviorSourceId;
         }
 
@@ -214,8 +216,11 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
 
     }
 
-    protected void renderOption(FacesContext context, UIComponent component, Converter<?> converter, SelectItem curItem, Object currentSelections,
-            Object[] submittedValues, Boolean newTableRow, int itemNumber, OptionComponentInfo optionInfo) throws IOException {
+    protected void renderOption(
+        FacesContext context, UIComponent component, Converter<?> converter, SelectItem curItem, Object currentSelections,
+        Object[] submittedValues, Boolean newTableRow, int itemNumber, OptionComponentInfo optionInfo
+    ) throws IOException
+    {
 
         String valueString = getFormattedValue(context, component, curItem.getValue(), converter);
 
@@ -224,7 +229,8 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
         if (submittedValues != null) {
             valuesArray = submittedValues;
             itemValue = valueString;
-        } else {
+        }
+        else {
             valuesArray = currentSelections;
             itemValue = curItem.getValue();
         }
@@ -270,7 +276,8 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
         // Apply HTML 4.x attributes specified on UISelectMany component to all
         // items in the list except styleClass and style which are rendered as
         // attributes of outer most table.
-        RenderKitUtils.renderPassThruAttributes(context, writer, component, idString, false, ATTRIBUTES, HtmlElementEvent.click, FacesComponentEvent.valueChange);
+        RenderKitUtils
+            .renderPassThruAttributes(context, writer, component, idString, false, ATTRIBUTES, HtmlElementEvent.click, FacesComponentEvent.valueChange);
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
         writer.endElement("input");
@@ -286,7 +293,8 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
         // If disabledClass or enabledClass set, add it to the label's class
         if (optionInfo.isDisabled() || curItem.isDisabled()) {
             style = optionInfo.getDisabledClass();
-        } else { // enabled
+        }
+        else { // enabled
             style = optionInfo.getEnabledClass();
         }
         if (style != null) {
@@ -295,7 +303,8 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
         // If selectedClass or unselectedClass set, add it to the label's class
         if (isSelected(context, component, itemValue, valuesArray, converter)) {
             style = optionInfo.getSelectedClass();
-        } else { // not selected
+        }
+        else { // not selected
             style = optionInfo.getUnselectedClass();
         }
         if (style != null) {
@@ -316,7 +325,8 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
             // to determine if it content written should
             // be escaped or not.
             writer.write(itemLabel);
-        } else {
+        }
+        else {
             writer.writeText(itemLabel, component, "label");
         }
 

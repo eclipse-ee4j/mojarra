@@ -56,4 +56,5 @@ public class UIOutputTestCase extends ValueHolderTestCaseBase {
         component.setRendererType(null);
         return component;
     }
+
 }

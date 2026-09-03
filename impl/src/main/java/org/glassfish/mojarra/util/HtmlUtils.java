@@ -37,12 +37,16 @@ import org.glassfish.mojarra.RIConstants;
  * Utility class for HTML. Kudos to Adam Winer (Oracle) for much of this code.
  */
 public final class HtmlUtils {
-    private HtmlUtils() {}
+
+    private HtmlUtils() {
+    }
 
     private static final String ISO_8859_1 = StandardCharsets.ISO_8859_1.name();
 
-    private static final Set<String> UTF_CHARSET = Set.of("UTF-8", "UTF-16", "UTF-16BE", "UTF-16LE", "UTF-32", "UTF-32BE", "UTF-32LE",
-            "x-UTF-16LE-BOM", "X-UTF-16LE-BOM", "X-UTF-32BE-BOM", "X-UTF-32LE-BOM", "");
+    private static final Set<String> UTF_CHARSET = Set.of(
+        "UTF-8", "UTF-16", "UTF-16BE", "UTF-16LE", "UTF-32", "UTF-32BE", "UTF-32LE",
+        "x-UTF-16LE-BOM", "X-UTF-16LE-BOM", "X-UTF-32BE-BOM", "X-UTF-32LE-BOM", ""
+    );
 
     // -------------------------------------------------
     // The following methods include the handling of
@@ -56,11 +60,10 @@ public final class HtmlUtils {
     /**
      * Write char array text, escaping HTML special characters as needed.
      *
-     * <p>Uses a range-emit strategy: walks the input character by character, tracking the start
-     * of the current safe run. When a character requires escaping (or dropping), the pending
-     * safe run is bulk-written to the underlying writer via {@code Writer.write(char[], off, len)},
-     * the escape sequence is emitted, and a new run begins. At the end the remaining tail is
-     * flushed. For plain ASCII content this collapses to a single underlying write.
+     * <p>
+     * Uses a range-emit strategy: walks the input character by character, tracking the start of the current safe run. When a character requires escaping (or
+     * dropping), the pending safe run is bulk-written to the underlying writer via {@code Writer.write(char[], off, len)}, the escape sequence is emitted, and
+     * a new run begins. At the end the remaining tail is flushed. For plain ASCII content this collapses to a single underlying write.
      *
      * @param out the writer to emit to
      * @param escapeUnicode if true, chars &gt; 0xFF are emitted as numeric character references
@@ -70,7 +73,9 @@ public final class HtmlUtils {
      * @param length number of characters to write
      * @param forXml if true, drop characters not valid in XML (per XML 1.0 spec)
      */
-    public static void writeText(Writer out, boolean escapeUnicode, boolean escapeIsocode, char[] text, int start, int length, boolean forXml) throws IOException {
+    public static void writeText(Writer out, boolean escapeUnicode, boolean escapeIsocode, char[] text, int start, int length, boolean forXml)
+        throws IOException
+    {
         int end = start + length;
         int runStart = start;
 
@@ -94,30 +99,39 @@ public final class HtmlUtils {
                     out.write(ch);
                 }
                 // else: drop (already advanced runStart past it)
-            } else if (ch == '<') {
+            }
+            else if (ch == '<') {
                 out.write(LT_CHARS);
-            } else if (ch == '>') {
+            }
+            else if (ch == '>') {
                 out.write(GT_CHARS);
-            } else if (ch == '&') {
+            }
+            else if (ch == '&') {
                 out.write(AMP_CHARS);
-            } else if (ch < 0xA0) {
+            }
+            else if (ch < 0xA0) {
                 // 0x7F (DEL) and 0x80-0x9F (Latin-1 Supplement control range): pass through as-is,
                 // matching the legacy behavior. These weren't on the fast path because ch < 0x7f
                 // bounded it.
                 out.write(ch);
-            } else if (ch <= 0xff) {
+            }
+            else if (ch <= 0xff) {
                 if (escapeIsocode) {
                     out.write(sISO8859_1_Entities[ch - 0xA0]);
-                } else {
+                }
+                else {
                     out.write(ch);
                 }
-            } else {
+            }
+            else {
                 // ch > 0xff
                 if (escapeUnicode) {
                     writeDecRefDirect(out, ch);
-                } else if (forXml && !(isAllowedXmlCharacter(ch) || isAllowedSurrogateCharacter(ch, i, text))) {
+                }
+                else if (forXml && !(isAllowedXmlCharacter(ch) || isAllowedSurrogateCharacter(ch, i, text))) {
                     // drop (already advanced runStart)
-                } else {
+                }
+                else {
                     out.write(ch);
                 }
             }
@@ -129,9 +143,8 @@ public final class HtmlUtils {
     }
 
     /**
-     * Write String text, escaping HTML special characters as needed. Routes through the char[]
-     * variant via {@link String#getChars(int, int, char[], int)}; the {@code textBuff} parameter
-     * is reused unless the input exceeds its capacity (uncommon for typical attribute values).
+     * Write String text, escaping HTML special characters as needed. Routes through the char[] variant via {@link String#getChars(int, int, char[], int)}; the
+     * {@code textBuff} parameter is reused unless the input exceeds its capacity (uncommon for typical attribute values).
      */
     public static void writeText(Writer out, boolean escapeUnicode, boolean escapeIsocode, String text, char[] textBuff, boolean forXml) throws IOException {
         int length = text.length();
@@ -144,12 +157,14 @@ public final class HtmlUtils {
     }
 
     /**
-     * Write String attribute, escaping HTML special characters. Routes through the char[] variant
-     * via {@link String#getChars(int, int, char[], int)}; the {@code textBuff} parameter is reused
-     * unless the input exceeds its capacity.
+     * Write String attribute, escaping HTML special characters. Routes through the char[] variant via {@link String#getChars(int, int, char[], int)}; the
+     * {@code textBuff} parameter is reused unless the input exceeds its capacity.
      */
-    public static void writeAttribute(Writer out, boolean escapeUnicode, boolean escapeIsocode, String text, char[] textBuff,
-            boolean isScriptInAttributeValueEnabled, boolean forXml) throws IOException {
+    public static void writeAttribute(
+        Writer out, boolean escapeUnicode, boolean escapeIsocode, String text, char[] textBuff,
+        boolean isScriptInAttributeValueEnabled, boolean forXml
+    ) throws IOException
+    {
         int length = text.length();
         if (length == 0) {
             return;
@@ -162,21 +177,22 @@ public final class HtmlUtils {
     /**
      * Write char array attribute, escaping HTML special characters as needed.
      *
-     * <p>Range-emit strategy (see {@link #writeText(Writer, boolean, boolean, char[], int, int, boolean)}):
-     * walks the input character by character, tracking the start of the current safe run, and
-     * bulk-writes safe runs to the underlying writer. Differences from {@code writeText}:
+     * <p>
+     * Range-emit strategy (see {@link #writeText(Writer, boolean, boolean, char[], int, int, boolean)}): walks the input character by character, tracking the
+     * start of the current safe run, and bulk-writes safe runs to the underlying writer. Differences from {@code writeText}:
      * <ul>
-     *   <li>The {@code "} double quote is escaped to {@code &quot;}</li>
-     *   <li>An ampersand immediately followed by an open brace is NOT escaped (HTML 4 spec B.7.1 -
-     *       Netscape-style JavaScript object literal in attribute value)</li>
-     *   <li>When {@code !isScriptInAttributeValueEnabled} (default), encountering the literal string
-     *       {@code "script:"} in the value causes the method to return WITHOUT writing the pending
-     *       safe run -- effectively dropping the entire attribute output as a defence against
-     *       JavaScript-URL injection.</li>
+     * <li>The {@code "} double quote is escaped to {@code &quot;}</li>
+     * <li>An ampersand immediately followed by an open brace is NOT escaped (HTML 4 spec B.7.1 - Netscape-style JavaScript object literal in attribute
+     * value)</li>
+     * <li>When {@code !isScriptInAttributeValueEnabled} (default), encountering the literal string {@code "script:"} in the value causes the method to return
+     * WITHOUT writing the pending safe run -- effectively dropping the entire attribute output as a defence against JavaScript-URL injection.</li>
      * </ul>
      */
-    public static void writeAttribute(Writer out, boolean escapeUnicode, boolean escapeIsocode, char[] text, int start, int length,
-            boolean isScriptInAttributeValueEnabled, boolean forXml) throws IOException {
+    public static void writeAttribute(
+        Writer out, boolean escapeUnicode, boolean escapeIsocode, char[] text, int start, int length,
+        boolean isScriptInAttributeValueEnabled, boolean forXml
+    ) throws IOException
+    {
         int end = start + length;
         int runStart = start;
 
@@ -190,9 +206,11 @@ public final class HtmlUtils {
                 // Special case: 's' may begin the literal "script:". Check inline so we can
                 // abort BEFORE flushing the safe run (matching the legacy buffer-discard behavior
                 // when the script:-disabled path returns mid-method).
-                if (ch == 's' && !isScriptInAttributeValueEnabled && i + 6 < end
+                if (
+                    ch == 's' && !isScriptInAttributeValueEnabled && i + 6 < end
                         && text[i + 1] == 'c' && text[i + 2] == 'r' && text[i + 3] == 'i'
-                        && text[i + 4] == 'p' && text[i + 5] == 't' && text[i + 6] == ':') {
+                        && text[i + 4] == 'p' && text[i + 5] == 't' && text[i + 6] == ':'
+                ) {
                     return;
                 }
                 continue;
@@ -209,36 +227,47 @@ public final class HtmlUtils {
                     out.write(ch);
                 }
                 // else: drop (already advanced runStart past it)
-            } else if (ch == '<') {
+            }
+            else if (ch == '<') {
                 out.write(LT_CHARS);
-            } else if (ch == '>') {
+            }
+            else if (ch == '>') {
                 out.write(GT_CHARS);
-            } else if (ch == '&') {
+            }
+            else if (ch == '&') {
                 // HTML 4.0 section B.7.1: '&{' is the start of a JS object literal in attribute
                 // values; preserve the '&' as-is.
                 if (i + 1 < end && text[i + 1] == '{') {
                     out.write('&');
-                } else {
+                }
+                else {
                     out.write(AMP_CHARS);
                 }
-            } else if (ch == '"') {
+            }
+            else if (ch == '"') {
                 out.write(QUOT_CHARS);
-            } else if (ch < 0xA0) {
+            }
+            else if (ch < 0xA0) {
                 // 0x7F (DEL) and 0x80-0x9F: pass through as-is, matching legacy behavior.
                 out.write(ch);
-            } else if (ch <= 0xff) {
+            }
+            else if (ch <= 0xff) {
                 if (escapeIsocode) {
                     out.write(sISO8859_1_Entities[ch - 0xA0]);
-                } else {
+                }
+                else {
                     out.write(ch);
                 }
-            } else {
+            }
+            else {
                 // ch > 0xff
                 if (escapeUnicode) {
                     writeDecRefDirect(out, ch);
-                } else if (forXml && !(isAllowedXmlCharacter(ch) || isAllowedSurrogateCharacter(ch, i, text))) {
+                }
+                else if (forXml && !(isAllowedXmlCharacter(ch) || isAllowedSurrogateCharacter(ch, i, text))) {
                     // drop (runStart already advanced)
-                } else {
+                }
+                else {
                     out.write(ch);
                 }
             }
@@ -250,10 +279,9 @@ public final class HtmlUtils {
     }
 
     /**
-     * Emits a numeric character reference {@code &#NNN;} for the given character directly via
-     * {@link Writer#write(int)} calls -- no intermediate buffer. Always uses the numeric form,
-     * which is universally valid across HTML 4, HTML5, XHTML and XML (whereas named entities
-     * like {@code &euro;} are invalid in XHTML/XML without a DTD declaration).
+     * Emits a numeric character reference {@code &#NNN;} for the given character directly via {@link Writer#write(int)} calls -- no intermediate buffer. Always
+     * uses the numeric form, which is universally valid across HTML 4, HTML5, XHTML and XML (whereas named entities like {@code &euro;} are invalid in
+     * XHTML/XML without a DTD declaration).
      */
     private static void writeDecRefDirect(Writer out, char ch) throws IOException {
         out.write(DEC_REF_START);
@@ -268,7 +296,8 @@ public final class HtmlUtils {
             out.write('0' + v / 10);
             v %= 10;
             out.write('0' + v);
-        } else if (v >= 1000) {
+        }
+        else if (v >= 1000) {
             out.write('0' + v / 1000);
             v %= 1000;
             out.write('0' + v / 100);
@@ -276,17 +305,20 @@ public final class HtmlUtils {
             out.write('0' + v / 10);
             v %= 10;
             out.write('0' + v);
-        } else if (v >= 100) {
+        }
+        else if (v >= 100) {
             out.write('0' + v / 100);
             v %= 100;
             out.write('0' + v / 10);
             v %= 10;
             out.write('0' + v);
-        } else if (v >= 10) {
+        }
+        else if (v >= 10) {
             out.write('0' + v / 10);
             v %= 10;
             out.write('0' + v);
-        } else {
+        }
+        else {
             out.write('0' + v);
         }
         out.write(';');
@@ -299,7 +331,7 @@ public final class HtmlUtils {
 
     static boolean isAllowedXmlCharacter(char ch) {
         // See https://www.w3.org/TR/xml/#charsets Character Range
-        return ch < 0x20 ? isPrintableControlChar(ch, true) : ch <= 0xD7FF || ch >= 0xE000 && ch <= 0xFFFD; 
+        return ch < 0x20 ? isPrintableControlChar(ch, true) : ch <= 0xD7FF || ch >= 0xE000 && ch <= 0xFFFD;
     }
 
     private static boolean isAllowedSurrogateCharacter(char ch, int index, Object originalTextOrChars) {
@@ -340,21 +372,19 @@ public final class HtmlUtils {
     /**
      * Writes a string into URL-encoded format out to a Writer.
      *
-     * <p>All characters before the start of the query string will be encoded using UTF-8.
-     * Characters after the start of the query string will be encoded using the client-defined
-     * {@code queryEncoding} -- this needs to match the encoding the server will use to decode
-     * the query string (HTML forms generate query strings using the character encoding the HTML
-     * itself was generated in).
+     * <p>
+     * All characters before the start of the query string will be encoded using UTF-8. Characters after the start of the query string will be encoded using the
+     * client-defined {@code queryEncoding} -- this needs to match the encoding the server will use to decode the query string (HTML forms generate query
+     * strings using the character encoding the HTML itself was generated in).
      *
-     * <p>All characters will be encoded as needed for URLs, with the exception of the percent
-     * symbol ({@code %}). Because that's the character used for escaping itself, attempting to
-     * escape it would double-encode anything already pre-encoded. It also may be necessary to
-     * pre-escape some characters; in particular, the first {@code ?} is treated as the start of
-     * the query string.
+     * <p>
+     * All characters will be encoded as needed for URLs, with the exception of the percent symbol ({@code %}). Because that's the character used for escaping
+     * itself, attempting to escape it would double-encode anything already pre-encoded. It also may be necessary to pre-escape some characters; in particular,
+     * the first {@code ?} is treated as the start of the query string.
      *
-     * <p>Delegates to {@link #writeURL(Writer, char[], int, int, String)} via {@code getChars} --
-     * a single range-emit pass over the char buffer is faster than per-char {@code charAt} +
-     * branch-per-char for any non-trivial input, and avoids duplicating the per-character logic.
+     * <p>
+     * Delegates to {@link #writeURL(Writer, char[], int, int, String)} via {@code getChars} -- a single range-emit pass over the char buffer is faster than
+     * per-char {@code charAt} + branch-per-char for any non-trivial input, and avoids duplicating the per-character logic.
      *
      * @param out a Writer for the output
      * @param text the unencoded (or partially encoded) String
@@ -374,24 +404,24 @@ public final class HtmlUtils {
     /**
      * Writes a char-array slice into URL-encoded format out to a Writer.
      *
-     * <p>Range-emit strategy: walk the input character by character, tracking the start of the
-     * current safe run, and bulk-write safe runs to the underlying Writer instead of dispatching
-     * a single {@code out.write(ch)} per character. The safe-run check is one bounds-check plus
-     * two exclusions ({@code ch > 32 && ch < 127 && ch != '"' && ch != '?'}). Inputs consisting
-     * entirely of unreserved ASCII (the common case) collapse to a single underlying write.
+     * <p>
+     * Range-emit strategy: walk the input character by character, tracking the start of the current safe run, and bulk-write safe runs to the underlying Writer
+     * instead of dispatching a single {@code out.write(ch)} per character. The safe-run check is one bounds-check plus two exclusions
+     * ({@code ch > 32 && ch < 127 && ch != '"' && ch != '?'}). Inputs consisting entirely of unreserved ASCII (the common case) collapse to a single underlying
+     * write.
      *
-     * <p>For chars outside the safe run:
+     * <p>
+     * For chars outside the safe run:
      * <ul>
-     *   <li>{@code ?} -- writes {@code ?}, then delegates the remainder to
-     *       {@link #encodeURIString(Writer, char[], String, int, int)} using {@code queryEncoding}
-     *       and returns.</li>
-     *   <li>{@code "} -- escaped to {@code %22} (HTML attribute value safety).</li>
-     *   <li>{@code ch < 33} or {@code ch > 126} -- percent-encoded through UTF-8.</li>
+     * <li>{@code ?} -- writes {@code ?}, then delegates the remainder to {@link #encodeURIString(Writer, char[], String, int, int)} using {@code queryEncoding}
+     * and returns.</li>
+     * <li>{@code "} -- escaped to {@code %22} (HTML attribute value safety).</li>
+     * <li>{@code ch < 33} or {@code ch > 126} -- percent-encoded through UTF-8.</li>
      * </ul>
      *
-     * <p>Importantly, {@code %} is NOT encoded: encoding it would double-encode anything already
-     * pre-encoded and would defeat callers who need to embed already-encoded {@code ?}/{@code &}
-     * etc.
+     * <p>
+     * Importantly, {@code %} is NOT encoded: encoding it would double-encode anything already pre-encoded and would defeat callers who need to embed
+     * already-encoded {@code ?}/{@code &} etc.
      *
      * @param out a Writer for the output
      * @param textBuff char[] containing the content to write
@@ -462,23 +492,22 @@ public final class HtmlUtils {
     /**
      * Encodes a char-array slice into URI-encoded form (rather similar to {@link java.net.URLEncoder}).
      *
-     * <p>Range-emit: walks the input tracking the start of the current safe run, and bulk-writes
-     * safe runs to the underlying Writer. A character is "safe" if it's in {@link #DONT_ENCODE_SET}
-     * AND not {@code &} (needs lookahead for {@code &amp;} non-double-escape) AND not {@code #}
-     * (sets fragment mode). Within fragment mode (after the first {@code #}, per RFC 3986 section
-     * 3.5) the {@code ?} character is also safe.
+     * <p>
+     * Range-emit: walks the input tracking the start of the current safe run, and bulk-writes safe runs to the underlying Writer. A character is "safe" if it's
+     * in {@link #DONT_ENCODE_SET} AND not {@code &} (needs lookahead for {@code &amp;} non-double-escape) AND not {@code #} (sets fragment mode). Within
+     * fragment mode (after the first {@code #}, per RFC 3986 section 3.5) the {@code ?} character is also safe.
      *
-     * <p>Characters not in the safe run are dispatched as follows:
+     * <p>
+     * Characters not in the safe run are dispatched as follows:
      * <ul>
-     *   <li>{@code &} -- if immediately followed by {@code amp;}, write the bare {@code &}
-     *       (don't double-escape); otherwise emit {@code &amp;}.</li>
-     *   <li>{@code #} -- write {@code #} and enter fragment mode.</li>
-     *   <li>Anything else -- percent-encode through the requested external encoding.</li>
+     * <li>{@code &} -- if immediately followed by {@code amp;}, write the bare {@code &} (don't double-escape); otherwise emit {@code &amp;}.</li>
+     * <li>{@code #} -- write {@code #} and enter fragment mode.</li>
+     * <li>Anything else -- percent-encode through the requested external encoding.</li>
      * </ul>
      *
-     * <p>The {@link FastByteArrayOutputStream}/{@link OutputStreamWriter} pair used for non-ASCII
-     * percent-encoding is lazily allocated on first need and shared across all encode calls in
-     * a single invocation -- matching the original allocation amortization.
+     * <p>
+     * The {@link FastByteArrayOutputStream}/{@link OutputStreamWriter} pair used for non-ASCII percent-encoding is lazily allocated on first need and shared
+     * across all encode calls in a single invocation -- matching the original allocation amortization.
      */
     private static void encodeURIString(Writer out, char[] textBuff, String encoding, int start, int end) throws IOException {
         int runStart = start;
@@ -510,7 +539,8 @@ public final class HtmlUtils {
             if (ch == '&') {
                 if (i + 1 < end && isAmpEscaped(textBuff, i + 1)) {
                     out.write('&');
-                } else {
+                }
+                else {
                     out.write(AMP_CHARS);
                 }
                 continue;
@@ -530,19 +560,21 @@ public final class HtmlUtils {
     }
 
     /**
-     * Percent-encode a single char by routing it through {@code writer} (which wraps {@code buf}
-     * with the desired charset) and emitting {@code %XX} for each resulting byte. The shared
-     * {@code buf}/{@code writer}/{@code charArray} are reused across calls in the same enclosing
-     * encode loop.
+     * Percent-encode a single char by routing it through {@code writer} (which wraps {@code buf} with the desired charset) and emitting {@code %XX} for each
+     * resulting byte. The shared {@code buf}/{@code writer}/{@code charArray} are reused across calls in the same enclosing encode loop.
      */
-    private static void encodeCharPercentBytes(Writer out, char ch, FastByteArrayOutputStream buf,
-            OutputStreamWriter writer, char[] charArray) throws IOException {
+    private static void encodeCharPercentBytes(
+        Writer out, char ch, FastByteArrayOutputStream buf,
+        OutputStreamWriter writer, char[] charArray
+    ) throws IOException
+    {
         try {
             // OutputStreamWriter#write(char) always allocates a one-element char array; we reuse our own.
             charArray[0] = ch;
             writer.write(charArray, 0, 1);
             writer.flush();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             buf.reset();
             return;
         }
@@ -574,7 +606,8 @@ public final class HtmlUtils {
     private static char intToHex(int i) {
         if (i < 10) {
             return (char) ('0' + i);
-        } else {
+        }
+        else {
             return (char) ('A' + (i - 10));
         }
     }
@@ -628,24 +661,24 @@ public final class HtmlUtils {
     // Entities from HTML 4.0, section 24.2.1; character codes 0xA0 to 0xFF
     //
     private static final char[][] sISO8859_1_Entities = new char[][] { "&nbsp;".toCharArray(), "&iexcl;".toCharArray(), "&cent;".toCharArray(),
-            "&pound;".toCharArray(), "&curren;".toCharArray(), "&yen;".toCharArray(), "&brvbar;".toCharArray(), "&sect;".toCharArray(), "&uml;".toCharArray(),
-            "&copy;".toCharArray(), "&ordf;".toCharArray(), "&laquo;".toCharArray(), "&not;".toCharArray(), "&shy;".toCharArray(), "&reg;".toCharArray(),
-            "&macr;".toCharArray(), "&deg;".toCharArray(), "&plusmn;".toCharArray(), "&sup2;".toCharArray(), "&sup3;".toCharArray(), "&acute;".toCharArray(),
-            "&micro;".toCharArray(), "&para;".toCharArray(), "&middot;".toCharArray(), "&cedil;".toCharArray(), "&sup1;".toCharArray(), "&ordm;".toCharArray(),
-            "&raquo;".toCharArray(), "&frac14;".toCharArray(), "&frac12;".toCharArray(), "&frac34;".toCharArray(), "&iquest;".toCharArray(),
-            "&Agrave;".toCharArray(), "&Aacute;".toCharArray(), "&Acirc;".toCharArray(), "&Atilde;".toCharArray(), "&Auml;".toCharArray(),
-            "&Aring;".toCharArray(), "&AElig;".toCharArray(), "&Ccedil;".toCharArray(), "&Egrave;".toCharArray(), "&Eacute;".toCharArray(),
-            "&Ecirc;".toCharArray(), "&Euml;".toCharArray(), "&Igrave;".toCharArray(), "&Iacute;".toCharArray(), "&Icirc;".toCharArray(),
-            "&Iuml;".toCharArray(), "&ETH;".toCharArray(), "&Ntilde;".toCharArray(), "&Ograve;".toCharArray(), "&Oacute;".toCharArray(),
-            "&Ocirc;".toCharArray(), "&Otilde;".toCharArray(), "&Ouml;".toCharArray(), "&times;".toCharArray(), "&Oslash;".toCharArray(),
-            "&Ugrave;".toCharArray(), "&Uacute;".toCharArray(), "&Ucirc;".toCharArray(), "&Uuml;".toCharArray(), "&Yacute;".toCharArray(),
-            "&THORN;".toCharArray(), "&szlig;".toCharArray(), "&agrave;".toCharArray(), "&aacute;".toCharArray(), "&acirc;".toCharArray(),
-            "&atilde;".toCharArray(), "&auml;".toCharArray(), "&aring;".toCharArray(), "&aelig;".toCharArray(), "&ccedil;".toCharArray(),
-            "&egrave;".toCharArray(), "&eacute;".toCharArray(), "&ecirc;".toCharArray(), "&euml;".toCharArray(), "&igrave;".toCharArray(),
-            "&iacute;".toCharArray(), "&icirc;".toCharArray(), "&iuml;".toCharArray(), "&eth;".toCharArray(), "&ntilde;".toCharArray(),
-            "&ograve;".toCharArray(), "&oacute;".toCharArray(), "&ocirc;".toCharArray(), "&otilde;".toCharArray(), "&ouml;".toCharArray(),
-            "&divide;".toCharArray(), "&oslash;".toCharArray(), "&ugrave;".toCharArray(), "&uacute;".toCharArray(), "&ucirc;".toCharArray(),
-            "&uuml;".toCharArray(), "&yacute;".toCharArray(), "&thorn;".toCharArray(), "&yuml;".toCharArray() };
+        "&pound;".toCharArray(), "&curren;".toCharArray(), "&yen;".toCharArray(), "&brvbar;".toCharArray(), "&sect;".toCharArray(), "&uml;".toCharArray(),
+        "&copy;".toCharArray(), "&ordf;".toCharArray(), "&laquo;".toCharArray(), "&not;".toCharArray(), "&shy;".toCharArray(), "&reg;".toCharArray(),
+        "&macr;".toCharArray(), "&deg;".toCharArray(), "&plusmn;".toCharArray(), "&sup2;".toCharArray(), "&sup3;".toCharArray(), "&acute;".toCharArray(),
+        "&micro;".toCharArray(), "&para;".toCharArray(), "&middot;".toCharArray(), "&cedil;".toCharArray(), "&sup1;".toCharArray(), "&ordm;".toCharArray(),
+        "&raquo;".toCharArray(), "&frac14;".toCharArray(), "&frac12;".toCharArray(), "&frac34;".toCharArray(), "&iquest;".toCharArray(),
+        "&Agrave;".toCharArray(), "&Aacute;".toCharArray(), "&Acirc;".toCharArray(), "&Atilde;".toCharArray(), "&Auml;".toCharArray(),
+        "&Aring;".toCharArray(), "&AElig;".toCharArray(), "&Ccedil;".toCharArray(), "&Egrave;".toCharArray(), "&Eacute;".toCharArray(),
+        "&Ecirc;".toCharArray(), "&Euml;".toCharArray(), "&Igrave;".toCharArray(), "&Iacute;".toCharArray(), "&Icirc;".toCharArray(),
+        "&Iuml;".toCharArray(), "&ETH;".toCharArray(), "&Ntilde;".toCharArray(), "&Ograve;".toCharArray(), "&Oacute;".toCharArray(),
+        "&Ocirc;".toCharArray(), "&Otilde;".toCharArray(), "&Ouml;".toCharArray(), "&times;".toCharArray(), "&Oslash;".toCharArray(),
+        "&Ugrave;".toCharArray(), "&Uacute;".toCharArray(), "&Ucirc;".toCharArray(), "&Uuml;".toCharArray(), "&Yacute;".toCharArray(),
+        "&THORN;".toCharArray(), "&szlig;".toCharArray(), "&agrave;".toCharArray(), "&aacute;".toCharArray(), "&acirc;".toCharArray(),
+        "&atilde;".toCharArray(), "&auml;".toCharArray(), "&aring;".toCharArray(), "&aelig;".toCharArray(), "&ccedil;".toCharArray(),
+        "&egrave;".toCharArray(), "&eacute;".toCharArray(), "&ecirc;".toCharArray(), "&euml;".toCharArray(), "&igrave;".toCharArray(),
+        "&iacute;".toCharArray(), "&icirc;".toCharArray(), "&iuml;".toCharArray(), "&eth;".toCharArray(), "&ntilde;".toCharArray(),
+        "&ograve;".toCharArray(), "&oacute;".toCharArray(), "&ocirc;".toCharArray(), "&otilde;".toCharArray(), "&ouml;".toCharArray(),
+        "&divide;".toCharArray(), "&oslash;".toCharArray(), "&ugrave;".toCharArray(), "&uacute;".toCharArray(), "&ucirc;".toCharArray(),
+        "&uuml;".toCharArray(), "&yacute;".toCharArray(), "&thorn;".toCharArray(), "&yuml;".toCharArray() };
 
     // ----------------------------------------------------------
     // The following is used to verify encodings
@@ -742,8 +775,8 @@ public final class HtmlUtils {
 
     /**
      * <p>
-     * Unsynchronized {@link OutputStream} that accumulates into a {@code byte[]} and hands that
-     * array out directly, so a percent-encoded character can be read back without a defensive copy.
+     * Unsynchronized {@link OutputStream} that accumulates into a {@code byte[]} and hands that array out directly, so a percent-encoded character can be read
+     * back without a defensive copy.
      * </p>
      */
     private static final class FastByteArrayOutputStream extends OutputStream {

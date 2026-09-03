@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 import jakarta.faces.FactoryFinder;
-import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
@@ -34,22 +33,20 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * Isolates the Facelets {@code buildView} cost — the component-tree construction the Restore View
- * phase pays on every postback — apart from state restore, render and
- * state save. Uses only standard {@code jakarta.faces} API, so the same endpoint runs on Eclipse
- * Mojarra and Apache MyFaces, giving an apples-to-apples buildView comparison.
+ * Isolates the Facelets {@code buildView} cost — the component-tree construction the Restore View phase pays on every postback — apart from state restore,
+ * render and state save. Uses only standard {@code jakarta.faces} API, so the same endpoint runs on Eclipse Mojarra and Apache MyFaces, giving an
+ * apples-to-apples buildView comparison.
  *
- * <p>{@code GET /buildview-bench?scenario=composite-build&warmup=50&runs=2000} creates a fresh
- * {@link UIViewRoot} and calls {@link ViewDeclarationLanguage#buildView} that many times (the
- * compiled Facelet is cached after warmup, so each measured run rebuilds the component tree without
- * recompiling), then reports ns per build and the component count of the last tree.
+ * <p>
+ * {@code GET /buildview-bench?scenario=composite-build&warmup=50&runs=2000} creates a fresh {@link UIViewRoot} and calls
+ * {@link ViewDeclarationLanguage#buildView} that many times (the compiled Facelet is cached after warmup, so each measured run rebuilds the component tree
+ * without recompiling), then reports ns per build and the component count of the last tree.
  *
- * <p>Add {@code &split=true} to also report where those nanoseconds go: creating and releasing the
- * {@link FacesContext}, resolving the declaration language, {@code createView}, {@code buildView}
- * itself and the component count walk. A per-build cost that does not scale with the number of
- * components lives in one of the surrounding steps rather than in the Facelets build, and only a
- * split run can tell those apart. Timing costs four extra {@code nanoTime} reads per build, so leave
- * it off when comparing totals.
+ * <p>
+ * Add {@code &split=true} to also report where those nanoseconds go: creating and releasing the {@link FacesContext}, resolving the declaration language,
+ * {@code createView}, {@code buildView} itself and the component count walk. A per-build cost that does not scale with the number of components lives in one of
+ * the surrounding steps rather than in the Facelets build, and only a split run can tell those apart. Timing costs four extra {@code nanoTime} reads per build,
+ * so leave it off when comparing totals.
  */
 @WebServlet("/buildview-bench")
 public class BuildViewBenchServlet extends HttpServlet {
@@ -90,25 +87,29 @@ public class BuildViewBenchServlet extends HttpServlet {
         response.setContentType("text/plain");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().printf(
-                "# buildview-bench scenario=%s warmup=%d runs=%d components=%d ns_per_build=%d total_ms=%d%n",
-                scenario, warmup, runs, count, elapsedNanos / runs, elapsedNanos / 1_000_000L);
+            "# buildview-bench scenario=%s warmup=%d runs=%d components=%d ns_per_build=%d total_ms=%d%n",
+            scenario, warmup, runs, count, elapsedNanos / runs, elapsedNanos / 1_000_000L
+        );
 
         if (split) {
             for (int i = 0; i < STEPS.length; i++) {
-                response.getWriter().printf("# buildview-split scenario=%s step=%s ns_per_build=%d%n",
-                        scenario, STEPS[i], steps[i] / runs);
+                response.getWriter().printf(
+                    "# buildview-split scenario=%s step=%s ns_per_build=%d%n",
+                    scenario, STEPS[i], steps[i] / runs
+                );
             }
         }
     }
 
-
     /**
-     * One build under its own FacesContext — mirrors a real request, so each build's per-view state and
-     * events are released and collectible rather than accumulating across the loop. When {@code steps} is
-     * given, each step's elapsed time is accumulated into it, indexed as in {@link #STEPS}.
+     * One build under its own FacesContext — mirrors a real request, so each build's per-view state and events are released and collectible rather than
+     * accumulating across the loop. When {@code steps} is given, each step's elapsed time is accumulated into it, indexed as in {@link #STEPS}.
      */
-    private int buildOnce(FacesContextFactory facesContextFactory, Lifecycle lifecycle,
-            HttpServletRequest request, HttpServletResponse response, String viewId, long[] steps) throws IOException {
+    private int buildOnce(
+        FacesContextFactory facesContextFactory, Lifecycle lifecycle,
+        HttpServletRequest request, HttpServletResponse response, String viewId, long[] steps
+    ) throws IOException
+    {
         if (steps == null) {
             FacesContext context = facesContextFactory.getFacesContext(getServletContext(), request, response, lifecycle);
             try {
@@ -117,7 +118,8 @@ public class BuildViewBenchServlet extends HttpServlet {
                 context.setViewRoot(root);
                 vdl.buildView(context, root);
                 return countComponents(root);
-            } finally {
+            }
+            finally {
                 context.release();
             }
         }
@@ -136,7 +138,8 @@ public class BuildViewBenchServlet extends HttpServlet {
             int count = countComponents(root);
             mark = record(steps, 4, mark);
             return count;
-        } finally {
+        }
+        finally {
             context.release();
             record(steps, 5, mark);
         }
@@ -163,8 +166,10 @@ public class BuildViewBenchServlet extends HttpServlet {
         }
         try {
             return Integer.parseInt(value.trim());
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             return defaultValue;
         }
     }
+
 }

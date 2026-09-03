@@ -26,8 +26,8 @@ import jakarta.faces.view.facelets.TagHandler;
 
 /**
  * <p class="changed_added_2_0">
- * This class holds collection of {@link BehaviorHandler} instances, attached to the composite component. Descendant
- * components from that composite uses that collection to substitute actual instance
+ * This class holds collection of {@link BehaviorHandler} instances, attached to the composite component. Descendant components from that composite uses that
+ * collection to substitute actual instance
  * </p>
  *
  * @author asmirnov@exadel.com

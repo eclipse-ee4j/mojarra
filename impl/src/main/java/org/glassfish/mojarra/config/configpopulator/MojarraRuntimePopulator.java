@@ -118,12 +118,12 @@ public final class MojarraRuntimePopulator extends ApplicationConfigurationPopul
         var applicationElement = doc.createElementNS(namespace, "application");
 
         String[][] applicationElements = {
-                { "action-listener", org.glassfish.mojarra.application.ActionListenerImpl.class.getName() },
-                { "navigation-handler", org.glassfish.mojarra.application.NavigationHandlerImpl.class.getName() },
-                { "state-manager", org.glassfish.mojarra.application.StateManagerImpl.class.getName() },
-                { "view-handler", org.glassfish.mojarra.application.view.MultiViewHandler.class.getName() },
-                { "resource-handler", org.glassfish.mojarra.application.resource.ResourceHandlerImpl.class.getName() },
-                { "search-expression-handler", org.glassfish.mojarra.component.search.SearchExpressionHandlerImpl.class.getName() }
+            { "action-listener", org.glassfish.mojarra.application.ActionListenerImpl.class.getName() },
+            { "navigation-handler", org.glassfish.mojarra.application.NavigationHandlerImpl.class.getName() },
+            { "state-manager", org.glassfish.mojarra.application.StateManagerImpl.class.getName() },
+            { "view-handler", org.glassfish.mojarra.application.view.MultiViewHandler.class.getName() },
+            { "resource-handler", org.glassfish.mojarra.application.resource.ResourceHandlerImpl.class.getName() },
+            { "search-expression-handler", org.glassfish.mojarra.component.search.SearchExpressionHandlerImpl.class.getName() }
         };
 
         appendChildElements(doc, namespace, applicationElement, applicationElements);
@@ -133,33 +133,38 @@ public final class MojarraRuntimePopulator extends ApplicationConfigurationPopul
 
     private void populateSystemEventListeners(Document doc, String namespace, Element applicationElement) {
         String[][] systemEventListeners = {
-                { org.glassfish.mojarra.application.view.ViewScopeEventListener.class.getName(), PostConstructViewMapEvent.class.getName(), UIViewRoot.class.getName() },
-                { org.glassfish.mojarra.application.view.ViewScopeEventListener.class.getName(), PreDestroyViewMapEvent.class.getName(), UIViewRoot.class.getName() }   
+            { org.glassfish.mojarra.application.view.ViewScopeEventListener.class.getName(), PostConstructViewMapEvent.class.getName(),
+                UIViewRoot.class.getName() },
+            { org.glassfish.mojarra.application.view.ViewScopeEventListener.class.getName(), PreDestroyViewMapEvent.class.getName(),
+                UIViewRoot.class.getName() }
         };
 
-        appendNestedChildElements(doc, namespace, applicationElement, "system-event-listener", new String[] { "system-event-listener-class", "system-event-class", "source-class" }, systemEventListeners);
+        appendNestedChildElements(
+            doc, namespace, applicationElement, "system-event-listener", new String[] { "system-event-listener-class", "system-event-class", "source-class" },
+            systemEventListeners
+        );
     }
 
     private void populateFactoryElements(Document doc, String namespace, Element rootElement) {
         var factoryElement = doc.createElementNS(namespace, "factory");
 
         String[][] factoryElements = {
-                { "faces-servlet-factory", org.glassfish.mojarra.webapp.FacesServletFactoryImpl.class.getName() },
-                { "application-factory", org.glassfish.mojarra.application.ApplicationFactoryImpl.class.getName() },
-                { "exception-handler-factory", org.glassfish.mojarra.context.ExceptionHandlerFactoryImpl.class.getName() },
-                { "visit-context-factory", org.glassfish.mojarra.component.visit.VisitContextFactoryImpl.class.getName() },
-                { "faces-context-factory", org.glassfish.mojarra.context.FacesContextFactoryImpl.class.getName() },
-                { "client-window-factory", org.glassfish.mojarra.lifecycle.ClientWindowFactoryImpl.class.getName() },
-                { "flash-factory", org.glassfish.mojarra.context.flash.FlashFactoryImpl.class.getName() },
-                { "partial-view-context-factory", org.glassfish.mojarra.context.PartialViewContextFactoryImpl.class.getName() },
-                { "lifecycle-factory", org.glassfish.mojarra.lifecycle.LifecycleFactoryImpl.class.getName() },
-                { "render-kit-factory", org.glassfish.mojarra.renderkit.RenderKitFactoryImpl.class.getName() },
-                { "view-declaration-language-factory", org.glassfish.mojarra.application.view.ViewDeclarationLanguageFactoryImpl.class.getName() },
-                { "tag-handler-delegate-factory", org.glassfish.mojarra.facelets.tag.faces.TagHandlerDelegateFactoryImpl.class.getName() },
-                { "external-context-factory", org.glassfish.mojarra.context.ExternalContextFactoryImpl.class.getName() },
-                { "facelet-cache-factory", org.glassfish.mojarra.facelets.impl.FaceletCacheFactoryImpl.class.getName() },
-                { "flow-handler-factory", org.glassfish.mojarra.flow.FlowHandlerFactoryImpl.class.getName() },
-                { "search-expression-context-factory", org.glassfish.mojarra.component.search.SearchExpressionContextFactoryImpl.class.getName() }
+            { "faces-servlet-factory", org.glassfish.mojarra.webapp.FacesServletFactoryImpl.class.getName() },
+            { "application-factory", org.glassfish.mojarra.application.ApplicationFactoryImpl.class.getName() },
+            { "exception-handler-factory", org.glassfish.mojarra.context.ExceptionHandlerFactoryImpl.class.getName() },
+            { "visit-context-factory", org.glassfish.mojarra.component.visit.VisitContextFactoryImpl.class.getName() },
+            { "faces-context-factory", org.glassfish.mojarra.context.FacesContextFactoryImpl.class.getName() },
+            { "client-window-factory", org.glassfish.mojarra.lifecycle.ClientWindowFactoryImpl.class.getName() },
+            { "flash-factory", org.glassfish.mojarra.context.flash.FlashFactoryImpl.class.getName() },
+            { "partial-view-context-factory", org.glassfish.mojarra.context.PartialViewContextFactoryImpl.class.getName() },
+            { "lifecycle-factory", org.glassfish.mojarra.lifecycle.LifecycleFactoryImpl.class.getName() },
+            { "render-kit-factory", org.glassfish.mojarra.renderkit.RenderKitFactoryImpl.class.getName() },
+            { "view-declaration-language-factory", org.glassfish.mojarra.application.view.ViewDeclarationLanguageFactoryImpl.class.getName() },
+            { "tag-handler-delegate-factory", org.glassfish.mojarra.facelets.tag.faces.TagHandlerDelegateFactoryImpl.class.getName() },
+            { "external-context-factory", org.glassfish.mojarra.context.ExternalContextFactoryImpl.class.getName() },
+            { "facelet-cache-factory", org.glassfish.mojarra.facelets.impl.FaceletCacheFactoryImpl.class.getName() },
+            { "flow-handler-factory", org.glassfish.mojarra.flow.FlowHandlerFactoryImpl.class.getName() },
+            { "search-expression-context-factory", org.glassfish.mojarra.component.search.SearchExpressionContextFactoryImpl.class.getName() }
         };
 
         appendChildElements(doc, namespace, factoryElement, factoryElements);
@@ -170,7 +175,7 @@ public final class MojarraRuntimePopulator extends ApplicationConfigurationPopul
         var lifecycleElement = doc.createElementNS(namespace, "lifecycle");
 
         String[][] lifecycleElements = {
-                { "phase-listener", org.glassfish.mojarra.lifecycle.ELResolverInitPhaseListener.class.getName() }
+            { "phase-listener", org.glassfish.mojarra.lifecycle.ELResolverInitPhaseListener.class.getName() }
         };
 
         appendChildElements(doc, namespace, lifecycleElement, lifecycleElements);
@@ -179,20 +184,20 @@ public final class MojarraRuntimePopulator extends ApplicationConfigurationPopul
 
     private void populateConverters(Document doc, String namespace, Element rootElement) {
         String[][] converters = {
-                { BigDecimalConverter.CONVERTER_ID, BigDecimalConverter.class.getName() },
-                { BigIntegerConverter.CONVERTER_ID, BigIntegerConverter.class.getName() },
-                { BooleanConverter.CONVERTER_ID,BooleanConverter.class.getName() },
-                { ByteConverter.CONVERTER_ID, ByteConverter.class.getName() },
-                { CharacterConverter.CONVERTER_ID, CharacterConverter.class.getName() },
-                { DateTimeConverter.CONVERTER_ID, DateTimeConverter.class.getName() },
-                { DoubleConverter.CONVERTER_ID, DoubleConverter.class.getName() },
-                { FloatConverter.CONVERTER_ID, FloatConverter.class.getName() },
-                { IntegerConverter.CONVERTER_ID, IntegerConverter.class.getName() },
-                { LongConverter.CONVERTER_ID, LongConverter.class.getName() },
-                { NumberConverter.CONVERTER_ID, NumberConverter.class.getName() },
-                { ShortConverter.CONVERTER_ID, ShortConverter.class.getName() },
-                { EnumConverter.CONVERTER_ID, EnumConverter.class.getName() },
-                { UUIDConverter.CONVERTER_ID, UUIDConverter.class.getName() }
+            { BigDecimalConverter.CONVERTER_ID, BigDecimalConverter.class.getName() },
+            { BigIntegerConverter.CONVERTER_ID, BigIntegerConverter.class.getName() },
+            { BooleanConverter.CONVERTER_ID, BooleanConverter.class.getName() },
+            { ByteConverter.CONVERTER_ID, ByteConverter.class.getName() },
+            { CharacterConverter.CONVERTER_ID, CharacterConverter.class.getName() },
+            { DateTimeConverter.CONVERTER_ID, DateTimeConverter.class.getName() },
+            { DoubleConverter.CONVERTER_ID, DoubleConverter.class.getName() },
+            { FloatConverter.CONVERTER_ID, FloatConverter.class.getName() },
+            { IntegerConverter.CONVERTER_ID, IntegerConverter.class.getName() },
+            { LongConverter.CONVERTER_ID, LongConverter.class.getName() },
+            { NumberConverter.CONVERTER_ID, NumberConverter.class.getName() },
+            { ShortConverter.CONVERTER_ID, ShortConverter.class.getName() },
+            { EnumConverter.CONVERTER_ID, EnumConverter.class.getName() },
+            { UUIDConverter.CONVERTER_ID, UUIDConverter.class.getName() }
         };
 
         appendNestedChildElements(doc, namespace, rootElement, "converter", new String[] { "converter-id", "converter-class" }, converters);
@@ -201,18 +206,18 @@ public final class MojarraRuntimePopulator extends ApplicationConfigurationPopul
 
     private void populateConvertersForClass(Document doc, String namespace, Element rootElement) {
         String[][] convertersForClass = {
-                { BigDecimal.class.getName(), BigDecimalConverter.class.getName() },
-                { BigInteger.class.getName(), BigIntegerConverter.class.getName() },
-                { Boolean.class.getName(),BooleanConverter.class.getName() },
-                { Byte.class.getName(), ByteConverter.class.getName() },
-                { Character.class.getName(), CharacterConverter.class.getName() },
-                { Double.class.getName(), DoubleConverter.class.getName() },
-                { Float.class.getName(), FloatConverter.class.getName() },
-                { Integer.class.getName(), IntegerConverter.class.getName() },
-                { Long.class.getName(), LongConverter.class.getName() },
-                { Short.class.getName(), ShortConverter.class.getName() },
-                { Enum.class.getName(), EnumConverter.class.getName() },
-                { UUID.class.getName(), UUIDConverter.class.getName() }
+            { BigDecimal.class.getName(), BigDecimalConverter.class.getName() },
+            { BigInteger.class.getName(), BigIntegerConverter.class.getName() },
+            { Boolean.class.getName(), BooleanConverter.class.getName() },
+            { Byte.class.getName(), ByteConverter.class.getName() },
+            { Character.class.getName(), CharacterConverter.class.getName() },
+            { Double.class.getName(), DoubleConverter.class.getName() },
+            { Float.class.getName(), FloatConverter.class.getName() },
+            { Integer.class.getName(), IntegerConverter.class.getName() },
+            { Long.class.getName(), LongConverter.class.getName() },
+            { Short.class.getName(), ShortConverter.class.getName() },
+            { Enum.class.getName(), EnumConverter.class.getName() },
+            { UUID.class.getName(), UUIDConverter.class.getName() }
         };
 
         appendNestedChildElements(doc, namespace, rootElement, "converter", new String[] { "converter-for-class", "converter-class" }, convertersForClass);
@@ -220,20 +225,20 @@ public final class MojarraRuntimePopulator extends ApplicationConfigurationPopul
 
     private void populateValidators(Document doc, String namespace, Element rootElement) {
         String[][] validators = {
-                { BeanValidator.VALIDATOR_ID, BeanValidator.class.getName() },
-                { DoubleRangeValidator.VALIDATOR_ID, DoubleRangeValidator.class.getName() },
-                { LengthValidator.VALIDATOR_ID, LengthValidator.class.getName() },
-                { LongRangeValidator.VALIDATOR_ID, LongRangeValidator.class.getName() },
-                { RegexValidator.VALIDATOR_ID, RegexValidator.class.getName() },
-                { RequiredValidator.VALIDATOR_ID, RequiredValidator.class.getName() }
+            { BeanValidator.VALIDATOR_ID, BeanValidator.class.getName() },
+            { DoubleRangeValidator.VALIDATOR_ID, DoubleRangeValidator.class.getName() },
+            { LengthValidator.VALIDATOR_ID, LengthValidator.class.getName() },
+            { LongRangeValidator.VALIDATOR_ID, LongRangeValidator.class.getName() },
+            { RegexValidator.VALIDATOR_ID, RegexValidator.class.getName() },
+            { RequiredValidator.VALIDATOR_ID, RequiredValidator.class.getName() }
         };
 
         appendNestedChildElements(doc, namespace, rootElement, "validator", new String[] { "validator-id", "validator-class" }, validators);
     }
-    
+
     private void populateBehaviors(Document doc, String namespace, Element rootElement) {
         String[][] behaviors = {
-                { AjaxBehavior.BEHAVIOR_ID, jakarta.faces.component.behavior.AjaxBehavior.class.getName() }
+            { AjaxBehavior.BEHAVIOR_ID, jakarta.faces.component.behavior.AjaxBehavior.class.getName() }
         };
 
         appendNestedChildElements(doc, namespace, rootElement, "behavior", new String[] { "behavior-id", "behavior-class" }, behaviors);
@@ -241,69 +246,69 @@ public final class MojarraRuntimePopulator extends ApplicationConfigurationPopul
 
     private void populateComponents(Document doc, String namespace, Element rootElement) {
         String[][] components = {
-                { UIValidateWholeBean.FAMILY, UIValidateWholeBean.class.getName() },
-                { UIRepeat.COMPONENT_TYPE, UIRepeat.class.getName() },
-                { ComponentRef.COMPONENT_TYPE, ComponentRef.class.getName() },
-                { UIDebug.COMPONENT_TYPE, UIDebug.class.getName() },
-                { "jakarta.faces.Composite", org.glassfish.mojarra.facelets.tag.faces.CompositeComponentImpl.class.getName() },
-                { "jakarta.faces.ComponentResourceContainer", org.glassfish.mojarra.component.ComponentResourceContainer.class.getName() },
-                { UIColumn.COMPONENT_TYPE, UIColumn.class.getName() },
-                { UICommand.COMPONENT_TYPE, UICommand.class.getName() },
-                { UIData.COMPONENT_TYPE, UIData.class.getName() },
-                { UIForm.COMPONENT_TYPE, UIForm.class.getName() },
-                { UIGraphic.COMPONENT_TYPE, UIGraphic.class.getName() },
-                { UIImportConstants.COMPONENT_TYPE, UIImportConstants.class.getName() },
-                { UIInput.COMPONENT_TYPE, UIInput.class.getName() },
-                { UIMessage.COMPONENT_TYPE, UIMessage.class.getName() },
-                { UIMessages.COMPONENT_TYPE, UIMessages.class.getName() },
-                { UINamingContainer.COMPONENT_TYPE, UINamingContainer.class.getName() },
-                { UIOutput.COMPONENT_TYPE, UIOutput.class.getName() },
-                { UIOutcomeTarget.COMPONENT_TYPE, UIOutcomeTarget.class.getName() },
-                { UIPanel.COMPONENT_TYPE, UIPanel.class.getName() },
-                { UIViewParameter.COMPONENT_TYPE, UIViewParameter.class.getName() },
-                { UIViewAction.COMPONENT_TYPE, UIViewAction.class.getName() },
-                { UIParameter.COMPONENT_TYPE, UIParameter.class.getName() },
-                { UISelectBoolean.COMPONENT_TYPE, UISelectBoolean.class.getName() },
-                { UISelectItem.COMPONENT_TYPE, UISelectItem.class.getName() },
-                { UISelectItems.COMPONENT_TYPE, UISelectItems.class.getName() },
-                { UISelectItemGroup.COMPONENT_TYPE, UISelectItemGroup.class.getName() },
-                { UISelectItemGroups.COMPONENT_TYPE, UISelectItemGroups.class.getName() },
-                { UISelectMany.COMPONENT_TYPE, UISelectMany.class.getName() },
-                { UISelectOne.COMPONENT_TYPE, UISelectOne.class.getName() },
-                { UIViewRoot.COMPONENT_TYPE, UIViewRoot.class.getName() },
-                { UIWebsocket.COMPONENT_TYPE, UIWebsocket.class.getName() },
-                { HtmlColumn.COMPONENT_TYPE, HtmlColumn.class.getName() },
-                { HtmlCommandButton.COMPONENT_TYPE, HtmlCommandButton.class.getName() },
-                { HtmlCommandLink.COMPONENT_TYPE, HtmlCommandLink.class.getName() },
-                { HtmlCommandScript.COMPONENT_TYPE, HtmlCommandScript.class.getName() },
-                { HtmlDataTable.COMPONENT_TYPE, HtmlDataTable.class.getName() },
-                { HtmlForm.COMPONENT_TYPE, HtmlForm.class.getName() },
-                { HtmlGraphicImage.COMPONENT_TYPE, HtmlGraphicImage.class.getName() },
-                { HtmlInputFile.COMPONENT_TYPE, HtmlInputFile.class.getName() },
-                { HtmlInputHidden.COMPONENT_TYPE, HtmlInputHidden.class.getName() },
-                { HtmlInputSecret.COMPONENT_TYPE, HtmlInputSecret.class.getName() },
-                { HtmlInputText.COMPONENT_TYPE, HtmlInputText.class.getName() },
-                { HtmlInputTextarea.COMPONENT_TYPE, HtmlInputTextarea.class.getName() },
-                { HtmlMessage.COMPONENT_TYPE, HtmlMessage.class.getName() },
-                { HtmlMessages.COMPONENT_TYPE, HtmlMessages.class.getName() },
-                { HtmlOutputFormat.COMPONENT_TYPE, HtmlOutputFormat.class.getName() },
-                { HtmlOutputLabel.COMPONENT_TYPE, HtmlOutputLabel.class.getName() },
-                { HtmlOutputLink.COMPONENT_TYPE, HtmlOutputLink.class.getName() },
-                { HtmlOutcomeTargetLink.COMPONENT_TYPE, HtmlOutcomeTargetLink.class.getName() },
-                { HtmlOutcomeTargetButton.COMPONENT_TYPE, HtmlOutcomeTargetButton.class.getName() },
-                { HtmlOutputText.COMPONENT_TYPE, HtmlOutputText.class.getName() },
-                { HtmlPanelGrid.COMPONENT_TYPE, HtmlPanelGrid.class.getName() },
-                { HtmlPanelGroup.COMPONENT_TYPE, HtmlPanelGroup.class.getName() },
-                { HtmlSelectBooleanCheckbox.COMPONENT_TYPE, HtmlSelectBooleanCheckbox.class.getName() },
-                { HtmlSelectManyCheckbox.COMPONENT_TYPE, HtmlSelectManyCheckbox.class.getName() },
-                { HtmlSelectManyListbox.COMPONENT_TYPE, HtmlSelectManyListbox.class.getName() },
-                { HtmlSelectManyMenu.COMPONENT_TYPE, HtmlSelectManyMenu.class.getName() },
-                { HtmlSelectOneListbox.COMPONENT_TYPE, HtmlSelectOneListbox.class.getName() },
-                { HtmlSelectOneMenu.COMPONENT_TYPE, HtmlSelectOneMenu.class.getName() },
-                { HtmlSelectOneRadio.COMPONENT_TYPE, HtmlSelectOneRadio.class.getName() },
-                { HtmlDoctype.COMPONENT_TYPE, HtmlDoctype.class.getName() },
-                { HtmlHead.COMPONENT_TYPE, HtmlHead.class.getName() },
-                { HtmlBody.COMPONENT_TYPE, HtmlBody.class.getName() }
+            { UIValidateWholeBean.FAMILY, UIValidateWholeBean.class.getName() },
+            { UIRepeat.COMPONENT_TYPE, UIRepeat.class.getName() },
+            { ComponentRef.COMPONENT_TYPE, ComponentRef.class.getName() },
+            { UIDebug.COMPONENT_TYPE, UIDebug.class.getName() },
+            { "jakarta.faces.Composite", org.glassfish.mojarra.facelets.tag.faces.CompositeComponentImpl.class.getName() },
+            { "jakarta.faces.ComponentResourceContainer", org.glassfish.mojarra.component.ComponentResourceContainer.class.getName() },
+            { UIColumn.COMPONENT_TYPE, UIColumn.class.getName() },
+            { UICommand.COMPONENT_TYPE, UICommand.class.getName() },
+            { UIData.COMPONENT_TYPE, UIData.class.getName() },
+            { UIForm.COMPONENT_TYPE, UIForm.class.getName() },
+            { UIGraphic.COMPONENT_TYPE, UIGraphic.class.getName() },
+            { UIImportConstants.COMPONENT_TYPE, UIImportConstants.class.getName() },
+            { UIInput.COMPONENT_TYPE, UIInput.class.getName() },
+            { UIMessage.COMPONENT_TYPE, UIMessage.class.getName() },
+            { UIMessages.COMPONENT_TYPE, UIMessages.class.getName() },
+            { UINamingContainer.COMPONENT_TYPE, UINamingContainer.class.getName() },
+            { UIOutput.COMPONENT_TYPE, UIOutput.class.getName() },
+            { UIOutcomeTarget.COMPONENT_TYPE, UIOutcomeTarget.class.getName() },
+            { UIPanel.COMPONENT_TYPE, UIPanel.class.getName() },
+            { UIViewParameter.COMPONENT_TYPE, UIViewParameter.class.getName() },
+            { UIViewAction.COMPONENT_TYPE, UIViewAction.class.getName() },
+            { UIParameter.COMPONENT_TYPE, UIParameter.class.getName() },
+            { UISelectBoolean.COMPONENT_TYPE, UISelectBoolean.class.getName() },
+            { UISelectItem.COMPONENT_TYPE, UISelectItem.class.getName() },
+            { UISelectItems.COMPONENT_TYPE, UISelectItems.class.getName() },
+            { UISelectItemGroup.COMPONENT_TYPE, UISelectItemGroup.class.getName() },
+            { UISelectItemGroups.COMPONENT_TYPE, UISelectItemGroups.class.getName() },
+            { UISelectMany.COMPONENT_TYPE, UISelectMany.class.getName() },
+            { UISelectOne.COMPONENT_TYPE, UISelectOne.class.getName() },
+            { UIViewRoot.COMPONENT_TYPE, UIViewRoot.class.getName() },
+            { UIWebsocket.COMPONENT_TYPE, UIWebsocket.class.getName() },
+            { HtmlColumn.COMPONENT_TYPE, HtmlColumn.class.getName() },
+            { HtmlCommandButton.COMPONENT_TYPE, HtmlCommandButton.class.getName() },
+            { HtmlCommandLink.COMPONENT_TYPE, HtmlCommandLink.class.getName() },
+            { HtmlCommandScript.COMPONENT_TYPE, HtmlCommandScript.class.getName() },
+            { HtmlDataTable.COMPONENT_TYPE, HtmlDataTable.class.getName() },
+            { HtmlForm.COMPONENT_TYPE, HtmlForm.class.getName() },
+            { HtmlGraphicImage.COMPONENT_TYPE, HtmlGraphicImage.class.getName() },
+            { HtmlInputFile.COMPONENT_TYPE, HtmlInputFile.class.getName() },
+            { HtmlInputHidden.COMPONENT_TYPE, HtmlInputHidden.class.getName() },
+            { HtmlInputSecret.COMPONENT_TYPE, HtmlInputSecret.class.getName() },
+            { HtmlInputText.COMPONENT_TYPE, HtmlInputText.class.getName() },
+            { HtmlInputTextarea.COMPONENT_TYPE, HtmlInputTextarea.class.getName() },
+            { HtmlMessage.COMPONENT_TYPE, HtmlMessage.class.getName() },
+            { HtmlMessages.COMPONENT_TYPE, HtmlMessages.class.getName() },
+            { HtmlOutputFormat.COMPONENT_TYPE, HtmlOutputFormat.class.getName() },
+            { HtmlOutputLabel.COMPONENT_TYPE, HtmlOutputLabel.class.getName() },
+            { HtmlOutputLink.COMPONENT_TYPE, HtmlOutputLink.class.getName() },
+            { HtmlOutcomeTargetLink.COMPONENT_TYPE, HtmlOutcomeTargetLink.class.getName() },
+            { HtmlOutcomeTargetButton.COMPONENT_TYPE, HtmlOutcomeTargetButton.class.getName() },
+            { HtmlOutputText.COMPONENT_TYPE, HtmlOutputText.class.getName() },
+            { HtmlPanelGrid.COMPONENT_TYPE, HtmlPanelGrid.class.getName() },
+            { HtmlPanelGroup.COMPONENT_TYPE, HtmlPanelGroup.class.getName() },
+            { HtmlSelectBooleanCheckbox.COMPONENT_TYPE, HtmlSelectBooleanCheckbox.class.getName() },
+            { HtmlSelectManyCheckbox.COMPONENT_TYPE, HtmlSelectManyCheckbox.class.getName() },
+            { HtmlSelectManyListbox.COMPONENT_TYPE, HtmlSelectManyListbox.class.getName() },
+            { HtmlSelectManyMenu.COMPONENT_TYPE, HtmlSelectManyMenu.class.getName() },
+            { HtmlSelectOneListbox.COMPONENT_TYPE, HtmlSelectOneListbox.class.getName() },
+            { HtmlSelectOneMenu.COMPONENT_TYPE, HtmlSelectOneMenu.class.getName() },
+            { HtmlSelectOneRadio.COMPONENT_TYPE, HtmlSelectOneRadio.class.getName() },
+            { HtmlDoctype.COMPONENT_TYPE, HtmlDoctype.class.getName() },
+            { HtmlHead.COMPONENT_TYPE, HtmlHead.class.getName() },
+            { HtmlBody.COMPONENT_TYPE, HtmlBody.class.getName() }
         };
 
         appendNestedChildElements(doc, namespace, rootElement, "component", new String[] { "component-type", "component-class" }, components);
@@ -313,7 +318,7 @@ public final class MojarraRuntimePopulator extends ApplicationConfigurationPopul
         var renderKitElement = doc.createElementNS(namespace, "render-kit");
 
         String[][] renderKitElements = {
-                { "render-kit-id", RenderKitFactory.HTML_BASIC_RENDER_KIT }
+            { "render-kit-id", RenderKitFactory.HTML_BASIC_RENDER_KIT }
         };
 
         appendChildElements(doc, namespace, renderKitElement, renderKitElements);
@@ -324,53 +329,58 @@ public final class MojarraRuntimePopulator extends ApplicationConfigurationPopul
 
     private void populateClientBehaviorRenderers(Document doc, String namespace, Element rootElement) {
         String[][] clientBehaviorRenderers = {
-                { AjaxBehavior.BEHAVIOR_ID, org.glassfish.mojarra.renderkit.html_basic.AjaxBehaviorRenderer.class.getName() }
+            { AjaxBehavior.BEHAVIOR_ID, org.glassfish.mojarra.renderkit.html_basic.AjaxBehaviorRenderer.class.getName() }
         };
 
-        appendNestedChildElements(doc, namespace, rootElement, "client-behavior-renderer", new String[] { "client-behavior-renderer-type", "client-behavior-renderer-class" }, clientBehaviorRenderers);
+        appendNestedChildElements(
+            doc, namespace, rootElement, "client-behavior-renderer", new String[] { "client-behavior-renderer-type", "client-behavior-renderer-class" },
+            clientBehaviorRenderers
+        );
     }
 
     private void populateRenderers(Document doc, String namespace, Element rootElement) {
         String[][] renderers = {
-                { UIRepeat.COMPONENT_FAMILY, "facelets.ui.Repeat", org.glassfish.mojarra.facelets.component.RepeatRenderer.class.getName() },
-                { UICommand.COMPONENT_FAMILY, "jakarta.faces.Button", org.glassfish.mojarra.renderkit.html_basic.ButtonRenderer.class.getName() },                    
-                { UICommand.COMPONENT_FAMILY, "jakarta.faces.Link", org.glassfish.mojarra.renderkit.html_basic.CommandLinkRenderer.class.getName() },                    
-                { UICommand.COMPONENT_FAMILY, "jakarta.faces.Script", org.glassfish.mojarra.renderkit.html_basic.CommandScriptRenderer.class.getName() },                    
-                { UIData.COMPONENT_FAMILY, "jakarta.faces.Table", org.glassfish.mojarra.renderkit.html_basic.TableRenderer.class.getName() },                    
-                { UIForm.COMPONENT_FAMILY, "jakarta.faces.Form", org.glassfish.mojarra.renderkit.html_basic.FormRenderer.class.getName() },                    
-                { UIGraphic.COMPONENT_FAMILY, "jakarta.faces.Image", org.glassfish.mojarra.renderkit.html_basic.ImageRenderer.class.getName() },                    
-                { UIPanel.COMPONENT_FAMILY, "jakarta.faces.passthrough.Element", org.glassfish.mojarra.renderkit.html_basic.PassthroughRenderer.class.getName() },                    
-                { UIInput.COMPONENT_FAMILY, "jakarta.faces.File", org.glassfish.mojarra.renderkit.html_basic.FileRenderer.class.getName() },                    
-                { UIInput.COMPONENT_FAMILY, "jakarta.faces.Hidden", org.glassfish.mojarra.renderkit.html_basic.HiddenRenderer.class.getName() },                    
-                { UIInput.COMPONENT_FAMILY, "jakarta.faces.Secret", org.glassfish.mojarra.renderkit.html_basic.SecretRenderer.class.getName() },                    
-                { UIInput.COMPONENT_FAMILY, "jakarta.faces.Text", org.glassfish.mojarra.renderkit.html_basic.TextRenderer.class.getName() },                    
-                { UIInput.COMPONENT_FAMILY, "jakarta.faces.Textarea", org.glassfish.mojarra.renderkit.html_basic.TextareaRenderer.class.getName() },                    
-                { UIMessage.COMPONENT_FAMILY, "jakarta.faces.Message", org.glassfish.mojarra.renderkit.html_basic.MessageRenderer.class.getName() },                    
-                { UIMessages.COMPONENT_FAMILY, "jakarta.faces.Messages", org.glassfish.mojarra.renderkit.html_basic.MessagesRenderer.class.getName() },                    
-                { UIOutput.COMPONENT_FAMILY, "jakarta.faces.Format", org.glassfish.mojarra.renderkit.html_basic.OutputMessageRenderer.class.getName() },                    
-                { UIOutput.COMPONENT_FAMILY, "jakarta.faces.Label", org.glassfish.mojarra.renderkit.html_basic.LabelRenderer.class.getName() },                    
-                { UIOutput.COMPONENT_FAMILY, "jakarta.faces.Link", org.glassfish.mojarra.renderkit.html_basic.OutputLinkRenderer.class.getName() },                    
-                { UIOutcomeTarget.COMPONENT_FAMILY, "jakarta.faces.Link", org.glassfish.mojarra.renderkit.html_basic.OutcomeTargetLinkRenderer.class.getName() },                    
-                { UIOutcomeTarget.COMPONENT_FAMILY, "jakarta.faces.Button", org.glassfish.mojarra.renderkit.html_basic.OutcomeTargetButtonRenderer.class.getName() },                    
-                { UIOutput.COMPONENT_FAMILY, "jakarta.faces.Text", org.glassfish.mojarra.renderkit.html_basic.TextRenderer.class.getName() },                    
-                { UIPanel.COMPONENT_FAMILY, "jakarta.faces.Grid", org.glassfish.mojarra.renderkit.html_basic.GridRenderer.class.getName() },                    
-                { UIPanel.COMPONENT_FAMILY, "jakarta.faces.Group", org.glassfish.mojarra.renderkit.html_basic.GroupRenderer.class.getName() },                    
-                { UISelectBoolean.COMPONENT_FAMILY, "jakarta.faces.Checkbox", org.glassfish.mojarra.renderkit.html_basic.CheckboxRenderer.class.getName() },                    
-                { UISelectMany.COMPONENT_FAMILY, "jakarta.faces.Checkbox", org.glassfish.mojarra.renderkit.html_basic.SelectManyCheckboxListRenderer.class.getName() },                    
-                { UISelectMany.COMPONENT_FAMILY, "jakarta.faces.Listbox", org.glassfish.mojarra.renderkit.html_basic.ListboxRenderer.class.getName() },                    
-                { UISelectMany.COMPONENT_FAMILY, "jakarta.faces.Menu", org.glassfish.mojarra.renderkit.html_basic.MenuRenderer.class.getName() },                    
-                { UISelectOne.COMPONENT_FAMILY, "jakarta.faces.Listbox", org.glassfish.mojarra.renderkit.html_basic.ListboxRenderer.class.getName() },                    
-                { UISelectOne.COMPONENT_FAMILY, "jakarta.faces.Menu", org.glassfish.mojarra.renderkit.html_basic.MenuRenderer.class.getName() },                    
-                { UISelectOne.COMPONENT_FAMILY, "jakarta.faces.Radio", org.glassfish.mojarra.renderkit.html_basic.RadioRenderer.class.getName() },                    
-                { UINamingContainer.COMPONENT_FAMILY, "jakarta.faces.Composite", org.glassfish.mojarra.renderkit.html_basic.CompositeRenderer.class.getName() },                    
-                { UIOutput.COMPONENT_FAMILY, "jakarta.faces.CompositeFacet", org.glassfish.mojarra.renderkit.html_basic.CompositeFacetRenderer.class.getName() },                    
-                { UIOutput.COMPONENT_FAMILY, "jakarta.faces.resource.Script", org.glassfish.mojarra.renderkit.html_basic.ScriptRenderer.class.getName() },                    
-                { UIOutput.COMPONENT_FAMILY, "jakarta.faces.resource.Stylesheet", org.glassfish.mojarra.renderkit.html_basic.StylesheetRenderer.class.getName() },                    
-                { UIOutput.COMPONENT_FAMILY, "jakarta.faces.Doctype", org.glassfish.mojarra.renderkit.html_basic.DoctypeRenderer.class.getName() },                    
-                { UIOutput.COMPONENT_FAMILY, "jakarta.faces.Head", org.glassfish.mojarra.renderkit.html_basic.HeadRenderer.class.getName() },                    
-                { UIOutput.COMPONENT_FAMILY, "jakarta.faces.Body", org.glassfish.mojarra.renderkit.html_basic.BodyRenderer.class.getName() },                    
-                { UIWebsocket.COMPONENT_FAMILY, WebsocketRenderer.RENDERER_TYPE, WebsocketRenderer.class.getName() },
-                { UIImportConstants.COMPONENT_FAMILY, ImportConstantsRenderer.RENDERER_TYPE, ImportConstantsRenderer.class.getName() }
+            { UIRepeat.COMPONENT_FAMILY, "facelets.ui.Repeat", org.glassfish.mojarra.facelets.component.RepeatRenderer.class.getName() },
+            { UICommand.COMPONENT_FAMILY, "jakarta.faces.Button", org.glassfish.mojarra.renderkit.html_basic.ButtonRenderer.class.getName() },
+            { UICommand.COMPONENT_FAMILY, "jakarta.faces.Link", org.glassfish.mojarra.renderkit.html_basic.CommandLinkRenderer.class.getName() },
+            { UICommand.COMPONENT_FAMILY, "jakarta.faces.Script", org.glassfish.mojarra.renderkit.html_basic.CommandScriptRenderer.class.getName() },
+            { UIData.COMPONENT_FAMILY, "jakarta.faces.Table", org.glassfish.mojarra.renderkit.html_basic.TableRenderer.class.getName() },
+            { UIForm.COMPONENT_FAMILY, "jakarta.faces.Form", org.glassfish.mojarra.renderkit.html_basic.FormRenderer.class.getName() },
+            { UIGraphic.COMPONENT_FAMILY, "jakarta.faces.Image", org.glassfish.mojarra.renderkit.html_basic.ImageRenderer.class.getName() },
+            { UIPanel.COMPONENT_FAMILY, "jakarta.faces.passthrough.Element", org.glassfish.mojarra.renderkit.html_basic.PassthroughRenderer.class.getName() },
+            { UIInput.COMPONENT_FAMILY, "jakarta.faces.File", org.glassfish.mojarra.renderkit.html_basic.FileRenderer.class.getName() },
+            { UIInput.COMPONENT_FAMILY, "jakarta.faces.Hidden", org.glassfish.mojarra.renderkit.html_basic.HiddenRenderer.class.getName() },
+            { UIInput.COMPONENT_FAMILY, "jakarta.faces.Secret", org.glassfish.mojarra.renderkit.html_basic.SecretRenderer.class.getName() },
+            { UIInput.COMPONENT_FAMILY, "jakarta.faces.Text", org.glassfish.mojarra.renderkit.html_basic.TextRenderer.class.getName() },
+            { UIInput.COMPONENT_FAMILY, "jakarta.faces.Textarea", org.glassfish.mojarra.renderkit.html_basic.TextareaRenderer.class.getName() },
+            { UIMessage.COMPONENT_FAMILY, "jakarta.faces.Message", org.glassfish.mojarra.renderkit.html_basic.MessageRenderer.class.getName() },
+            { UIMessages.COMPONENT_FAMILY, "jakarta.faces.Messages", org.glassfish.mojarra.renderkit.html_basic.MessagesRenderer.class.getName() },
+            { UIOutput.COMPONENT_FAMILY, "jakarta.faces.Format", org.glassfish.mojarra.renderkit.html_basic.OutputMessageRenderer.class.getName() },
+            { UIOutput.COMPONENT_FAMILY, "jakarta.faces.Label", org.glassfish.mojarra.renderkit.html_basic.LabelRenderer.class.getName() },
+            { UIOutput.COMPONENT_FAMILY, "jakarta.faces.Link", org.glassfish.mojarra.renderkit.html_basic.OutputLinkRenderer.class.getName() },
+            { UIOutcomeTarget.COMPONENT_FAMILY, "jakarta.faces.Link", org.glassfish.mojarra.renderkit.html_basic.OutcomeTargetLinkRenderer.class.getName() },
+            { UIOutcomeTarget.COMPONENT_FAMILY, "jakarta.faces.Button",
+                org.glassfish.mojarra.renderkit.html_basic.OutcomeTargetButtonRenderer.class.getName() },
+            { UIOutput.COMPONENT_FAMILY, "jakarta.faces.Text", org.glassfish.mojarra.renderkit.html_basic.TextRenderer.class.getName() },
+            { UIPanel.COMPONENT_FAMILY, "jakarta.faces.Grid", org.glassfish.mojarra.renderkit.html_basic.GridRenderer.class.getName() },
+            { UIPanel.COMPONENT_FAMILY, "jakarta.faces.Group", org.glassfish.mojarra.renderkit.html_basic.GroupRenderer.class.getName() },
+            { UISelectBoolean.COMPONENT_FAMILY, "jakarta.faces.Checkbox", org.glassfish.mojarra.renderkit.html_basic.CheckboxRenderer.class.getName() },
+            { UISelectMany.COMPONENT_FAMILY, "jakarta.faces.Checkbox",
+                org.glassfish.mojarra.renderkit.html_basic.SelectManyCheckboxListRenderer.class.getName() },
+            { UISelectMany.COMPONENT_FAMILY, "jakarta.faces.Listbox", org.glassfish.mojarra.renderkit.html_basic.ListboxRenderer.class.getName() },
+            { UISelectMany.COMPONENT_FAMILY, "jakarta.faces.Menu", org.glassfish.mojarra.renderkit.html_basic.MenuRenderer.class.getName() },
+            { UISelectOne.COMPONENT_FAMILY, "jakarta.faces.Listbox", org.glassfish.mojarra.renderkit.html_basic.ListboxRenderer.class.getName() },
+            { UISelectOne.COMPONENT_FAMILY, "jakarta.faces.Menu", org.glassfish.mojarra.renderkit.html_basic.MenuRenderer.class.getName() },
+            { UISelectOne.COMPONENT_FAMILY, "jakarta.faces.Radio", org.glassfish.mojarra.renderkit.html_basic.RadioRenderer.class.getName() },
+            { UINamingContainer.COMPONENT_FAMILY, "jakarta.faces.Composite", org.glassfish.mojarra.renderkit.html_basic.CompositeRenderer.class.getName() },
+            { UIOutput.COMPONENT_FAMILY, "jakarta.faces.CompositeFacet", org.glassfish.mojarra.renderkit.html_basic.CompositeFacetRenderer.class.getName() },
+            { UIOutput.COMPONENT_FAMILY, "jakarta.faces.resource.Script", org.glassfish.mojarra.renderkit.html_basic.ScriptRenderer.class.getName() },
+            { UIOutput.COMPONENT_FAMILY, "jakarta.faces.resource.Stylesheet", org.glassfish.mojarra.renderkit.html_basic.StylesheetRenderer.class.getName() },
+            { UIOutput.COMPONENT_FAMILY, "jakarta.faces.Doctype", org.glassfish.mojarra.renderkit.html_basic.DoctypeRenderer.class.getName() },
+            { UIOutput.COMPONENT_FAMILY, "jakarta.faces.Head", org.glassfish.mojarra.renderkit.html_basic.HeadRenderer.class.getName() },
+            { UIOutput.COMPONENT_FAMILY, "jakarta.faces.Body", org.glassfish.mojarra.renderkit.html_basic.BodyRenderer.class.getName() },
+            { UIWebsocket.COMPONENT_FAMILY, WebsocketRenderer.RENDERER_TYPE, WebsocketRenderer.class.getName() },
+            { UIImportConstants.COMPONENT_FAMILY, ImportConstantsRenderer.RENDERER_TYPE, ImportConstantsRenderer.class.getName() }
         };
 
         appendNestedChildElements(doc, namespace, rootElement, "renderer", new String[] { "component-family", "renderer-type", "renderer-class" }, renderers);
@@ -384,11 +394,14 @@ public final class MojarraRuntimePopulator extends ApplicationConfigurationPopul
         }
     }
 
-    private void appendNestedChildElements(Document doc, String namespace, Element parentElement, String nestedElementName, String[] childElementNames, String[][] nestedChildElementValues) {
-        for (String[] childElementValues: nestedChildElementValues) {
+    private void appendNestedChildElements(
+        Document doc, String namespace, Element parentElement, String nestedElementName, String[] childElementNames, String[][] nestedChildElementValues
+    )
+    {
+        for (String[] childElementValues : nestedChildElementValues) {
             var nestedElement = doc.createElementNS(namespace, nestedElementName);
             var childElementNamesAndValues = new ArrayList<String[]>();
-            
+
             for (int i = 0; i < childElementNames.length; i++) {
                 childElementNamesAndValues.add(new String[] { childElementNames[i], childElementValues[i] });
             }
@@ -397,4 +410,5 @@ public final class MojarraRuntimePopulator extends ApplicationConfigurationPopul
             parentElement.appendChild(nestedElement);
         }
     }
+
 }

@@ -27,17 +27,17 @@ import jakarta.faces.event.PhaseId;
 /**
  * Per-phase memoization of a {@code c:forEach} <em>items</em> expression.
  *
- * <p>Every unrolled iteration var expression ({@link IndexedValueExpression}, {@link IteratedValueExpression},
- * {@link MappedValueExpression}) resolves the same shared items expression ({@code orig}) to reach its element, and
- * resolving it is the expensive part - it walks the whole EL/CDI chain (e.g. {@code #{dataBean.groups}} through the
- * CDI/bean resolvers). Because the body is unrolled, that walk is paid once per cell per phase even though every cell
- * of one {@code c:forEach} shares the same {@code orig} instance and the same result.
+ * <p>
+ * Every unrolled iteration var expression ({@link IndexedValueExpression}, {@link IteratedValueExpression}, {@link MappedValueExpression}) resolves the same
+ * shared items expression ({@code orig}) to reach its element, and resolving it is the expensive part - it walks the whole EL/CDI chain (e.g.
+ * {@code #{dataBean.groups}} through the CDI/bean resolvers). Because the body is unrolled, that walk is paid once per cell per phase even though every cell of
+ * one {@code c:forEach} shares the same {@code orig} instance and the same result.
  *
- * <p>Within a single lifecycle phase the items collection is stable - it is only structurally replaced <em>between</em>
- * phases (by an action), not mid-phase - so this caches {@code orig}'s value keyed by {@code orig} identity and scoped
- * to the current {@link PhaseId}. The chain is then walked once per items expression per phase instead of once per
- * cell, while staying live across phases: a content change made by an action is picked up by the render phase's fresh
- * cache, and a reused component still reads current content because its var expression holds the same {@code orig}.
+ * <p>
+ * Within a single lifecycle phase the items collection is stable - it is only structurally replaced <em>between</em> phases (by an action), not mid-phase - so
+ * this caches {@code orig}'s value keyed by {@code orig} identity and scoped to the current {@link PhaseId}. The chain is then walked once per items expression
+ * per phase instead of once per cell, while staying live across phases: a content change made by an action is picked up by the render phase's fresh cache, and
+ * a reused component still reads current content because its var expression holds the same {@code orig}.
  */
 final class IterationBaseCache {
 
@@ -54,8 +54,8 @@ final class IterationBaseCache {
     }
 
     /**
-     * Resolve {@code orig} against the current phase's cache, populating it on first use. Falls back to a direct,
-     * uncached resolution when there is no active lifecycle phase (nothing to key the cache by).
+     * Resolve {@code orig} against the current phase's cache, populating it on first use. Falls back to a direct, uncached resolution when there is no active
+     * lifecycle phase (nothing to key the cache by).
      */
     static Object getValue(ELContext elContext, ValueExpression orig) {
         FacesContext context = FacesContext.getCurrentInstance();
@@ -79,4 +79,5 @@ final class IterationBaseCache {
         }
         return base == NULL ? null : base;
     }
+
 }

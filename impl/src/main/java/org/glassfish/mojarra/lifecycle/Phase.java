@@ -41,9 +41,8 @@ import org.glassfish.mojarra.util.Timer;
 
 /**
  * <p>
- * A <strong>Phase</strong> is a single step in the processing of a Jakarta Faces request throughout its entire
- * {@link jakarta.faces.lifecycle.Lifecycle}. Each <code>Phase</code> performs the required transitions on the state
- * information in the {@link FacesContext} associated with this request.
+ * A <strong>Phase</strong> is a single step in the processing of a Jakarta Faces request throughout its entire {@link jakarta.faces.lifecycle.Lifecycle}. Each
+ * <code>Phase</code> performs the required transitions on the state information in the {@link FacesContext} associated with this request.
  */
 
 public abstract class Phase {
@@ -74,12 +73,15 @@ public abstract class Phase {
             if (!shouldSkip(context)) {
                 execute(context);
             }
-        } catch (Throwable e) {
+        }
+        catch (Throwable e) {
             queueException(context, e);
-        } finally {
+        }
+        finally {
             try {
                 handleAfterPhase(context, listeners, event);
-            } catch (Throwable e) {
+            }
+            catch (Throwable e) {
                 queueException(context, e);
             }
             // stop timing
@@ -95,8 +97,7 @@ public abstract class Phase {
 
     /**
      * <p>
-     * Perform all state transitions required by the current phase of the request processing
-     * {@link jakarta.faces.lifecycle.Lifecycle} for a particular request.
+     * Perform all state transitions required by the current phase of the request processing {@link jakarta.faces.lifecycle.Lifecycle} for a particular request.
      * </p>
      *
      * @param context FacesContext for the current request being processed
@@ -139,7 +140,8 @@ public abstract class Phase {
         try {
             Flash flash = context.getExternalContext().getFlash();
             flash.doPostPhaseActions(context);
-        } catch (UnsupportedOperationException uoe) {
+        }
+        catch (UnsupportedOperationException uoe) {
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.fine("ExternalContext.getFlash() throw UnsupportedOperationException -> Flash unavailable");
             }
@@ -150,7 +152,8 @@ public abstract class Phase {
             if (getId().equals(listener.getPhaseId()) || PhaseId.ANY_PHASE.equals(listener.getPhaseId())) {
                 try {
                     listener.afterPhase(event);
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     queueException(context, e, ExceptionQueuedEventContext.IN_AFTER_PHASE_KEY);
                     break;
                 }
@@ -178,7 +181,8 @@ public abstract class Phase {
         try {
             Flash flash = context.getExternalContext().getFlash();
             flash.doPrePhaseActions(context);
-        } catch (UnsupportedOperationException uoe) {
+        }
+        catch (UnsupportedOperationException uoe) {
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.fine("ExternalContext.getFlash() throw UnsupportedOperationException -> Flash unavailable");
             }
@@ -197,7 +201,8 @@ public abstract class Phase {
             if (getId().equals(listener.getPhaseId()) || PhaseId.ANY_PHASE.equals(listener.getPhaseId())) {
                 try {
                     listener.beforePhase(event);
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     queueException(context, e, ExceptionQueuedEventContext.IN_BEFORE_PHASE_KEY);
                     // move the iterator pointer back one
                     if (listenersIterator.hasPrevious()) {
@@ -209,21 +214,21 @@ public abstract class Phase {
         }
 
     }
-    
+
     private static void fireCdiPhaseEvent(FacesContext context, PhaseEvent event, Annotation qualifier) {
         getCdiBeanManager(context).getEvent().select(PhaseEvent.class, qualifier).fire(event);
     }
 
     /**
-     * @return whether the application defines any CDI observer of a {@link PhaseEvent}, so the before/after
-     * phase dispatch can be skipped entirely in the common case where it does not. Decided once at CDI bootstrap
-     * (see {@link CdiExtension#isPhaseEventObserved()}); returns {@code false} when the extension is no longer
-     * registered (deployment shutting down, WELD-001325), where there are no observers to dispatch to.
+     * @return whether the application defines any CDI observer of a {@link PhaseEvent}, so the before/after phase dispatch can be skipped entirely in the
+     * common case where it does not. Decided once at CDI bootstrap (see {@link CdiExtension#isPhaseEventObserved()}); returns {@code false} when the extension
+     * is no longer registered (deployment shutting down, WELD-001325), where there are no observers to dispatch to.
      */
     private static boolean hasCdiPhaseObserver(FacesContext context) {
         try {
             return getCdiBeanManager(context).getExtension(CdiExtension.class).isPhaseEventObserved();
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             return false;
         }
     }
@@ -232,16 +237,18 @@ public abstract class Phase {
 
     /**
      * @param context the FacesContext for the current request
-     * @return <code>true</code> if <code>FacesContext.responseComplete()</code> or
-     * <code>FacesContext.renderResponse()</code> and the phase is not RENDER_RESPONSE, otherwise return <code>false</code>
+     * @return <code>true</code> if <code>FacesContext.responseComplete()</code> or <code>FacesContext.renderResponse()</code> and the phase is not
+     * RENDER_RESPONSE, otherwise return <code>false</code>
      */
     private boolean shouldSkip(FacesContext context) {
 
         if (context.getResponseComplete()) {
             return true;
-        } else if (context.getRenderResponse() && !PhaseId.RENDER_RESPONSE.equals(getId())) {
+        }
+        else if (context.getRenderResponse() && !PhaseId.RENDER_RESPONSE.equals(getId())) {
             return true;
-        } else {
+        }
+        else {
             return false;
         }
 

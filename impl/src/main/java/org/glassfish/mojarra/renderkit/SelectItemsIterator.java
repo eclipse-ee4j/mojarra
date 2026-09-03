@@ -39,8 +39,7 @@ import org.glassfish.mojarra.util.Util;
 
 /**
  * <p>
- * Package private class for iterating over the set of {@link SelectItem}s for a parent {@link UISelectMany} or
- * {@link UISelectOne}.
+ * Package private class for iterating over the set of {@link SelectItem}s for a parent {@link UISelectMany} or {@link UISelectOne}.
  * </p>
  *
  * // RELEASE_PENDING (rlubke,driscoll) performanc review
@@ -81,8 +80,7 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
     private ListIterator<UIComponent> kids;
 
     /**
-     * Expose single SelectItems via an Iterator. This iterator will be reset/reused for each individual SelectItem instance
-     * encountered.
+     * Expose single SelectItems via an Iterator. This iterator will be reset/reused for each individual SelectItem instance encountered.
      */
     private SingleElementIterator singleItemIterator;
 
@@ -104,7 +102,8 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
         if (items != null) {
             if (items.hasNext()) {
                 return true;
-            } else {
+            }
+            else {
                 items = null;
             }
         }
@@ -113,7 +112,8 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
             initializeItems(next);
             if (items != null) {
                 return true;
-            } else {
+            }
+            else {
                 next = findNextValidChild();
             }
         }
@@ -163,8 +163,7 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
 
     /**
      * <p>
-     * Initializes the <code>items</code> instance variable with an <code>Iterator</code> appropriate to the UISelectItem(s)
-     * value.
+     * Initializes the <code>items</code> instance variable with an <code>Iterator</code> appropriate to the UISelectItem(s) value.
      * </p>
      */
     private void initializeItems(Object kid) {
@@ -173,24 +172,31 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
             UISelectItem ui = (UISelectItem) kid;
             SelectItem item = (SelectItem) ui.getValue();
             if (item == null) {
-                item = new SelectItem(ui.getItemValue(), ui.getItemLabel(), ui.getItemDescription(), ui.isItemDisabled(), ui.isItemEscaped(),
-                        ui.isNoSelectionOption());
+                item = new SelectItem(
+                    ui.getItemValue(), ui.getItemLabel(), ui.getItemDescription(), ui.isItemDisabled(), ui.isItemEscaped(),
+                    ui.isNoSelectionOption()
+                );
             }
             updateSingeItemIterator(ui, item);
             items = singleItemIterator;
-        } else if (kid instanceof UISelectItems) {
+        }
+        else if (kid instanceof UISelectItems) {
             UISelectItems ui = (UISelectItems) kid;
             Object value = ui.getValue();
             if (value != null) {
                 if (value instanceof SelectItem) {
                     items = new ArrayIterator(ctx, (UISelectItems) kid, new Object[] { value });
-                } else if (value.getClass().isArray()) {
+                }
+                else if (value.getClass().isArray()) {
                     items = new ArrayIterator(ctx, (UISelectItems) kid, value);
-                } else if (value instanceof Iterable) {
+                }
+                else if (value instanceof Iterable) {
                     items = new IterableItemIterator(ctx, (UISelectItems) kid, (Iterable<?>) value);
-                } else if (value instanceof Map) {
+                }
+                else if (value instanceof Map) {
                     items = new MapIterator(ctx, (UISelectItems) kid, (Map<?, ?>) value);
-                } else {
+                }
+                else {
                     throw new IllegalArgumentException();
                 }
             }
@@ -291,8 +297,8 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
     } // END SingleElementIterator
 
     /**
-     * Iterates over a <code>Map</code> of values exposing each entry as a SelectItem. Note that this will do so re-using
-     * the same SelectItem but changing the value and label as appropriate.
+     * Iterates over a <code>Map</code> of values exposing each entry as a SelectItem. Note that this will do so re-using the same SelectItem but changing the
+     * value and label as appropriate.
      */
     private static final class MapIterator extends GenericObjectSelectItemIterator {
 
@@ -329,7 +335,8 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
                 item.setLabel(key != null ? key.toString() : value.toString());
                 item.setValue(value != null ? value : "");
                 return item;
-            } else {
+            }
+            else {
                 return getSelectItemFor(ctx, entry);
             }
 
@@ -346,8 +353,7 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
 
     /**
      * <p>
-     * Base class to support iterating over Collections or Arrays that may or may not contain <code>SelectItem</code>
-     * instances.
+     * Base class to support iterating over Collections or Arrays that may or may not contain <code>SelectItem</code> instances.
      * </p>
      */
     private static abstract class GenericObjectSelectItemIterator implements ComponentAwareSelectItemIterator<SelectItem> {
@@ -405,8 +411,8 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
         // ------------------------------------------------------ Nested Classes
 
         /**
-         * A <code>SelectItem</code> implementation to support generating unique <code>SelectItem</code> values based on
-         * <code>ValueExpressions</code> from the owning {@link UISelectItems} instance.
+         * A <code>SelectItem</code> implementation to support generating unique <code>SelectItem</code> values based on <code>ValueExpressions</code> from the
+         * owning {@link UISelectItems} instance.
          */
         private static final class GenericObjectSelectItem extends SelectItem {
 
@@ -467,14 +473,17 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
                     setDisabled(Util.toBoolean(itemDisabledResult, false));
                     if (null != noSelectionOptionResult) {
                         setNoSelectionOption(Util.toBoolean(noSelectionOptionResult, false));
-                    } else if (null != noSelectionValueResult) {
+                    }
+                    else if (null != noSelectionValueResult) {
                         setNoSelectionOption(getValue().equals(noSelectionValueResult));
                     }
-                } finally {
+                }
+                finally {
                     if (varName != null) {
                         if (oldVarValue != null) {
                             reqMap.put(varName, oldVarValue);
-                        } else {
+                        }
+                        else {
                             reqMap.remove(varName);
                         }
                     }
@@ -501,14 +510,15 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
     } // END GenericObjectSelectItemIterator
 
     private interface ComponentAwareSelectItemIterator<E extends Object> extends Iterator<E> {
+
         UIComponent currentSelectComponent();
+
     }
 
     /**
      * Handles arrays of <code>SelectItem</code>s, generic Objects, or combintations of both.
      *
-     * A single <code>GenericObjectSelectItem</code> will be leverage for any non-<code>SelectItem</code> objects
-     * encountered.
+     * A single <code>GenericObjectSelectItem</code> will be leverage for any non-<code>SelectItem</code> objects encountered.
      */
     private static final class ArrayIterator extends GenericObjectSelectItemIterator {
 
@@ -547,7 +557,8 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
             Object item = Array.get(array, index++);
             if (item instanceof SelectItem && (item instanceof SelectItemGroup || !hasVar())) {
                 return (SelectItem) item;
-            } else {
+            }
+            else {
                 return getSelectItemFor(ctx, item);
             }
 
@@ -563,8 +574,7 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
     /**
      * Handles Collections of <code>SelectItem</code>s, generic Objects, or combintations of both.
      *
-     * A single <code>GenericObjectSelectItem</code> will be leverage for any non-<code>SelectItem</code> objects
-     * encountered.
+     * A single <code>GenericObjectSelectItem</code> will be leverage for any non-<code>SelectItem</code> objects encountered.
      */
     private static final class IterableItemIterator extends GenericObjectSelectItemIterator {
 
@@ -596,7 +606,8 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
             Object item = iterator.next();
             if (item instanceof SelectItem && (item instanceof SelectItemGroup || !hasVar())) {
                 return (SelectItem) item;
-            } else {
+            }
+            else {
                 return getSelectItemFor(ctx, item);
             }
 

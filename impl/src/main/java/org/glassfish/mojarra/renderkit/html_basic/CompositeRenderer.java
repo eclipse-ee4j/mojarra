@@ -27,8 +27,7 @@ import org.glassfish.mojarra.util.Util;
 
 /**
  * <p>
- * This <code>Renderer</code> is responsible for rendering the children defined within the composite implementation
- * section of a composite component template.
+ * This <code>Renderer</code> is responsible for rendering the children defined within the composite implementation section of a composite component template.
  * </p>
  */
 public class CompositeRenderer extends Renderer<UIComponent> {
@@ -44,8 +43,10 @@ public class CompositeRenderer extends Renderer<UIComponent> {
         Map<String, UIComponent> facets = component.getFacets();
         UIComponent compositeRoot = facets.get(UIComponent.COMPOSITE_FACET_NAME);
         if (null == compositeRoot) {
-            throw new IOException("PENDING_I18N: Unable to find composite " + " component root for composite component with id " + component.getId()
-                    + " and class " + component.getClass().getName());
+            throw new IOException(
+                "PENDING_I18N: Unable to find composite " + " component root for composite component with id " + component.getId()
+                    + " and class " + component.getClass().getName()
+            );
         }
         compositeRoot.encodeAll(context);
 

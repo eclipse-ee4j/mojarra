@@ -72,14 +72,13 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 /**
- * This <code>Callable</code> will be used by <code>getXMLDocuments</code>
- * It represents a single configuration resource (such as faces-config.xml) to be parsed into a DOM.
+ * This <code>Callable</code> will be used by <code>getXMLDocuments</code> It represents a single configuration resource (such as faces-config.xml) to be parsed
+ * into a DOM.
  */
 public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
 
     /**
-     * Name of the attribute added by ParseTask to indicate a {@link Document} instance as a representation of
-     * <code>/WEB-INF/faces-config.xml</code>.
+     * Name of the attribute added by ParseTask to indicate a {@link Document} instance as a representation of <code>/WEB-INF/faces-config.xml</code>.
      */
     public static final String WEB_INF_MARKER = "org.glassfish.mojarra.webinf";
 
@@ -90,15 +89,15 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
     private static final String FACELET_TAGLIB_TAGNAME = "facelet-taglib";
 
     /**
-     * The namespaces a configuration document may legitimately declare, used to recognize one which was written with the
-     * wrong scheme.
+     * The namespaces a configuration document may legitimately declare, used to recognize one which was written with the wrong scheme.
      */
     private static final Set<String> KNOWN_NAMESPACES = Set.of(
-            XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI,
-            JAKARTAEE_SCHEMA_DEFAULT_NS,
-            JAVAEE_SCHEMA_DEFAULT_NS,
-            JAVAEE_SCHEMA_LEGACY_DEFAULT_NS,
-            FACES_CONFIG_1_X_DEFAULT_NS);
+        XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI,
+        JAKARTAEE_SCHEMA_DEFAULT_NS,
+        JAVAEE_SCHEMA_DEFAULT_NS,
+        JAVAEE_SCHEMA_LEGACY_DEFAULT_NS,
+        FACES_CONFIG_1_X_DEFAULT_NS
+    );
 
     /**
      * Stylesheet to convert 1.0 and 1.1 based faces-config documents to our private 1.1 schema for validation.
@@ -108,8 +107,6 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
     private final ServletContext servletContext;
     private final URI documentURI;
     private final boolean validating;
-
-
 
     // --------------------------------------------------------
     // Constructors
@@ -129,8 +126,6 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
         this.documentURI = documentURI;
         this.validating = validating;
     }
-
-
 
     // ----------------------------------------------- Methods from Callable
 
@@ -154,12 +149,11 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
             }
 
             return new DocumentInfo(document, documentURI);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new ConfigurationException(format("Unable to parse document ''{0}'': {1}", documentURI.toURL().toExternalForm(), e.getMessage()), e);
         }
     }
-
-
 
     // ----------------------------------------------------- Private Methods
 
@@ -179,7 +173,8 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
                 documentNS = CURRENT_NAMESPACE;
                 configDocument = synthesizeEmptyFlowDefinition(documentURI);
             }
-        } else {
+        }
+        else {
             Element documentElement = configDocument.getDocumentElement();
             documentNS = documentElement.getNamespaceURI();
             String rootElementTagName = documentElement.getTagName();
@@ -187,9 +182,13 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
             if (isNonFacesConfigDocument(rootElementTagName)) {
 
                 if (LOGGER.isLoggable(WARNING)) {
-                    LOGGER.log(WARNING,
-                            MessageFormat.format("Config document {0} with namespace URI {1} is not a faces-config or facelet-taglib file.  Ignoring.",
-                                    documentURI.toURL().toExternalForm(), documentNS));
+                    LOGGER.log(
+                        WARNING,
+                        MessageFormat.format(
+                            "Config document {0} with namespace URI {1} is not a faces-config or facelet-taglib file.  Ignoring.",
+                            documentURI.toURL().toExternalForm(), documentNS
+                        )
+                    );
                 }
                 // Ignore by returning an empty document instead of null
                 return getEmptyFacesConfig(documentBuilder);
@@ -204,33 +203,35 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
             DOMSource domSource = new DOMSource(configDocument, documentURL.toExternalForm());
 
             /*
-             * If the Document in question is 1.2 (i.e. it has a namespace matching JAVAEE_SCHEMA_DEFAULT_NS, then perform
-             * validation using the cached schema and return. Otherwise we assume a 1.0 or 1.1 faces-config in which case we need to
-             * transform it to reference a special 1.1 schema before validating.
+             * If the Document in question is 1.2 (i.e. it has a namespace matching JAVAEE_SCHEMA_DEFAULT_NS, then perform validation using the cached schema
+             * and return. Otherwise we assume a 1.0 or 1.1 faces-config in which case we need to transform it to reference a special 1.1 schema before
+             * validating.
              */
             Node documentElement = ((Document) domSource.getNode()).getDocumentElement();
 
             switch (documentNS) {
-            case JAKARTAEE_SCHEMA_DEFAULT_NS:
-            case JAVAEE_SCHEMA_DEFAULT_NS:
-            case JAVAEE_SCHEMA_LEGACY_DEFAULT_NS: {
+                case JAKARTAEE_SCHEMA_DEFAULT_NS :
+                case JAVAEE_SCHEMA_DEFAULT_NS :
+                case JAVAEE_SCHEMA_LEGACY_DEFAULT_NS : {
 
-                // If the Document in question is 1.2+ (i.e. it has a namespace matching JAVAEE_SCHEMA_LEGACY_DEFAULT_NS or later,
-                // then perform validation using the cached schema and return.
+                    // If the Document in question is 1.2+ (i.e. it has a namespace matching JAVAEE_SCHEMA_LEGACY_DEFAULT_NS or later,
+                    // then perform validation using the cached schema and return.
 
-                returnDoc = validateDocument(
-                    findMatchingSchema(documentNS, getVersion(documentElement), documentElement.getLocalName()),
-                    domSource);
-                break;
-            }
+                    returnDoc = validateDocument(
+                        findMatchingSchema(documentNS, getVersion(documentElement), documentElement.getLocalName()),
+                        domSource
+                    );
+                    break;
+                }
 
-            default:
-                // Assume a 1.0 or 1.1 faces-config in which case we need to transform it to reference a special 1.1 schema
-                // before validating.
+                default :
+                    // Assume a 1.0 or 1.1 faces-config in which case we need to transform it to reference a special 1.1 schema
+                    // before validating.
 
-                returnDoc = validateDocument(
-                    findMatchingSchema(documentNS, null, null),
-                    transformDocument(documentNS, domSource));
+                    returnDoc = validateDocument(
+                        findMatchingSchema(documentNS, null, null),
+                        transformDocument(documentNS, domSource)
+                    );
             }
         }
 
@@ -251,7 +252,8 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
 
         try {
             return documentBuilder.parse(documentInputSource);
-        } catch (SAXParseException spe) {
+        }
+        catch (SAXParseException spe) {
             // [mojarra-1693]
             // Test if this is a zero length or whitespace only faces-config.xml file.
             // If so, just make an empty Document
@@ -269,15 +271,15 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
 
     /**
      * <p>
-     * Returns <code>null</code> when the version is not one this release ships a schema for, which skips validation of
-     * that document rather than failing the deployment. A library on the classpath may legitimately declare a newer
-     * configuration version than the runtime knows.
+     * Returns <code>null</code> when the version is not one this release ships a schema for, which skips validation of that document rather than failing the
+     * deployment. A library on the classpath may legitimately declare a newer configuration version than the runtime knows.
      * </p>
      */
     private Schema findMatchingSchema(String documentNS, String version, String localName) {
         try {
             return DbfFactory.getSchema(servletContext, documentNS, version, localName);
-        } catch (ConfigurationException e) {
+        }
+        catch (ConfigurationException e) {
             LOGGER.log(WARNING, "faces.config.schema.unknown", new Object[] { documentURI, e.getMessage() });
             return null;
         }
@@ -295,10 +297,9 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
 
     /**
      * <p>
-     * A namespace is compared as an exact string and is never resolved, so writing <code>https</code> where the
-     * namespace says <code>http</code> declares an entirely different namespace. The schema then rejects everything in
-     * it, naming the attribute or element rather than the declaration which actually went wrong, which is a hard error
-     * to read. This says what happened instead.
+     * A namespace is compared as an exact string and is never resolved, so writing <code>https</code> where the namespace says <code>http</code> declares an
+     * entirely different namespace. The schema then rejects everything in it, naming the attribute or element rather than the declaration which actually went
+     * wrong, which is a hard error to read. This says what happened instead.
      * </p>
      */
     private void warnAboutNamespacesWhichDifferOnlyInScheme(Document document) {
@@ -315,8 +316,10 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
             String withOtherScheme = withOtherScheme(declared);
 
             if (!KNOWN_NAMESPACES.contains(declared) && KNOWN_NAMESPACES.contains(withOtherScheme)) {
-                LOGGER.log(WARNING, "faces.config.namespace.wrong_scheme",
-                        new Object[] { documentURI, attribute.getName(), declared, withOtherScheme });
+                LOGGER.log(
+                    WARNING, "faces.config.namespace.wrong_scheme",
+                    new Object[] { documentURI, attribute.getName(), declared, withOtherScheme }
+                );
             }
         }
     }
@@ -335,8 +338,8 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
 
     /**
      * <p>
-     * Reports every way in which the document departs from its schema, rather than stopping at the first one and taking
-     * the deployment down with it. A configuration file which a previous release accepted has to keep deploying.
+     * Reports every way in which the document departs from its schema, rather than stopping at the first one and taking the deployment down with it. A
+     * configuration file which a previous release accepted has to keep deploying.
      * </p>
      */
     private void validate(Schema schema, DOMSource domSource) throws Exception {
@@ -361,14 +364,17 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
 
         @Override
         public void error(SAXParseException exception) {
-            LOGGER.log(WARNING, "faces.config.schema.violation",
-                    new Object[] { documentURI, exception.getLineNumber(), exception.getColumnNumber(), exception.getMessage() });
+            LOGGER.log(
+                WARNING, "faces.config.schema.violation",
+                new Object[] { documentURI, exception.getLineNumber(), exception.getColumnNumber(), exception.getMessage() }
+            );
         }
 
         @Override
         public void fatalError(SAXParseException exception) throws SAXException {
             throw exception;
         }
+
     }
 
     private String getVersion(Node documentElement) {
@@ -417,12 +423,12 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
     private static Transformer getTransformer(String documentNS) throws Exception {
         String xslToApply;
         switch (documentNS) {
-            case FACES_CONFIG_1_X_DEFAULT_NS:
+            case FACES_CONFIG_1_X_DEFAULT_NS :
                 xslToApply = FACES_TO_1_1_PRIVATE_XSL;
                 break;
-            default:
+            default :
                 throw new IllegalStateException();
-            }
+        }
 
         return createTransformerFactory().newTransformer(new StreamSource(getInputStream(ConfigManager.class.getResource(xslToApply))));
     }
@@ -456,7 +462,8 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
 
     private Document getEmptyFacesConfig(DocumentBuilder documentBuilder) throws SAXException, IOException {
         return documentBuilder.parse(
-                new InputSource(getInputStream(getClass().getClassLoader().getResource(EMPTY_FACES_CONFIG))));
+            new InputSource(getInputStream(getClass().getClassLoader().getResource(EMPTY_FACES_CONFIG)))
+        );
     }
 
 }

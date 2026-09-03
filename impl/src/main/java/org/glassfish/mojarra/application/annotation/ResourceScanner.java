@@ -75,9 +75,12 @@ class ResourceScanner implements Scanner {
         }
 
         if (!fieldAnnotations.isEmpty() || !methodAnnotations.isEmpty()) {
-            handler = new ResourceHandler(fields.toArray(new Field[0]), fieldAnnotations.toArray(new Resource[0]), methods.toArray(new Method[0]),
-                    methodAnnotations.toArray(new Resource[0]));
+            handler = new ResourceHandler(
+                fields.toArray(new Field[0]), fieldAnnotations.toArray(new Resource[0]), methods.toArray(new Method[0]),
+                methodAnnotations.toArray(new Resource[0])
+            );
         }
         return handler;
     }
+
 }

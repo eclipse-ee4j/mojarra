@@ -83,12 +83,10 @@ public class UIViewRootTest {
         when(facesContext.getViewRoot()).thenReturn(viewRoot);
         application.publishEvent(facesContext, PreDestroyViewMapEvent.class, UIViewRoot.class, viewRoot);
 
-
         Map<String, Object> viewMap = viewRoot.getViewMap();
         assertNotNull(viewMap);
         viewRoot.getViewMap().clear();
         viewRoot.getViewMap().clear();
-
 
         CurrentFacesContext.set(null);
     }
@@ -217,4 +215,5 @@ public class UIViewRootTest {
 
         CurrentFacesContext.set(null);
     }
+
 }

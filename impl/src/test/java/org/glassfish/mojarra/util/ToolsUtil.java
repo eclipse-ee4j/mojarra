@@ -36,53 +36,41 @@ public class ToolsUtil {
 
     public static final String GENERATE_LOGGER = ".config.generate";
 
-    public static final String FACES_LOG_STRINGS
-            = "org.glassfish.mojarra.LogStrings";
+    public static final String FACES_LOG_STRINGS = "org.glassfish.mojarra.LogStrings";
 
-    public static final String TOOLS_LOG_STRINGS
-            = "org.glassfish.mojarra.ToolsLogStrings";
+    public static final String TOOLS_LOG_STRINGS = "org.glassfish.mojarra.ToolsLogStrings";
 
-    private static final String RESOURCE_BUNDLE_BASE_NAME
-            = "org.glassfish.mojarra.resources.JsfToolsMessages";
+    private static final String RESOURCE_BUNDLE_BASE_NAME = "org.glassfish.mojarra.resources.JsfToolsMessages";
 
     // --------------------------------------------------- Message Key Constants
-    public static final String MANAGED_BEAN_NO_MANAGED_BEAN_NAME_ID
-            = "org.glassfish.mojarra.MANAGED_BEAN_NO_MANAGED_BEAN_NAME";
+    public static final String MANAGED_BEAN_NO_MANAGED_BEAN_NAME_ID = "org.glassfish.mojarra.MANAGED_BEAN_NO_MANAGED_BEAN_NAME";
 
-    public static final String MANAGED_BEAN_NO_MANAGED_BEAN_CLASS_ID
-            = "org.glassfish.mojarra.MANAGED_BEAN_NO_MANAGED_BEAN_CLASS";
+    public static final String MANAGED_BEAN_NO_MANAGED_BEAN_CLASS_ID = "org.glassfish.mojarra.MANAGED_BEAN_NO_MANAGED_BEAN_CLASS";
 
-    public static final String MANAGED_BEAN_NO_MANAGED_BEAN_SCOPE_ID
-            = "org.glassfish.mojarra.MANAGED_BEAN_NO_MANAGED_BEAN_SCOPE";
+    public static final String MANAGED_BEAN_NO_MANAGED_BEAN_SCOPE_ID = "org.glassfish.mojarra.MANAGED_BEAN_NO_MANAGED_BEAN_SCOPE";
 
-    public static final String MANAGED_BEAN_INVALID_SCOPE_ID
-            = "org.glassfish.mojarra.MANAGED_BEAN_INVALID_SCOPE";
+    public static final String MANAGED_BEAN_INVALID_SCOPE_ID = "org.glassfish.mojarra.MANAGED_BEAN_INVALID_SCOPE";
 
-    public static final String MANAGED_BEAN_AS_LIST_CONFIG_ERROR_ID
-            = "org.glassfish.mojarra.MANAGED_BEAN_AS_LIST_CONFIG_ERROR";
+    public static final String MANAGED_BEAN_AS_LIST_CONFIG_ERROR_ID = "org.glassfish.mojarra.MANAGED_BEAN_AS_LIST_CONFIG_ERROR";
 
-    public static final String MANAGED_BEAN_AS_MAP_CONFIG_ERROR_ID
-            = "org.glassfish.mojarra.MANAGED_BEAN_AS_MAP_CONFIG_ERROR";
+    public static final String MANAGED_BEAN_AS_MAP_CONFIG_ERROR_ID = "org.glassfish.mojarra.MANAGED_BEAN_AS_MAP_CONFIG_ERROR";
 
-    public static final String MANAGED_BEAN_LIST_PROPERTY_CONFIG_ERROR_ID
-            = "org.glassfish.mojarra.MANAGED_BEAN_LIST_PROPERTY_CONFIG_ERROR";
+    public static final String MANAGED_BEAN_LIST_PROPERTY_CONFIG_ERROR_ID = "org.glassfish.mojarra.MANAGED_BEAN_LIST_PROPERTY_CONFIG_ERROR";
 
-    public static final String MANAGED_BEAN_MAP_PROPERTY_CONFIG_ERROR_ID
-            = "org.glassfish.mojarra.MANAGED_BEAN_MAP_PROPERTY_CONFIG_ERROR";
+    public static final String MANAGED_BEAN_MAP_PROPERTY_CONFIG_ERROR_ID = "org.glassfish.mojarra.MANAGED_BEAN_MAP_PROPERTY_CONFIG_ERROR";
 
-    public static final String MANAGED_BEAN_PROPERTY_CONFIG_ERROR_ID
-            = "org.glassfish.mojarra.MANAGED_BEAN_PROPERTY_CONFIG_ERROR";
+    public static final String MANAGED_BEAN_PROPERTY_CONFIG_ERROR_ID = "org.glassfish.mojarra.MANAGED_BEAN_PROPERTY_CONFIG_ERROR";
 
-    public static final String MANAGED_BEAN_NO_MANAGED_PROPERTY_NAME_ID
-            = "org.glassfish.mojarra.MANAGED_BEAN_NO_MANAGED_PROPERTY_NAME";
+    public static final String MANAGED_BEAN_NO_MANAGED_PROPERTY_NAME_ID = "org.glassfish.mojarra.MANAGED_BEAN_NO_MANAGED_PROPERTY_NAME";
 
     // ---------------------------------------------------------- Public Methods
     public static String getMessage(String messageKey, Object[] params) {
 
-        ResourceBundle bundle
-                = ResourceBundle.getBundle(RESOURCE_BUNDLE_BASE_NAME,
-                        Locale.getDefault(),
-                        Thread.currentThread().getContextClassLoader());
+        ResourceBundle bundle = ResourceBundle.getBundle(
+            RESOURCE_BUNDLE_BASE_NAME,
+            Locale.getDefault(),
+            Thread.currentThread().getContextClassLoader()
+        );
         return MessageFormat.format(bundle.getString(messageKey), params);
 
     } // END getMessage
@@ -97,19 +85,22 @@ public class ToolsUtil {
         return Logger.getLogger(loggerName, FACES_LOG_STRINGS);
     }
 
-    public static Class<?> loadClass(String name,
-            Object fallbackClass)
-            throws ClassNotFoundException {
+    public static Class<?> loadClass(
+        String name,
+        Object fallbackClass
+    )
+        throws ClassNotFoundException
+    {
         ClassLoader loader = ToolsUtil.getCurrentLoader(fallbackClass);
         return Class.forName(name, false, loader);
     }
 
     public static ClassLoader getCurrentLoader(Object fallbackClass) {
-        ClassLoader loader
-                = Thread.currentThread().getContextClassLoader();
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
         if (loader == null) {
             loader = fallbackClass.getClass().getClassLoader();
         }
         return loader;
     }
+
 }

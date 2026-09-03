@@ -33,9 +33,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
- * A behavior event attribute is wired by <code>mojarra.ael()</code>, which locates its element by the component's
- * client id, so a component carrying one gets that id rendered even when the id was auto generated and would
- * otherwise have been left out.
+ * A behavior event attribute is wired by <code>mojarra.ael()</code>, which locates its element by the component's client id, so a component carrying one gets
+ * that id rendered even when the id was auto generated and would otherwise have been left out.
  */
 class HtmlBasicRendererIdTest {
 
@@ -85,8 +84,8 @@ class HtmlBasicRendererIdTest {
     }
 
     /**
-     * A delegated handler travels in its own attribute and needs no id, but the renderer cannot tell which element it
-     * is about to write, so it forces the id for that case too.
+     * A delegated handler travels in its own attribute and needs no id, but the renderer cannot tell which element it is about to write, so it forces the id
+     * for that case too.
      */
     @Test
     void anAutoIdIsRenderedForADelegatedEventAttributeAsWell() {
@@ -120,4 +119,5 @@ class HtmlBasicRendererIdTest {
         component.setId("j_id1");
         return component;
     }
+
 }

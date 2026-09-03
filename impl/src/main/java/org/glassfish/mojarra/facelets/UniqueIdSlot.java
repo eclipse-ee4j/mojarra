@@ -22,22 +22,20 @@ import jakarta.faces.view.facelets.FaceletContext;
 /**
  * The unique-id counter slot a tag handler reserves once and reuses for every build.
  * <p>
- * A handler that asks for its id by tag id makes the context count in a map keyed by that id, which is one lookup and,
- * while the map is still growing, a share of a rehash for every tag applied. Reserving a slot moves the counter into an
- * array indexed per tag, so the same id costs an array increment. The slot belongs to the {@link Facelet} it was
- * reserved from, so it is re-reserved whenever a handler is applied from a different one.
+ * A handler that asks for its id by tag id makes the context count in a map keyed by that id, which is one lookup and, while the map is still growing, a share
+ * of a rehash for every tag applied. Reserving a slot moves the counter into an array indexed per tag, so the same id costs an array increment. The slot
+ * belongs to the {@link Facelet} it was reserved from, so it is re-reserved whenever a handler is applied from a different one.
  * <p>
- * A handler holds one of these per instance and is shared across concurrent builds, hence the volatile: a stale read
- * only costs a re-reservation, never a wrong id.
+ * A handler holds one of these per instance and is shared across concurrent builds, hence the volatile: a stale read only costs a re-reservation, never a wrong
+ * id.
  */
 public final class UniqueIdSlot {
 
     private volatile Reservation reservation;
 
     /**
-     * Returns the next unique id for {@code tagId}, through the reserved slot where the context supports it and
-     * through the public {@link FaceletContext} API otherwise, which a wrapping context or a foreign implementation
-     * may supply.
+     * Returns the next unique id for {@code tagId}, through the reserved slot where the context supports it and through the public {@link FaceletContext} API
+     * otherwise, which a wrapping context or a foreign implementation may supply.
      *
      * @param ctx the context to generate the id from
      * @param tagId the tag id to generate an id for
@@ -74,5 +72,7 @@ public final class UniqueIdSlot {
             this.owner = owner;
             this.slot = slot;
         }
+
     }
+
 }

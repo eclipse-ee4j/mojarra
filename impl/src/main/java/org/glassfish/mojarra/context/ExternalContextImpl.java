@@ -107,7 +107,13 @@ public class ExternalContextImpl extends ExternalContext {
     private final boolean distributable;
 
     private enum PREDEFINED_COOKIE_PROPERTIES {
-        domain, maxAge, path, secure, httpOnly, attribute;
+
+        domain,
+        maxAge,
+        path,
+        secure,
+        httpOnly,
+        attribute;
 
         static PREDEFINED_COOKIE_PROPERTIES of(String key) {
             try {
@@ -117,15 +123,17 @@ public class ExternalContextImpl extends ExternalContext {
                 return attribute;
             }
         }
+
     }
 
     // we want exactly the UnmodifiableMap.class (which is private) so do not remove the call to Collections.unmodifiableMap(...)
     static final Class<?> theUnmodifiableMapClass = Collections.unmodifiableMap(Collections.emptyMap()).getClass();
 
     private static final Map<String, String> fallbackContentTypeMap = Map.of(
-            "js", ScriptRenderer.DEFAULT_CONTENT_TYPE,
-            "css", StylesheetRenderer.DEFAULT_CONTENT_TYPE,
-            "properties", "text/plain");
+        "js", ScriptRenderer.DEFAULT_CONTENT_TYPE,
+        "css", StylesheetRenderer.DEFAULT_CONTENT_TYPE,
+        "properties", "text/plain"
+    );
 
     // ------------------------------------------------------------ Constructors
 
@@ -289,7 +297,8 @@ public class ExternalContextImpl extends ExternalContext {
         if (sessionMap == null) {
             if (distributable) {
                 sessionMap = new AlwaysPuttingSessionMap((HttpServletRequest) request, FacesContext.getCurrentInstance().getApplication().getProjectStage());
-            } else {
+            }
+            else {
                 sessionMap = new SessionMap((HttpServletRequest) request, FacesContext.getCurrentInstance().getApplication().getProjectStage());
             }
         }
@@ -378,7 +387,7 @@ public class ExternalContextImpl extends ExternalContext {
      */
     @Override
     public Iterator<String> getRequestParameterNames() {
-        return CollectionsUtils.unmodifiableIterator( request.getParameterNames() );
+        return CollectionsUtils.unmodifiableIterator(request.getParameterNames());
     }
 
     /**
@@ -522,7 +531,8 @@ public class ExternalContextImpl extends ExternalContext {
         URL url;
         try {
             url = servletContext.getResource(path);
-        } catch (MalformedURLException e) {
+        }
+        catch (MalformedURLException e) {
             return null;
         }
         return url;
@@ -546,7 +556,8 @@ public class ExternalContextImpl extends ExternalContext {
                 StringBuilder builder = new StringBuilder(url);
                 if (url.indexOf(UrlBuilder.QUERY_STRING_SEPARATOR) < 0) {
                     builder.append(UrlBuilder.QUERY_STRING_SEPARATOR);
-                } else {
+                }
+                else {
                     builder.append(UrlBuilder.PARAMETER_PAIR_SEPARATOR);
                 }
                 builder.append(ResponseStateManager.CLIENT_WINDOW_URL_PARAM).append(UrlBuilder.PARAMETER_NAME_VALUE_SEPARATOR).append(clientWindowId);
@@ -603,7 +614,7 @@ public class ExternalContextImpl extends ExternalContext {
             // ws://[...]
             final String websocketURL = WEBSOCKET_PROTOCOL + fixedPortRequestURL.substring(protocolEndIndex);
 
-            return encodeResourceURL( websocketURL );
+            return encodeResourceURL(websocketURL);
         }
         catch (MalformedURLException e) {
             return url;
@@ -630,7 +641,8 @@ public class ExternalContextImpl extends ExternalContext {
         }
         try {
             requestDispatcher.forward(request, response);
-        } catch (ServletException se) {
+        }
+        catch (ServletException se) {
             throw new FacesException(se);
         }
     }
@@ -652,7 +664,8 @@ public class ExternalContextImpl extends ExternalContext {
             ResponseWriter writer = ctx.getResponseWriter();
             if (writer instanceof PartialResponseWriter) {
                 pwriter = (PartialResponseWriter) writer;
-            } else {
+            }
+            else {
                 pwriter = ctx.getPartialViewContext().getPartialResponseWriter();
             }
             setResponseContentType(RIConstants.TEXT_XML_CONTENT_TYPE);
@@ -661,9 +674,11 @@ public class ExternalContextImpl extends ExternalContext {
             pwriter.startDocument();
             pwriter.redirect(requestURI);
             pwriter.endDocument();
-        } else if (response instanceof HttpServletResponse) {
+        }
+        else if (response instanceof HttpServletResponse) {
             ((HttpServletResponse) response).sendRedirect(requestURI);
-        } else {
+        }
+        else {
             throw new IllegalStateException();
         }
         ctx.responseComplete();
@@ -779,24 +794,24 @@ public class ExternalContextImpl extends ExternalContext {
                 PREDEFINED_COOKIE_PROPERTIES p = PREDEFINED_COOKIE_PROPERTIES.of(key);
                 Object v = entry.getValue();
                 switch (p) {
-                case domain:
-                    cookie.setDomain((String) v);
-                    break;
-                case maxAge:
-                    cookie.setMaxAge((Integer) v);
-                    break;
-                case path:
-                    cookie.setPath((String) v);
-                    break;
-                case secure:
-                    cookie.setSecure((Boolean) v);
-                    break;
-                case httpOnly:
-                    cookie.setHttpOnly((Boolean) v);
-                    break;
-                default:
-                    cookie.setAttribute(key, (String) v);
-                    break;
+                    case domain :
+                        cookie.setDomain((String) v);
+                        break;
+                    case maxAge :
+                        cookie.setMaxAge((Integer) v);
+                        break;
+                    case path :
+                        cookie.setPath((String) v);
+                        break;
+                    case secure :
+                        cookie.setSecure((Boolean) v);
+                        break;
+                    case httpOnly :
+                        cookie.setHttpOnly((Boolean) v);
+                        break;
+                    default :
+                        cookie.setAttribute(key, (String) v);
+                        break;
                 }
             }
         }
@@ -824,11 +839,10 @@ public class ExternalContextImpl extends ExternalContext {
     }
 
     /**
-     * Empty the cached {@link ResponseOutputWriter} without flushing it. Both {@code response.reset()} and
-     * {@code response.sendError()} only clear the container buffer, so output still buffered in the wrapping
-     * writer would survive and get flushed at {@link #release()}, re-committing the aborted response and
-     * defeating the container's error page. The writer itself is deliberately kept, as the response writer
-     * created earlier in the request holds on to it and keeps writing into it after the reset.
+     * Empty the cached {@link ResponseOutputWriter} without flushing it. Both {@code response.reset()} and {@code response.sendError()} only clear the
+     * container buffer, so output still buffered in the wrapping writer would survive and get flushed at {@link #release()}, re-committing the aborted response
+     * and defeating the container's error page. The writer itself is deliberately kept, as the response writer created earlier in the request holds on to it
+     * and keeps writing into it after the reset.
      */
     private void discardResponseOutputWriter() {
         if (responseOutputWriter != null) {
@@ -917,7 +931,8 @@ public class ExternalContextImpl extends ExternalContext {
         discardResponseOutputWriter();
         if (message == null) {
             ((HttpServletResponse) response).sendError(statusCode);
-        } else {
+        }
+        else {
             ((HttpServletResponse) response).sendError(statusCode, message);
         }
     }
@@ -1053,7 +1068,8 @@ public class ExternalContextImpl extends ExternalContext {
                 // when nothing is left to write, and thereby defeat the error page of a request which is being aborted.
                 // The container flushes its own buffer when the request ends.
                 responseOutputWriter.drain();
-            } catch (IOException ignored) {
+            }
+            catch (IOException ignored) {
                 // Best-effort at teardown; a genuine write failure surfaces via the container.
             }
             responseOutputWriter = null;
@@ -1100,14 +1116,17 @@ public class ExternalContextImpl extends ExternalContext {
     }
 
     /**
-     * Sends a single HTTP 103 (Early Hints) interim response with the {@code Link} preload headers collected so far,
-     * provided the response is not yet committed. Invoked once, right after the head resources have been rendered, so the
-     * client can start fetching the render-blocking resources while the body is still being rendered.
+     * Sends a single HTTP 103 (Early Hints) interim response with the {@code Link} preload headers collected so far, provided the response is not yet
+     * committed. Invoked once, right after the head resources have been rendered, so the client can start fetching the render-blocking resources while the body
+     * is still being rendered.
      */
     public static void sendEarlyHints(FacesContext context) {
         Object resourceUrls = context.getAttributes().get(EARLY_HINTS_RESOURCE_URLS_KEY_NAME);
 
-        if (resourceUrls instanceof Set<?> set && !set.isEmpty() && context.getExternalContext().getResponse() instanceof HttpServletResponse hres && !hres.isCommitted()) {
+        if (
+            resourceUrls instanceof Set<?> set && !set.isEmpty() && context.getExternalContext().getResponse() instanceof HttpServletResponse hres
+                && !hres.isCommitted()
+        ) {
             hres.sendEarlyHints();
         }
     }
@@ -1117,7 +1136,8 @@ public class ExternalContextImpl extends ExternalContext {
         try {
             attrs.put(ELFlash.ACT_AS_DO_LAST_PHASE_ACTIONS, outgoingResponseIsRedirect);
             getFlash().doPostPhaseActions(context);
-        } finally {
+        }
+        finally {
             attrs.remove(ELFlash.ACT_AS_DO_LAST_PHASE_ACTIONS);
         }
 
@@ -1131,12 +1151,9 @@ public class ExternalContextImpl extends ExternalContext {
     }
 
     /**
-     * Normalize a relative URI path that may have relative values ("/./",
-     * "/../", and so on ) it it.  <strong>WARNING</strong> - This method is
-     * useful only for normalizing application-generated paths.  It does not
-     * try to perform security checks for malicious input.
-     * Normalize operations were was happily taken from org.apache.catalina.util.RequestUtil in
-     * Tomcat trunk, r939305
+     * Normalize a relative URI path that may have relative values ("/./", "/../", and so on ) it it. <strong>WARNING</strong> - This method is useful only for
+     * normalizing application-generated paths. It does not try to perform security checks for malicious input. Normalize operations were was happily taken from
+     * org.apache.catalina.util.RequestUtil in Tomcat trunk, r939305
      *
      * @param path Relative path to be normalized
      * @return normalized path
@@ -1146,14 +1163,11 @@ public class ExternalContextImpl extends ExternalContext {
     }
 
     /**
-     * Normalize a relative URI path that may have relative values ("/./",
-     * "/../", and so on ) it it.  <strong>WARNING</strong> - This method is
-     * useful only for normalizing application-generated paths.  It does not
-     * try to perform security checks for malicious input.
-     * Normalize operations were was happily taken from org.apache.catalina.util.RequestUtil in
-     * Tomcat trunk, r939305
+     * Normalize a relative URI path that may have relative values ("/./", "/../", and so on ) it it. <strong>WARNING</strong> - This method is useful only for
+     * normalizing application-generated paths. It does not try to perform security checks for malicious input. Normalize operations were was happily taken from
+     * org.apache.catalina.util.RequestUtil in Tomcat trunk, r939305
      *
-     * @param path             Relative path to be normalized
+     * @param path Relative path to be normalized
      * @param replaceBackSlash Should '\\' be replaced with '/'
      * @return normalized path
      */
@@ -1180,7 +1194,7 @@ public class ExternalContextImpl extends ExternalContext {
             if (index < 0)
                 break;
             normalized = normalized.substring(0, index) +
-                    normalized.substring(index + 1);
+                normalized.substring(index + 1);
         }
 
         // Resolve occurrences of "/./" in the normalized path
@@ -1189,7 +1203,7 @@ public class ExternalContextImpl extends ExternalContext {
             if (index < 0)
                 break;
             normalized = normalized.substring(0, index) +
-                    normalized.substring(index + 2);
+                normalized.substring(index + 2);
         }
 
         // Resolve occurrences of "/../" in the normalized path
@@ -1198,10 +1212,10 @@ public class ExternalContextImpl extends ExternalContext {
             if (index < 0)
                 break;
             if (index == 0)
-                return (null);  // Trying to go outside our context
+                return (null); // Trying to go outside our context
             int index2 = normalized.lastIndexOf('/', index - 1);
             normalized = normalized.substring(0, index2) +
-                    normalized.substring(index + 3);
+                normalized.substring(index + 3);
         }
 
         // Return the normalized path that we have completed
@@ -1210,15 +1224,13 @@ public class ExternalContextImpl extends ExternalContext {
 
     // ----------------------------------------------------------- Inner Classes
 
-
     /**
-     * Buffering writer which coalesces the many small render-time writes into larger chunks before handing them to the
-     * container's writer, and which can additionally discard whatever is still buffered.
+     * Buffering writer which coalesces the many small render-time writes into larger chunks before handing them to the container's writer, and which can
+     * additionally discard whatever is still buffered.
      * <p>
-     * The discard is what {@link BufferedWriter} cannot offer: aborting a partially rendered response requires
-     * dropping the output that has not reached the container yet, as {@code response.reset()} only clears the
-     * container's own buffer. Output already drained to the container's writer is beyond reach, which matches the
-     * container's own semantics -- once it is committed it can no longer be taken back.
+     * The discard is what {@link BufferedWriter} cannot offer: aborting a partially rendered response requires dropping the output that has not reached the
+     * container yet, as {@code response.reset()} only clears the container's own buffer. Output already drained to the container's writer is beyond reach,
+     * which matches the container's own semantics -- once it is committed it can no longer be taken back.
      */
     private static class ResponseOutputWriter extends Writer {
 

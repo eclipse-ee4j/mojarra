@@ -31,8 +31,8 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.EnumSource.Mode;
 
 /**
- * The resource caching parameters are tri-state, where <code>auto</code> leaves the decision to the project stage:
- * only Development, where a resource which changed on disk has to be noticed, gets the slower values.
+ * The resource caching parameters are tri-state, where <code>auto</code> leaves the decision to the project stage: only Development, where a resource which
+ * changed on disk has to be noticed, gets the slower values.
  */
 class StageDerivedDefaultTest {
 
@@ -54,8 +54,8 @@ class StageDerivedDefaultTest {
     }
 
     /**
-     * An explicit value pins it in either direction, including in Development, which is what distinguishes it from
-     * <code>auto</code> and is why the stage is no longer also consulted where the value is used.
+     * An explicit value pins it in either direction, including in Development, which is what distinguishes it from <code>auto</code> and is why the stage is no
+     * longer also consulted where the value is used.
      */
     @Test
     void anExplicitValueWinsOverTheStage() {
@@ -71,8 +71,8 @@ class StageDerivedDefaultTest {
     }
 
     /**
-     * An unusable value behaves as though the parameter was never set, rather than as the value a bare parse happens to
-     * produce, which for a boolean would silently be false and for the period would silently be never.
+     * An unusable value behaves as though the parameter was never set, rather than as the value a bare parse happens to produce, which for a boolean would
+     * silently be false and for the period would silently be never.
      */
     @Test
     void anUnusableValueFallsBackToAuto() {
@@ -88,8 +88,7 @@ class StageDerivedDefaultTest {
     }
 
     /**
-     * And surrounding whitespace, which a container is not obliged to strip from a context parameter, does not turn a
-     * usable value into an unusable one.
+     * And surrounding whitespace, which a container is not obliged to strip from a context parameter, does not turn a usable value into an unusable one.
      */
     @Test
     void surroundingWhitespaceIsTolerated() {
@@ -117,4 +116,5 @@ class StageDerivedDefaultTest {
 
         return servletContext;
     }
+
 }

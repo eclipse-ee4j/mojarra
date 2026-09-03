@@ -43,8 +43,8 @@ import org.glassfish.mojarra.util.MessageUtils;
 
 /**
  * <p>
- * <strong>HtmlResponseWriter</strong> is an Html specific implementation of the <code>ResponseWriter</code> abstract
- * class. Kudos to Adam Winer (Oracle) for much of this code.
+ * <strong>HtmlResponseWriter</strong> is an Html specific implementation of the <code>ResponseWriter</code> abstract class. Kudos to Adam Winer (Oracle) for
+ * much of this code.
  */
 public class HtmlResponseWriter extends ResponseWriter {
 
@@ -132,8 +132,8 @@ public class HtmlResponseWriter extends ResponseWriter {
     private char[] cdataTextBuffer;
 
     /**
-     * The pass-through attributes of the element currently being started. This aliases the component's own map, so it
-     * must never be mutated here; {@link #pushElementName} takes a copy for the one case that needs to drop a key.
+     * The pass-through attributes of the element currently being started. This aliases the component's own map, so it must never be mutated here;
+     * {@link #pushElementName} takes a copy for the one case that needs to drop a key.
      */
     private Map<String, Object> passthroughAttributes;
 
@@ -233,8 +233,11 @@ public class HtmlResponseWriter extends ResponseWriter {
      *
      * @throws jakarta.faces.FacesException the encoding is not recognized.
      */
-    public HtmlResponseWriter(Writer writer, String contentType, String encoding, Boolean isScriptInAttributeValueEnabled,
-            Tristate disableUnicodeEscaping, boolean isPartial) throws FacesException {
+    public HtmlResponseWriter(
+        Writer writer, String contentType, String encoding, Boolean isScriptInAttributeValueEnabled,
+        Tristate disableUnicodeEscaping, boolean isPartial
+    ) throws FacesException
+    {
 
         this.writer = writer;
 
@@ -247,13 +250,15 @@ public class HtmlResponseWriter extends ResponseWriter {
 
         // init those configuration parameters not yet initialized
         if (isScriptInAttributeValueEnabled == null) {
-            isScriptInAttributeValueEnabled = null == context ? MojarraContextParam.ENABLE_SCRIPTS_IN_ATTRIBUTE_VALUES.getDefaultValue(null)
-                    : MojarraContextParam.ENABLE_SCRIPTS_IN_ATTRIBUTE_VALUES.isEnabled(context);
+            isScriptInAttributeValueEnabled = null == context
+                ? MojarraContextParam.ENABLE_SCRIPTS_IN_ATTRIBUTE_VALUES.getDefaultValue(null)
+                : MojarraContextParam.ENABLE_SCRIPTS_IN_ATTRIBUTE_VALUES.isEnabled(context);
         }
 
         if (disableUnicodeEscaping == null) {
-            disableUnicodeEscaping = null == context ? MojarraContextParam.DISABLE_UNICODE_ESCAPING.getDefaultValue(null)
-                    : MojarraContextParam.DISABLE_UNICODE_ESCAPING.getEnum(context);
+            disableUnicodeEscaping = null == context
+                ? MojarraContextParam.DISABLE_UNICODE_ESCAPING.getDefaultValue(null)
+                : MojarraContextParam.DISABLE_UNICODE_ESCAPING.getEnum(context);
         }
 
         // and store them for later use
@@ -269,22 +274,22 @@ public class HtmlResponseWriter extends ResponseWriter {
         String charsetName = encoding.toUpperCase(Locale.ROOT);
 
         switch (disableUnicodeEscaping) {
-        case TRUE:
-            // html escape noting (except the dangerous characters like "<>'" etc
-            escapeUnicode = false;
-            escapeIso = false;
-            break;
-        case FALSE:
-            // html escape any non-ascii character
-            escapeUnicode = true;
-            escapeIso = true;
-            break;
-        case AUTO:
-            // is stream capable of rendering unicode, do not escape
-            escapeUnicode = !HtmlUtils.isUTFencoding(charsetName);
-            // is stream capable of rendering unicode or iso-8859-1, do not escape
-            escapeIso = !HtmlUtils.isISO8859_1encoding(charsetName) && !HtmlUtils.isUTFencoding(charsetName);
-            break;
+            case TRUE :
+                // html escape noting (except the dangerous characters like "<>'" etc
+                escapeUnicode = false;
+                escapeIso = false;
+                break;
+            case FALSE :
+                // html escape any non-ascii character
+                escapeUnicode = true;
+                escapeIso = true;
+                break;
+            case AUTO :
+                // is stream capable of rendering unicode, do not escape
+                escapeUnicode = !HtmlUtils.isUTFencoding(charsetName);
+                // is stream capable of rendering unicode or iso-8859-1, do not escape
+                escapeIso = !HtmlUtils.isISO8859_1encoding(charsetName) && !HtmlUtils.isUTFencoding(charsetName);
+                break;
         }
     }
 
@@ -331,14 +336,17 @@ public class HtmlResponseWriter extends ResponseWriter {
     @Override
     public ResponseWriter cloneWithWriter(Writer writer) {
         try {
-            HtmlResponseWriter responseWriter = new HtmlResponseWriter(writer, getContentType(), getCharacterEncoding(),
-                    isScriptInAttributeValueEnabled, disableUnicodeEscaping, isPartial);
+            HtmlResponseWriter responseWriter = new HtmlResponseWriter(
+                writer, getContentType(), getCharacterEncoding(),
+                isScriptInAttributeValueEnabled, disableUnicodeEscaping, isPartial
+            );
             responseWriter.dontEscape = dontEscape;
             responseWriter.writingCdata = writingCdata;
             responseWriter.behaviorEventBootstrapWritten = behaviorEventBootstrapWritten;
             return responseWriter;
 
-        } catch (FacesException e) {
+        }
+        catch (FacesException e) {
             // This should never happen
             throw new IllegalStateException();
         }
@@ -349,8 +357,7 @@ public class HtmlResponseWriter extends ResponseWriter {
     public void endDocument() throws IOException {
 
         /*
-         * If the FastStringWriter is kept because of an error in <script> writing we get it here and write out the result. See
-         * issue #3473
+         * If the FastStringWriter is kept because of an error in <script> writing we get it here and write out the result. See issue #3473
          */
         if (writer instanceof FastStringWriter) {
             FastStringWriter fastStringWriter = (FastStringWriter) writer;
@@ -366,8 +373,7 @@ public class HtmlResponseWriter extends ResponseWriter {
 
     /**
      * <p>
-     * Write the end of an element. This method will first close any open element created by a call to
-     * <code>startElement()</code>.
+     * Write the end of an element. This method will first close any open element created by a call to <code>startElement()</code>.
      *
      * @param name Name of the element to be ended
      *
@@ -386,7 +392,8 @@ public class HtmlResponseWriter extends ResponseWriter {
         // Keep track when we are exiting a script or style element for escaping purposes.
         if (kind == ElementKind.SCRIPT) {
             withinScript = false;
-        } else if (kind == ElementKind.STYLE) {
+        }
+        else if (kind == ElementKind.STYLE) {
             withinStyle = false;
         }
 
@@ -406,7 +413,7 @@ public class HtmlResponseWriter extends ResponseWriter {
                 if (isXhtml) {
                     if (isScript) {
                         Matcher cdataStartSlashSlash = CDATA_START_SLASH_SLASH.matcher(trim), cdataEndSlashSlash = CDATA_END_SLASH_SLASH.matcher(trim),
-                                cdataStartSlashStar = CDATA_START_SLASH_STAR.matcher(trim), cdataEndSlashStar = CDATA_END_SLASH_STAR.matcher(trim);
+                            cdataStartSlashStar = CDATA_START_SLASH_STAR.matcher(trim), cdataEndSlashStar = CDATA_END_SLASH_STAR.matcher(trim);
                         int trimLen = trim.length(), start, end;
                         // case 1 start is // end is //
                         if (cdataStartSlashSlash.find() && cdataEndSlashSlash.find()) {
@@ -427,8 +434,10 @@ public class HtmlResponseWriter extends ResponseWriter {
                             writer.write(trim.substring(start, end));
                         }
                         // case 4 start is /* */ end is //
-                        else if (null != cdataStartSlashStar.reset() && cdataStartSlashStar.find()
-                                && null != cdataEndSlashStar.reset() && cdataEndSlashSlash.find()) {
+                        else if (
+                            null != cdataStartSlashStar.reset() && cdataStartSlashStar.find()
+                                && null != cdataEndSlashStar.reset() && cdataEndSlashSlash.find()
+                        ) {
                             start = cdataStartSlashStar.end() - cdataStartSlashStar.start();
                             end = trimLen - (cdataEndSlashSlash.end() - cdataEndSlashSlash.start());
                             writer.write(trim.substring(start, end));
@@ -437,17 +446,21 @@ public class HtmlResponseWriter extends ResponseWriter {
                         else {
                             writer.write(result);
                         }
-                    } else {
+                    }
+                    else {
                         if (trim.startsWith("<![CDATA[") && trim.endsWith("]]>")) {
                             writer.write(trim.substring(9, trim.length() - 3));
-                        } else {
+                        }
+                        else {
                             writer.write(result);
                         }
                     }
-                } else {
+                }
+                else {
                     if (trim.startsWith("<!--") && trim.endsWith("//-->")) {
                         writer.write(trim.substring(4, trim.length() - 5));
-                    } else {
+                    }
+                    else {
                         writer.write(result);
                     }
                 }
@@ -457,7 +470,8 @@ public class HtmlResponseWriter extends ResponseWriter {
 
         if (!withinScript || isScript) {
             isScript = false;
-        } else if (!withinStyle || isStyle) {
+        }
+        else if (!withinStyle || isStyle) {
             isStyle = false;
         }
         // always turn escaping back on once an element ends
@@ -521,12 +535,11 @@ public class HtmlResponseWriter extends ResponseWriter {
 
     /**
      * <p>
-     * Write the start of an element, up to and including the element name. Clients call <code>writeAttribute()</code> or
-     * <code>writeURIAttribute()</code> methods to add attributes after calling this method.
+     * Write the start of an element, up to and including the element name. Clients call <code>writeAttribute()</code> or <code>writeURIAttribute()</code>
+     * methods to add attributes after calling this method.
      *
      * @param name Name of the starting element
-     * @param componentForElement The UIComponent instance that applies to this element. This argument may be
-     * <code>null</code>.
+     * @param componentForElement The UIComponent instance that applies to this element. This argument may be <code>null</code>.
      *
      * @throws IOException if an input/output error occurs
      * @throws NullPointerException if <code>name</code> is <code>null</code>
@@ -543,7 +556,8 @@ public class HtmlResponseWriter extends ResponseWriter {
         // Keep track if we are in either a script or style element so we know we do not want to escape.
         if (kind == ElementKind.SCRIPT) {
             withinScript = true;
-        } else if (kind == ElementKind.STYLE) {
+        }
+        else if (kind == ElementKind.STYLE) {
             withinStyle = true;
         }
 
@@ -554,7 +568,8 @@ public class HtmlResponseWriter extends ResponseWriter {
             isCdata = true;
             startCDATA();
             return;
-        } else if (writingCdata) {
+        }
+        else if (writingCdata) {
             // starting an element within a cdata section,
             // keep escaping disabled
             isCdata = false;
@@ -653,15 +668,13 @@ public class HtmlResponseWriter extends ResponseWriter {
 
     /**
      * <p>
-     * Write a properly escaped attribute name and the corresponding value. The value text will be converted to a String if
-     * necessary. This method may only be called after a call to <code>startElement()</code>, and before the opened element
-     * has been closed.
+     * Write a properly escaped attribute name and the corresponding value. The value text will be converted to a String if necessary. This method may only be
+     * called after a call to <code>startElement()</code>, and before the opened element has been closed.
      * </p>
      *
      * @param name Attribute name to be added
      * @param value Attribute value to be added
-     * @param componentPropertyName The name of the component property to which this attribute argument applies. This
-     * argument may be <code>null</code>.
+     * @param componentPropertyName The name of the component property to which this attribute argument applies. This argument may be <code>null</code>.
      *
      * @throws IllegalStateException if this method is called when there is no currently open element
      * @throws IOException if an input/output error occurs
@@ -708,7 +721,8 @@ public class HtmlResponseWriter extends ResponseWriter {
                 writer.write(name);
                 writer.write('"');
             }
-        } else {
+        }
+        else {
             writer.write(' ');
             writer.write(name);
             writer.write("=\"");
@@ -723,8 +737,8 @@ public class HtmlResponseWriter extends ResponseWriter {
 
     /**
      * <p>
-     * Write a comment string containing the specified text. The text will be converted to a String if necessary. If there
-     * is an open element that has been created by a call to <code>startElement()</code>, that element will be closed first.
+     * Write a comment string containing the specified text. The text will be converted to a String if necessary. If there is an open element that has been
+     * created by a call to <code>startElement()</code>, that element will be closed first.
      * </p>
      *
      * @param comment Text content of the comment
@@ -743,7 +757,7 @@ public class HtmlResponseWriter extends ResponseWriter {
         }
 
         closeStartIfNecessary();
-        
+
         // Don't include a trailing space after the '<!--'
         // or a leading space before the '-->' to support
         // IE conditional commentsoth
@@ -757,10 +771,10 @@ public class HtmlResponseWriter extends ResponseWriter {
 
     /**
      * <p>
-     * Write a properly escaped single character, If there is an open element that has been created by a call to
-     * <code>startElement()</code>, that element will be closed first.
+     * Write a properly escaped single character, If there is an open element that has been created by a call to <code>startElement()</code>, that element will
+     * be closed first.
      * </p>
-     * 
+     *
      * <p>
      * All angle bracket occurrences in the argument must be escaped using the &amp;gt; &amp;lt; syntax.
      * </p>
@@ -771,18 +785,21 @@ public class HtmlResponseWriter extends ResponseWriter {
      */
     public void writeText(char text) throws IOException {
         closeStartIfNecessary();
-        
+
         if (dontEscape) {
             if (writingCdata) {
                 charHolder[0] = text;
                 writeUnescapedCData(charHolder, 0, 1);
-            } else {
+            }
+            else {
                 writer.write(text);
             }
-        } else if (isPartial || !writingCdata) {
+        }
+        else if (isPartial || !writingCdata) {
             charHolder[0] = text;
             HtmlUtils.writeText(writer, escapeUnicode, escapeIso, charHolder, isPartial);
-        } else { // if writingCdata
+        }
+        else { // if writingCdata
             assert writingCdata;
             charHolder[0] = text;
             writeEscaped(charHolder, 0, 1);
@@ -792,11 +809,10 @@ public class HtmlResponseWriter extends ResponseWriter {
 
     /**
      * <p>
-     * Write properly escaped text from a character array. The output from this command is identical to the invocation:
-     * <code>writeText(c, 0, c.length)</code>. If there is an open element that has been created by a call to
-     * <code>startElement()</code>, that element will be closed first.
+     * Write properly escaped text from a character array. The output from this command is identical to the invocation: <code>writeText(c, 0, c.length)</code>.
+     * If there is an open element that has been created by a call to <code>startElement()</code>, that element will be closed first.
      * </p>
-     * 
+     *
      * <p>
      * All angle bracket occurrences in the argument must be escaped using the &amp;gt; &amp;lt; syntax.
      * </p>
@@ -810,20 +826,24 @@ public class HtmlResponseWriter extends ResponseWriter {
         if (text == null) {
             throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "text"));
         }
-        
+
         closeStartIfNecessary();
 
-        if (text.length == 0) return;
+        if (text.length == 0)
+            return;
 
         if (dontEscape) {
             if (writingCdata) {
                 writeUnescapedCData(text, 0, text.length);
-            } else {
+            }
+            else {
                 writer.write(text);
             }
-        } else if (isPartial || !writingCdata) {
+        }
+        else if (isPartial || !writingCdata) {
             HtmlUtils.writeText(writer, escapeUnicode, escapeIso, text, isPartial);
-        } else { // if writingCdata
+        }
+        else { // if writingCdata
             assert writingCdata;
             writeEscaped(text, 0, text.length);
         }
@@ -832,13 +852,12 @@ public class HtmlResponseWriter extends ResponseWriter {
 
     /**
      * <p>
-     * Write a properly escaped object. The object will be converted to a String if necessary. If there is an open element
-     * that has been created by a call to <code>startElement()</code>, that element will be closed first.
+     * Write a properly escaped object. The object will be converted to a String if necessary. If there is an open element that has been created by a call to
+     * <code>startElement()</code>, that element will be closed first.
      * </p>
      *
      * @param text Text to be written
-     * @param componentPropertyName The name of the component property to which this text argument applies. This argument
-     * may be <code>null</code>.
+     * @param componentPropertyName The name of the component property to which this text argument applies. This argument may be <code>null</code>.
      *
      * @throws IOException if an input/output error occurs
      * @throws NullPointerException if <code>text</code> is <code>null</code>
@@ -852,27 +871,33 @@ public class HtmlResponseWriter extends ResponseWriter {
         closeStartIfNecessary();
         String textStr = text.toString();
 
-        if (textStr.length() == 0) return;
+        if (textStr.length() == 0)
+            return;
 
         if (dontEscape) {
             if (writingCdata && !textStr.isEmpty()) {
                 writeUnescapedCData(textStr.toCharArray(), 0, textStr.length());
-            } else {
+            }
+            else {
                 writer.write(textStr);
             }
-        } else if (isPartial || !writingCdata) {
+        }
+        else if (isPartial || !writingCdata) {
             ensureTextBufferCapacity(textStr);
             HtmlUtils.writeText(writer, escapeUnicode, escapeIso, textStr, textBuffer, isPartial);
-        } else { // if writingCdata
+        }
+        else { // if writingCdata
             assert writingCdata;
             int textLen = textStr.length();
             if (textLen > cdataTextBufferSize) {
                 writeEscaped(textStr.toCharArray(), 0, textLen);
-            } else if (textLen >= 16) { // >16, < cdataTextBufferSize
+            }
+            else if (textLen >= 16) { // >16, < cdataTextBufferSize
                 char[] buf = cdataTextBuffer();
                 textStr.getChars(0, textLen, buf, 0);
                 writeEscaped(buf, 0, textLen);
-            } else { // <16
+            }
+            else { // <16
                 char[] buf = cdataTextBuffer();
                 for (int i = 0; i < textLen; i++) {
                     buf[i] = textStr.charAt(i);
@@ -884,10 +909,10 @@ public class HtmlResponseWriter extends ResponseWriter {
 
     /**
      * <p>
-     * Write properly escaped text from a character array. If there is an open element that has been created by a call to
-     * <code>startElement()</code>, that element will be closed first.
+     * Write properly escaped text from a character array. If there is an open element that has been created by a call to <code>startElement()</code>, that
+     * element will be closed first.
      * </p>
-     * 
+     *
      * <p>
      * All angle bracket occurrences in the argument must be escaped using the &amp;gt; &amp;lt; syntax.
      * </p>
@@ -896,8 +921,7 @@ public class HtmlResponseWriter extends ResponseWriter {
      * @param off Starting offset (zero-relative)
      * @param len Number of characters to be written
      *
-     * @throws IndexOutOfBoundsException if the calculated starting or ending position is outside the bounds of the
-     * character array
+     * @throws IndexOutOfBoundsException if the calculated starting or ending position is outside the bounds of the character array
      * @throws IOException if an input/output error occurs
      * @throws NullPointerException if <code>text</code> is <code>null</code>
      */
@@ -920,12 +944,15 @@ public class HtmlResponseWriter extends ResponseWriter {
         if (dontEscape) {
             if (writingCdata) {
                 writeUnescapedCData(text, off, len);
-            } else {
+            }
+            else {
                 writer.write(text, off, len);
             }
-        } else if (isPartial || !writingCdata) {
+        }
+        else if (isPartial || !writingCdata) {
             HtmlUtils.writeText(writer, escapeUnicode, escapeIso, text, off, len, isPartial);
-        } else { // if (writingCdata)
+        }
+        else { // if (writingCdata)
             assert writingCdata;
             writeEscaped(text, off, len);
         }
@@ -934,15 +961,13 @@ public class HtmlResponseWriter extends ResponseWriter {
 
     /**
      * <p>
-     * Write a properly encoded URI attribute name and the corresponding value. The value text will be converted to a String
-     * if necessary). This method may only be called after a call to <code>startElement()</code>, and before the opened
-     * element has been closed.
+     * Write a properly encoded URI attribute name and the corresponding value. The value text will be converted to a String if necessary). This method may only
+     * be called after a call to <code>startElement()</code>, and before the opened element has been closed.
      * </p>
      *
      * @param name Attribute name to be added
      * @param value Attribute value to be added
-     * @param componentPropertyName The name of the component property to which this attribute argument applies. This
-     * argument may be <code>null</code>.
+     * @param componentPropertyName The name of the component property to which this attribute argument applies. This argument may be <code>null</code>.
      *
      * @throws IllegalStateException if this method is called when there is no currently open element
      * @throws IOException if an input/output error occurs
@@ -958,7 +983,8 @@ public class HtmlResponseWriter extends ResponseWriter {
     }
 
     private void writeURIAttributeIgnoringPassThroughAttributes(String name, Object value, String componentPropertyName, boolean isPassthrough)
-            throws IOException {
+        throws IOException
+    {
 
         if (name == null) {
             throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "name"));
@@ -988,7 +1014,8 @@ public class HtmlResponseWriter extends ResponseWriter {
         // Javascript URLs should not be URL-encoded
         if (stringValue.startsWith("javascript:") || isPassthrough) {
             HtmlUtils.writeAttribute(writer, escapeUnicode, escapeIso, stringValue, textBuffer, isScriptInAttributeValueEnabled, isPartial);
-        } else {
+        }
+        else {
             HtmlUtils.writeURL(writer, stringValue, textBuffer, encoding);
         }
 
@@ -1055,23 +1082,19 @@ public class HtmlResponseWriter extends ResponseWriter {
     }
 
     /**
-     * Emit any pass-through attributes inline just before the {@code >} closing the start tag,
-     * so they appear AFTER all regular {@code writeAttribute}/{@code writeURIAttribute} output
-     * in the rendered tag ({@code <el regular_attrs passthrough_attrs>}).
+     * Emit any pass-through attributes inline just before the {@code >} closing the start tag, so they appear AFTER all regular
+     * {@code writeAttribute}/{@code writeURIAttribute} output in the rendered tag ({@code <el regular_attrs passthrough_attrs>}).
      */
     private void writePassThroughAttributesInline() throws IOException {
         writePassthroughAttributes(passthroughAttributes);
     }
 
     /**
-     * Write the given pass-through attributes onto the currently open start tag. A behavior event attribute, whose name
-     * starts with {@code on}, is written without an inline handler where the runtime can still guarantee that its
-     * script runs on the event, in one of two ways. A delegated one is renamed to its
-     * {@value RenderKitUtils#DELEGATED_BEHAVIOR_EVENT_ATTRIBUTE_PREFIX} counterpart and picked up by the bootstrap
-     * which this writer has put ahead of it. Any other is wired afterwards by {@code mojarra.ael()}, which
-     * locates its element by the component's client id and therefore needs the element to carry that very id. An
-     * element which qualifies for neither gets the handler inline, as a handler which is dropped or attached too late
-     * is no handler at all.
+     * Write the given pass-through attributes onto the currently open start tag. A behavior event attribute, whose name starts with {@code on}, is written
+     * without an inline handler where the runtime can still guarantee that its script runs on the event, in one of two ways. A delegated one is renamed to its
+     * {@value RenderKitUtils#DELEGATED_BEHAVIOR_EVENT_ATTRIBUTE_PREFIX} counterpart and picked up by the bootstrap which this writer has put ahead of it. Any
+     * other is wired afterwards by {@code mojarra.ael()}, which locates its element by the component's client id and therefore needs the element to carry that
+     * very id. An element which qualifies for neither gets the handler inline, as a handler which is dropped or attached too late is no handler at all.
      *
      * @param attrs the pass-through attributes to write
      * @throws IOException if an input/output error occurs
@@ -1097,7 +1120,7 @@ public class HtmlResponseWriter extends ResponseWriter {
 
         String elementId = resolved.containsKey("id") ? resolved.get("id") : currentElementId;
         boolean elementIsAddressable = context != null && currentComponent != null && elementId != null
-                && elementId.equals(currentComponent.getClientId(context));
+            && elementId.equals(currentComponent.getClientId(context));
         for (Map.Entry<String, String> entry : resolved.entrySet()) {
             String key = entry.getKey();
             String val = entry.getValue();
@@ -1123,9 +1146,9 @@ public class HtmlResponseWriter extends ResponseWriter {
     }
 
     /**
-     * Writes the behavior event bootstrap ahead of the element being started, when that element carries a delegated
-     * behavior event attribute and the bootstrap is not already in the response. It goes out as raw markup, as the
-     * element methods of this writer would touch the bookkeeping of the element being started.
+     * Writes the behavior event bootstrap ahead of the element being started, when that element carries a delegated behavior event attribute and the bootstrap
+     * is not already in the response. It goes out as raw markup, as the element methods of this writer would touch the bookkeeping of the element being
+     * started.
      */
     private void writeBehaviorEventBootstrapIfNecessary(String elementName, Map<String, Object> passThroughAttrs) throws IOException {
         if (behaviorEventBootstrapWritten || !RenderKitUtils.hasDelegatedBehaviorEventAttribute(elementName, passThroughAttrs)) {
@@ -1170,8 +1193,7 @@ public class HtmlResponseWriter extends ResponseWriter {
     }
 
     /**
-     * Writes the start of the CDATA section which wraps the content of a script or style element, if the response is
-     * XML and no section is open yet.
+     * Writes the start of the CDATA section which wraps the content of a script or style element, if the response is XML and no section is open yet.
      */
     private void writeCdataStartIfNecessary() throws IOException {
         if (isXhtml && !writingCdata) {
@@ -1180,8 +1202,7 @@ public class HtmlResponseWriter extends ResponseWriter {
     }
 
     /**
-     * Writes the end of the CDATA section which {@link #writeCdataStartIfNecessary()} started, under the same
-     * condition.
+     * Writes the end of the CDATA section which {@link #writeCdataStartIfNecessary()} started, under the same condition.
      */
     private void writeCdataEndIfNecessary() throws IOException {
         if (isXhtml && !writingCdata) {
@@ -1194,7 +1215,8 @@ public class HtmlResponseWriter extends ResponseWriter {
         if (valObj instanceof ValueExpression) {
             Object result = ((ValueExpression) valObj).getValue(context.getELContext());
             val = result != null ? result.toString() : null;
-        } else {
+        }
+        else {
             val = valObj.toString();
         }
         return val;
@@ -1215,7 +1237,8 @@ public class HtmlResponseWriter extends ResponseWriter {
         if (containsPassThroughAttribute(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY)) {
             if (passthroughAttributes.size() == 1) {
                 passthroughAttributes = null;
-            } else {
+            }
+            else {
                 passthroughAttributes = new LinkedHashMap<>(passthroughAttributes);
                 passthroughAttributes.remove(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY);
             }
@@ -1241,8 +1264,10 @@ public class HtmlResponseWriter extends ResponseWriter {
         // The passthrough localName applies only to the element itself, never to a framework-generated
         // <script>/<style> element.
         ElementKind kind = ElementKind.of(name);
-        if (kind != ElementKind.SCRIPT && kind != ElementKind.STYLE
-                && containsPassThroughAttribute(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY)) {
+        if (
+            kind != ElementKind.SCRIPT && kind != ElementKind.STYLE
+                && containsPassThroughAttribute(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY)
+        ) {
             FacesContext context = FacesContext.getCurrentInstance();
 
             String elementName = getAttributeValue(context, passthroughAttributes.get(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY));
@@ -1257,10 +1282,12 @@ public class HtmlResponseWriter extends ResponseWriter {
         if (kind == ElementKind.SCRIPT) {
             isScript = true;
             dontEscape = true;
-        } else if (kind == ElementKind.STYLE) {
+        }
+        else if (kind == ElementKind.STYLE) {
             isStyle = true;
             dontEscape = true;
-        } else {
+        }
+        else {
             isScript = false;
             isStyle = false;
             if (!withinScript && !withinStyle) {
@@ -1276,32 +1303,36 @@ public class HtmlResponseWriter extends ResponseWriter {
     }
 
     /**
-     * Coarse element-name classification used by start/end element handling. Classifying once
-     * up-front lets the rest of the method dispatch via {@code kind ==} checks instead of
-     * repeated case-insensitive name comparisons.
+     * Coarse element-name classification used by start/end element handling. Classifying once up-front lets the rest of the method dispatch via {@code kind ==}
+     * checks instead of repeated case-insensitive name comparisons.
      */
     private enum ElementKind {
-        SCRIPT, STYLE, CDATA, OTHER;
+
+        SCRIPT,
+        STYLE,
+        CDATA,
+        OTHER;
 
         static ElementKind of(String name) {
             switch (name.length()) {
-            case 5:
-                if (name.equalsIgnoreCase("style")) {
-                    return STYLE;
-                }
-                if (name.equalsIgnoreCase("cdata")) {
-                    return CDATA;
-                }
-                return OTHER;
-            case 6:
-                if (name.equalsIgnoreCase("script")) {
-                    return SCRIPT;
-                }
-                return OTHER;
-            default:
-                return OTHER;
+                case 5 :
+                    if (name.equalsIgnoreCase("style")) {
+                        return STYLE;
+                    }
+                    if (name.equalsIgnoreCase("cdata")) {
+                        return CDATA;
+                    }
+                    return OTHER;
+                case 6 :
+                    if (name.equalsIgnoreCase("script")) {
+                        return SCRIPT;
+                    }
+                    return OTHER;
+                default :
+                    return OTHER;
             }
         }
+
     }
 
     /*
@@ -1322,9 +1353,11 @@ public class HtmlResponseWriter extends ResponseWriter {
         if (length == 1) {
             if (cbuf[offset] == '<') {
                 appendBuffer(ESCAPEDLT);
-            } else if (cbuf[offset] == ']') {
+            }
+            else if (cbuf[offset] == ']') {
                 appendBuffer(ESCAPEDSINGLEBRACKET);
-            } else {
+            }
+            else {
                 appendBuffer(cbuf[offset]);
             }
             flushBuffer();
@@ -1335,10 +1368,12 @@ public class HtmlResponseWriter extends ResponseWriter {
             if (cbuf[offset] == '<' && cbuf[offset + 1] == '!') {
                 appendBuffer(ESCAPEDLT);
                 appendBuffer(cbuf[offset + 1]);
-            } else if (cbuf[offset] == ']' && cbuf[offset + 1] == ']') {
+            }
+            else if (cbuf[offset] == ']' && cbuf[offset + 1] == ']') {
                 appendBuffer(ESCAPEDSINGLEBRACKET);
                 appendBuffer(ESCAPEDSINGLEBRACKET);
-            } else {
+            }
+            else {
                 appendBuffer(cbuf[offset]);
                 appendBuffer(cbuf[offset + 1]);
             }
@@ -1351,10 +1386,12 @@ public class HtmlResponseWriter extends ResponseWriter {
             if (cbuf[i] == '<' && cbuf[i + 1] == '!' && cbuf[i + 2] == '[') {
                 appendBuffer(ESCAPEDSTART);
                 i += 2;
-            } else if (cbuf[i] == ']' && cbuf[i + 1] == ']' && cbuf[i + 2] == '>') {
+            }
+            else if (cbuf[i] == ']' && cbuf[i + 1] == ']' && cbuf[i + 2] == '>') {
                 appendBuffer(ESCAPEDEND);
                 i += 2;
-            } else {
+            }
+            else {
                 appendBuffer(cbuf[i]);
             }
             if (i == offset + length - 1) {
@@ -1365,16 +1402,20 @@ public class HtmlResponseWriter extends ResponseWriter {
         if (!last) {
             if (cbuf[offset + length - 2] == '<') {
                 appendBuffer(ESCAPEDLT);
-            } else if (cbuf[offset + length - 2] == ']') {
+            }
+            else if (cbuf[offset + length - 2] == ']') {
                 appendBuffer(ESCAPEDSINGLEBRACKET);
-            } else {
+            }
+            else {
                 appendBuffer(cbuf[offset + length - 2]);
             }
             if (cbuf[offset + length - 1] == '<') {
                 appendBuffer(ESCAPEDLT);
-            } else if (cbuf[offset + length - 1] == ']') {
+            }
+            else if (cbuf[offset + length - 1] == ']') {
                 appendBuffer(ESCAPEDSINGLEBRACKET);
-            } else {
+            }
+            else {
                 appendBuffer(cbuf[offset + length - 1]);
             }
         }
@@ -1442,7 +1483,8 @@ public class HtmlResponseWriter extends ResponseWriter {
         if (length == 1) {
             if (cbuf[offset] == ']') {
                 appendBuffer(ESCAPEDSINGLEBRACKET);
-            } else {
+            }
+            else {
                 appendBuffer(cbuf[offset]);
             }
             flushBuffer();
@@ -1454,7 +1496,8 @@ public class HtmlResponseWriter extends ResponseWriter {
             if (cbuf[offset] == ']' && cbuf[offset + 1] == ']') {
                 appendBuffer(ESCAPEDSINGLEBRACKET);
                 appendBuffer(ESCAPEDSINGLEBRACKET);
-            } else {
+            }
+            else {
                 appendBuffer(cbuf[offset]);
                 appendBuffer(cbuf[offset + 1]);
             }
@@ -1468,7 +1511,8 @@ public class HtmlResponseWriter extends ResponseWriter {
             if (cbuf[i] == ']' && cbuf[i + 1] == ']' && cbuf[i + 2] == '>') {
                 appendBuffer(ESCAPEDEND);
                 i += 2;
-            } else {
+            }
+            else {
                 appendBuffer(cbuf[i]);
             }
             if (i == offset + length - 1) {
@@ -1479,15 +1523,18 @@ public class HtmlResponseWriter extends ResponseWriter {
         if (!last) {
             if (cbuf[offset + length - 2] == ']') {
                 appendBuffer(ESCAPEDSINGLEBRACKET);
-            } else {
+            }
+            else {
                 appendBuffer(cbuf[offset + length - 2]);
             }
             if (cbuf[offset + length - 1] == ']') {
                 appendBuffer(ESCAPEDSINGLEBRACKET);
-            } else {
+            }
+            else {
                 appendBuffer(cbuf[offset + length - 1]);
             }
         }
         flushBuffer();
     }
+
 }

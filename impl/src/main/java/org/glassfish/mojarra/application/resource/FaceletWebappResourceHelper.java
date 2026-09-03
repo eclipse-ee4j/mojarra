@@ -119,7 +119,8 @@ public class FaceletWebappResourceHelper extends ResourceHelper {
                 result = new FaceletResourceInfo(outContract[0], resourceName, null, this, url);
                 result.setDoNotCache(outDoNotCache[0]);
             }
-        } catch (IOException ex) {
+        }
+        catch (IOException ex) {
             throw new FacesException(ex);
         }
 
@@ -127,14 +128,17 @@ public class FaceletWebappResourceHelper extends ResourceHelper {
     }
 
     public Stream<String> getViewResources(FacesContext facesContext, String path, int maxDepth, ResourceVisitOption... options) {
-        Stream<String> physicalViewResources = stream(spliteratorUnknownSize(
+        Stream<String> physicalViewResources = stream(
+            spliteratorUnknownSize(
                 new ResourcePathsIterator(path, maxDepth, configuredExtensions, getRestrictedDirectories(options), facesContext.getExternalContext()),
-                DISTINCT), false);
+                DISTINCT
+            ), false
+        );
         Stream<String> programmaticViewResources = Util.getCdiBeanManager(facesContext)
-                .getBeans(Object.class, Any.Literal.INSTANCE).stream()
-                .map(bean -> bean.getBeanClass().getAnnotation(View.class))
-                .filter(Objects::nonNull)
-                .map(View::value);
+            .getBeans(Object.class, Any.Literal.INSTANCE).stream()
+            .map(bean -> bean.getBeanClass().getAnnotation(View.class))
+            .filter(Objects::nonNull)
+            .map(View::value);
 
         return Stream.concat(physicalViewResources, programmaticViewResources);
     }
@@ -153,7 +157,8 @@ public class FaceletWebappResourceHelper extends ResourceHelper {
         String path = resourceName;
         if (library != null) {
             path = library.getPath() + "/" + resourceName;
-        } else {
+        }
+        else {
             // prepend the leading '/' if necessary.
             if (path.charAt(0) != '/') {
                 path = "/" + path;
@@ -164,14 +169,16 @@ public class FaceletWebappResourceHelper extends ResourceHelper {
     }
 
     private URL findResourceInfoConsideringContracts(FacesContext ctx, String baseResourceName, ContractInfo[] outContract, List<String> contracts)
-            throws MalformedURLException {
+        throws MalformedURLException
+    {
         URL url = null;
         String resourceName;
 
         for (String contract : contracts) {
             if (baseResourceName.startsWith("/")) {
                 resourceName = getBaseContractsPath() + "/" + contract + baseResourceName;
-            } else {
+            }
+            else {
                 resourceName = getBaseContractsPath() + "/" + contract + "/" + baseResourceName;
             }
 
@@ -180,10 +187,12 @@ public class FaceletWebappResourceHelper extends ResourceHelper {
             if (url != null) {
                 outContract[0] = new ContractInfo(contract);
                 break;
-            } else {
+            }
+            else {
                 if (baseResourceName.startsWith("/")) {
                     resourceName = META_INF_CONTRACTS_DIR + "/" + contract + baseResourceName;
-                } else {
+                }
+                else {
                     resourceName = META_INF_CONTRACTS_DIR + "/" + contract + "/" + baseResourceName;
                 }
                 url = Util.getCurrentLoader(this).getResource(resourceName);
@@ -206,7 +215,8 @@ public class FaceletWebappResourceHelper extends ResourceHelper {
         URL url;
         try {
             url = matches.nextElement();
-        } catch (NoSuchElementException nsee) {
+        }
+        catch (NoSuchElementException nsee) {
             url = null;
         }
 
@@ -223,17 +233,21 @@ public class FaceletWebappResourceHelper extends ResourceHelper {
                     if (associate.urlIsRelatedToDefiningDocumentInJar(url, definingDocumentId)) {
                         keepGoing = false;
                         outDoNotCache[0] = true;
-                    } else {
+                    }
+                    else {
                         if (matches.hasMoreElements()) {
                             url = matches.nextElement();
-                        } else {
+                        }
+                        else {
                             keepGoing = false;
                         }
                     }
-                } else {
+                }
+                else {
                     keepGoing = false;
                 }
-            } while (keepGoing);
+            }
+            while (keepGoing);
         }
 
         return url;

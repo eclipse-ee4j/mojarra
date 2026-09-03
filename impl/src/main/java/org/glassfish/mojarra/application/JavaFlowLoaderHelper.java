@@ -46,8 +46,10 @@ public class JavaFlowLoaderHelper {
         FlowDiscoveryCDIExtension flowDiscoveryCDIExtension = CdiUtils.getBeanReference(beanManager, FlowDiscoveryCDIExtension.class);
         if (flowDiscoveryCDIExtension == null) {
             if (LOGGER.isLoggable(SEVERE)) {
-                LOGGER.log(SEVERE, "Unable to obtain {0} from CDI implementation.  Flows described with {1} are unavailable.",
-                        new String[] { FlowDiscoveryCDIExtension.class.getName(), FlowDefinition.class.getName() });
+                LOGGER.log(
+                    SEVERE, "Unable to obtain {0} from CDI implementation.  Flows described with {1} are unavailable.",
+                    new String[] { FlowDiscoveryCDIExtension.class.getName(), FlowDefinition.class.getName() }
+                );
             }
             return;
         }
@@ -61,7 +63,8 @@ public class JavaFlowLoaderHelper {
             Flow toAdd = flowProducer.produce(beanManager.<Flow>createCreationalContext(null));
             if (toAdd == null) {
                 LOGGER.log(SEVERE, "Flow producer method {0}() returned null.  Ignoring.", flowProducer.toString());
-            } else {
+            }
+            else {
                 flowHandler.addFlow(context, toAdd);
             }
         }
@@ -74,10 +77,13 @@ public class JavaFlowLoaderHelper {
         if ("none".equals(optionValue)) {
             clientWindowNeedsEnabling = true;
 
-            LOGGER.log(WARNING, "{0} was set to none, but Faces Flows requires {0} is enabled.  Setting to ''url''.",
-                    new Object[] { FacesContextParam.CLIENT_WINDOW_MODE.getName() });
+            LOGGER.log(
+                WARNING, "{0} was set to none, but Faces Flows requires {0} is enabled.  Setting to ''url''.",
+                new Object[] { FacesContextParam.CLIENT_WINDOW_MODE.getName() }
+            );
 
-        } else if (optionValue == null) {
+        }
+        else if (optionValue == null) {
             clientWindowNeedsEnabling = true;
         }
 
@@ -85,8 +91,9 @@ public class JavaFlowLoaderHelper {
             context.getExternalContext().getApplicationMap().put(JavaFlowLoaderHelper.class.getName(), Boolean.TRUE);
         }
     }
-    
+
     public static boolean isClientWindowModeForciblyEnabled(FacesContext context) {
         return context.getExternalContext().getApplicationMap().get(JavaFlowLoaderHelper.class.getName()) == Boolean.TRUE;
     }
+
 }

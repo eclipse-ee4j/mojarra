@@ -42,9 +42,11 @@ public class TagHandlerDelegateFactoryImpl extends TagHandlerDelegateFactory {
     public TagHandlerDelegate createComponentHandlerDelegate(ComponentHandler owner) {
         if (owner instanceof StylesheetResourceHandler) {
             return new StylesheetResourceDelegate(owner);
-        } else if (owner instanceof ScriptResourceHandler) {
+        }
+        else if (owner instanceof ScriptResourceHandler) {
             return new ScriptResourceDelegate(owner);
-        } else {
+        }
+        else {
             return new ComponentTagHandlerDelegateImpl(owner);
         }
     }

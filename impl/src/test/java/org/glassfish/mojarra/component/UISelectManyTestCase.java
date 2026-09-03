@@ -411,7 +411,8 @@ public class UISelectManyTestCase extends UIInputTestCase {
         try {
             iter.next();
             assertTrue(false);
-        } catch (NoSuchElementException nsee) {
+        }
+        catch (NoSuchElementException nsee) {
             // expected
         }
 
@@ -445,7 +446,8 @@ public class UISelectManyTestCase extends UIInputTestCase {
         try {
             iter.next();
             assertTrue(false);
-        } catch (NoSuchElementException nsee) {
+        }
+        catch (NoSuchElementException nsee) {
             // expected
         }
 
@@ -477,7 +479,8 @@ public class UISelectManyTestCase extends UIInputTestCase {
         try {
             iter.next();
             assertTrue(false);
-        } catch (NoSuchElementException nsee) {
+        }
+        catch (NoSuchElementException nsee) {
             // expected
         }
     }
@@ -530,4 +533,5 @@ public class UISelectManyTestCase extends UIInputTestCase {
         options.add(new SelectItem("A3"));
         return options;
     }
+
 }

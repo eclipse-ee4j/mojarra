@@ -24,9 +24,8 @@ import java.util.Map;
 /**
  * One renderer's pass-through attribute table, which can be asked for an attribute by name or iterated whole.
  * <p>
- * The by-name index is what lets the table be declared in any order: a lookup that searched the attributes instead
- * would need them sorted by name, an invariant that cannot be checked at the declaration site and that fails silently
- * -- an attribute declared out of order would simply stop rendering.
+ * The by-name index is what lets the table be declared in any order: a lookup that searched the attributes instead would need them sorted by name, an invariant
+ * that cannot be checked at the declaration site and that fails silently -- an attribute declared out of order would simply stop rendering.
  *
  * @see AttributeManager#getAttributes(AttributeManager.Key)
  */
@@ -58,4 +57,5 @@ public final class Attributes implements Iterable<Attribute> {
     public Iterator<Attribute> iterator() {
         return Arrays.asList(attributes).iterator();
     }
+
 }

@@ -25,9 +25,9 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import org.junit.jupiter.api.Test;
 
 /**
- * A view build hands back ids from this cache instead of building the strings again, so the cache has to keep an entry
- * for as long as the Facelet lives, keep the prefixes apart -- the same tag generates a different id under each -- and
- * stop growing at some point, since a Facelet included from inside an iteration produces a prefix per iteration.
+ * A view build hands back ids from this cache instead of building the strings again, so the cache has to keep an entry for as long as the Facelet lives, keep
+ * the prefixes apart -- the same tag generates a different id under each -- and stop growing at some point, since a Facelet included from inside an iteration
+ * produces a prefix per iteration.
  */
 class FirstIdCacheTest {
 
@@ -79,4 +79,5 @@ class FirstIdCacheTest {
         assertNull(cache.ids("p64"), "a further prefix is not cached at all");
         assertNotNull(cache.ids("p0"), "while the prefixes already held keep working");
     }
+
 }

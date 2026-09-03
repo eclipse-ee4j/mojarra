@@ -34,8 +34,7 @@ public class StylesheetResourceDelegate extends ComponentResourceDelegate {
 
     /**
      * @param ctx the <code>FacesContext</code> for the current request
-     * @return <code>head</code> as external stylesheet references are only valid in the head of a document, this method
-     * returns <code>head</code>
+     * @return <code>head</code> as external stylesheet references are only valid in the head of a document, this method returns <code>head</code>
      */
     @Override
     protected String getLocationTarget(FaceletContext ctx) {

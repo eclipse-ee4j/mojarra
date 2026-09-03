@@ -65,9 +65,11 @@ class PersistenceContextHandler extends JndiHandler implements RuntimeAnnotation
         Object value;
         if (unit.name() != null && !unit.name().isBlank()) {
             value = lookup(facesContext, JAVA_COMP_ENV + unit.name());
-        } else {
+        }
+        else {
             value = lookup(facesContext, field.getType().getSimpleName());
         }
         setField(facesContext, field, instance, value);
     }
+
 }

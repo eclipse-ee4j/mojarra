@@ -19,13 +19,14 @@ package org.glassfish.mojarra.cdi;
 import jakarta.enterprise.util.AnnotationLiteral;
 
 /**
- * An annotation literal for classifier for obtaining the map that the {@link DataModelClassesMapProducer} producer
- * produces.
+ * An annotation literal for classifier for obtaining the map that the {@link DataModelClassesMapProducer} producer produces.
  *
  * @since 2.3
  *
  */
 @SuppressWarnings("all")
 class DataModelClassesAnnotationLiteral extends AnnotationLiteral<DataModelClasses> implements DataModelClasses {
+
     private static final long serialVersionUID = 1L;
+
 }

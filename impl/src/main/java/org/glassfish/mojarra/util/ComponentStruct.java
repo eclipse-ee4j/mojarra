@@ -154,13 +154,11 @@ public class ComponentStruct implements StateHolder {
     }
 
     /**
-     * Returns the index within the parent's children which this action's child must be restored at, or
-     * {@link #APPEND} when it must be appended.
+     * Returns the index within the parent's children which this action's child must be restored at, or {@link #APPEND} when it must be appended.
      *
      * <p>
-     * The index travels with the action rather than with the component, because the component itself does
-     * not necessarily survive: a facelet-created child which was dynamically moved to another parent is
-     * deleted and recreated by the facelet refresh, which loses any marker held in its attribute map.
+     * The index travels with the action rather than with the component, because the component itself does not necessarily survive: a facelet-created child
+     * which was dynamically moved to another parent is deleted and recreated by the facelet refresh, which loses any marker held in its attribute map.
      * </p>
      *
      * @return the index within the parent's children, or {@link #APPEND}.

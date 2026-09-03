@@ -24,9 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * An ObjectInputStream that can deserialize objects relative to the current application's class loader. In particular,
- * this class works around deserialization problems when the Faces JARs are shared (i.e. the classloader has no access to
- * application objects).
+ * An ObjectInputStream that can deserialize objects relative to the current application's class loader. In particular, this class works around deserialization
+ * problems when the Faces JARs are shared (i.e. the classloader has no access to application objects).
  */
 public class ApplicationObjectInputStream extends ObjectInputStream {
 
@@ -65,7 +64,8 @@ public class ApplicationObjectInputStream extends ObjectInputStream {
         String name = desc.getName();
         try {
             return Class.forName(name, true, Thread.currentThread().getContextClassLoader());
-        } catch (ClassNotFoundException cnfe) {
+        }
+        catch (ClassNotFoundException cnfe) {
             Class<?> c = PRIMITIVE_CLASSES.get(name);
             if (c != null) {
                 return c;
@@ -74,4 +74,5 @@ public class ApplicationObjectInputStream extends ObjectInputStream {
         }
 
     }
+
 }

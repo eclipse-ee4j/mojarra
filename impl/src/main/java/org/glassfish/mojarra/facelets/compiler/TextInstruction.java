@@ -27,6 +27,7 @@ import jakarta.faces.context.ResponseWriter;
 import org.glassfish.mojarra.facelets.el.ELText;
 
 final class TextInstruction implements Instruction {
+
     private final ELText txt;
 
     private final String alias;
@@ -43,9 +44,11 @@ final class TextInstruction implements Instruction {
             ELContext elContext = context.getELContext();
             txt.writeText(out, elContext);
             // out.writeText(txt.toString(elContext), null);
-        } catch (ELException e) {
+        }
+        catch (ELException e) {
             throw new ELException(alias + ": " + e.getMessage(), e.getCause());
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new ELException(alias + ": " + e.getMessage(), e);
         }
     }
@@ -64,4 +67,5 @@ final class TextInstruction implements Instruction {
     public boolean isLiteral() {
         return txt.isLiteral();
     }
+
 }

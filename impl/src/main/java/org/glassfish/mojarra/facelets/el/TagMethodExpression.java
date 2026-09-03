@@ -55,11 +55,14 @@ public final class TagMethodExpression extends MethodExpression implements Exter
     public MethodInfo getMethodInfo(ELContext context) {
         try {
             return orig.getMethodInfo(context);
-        } catch (PropertyNotFoundException pnfe) {
+        }
+        catch (PropertyNotFoundException pnfe) {
             throw new PropertyNotFoundException(attr + ": " + pnfe.getMessage(), pnfe.getCause());
-        } catch (MethodNotFoundException mnfe) {
+        }
+        catch (MethodNotFoundException mnfe) {
             throw new MethodNotFoundException(attr + ": " + mnfe.getMessage(), mnfe.getCause());
-        } catch (ELException e) {
+        }
+        catch (ELException e) {
             throw new ELException(attr + ": " + e.getMessage(), e.getCause());
         }
     }
@@ -68,11 +71,14 @@ public final class TagMethodExpression extends MethodExpression implements Exter
     public Object invoke(ELContext context, Object[] params) {
         try {
             return orig.invoke(context, params);
-        } catch (PropertyNotFoundException pnfe) {
+        }
+        catch (PropertyNotFoundException pnfe) {
             throw new PropertyNotFoundException(attr + ": " + pnfe.getMessage(), pnfe.getCause());
-        } catch (MethodNotFoundException mnfe) {
+        }
+        catch (MethodNotFoundException mnfe) {
             throw new MethodNotFoundException(attr + ": " + mnfe.getMessage(), mnfe.getCause());
-        } catch (ELException e) {
+        }
+        catch (ELException e) {
             throw new ELException(attr + ": " + e.getMessage(), e.getCause());
         }
     }
@@ -131,4 +137,5 @@ public final class TagMethodExpression extends MethodExpression implements Exter
     public String toString() {
         return attr + ": " + orig;
     }
+
 }

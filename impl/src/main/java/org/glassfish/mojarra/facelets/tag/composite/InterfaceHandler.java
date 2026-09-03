@@ -63,7 +63,8 @@ public class InterfaceHandler extends TagHandlerImpl {
         if (FaceletViewHandlingStrategy.isBuildingMetadata(context)) {
             imbueComponentWithMetadata(ctx, parent);
             nextHandler.apply(ctx, parent);
-        } else {
+        }
+        else {
             if (ProjectStage.Development == context.getApplication().getProjectStage()) {
                 validateComponent(context, parent);
             }
@@ -112,7 +113,8 @@ public class InterfaceHandler extends TagHandlerImpl {
                 if (null != cur.getValue("method-signature") && null == cur.getValue("type")) {
                     // Yes, look for it as an EL expression.
                     found = null != cc.getValueExpression(key);
-                } else {
+                }
+                else {
                     // No, look for it as an actual attribute
                     found = attrs.containsKey(key);
                     // Special case: nested composite components
@@ -130,7 +132,8 @@ public class InterfaceHandler extends TagHandlerImpl {
                     if (null == buf) {
                         buf = new StringBuilder();
                         buf.append(key);
-                    } else {
+                    }
+                    else {
                         buf.append(", ").append(key);
                     }
                 }
@@ -144,7 +147,7 @@ public class InterfaceHandler extends TagHandlerImpl {
 
         // Traverse the declared facets
         Map<String, PropertyDescriptor> declaredFacets = (Map<String, PropertyDescriptor>) componentMetadata.getBeanDescriptor()
-                .getValue(UIComponent.FACETS_KEY);
+            .getValue(UIComponent.FACETS_KEY);
         if (null != declaredFacets) {
             for (PropertyDescriptor cur : declaredFacets.values()) {
                 required = false;
@@ -161,7 +164,8 @@ public class InterfaceHandler extends TagHandlerImpl {
                         if (null == buf) {
                             buf = new StringBuilder();
                             buf.append(key);
-                        } else {
+                        }
+                        else {
                             buf.append(", ").append(key);
                         }
                     }

@@ -23,6 +23,7 @@ import jakarta.el.ExpressionFactory;
 import jakarta.faces.context.FacesContext;
 
 final class LiteralAttributeInstruction implements Instruction {
+
     private final String attr;
 
     private final String text;
@@ -46,4 +47,5 @@ final class LiteralAttributeInstruction implements Instruction {
     public boolean isLiteral() {
         return true;
     }
+
 }

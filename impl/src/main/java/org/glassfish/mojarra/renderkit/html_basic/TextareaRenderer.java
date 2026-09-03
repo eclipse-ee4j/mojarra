@@ -61,8 +61,10 @@ public class TextareaRenderer extends HtmlBasicInputRenderer {
         RenderKitUtils.renderPassThruAttributes(context, writer, component, null, false, ATTRIBUTES, HtmlElementEvent.change, FacesComponentEvent.valueChange);
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
-        if (component.getAttributes().containsKey("org.glassfish.mojarra.addNewLineAtStart")
-                && "true".equalsIgnoreCase((String) component.getAttributes().get("org.glassfish.mojarra.addNewLineAtStart"))) {
+        if (
+            component.getAttributes().containsKey("org.glassfish.mojarra.addNewLineAtStart")
+                && "true".equalsIgnoreCase((String) component.getAttributes().get("org.glassfish.mojarra.addNewLineAtStart"))
+        ) {
             writer.writeText("\n", null);
         }
 

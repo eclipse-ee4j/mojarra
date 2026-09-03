@@ -26,8 +26,7 @@ import java.util.concurrent.atomic.LongAdder;
 import jakarta.faces.event.PhaseId;
 
 /**
- * Thread-safe singleton accumulator for per-scenario per-phase timings.
- * One bucket per (scenario, phaseId) holds count, total/min/max nanos.
+ * Thread-safe singleton accumulator for per-scenario per-phase timings. One bucket per (scenario, phaseId) holds count, total/min/max nanos.
  */
 public final class PerfStats {
 
@@ -87,6 +86,7 @@ public final class PerfStats {
     }
 
     private static final class Bucket {
+
         private final LongAdder count = new LongAdder();
         private final LongAdder totalNanos = new LongAdder();
         private final AtomicLong minNanos = new AtomicLong(Long.MAX_VALUE);
@@ -110,9 +110,11 @@ public final class PerfStats {
             long max = maxNanos.get();
             return new Snapshot(c, total, min == Long.MAX_VALUE ? 0 : min, max);
         }
+
     }
 
     public static final class Snapshot {
+
         public final long count;
         public final long totalNanos;
         public final long minNanos;
@@ -128,5 +130,7 @@ public final class PerfStats {
         public long avgNanos() {
             return count == 0 ? 0 : totalNanos / count;
         }
+
     }
+
 }

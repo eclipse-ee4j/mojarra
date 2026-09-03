@@ -44,6 +44,7 @@ import org.glassfish.mojarra.application.ApplicationAssociate;
  * This is the TagHandler for the f:event tag.
  */
 public class EventHandler extends TagHandler {
+
     protected final TagAttribute type;
     protected final TagAttribute listener;
 
@@ -64,9 +65,13 @@ public class EventHandler extends TagHandler {
                 parent = viewRoot;
             }
             if (eventClass != null) {
-                parent.subscribeToEvent(eventClass,
-                        new DeclarativeSystemEventListener(listener.getMethodExpression(ctx, Object.class, new Class<?>[] { ComponentSystemEvent.class }),
-                                listener.getMethodExpression(ctx, Object.class, new Class<?>[] {})));
+                parent.subscribeToEvent(
+                    eventClass,
+                    new DeclarativeSystemEventListener(
+                        listener.getMethodExpression(ctx, Object.class, new Class<?>[] { ComponentSystemEvent.class }),
+                        listener.getMethodExpression(ctx, Object.class, new Class<?>[] {})
+                    )
+                );
             }
         }
     }
@@ -103,7 +108,8 @@ class DeclarativeSystemEventListener implements ComponentSystemEventListener, Se
         final ELContext elContext = FacesContext.getCurrentInstance().getELContext();
         try {
             noArgListener.invoke(elContext, new Object[] {});
-        } catch (MethodNotFoundException | IllegalArgumentException mnfe) {
+        }
+        catch (MethodNotFoundException | IllegalArgumentException mnfe) {
             // Attempt to call public void method(ComponentSystemEvent event)
             oneArgListener.invoke(elContext, new Object[] { event });
         }
@@ -136,4 +142,5 @@ class DeclarativeSystemEventListener implements ComponentSystemEventListener, Se
         result = 31 * result + (noArgListener != null ? noArgListener.hashCode() : 0);
         return result;
     }
+
 }

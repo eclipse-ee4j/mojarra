@@ -29,8 +29,7 @@ import jakarta.faces.lifecycle.ClientWindowScoped;
 
 import org.glassfish.mojarra.util.FacesLogger;
 
-public class ClientWindowScopeExtension implements Extension
-{
+public class ClientWindowScopeExtension implements Extension {
 
     private static final Logger LOGGER = FacesLogger.CLIENTWINDOW.getLogger();
 
@@ -42,8 +41,7 @@ public class ClientWindowScopeExtension implements Extension
         addAnnotatedTypes(beforeBeanDiscovery, beanManager);
     }
 
-    void beforeBeanDiscovery(@Observes BeforeBeanDiscovery beforeBeanDiscovery, BeanManager beanManager)
-    {
+    void beforeBeanDiscovery(@Observes BeforeBeanDiscovery beforeBeanDiscovery, BeanManager beanManager) {
         beforeBeanDiscovery.addScope(ClientWindowScoped.class, true, true);
     }
 
@@ -54,9 +52,9 @@ public class ClientWindowScopeExtension implements Extension
         }
     }
 
-    void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager)
-    {
+    void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager) {
         LOGGER.finest("Adding @ClientWindowScope context to CDI runtime");
         afterBeanDiscovery.addContext(new ClientWindowScopeContext());
     }
+
 }

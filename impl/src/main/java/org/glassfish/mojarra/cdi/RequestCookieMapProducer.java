@@ -27,8 +27,7 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_3">
- * The CookieMapProducer is the CDI producer that allows injection of the request cookie map using @Inject and allows
- * the EL resolving of #{cookie}
+ * The CookieMapProducer is the CDI producer that allows injection of the request cookie map using @Inject and allows the EL resolving of #{cookie}
  * </p>
  *
  * @since 2.3

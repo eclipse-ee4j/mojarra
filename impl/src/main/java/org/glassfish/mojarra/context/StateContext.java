@@ -95,7 +95,7 @@ public class StateContext {
             stateCtx = new StateContext();
             ctx.getAttributes().put(KEY, stateCtx);
         }
-        
+
         return stateCtx;
     }
 
@@ -107,8 +107,8 @@ public class StateContext {
     }
 
     /**
-     * Installs a <code>SystemEventListener</code> on the <code>UIViewRoot</code> to track components added to or removed
-     * from the view.
+     * Installs a <code>SystemEventListener</code> on the <code>UIViewRoot</code> to track components added to or removed from the view.
+     *
      * @param ctx the involved faces context
      * @param root the involved view root
      */
@@ -129,7 +129,8 @@ public class StateContext {
                 modListener = createAddRemoveListener(ctx, root);
                 root.subscribeToViewEvent(PostAddToViewEvent.class, modListener);
                 root.subscribeToViewEvent(PreRemoveFromViewEvent.class, modListener);
-            } else {
+            }
+            else {
                 LOGGER.warning("Unable to attach AddRemoveListener to UIViewRoot because it is null");
             }
         }
@@ -139,9 +140,8 @@ public class StateContext {
     /**
      * Toggles the current modification tracking status.
      *
-     * @param trackMods if <code>true</code> and the listener installed by
-     * <code>startTrackViewModifications</code> is* present, then view modifications will be tracked. 
-     * If <code>false</code>, then modification events will be ignored.
+     * @param trackMods if <code>true</code> and the listener installed by <code>startTrackViewModifications</code> is* present, then view modifications will be
+     * tracked. If <code>false</code>, then modification events will be ignored.
      */
     public void setTrackViewModifications(boolean trackMods) {
         this.trackMods = trackMods;
@@ -156,10 +156,9 @@ public class StateContext {
     }
 
     /**
-     * Hint from the state-management strategy: when a restored view's saved state carries no dynamic
-     * add/remove actions, no component can bear the {@code DYNAMIC_COMPONENT} marker, so
-     * {@link #componentAddedDynamically} skips the per-component attribute lookup. Defaults to
-     * {@code true} (always check) for every other call path.
+     * Hint from the state-management strategy: when a restored view's saved state carries no dynamic add/remove actions, no component can bear the
+     * {@code DYNAMIC_COMPONENT} marker, so {@link #componentAddedDynamically} skips the per-component attribute lookup. Defaults to {@code true} (always check)
+     * for every other call path.
      *
      * @param hasDynamicComponents whether the current view may contain dynamically added/removed components
      */
@@ -181,9 +180,8 @@ public class StateContext {
     }
 
     /**
-     * Mark {@code parent} as having a dynamically added child. Read back by {@link #hasOneOrMoreDynamicChild} to gate
-     * the dynamic-child reorder during Facelets re-apply, which tests only for the key's presence -- so this is a
-     * set-once marker, not a count.
+     * Mark {@code parent} as having a dynamically added child. Read back by {@link #hasOneOrMoreDynamicChild} to gate the dynamic-child reorder during Facelets
+     * re-apply, which tests only for the key's presence -- so this is a set-once marker, not a count.
      */
     private void markHasDynamicChild(UIComponent parent) {
         Map<String, Object> attrs = parent.getAttributes();
@@ -194,6 +192,7 @@ public class StateContext {
 
     /**
      * Get the dynamic list (of adds and removes).
+     *
      * @return the dynamic list
      */
     public List<ComponentStruct> getDynamicActions() {
@@ -213,11 +212,9 @@ public class StateContext {
      * Collapses a raw, append-ordered dynamic action list into the minimal set to replay or save.
      *
      * <p>
-     * Actions are recorded append-only per event (see {@code recordDynamicAction}); redundant add/remove pairs for
-     * the same client id are collapsed here in a single O(n) pass rather than per event (a per-event prune is
-     * O(n&sup2;)). Per
-     * client id the net effect is one of: an ADD (added and still present), nothing (added then removed again), a
-     * REMOVE (a pre-existing component removed), or a REMOVE followed by an ADD (pre-existing removed then re-added).
+     * Actions are recorded append-only per event (see {@code recordDynamicAction}); redundant add/remove pairs for the same client id are collapsed here in a
+     * single O(n) pass rather than per event (a per-event prune is O(n&sup2;)). Per client id the net effect is one of: an ADD (added and still present),
+     * nothing (added then removed again), a REMOVE (a pre-existing component removed), or a REMOVE followed by an ADD (pre-existing removed then re-added).
      * First-occurrence order is preserved so a parent is always replayed before its children.
      * </p>
      *
@@ -236,7 +233,8 @@ public class StateContext {
         for (ComponentStruct action : rawActions) {
             if (ADD.equals(action.getAction())) {
                 hasAdd = true;
-            } else if (REMOVE.equals(action.getAction())) {
+            }
+            else if (REMOVE.equals(action.getAction())) {
                 hasRemove = true;
             }
             if (hasAdd && hasRemove) {
@@ -252,10 +250,12 @@ public class StateContext {
             ComponentStruct[] net = netByClientId.computeIfAbsent(action.getClientId(), key -> new ComponentStruct[2]);
             if (ADD.equals(action.getAction())) {
                 net[1] = action;
-            } else if (net[1] != null) {
-                net[1] = null;          // an earlier ADD is cancelled by this REMOVE
-            } else if (net[0] == null) {
-                net[0] = action;        // first REMOVE of a pre-existing component
+            }
+            else if (net[1] != null) {
+                net[1] = null; // an earlier ADD is cancelled by this REMOVE
+            }
+            else if (net[0] == null) {
+                net[0] = action; // first REMOVE of a pre-existing component
             }
         }
         List<ComponentStruct> pruned = new ArrayList<>(netByClientId.size());
@@ -271,21 +271,18 @@ public class StateContext {
     }
 
     /**
-     * Drops the iteration index of every iterating ancestor from the given client id, e.g.
-     * {@code form:table:1:group} becomes {@code form:table:group}.
+     * Drops the iteration index of every iterating ancestor from the given client id, e.g. {@code form:table:1:group} becomes {@code form:table:group}.
      *
      * <p>
-     * An action is recorded whenever the tree is modified, which can be while an iterating component has a row
-     * index set -- an add performed by a command button inside a row, for instance, as {@link UIData#broadcast}
-     * sets the row index before the action runs. The client id then carries that row, but the component does not:
-     * a component inside an iterating one is a single instance shared by every row, so the modification belongs to
-     * all of them and the row says only when it happened. Recording it would key the action to a position which
-     * does not exist, which nothing can resolve it against afterwards.
+     * An action is recorded whenever the tree is modified, which can be while an iterating component has a row index set -- an add performed by a command
+     * button inside a row, for instance, as {@link UIData#broadcast} sets the row index before the action runs. The client id then carries that row, but the
+     * component does not: a component inside an iterating one is a single instance shared by every row, so the modification belongs to all of them and the row
+     * says only when it happened. Recording it would key the action to a position which does not exist, which nothing can resolve it against afterwards.
      * </p>
      *
      * <p>
-     * A numeric segment is unambiguous: a component id cannot be one, as {@link UIComponent#setId} requires the
-     * first character to be a letter or an underscore. Only an iterating component contributes one.
+     * A numeric segment is unambiguous: a component id cannot be one, as {@link UIComponent#setId} requires the first character to be a letter or an
+     * underscore. Only an iterating component contributes one.
      * </p>
      *
      * @param separatorChar the naming-container separator character.
@@ -304,7 +301,8 @@ public class StateContext {
 
             if (isIterationIndex(clientId, segmentStart, i)) {
                 stripped = true;
-            } else {
+            }
+            else {
                 if (builder.length() > 0) {
                     builder.append(separatorChar);
                 }
@@ -380,7 +378,8 @@ public class StateContext {
                 if (stateCtx.trackViewModifications()) {
                     handleRemove(ctx, ((PreRemoveFromViewEvent) event).getComponent());
                 }
-            } else {
+            }
+            else {
                 if (stateCtx.trackViewModifications()) {
                     handleAdd(ctx, ((PostAddToViewEvent) event).getComponent());
                 }
@@ -417,11 +416,11 @@ public class StateContext {
          * @param component the UI component to add to the list as an ADD.
          */
         abstract protected void handleAdd(FacesContext context, UIComponent component);
+
     }
 
     /**
-     * A system event listener which is used to listen for changes on the component tree after restore view and before
-     * rendering out the view.
+     * A system event listener which is used to listen for changes on the component tree after restore view and before rendering out the view.
      */
     public class DynamicAddRemoveListener extends AddRemoveListener {
 
@@ -482,10 +481,12 @@ public class StateContext {
             if (component.isInView()) {
                 recordDynamicAction(
                     component,
-                    new ComponentStruct(REMOVE, findFacetNameForComponent(component),
-                        stripIterationIndex(UINamingContainer.getSeparatorChar(context), component.getClientId(context)), component.getId())
+                    new ComponentStruct(
+                        REMOVE, findFacetNameForComponent(component),
+                        stripIterationIndex(UINamingContainer.getSeparatorChar(context), component.getClientId(context)), component.getId()
+                    )
                 );
-           }
+            }
         }
 
         /**
@@ -506,10 +507,12 @@ public class StateContext {
                 component.getAttributes().put(DYNAMIC_COMPONENT, index);
 
                 char separatorChar = UINamingContainer.getSeparatorChar(context);
-                ComponentStruct struct = new ComponentStruct(ADD, facetName,
-                        stripIterationIndex(separatorChar, component.getParent().getClientId(context)),
-                        stripIterationIndex(separatorChar, component.getClientId(context)),
-                        component.getId());
+                ComponentStruct struct = new ComponentStruct(
+                    ADD, facetName,
+                    stripIterationIndex(separatorChar, component.getParent().getClientId(context)),
+                    stripIterationIndex(separatorChar, component.getClientId(context)),
+                    component.getId()
+                );
                 struct.setIndex(index);
 
                 recordDynamicAction(component, struct);
@@ -538,11 +541,10 @@ public class StateContext {
          * Records a dynamic add/remove action by appending it to the dynamic action list (O(1)).
          *
          * <p>
-         * Redundant add/remove pairs for the same client id (e.g. a component added then removed within a request)
-         * are collapsed in a single pass at save time (see
-         * {@code FaceletStateManagementStrategy#saveDynamicActions}) rather than per event. A per-event prune
-         * has to {@code indexOf}/{@code remove} on the action list for every add or remove, which is O(n&sup2;) over
-         * n dynamically added components; appending and pruning once at save keeps recording O(1) per event.
+         * Redundant add/remove pairs for the same client id (e.g. a component added then removed within a request) are collapsed in a single pass at save time
+         * (see {@code FaceletStateManagementStrategy#saveDynamicActions}) rather than per event. A per-event prune has to {@code indexOf}/{@code remove} on the
+         * action list for every add or remove, which is O(n&sup2;) over n dynamically added components; appending and pruning once at save keeps recording O(1)
+         * per event.
          * </p>
          *
          * @param component the UI component.
@@ -554,9 +556,8 @@ public class StateContext {
         }
 
         /**
-         * Index of the component within its parent's children list, computed in O(1) for the common case where the
-         * component was just appended (a dynamic add typically appends), with a scan fallback otherwise. Returns -1
-         * when the component is not in the children list (e.g. it is a facet).
+         * Index of the component within its parent's children list, computed in O(1) for the common case where the component was just appended (a dynamic add
+         * typically appends), with a scan fallback otherwise. Returns -1 when the component is not in the children list (e.g. it is a facet).
          *
          * @param component the component whose position to report.
          * @return the child index, or -1 if not a child of its parent.
@@ -569,6 +570,7 @@ public class StateContext {
             }
             return children.indexOf(component);
         }
+
     }
 
 }

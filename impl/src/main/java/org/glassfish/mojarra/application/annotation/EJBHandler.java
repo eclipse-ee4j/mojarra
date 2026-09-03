@@ -56,9 +56,11 @@ class EJBHandler extends JndiHandler implements RuntimeAnnotationHandler {
         Object value;
         if (ejb.lookup() != null && !ejb.lookup().isBlank()) {
             value = lookup(facesContext, ejb.lookup());
-        } else if (ejb.name() != null && !ejb.name().isBlank()) {
+        }
+        else if (ejb.name() != null && !ejb.name().isBlank()) {
             value = lookup(facesContext, JAVA_COMP_ENV + ejb.name());
-        } else {
+        }
+        else {
             value = lookup(facesContext, JAVA_MODULE + field.getType().getSimpleName());
         }
         setField(facesContext, field, instance, value);
@@ -69,10 +71,12 @@ class EJBHandler extends JndiHandler implements RuntimeAnnotationHandler {
             Object value = null;
             if (ejb.lookup() != null && !ejb.lookup().isBlank()) {
                 value = lookup(facesContext, ejb.lookup());
-            } else if (ejb.name() != null && !ejb.name().isBlank()) {
+            }
+            else if (ejb.name() != null && !ejb.name().isBlank()) {
                 value = lookup(facesContext, JAVA_COMP_ENV + ejb.name());
             }
             invokeMethod(facesContext, method, instance, value);
         }
     }
+
 }

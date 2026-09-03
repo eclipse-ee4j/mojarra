@@ -36,8 +36,7 @@ import org.glassfish.mojarra.facelets.util.ReflectionUtil;
 /**
  * Register an ActionListener instance on the UIComponent associated with the closest parent UIComponent custom action.
  *
- * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/actionListener.html">tag
- * documentation</a>.
+ * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/actionListener.html">tag documentation</a>.
  *
  * @author Jacob Hookom
  * @see jakarta.faces.event.ActionListener
@@ -70,7 +69,8 @@ public final class ActionListenerHandler extends ActionListenerHandlerBase imple
             if (instance == null && type != null) {
                 try {
                     instance = (ActionListener) ReflectionUtil.newInstance(type);
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     throw new AbortProcessingException("Could not instantiate ActionListener of type " + type, e);
                 }
                 if (binding != null) {
@@ -81,6 +81,7 @@ public final class ActionListenerHandler extends ActionListenerHandlerBase imple
                 instance.processAction(event);
             }
         }
+
     }
 
     private final TagAttribute binding;
@@ -102,12 +103,14 @@ public final class ActionListenerHandler extends ActionListenerHandlerBase imple
                 FacesContext context = FacesContext.getCurrentInstance();
                 FaceletContext ctx = (FaceletContext) context.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
                 stringType = (String) typeAttribute.getValueExpression(ctx, String.class).getValue(ctx);
-            } else {
+            }
+            else {
                 stringType = typeAttribute.getValue();
             }
             checkType(stringType);
             listenerType = stringType;
-        } else {
+        }
+        else {
             listenerType = null;
         }
     }
@@ -127,8 +130,10 @@ public final class ActionListenerHandler extends ActionListenerHandlerBase imple
     private void checkType(String type) {
         try {
             ReflectionUtil.forName(type);
-        } catch (ClassNotFoundException e) {
+        }
+        catch (ClassNotFoundException e) {
             throw new TagAttributeException(typeAttribute, "Couldn't qualify ActionListener", e);
         }
     }
+
 }

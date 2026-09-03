@@ -38,8 +38,8 @@ import org.glassfish.mojarra.renderkit.html_basic.ScriptRenderer;
 
 /**
  * <p class="changed_added_2_3">
- * This Faces listener for {@link UIViewRoot} ensures that the necessary JavaScript code to open or close the
- * <code>WebSocket</code> is properly rendered depending on <code>rendered</code> and <code>connected</code> attributes.
+ * This Faces listener for {@link UIViewRoot} ensures that the necessary JavaScript code to open or close the <code>WebSocket</code> is properly rendered
+ * depending on <code>rendered</code> and <code>connected</code> attributes.
  *
  * @author Bauke Scholtz
  * @see Push
@@ -78,10 +78,9 @@ public class WebsocketFacesListener implements SystemEventListener {
     }
 
     /**
-     * If the websocket has just switched its <code>rendered</code> or <code>connected</code> attribute, then render either
-     * the <code>open()</code> script or the <code>close()</code> script. During an ajax request with partial rendering,
-     * it's added as <code>&lt;eval&gt;</code> by partial response writer, else it's just added as a script component with
-     * <code>target="body"</code>.
+     * If the websocket has just switched its <code>rendered</code> or <code>connected</code> attribute, then render either the <code>open()</code> script or
+     * the <code>close()</code> script. During an ajax request with partial rendering, it's added as <code>&lt;eval&gt;</code> by partial response writer, else
+     * it's just added as a script component with <code>target="body"</code>.
      */
     @Override
     public void processEvent(SystemEvent event) throws AbortProcessingException {
@@ -108,7 +107,8 @@ public class WebsocketFacesListener implements SystemEventListener {
 
                 if (pvc.isAjaxRequest() && !pvc.isRenderAll()) {
                     context.getPartialViewContext().getEvalScripts().add(script);
-                } else {
+                }
+                else {
                     UIOutput outputScript = new UIOutput();
                     outputScript.setRendererType(ScriptRenderer.RENDERER_TYPE);
                     UIOutput content = new UIOutput();

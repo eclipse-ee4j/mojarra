@@ -124,13 +124,17 @@ public class ScopedAttributeELResolver extends ELResolver {
         ExternalContext externalContext = facesContext.getExternalContext();
         if (externalContext.getRequestMap().get(attribute) != null) {
             externalContext.getRequestMap().put(attribute, val);
-        } else if (facesContext.getViewRoot() != null && facesContext.getViewRoot().getViewMap().get(attribute) != null) {
+        }
+        else if (facesContext.getViewRoot() != null && facesContext.getViewRoot().getViewMap().get(attribute) != null) {
             facesContext.getViewRoot().getViewMap().put(attribute, val);
-        } else if (externalContext.getSessionMap().get(attribute) != null) {
+        }
+        else if (externalContext.getSessionMap().get(attribute) != null) {
             externalContext.getSessionMap().put(attribute, val);
-        } else if (externalContext.getApplicationMap().get(attribute) != null) {
+        }
+        else if (externalContext.getApplicationMap().get(attribute) != null) {
             externalContext.getApplicationMap().put(attribute, val);
-        } else {
+        }
+        else {
             // if the property doesn't exist in any of the scopes, put it in
             // request scope.
             externalContext.getRequestMap().put(attribute, val);

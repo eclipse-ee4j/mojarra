@@ -80,11 +80,10 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
     private CreateComponentDelegate createCompositeComponentDelegate;
 
     /**
-     * This tag's unique-id counter slot and the Facelet holding it, so {@link #apply} can count this tag's generated
-     * ids by array index instead of by a per-build map lookup on the tag id. Held as one object so that both are read
-     * together: a build that saw the owner must see that owner's slot. Bound to the Facelet being applied rather than
-     * the one this tag was compiled in, because a {@code ui:define} body applies under the template it is inserted
-     * into; a tag that alternates between templates simply rebinds.
+     * This tag's unique-id counter slot and the Facelet holding it, so {@link #apply} can count this tag's generated ids by array index instead of by a
+     * per-build map lookup on the tag id. Held as one object so that both are read together: a build that saw the owner must see that owner's slot. Bound to
+     * the Facelet being applied rather than the one this tag was compiled in, because a {@code ui:define} body applies under the template it is inserted into;
+     * a tag that alternates between templates simply rebinds.
      */
     private final UniqueIdSlot idSlot = new UniqueIdSlot();
 
@@ -101,24 +100,20 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
     /**
      * Method handles UIComponent tree creation in accordance with the Faces 1.2 spec.
      * <ol>
-     * <li>First determines this UIComponent's id by calling
-     * {@link jakarta.faces.view.facelets.ComponentHandler#getTagId()}.</li>
+     * <li>First determines this UIComponent's id by calling {@link jakarta.faces.view.facelets.ComponentHandler#getTagId()}.</li>
      * <li>Search the parent for an existing UIComponent of the id we just grabbed</li>
-     * <li>If found,
-     * {@link org.glassfish.mojarra.facelets.tag.faces.ComponentSupport#markForDeletion(jakarta.faces.component.UIComponent) mark} its
-     * children for deletion.</li>
+     * <li>If found, {@link org.glassfish.mojarra.facelets.tag.faces.ComponentSupport#markForDeletion(jakarta.faces.component.UIComponent) mark} its children
+     * for deletion.</li>
      * <li>If <i>not</i> found, call {@link #createComponent(FaceletContext) createComponent}.
      * <ol>
-     * <li>Only here do we apply
-     * {@link org.glassfish.mojarra.facelets.tag.MetaTagHandlerImpl#setAttributes(FaceletContext, Object)}</li>
+     * <li>Only here do we apply {@link org.glassfish.mojarra.facelets.tag.MetaTagHandlerImpl#setAttributes(FaceletContext, Object)}</li>
      * <li>Set the UIComponent's id</li>
      * <li>Set the RendererType of this instance</li>
      * </ol>
      * </li>
      * <li>Now apply the nextHandler, passing the UIComponent we've created/found.</li>
      * <li>Now add the UIComponent to the passed parent</li>
-     * <li>Lastly, if the UIComponent already existed (found), then {@link ComponentSupport#finalizeForDeletion(UIComponent)
-     * finalize} for deletion.</li>
+     * <li>Lastly, if the UIComponent already existed (found), then {@link ComponentSupport#finalizeForDeletion(UIComponent) finalize} for deletion.</li>
      * </ol>
      *
      * @throws TagException if the UIComponent parent is null
@@ -141,10 +136,11 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
         // Reparenting only ever applies to a child of a composite component, so that test gates the costlier ones.
         if (null == c && UIComponent.isCompositeComponent(parent) && context.isPostback() && parent.getAttributes().get(id) != null) {
             c = findReparentedComponent(ctx, parent, id);
-        } else {
+        }
+        else {
             /**
-             * If we found a child that is dynamic, the actual parent might have changed, so we need to remove it from the actual
-             * parent. The reapplyDynamicActions will then replay the actions and will make sure it ends up in the correct order.
+             * If we found a child that is dynamic, the actual parent might have changed, so we need to remove it from the actual parent. The
+             * reapplyDynamicActions will then replay the actions and will make sure it ends up in the correct order.
              */
             if (c != null && c.getParent() != parent && c.getAttributes().containsKey(DYNAMIC_COMPONENT)) {
                 c.getParent().getChildren().remove(c);
@@ -156,9 +152,11 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
         if (c != null) {
             componentFound = true;
             doExistingComponentActions(ctx, id, c);
-        } else if (suppressRemovedChild(parent, id)) {
+        }
+        else if (suppressRemovedChild(parent, id)) {
             return;
-        } else {
+        }
+        else {
             // hook method
             c = owner.createComponent(ctx);
             if (c == null) {
@@ -203,11 +201,13 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
         try {
             // first allow c to get populated
             owner.applyNextHandler(ctx, c);
-        } finally {
+        }
+        finally {
             if (flipped) {
                 if (previousFreshSubtree != null) {
                     contextAttributes.put(ComponentSupport.BUILDING_FRESH_SUBTREE, previousFreshSubtree);
-                } else {
+                }
+                else {
                     contextAttributes.remove(ComponentSupport.BUILDING_FRESH_SUBTREE);
                 }
             }
@@ -301,7 +301,8 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
             if (-1 != i) {
                 if (i < children.size()) {
                     children.add(i, cur);
-                } else {
+                }
+                else {
                     children.add(cur);
                 }
             }
@@ -346,8 +347,11 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
 
     // ------------------------------------------------------- Protected Methods
 
-    private void addComponentToView(FaceletContext ctx, UIComponent parent, UIComponent c, boolean componentFound, boolean parentModified,
-            StateContext stateContext) {
+    private void addComponentToView(
+        FaceletContext ctx, UIComponent parent, UIComponent c, boolean componentFound, boolean parentModified,
+        StateContext stateContext
+    )
+    {
         if (!componentFound || !parentModified) {
             addComponentToView(ctx, parent, c, componentFound, stateContext);
         }
@@ -395,7 +399,8 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
     private void doOrphanedChildCleanup(FaceletContext ctx, UIComponent parent, UIComponent c, boolean parentModified) {
         if (parentModified) {
             ComponentSupport.finalizeForDeletion(c);
-        } else {
+        }
+        else {
             doOrphanedChildCleanup(ctx, parent, c);
         }
     }
@@ -431,12 +436,14 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
 
         if (this.id != null && !(this.id.isLiteral() && IterationIdManager.registerLiteralId(ctx, this.id.getValue()))) {
             c.setId(resolveId(ctx, id));
-        } else {
+        }
+        else {
             String mid = ComponentSupport.getAliasedId(ctx, id);
             UIComponent ancestorNamingContainer = parent.getNamingContainer();
             if (ancestorNamingContainer instanceof UniqueIdVendor) {
                 c.setId(((UniqueIdVendor) ancestorNamingContainer).createUniqueId(ctx.getFacesContext(), mid));
-            } else {
+            }
+            else {
                 // No UniqueIdVendor ancestor: fall back to the view root. getViewRoot walks the parent chain,
                 // so resolve it only on this branch instead of unconditionally for every component.
                 UIViewRoot root = ComponentSupport.getViewRoot(ctx, parent);
@@ -453,20 +460,18 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
     }
 
     /**
-     * The id this tag assigns, which an expression can decide per build. Where build time decisions are replayed, the
-     * build which restores a view assigns the id the build which rendered it assigned, so that the state saved for a
-     * component is restored into the component it was saved for, and every build after that decides for itself again:
-     * the decision recorded beside it denies the skip of the render time re-apply once the expression yields another
-     * id than the one this build assigned.
+     * The id this tag assigns, which an expression can decide per build. Where build time decisions are replayed, the build which restores a view assigns the
+     * id the build which rendered it assigned, so that the state saved for a component is restored into the component it was saved for, and every build after
+     * that decides for itself again: the decision recorded beside it denies the skip of the render time re-apply once the expression yields another id than the
+     * one this build assigned.
      *
      * <p>
-     * Nothing of this happens where the decisions are not replayed: the decision would then deny the skip of that
-     * re-apply for every build whose body holds a component with an expression for an id, which is what an unrolled
-     * iteration naming its rows produces, while there is no replayed id for it to reconcile.
+     * Nothing of this happens where the decisions are not replayed: the decision would then deny the skip of that re-apply for every build whose body holds a
+     * component with an expression for an id, which is what an unrolled iteration naming its rows produces, while there is no replayed id for it to reconcile.
      *
      * <p>
-     * The attribute evaluates itself rather than the expression recorded beside it, so that an expression which fails
-     * to evaluate reports the tag it belongs to.
+     * The attribute evaluates itself rather than the expression recorded beside it, so that an expression which fails to evaluate reports the tag it belongs
+     * to.
      *
      * @param ctx the {@link FaceletContext} for the current build.
      * @param tagId the id this tag generated for the current build, under which its decision is saved and replayed.
@@ -493,10 +498,9 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
     }
 
     /**
-     * Generates this tag's unique id through {@link org.glassfish.mojarra.facelets.impl.DefaultFaceletContext}'s
-     * slot-based counter where the context supports it (the only implementation Facelets builds views with), and
-     * through the public {@link FaceletContext} API otherwise, which a wrapping context or a foreign implementation
-     * may supply.
+     * Generates this tag's unique id through {@link org.glassfish.mojarra.facelets.impl.DefaultFaceletContext}'s slot-based counter where the context supports
+     * it (the only implementation Facelets builds views with), and through the public {@link FaceletContext} API otherwise, which a wrapping context or a
+     * foreign implementation may supply.
      */
     private String generateUniqueId(FaceletContext ctx) {
         return idSlot.generateUniqueId(ctx, owner.getTagId());
@@ -534,9 +538,8 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
 
         if (this.id != null) {
             /*
-             * Note that registerLiteralId() needs to be called here regardless of whether we keep the code for reapplying Ids
-             * below. This makes IterationIdManager aware of all literal Ids on the page, so that it can ensure Id uniqueness for
-             * components added during postback.
+             * Note that registerLiteralId() needs to be called here regardless of whether we keep the code for reapplying Ids below. This makes
+             * IterationIdManager aware of all literal Ids on the page, so that it can ensure Id uniqueness for components added during postback.
              */
             boolean autoGenerated = this.id.isLiteral() && IterationIdManager.registerLiteralId(ctx, this.id.getValue());
 
@@ -571,8 +574,8 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
     }
 
     /**
-     * If the binding attribute was specified, use that in conjuction with our componentType String variable to call
-     * createComponent on the Application, otherwise just pass the componentType String.
+     * If the binding attribute was specified, use that in conjuction with our componentType String variable to call createComponent on the Application,
+     * otherwise just pass the componentType String.
      * <p />
      * If the binding was used, then set the ValueExpression "binding" on the created UIComponent.
      *
@@ -597,15 +600,16 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
                 // Make sure the component supports 1.2
                 c.setValueExpression("binding", ve);
             }
-        } else {
+        }
+        else {
             c = app.createComponent(faces, componentType, rendererType);
         }
         return c;
     }
 
     /*
-     * Internal hook that allows us to perform common processing for all components after they are populated. At the moment,
-     * the only common processing we need to perform is applying wrapping AjaxBehaviors, if any exist.
+     * Internal hook that allows us to perform common processing for all components after they are populated. At the moment, the only common processing we need
+     * to perform is applying wrapping AjaxBehaviors, if any exist.
      */
     private void privateOnComponentPopulated(FaceletContext ctx, UIComponent c) {
 
@@ -630,7 +634,8 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
         if (componentValidators != null) {
             // process any elements on the stack.
             componentValidators.addValidators(ctx, editableValueHolder);
-        } else {
+        }
+        else {
             // no custom handling required, so add the default validators
             ComponentValidators.addDefaultValidatorsToComponent(ctx, editableValueHolder);
         }

@@ -40,8 +40,7 @@ import org.glassfish.mojarra.renderkit.Attributes;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 
 /**
- * <b>CommandLinkRenderer</b> is a class that renders the current value of <code>UICommand</code> as a HyperLink that
- * acts like a Button.
+ * <b>CommandLinkRenderer</b> is a class that renders the current value of <code>UICommand</code> as a HyperLink that acts like a Button.
  */
 
 public class CommandLinkRenderer extends LinkRenderer {
@@ -80,12 +79,14 @@ public class CommandLinkRenderer extends LinkRenderer {
             return;
         }
 
-        boolean componentDisabled = component instanceof HtmlCommandLink link ? link.isDisabled()
-                : componentIsDisabled(component);
+        boolean componentDisabled = component instanceof HtmlCommandLink link
+            ? link.isDisabled()
+            : componentIsDisabled(component);
 
         if (componentDisabled) {
             renderAsDisabled(context, component);
-        } else {
+        }
+        else {
             RenderKitUtils.renderFacesJsIfNecessary(context);
             renderAsActive(context, component);
         }
@@ -123,14 +124,17 @@ public class CommandLinkRenderer extends LinkRenderer {
 
         if (component instanceof HtmlCommandLink link ? link.isDisabled() : componentIsDisabled(component)) {
             writer.endElement("span");
-        } else {
+        }
+        else {
             writer.endElement("a");
 
-            String target = component instanceof HtmlCommandLink link ? link.getTarget()
-                    : (String) component.getAttributes().get("target");
+            String target = component instanceof HtmlCommandLink link
+                ? link.getTarget()
+                : (String) component.getAttributes().get("target");
             if (target != null) {
                 target = target.trim();
-            } else {
+            }
+            else {
                 target = "";
             }
             Collection<ClientBehaviorContext.Parameter> params = getBehaviorParameters(component);
@@ -157,8 +161,8 @@ public class CommandLinkRenderer extends LinkRenderer {
     }
 
     /*
-     * Render the necessary Javascript for the link. Note that much of this code is shared with
-     * CommandButtonRenderer.renderOnClick RELEASE_PENDING: Consolidate this code into a utility method, if possible.
+     * Render the necessary Javascript for the link. Note that much of this code is shared with CommandButtonRenderer.renderOnClick RELEASE_PENDING: Consolidate
+     * this code into a utility method, if possible.
      */
     @Override
     protected void renderAsActive(FacesContext context, UIComponent command) throws IOException {

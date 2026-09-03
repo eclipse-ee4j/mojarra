@@ -16,7 +16,6 @@
 
 package org.glassfish.mojarra.facelets.tag.faces;
 
-
 import jakarta.el.ExpressionFactory;
 import jakarta.el.MethodExpression;
 import jakarta.faces.component.ActionSource;
@@ -70,8 +69,10 @@ final class ActionSourceRule extends MetaRule {
 
             MethodExpression methodExpressionOneArg = attr.getMethodExpression(ctx, null, ActionSourceRule.ACTION_LISTENER_SIG);
 
-            MethodExpression methodExpressionZeroArg = expressionFactory.createMethodExpression(ctx, methodExpressionOneArg.getExpressionString(), Void.class,
-                    ActionSourceRule.ACTION_LISTENER_ZEROARG_SIG);
+            MethodExpression methodExpressionZeroArg = expressionFactory.createMethodExpression(
+                ctx, methodExpressionOneArg.getExpressionString(), Void.class,
+                ActionSourceRule.ACTION_LISTENER_ZEROARG_SIG
+            );
 
             ((ActionSource) instance).addActionListener(new MethodExpressionActionListener(methodExpressionOneArg, methodExpressionZeroArg));
 
@@ -101,4 +102,5 @@ final class ActionSourceRule extends MetaRule {
 
         return null;
     }
+
 }

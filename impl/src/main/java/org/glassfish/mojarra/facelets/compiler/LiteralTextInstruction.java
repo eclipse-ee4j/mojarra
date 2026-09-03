@@ -25,6 +25,7 @@ import jakarta.faces.context.FacesContext;
 import org.glassfish.mojarra.config.FaceletsConfiguration;
 
 final class LiteralTextInstruction implements Instruction {
+
     private final String text;
 
     public LiteralTextInstruction(String text) {
@@ -35,7 +36,8 @@ final class LiteralTextInstruction implements Instruction {
     public void write(FacesContext context) throws IOException {
         if (FaceletsConfiguration.getInstance(context).isEscapeInlineText(context)) {
             context.getResponseWriter().writeText(text, null);
-        } else {
+        }
+        else {
             context.getResponseWriter().write(text);
         }
     }
@@ -49,4 +51,5 @@ final class LiteralTextInstruction implements Instruction {
     public boolean isLiteral() {
         return true;
     }
+
 }

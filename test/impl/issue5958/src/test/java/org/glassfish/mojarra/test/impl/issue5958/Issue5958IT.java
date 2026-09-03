@@ -25,9 +25,9 @@ import ee.jakarta.tck.faces.util.selenium.BaseITNG;
 import ee.jakarta.tck.faces.util.selenium.WebPage;
 
 /**
- * A child added from a {@code postAddToView} listener is produced again by the view build of every request, so the
- * saved state must not carry it: no dynamic action is recorded, and the component is left to the build. This holds
- * wherever the listener is attached, since what makes the add repeatable is the phase it runs in, not its source.
+ * A child added from a {@code postAddToView} listener is produced again by the view build of every request, so the saved state must not carry it: no dynamic
+ * action is recorded, and the component is left to the build. This holds wherever the listener is attached, since what makes the add repeatable is the phase it
+ * runs in, not its source.
  *
  * @see org.glassfish.mojarra.context.StateContext
  */
@@ -58,4 +58,5 @@ class Issue5958IT extends BaseITNG {
         assertEquals(SUBMITTED_VALUE, page.findElement(By.id("echo")).getText(), "value decoded from the added child");
         assertEquals("0", page.findElement(By.id("dynamicActionCount")).getText(), "dynamic actions after postback");
     }
+
 }

@@ -68,7 +68,8 @@ public class OutcomeTargetLinkRenderer extends OutcomeTargetRenderer {
 
         if (disabled || navCase == null) {
             renderAsDisabled(context, component, failedToResolveNavigationCase);
-        } else {
+        }
+        else {
             renderAsActive(context, navCase, component);
         }
 

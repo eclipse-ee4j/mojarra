@@ -52,8 +52,9 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
         writer.startElement("input", component);
         writeIdAttributeIfNecessary(context, writer, component);
 
-        String imageSrc = component instanceof HtmlOutcomeTargetButton button ? button.getImage()
-                : (String) component.getAttributes().get("image");
+        String imageSrc = component instanceof HtmlOutcomeTargetButton button
+            ? button.getImage()
+            : (String) component.getAttributes().get("image");
         if (imageSrc != null) {
             writer.writeAttribute("type", "image", "type");
             writer.writeURIAttribute("src", RenderKitUtils.getImageSource(context, component, "image"), "image");
@@ -65,7 +66,8 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
             else if (writer.getContentType().equals(RIConstants.XHTML_CONTENT_TYPE)) {
                 writer.writeAttribute("alt", "", "alt"); // write out an empty alt as it is required by HTML spec.
             }
-        } else {
+        }
+        else {
             writer.writeAttribute("type", "button", "type");
         }
 
@@ -132,7 +134,8 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
             if (onclick.length() > 0 && !onclick.endsWith(";")) {
                 onclick += "; ";
             }
-        } else {
+        }
+        else {
             onclick = "";
         }
 

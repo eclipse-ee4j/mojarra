@@ -53,21 +53,21 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 /**
- * Manual performance harness comparing the pre-cache CDI bean-resolution path (raw
- * {@link BeanManager#getBeans}/{@code resolve}/{@code getReference}) against the
- * post-cache {@link CdiUtils} API for every hot spot touched on this branch.
+ * Manual performance harness comparing the pre-cache CDI bean-resolution path (raw {@link BeanManager#getBeans}/{@code resolve}/{@code getReference}) against
+ * the post-cache {@link CdiUtils} API for every hot spot touched on this branch.
  *
- * <p>Disabled by default. To run: {@code mvn -pl impl test -Dperf=true -Dtest=CdiLookupPerfHarness}.
- * Output goes to stdout; capture and paste into a JIRA comment or PR description.
+ * <p>
+ * Disabled by default. To run: {@code mvn -pl impl test -Dperf=true -Dtest=CdiLookupPerfHarness}. Output goes to stdout; capture and paste into a JIRA comment
+ * or PR description.
  *
- * <p>Each scenario runs both paths inside the same Weld SE container so Weld's internal
- * caches are equally warm. Warm-up is performed before measurement; reported numbers are
- * the median of {@value #RUNS} runs of {@value #ITERATIONS} iterations each.
+ * <p>
+ * Each scenario runs both paths inside the same Weld SE container so Weld's internal caches are equally warm. Warm-up is performed before measurement; reported
+ * numbers are the median of {@value #RUNS} runs of {@value #ITERATIONS} iterations each.
  *
- * <p>For positive cases ({@code testConverter}, {@code testValidator}, {@code testBehavior})
- * a stub bean is registered with the {@code @Faces*} qualifier. For the
- * {@link FacesContext} producer destroy path, an extension registers a stub bean with both
- * {@link FacesContext} and {@link FacesContextProducer} in its bean types.
+ * <p>
+ * For positive cases ({@code testConverter}, {@code testValidator}, {@code testBehavior}) a stub bean is registered with the {@code @Faces*} qualifier. For the
+ * {@link FacesContext} producer destroy path, an extension registers a stub bean with both {@link FacesContext} and {@link FacesContextProducer} in its bean
+ * types.
  */
 @EnabledIfSystemProperty(named = "perf", matches = "true")
 public class CdiLookupPerfHarness {
@@ -77,11 +77,15 @@ public class CdiLookupPerfHarness {
     private static final int RUNS = 5;
 
     private static final Type CONVERTER_TYPE = new TypeLiteral<Converter<?>>() {
+
         private static final long serialVersionUID = 1L;
+
     }.getType();
 
     private static final Type VALIDATOR_TYPE = new TypeLiteral<Validator<?>>() {
+
         private static final long serialVersionUID = 1L;
+
     }.getType();
 
     private static WeldContainer container;
@@ -90,10 +94,10 @@ public class CdiLookupPerfHarness {
     @BeforeAll
     static void init() {
         container = new Weld()
-                .disableDiscovery()
-                .beanClasses(TestConverter.class, TestValidator.class, TestBehavior.class, TestDataModelClassesMap.class)
-                .addExtension(new StubFacesContextProducerExtension())
-                .initialize();
+            .disableDiscovery()
+            .beanClasses(TestConverter.class, TestValidator.class, TestBehavior.class, TestDataModelClassesMap.class)
+            .addExtension(new StubFacesContextProducerExtension())
+            .initialize();
         beanManager = container.getBeanManager();
         System.out.println();
         System.out.println("CdiLookupPerfHarness (warmup=" + WARMUP_ITERATIONS + ", iterations=" + ITERATIONS + ", runs=" + RUNS + ")");
@@ -111,9 +115,11 @@ public class CdiLookupPerfHarness {
 
     @Test
     void createConverter_byId_unknown() {
-        compare("createConverter(String) -- unknown ID",
-                () -> rawCreateConverterById(beanManager, "jakarta.faces.Integer"),
-                () -> CdiUtils.createConverter(beanManager, "jakarta.faces.Integer"));
+        compare(
+            "createConverter(String) -- unknown ID",
+            () -> rawCreateConverterById(beanManager, "jakarta.faces.Integer"),
+            () -> CdiUtils.createConverter(beanManager, "jakarta.faces.Integer")
+        );
     }
 
     @Test
@@ -122,67 +128,85 @@ public class CdiLookupPerfHarness {
         // would also fire Mojarra's ApplicationAssociate annotation post-processing, which has no
         // ApplicationAssociate in standalone Weld; that's downstream of the cache anyway).
         FacesConverter qualifier = FacesConverter.Literal.of("testConverter", Object.class, true);
-        compare("getBeanReference(Converter.class, qualifier) -- managed match",
-                () -> rawGetBeanReference(beanManager, Converter.class, qualifier),
-                () -> CdiUtils.getBeanReference(beanManager, Converter.class, qualifier));
+        compare(
+            "getBeanReference(Converter.class, qualifier) -- managed match",
+            () -> rawGetBeanReference(beanManager, Converter.class, qualifier),
+            () -> CdiUtils.getBeanReference(beanManager, Converter.class, qualifier)
+        );
     }
 
     @Test
     void createConverter_byClass_unknown() {
-        compare("createConverter(Class) -- Long (no match, walks Long->Number)",
-                () -> rawCreateConverterByClass(beanManager, Long.class),
-                () -> CdiUtils.createConverter(beanManager, Long.class));
+        compare(
+            "createConverter(Class) -- Long (no match, walks Long->Number)",
+            () -> rawCreateConverterByClass(beanManager, Long.class),
+            () -> CdiUtils.createConverter(beanManager, Long.class)
+        );
     }
 
     @Test
     void createValidator_byId_unknown() {
-        compare("createValidator(String) -- unknown ID",
-                () -> rawCreateValidator(beanManager, "jakarta.faces.Required"),
-                () -> CdiUtils.createValidator(beanManager, "jakarta.faces.Required"));
+        compare(
+            "createValidator(String) -- unknown ID",
+            () -> rawCreateValidator(beanManager, "jakarta.faces.Required"),
+            () -> CdiUtils.createValidator(beanManager, "jakarta.faces.Required")
+        );
     }
 
     @Test
     void createValidator_byId_managed() {
-        compare("createValidator(String) -- managed CDI validator",
-                () -> rawCreateValidator(beanManager, "testValidator"),
-                () -> CdiUtils.createValidator(beanManager, "testValidator"));
+        compare(
+            "createValidator(String) -- managed CDI validator",
+            () -> rawCreateValidator(beanManager, "testValidator"),
+            () -> CdiUtils.createValidator(beanManager, "testValidator")
+        );
     }
 
     @Test
     void createBehavior_byId_unknown() {
-        compare("createBehavior(String) -- unknown ID",
-                () -> rawCreateBehavior(beanManager, "jakarta.faces.Ajax"),
-                () -> CdiUtils.createBehavior(beanManager, "jakarta.faces.Ajax"));
+        compare(
+            "createBehavior(String) -- unknown ID",
+            () -> rawCreateBehavior(beanManager, "jakarta.faces.Ajax"),
+            () -> CdiUtils.createBehavior(beanManager, "jakarta.faces.Ajax")
+        );
     }
 
     @Test
     void createBehavior_byId_managed() {
-        compare("createBehavior(String) -- managed CDI behavior",
-                () -> rawCreateBehavior(beanManager, "testBehavior"),
-                () -> CdiUtils.createBehavior(beanManager, "testBehavior"));
+        compare(
+            "createBehavior(String) -- managed CDI behavior",
+            () -> rawCreateBehavior(beanManager, "testBehavior"),
+            () -> CdiUtils.createBehavior(beanManager, "testBehavior")
+        );
     }
 
     @Test
     void resolveBeanByName_dataModelClassesMap() {
-        compare("resolveBeanByName -- " + DataModelClassesMapProducer.DATA_MODEL_CLASSES_MAP_BEAN_NAME,
-                () -> rawResolveBeanByName(beanManager, DataModelClassesMapProducer.DATA_MODEL_CLASSES_MAP_BEAN_NAME),
-                () -> CdiUtils.resolveBeanByName(beanManager, DataModelClassesMapProducer.DATA_MODEL_CLASSES_MAP_BEAN_NAME));
+        compare(
+            "resolveBeanByName -- " + DataModelClassesMapProducer.DATA_MODEL_CLASSES_MAP_BEAN_NAME,
+            () -> rawResolveBeanByName(beanManager, DataModelClassesMapProducer.DATA_MODEL_CLASSES_MAP_BEAN_NAME),
+            () -> CdiUtils.resolveBeanByName(beanManager, DataModelClassesMapProducer.DATA_MODEL_CLASSES_MAP_BEAN_NAME)
+        );
     }
 
     @Test
     void resolveFacesContextProducerBean() {
-        compare("resolveFacesContextProducerBean -- per request.release()",
-                () -> rawResolveFacesContextProducerBean(beanManager),
-                () -> CdiUtils.resolveFacesContextProducerBean(beanManager));
+        compare(
+            "resolveFacesContextProducerBean -- per request.release()",
+            () -> rawResolveFacesContextProducerBean(beanManager),
+            () -> CdiUtils.resolveFacesContextProducerBean(beanManager)
+        );
     }
 
     @Test
     void getCurrentInjectionPoint_path() {
         // getCurrentInjectionPoint requires a CreationalContext supplied by a producer;
         // we measure the bean-resolution portion only, which is what the cache fix targets.
-        compare("resolveBean(InjectionPoint.class) -- producer hot path",
-                () -> rawResolveBeanByType(beanManager, InjectionPoint.class),
-                () -> CdiUtils.resolveBean(beanManager, InjectionPoint.class));
+        compare(
+            "resolveBean(InjectionPoint.class) -- producer hot path",
+            () -> rawResolveBeanByType(beanManager, InjectionPoint.class),
+            () -> CdiUtils.resolveBean(beanManager, InjectionPoint.class)
+        );
     }
 
     private static void compare(String label, Runnable rawPath, Runnable cachedPath) {
@@ -271,8 +295,8 @@ public class CdiLookupPerfHarness {
 
     private static Bean<?> rawResolveFacesContextProducerBean(BeanManager bm) {
         Set<Bean<?>> beans = bm.getBeans(FacesContext.class).stream()
-                .filter(bean -> bean.getTypes().contains(FacesContextProducer.class))
-                .collect(toSet());
+            .filter(bean -> bean.getTypes().contains(FacesContextProducer.class))
+            .collect(toSet());
         return bm.resolve(beans);
     }
 
@@ -287,8 +311,8 @@ public class CdiLookupPerfHarness {
 
     private static Object rawGetBeanReferenceFilteredByName(BeanManager bm, Type type, String beanName, Annotation... qualifiers) {
         Set<Bean<?>> beans = bm.getBeans(type, qualifiers).stream()
-                .filter(bean -> beanName.equals(getBeanName(bean)))
-                .collect(toSet());
+            .filter(bean -> beanName.equals(getBeanName(bean)))
+            .collect(toSet());
         Bean<?> bean = bm.resolve(beans);
         if (bean == null) {
             return null;
@@ -310,6 +334,7 @@ public class CdiLookupPerfHarness {
     @FacesConverter(value = "testConverter")
     @Dependent
     public static class TestConverter implements Converter<Object> {
+
         @Override
         public Object getAsObject(FacesContext context, jakarta.faces.component.UIComponent component, String value) throws ConverterException {
             return value;
@@ -319,15 +344,18 @@ public class CdiLookupPerfHarness {
         public String getAsString(FacesContext context, jakarta.faces.component.UIComponent component, Object value) throws ConverterException {
             return value == null ? "" : value.toString();
         }
+
     }
 
     @FacesValidator(value = "testValidator")
     @Dependent
     public static class TestValidator implements Validator<Object> {
+
         @Override
         public void validate(FacesContext context, jakarta.faces.component.UIComponent component, Object value) throws ValidatorException {
             // no-op
         }
+
     }
 
     @FacesBehavior(value = "testBehavior")
@@ -338,25 +366,30 @@ public class CdiLookupPerfHarness {
     @Named(DataModelClassesMapProducer.DATA_MODEL_CLASSES_MAP_BEAN_NAME)
     @ApplicationScoped
     public static class TestDataModelClassesMap {
+
         public java.util.Map<Class<?>, Class<?>> getMap() {
             return Collections.emptyMap();
         }
+
     }
 
     /**
-     * Registers a stub {@link Bean} whose bean types include both {@link FacesContext} and
-     * {@link FacesContextProducer}, so {@link CdiUtils#resolveFacesContextProducerBean}
-     * (and its uncached counterpart {@link #rawResolveFacesContextProducerBean}) find a
-     * match instead of returning null. Mirrors how Mojarra's real
-     * {@link org.glassfish.mojarra.cdi.CdiExtension} registers the FacesContext producer at runtime.
+     * Registers a stub {@link Bean} whose bean types include both {@link FacesContext} and {@link FacesContextProducer}, so
+     * {@link CdiUtils#resolveFacesContextProducerBean} (and its uncached counterpart {@link #rawResolveFacesContextProducerBean}) find a match instead of
+     * returning null. Mirrors how Mojarra's real {@link org.glassfish.mojarra.cdi.CdiExtension} registers the FacesContext producer at runtime.
      */
     public static class StubFacesContextProducerExtension implements Extension {
+
         void addStubBean(@Observes AfterBeanDiscovery event, BeanManager bm) {
             event.addBean()
-                    .types(FacesContext.class, FacesContextProducer.class, Object.class)
-                    .scope(ApplicationScoped.class)
-                    .createWith(ctx -> null)
-                    .destroyWith((instance, ctx) -> { /* no-op */ });
+                .types(FacesContext.class, FacesContextProducer.class, Object.class)
+                .scope(ApplicationScoped.class)
+                .createWith(ctx -> null)
+                .destroyWith((instance, ctx) -> {
+                    /* no-op */ }
+                );
         }
+
     }
+
 }

@@ -29,8 +29,8 @@ import org.glassfish.mojarra.util.Util;
 
 /**
  * <p>
- * This <code>Renderer</code> is responsible for rendering the content of a facet defined within the <em>using page</em>
- * template in the desired location within the composite component implementation section.
+ * This <code>Renderer</code> is responsible for rendering the content of a facet defined within the <em>using page</em> template in the desired location within
+ * the composite component implementation section.
  * </p>
  */
 public class CompositeFacetRenderer extends Renderer<UIComponent> {
@@ -55,7 +55,8 @@ public class CompositeFacetRenderer extends Renderer<UIComponent> {
             UIComponent facet = currentCompositeComponent.getFacet(facetName);
             if (null != facet) {
                 facet.encodeAll(context);
-            } else {
+            }
+            else {
                 if (logger.isLoggable(Level.FINE)) {
                     logger.log(Level.FINE, "Could not find facet named {0}", facetName);
                 }

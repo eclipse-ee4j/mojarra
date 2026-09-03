@@ -59,4 +59,5 @@ public final class PassThroughAttributesHandler extends TagHandlerImpl implement
     public String getAttributeName(FaceletContext ctxt) {
         return "value";
     }
+
 }

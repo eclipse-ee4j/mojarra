@@ -89,8 +89,11 @@ public class MockResponseWriter extends ResponseWriter {
     }
 
     @Override
-    public void startElement(String name,
-            UIComponent component) throws IOException {
+    public void startElement(
+        String name,
+        UIComponent component
+    ) throws IOException
+    {
         throw new UnsupportedOperationException();
     }
 
@@ -100,8 +103,11 @@ public class MockResponseWriter extends ResponseWriter {
     }
 
     @Override
-    public void writeAttribute(String name, Object value,
-            String componentPropertyName) throws IOException {
+    public void writeAttribute(
+        String name, Object value,
+        String componentPropertyName
+    ) throws IOException
+    {
         throw new UnsupportedOperationException();
     }
 
@@ -129,4 +135,5 @@ public class MockResponseWriter extends ResponseWriter {
     public ResponseWriter cloneWithWriter(Writer writer) {
         throw new UnsupportedOperationException();
     }
+
 }

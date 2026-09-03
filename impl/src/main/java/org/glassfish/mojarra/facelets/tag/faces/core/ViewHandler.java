@@ -43,9 +43,8 @@ import org.glassfish.mojarra.util.Util;
 
 /**
  * Container for all Jakarta Faces core and custom component actions used on a page.
- * 
- * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/view.html">tag
- * documentation</a>.
+ *
+ * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/view.html">tag documentation</a>.
  *
  * @author Jacob Hookom
  * @version $Id$
@@ -123,11 +122,13 @@ public final class ViewHandler extends TagHandlerImpl {
 
             if (contracts != null) {
                 /*
-                 * JAVASERVERFACES-3139: We are relaxing when the contracts attribute can be used. In Development mode we will still
-                 * blurb a message that the user is not using it at the top level, which could cause problems.
+                 * JAVASERVERFACES-3139: We are relaxing when the contracts attribute can be used. In Development mode we will still blurb a message that the
+                 * user is not using it at the top level, which could cause problems.
                  */
-                if (ctx.getFacesContext().getAttributes().containsKey("org.glassfish.mojarra.uiCompositionCount") && LOGGER.isLoggable(Level.INFO)
-                        && ctx.getFacesContext().getApplication().getProjectStage().equals(ProjectStage.Development)) {
+                if (
+                    ctx.getFacesContext().getAttributes().containsKey("org.glassfish.mojarra.uiCompositionCount") && LOGGER.isLoggable(Level.INFO)
+                        && ctx.getFacesContext().getApplication().getProjectStage().equals(ProjectStage.Development)
+                ) {
                     LOGGER.log(Level.INFO, "f:view contracts attribute found, but not used at top level");
                 }
                 String contractsValue = contracts.getValue(ctx);
@@ -158,7 +159,8 @@ public final class ViewHandler extends TagHandlerImpl {
         if (locale != null && root != null) {
             try {
                 root.setLocale(ComponentSupport.getLocale(ctx, locale));
-            } catch (TagAttributeException tae) {
+            }
+            catch (TagAttributeException tae) {
                 Object result = locale.getObject(ctx);
                 if (null == result) {
                     Locale l = Locale.getDefault();
@@ -177,15 +179,13 @@ public final class ViewHandler extends TagHandlerImpl {
     }
 
     /**
-     * Records what this build decided for every non-literal view attribute, so the redundant render-time re-apply is
-     * skipped as long as each still holds and is performed when one of them does not, which is what applies the new
-     * value (see {@code refreshTransientBuild}). Each takes two decisions: the attribute still evaluates to the
-     * value this build got, and, for the attributes held in the state of the {@link UIViewRoot} rather than in that
-     * of the request, the value this build applied is still the one in effect, since the state restored over the tree
-     * after this build replaces it with the one the previous request saved. The resource library contracts take that
-     * second decision as well, on the {@link FacesContext} rather than on the view: restoring a view recalculates them
-     * from the configured mappings once the build that applied them has finished. The {@code beforePhase}/{@code afterPhase}
-     * listener expressions are excluded as they are fixed per facelet and restored from state.
+     * Records what this build decided for every non-literal view attribute, so the redundant render-time re-apply is skipped as long as each still holds and is
+     * performed when one of them does not, which is what applies the new value (see {@code refreshTransientBuild}). Each takes two decisions: the attribute
+     * still evaluates to the value this build got, and, for the attributes held in the state of the {@link UIViewRoot} rather than in that of the request, the
+     * value this build applied is still the one in effect, since the state restored over the tree after this build replaces it with the one the previous
+     * request saved. The resource library contracts take that second decision as well, on the {@link FacesContext} rather than on the view: restoring a view
+     * recalculates them from the configured mappings once the build that applied them has finished. The {@code beforePhase}/{@code afterPhase} listener
+     * expressions are excluded as they are fixed per facelet and restored from state.
      */
     private void recordDecisions(FaceletContext ctx, UIViewRoot root) {
         recordBuildTimeDecision(ctx, locale);
@@ -207,8 +207,10 @@ public final class ViewHandler extends TagHandlerImpl {
             }
             if (isDynamic(encoding)) {
                 Map<String, Object> attributes = root.getAttributes();
-                recordBuildTimeDecision(ctx, () -> attributes.get(RIConstants.FACELETS_ENCODING_KEY),
-                        attributes.get(RIConstants.FACELETS_ENCODING_KEY));
+                recordBuildTimeDecision(
+                    ctx, () -> attributes.get(RIConstants.FACELETS_ENCODING_KEY),
+                    attributes.get(RIConstants.FACELETS_ENCODING_KEY)
+                );
             }
         }
 

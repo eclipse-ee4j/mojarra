@@ -27,6 +27,7 @@ import jakarta.el.ELResolver;
  *
  */
 public class DemuxCompositeELResolver extends FacesCompositeELResolver {
+
     private final ELResolverChainType _chainType;
 
     private ELResolver[] _rootELResolvers = new ELResolver[2];
@@ -87,9 +88,9 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
     }
 
     /**
-     * Registers <code>elResolver</code> for {@link #convertToType} only when it actually declares that method.
-     * {@link ELResolver#convertToType} returns <code>null</code> without marking the property as resolved, so a
-     * resolver which inherits it can never contribute a conversion, and consulting it is a no-op.
+     * Registers <code>elResolver</code> for {@link #convertToType} only when it actually declares that method. {@link ELResolver#convertToType} returns
+     * <code>null</code> without marking the property as resolved, so a resolver which inherits it can never contribute a conversion, and consulting it is a
+     * no-op.
      */
     private void _addConvertELResolver(ELResolver elResolver) {
         if (!declaresConvertToType(elResolver)) {
@@ -111,7 +112,8 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
     private static boolean declaresConvertToType(ELResolver elResolver) {
         try {
             return elResolver.getClass().getMethod("convertToType", ELContext.class, Object.class, Class.class).getDeclaringClass() != ELResolver.class;
-        } catch (NoSuchMethodException e) {
+        }
+        catch (NoSuchMethodException e) {
             // Cannot happen: convertToType is public on ELResolver itself.
             return true;
         }
@@ -190,7 +192,8 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
         if (base == null || base instanceof ELClass) {
             resolverCount = _rootELResolverCount;
             resolvers = _rootELResolvers;
-        } else {
+        }
+        else {
             resolverCount = _propertyELResolverCount;
             resolvers = _propertyELResolvers;
         }
@@ -220,7 +223,8 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
         if (base == null || base instanceof ELClass) {
             resolverCount = _rootELResolverCount;
             resolvers = _rootELResolvers;
-        } else {
+        }
+        else {
             resolverCount = _propertyELResolverCount;
             resolvers = _propertyELResolvers;
         }
@@ -248,7 +252,8 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
         if (base == null || base instanceof ELClass) {
             resolverCount = _rootELResolverCount;
             resolvers = _rootELResolvers;
-        } else {
+        }
+        else {
             resolverCount = _propertyELResolverCount;
             resolvers = _propertyELResolvers;
         }
@@ -278,7 +283,8 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
         if (base == null || base instanceof ELClass) {
             resolverCount = _rootELResolverCount;
             resolvers = _rootELResolvers;
-        } else {
+        }
+        else {
             resolverCount = _propertyELResolverCount;
             resolvers = _propertyELResolvers;
         }
@@ -305,4 +311,5 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
     public Class<?> getCommonPropertyType(ELContext context, Object base) {
         return null;
     }
+
 }

@@ -24,9 +24,8 @@ import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagHandler;
 
 /**
- * A tag handler taking over {@code apply} from outside the packages of this implementation, which is what every tag
- * handler of another tag library does. It lives here rather than beside the test using it so that it does not fall
- * under the package this implementation audits.
+ * A tag handler taking over {@code apply} from outside the packages of this implementation, which is what every tag handler of another tag library does. It
+ * lives here rather than beside the test using it so that it does not fall under the package this implementation audits.
  */
 public class ForeignTagHandler extends TagHandler {
 
@@ -38,4 +37,5 @@ public class ForeignTagHandler extends TagHandler {
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         // Whatever this contributes to the view is exactly what this implementation cannot know.
     }
+
 }

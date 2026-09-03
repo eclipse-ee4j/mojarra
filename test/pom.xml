@@ -240,8 +240,8 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-        		<glassfish.home>glassfish9</glassfish.home>
-        		<arquillian.glassfish.version>2.2.1</arquillian.glassfish.version>
+                <glassfish.home>glassfish9</glassfish.home>
+                <arquillian.glassfish.version>2.2.1</arquillian.glassfish.version>
             </properties>
             <dependencies>
                 <dependency>

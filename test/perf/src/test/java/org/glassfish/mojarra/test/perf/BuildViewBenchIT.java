@@ -35,15 +35,14 @@ import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import ee.jakarta.tck.faces.util.selenium.BaseITNG;
 
 /**
- * Drives {@link BuildViewBenchServlet} so a JFR recording captures only the Facelets buildView loop
- * (no render, no state save/restore). Run on Mojarra and on MyFaces (via the {@code -*-myfaces}
- * profiles) and diff the recordings to see where Mojarra's buildView does more work.
+ * Drives {@link BuildViewBenchServlet} so a JFR recording captures only the Facelets buildView loop (no render, no state save/restore). Run on Mojarra and on
+ * MyFaces (via the {@code -*-myfaces} profiles) and diff the recordings to see where Mojarra's buildView does more work.
  *
- * <p>Gated behind {@code -Dbuildview=true}. Iteration counts reuse {@code -Dperf.warmup}/{@code
- * -Dperf.runs} (defaults 50/2000); {@code -Dperf.scenarios=<comma-separated>} selects the views to
- * run in order (default composite-build), so one server start covers a whole sweep.
- * {@code -Dperf.split=true} additionally reports where one build's nanoseconds go, which is what
- * separates a fixed per-build cost from a per-component one.
+ * <p>
+ * Gated behind {@code -Dbuildview=true}. Iteration counts reuse {@code -Dperf.warmup}/{@code
+ * -Dperf.runs} (defaults 50/2000); {@code -Dperf.scenarios=<comma-separated>} selects the views to run in order (default composite-build), so one server start
+ * covers a whole sweep. {@code -Dperf.split=true} additionally reports where one build's nanoseconds go, which is what separates a fixed per-build cost from a
+ * per-component one.
  */
 @EnabledIfSystemProperty(named = "buildview", matches = "true")
 class BuildViewBenchIT extends BaseITNG {
@@ -55,24 +54,24 @@ class BuildViewBenchIT extends BaseITNG {
     @Test
     void buildView() throws Exception {
         List<String> scenarios = Stream.of(System.getProperty("perf.scenarios", "composite-build").split(","))
-                .map(String::trim)
-                .filter(not(String::isEmpty))
-                .toList();
+            .map(String::trim)
+            .filter(not(String::isEmpty))
+            .toList();
 
         if (scenarios.isEmpty()) {
             scenarios = List.of("composite-build");
         }
 
         HttpClient client = HttpClient.newBuilder()
-                .version(HttpClient.Version.HTTP_1_1)
-                .connectTimeout(ofSeconds(10))
-                .build();
+            .version(HttpClient.Version.HTTP_1_1)
+            .connectTimeout(ofSeconds(10))
+            .build();
 
         System.out.println();
 
         for (String scenario : scenarios) {
             String url = webUrl + "buildview-bench?scenario=" + scenario + "&warmup=" + WARMUP + "&runs=" + RUNS
-                    + "&split=" + SPLIT;
+                + "&split=" + SPLIT;
             HttpRequest request = HttpRequest.newBuilder(URI.create(url)).timeout(ofSeconds(600)).GET().build();
             HttpResponse<String> response = client.send(request, ofString(UTF_8));
 
@@ -80,4 +79,5 @@ class BuildViewBenchIT extends BaseITNG {
             System.out.print(response.body());
         }
     }
+
 }

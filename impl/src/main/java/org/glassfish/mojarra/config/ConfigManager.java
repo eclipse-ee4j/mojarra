@@ -23,9 +23,9 @@ import static org.glassfish.mojarra.config.manager.Documents.getProgrammaticDocu
 import static org.glassfish.mojarra.config.manager.Documents.getXMLDocuments;
 import static org.glassfish.mojarra.config.manager.Documents.mergeDocuments;
 import static org.glassfish.mojarra.config.manager.Documents.sortDocuments;
-import static org.glassfish.mojarra.spi.ConfigurationResourceProviderFactory.createProviders;
 import static org.glassfish.mojarra.spi.ConfigurationResourceProviderFactory.ProviderType.FaceletConfig;
 import static org.glassfish.mojarra.spi.ConfigurationResourceProviderFactory.ProviderType.FacesConfig;
+import static org.glassfish.mojarra.spi.ConfigurationResourceProviderFactory.createProviders;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -100,44 +100,46 @@ public class ConfigManager {
 
     /**
      * <p>
-     * Contains each <code>ServletContext</code> that we've initialized. The <code>ServletContext</code> will be removed
-     * when the application is destroyed.
+     * Contains each <code>ServletContext</code> that we've initialized. The <code>ServletContext</code> will be removed when the application is destroyed.
      * </p>
      */
     private final List<ServletContext> initializedContexts = new CopyOnWriteArrayList<>();
 
     private final List<ConfigProcessor> configProcessors = List.of(
-                new FactoryConfigProcessor(),
-                new LifecycleConfigProcessor(),
-                new ApplicationConfigProcessor(),
-                new ComponentConfigProcessor(),
-                new ConverterConfigProcessor(),
-                new ValidatorConfigProcessor(),
-                new RenderKitConfigProcessor(),
-                new NavigationConfigProcessor(),
-                new BehaviorConfigProcessor(),
-                new FacesConfigExtensionProcessor(),
-                new ProtectedViewsConfigProcessor(),
-                new FacesFlowDefinitionConfigProcessor(),
-                new ResourceLibraryContractsConfigProcessor());
+        new FactoryConfigProcessor(),
+        new LifecycleConfigProcessor(),
+        new ApplicationConfigProcessor(),
+        new ComponentConfigProcessor(),
+        new ConverterConfigProcessor(),
+        new ValidatorConfigProcessor(),
+        new RenderKitConfigProcessor(),
+        new NavigationConfigProcessor(),
+        new BehaviorConfigProcessor(),
+        new FacesConfigExtensionProcessor(),
+        new ProtectedViewsConfigProcessor(),
+        new FacesFlowDefinitionConfigProcessor(),
+        new ResourceLibraryContractsConfigProcessor()
+    );
 
     /**
      * <p>
-     * A List of resource providers that search for faces-config documents. By default, this contains a provider for the
-     * Mojarra, and two other providers to satisfy the requirements of the specification.
+     * A List of resource providers that search for faces-config documents. By default, this contains a provider for the Mojarra, and two other providers to
+     * satisfy the requirements of the specification.
      * </p>
      */
     private final List<ConfigurationResourceProvider> facesConfigProviders = List.of(
-            new MetaInfFacesConfigResourceProvider(), new WebAppFlowConfigResourceProvider(), new WebFacesConfigResourceProvider());
+        new MetaInfFacesConfigResourceProvider(), new WebAppFlowConfigResourceProvider(), new WebFacesConfigResourceProvider()
+    );
 
     /**
      * <p>
-     * A List of resource providers that search for faces-config documents. By default, this contains a provider for the
-     * Mojarra, and one other providers to satisfy the requirements of the specification.
+     * A List of resource providers that search for faces-config documents. By default, this contains a provider for the Mojarra, and one other providers to
+     * satisfy the requirements of the specification.
      * </p>
      */
     private final List<ConfigurationResourceProvider> facesletsTagLibConfigProviders = List.of(
-            new MetaInfFaceletTaglibraryConfigProvider(), new WebFaceletTaglibResourceProvider());
+        new MetaInfFaceletTaglibraryConfigProvider(), new WebFaceletTaglibResourceProvider()
+    );
 
     /**
      * <p>
@@ -195,8 +197,10 @@ public class ConfigManager {
                 boolean validating = WebConfiguration.getInstance(servletContext).getProjectStage() != ProjectStage.Production;
 
                 // Obtain and merge the XML and Programmatic documents
-                DocumentInfo[] facesDocuments = mergeDocuments(getXMLDocuments(servletContext, getFacesConfigResourceProviders(), validating),
-                        getProgrammaticDocuments(getConfigPopulators()));
+                DocumentInfo[] facesDocuments = mergeDocuments(
+                    getXMLDocuments(servletContext, getFacesConfigResourceProviders(), validating),
+                    getProgrammaticDocuments(getConfigPopulators())
+                );
 
                 FacesConfigInfo lastFacesConfigInfo = new FacesConfigInfo(facesDocuments[facesDocuments.length - 1]);
 
@@ -218,10 +222,13 @@ public class ConfigManager {
                     configProcessor.process(servletContext, facesContext, facesDocuments);
                 }
 
-                faceletTaglibConfigProcessor.process(servletContext, facesContext,
-                    getXMLDocuments(servletContext, getFaceletConfigResourceProviders(), validating));
+                faceletTaglibConfigProcessor.process(
+                    servletContext, facesContext,
+                    getXMLDocuments(servletContext, getFaceletConfigResourceProviders(), validating)
+                );
 
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 // Clear out any configured factories
                 releaseFactories();
 
@@ -255,7 +262,10 @@ public class ConfigManager {
         return getConfigurationResourceProviders(facesletsTagLibConfigProviders, FaceletConfig);
     }
 
-    private List<ConfigurationResourceProvider> getConfigurationResourceProviders(List<ConfigurationResourceProvider> defaultProviders, ConfigurationResourceProviderFactory.ProviderType providerType) {
+    private List<ConfigurationResourceProvider> getConfigurationResourceProviders(
+        List<ConfigurationResourceProvider> defaultProviders, ConfigurationResourceProviderFactory.ProviderType providerType
+    )
+    {
         ConfigurationResourceProvider[] customProviders = createProviders(providerType);
         if (customProviders.length == 0) {
             return defaultProviders;
@@ -285,14 +295,13 @@ public class ConfigManager {
     }
 
     /**
-     * Publishes a {@link jakarta.faces.event.PostConstructApplicationEvent} event for the current {@link Application}
-     * instance.
+     * Publishes a {@link jakarta.faces.event.PostConstructApplicationEvent} event for the current {@link Application} instance.
      */
     void publishPostConfigEvent() {
         InitFacesContext facesContext = (InitFacesContext) FacesContext.getCurrentInstance();
         Application application = facesContext.getApplication();
 
-        if ( facesContext.getELContext() == null) {
+        if (facesContext.getELContext() == null) {
             ELContext elContext = new ELContextImpl(facesContext);
 
             ELContextListener[] listeners = application.getELContextListeners();
@@ -315,7 +324,8 @@ public class ConfigManager {
     private void releaseFactories() {
         try {
             FactoryFinder.releaseFactories();
-        } catch (FacesException ignored) {
+        }
+        catch (FacesException ignored) {
             LOGGER.log(FINE, "Exception thrown from FactoryFinder.releaseFactories()", ignored);
         }
     }
@@ -327,7 +337,7 @@ public class ConfigManager {
      * @param servletContext the <code>ServletContext</code> for the application that needs to be removed
      */
     public void destroy(ServletContext servletContext, FacesContext facesContext) {
-        configProcessors.forEach( processor -> processor.destroy(servletContext, facesContext) );
+        configProcessors.forEach(processor -> processor.destroy(servletContext, facesContext));
         initializedContexts.remove(servletContext);
     }
 

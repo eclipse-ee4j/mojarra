@@ -29,11 +29,10 @@ import jakarta.faces.event.ComponentSystemEvent;
 import jakarta.inject.Named;
 
 /**
- * Backs {@code dynamic-form-ajax.xhtml} — the idiomatic "dynamic components" pattern: a request-scoped bean holds
- * the container via {@code binding}, and an {@code f:event type="postAddToView"} listener {@link #build builds} its
- * input subtree programmatically each time the view is (re)built. Unlike an add/remove-after-build toggle, the tree
- * structure is identical on every request, so the ajax postback behaves exactly like {@code form-inputs-ajax} and
- * is portable across implementations (their add/remove-after-build state handling differs).
+ * Backs {@code dynamic-form-ajax.xhtml} — the idiomatic "dynamic components" pattern: a request-scoped bean holds the container via {@code binding}, and an
+ * {@code f:event type="postAddToView"} listener {@link #build builds} its input subtree programmatically each time the view is (re)built. Unlike an
+ * add/remove-after-build toggle, the tree structure is identical on every request, so the ajax postback behaves exactly like {@code form-inputs-ajax} and is
+ * portable across implementations (their add/remove-after-build state handling differs).
  */
 @Named
 @RequestScoped
@@ -45,8 +44,8 @@ public class DynamicFormBean {
     private final Map<String, String> values = new HashMap<>();
 
     /**
-     * {@code postAddToView} listener: programmatically populates the bound container with {@value #FIELD_COUNT}
-     * labelled inputs. Runs on the initial build and on every postback's view refresh.
+     * {@code postAddToView} listener: programmatically populates the bound container with {@value #FIELD_COUNT} labelled inputs. Runs on the initial build and
+     * on every postback's view refresh.
      */
     public void build(ComponentSystemEvent event) {
         UIComponent group = event.getComponent();
@@ -64,8 +63,11 @@ public class DynamicFormBean {
 
             HtmlInputText input = (HtmlInputText) application.createComponent(HtmlInputText.COMPONENT_TYPE);
             input.setId("field" + i);
-            input.setValueExpression("value", application.getExpressionFactory().createValueExpression(
-                    context.getELContext(), "#{dynamicFormBean.values['field" + i + "']}", String.class));
+            input.setValueExpression(
+                "value", application.getExpressionFactory().createValueExpression(
+                    context.getELContext(), "#{dynamicFormBean.values['field" + i + "']}", String.class
+                )
+            );
 
             children.add(label);
             children.add(input);
@@ -83,4 +85,5 @@ public class DynamicFormBean {
     public Map<String, String> getValues() {
         return values;
     }
+
 }

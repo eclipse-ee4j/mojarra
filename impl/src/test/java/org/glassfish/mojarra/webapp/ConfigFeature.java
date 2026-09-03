@@ -22,7 +22,8 @@ import java.util.Map;
 
 /**
  * <p>
- * Base bean for configuration beans that have common feature elements.</p>
+ * Base bean for configuration beans that have common feature elements.
+ * </p>
  */
 public abstract class ConfigFeature {
 
@@ -38,7 +39,8 @@ public abstract class ConfigFeature {
     public Map<String, ConfigAttribute> getAttributes() {
         if (attributes == null) {
             return (Collections.emptyMap());
-        } else {
+        }
+        else {
             return (attributes);
         }
     }
@@ -85,7 +87,8 @@ public abstract class ConfigFeature {
     public Map<String, ConfigProperty> getProperties() {
         if (properties == null) {
             return (Collections.emptyMap());
-        } else {
+        }
+        else {
             return (properties);
         }
     }
@@ -99,4 +102,5 @@ public abstract class ConfigFeature {
     public void setSmallIcon(String smallIcon) {
         this.smallIcon = smallIcon;
     }
+
 }

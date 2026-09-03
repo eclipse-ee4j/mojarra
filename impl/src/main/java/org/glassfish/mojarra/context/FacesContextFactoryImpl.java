@@ -16,7 +16,6 @@
 
 package org.glassfish.mojarra.context;
 
-
 import java.util.List;
 import java.util.Map;
 
@@ -36,19 +35,19 @@ public class FacesContextFactoryImpl extends FacesContextFactory {
     private final ExceptionHandlerFactory exceptionHandlerFactory;
 
     /**
-     * The parameters which have to be published into the FacesContext attribute map under their own name, because the
-     * API reads them there rather than from the configuration they are resolved in, which it cannot reach. This is an
-     * arrangement between the API and an implementation rather than anything the specification states, and it is
-     * visible only from private members of UIInput, UIViewRoot and MultiFieldValidationUtils.
+     * The parameters which have to be published into the FacesContext attribute map under their own name, because the API reads them there rather than from the
+     * configuration they are resolved in, which it cannot reach. This is an arrangement between the API and an implementation rather than anything the
+     * specification states, and it is visible only from private members of UIInput, UIViewRoot and MultiFieldValidationUtils.
      *
-     * Only UIInput falls back to reading the parameter itself when the attribute is absent. Dropping either of the
-     * other two silently disables the behaviour it guards, so a parameter leaves this list only once the API stops
-     * reading it there. A parameter this implementation reads itself never belonged here to begin with.
+     * Only UIInput falls back to reading the parameter itself when the attribute is absent. Dropping either of the other two silently disables the behaviour it
+     * guards, so a parameter leaves this list only once the API stops reading it there. A parameter this implementation reads itself never belonged here to
+     * begin with.
      */
     private static final List<FacesContextParam> API_READS_FROM_THE_CONTEXT = List.of(
-            FacesContextParam.ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE,
-            FacesContextParam.ENABLE_VALIDATE_WHOLE_BEAN,
-            FacesContextParam.VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS);
+        FacesContextParam.ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE,
+        FacesContextParam.ENABLE_VALIDATE_WHOLE_BEAN,
+        FacesContextParam.VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS
+    );
 
     private final ExternalContextFactory externalContextFactory;
 
@@ -82,9 +81,8 @@ public class FacesContextFactoryImpl extends FacesContextFactory {
     }
 
     /*
-     * Copies the parameters which the API reads back out of the FacesContext attribute map, keyed by the name of the
-     * parameter, because it cannot reach the configuration these are resolved in. A parameter this implementation
-     * reads itself does not belong here, it consults that configuration directly.
+     * Copies the parameters which the API reads back out of the FacesContext attribute map, keyed by the name of the parameter, because it cannot reach the
+     * configuration these are resolved in. A parameter this implementation reads itself does not belong here, it consults that configuration directly.
      */
     private void savePerRequestInitParams(FacesContext context) {
         Map<Object, Object> attrs = context.getAttributes();

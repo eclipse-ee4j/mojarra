@@ -56,8 +56,9 @@ public class SecretRenderer extends HtmlBasicInputRenderer {
         ResponseWriter writer = context.getResponseWriter();
         assert writer != null;
 
-        boolean redisplay = component instanceof HtmlInputSecret secret ? secret.isRedisplay()
-                : RenderKitUtils.attributeIsTrue(component, "redisplay", false);
+        boolean redisplay = component instanceof HtmlInputSecret secret
+            ? secret.isRedisplay()
+            : RenderKitUtils.attributeIsTrue(component, "redisplay", false);
         if (!redisplay) {
             currentValue = "";
         }
@@ -67,8 +68,9 @@ public class SecretRenderer extends HtmlBasicInputRenderer {
         writer.writeAttribute("type", "password", "type");
         writer.writeAttribute("name", component.getClientId(context), "clientId");
 
-        String autoComplete = component instanceof HtmlInputSecret secret ? secret.getAutocomplete()
-                : (String) component.getAttributes().get("autocomplete");
+        String autoComplete = component instanceof HtmlInputSecret secret
+            ? secret.getAutocomplete()
+            : (String) component.getAttributes().get("autocomplete");
         if (autoComplete != null) {
             // only output the autocomplete attribute if the value
             // is 'off' since its lack of presence will be interpreted

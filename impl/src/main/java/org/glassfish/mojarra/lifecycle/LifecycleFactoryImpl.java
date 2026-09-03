@@ -107,6 +107,6 @@ public class LifecycleFactoryImpl extends LifecycleFactory {
         return lifecycleMap.keySet().iterator();
     }
 
-// The testcase for this class is TestLifecycleFactoryImpl.java
+    // The testcase for this class is TestLifecycleFactoryImpl.java
 
 }

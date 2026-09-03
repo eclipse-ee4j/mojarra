@@ -18,8 +18,8 @@ package org.glassfish.mojarra.spi;
 
 /**
  * <p>
- * Classes that implement this interface return zero or more <code>URL</code>s which refer to application configuration
- * resources (i.e. documents conforming the Facelet taglib DTD or Schema).
+ * Classes that implement this interface return zero or more <code>URL</code>s which refer to application configuration resources (i.e. documents conforming the
+ * Facelet taglib DTD or Schema).
  * </p>
  *
  * <p>
@@ -35,14 +35,14 @@ package org.glassfish.mojarra.spi;
  * </pre>
  *
  * <p>
- * The file, <code>org.glassfish.mojarra.spi.FaceletConfigResourceProvider</code>, contains a single line which represents the
- * fully qualified class name of the concrete <code>FacesConfigResourceProvider</code>.
+ * The file, <code>org.glassfish.mojarra.spi.FaceletConfigResourceProvider</code>, contains a single line which represents the fully qualified class name of the
+ * concrete <code>FacesConfigResourceProvider</code>.
  * </p>
  *
  * <p>
- * The <code>FaceletConfigResourceProvider</code> instances that are found will be inserted into a List of existing
- * <code>ConfigurationResourceProviders</code> <em>after</em> those that process <code>taglib.xml</code> files in
- * <code>META-INF</code> but <em>before</em> those that process <code>taglib.xml</code> files in the web application.
+ * The <code>FaceletConfigResourceProvider</code> instances that are found will be inserted into a List of existing <code>ConfigurationResourceProviders</code>
+ * <em>after</em> those that process <code>taglib.xml</code> files in <code>META-INF</code> but <em>before</em> those that process <code>taglib.xml</code> files
+ * in the web application.
  * </p>
  */
 public interface FaceletConfigResourceProvider extends ConfigurationResourceProvider {

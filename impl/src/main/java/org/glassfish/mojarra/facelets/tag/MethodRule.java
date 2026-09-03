@@ -64,6 +64,7 @@ public final class MethodRule extends MetaRule {
     }
 
     private static class MethodExpressionMetadata extends Metadata {
+
         private final Method _method;
 
         private final TagAttribute _attribute;
@@ -85,11 +86,15 @@ public final class MethodRule extends MetaRule {
 
             try {
                 _method.invoke(instance, expr);
-            } catch (InvocationTargetException e) {
+            }
+            catch (InvocationTargetException e) {
                 throw new TagAttributeException(_attribute, e.getCause());
-            } catch (IllegalAccessException | IllegalArgumentException e) {
+            }
+            catch (IllegalAccessException | IllegalArgumentException e) {
                 throw new TagAttributeException(_attribute, e);
             }
         }
+
     }
+
 }

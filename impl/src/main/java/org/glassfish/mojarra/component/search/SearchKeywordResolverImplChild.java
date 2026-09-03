@@ -40,8 +40,10 @@ public class SearchKeywordResolverImplChild extends SearchKeywordResolver {
 
             int childNumber = Integer.parseInt(matcher.group(1));
             if (childNumber + 1 > current.getChildCount()) {
-                throw new FacesException("Component with clientId \"" + current.getClientId(searchKeywordContext.getSearchExpressionContext().getFacesContext())
-                        + "\" has fewer children as \"" + childNumber + "\". Expression: \"" + keyword + "\"");
+                throw new FacesException(
+                    "Component with clientId \"" + current.getClientId(searchKeywordContext.getSearchExpressionContext().getFacesContext())
+                        + "\" has fewer children as \"" + childNumber + "\". Expression: \"" + keyword + "\""
+                );
             }
 
             List<UIComponent> list = current.getChildren();
@@ -57,10 +59,13 @@ public class SearchKeywordResolverImplChild extends SearchKeywordResolver {
             }
 
             if (count < childNumber) {
-                throw new FacesException("Component with clientId \"" + current.getClientId(searchKeywordContext.getSearchExpressionContext().getFacesContext())
-                        + "\" has fewer children as \"" + childNumber + "\". Expression: \"" + keyword + "\"");
+                throw new FacesException(
+                    "Component with clientId \"" + current.getClientId(searchKeywordContext.getSearchExpressionContext().getFacesContext())
+                        + "\" has fewer children as \"" + childNumber + "\". Expression: \"" + keyword + "\""
+                );
             }
-        } else {
+        }
+        else {
             throw new FacesException("Expression does not match following pattern @child(n). Expression: \"" + keyword + "\"");
         }
     }
@@ -72,7 +77,8 @@ public class SearchKeywordResolverImplChild extends SearchKeywordResolver {
             try {
                 Matcher matcher = PATTERN.matcher(keyword);
                 return matcher.matches();
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 return false;
             }
         }

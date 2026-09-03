@@ -28,6 +28,7 @@ import org.glassfish.mojarra.facelets.tag.TagLibrary;
 final class NamespaceManager {
 
     private final static class NS {
+
         public final String prefix;
 
         public final String namespace;
@@ -36,6 +37,7 @@ final class NamespaceManager {
             this.prefix = prefix;
             namespace = ns;
         }
+
     }
 
     private final List<NS> namespaces;

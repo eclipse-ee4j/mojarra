@@ -58,20 +58,21 @@ import org.glassfish.mojarra.test.tag.ForeignTagHandler;
 import org.junit.jupiter.api.Test;
 
 /**
- * A view whose build takes a decision this implementation cannot see is built as unreproducible, so the redundant
- * render-time re-apply is performed rather than skipped ({@link BuildTimeDecisions}). Every tag handler of this
- * implementation is exempt from that, since each is audited to either contribute the same thing to every build of a
- * view or to record what it decided. This holds the audited set, so a handler added or changed since fails here until
- * it has been audited too.
+ * A view whose build takes a decision this implementation cannot see is built as unreproducible, so the redundant render-time re-apply is performed rather than
+ * skipped ({@link BuildTimeDecisions}). Every tag handler of this implementation is exempt from that, since each is audited to either contribute the same thing
+ * to every build of a view or to record what it decided. This holds the audited set, so a handler added or changed since fails here until it has been audited
+ * too.
  */
 class BuildTimeDecisionsTest {
 
     private static final Path TAG_HANDLER_SOURCES = Path.of("src/main/java/org/glassfish/mojarra/facelets/tag");
 
     private static final Pattern APPLY_DECLARATION = Pattern.compile(
-            "public\\s+void\\s+apply\\s*\\(\\s*(jakarta\\.faces\\.view\\.facelets\\.)?FaceletContext");
+        "public\\s+void\\s+apply\\s*\\(\\s*(jakarta\\.faces\\.view\\.facelets\\.)?FaceletContext"
+    );
 
-    private static final Set<String> AUDITED_TAG_HANDLERS = new TreeSet<>(Set.of(
+    private static final Set<String> AUDITED_TAG_HANDLERS = new TreeSet<>(
+        Set.of(
             "composite.AttachedObjectTargetHandler",
             "composite.AttributeHandler",
             "composite.DeclareFacetHandler",
@@ -112,13 +113,14 @@ class BuildTimeDecisionsTest {
             "ui.InsertHandler",
             "ui.ParamHandler",
             "ui.SchemaCompliantRemoveHandler",
-            "UserTagHandler"));
+            "UserTagHandler"
+        )
+    );
 
     /**
-     * Every tag handler that takes over {@code apply} must be one of the audited ones. A new or renamed handler is
-     * exempted from the re-apply by the package it lives in, so it must be audited before it is added here: it either
-     * contributes the same thing to every build, or it records the expression it decided on, or it marks the build
-     * unreproducible.
+     * Every tag handler that takes over {@code apply} must be one of the audited ones. A new or renamed handler is exempted from the re-apply by the package it
+     * lives in, so it must be audited before it is added here: it either contributes the same thing to every build, or it records the expression it decided on,
+     * or it marks the build unreproducible.
      *
      * @see BuildTimeDecisions#keepsBuildReproducible(jakarta.faces.view.facelets.FaceletHandler, jakarta.faces.view.facelets.Tag)
      */
@@ -128,8 +130,8 @@ class BuildTimeDecisionsTest {
     }
 
     /**
-     * A decision that still yields the value it was recorded with lets the re-apply be skipped, and one that yields
-     * anything else, or cannot be evaluated at all, does not.
+     * A decision that still yields the value it was recorded with lets the re-apply be skipped, and one that yields anything else, or cannot be evaluated at
+     * all, does not.
      */
     @Test
     void aDecisionHoldsOnlyWhileItYieldsTheValueItWasRecordedWith() {
@@ -173,8 +175,8 @@ class BuildTimeDecisionsTest {
     }
 
     /**
-     * A tag handler of another tag library is taken to keep the build reproducible only while its tag carries no
-     * expression, except when it attaches a converter, validator or behavior, which a re-apply does not act on.
+     * A tag handler of another tag library is taken to keep the build reproducible only while its tag carries no expression, except when it attaches a
+     * converter, validator or behavior, which a re-apply does not act on.
      */
     @Test
     void aForeignTagHandlerKeepsTheBuildReproducibleOnlyWithoutAnExpression() {
@@ -215,16 +217,17 @@ class BuildTimeDecisionsTest {
     private static Set<String> tagHandlersTakingOverApply() throws IOException {
         try (Stream<Path> sources = walk(TAG_HANDLER_SOURCES)) {
             return sources.filter(source -> source.toString().endsWith(".java"))
-                          .filter(BuildTimeDecisionsTest::declaresApply)
-                          .map(BuildTimeDecisionsTest::toClassName)
-                          .collect(toCollection(TreeSet::new));
+                .filter(BuildTimeDecisionsTest::declaresApply)
+                .map(BuildTimeDecisionsTest::toClassName)
+                .collect(toCollection(TreeSet::new));
         }
     }
 
     private static boolean declaresApply(Path source) {
         try {
             return APPLY_DECLARATION.matcher(readString(source)).find();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new IllegalStateException(source.toString(), e);
         }
     }
@@ -232,4 +235,5 @@ class BuildTimeDecisionsTest {
     private static String toClassName(Path source) {
         return TAG_HANDLER_SOURCES.relativize(source).toString().replace(".java", "").replace('/', '.');
     }
+
 }

@@ -88,4 +88,5 @@ public class CompositeSearchKeywordResolver extends SearchKeywordResolver {
 
         return false;
     }
+
 }

@@ -25,14 +25,12 @@ import jakarta.faces.model.DataModel;
 
 /**
  * <p class="changed_added_2_3">
- * The DataModelClassesMapProducer is the CDI producer that allows UIData, UIRepeat and possible other components that
- * need a DataModel wrapper for a given type to obtain a Map of types to DataModel implementations capable of wrapping
- * that type.
+ * The DataModelClassesMapProducer is the CDI producer that allows UIData, UIRepeat and possible other components that need a DataModel wrapper for a given type
+ * to obtain a Map of types to DataModel implementations capable of wrapping that type.
  * </p>
  *
  * <p>
- * Components can obtain this Map by querying the bean manager for beans named
- * {@link #DATA_MODEL_CLASSES_MAP_BEAN_NAME}.
+ * Components can obtain this Map by querying the bean manager for beans named {@link #DATA_MODEL_CLASSES_MAP_BEAN_NAME}.
  * </p>
  *
  * @since 2.3
@@ -41,8 +39,8 @@ import jakarta.faces.model.DataModel;
 public class DataModelClassesMapProducer extends CdiProducer<Map<Class<?>, Class<? extends DataModel<?>>>> {
 
     /**
-     * The CDI bean name under which this producer registers the map of {@code @FacesDataModel} classes to their
-     * {@code DataModel} implementations. Consumers (e.g. {@code UIData}) query the bean manager by this name.
+     * The CDI bean name under which this producer registers the map of {@code @FacesDataModel} classes to their {@code DataModel} implementations. Consumers
+     * (e.g. {@code UIData}) query the bean manager by this name.
      */
     public static final String DATA_MODEL_CLASSES_MAP_BEAN_NAME = "jakarta.faces.DATA_MODEL_CLASSES_MAP";
 

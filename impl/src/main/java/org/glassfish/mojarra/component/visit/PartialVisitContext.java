@@ -290,7 +290,8 @@ public class PartialVisitContext extends VisitContext {
 
         if (lastIndex < 0) {
             id = clientId;
-        } else if (lastIndex < clientId.length() - 1) {
+        }
+        else if (lastIndex < clientId.length() - 1) {
             id = clientId.substring(lastIndex + 1);
         }
 
@@ -341,9 +342,12 @@ public class PartialVisitContext extends VisitContext {
 
     private static void warnNamingContainerDepthExceeded(FacesContext context, String clientId) {
         if (context.isProjectStage(ProjectStage.Development)) {
-            LOGGER.log(WARNING, "Not registering naming-container ancestors beyond depth {0} for a client id of"
-                    + " length {1} starting with: {2}", new Object[] { MAX_NAMING_CONTAINER_DEPTH, clientId.length(),
-                    clientId.substring(0, Math.min(clientId.length(), 32)) });
+            LOGGER.log(
+                WARNING, "Not registering naming-container ancestors beyond depth {0} for a client id of"
+                    + " length {1} starting with: {2}",
+                new Object[] { MAX_NAMING_CONTAINER_DEPTH, clientId.length(),
+                    clientId.substring(0, Math.min(clientId.length(), 32)) }
+            );
         }
     }
 
@@ -399,11 +403,13 @@ public class PartialVisitContext extends VisitContext {
         }
 
         private final Collection<String> wrapped;
+
     }
 
     // Little proxy iterator implementation used by CollectionProxy
     // so that we can catch removes.
     private class IteratorProxy implements Iterator<String> {
+
         private IteratorProxy(Iterator<String> wrapped) {
             this.wrapped = wrapped;
         }
@@ -433,6 +439,7 @@ public class PartialVisitContext extends VisitContext {
         private final Iterator<String> wrapped;
 
         private String current = null;
+
     }
 
     // The client ids to visit
@@ -455,4 +462,5 @@ public class PartialVisitContext extends VisitContext {
 
     // Our visit hints
     private final Set<VisitHint> hints;
+
 }

@@ -27,16 +27,14 @@ import org.glassfish.mojarra.component.CompositeComponentStackManager;
 
 /**
  * <p>
- * This specialized <code>ValueExpression</code> enables the evaluation of composite component expressions. Instances of
- * this expression will be created when
- * {@link org.glassfish.mojarra.facelets.tag.TagAttributeImpl#getValueExpression(jakarta.faces.view.facelets.FaceletContext, Class)}
- * is invoked and the expression represents a composite component expression (i.e. #{cc.[properties]}).
+ * This specialized <code>ValueExpression</code> enables the evaluation of composite component expressions. Instances of this expression will be created when
+ * {@link org.glassfish.mojarra.facelets.tag.TagAttributeImpl#getValueExpression(jakarta.faces.view.facelets.FaceletContext, Class)} is invoked and the
+ * expression represents a composite component expression (i.e. #{cc.[properties]}).
  * </p>
  *
  * <p>
- * It's important to note that these <code>ValueExpression</code>s are context sensitive in that they leverage the
- * location in which they were referenced in order to push the proper composite component to the evaluation context
- * prior to evaluating the expression itself.
+ * It's important to note that these <code>ValueExpression</code>s are context sensitive in that they leverage the location in which they were referenced in
+ * order to push the proper composite component to the evaluation context prior to evaluating the expression itself.
  * </p>
  *
  * Here's an example:
@@ -67,17 +65,14 @@ import org.glassfish.mojarra.component.CompositeComponentStackManager;
  * </pre>
  *
  * <p>
- * In the above example, there will be two composite components available to the runtime: <code>ez:comp1</code> and
- * <code>ez:nesting</code>.
+ * In the above example, there will be two composite components available to the runtime: <code>ez:comp1</code> and <code>ez:nesting</code>.
  * </p>
  *
  * <p>
- * When &lt;h:outputText value="#{cc.attrs.greeting}" /&gt;, prior to attempting to evaluate the expression, the
- * {@link Location} object will be used to find the composite component that 'owns' the template in which the expression
- * was defined in by comparing the path of the Location with the name and library of the
- * {@link jakarta.faces.application.Resource} instance associated with each composite component. If a matching composite
- * component is found, it will be made available to the EL by calling
- * {@link CompositeComponentStackManager#push(jakarta.faces.component.UIComponent)}.
+ * When &lt;h:outputText value="#{cc.attrs.greeting}" /&gt;, prior to attempting to evaluate the expression, the {@link Location} object will be used to find
+ * the composite component that 'owns' the template in which the expression was defined in by comparing the path of the Location with the name and library of
+ * the {@link jakarta.faces.application.Resource} instance associated with each composite component. If a matching composite component is found, it will be made
+ * available to the EL by calling {@link CompositeComponentStackManager#push(jakarta.faces.component.UIComponent)}.
  * </p>
  */
 public final class ContextualCompositeValueExpression extends ValueExpression {
@@ -109,7 +104,8 @@ public final class ContextualCompositeValueExpression extends ValueExpression {
         CompositeComponentStackManager manager = pushCompositeComponent(ctx);
         try {
             return originalVE.getValue(elContext);
-        } finally {
+        }
+        finally {
             popCompositeComponent(manager);
         }
 
@@ -122,7 +118,8 @@ public final class ContextualCompositeValueExpression extends ValueExpression {
         CompositeComponentStackManager manager = pushCompositeComponent(ctx);
         try {
             originalVE.setValue(elContext, o);
-        } finally {
+        }
+        finally {
             popCompositeComponent(manager);
         }
 
@@ -135,7 +132,8 @@ public final class ContextualCompositeValueExpression extends ValueExpression {
         CompositeComponentStackManager manager = pushCompositeComponent(ctx);
         try {
             return originalVE.isReadOnly(elContext);
-        } finally {
+        }
+        finally {
             popCompositeComponent(manager);
         }
 
@@ -148,7 +146,8 @@ public final class ContextualCompositeValueExpression extends ValueExpression {
         CompositeComponentStackManager manager = pushCompositeComponent(ctx);
         try {
             return originalVE.getType(elContext);
-        } finally {
+        }
+        finally {
             popCompositeComponent(manager);
         }
 
@@ -161,7 +160,8 @@ public final class ContextualCompositeValueExpression extends ValueExpression {
         CompositeComponentStackManager manager = pushCompositeComponent(ctx);
         try {
             return originalVE.getExpectedType();
-        } finally {
+        }
+        finally {
             popCompositeComponent(manager);
         }
     }
@@ -173,7 +173,8 @@ public final class ContextualCompositeValueExpression extends ValueExpression {
         CompositeComponentStackManager manager = pushCompositeComponent(ctx);
         try {
             return originalVE.getValueReference(elContext);
-        } finally {
+        }
+        finally {
             popCompositeComponent(manager);
         }
 
@@ -218,9 +219,9 @@ public final class ContextualCompositeValueExpression extends ValueExpression {
     // ----------------------------------------------------- Private Methods
 
     /**
-     * @return the manager the composite component was pushed onto, or <code>null</code> when nothing was pushed. The
-     * manager is handed to {@link #popCompositeComponent(CompositeComponentStackManager)} so that the pop does not have
-     * to look it up again; every evaluation of this expression goes through this pair.
+     * @return the manager the composite component was pushed onto, or <code>null</code> when nothing was pushed. The manager is handed to
+     * {@link #popCompositeComponent(CompositeComponentStackManager)} so that the pop does not have to look it up again; every evaluation of this expression
+     * goes through this pair.
      */
     private CompositeComponentStackManager pushCompositeComponent(FacesContext ctx) {
 

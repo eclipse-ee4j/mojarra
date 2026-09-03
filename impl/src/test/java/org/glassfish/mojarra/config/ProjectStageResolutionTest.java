@@ -32,8 +32,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 /**
- * Startup validation asks {@link WebConfiguration} for the project stage rather than the {@link jakarta.faces.application.Application},
- * which does not exist yet while the configuration is being processed, so it has to answer the same thing.
+ * Startup validation asks {@link WebConfiguration} for the project stage rather than the {@link jakarta.faces.application.Application}, which does not exist
+ * yet while the configuration is being processed, so it has to answer the same thing.
  */
 class ProjectStageResolutionTest {
 
@@ -49,8 +49,8 @@ class ProjectStageResolutionTest {
     }
 
     /**
-     * The stage decides startup validation, resource caching and whether the debugging parameters are honored at all,
-     * so silently reading a differently cased value as Production would be expensive.
+     * The stage decides startup validation, resource caching and whether the debugging parameters are honored at all, so silently reading a differently cased
+     * value as Production would be expensive.
      */
     @ParameterizedTest
     @EnumSource(ProjectStage.class)
@@ -77,11 +77,13 @@ class ProjectStageResolutionTest {
         ExternalContext externalContext = mock(ExternalContext.class);
         when(externalContext.getContext()).thenReturn(servletContext);
         when(externalContext.getInitParameter(any())).thenAnswer(
-                invocation -> servletContext.getInitParameter(invocation.getArgument(0)));
+            invocation -> servletContext.getInitParameter(invocation.getArgument(0))
+        );
 
         FacesContext context = mock(FacesContext.class);
         when(context.getExternalContext()).thenReturn(externalContext);
 
         return WebConfiguration.getInstance(servletContext).getProjectStage();
     }
+
 }

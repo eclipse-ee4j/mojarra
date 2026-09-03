@@ -15,4 +15,5 @@ public class MockConfigurationResourceProvider implements ConfigurationResourceP
     public Collection<URI> getResources(ServletContext context) {
         return new ArrayList<>();
     }
+
 }

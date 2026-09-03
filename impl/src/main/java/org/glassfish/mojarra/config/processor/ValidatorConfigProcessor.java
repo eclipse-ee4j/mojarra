@@ -133,12 +133,12 @@ public class ValidatorConfigProcessor extends AbstractConfigProcessor {
                 Node n = children.item(c);
                 if (n.getNodeType() == Node.ELEMENT_NODE) {
                     switch (n.getLocalName()) {
-                    case VALIDATOR_ID:
-                        validatorId = getNodeText(n);
-                        break;
-                    case VALIDATOR_CLASS:
-                        validatorClass = getNodeText(n);
-                        break;
+                        case VALIDATOR_ID :
+                            validatorId = getNodeText(n);
+                            break;
+                        case VALIDATOR_CLASS :
+                            validatorClass = getNodeText(n);
+                            break;
                     }
                 }
             }

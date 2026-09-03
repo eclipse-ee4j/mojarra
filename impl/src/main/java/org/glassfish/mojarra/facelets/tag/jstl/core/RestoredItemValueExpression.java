@@ -28,26 +28,23 @@ import jakarta.el.ELContext;
 import jakarta.el.ValueExpression;
 
 /**
- * The element of a row the build which restores a view reproduced, read live from the items the model holds now, and
- * stood in for where the model no longer holds it.
+ * The element of a row the build which restores a view reproduced, read live from the items the model holds now, and stood in for where the model no longer
+ * holds it.
  *
  * <p>
- * The rows an iteration rendered are reproduced from the row count and, for a {@link Map}, the keys, never from the
- * elements themselves: each row reads its own element live, by position or by key, so that it edits what the model
- * holds now rather than a copy of what it held. An element the model no longer holds leaves its row without one, and
- * resolving that row's var to {@code null} fails the postback outright - on the first property of it any expression
- * reads, in whichever phase reads it first. Resolving it to an item which reads {@code null} and swallows what is
- * written to it lets the postback complete instead, the value submitted for a row whose element is gone going where
- * that element went. {@link ForEachHandler} reports the rows this happens to.
+ * The rows an iteration rendered are reproduced from the row count and, for a {@link Map}, the keys, never from the elements themselves: each row reads its own
+ * element live, by position or by key, so that it edits what the model holds now rather than a copy of what it held. An element the model no longer holds
+ * leaves its row without one, and resolving that row's var to {@code null} fails the postback outright - on the first property of it any expression reads, in
+ * whichever phase reads it first. Resolving it to an item which reads {@code null} and swallows what is written to it lets the postback complete instead, the
+ * value submitted for a row whose element is gone going where that element went. {@link ForEachHandler} reports the rows this happens to.
  */
 final class RestoredItemValueExpression extends ValueExpression {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * Stands in for the element of a row the items no longer hold: reads {@code null} for every property and swallows
-     * every value written to one. A {@link Map} needs no {@code ELResolver} of its own to be read and written that
-     * way, and an empty one is what an expression over a row without an element asks for.
+     * Stands in for the element of a row the items no longer hold: reads {@code null} for every property and swallows every value written to one. A {@link Map}
+     * needs no {@code ELResolver} of its own to be read and written that way, and an empty one is what an expression over a row without an element asks for.
      */
     private static final class VanishedItem extends AbstractMap<Object, Object> implements Serializable {
 
@@ -67,11 +64,12 @@ final class RestoredItemValueExpression extends ValueExpression {
         public String toString() {
             return "";
         }
+
     }
 
     /**
-     * Stands in for the entry of a row the map no longer holds: the key it was rendered for, which the row still
-     * names, over a value which reads {@code null} and swallows what is written to it.
+     * Stands in for the entry of a row the map no longer holds: the key it was rendered for, which the row still names, over a value which reads {@code null}
+     * and swallows what is written to it.
      */
     private static final class VanishedEntry implements Map.Entry<Object, Object>, Serializable {
 
@@ -102,13 +100,14 @@ final class RestoredItemValueExpression extends ValueExpression {
         public String toString() {
             return "";
         }
+
     }
 
     private static final Object VANISHED_ITEM = new VanishedItem();
 
     /**
-     * How a row reaches its element, which is what the expression reading it was built for. Items which have become
-     * another one of these hold nothing that expression can read, however many elements they carry.
+     * How a row reaches its element, which is what the expression reading it was built for. Items which have become another one of these hold nothing that
+     * expression can read, however many elements they carry.
      */
     enum Access {
 
@@ -132,8 +131,8 @@ final class RestoredItemValueExpression extends ValueExpression {
      * @param items the items expression of the iteration this row belongs to.
      * @param element the expression which reads this row's element from those items.
      * @param position where this row reads its element, a {@link Map} key or an index.
-     * @param access how the element expression reaches the element, which the position does not tell: a map may be
-     * keyed by the very type an index has, and an index reads a list by another route than a set.
+     * @param access how the element expression reaches the element, which the position does not tell: a map may be keyed by the very type an index has, and an
+     * index reads a list by another route than a set.
      * @param start the index the iteration begins at, which only {@link Access#ITERATED} walks past to reach its own.
      */
     RestoredItemValueExpression(ValueExpression items, ValueExpression element, Object position, Access access, int start) {
@@ -145,9 +144,9 @@ final class RestoredItemValueExpression extends ValueExpression {
     }
 
     /**
-     * Whether the items hold an element where this row reads one, which is what makes it the row that was rendered
-     * rather than one whose element is gone. The items may also have become something else entirely than what they
-     * were iterated as, which the expression reading them was not built for and no position reaches.
+     * Whether the items hold an element where this row reads one, which is what makes it the row that was rendered rather than one whose element is gone. The
+     * items may also have become something else entirely than what they were iterated as, which the expression reading them was not built for and no position
+     * reaches.
      *
      * @param context the {@link ELContext} to resolve the items against.
      * @return whether the items hold an element where this row reads one.
@@ -166,7 +165,8 @@ final class RestoredItemValueExpression extends ValueExpression {
 
             try {
                 return ((Map<?, ?>) current).containsKey(position);
-            } catch (ClassCastException | NullPointerException e) {
+            }
+            catch (ClassCastException | NullPointerException e) {
                 // A map is free to reject a key it cannot hold rather than answer for it, which is an answer as well.
                 return false;
             }
@@ -192,8 +192,7 @@ final class RestoredItemValueExpression extends ValueExpression {
     }
 
     /**
-     * The stand-in for the element of a row the given items no longer hold, for where the row reads it without an
-     * expression of its own to read it through.
+     * The stand-in for the element of a row the given items no longer hold, for where the row reads it without an expression of its own to read it through.
      *
      * @param position where the row reads its element, a {@link Map} key or an index.
      * @param keyed whether the position is a key rather than an index.
@@ -220,7 +219,8 @@ final class RestoredItemValueExpression extends ValueExpression {
     public void setValue(ELContext context, Object value) {
         if (supplies(context)) {
             element.setValue(context, value);
-        } else {
+        }
+        else {
             context.setPropertyResolved(true);
         }
     }
@@ -259,4 +259,5 @@ final class RestoredItemValueExpression extends ValueExpression {
     public boolean isLiteralText() {
         return false;
     }
+
 }

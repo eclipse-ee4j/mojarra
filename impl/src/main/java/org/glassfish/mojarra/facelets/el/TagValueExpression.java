@@ -60,9 +60,11 @@ public final class TagValueExpression extends ValueExpression implements Externa
     public Class<?> getType(ELContext context) {
         try {
             return wrapped.getType(context);
-        } catch (PropertyNotFoundException pnfe) {
+        }
+        catch (PropertyNotFoundException pnfe) {
             throw new PropertyNotFoundException(tagAttribute + ": " + pnfe.getMessage(), pnfe);
-        } catch (ELException e) {
+        }
+        catch (ELException e) {
             throw new ELException(tagAttribute + ": " + e.getMessage(), e);
         }
     }
@@ -71,9 +73,11 @@ public final class TagValueExpression extends ValueExpression implements Externa
     public <T> T getValue(ELContext context) {
         try {
             return wrapped.getValue(context);
-        } catch (PropertyNotFoundException pnfe) {
+        }
+        catch (PropertyNotFoundException pnfe) {
             throw new PropertyNotFoundException(tagAttribute + ": " + pnfe.getMessage(), pnfe);
-        } catch (ELException e) {
+        }
+        catch (ELException e) {
             throw new ELException(tagAttribute + ": " + e.getMessage(), e);
         }
     }
@@ -82,9 +86,11 @@ public final class TagValueExpression extends ValueExpression implements Externa
     public boolean isReadOnly(ELContext context) {
         try {
             return wrapped.isReadOnly(context);
-        } catch (PropertyNotFoundException pnfe) {
+        }
+        catch (PropertyNotFoundException pnfe) {
             throw new PropertyNotFoundException(tagAttribute + ": " + pnfe.getMessage(), pnfe);
-        } catch (ELException e) {
+        }
+        catch (ELException e) {
             throw new ELException(tagAttribute + ": " + e.getMessage(), e);
         }
     }
@@ -93,11 +99,14 @@ public final class TagValueExpression extends ValueExpression implements Externa
     public void setValue(ELContext context, Object value) {
         try {
             wrapped.setValue(context, value);
-        } catch (PropertyNotFoundException pnfe) {
+        }
+        catch (PropertyNotFoundException pnfe) {
             throw new PropertyNotFoundException(tagAttribute + ": " + pnfe.getMessage(), pnfe);
-        } catch (PropertyNotWritableException pnwe) {
+        }
+        catch (PropertyNotWritableException pnwe) {
             throw new PropertyNotWritableException(tagAttribute + ": " + pnwe.getMessage(), pnwe);
-        } catch (ELException e) {
+        }
+        catch (ELException e) {
             throw new ELException(tagAttribute + ": " + e.getMessage(), e);
         }
     }
@@ -165,4 +174,5 @@ public final class TagValueExpression extends ValueExpression implements Externa
     public String toString() {
         return tagAttribute;
     }
+
 }

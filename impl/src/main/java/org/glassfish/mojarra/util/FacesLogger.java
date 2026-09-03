@@ -30,11 +30,29 @@ import jakarta.faces.context.FacesContext;
  */
 public enum FacesLogger {
 
-    APPLICATION("application"), APPLICATION_VIEW("application.view"), RESOURCE("resource"), CONFIG("config"), CONTEXT("context"),
-    FACELETS_COMPILER("facelets.compiler"), FACELETS_COMPONENT("facelets.tag.component"), FACELETS_EL("facelets.el"), FACELETS_META("facelets.tag.meta"),
-    FACELETS_COMPOSITION("facelets.tag.ui.composition"), FACELETS_DECORATE("facelets.tag.ui.decorate"), FACELETS_INCLUDE("facelets.tag.ui.include"),
-    FACELETS_FACELET("faclets.facelet"), FACELETS_FACTORY("facelets.factory"), FLOW("flow"), LIFECYCLE("lifecycle"), MANAGEDBEAN("managedbean"),
-    RENDERKIT("renderkit"), TAGLIB("taglib"), TIMING("timing"), UTIL("util"), FLASH("flash"), CLIENTWINDOW("clientwindow");
+    APPLICATION("application"),
+    APPLICATION_VIEW("application.view"),
+    RESOURCE("resource"),
+    CONFIG("config"),
+    CONTEXT("context"),
+    FACELETS_COMPILER("facelets.compiler"),
+    FACELETS_COMPONENT("facelets.tag.component"),
+    FACELETS_EL("facelets.el"),
+    FACELETS_META("facelets.tag.meta"),
+    FACELETS_COMPOSITION("facelets.tag.ui.composition"),
+    FACELETS_DECORATE("facelets.tag.ui.decorate"),
+    FACELETS_INCLUDE("facelets.tag.ui.include"),
+    FACELETS_FACELET("faclets.facelet"),
+    FACELETS_FACTORY("facelets.factory"),
+    FLOW("flow"),
+    LIFECYCLE("lifecycle"),
+    MANAGEDBEAN("managedbean"),
+    RENDERKIT("renderkit"),
+    TAGLIB("taglib"),
+    TIMING("timing"),
+    UTIL("util"),
+    FLASH("flash"),
+    CLIENTWINDOW("clientwindow");
 
     private static final String LOGGER_RESOURCES = "org.glassfish.mojarra.LogStrings";
     public static final String FACES_LOGGER_NAME_PREFIX = "jakarta.enterprise.resource.webcontainer.faces.";
@@ -64,7 +82,8 @@ public enum FacesLogger {
         ClassLoader loader = Util.getCurrentLoader(this);
         if (null == root) {
             curLocale = Locale.getDefault();
-        } else {
+        }
+        else {
             curLocale = root.getLocale();
         }
         try {
@@ -72,10 +91,12 @@ public enum FacesLogger {
             String message = rb.getString(messageId);
             if (params != null) {
                 result = MessageFormat.format(message, params);
-            } else {
+            }
+            else {
                 result = message;
             }
-        } catch (MissingResourceException mre) {
+        }
+        catch (MissingResourceException mre) {
             result = messageId;
         }
 

@@ -53,7 +53,8 @@ public class DebugObjectOutputStream extends ObjectOutputStream {
         try {
             DEPTH_FIELD = ObjectOutputStream.class.getDeclaredField("depth");
             DEPTH_FIELD.setAccessible(true);
-        } catch (NoSuchFieldException e) {
+        }
+        catch (NoSuchFieldException e) {
             throw new AssertionError(e);
         }
     }
@@ -61,8 +62,7 @@ public class DebugObjectOutputStream extends ObjectOutputStream {
     final List<Object> stack = new ArrayList<>();
 
     /**
-     * Indicates whether or not OOS has tried to write an IOException (presumably as the result of a serialization error) to
-     * the stream.
+     * Indicates whether or not OOS has tried to write an IOException (presumably as the result of a serialization error) to the stream.
      */
     boolean broken = false;
 
@@ -110,16 +110,17 @@ public class DebugObjectOutputStream extends ObjectOutputStream {
         try {
             Integer oneBased = (Integer) DEPTH_FIELD.get(this);
             return oneBased - 1;
-        } catch (IllegalAccessException e) {
+        }
+        catch (IllegalAccessException e) {
             throw new AssertionError(e);
         }
     }
 
     /**
-     * Returns the path to the last object serialized. If an exception occurred, this should be the path to the
-     * non-serializable object.
+     * Returns the path to the last object serialized. If an exception occurred, this should be the path to the non-serializable object.
      */
     public List<Object> getStack() {
         return stack;
     }
+
 }

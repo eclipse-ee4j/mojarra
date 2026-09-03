@@ -75,7 +75,6 @@ public class PartialViewContextImpl extends PartialViewContext {
 
     private static final Set<VisitHint> SKIP_UNRENDERED_AND_EXECUTE_LIFECYCLE_HINTS = EnumSet.of(SKIP_UNRENDERED, EXECUTE_LIFECYCLE);
 
-
     private boolean released;
 
     // BE SURE TO ADD NEW IVARS TO THE RELEASE METHOD
@@ -264,7 +263,8 @@ public class PartialViewContextImpl extends PartialViewContext {
 
             try {
                 processComponents(viewRoot, phaseId, myExecuteIds, ctx);
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 if (LOGGER.isLoggable(Level.INFO)) {
                     LOGGER.log(Level.INFO, e.toString(), e);
                 }
@@ -280,15 +280,16 @@ public class PartialViewContextImpl extends PartialViewContext {
                 PartialResponseWriter writer = pvc.getPartialResponseWriter();
                 ctx.setResponseWriter(writer);
                 queuedAjaxBehaviors = viewRoot.getQueuedEvents().values().stream().flatMap(List::stream)
-                        .filter(BehaviorEvent.class::isInstance)
-                        .map(BehaviorEvent.class::cast)
-                        .map(BehaviorEvent::getBehavior)
-                        .filter(AjaxBehavior.class::isInstance)
-                        .map(AjaxBehavior.class::cast)
-                        .toList();
+                    .filter(BehaviorEvent.class::isInstance)
+                    .map(BehaviorEvent.class::cast)
+                    .map(BehaviorEvent::getBehavior)
+                    .filter(AjaxBehavior.class::isInstance)
+                    .map(AjaxBehavior.class::cast)
+                    .toList();
             }
 
-        } else if (phaseId == PhaseId.RENDER_RESPONSE) {
+        }
+        else if (phaseId == PhaseId.RENDER_RESPONSE) {
 
             try {
                 //
@@ -332,9 +333,11 @@ public class PartialViewContextImpl extends PartialViewContext {
                 doFlashPostPhaseActions(ctx);
 
                 writer.endDocument();
-            } catch (IOException ex) {
+            }
+            catch (IOException ex) {
                 cleanupAfterView();
-            } catch (RuntimeException ex) {
+            }
+            catch (RuntimeException ex) {
                 cleanupAfterView();
                 // Throw the exception
                 throw ex;
@@ -345,7 +348,8 @@ public class PartialViewContextImpl extends PartialViewContext {
     private void doFlashPostPhaseActions(FacesContext ctx) {
         try {
             ctx.getExternalContext().getFlash().doPostPhaseActions(ctx);
-        } catch (UnsupportedOperationException uoe) {
+        }
+        catch (UnsupportedOperationException uoe) {
             if (LOGGER.isLoggable(FINE)) {
                 LOGGER.fine("ExternalContext.getFlash() throw UnsupportedOperationException -> Flash unavailable");
             }
@@ -425,9 +429,11 @@ public class PartialViewContextImpl extends PartialViewContext {
 
         if (idLength > MAX_CLIENT_ID_LENGTH) {
             if (ctx.isProjectStage(ProjectStage.Development)) {
-                LOGGER.log(WARNING, "Ignoring a jakarta.faces.partial.execute/render client id of length {0}"
+                LOGGER.log(
+                    WARNING, "Ignoring a jakarta.faces.partial.execute/render client id of length {0}"
                         + " because it exceeds the limit of {1}; starts with: {2}",
-                        new Object[] { idLength, MAX_CLIENT_ID_LENGTH, param.substring(start, Math.min(end, start + 32)) });
+                    new Object[] { idLength, MAX_CLIENT_ID_LENGTH, param.substring(start, Math.min(end, start + 32)) }
+                );
             }
             return;
         }
@@ -498,7 +504,8 @@ public class PartialViewContextImpl extends PartialViewContext {
                 }
             }
             writer.endUpdate();
-        } else {
+        }
+        else {
             /*
              * If we have a portlet request, start rendering at the view root.
              */
@@ -523,8 +530,10 @@ public class PartialViewContextImpl extends PartialViewContext {
             String name = (String) resource.getAttributes().get("name");
             String library = (String) resource.getAttributes().get("library");
 
-            if (resource.getChildCount() == 0 && resourceHandler.getRendererTypeForResourceName(name) != null
-                    && !resourceHandler.isResourceRendered(context, name, library)) {
+            if (
+                resource.getChildCount() == 0 && resourceHandler.getRendererTypeForResourceName(name) != null
+                    && !resourceHandler.isResourceRendered(context, name, library)
+            ) {
                 if (!updateStarted) {
                     writer.startUpdate("jakarta.faces.Resource");
                     updateStarted = true;
@@ -579,7 +588,8 @@ public class PartialViewContextImpl extends PartialViewContext {
         Writer out = null;
         try {
             out = extContext.getResponseOutputWriter();
-        } catch (IOException ioe) {
+        }
+        catch (IOException ioe) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, ioe.toString(), ioe);
             }
@@ -589,7 +599,8 @@ public class PartialViewContextImpl extends PartialViewContext {
             UIViewRoot viewRoot = ctx.getViewRoot();
             if (viewRoot != null) {
                 responseWriter = ctx.getRenderKit().createResponseWriter(out, RIConstants.TEXT_XML_CONTENT_TYPE, encoding);
-            } else {
+            }
+            else {
                 RenderKitFactory factory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
                 RenderKit renderKit = factory.getRenderKit(ctx, RenderKitFactory.HTML_BASIC_RENDER_KIT);
                 responseWriter = renderKit.createResponseWriter(out, RIConstants.TEXT_XML_CONTENT_TYPE, encoding);
@@ -597,7 +608,8 @@ public class PartialViewContextImpl extends PartialViewContext {
         }
         if (responseWriter instanceof PartialResponseWriter) {
             return (PartialResponseWriter) responseWriter;
-        } else {
+        }
+        else {
             return new PartialResponseWriter(responseWriter);
         }
 
@@ -639,20 +651,25 @@ public class PartialViewContextImpl extends PartialViewContext {
                     // Make sure to set the immediate flag here.
 
                     comp.processDecodes(ctx);
-                } else if (curPhase == PhaseId.PROCESS_VALIDATIONS) {
+                }
+                else if (curPhase == PhaseId.PROCESS_VALIDATIONS) {
                     comp.processValidators(ctx);
-                } else if (curPhase == PhaseId.UPDATE_MODEL_VALUES) {
+                }
+                else if (curPhase == PhaseId.UPDATE_MODEL_VALUES) {
                     comp.processUpdates(ctx);
-                } else if (curPhase == PhaseId.RENDER_RESPONSE) {
+                }
+                else if (curPhase == PhaseId.RENDER_RESPONSE) {
                     PartialResponseWriter writer = ctx.getPartialViewContext().getPartialResponseWriter();
                     writer.startUpdate(comp.getClientId(ctx));
                     // do the default behavior...
                     comp.encodeAll(ctx);
                     writer.endUpdate();
-                } else {
+                }
+                else {
                     throw new IllegalStateException("I18N: Unexpected " + "PhaseId passed to " + " PhaseAwareContextCallback: " + curPhase.toString());
                 }
-            } catch (IOException ex) {
+            }
+            catch (IOException ex) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.severe(ex.toString());
                 }
@@ -668,6 +685,7 @@ public class PartialViewContextImpl extends PartialViewContext {
             // VisitResult.REJECT to supress the subtree visit.
             return VisitResult.REJECT;
         }
+
     }
 
     /**

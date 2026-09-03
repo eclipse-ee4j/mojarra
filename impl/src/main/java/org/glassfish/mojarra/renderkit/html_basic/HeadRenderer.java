@@ -31,8 +31,8 @@ import org.glassfish.mojarra.renderkit.RenderKitUtils;
 /**
  * /**
  * <p>
- * This <code>Renderer</code> is responsible for rendering the standard HTML head elements as well as rendering any
- * resources that should be output before the <code>head</code> tag is closed.
+ * This <code>Renderer</code> is responsible for rendering the standard HTML head elements as well as rendering any resources that should be output before the
+ * <code>head</code> tag is closed.
  * </p>
  */
 public class HeadRenderer extends HtmlBasicRenderer {

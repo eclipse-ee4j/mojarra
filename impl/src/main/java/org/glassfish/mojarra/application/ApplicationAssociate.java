@@ -98,13 +98,12 @@ import org.glassfish.mojarra.util.FacesLogger;
 
 /**
  * <p>
- * Break out the things that are associated with the Application, but need to be present even when the user has replaced
- * the Application instance.
+ * Break out the things that are associated with the Application, but need to be present even when the user has replaced the Application instance.
  * </p>
  *
  * <p>
- * For example: the user replaces ApplicationFactory, and wants to intercept calls to createValueExpression() and
- * createMethodExpression() for certain kinds of expressions, but allow the existing application to handle the rest.
+ * For example: the user replaces ApplicationFactory, and wants to intercept calls to createValueExpression() and createMethodExpression() for certain kinds of
+ * expressions, but allow the existing application to handle the rest.
  * </p>
  */
 public class ApplicationAssociate {
@@ -116,15 +115,15 @@ public class ApplicationAssociate {
     private final ApplicationImpl applicationImpl;
 
     /**
-     * Overall Map containing <code>from-view-id</code> key and <code>Set</code> of <code>NavigationCase</code> objects for
-     * that key; The <code>from-view-id</code> strings in this map will be stored as specified in the configuration file -
-     * some of them will have a trailing asterisk "*" signifying wild card, and some may be specified as an asterisk "*".
+     * Overall Map containing <code>from-view-id</code> key and <code>Set</code> of <code>NavigationCase</code> objects for that key; The
+     * <code>from-view-id</code> strings in this map will be stored as specified in the configuration file - some of them will have a trailing asterisk "*"
+     * signifying wild card, and some may be specified as an asterisk "*".
      */
     private final Map<String, Set<NavigationCase>> navigationMap;
 
     /*
-     * The FacesComponentTagLibrary uses the information in this map to help it fabricate tag handlers for components
-     * annotated with FacesComponent. Key: namespace
+     * The FacesComponentTagLibrary uses the information in this map to help it fabricate tag handlers for components annotated with FacesComponent. Key:
+     * namespace
      */
     private Map<String, List<FacesComponentUsage>> facesComponentsByNamespace;
 
@@ -170,7 +169,8 @@ public class ApplicationAssociate {
     public static void setCurrentInstance(ApplicationAssociate associate) {
         if (associate == null) {
             instance.remove();
-        } else {
+        }
+        else {
             instance.set(associate);
         }
     }
@@ -212,8 +212,6 @@ public class ApplicationAssociate {
 
         return (ApplicationAssociate) context.getAttribute(ASSOCIATE_KEY);
     }
-
-
 
     public ApplicationAssociate(ApplicationImpl appImpl) {
         applicationImpl = appImpl;
@@ -285,7 +283,8 @@ public class ApplicationAssociate {
 
             try {
                 new JavaFlowLoaderHelper().loadFlows(context, flowHandler);
-            } catch (IOException ex) {
+            }
+            catch (IOException ex) {
                 LOGGER.log(SEVERE, null, ex);
             }
 
@@ -300,9 +299,10 @@ public class ApplicationAssociate {
 
             if (FacesContextParam.AUTOMATIC_EXTENSIONLESS_MAPPING.isEnabled(context)) {
                 getFacesServletRegistration(context)
-                    .ifPresent(registration ->
-                        viewHandler.getViews(context, "/", RETURN_AS_MINIMAL_IMPLICIT_OUTCOME)
-                                   .forEach(view -> registration.addMapping(view)));
+                    .ifPresent(
+                        registration -> viewHandler.getViews(context, "/", RETURN_AS_MINIMAL_IMPLICIT_OUTCOME)
+                            .forEach(view -> registration.addMapping(view))
+                    );
             }
 
         }
@@ -492,9 +492,9 @@ public class ApplicationAssociate {
     }
 
     /**
-     * Add a navigation case to the internal case set. If a case set does not already exist in the case list map containing
-     * this case (identified by <code>from-view-id</code>), start a new list, add the case to it, and store the set in the
-     * case set map. If a case set already exists, overwrite the previous case.
+     * Add a navigation case to the internal case set. If a case set does not already exist in the case list map containing this case (identified by
+     * <code>from-view-id</code>), start a new list, add the case to it, and store the set in the case set map. If a case set already exists, overwrite the
+     * previous case.
      *
      * @param navigationCase the navigation case containing navigation mapping information from the configuration file.
      */
@@ -511,8 +511,8 @@ public class ApplicationAssociate {
     }
 
     /**
-     * Return a <code>Map</code> of navigation mappings loaded from the configuration system. The key for the returned
-     * <code>Map</code> is <code>from-view-id</code>, and the value is a <code>List</code> of navigation cases.
+     * Return a <code>Map</code> of navigation mappings loaded from the configuration system. The key for the returned <code>Map</code> is
+     * <code>from-view-id</code>, and the value is a <code>List</code> of navigation cases.
      *
      * @return Map the map of navigation mappings.
      */
@@ -550,6 +550,7 @@ public class ApplicationAssociate {
 
     /**
      * Returns a container with EL resolvers global to this application associate
+     *
      * @return global EL resolvers for the current application
      */
     public ResolversRegistry getApplicationResolvers() {
@@ -648,12 +649,13 @@ public class ApplicationAssociate {
         for (String decorator : decorators) {
             try {
                 newCompiler
-                        .addTagDecorator((TagDecorator) forName(decorator).getDeclaredConstructor().newInstance());
+                    .addTagDecorator((TagDecorator) forName(decorator).getDeclaredConstructor().newInstance());
 
                 if (LOGGER.isLoggable(FINE)) {
                     LOGGER.log(FINE, "Successfully Loaded Decorator: {0}", decorator);
                 }
-            } catch (ReflectiveOperationException | IllegalArgumentException | SecurityException e) {
+            }
+            catch (ReflectiveOperationException | IllegalArgumentException | SecurityException e) {
                 if (LOGGER.isLoggable(SEVERE)) {
                     LOGGER.log(SEVERE, "Error Loading Decorator: " + decorator, e);
                 }

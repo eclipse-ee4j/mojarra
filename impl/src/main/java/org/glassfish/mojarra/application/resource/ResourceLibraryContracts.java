@@ -40,8 +40,8 @@ import org.glassfish.mojarra.util.Util;
 
 /**
  * <p>
- * Which resource library contracts this application ships, discovered once at bringup from the web application root
- * and from the classpath, and published for the view handling strategy to consult per view.
+ * Which resource library contracts this application ships, discovered once at bringup from the web application root and from the classpath, and published for
+ * the view handling strategy to consult per view.
  * </p>
  */
 public final class ResourceLibraryContracts {
@@ -83,8 +83,10 @@ public final class ResourceLibraryContracts {
 
         // Scan for "META-INF" contractMappings in the classpath
         try {
-            URL[] candidateURLs = Classpath.search(Util.getCurrentLoader(ResourceLibraryContracts.class), META_INF_CONTRACTS_DIR, RESOURCE_CONTRACT_SUFFIX,
-                    Classpath.SearchAdvice.AllMatches);
+            URL[] candidateURLs = Classpath.search(
+                Util.getCurrentLoader(ResourceLibraryContracts.class), META_INF_CONTRACTS_DIR, RESOURCE_CONTRACT_SUFFIX,
+                Classpath.SearchAdvice.AllMatches
+            );
             for (URL curURL : candidateURLs) {
                 String cur = curURL.toExternalForm();
 
@@ -95,7 +97,8 @@ public final class ResourceLibraryContracts {
                 }
 
             }
-        } catch (IOException ioe) {
+        }
+        catch (IOException ioe) {
             if (LOGGER.isLoggable(Level.FINEST)) {
                 LOGGER.log(Level.FINEST, "Unable to scan " + META_INF_CONTRACTS_DIR, ioe);
             }
@@ -120,16 +123,20 @@ public final class ResourceLibraryContracts {
                     if (LOGGER.isLoggable(Level.CONFIG)) {
                         LOGGER.log(Level.CONFIG, "resource library contract mapping for pattern {0} has no contracts.", cur.getKey());
                     }
-                } else {
+                }
+                else {
                     contractsToExpose = new ArrayList<>();
                     for (String curContractFromMapping : contractsFromMapping) {
                         if (foundContracts.contains(curContractFromMapping)) {
                             contractsToExpose.add(curContractFromMapping);
-                        } else {
+                        }
+                        else {
                             if (LOGGER.isLoggable(Level.CONFIG)) {
-                                LOGGER.log(Level.CONFIG,
-                                        "resource library contract mapping for pattern {0} exposes contract {1}, but that contract is not available to the application.",
-                                        new String[] { cur.getKey(), curContractFromMapping });
+                                LOGGER.log(
+                                    Level.CONFIG,
+                                    "resource library contract mapping for pattern {0} exposes contract {1}, but that contract is not available to the application.",
+                                    new String[] { cur.getKey(), curContractFromMapping }
+                                );
                             }
                         }
                     }
@@ -138,11 +145,13 @@ public final class ResourceLibraryContracts {
                     }
                 }
             }
-        } else {
+        }
+        else {
             contractsToExpose = new ArrayList<>(foundContracts);
             contractMappings.put("*", contractsToExpose);
         }
         extContex.getApplicationMap().put(FaceletViewHandlingStrategy.RESOURCE_LIBRARY_CONTRACT_DATA_STRUCTURE_KEY, contractMappings);
 
     }
+
 }

@@ -56,13 +56,15 @@ final class UITextHandler extends AbstractUIHandler {
                 UIComponent ancestorNamingContainer = parent.getNamingContainer();
                 if (null != ancestorNamingContainer && ancestorNamingContainer instanceof UniqueIdVendor) {
                     uid = ((UniqueIdVendor) ancestorNamingContainer).createUniqueId(ctx.getFacesContext(), null);
-                } else {
+                }
+                else {
                     uid = ComponentSupport.getViewRoot(ctx, parent).createUniqueId();
                 }
 
                 c.setId(uid);
                 addComponent(ctx, parent, c);
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 throw new ELException(alias + ": " + e.getMessage(), e.getCause());
             }
         }
@@ -83,9 +85,11 @@ final class UITextHandler extends AbstractUIHandler {
         Writer writer = new FastWriter(length);
         try {
             txt.apply(ctx.getExpressionFactory(), ctx).write(writer, ctx);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new ELException(alias + ": " + e.getMessage(), e.getCause());
         }
         return writer.toString();
     }
+
 }

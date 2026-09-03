@@ -44,19 +44,19 @@ import org.junit.jupiter.api.Test;
 public class FactoryFinderTestCase {
 
     public static String FACTORIES[][] = {
-        {FactoryFinder.APPLICATION_FACTORY,
+        { FactoryFinder.APPLICATION_FACTORY,
             "org.glassfish.mojarra.mock.MockApplicationFactory"
         },
-        {FactoryFinder.EXTERNAL_CONTEXT_FACTORY,
+        { FactoryFinder.EXTERNAL_CONTEXT_FACTORY,
             "org.glassfish.mojarra.mock.MockExternalContextFactory"
         },
-        {FactoryFinder.FACES_CONTEXT_FACTORY,
+        { FactoryFinder.FACES_CONTEXT_FACTORY,
             "org.glassfish.mojarra.mock.MockFacesContextFactory"
         },
-        {FactoryFinder.LIFECYCLE_FACTORY,
+        { FactoryFinder.LIFECYCLE_FACTORY,
             "org.glassfish.mojarra.mock.MockLifecycleFactory"
         },
-        {FactoryFinder.RENDER_KIT_FACTORY,
+        { FactoryFinder.RENDER_KIT_FACTORY,
             "org.glassfish.mojarra.mock.MockRenderKitFactory"
         }
     };
@@ -87,8 +87,8 @@ public class FactoryFinderTestCase {
     // ------------------------------------------------- Individual Test Methods
     /**
      * <p>
-     * verify that the overrides specified in the faces-config.xml in the user's
-     * webapp take precedence.</p>
+     * verify that the overrides specified in the faces-config.xml in the user's webapp take precedence.
+     * </p>
      *
      * @throws java.lang.Exception
      */
@@ -102,8 +102,10 @@ public class FactoryFinderTestCase {
 
         // simulate the "faces implementation specific" part
         for (i = 0, len = FACTORIES.length; i < len; i++) {
-            FactoryFinder.setFactory(FACTORIES[i][0],
-                    FACTORIES[i][1]);
+            FactoryFinder.setFactory(
+                FACTORIES[i][0],
+                FACTORIES[i][1]
+            );
         }
 
         // simulate the "WEB-INF/services" part
@@ -135,18 +137,22 @@ public class FactoryFinderTestCase {
         cWriter.close();
 
         // simulate the "webapp faces-config.xml" part
-        FactoryFinder.setFactory(FactoryFinder.FACES_CONTEXT_FACTORY,
-                "org.glassfish.mojarra.mock.MockFacesContextFactoryExtender2");
+        FactoryFinder.setFactory(
+            FactoryFinder.FACES_CONTEXT_FACTORY,
+            "org.glassfish.mojarra.mock.MockFacesContextFactoryExtender2"
+        );
 
         for (i = 0, len = FACTORIES.length; i < len; i++) {
             clazz = Class.forName(FACTORIES[i][0]);
             factory = FactoryFinder.getFactory(FACTORIES[i][0]);
             assertTrue(
-                    clazz.isAssignableFrom(factory.getClass()), "Factory for " + clazz.getName()
-                    + " not of expected type.");
+                clazz.isAssignableFrom(factory.getClass()), "Factory for " + clazz.getName()
+                    + " not of expected type."
+            );
             clazz = Class.forName(FACTORIES[i][1]);
             assertTrue(
-                    clazz.isAssignableFrom(factory.getClass()), "Factory " + FACTORIES[i][1] + " not of expected type");
+                clazz.isAssignableFrom(factory.getClass()), "Factory " + FACTORIES[i][1] + " not of expected type"
+            );
 
         }
         // verify that the delegation works
@@ -162,7 +168,8 @@ public class FactoryFinderTestCase {
         boolean exceptionThrown = false;
         try {
             factory = FactoryFinder.getFactory(FACTORIES[3][0]);
-        } catch (IllegalStateException ise) {
+        }
+        catch (IllegalStateException ise) {
             exceptionThrown = true;
         }
         assertTrue(exceptionThrown);
@@ -174,16 +181,16 @@ public class FactoryFinderTestCase {
     // TODO re-enable
     @Test
     public void testNoFacesContext() throws Exception {
-//        assertNull(FacesContext.getCurrentInstance());
-//        Object result = FactoryFinder.getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
-//        assertNotNull(result);
-//        assertTrue(result instanceof FacesContextFactory);
+        // assertNull(FacesContext.getCurrentInstance());
+        // Object result = FactoryFinder.getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
+        // assertNotNull(result);
+        // assertTrue(result instanceof FacesContextFactory);
     }
 
     /**
      * <p>
-     * In the absence of webapp faces-config.xml, verify that the overrides
-     * specified in the META-INF/services take precedence.</p>
+     * In the absence of webapp faces-config.xml, verify that the overrides specified in the META-INF/services take precedence.
+     * </p>
      *
      * @throws java.lang.Exception
      */
@@ -197,8 +204,10 @@ public class FactoryFinderTestCase {
 
         // simulate the "faces implementation specific" part
         for (i = 0, len = FACTORIES.length; i < len; i++) {
-            FactoryFinder.setFactory(FACTORIES[i][0],
-                    FACTORIES[i][1]);
+            FactoryFinder.setFactory(
+                FACTORIES[i][0],
+                FACTORIES[i][1]
+            );
         }
 
         // simulate the "WEB-INF/services" part
@@ -236,11 +245,13 @@ public class FactoryFinderTestCase {
             clazz = Class.forName(FACTORIES[i][0]);
             factory = FactoryFinder.getFactory(FACTORIES[i][0]);
             assertTrue(
-                    clazz.isAssignableFrom(factory.getClass()), "Factory for " + clazz.getName()
-                    + " not of expected type.");
+                clazz.isAssignableFrom(factory.getClass()), "Factory for " + clazz.getName()
+                    + " not of expected type."
+            );
             clazz = Class.forName(FACTORIES[i][1]);
             assertTrue(
-                    clazz.isAssignableFrom(factory.getClass()), "Factory " + FACTORIES[i][1] + " not of expected type");
+                clazz.isAssignableFrom(factory.getClass()), "Factory " + FACTORIES[i][1] + " not of expected type"
+            );
 
         }
         // verify that the delegation works

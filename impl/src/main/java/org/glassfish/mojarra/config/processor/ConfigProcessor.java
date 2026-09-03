@@ -30,6 +30,7 @@ public interface ConfigProcessor {
 
     /**
      * Called to initialize the per-application metadata used by the ConfigProcessor
+     *
      * @param servletContext the involved servlet context
      * @param facesContext the involved faces context
      */

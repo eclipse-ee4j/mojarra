@@ -34,8 +34,7 @@ import org.apache.commons.beanutils.PropertyUtils;
  * </p>
  *
  * <ul>
- * <li>Recognizes <code>applicationScope</code>, <code>requestScope</code>, and <code>sessionScope</code> implicit
- * names.</li>
+ * <li>Recognizes <code>applicationScope</code>, <code>requestScope</code>, and <code>sessionScope</code> implicit names.</li>
  * <li>Searches in ascending scopes for non-reserved names.</li>
  * </ul>
  */
@@ -52,13 +51,16 @@ public class MockELResolver extends ELResolver {
             String name = (null != property) ? property.toString() : null;
             try {
                 result = resolveVariable(facesContext, name);
-            } catch (Throwable e) {
+            }
+            catch (Throwable e) {
                 throw new ELException(e);
             }
-        } else {
+        }
+        else {
             try {
                 result = getValue(base, property);
-            } catch (Throwable e) {
+            }
+            catch (Throwable e) {
                 throw new ELException(e);
             }
         }
@@ -75,9 +77,11 @@ public class MockELResolver extends ELResolver {
         // Handle predefined variables
         if ("applicationScope".equals(name)) {
             return (econtext().getApplicationMap());
-        } else if ("requestScope".equals(name)) {
+        }
+        else if ("requestScope".equals(name)) {
             return (econtext().getRequestMap());
-        } else if ("sessionScope".equals(name)) {
+        }
+        else if ("sessionScope".equals(name)) {
             return (econtext().getSessionMap());
         }
 
@@ -112,17 +116,22 @@ public class MockELResolver extends ELResolver {
                 Map<?, ?> map = (Map<?, ?>) base;
                 if (map.containsKey(name)) {
                     return (map.get(name));
-                } else {
+                }
+                else {
                     throw new IllegalStateException(name);
                 }
-            } else {
+            }
+            else {
                 return (PropertyUtils.getSimpleProperty(base, name));
             }
-        } catch (IllegalAccessException e) {
+        }
+        catch (IllegalAccessException e) {
             throw new IllegalStateException(e);
-        } catch (InvocationTargetException e) {
+        }
+        catch (InvocationTargetException e) {
             throw new IllegalStateException(e.getTargetException());
-        } catch (NoSuchMethodException e) {
+        }
+        catch (NoSuchMethodException e) {
             throw new IllegalStateException(name);
         }
 
@@ -153,4 +162,5 @@ public class MockELResolver extends ELResolver {
     public Class<?> getCommonPropertyType(ELContext context, Object base) {
         return null;
     }
+
 }

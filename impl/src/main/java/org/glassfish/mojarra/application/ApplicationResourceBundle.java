@@ -48,16 +48,14 @@ public class ApplicationResourceBundle {
      * </p>
      *
      * @param baseName the base name of the <code>ResourceBundle</code>
-     * @param displayNames any display names that were associated with the resource bundle definition in the configuration
-     * resource
-     * @param descriptions any descriptions that were associated with the resource bundle definition in the configuration
-     * resource
+     * @param displayNames any display names that were associated with the resource bundle definition in the configuration resource
+     * @param descriptions any descriptions that were associated with the resource bundle definition in the configuration resource
      */
     public ApplicationResourceBundle(String baseName, Map<String, String> displayNames, Map<String, String> descriptions) {
         if (baseName == null) {
             throw new IllegalArgumentException();
         }
-        
+
         this.baseName = baseName;
         this.displayNames = displayNames;
         this.descriptions = descriptions;
@@ -67,8 +65,7 @@ public class ApplicationResourceBundle {
     // ---------------------------------------------------------- Public Methods
 
     /**
-     * @return the base name of the <code>ResourceBundle</code> associated with this <code>ApplicationResourceBundle</code>
-     * instance
+     * @return the base name of the <code>ResourceBundle</code> associated with this <code>ApplicationResourceBundle</code> instance
      */
     public String getBaseName() {
         return baseName;

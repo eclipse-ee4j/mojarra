@@ -48,8 +48,11 @@ public abstract class OutcomeTargetRenderer extends HtmlBasicRenderer {
 
     // ------------------------------------------------------- Protected Methods
 
-    protected void renderPassThruAttributes(FacesContext ctx, ResponseWriter writer, UIComponent component, Attributes attributes, List<String> excludedAttributes)
-            throws IOException {
+    protected void renderPassThruAttributes(
+        FacesContext ctx, ResponseWriter writer, UIComponent component, Attributes attributes, List<String> excludedAttributes
+    )
+        throws IOException
+    {
         RenderKitUtils.renderPassThruAttributes(ctx, writer, component, attributes);
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component, excludedAttributes);
 
@@ -87,9 +90,8 @@ public abstract class OutcomeTargetRenderer extends HtmlBasicRenderer {
     }
 
     /**
-     * Invoke the {@link NavigationHandler} preemptively to resolve a {@link NavigationCase} for the outcome declared on the
-     * {@link UIOutcomeTarget} component. The current view id is used as the from-view-id when matching navigation cases and
-     * the from-action is assumed to be null.
+     * Invoke the {@link NavigationHandler} preemptively to resolve a {@link NavigationCase} for the outcome declared on the {@link UIOutcomeTarget} component.
+     * The current view id is used as the from-view-id when matching navigation cases and the from-action is assumed to be null.
      *
      * @param context the {@link FacesContext} for the current request
      * @param component the target {@link UIComponent}
@@ -111,17 +113,19 @@ public abstract class OutcomeTargetRenderer extends HtmlBasicRenderer {
         try {
             if (null == toFlowDocumentId) {
                 navCase = navHandler.getNavigationCase(context, null, outcome);
-            } else {
+            }
+            else {
                 navCase = navHandler.getNavigationCase(context, null, outcome, toFlowDocumentId);
             }
-        } finally {
+        }
+        finally {
             NavigationHandlerImpl.unsetResetFlowHandlerState(context);
         }
 
         if (navCase == null && logger.isLoggable(Level.WARNING)) {
             String componentId = component.getId();
             String viewId = context.getViewRoot().getViewId();
-            Object[] logParams = new Object[] {componentId, outcome, viewId};
+            Object[] logParams = new Object[] { componentId, outcome, viewId };
             logger.log(Level.WARNING, "faces.outcometarget.navigation.case.not.resolved", logParams);
         }
         return navCase;
@@ -130,8 +134,8 @@ public abstract class OutcomeTargetRenderer extends HtmlBasicRenderer {
     /**
      * <p>
      * Resolve the target view id and then delegate to
-     * {@link ViewHandler#getBookmarkableURL(jakarta.faces.context.FacesContext, String, java.util.Map, String, boolean)} to produce
-     * a redirect URL, which will add the page parameters if necessary and properly prioritizing the parameter overrides.
+     * {@link ViewHandler#getBookmarkableURL(jakarta.faces.context.FacesContext, String, java.util.Map, String, boolean)} to produce a redirect URL, which will
+     * add the page parameters if necessary and properly prioritizing the parameter overrides.
      * </p>
      *
      * @param context the {@link FacesContext} for the current request
@@ -163,7 +167,8 @@ public abstract class OutcomeTargetRenderer extends HtmlBasicRenderer {
             }
 
             result = Util.getViewHandler(context).getBookmarkableURL(context, toViewId, params, navCase.getFragment(), isIncludeViewParams(component, navCase));
-        } finally {
+        }
+        finally {
             if (didDisableClientWindowRendering && null != cw) {
                 cw.enableClientWindowRenderMode(context);
             }
@@ -191,10 +196,12 @@ public abstract class OutcomeTargetRenderer extends HtmlBasicRenderer {
                             List<String> values = new ArrayList<>();
                             values.add(value);
                             existingParams.put(navParamName, values);
-                        } else {
+                        }
+                        else {
                             existingParams.put(navParamName, entry.getValue());
                         }
-                    } else {
+                    }
+                    else {
                         existingParams.put(navParamName, entry.getValue());
                     }
                 }
@@ -217,7 +224,8 @@ public abstract class OutcomeTargetRenderer extends HtmlBasicRenderer {
                     existingParams.put(FlowHandlerImpl.FLOW_RETURN_DEPTH_PARAM_NAME, flowReturnDepthValues);
                 }
 
-            } else {
+            }
+            else {
                 String flowId = navCase.getFromOutcome();
                 List<String> flowDocumentIdValues = new ArrayList<>();
                 flowDocumentIdValues.add(toFlowDocumentId);

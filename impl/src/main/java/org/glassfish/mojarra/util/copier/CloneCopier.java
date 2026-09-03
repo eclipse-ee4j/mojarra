@@ -49,7 +49,8 @@ public class CloneCopier implements Copier {
 
             return cloneMethod.invoke(object);
 
-        } catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+        }
+        catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
             throw new IllegalStateException(e);
         }
     }

@@ -93,8 +93,8 @@ public class FacesContextImpl extends FacesContext {
     private ExceptionHandler exceptionHandler = null;
 
     /**
-     * Store mapping of clientId to ArrayList of FacesMessage instances. The null key is used to represent FacesMessage
-     * instances that are not associated with a clientId instance.
+     * Store mapping of clientId to ArrayList of FacesMessage instances. The null key is used to represent FacesMessage instances that are not associated with a
+     * clientId instance.
      */
     private Map<String, List<FacesMessage>> componentMessageLists;
 
@@ -185,7 +185,8 @@ public class FacesContextImpl extends FacesContext {
             RenderKit rk = getRenderKit();
             if (rk != null) {
                 postback = rk.getResponseStateManager().isPostback(this);
-            } else {
+            }
+            else {
                 // ViewRoot hasn't been set yet, so calculate the RK
                 ViewHandler vh = getApplication().getViewHandler();
                 String rkId = vh.calculateRenderKitId(this);
@@ -281,7 +282,8 @@ public class FacesContextImpl extends FacesContext {
 
         if (null == componentMessageLists) {
             return Collections.unmodifiableList(Collections.<FacesMessage>emptyList());
-        } else {
+        }
+        else {
             List<FacesMessage> messages = new ArrayList<>();
             for (List<FacesMessage> list : componentMessageLists.values()) {
                 messages.addAll(list);
@@ -301,7 +303,8 @@ public class FacesContextImpl extends FacesContext {
 
         if (null == componentMessageLists) {
             return Collections.unmodifiableList(Collections.<FacesMessage>emptyList());
-        } else {
+        }
+        else {
             List<FacesMessage> list = componentMessageLists.get(clientId);
             return Collections.unmodifiableList(list != null ? list : Collections.<FacesMessage>emptyList());
         }
@@ -320,7 +323,8 @@ public class FacesContextImpl extends FacesContext {
 
         if (componentMessageLists.size() > 0) {
             return new ComponentMessagesIterator(componentMessageLists);
-        } else {
+        }
+        else {
             return Collections.emptyIterator();
         }
     }
@@ -363,12 +367,15 @@ public class FacesContextImpl extends FacesContext {
 
         if (renderKitId.equals(lastRkId)) {
             return lastRk;
-        } else {
+        }
+        else {
             lastRk = rkFactory.getRenderKit(this, renderKitId);
             if (lastRk == null) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.log(Level.SEVERE, "Unable to locate renderkit " + "instance for render-kit-id {0}.  Using {1} instead.",
-                            new String[] { renderKitId, RenderKitFactory.HTML_BASIC_RENDER_KIT });
+                    LOGGER.log(
+                        Level.SEVERE, "Unable to locate renderkit " + "instance for render-kit-id {0}.  Using {1} instead.",
+                        new String[] { renderKitId, RenderKitFactory.HTML_BASIC_RENDER_KIT }
+                    );
                 }
             }
             lastRkId = renderKitId;
@@ -453,7 +460,8 @@ public class FacesContextImpl extends FacesContext {
 
         if (maxSeverity == null) {
             maxSeverity = message.getSeverity();
-        } else {
+        }
+        else {
             Severity sev = message.getSeverity();
             if (sev.getOrdinal() > maxSeverity.getOrdinal()) {
                 maxSeverity = sev;
@@ -603,7 +611,8 @@ public class FacesContextImpl extends FacesContext {
                 resourceLibraryContracts.clear();
                 resourceLibraryContracts = null;
             }
-        } else {
+        }
+        else {
             resourceLibraryContracts = new ArrayList<>(contracts);
         }
 
@@ -678,7 +687,8 @@ public class FacesContextImpl extends FacesContext {
                 outerIndex++;
                 if (outerIndex < messagesSize) {
                     inner = messages.get(keys.next()).iterator();
-                } else {
+                }
+                else {
                     return false;
                 }
             }
@@ -694,11 +704,13 @@ public class FacesContextImpl extends FacesContext {
             }
             if (inner != null && inner.hasNext()) {
                 return inner.next();
-            } else {
+            }
+            else {
                 // call this.hasNext() to properly initialize/position 'inner'
                 if (!hasNext()) {
                     throw new NoSuchElementException();
-                } else {
+                }
+                else {
                     return inner.next();
                 }
             }

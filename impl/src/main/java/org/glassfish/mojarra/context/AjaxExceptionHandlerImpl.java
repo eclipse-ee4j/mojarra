@@ -42,8 +42,7 @@ import org.glassfish.mojarra.util.FacesLogger;
 
 /**
  * <p>
- * A specialized implementation of {@link ExceptionHandler} for Faces that handles exceptions by writing error
- * information to the partial response.
+ * A specialized implementation of {@link ExceptionHandler} for Faces that handles exceptions by writing error information to the partial response.
  * </p>
  *
  */
@@ -89,18 +88,22 @@ public class AjaxExceptionHandlerImpl extends ExceptionHandlerWrapper {
 
                     if (unwrapped != null) {
                         handlePartialResponseError(context.getContext(), unwrapped);
-                    } else {
+                    }
+                    else {
                         if (t instanceof FacesException) {
                             handlePartialResponseError(context.getContext(), t);
-                        } else {
+                        }
+                        else {
                             handlePartialResponseError(context.getContext(), new FacesException(t.getMessage(), t));
                         }
                     }
-                } else {
+                }
+                else {
                     log(context);
                 }
 
-            } finally {
+            }
+            finally {
                 if (handledExceptions == null) {
                     handledExceptions = new LinkedList<>();
                 }
@@ -165,10 +168,12 @@ public class AjaxExceptionHandlerImpl extends ExceptionHandlerWrapper {
             if (context.isProjectStage(ProjectStage.Development)) {
                 if (t.getCause() != null) {
                     msg = t.getCause().getMessage();
-                } else {
+                }
+                else {
                     msg = t.getMessage();
                 }
-            } else {
+            }
+            else {
                 msg = "See your server log for more information";
             }
             writer.write(msg != null ? msg : "");
@@ -180,7 +185,8 @@ public class AjaxExceptionHandlerImpl extends ExceptionHandlerWrapper {
             }
 
             context.responseComplete();
-        } catch (IOException ioe) {
+        }
+        catch (IOException ioe) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, ioe.toString(), ioe);
             }
@@ -202,8 +208,10 @@ public class AjaxExceptionHandlerImpl extends ExceptionHandlerWrapper {
         Throwable t = exceptionContext.getException();
         String key = getLoggingKey(beforePhase, afterPhase);
         if (LOGGER.isLoggable(Level.SEVERE)) {
-            LOGGER.log(Level.SEVERE, key, new Object[] { t.getClass().getName(), phaseId.toString(),
-                    c != null ? c.getClientId(exceptionContext.getContext()) : "", t.getMessage() });
+            LOGGER.log(
+                Level.SEVERE, key, new Object[] { t.getClass().getName(), phaseId.toString(),
+                    c != null ? c.getClientId(exceptionContext.getContext()) : "", t.getMessage() }
+            );
             LOGGER.log(Level.SEVERE, t.getMessage(), t);
         }
 
@@ -212,9 +220,11 @@ public class AjaxExceptionHandlerImpl extends ExceptionHandlerWrapper {
     private String getLoggingKey(boolean beforePhase, boolean afterPhase) {
         if (beforePhase) {
             return LOG_BEFORE_KEY;
-        } else if (afterPhase) {
+        }
+        else if (afterPhase) {
             return LOG_AFTER_KEY;
-        } else {
+        }
+        else {
             return LOG_KEY;
         }
     }

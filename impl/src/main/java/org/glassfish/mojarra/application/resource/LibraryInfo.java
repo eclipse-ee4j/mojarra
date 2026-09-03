@@ -20,8 +20,7 @@ import java.util.Objects;
 
 /**
  * <p>
- * <code>LibraryInfo</code> is a simple wrapper class for information pertinent to building a complete resource path
- * using a Library and/or Contract.
+ * <code>LibraryInfo</code> is a simple wrapper class for information pertinent to building a complete resource path using a Library and/or Contract.
  * </p>
  */
 public class LibraryInfo {
@@ -136,8 +135,8 @@ public class LibraryInfo {
     @Override
     public String toString() {
         return "LibraryInfo{" + "name='" + (name != null ? name : "NONE") + '\'' + ", version=" + (version != null ? version : "NONE") + '\''
-                + ", localePrefix='" + (localePrefix != null ? localePrefix : "NONE") + '\'' + ", contract='" + (contract != null ? contract : "NONE")
-                + '\'' + ", path='" + path + '\'' + '}';
+            + ", localePrefix='" + (localePrefix != null ? localePrefix : "NONE") + '\'' + ", contract='" + (contract != null ? contract : "NONE")
+            + '\'' + ", path='" + path + '\'' + '}';
     }
 
     // --------------------------------------------------------- Private Methods
@@ -170,7 +169,8 @@ public class LibraryInfo {
     private void appendBasePath(StringBuilder builder) {
         if (contract == null) {
             builder.append(helper.getBaseResourcePath());
-        } else {
+        }
+        else {
             builder.append(helper.getBaseContractsPath()).append('/').append(contract);
         }
     }

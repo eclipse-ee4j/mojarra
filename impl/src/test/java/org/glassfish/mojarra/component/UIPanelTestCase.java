@@ -57,4 +57,5 @@ public class UIPanelTestCase extends UIComponentBaseTestCase {
         component.setRendererType(null);
         return component;
     }
+
 }

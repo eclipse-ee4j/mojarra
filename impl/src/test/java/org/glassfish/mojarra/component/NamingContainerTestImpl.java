@@ -48,7 +48,8 @@ public class NamingContainerTestImpl extends UINamingContainer {
     public static void trace(String text) {
         if (text == null) {
             trace.setLength(0);
-        } else {
+        }
+        else {
             trace.append('/');
             trace.append(text);
         }
@@ -58,4 +59,5 @@ public class NamingContainerTestImpl extends UINamingContainer {
     public static String trace() {
         return trace.toString();
     }
+
 }

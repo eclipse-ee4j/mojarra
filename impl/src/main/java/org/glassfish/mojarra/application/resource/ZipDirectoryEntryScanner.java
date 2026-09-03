@@ -64,7 +64,8 @@ class ZipDirectoryEntryScanner {
                             }
                         }
                     }
-                } catch (IOException ioe) {
+                }
+                catch (IOException ioe) {
                     if (LOGGER.isLoggable(SEVERE)) {
                         LOGGER.log(SEVERE, "Unable to inspect resource library " + cur, ioe);
                     }
@@ -74,8 +75,8 @@ class ZipDirectoryEntryScanner {
     }
 
     /**
-     * A key as built by {@link #libraryExists(String, String)} is either {@code libraryName} or
-     * {@code localePrefix + "/" + libraryName}. Anything deeper is a directory within a library, not a library.
+     * A key as built by {@link #libraryExists(String, String)} is either {@code libraryName} or {@code localePrefix + "/" + libraryName}. Anything deeper is a
+     * directory within a library, not a library.
      */
     private static boolean isLibraryKey(String entryName) {
         return entryName.indexOf('/') == entryName.lastIndexOf('/');

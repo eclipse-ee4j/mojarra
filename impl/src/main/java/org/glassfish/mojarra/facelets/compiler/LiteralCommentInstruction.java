@@ -23,6 +23,7 @@ import jakarta.el.ExpressionFactory;
 import jakarta.faces.context.FacesContext;
 
 final class LiteralCommentInstruction implements Instruction {
+
     private final String text;
 
     public LiteralCommentInstruction(String text) {
@@ -43,4 +44,5 @@ final class LiteralCommentInstruction implements Instruction {
     public boolean isLiteral() {
         return true;
     }
+
 }

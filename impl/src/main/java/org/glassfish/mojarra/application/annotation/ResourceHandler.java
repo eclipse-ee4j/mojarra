@@ -54,12 +54,12 @@ class ResourceHandler extends JndiHandler {
     private void applyToField(FacesContext facesContext, Field field, Resource resource, Object instance) {
         Object value;
         /*
-         * if (resource.lookup() != null && !"".equals(resource.lookup().trim())) { value = lookup(facesContext,
-         * resource.lookup()); } else
+         * if (resource.lookup() != null && !"".equals(resource.lookup().trim())) { value = lookup(facesContext, resource.lookup()); } else
          */
         if (resource.name() != null && !resource.name().isBlank()) {
             value = lookup(facesContext, JAVA_COMP_ENV + resource.name());
-        } else {
+        }
+        else {
             value = lookup(facesContext, field.getName());
         }
         setField(facesContext, field, instance, value);
@@ -69,8 +69,7 @@ class ResourceHandler extends JndiHandler {
         if (method.getName().startsWith("set")) {
             Object value = null;
             /*
-             * if (resource.lookup() != null && !"".equals(resource.lookup().trim())) { value = lookup(facesContext,
-             * resource.lookup()); } else
+             * if (resource.lookup() != null && !"".equals(resource.lookup().trim())) { value = lookup(facesContext, resource.lookup()); } else
              */
             if (resource.name() != null && !resource.name().isBlank()) {
                 value = lookup(facesContext, JAVA_COMP_ENV + resource.name());
@@ -78,4 +77,5 @@ class ResourceHandler extends JndiHandler {
             invokeMethod(facesContext, method, instance, value);
         }
     }
+
 }

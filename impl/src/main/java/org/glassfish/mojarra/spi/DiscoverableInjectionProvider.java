@@ -44,14 +44,15 @@ public abstract class DiscoverableInjectionProvider implements InjectionProvider
 
     /**
      * @param delegateClass the name of the delegate used by the <code>InjectionProvider</code> implementation.
-     * @return returns <code>true</code> if the <code>InjectionProvider</code> instance is appropriate for the container its
-     * currently deployed within, otherwise return <code>false</code>
+     * @return returns <code>true</code> if the <code>InjectionProvider</code> instance is appropriate for the container its currently deployed within,
+     * otherwise return <code>false</code>
      */
     public static boolean isInjectionFeatureAvailable(String delegateClass) {
         try {
             Util.loadClass(delegateClass, null);
             return true;
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             return false;
         }
 

@@ -46,18 +46,18 @@ public abstract class LinkRenderer extends HtmlBasicRenderer {
 
     @Override
     protected boolean isDisabledOrReadonly(UIComponent component) {
-    	if (component instanceof HtmlOutputLink link) {
-    		return link.isDisabled();
-    	}
-    	if (component instanceof HtmlCommandLink link) {
-    		return link.isDisabled();
-    	}
-    	if (component instanceof HtmlOutcomeTargetLink link) {
-    		return link.isDisabled();
-    	}
-    	return super.isDisabledOrReadonly(component);
+        if (component instanceof HtmlOutputLink link) {
+            return link.isDisabled();
+        }
+        if (component instanceof HtmlCommandLink link) {
+            return link.isDisabled();
+        }
+        if (component instanceof HtmlOutcomeTargetLink link) {
+            return link.isDisabled();
+        }
+        return super.isDisabledOrReadonly(component);
     }
-    
+
     protected void renderAsDisabled(FacesContext context, UIComponent component) throws IOException {
 
         ResponseWriter writer = context.getResponseWriter();

@@ -44,8 +44,7 @@ import org.glassfish.mojarra.renderkit.Attributes;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 
 /**
- * <B>TextRenderer</B> is a class that renders the current value of <code>UIInput</code> or <code>UIOutput</code>
- * component as a input field or static text.
+ * <B>TextRenderer</B> is a class that renders the current value of <code>UIInput</code> or <code>UIOutput</code> component as a input field or static text.
  */
 public class TextRenderer extends HtmlBasicInputRenderer {
 
@@ -112,7 +111,8 @@ public class TextRenderer extends HtmlBasicInputRenderer {
                 if (accept != null) {
                     writer.writeAttribute("accept", accept, "accept");
                 }
-            } else if (component instanceof HtmlInputText) {
+            }
+            else if (component instanceof HtmlInputText) {
                 String type = ((HtmlInputText) component).getType();
 
                 if (context.isProjectStage(ProjectStage.Development)) {
@@ -125,7 +125,8 @@ public class TextRenderer extends HtmlBasicInputRenderer {
                 }
 
                 writer.writeAttribute("type", type, null);
-            } else {
+            }
+            else {
                 writer.writeAttribute("type", "text", null);
             }
             writer.writeAttribute("name", component.getClientId(context), "clientId");
@@ -133,8 +134,11 @@ public class TextRenderer extends HtmlBasicInputRenderer {
             // only output the autocomplete attribute if the value
             // is 'off' since its lack of presence will be interpreted
             // as 'on' by the browser
-            if (component instanceof HtmlInputText text ? "off".equals(text.getAutocomplete())
-                    : "off".equals(component.getAttributes().get("autocomplete"))) {
+            if (
+                component instanceof HtmlInputText text
+                    ? "off".equals(text.getAutocomplete())
+                    : "off".equals(component.getAttributes().get("autocomplete"))
+            ) {
                 writer.writeAttribute("autocomplete", "off", "autocomplete");
             }
 
@@ -148,16 +152,20 @@ public class TextRenderer extends HtmlBasicInputRenderer {
 
             // style is rendered as a passthru attribute
             Attributes attributes = component instanceof HtmlInputFile ? INPUTFILE_ATTRIBUTES : INPUTTEXT_ATTRIBUTES;
-            RenderKitUtils.renderPassThruAttributes(context, writer, component, null, false, attributes, HtmlElementEvent.change, FacesComponentEvent.valueChange);
+            RenderKitUtils
+                .renderPassThruAttributes(context, writer, component, null, false, attributes, HtmlElementEvent.change, FacesComponentEvent.valueChange);
             RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
             writer.endElement("input");
 
             RenderKitUtils.flushPendingBehaviorEventListeners(context, component, null);
 
-        } else if (isOutput = component instanceof UIOutput) {
-            if (styleClass != null || style != null || dir != null || lang != null || title != null || hasPassthroughAttributes
-                    || (shouldWriteIdAttribute = shouldWriteIdAttribute(component))) {
+        }
+        else if (isOutput = component instanceof UIOutput) {
+            if (
+                styleClass != null || style != null || dir != null || lang != null || title != null || hasPassthroughAttributes
+                    || (shouldWriteIdAttribute = shouldWriteIdAttribute(component))
+            ) {
                 writer.startElement("span", component);
                 writeIdAttributeIfNecessary(context, writer, component);
                 if (null != styleClass) {
@@ -168,16 +176,22 @@ public class TextRenderer extends HtmlBasicInputRenderer {
 
             }
             if (currentValue != null) {
-                if (component instanceof HtmlOutputText text ? text.isEscape()
-                        : RenderKitUtils.attributeIsTrue(component, "escape", false)) {
+                if (
+                    component instanceof HtmlOutputText text
+                        ? text.isEscape()
+                        : RenderKitUtils.attributeIsTrue(component, "escape", false)
+                ) {
                     writer.writeText(currentValue, component, "value");
-                } else {
+                }
+                else {
                     writer.write(currentValue);
                 }
             }
         }
-        if (isOutput && (styleClass != null || style != null || dir != null || lang != null || title != null || hasPassthroughAttributes
-                || shouldWriteIdAttribute)) {
+        if (
+            isOutput && (styleClass != null || style != null || dir != null || lang != null || title != null || hasPassthroughAttributes
+                || shouldWriteIdAttribute)
+        ) {
             writer.endElement("span");
             RenderKitUtils.flushPendingBehaviorEventListeners(context, component, null);
         }

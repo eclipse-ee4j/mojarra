@@ -27,17 +27,25 @@ import jakarta.servlet.ServletResponse;
 public class MockExternalContextFactory extends ExternalContextFactory {
 
     public MockExternalContextFactory(ExternalContextFactory oldImpl) {
-        System.setProperty(FactoryFinder.EXTERNAL_CONTEXT_FACTORY,
-                this.getClass().getName());
+        System.setProperty(
+            FactoryFinder.EXTERNAL_CONTEXT_FACTORY,
+            this.getClass().getName()
+        );
     }
 
     public MockExternalContextFactory() {
     }
 
     @Override
-    public ExternalContext getExternalContext(Object context, Object request,
-            Object response) throws FacesException {
-        return new MockExternalContext((ServletContext) context,
-                (ServletRequest) request, (ServletResponse) response);
+    public ExternalContext getExternalContext(
+        Object context, Object request,
+        Object response
+    ) throws FacesException
+    {
+        return new MockExternalContext(
+            (ServletContext) context,
+            (ServletRequest) request, (ServletResponse) response
+        );
     }
+
 }

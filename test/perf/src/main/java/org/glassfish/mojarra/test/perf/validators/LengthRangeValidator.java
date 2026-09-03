@@ -23,9 +23,10 @@ import jakarta.faces.validator.FacesValidator;
 import jakarta.faces.validator.Validator;
 import jakarta.faces.validator.ValidatorException;
 
-/** CDI-managed validator looked up by id.
- *  {@code @Dependent} is the bean-defining annotation that makes this class
- *  discoverable under the CDI 4.0 default {@code bean-discovery-mode=annotated}. */
+/**
+ * CDI-managed validator looked up by id. {@code @Dependent} is the bean-defining annotation that makes this class discoverable under the CDI 4.0 default
+ * {@code bean-discovery-mode=annotated}.
+ */
 @FacesValidator(value = "lengthRangeValidator", managed = true)
 @Dependent
 public class LengthRangeValidator implements Validator<String> {
@@ -40,8 +41,13 @@ public class LengthRangeValidator implements Validator<String> {
         }
         int length = value.length();
         if (length < MIN || length > MAX) {
-            throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Length out of range", "Length must be between " + MIN + " and " + MAX));
+            throw new ValidatorException(
+                new FacesMessage(
+                    FacesMessage.SEVERITY_ERROR,
+                    "Length out of range", "Length must be between " + MIN + " and " + MAX
+                )
+            );
         }
     }
+
 }

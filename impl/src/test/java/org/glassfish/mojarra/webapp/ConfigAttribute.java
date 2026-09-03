@@ -18,7 +18,8 @@ package org.glassfish.mojarra.webapp;
 
 /**
  * <p>
- * Config Bean for an Attribute.</p>
+ * Config Bean for an Attribute.
+ * </p>
  */
 public class ConfigAttribute extends ConfigFeature {
 
@@ -41,4 +42,5 @@ public class ConfigAttribute extends ConfigFeature {
     public void setAttributeName(String attributeName) {
         this.attributeName = attributeName;
     }
+
 }

@@ -61,8 +61,7 @@ import org.w3c.dom.Node;
 
 /**
  * <p>
- * This is the base <code>ConfigProcessor</code> that all concrete <code>ConfigProcessor</code> implementations should
- * extend.
+ * This is the base <code>ConfigProcessor</code> that all concrete <code>ConfigProcessor</code> implementations should extend.
  * </p>
  */
 public abstract class AbstractConfigProcessor implements ConfigProcessor {
@@ -75,7 +74,7 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
     @SuppressWarnings("unchecked")
     private ApplicationInstanceFactoryMetadataMap<String, Object> getClassMetadataMap(ServletContext servletContext) {
         ApplicationInstanceFactoryMetadataMap<String, Object> classMetadataMap = (ApplicationInstanceFactoryMetadataMap<String, Object>) servletContext
-                .getAttribute(getClassMetadataMapKey());
+            .getAttribute(getClassMetadataMapKey());
 
         if (classMetadataMap == null) {
             classMetadataMap = new ApplicationInstanceFactoryMetadataMap<>(new ConcurrentHashMap<>());
@@ -113,8 +112,7 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
      * Return the text of the specified <code>Node</code>, if any.
      *
      * @param node the <code>Node</code>
-     * @return the text of the <code>Node</code> If the length of the text is zero, this method will return
-     * <code>null</code>
+     * @return the text of the <code>Node</code> If the length of the text is zero, this method will return <code>null</code>
      */
     protected String getNodeText(Node node) {
         String res = null;
@@ -129,9 +127,8 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
     }
 
     /**
-     * @return a <code>Map</code> of of textual values keyed off the values of any lang or xml:lang attributes specified on
-     * an attribute. If no such attribute exists, then the key {@link ApplicationResourceBundle#DEFAULT_KEY} will be used
-     * (i.e. this represents the default Locale).
+     * @return a <code>Map</code> of of textual values keyed off the values of any lang or xml:lang attributes specified on an attribute. If no such attribute
+     * exists, then the key {@link ApplicationResourceBundle#DEFAULT_KEY} will be used (i.e. this represents the default Locale).
      * @param list a list of nodes representing textual elements such as description or display-name
      */
     protected Map<String, String> getTextMap(List<Node> list) {
@@ -150,10 +147,12 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
                         }
                         if (lang != null) {
                             names.put(lang, textValue);
-                        } else {
+                        }
+                        else {
                             names.put(DEFAULT_KEY, textValue);
                         }
-                    } else {
+                    }
+                    else {
                         names.put(DEFAULT_KEY, textValue);
                     }
                 }
@@ -174,7 +173,8 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
                     return ctorArg;
                 }
             }
-        } catch (ClassNotFoundException cnfe) {
+        }
+        catch (ClassNotFoundException cnfe) {
             throw new ConfigurationException(buildMessage(format("Unable to find class ''{0}''", source), sourceNode), cnfe);
         }
 
@@ -191,8 +191,11 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
         return result;
     }
 
-    protected Object createInstance(ServletContext sc, FacesContext facesContext, String className, Class<?> rootType, Object root, Node source,
-            boolean performInjection, boolean[] didPerformInjection) {
+    protected Object createInstance(
+        ServletContext sc, FacesContext facesContext, String className, Class<?> rootType, Object root, Node source,
+        boolean performInjection, boolean[] didPerformInjection
+    )
+    {
         Class<?> clazz;
         Object returnObject = null;
         if (className != null) {
@@ -219,7 +222,8 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
                     if (classMetadataMap.hasAnnotations(className) && performInjection) {
                         try {
                             injectAndPostConstruct(clazz, returnObject);
-                        } catch (Exception ex) {
+                        }
+                        catch (Exception ex) {
                             LOGGER.log(SEVERE, "Unable to inject instance " + className, ex);
                             throw new FacesException(ex);
                         }
@@ -229,14 +233,19 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
 
                 }
 
-            } catch (ClassNotFoundException cnfe) {
+            }
+            catch (ClassNotFoundException cnfe) {
                 throw new ConfigurationException(buildMessage(format("Unable to find class ''{0}''", className), source), cnfe);
-            } catch (NoClassDefFoundError ncdfe) {
+            }
+            catch (NoClassDefFoundError ncdfe) {
                 throw new ConfigurationException(
-                        buildMessage(format("Class ''{0}'' is missing a runtime dependency: {1}", className, ncdfe.toString()), source), ncdfe);
-            } catch (ClassCastException cce) {
+                    buildMessage(format("Class ''{0}'' is missing a runtime dependency: {1}", className, ncdfe.toString()), source), ncdfe
+                );
+            }
+            catch (ClassCastException cce) {
                 throw new ConfigurationException(buildMessage(format("Class ''{0}'' is not an instance of ''{1}''", className, rootType), source), cce);
-            } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException | FacesException e) {
+            }
+            catch (IllegalArgumentException | ReflectiveOperationException | SecurityException | FacesException e) {
                 throw new ConfigurationException(buildMessage(format("Unable to create a new instance of ''{0}'': {1}", className, e.toString()), source), e);
             }
         }
@@ -254,7 +263,8 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
                 if (injectionProvider != null) {
                     try {
                         injectionProvider.invokePreDestroy(instance);
-                    } catch (InjectionProviderException ex) {
+                    }
+                    catch (InjectionProviderException ex) {
                         LOGGER.log(SEVERE, "Unable to invoke @PreDestroy annotated method on instance " + className, ex);
                         throw new FacesException(ex);
                     }
@@ -264,7 +274,8 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
     }
 
     protected Class<?> loadClass(ServletContext sc, FacesContext facesContext, String className, Object fallback, Class<?> expectedType)
-            throws ClassNotFoundException {
+        throws ClassNotFoundException
+    {
         ApplicationInstanceFactoryMetadataMap<String, Object> classMetadataMap = getClassMetadataMap(sc);
 
         Class<?> clazz = (Class<?>) classMetadataMap.get(className);
@@ -273,10 +284,12 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
                 clazz = Util.loadClass(className, fallback);
                 if (!isDevelopment(facesContext)) {
                     classMetadataMap.put(className, clazz);
-                } else {
+                }
+                else {
                     classMetadataMap.scanForAnnotations(className, clazz);
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 throw new FacesException(e.getMessage(), e);
             }
 
@@ -290,17 +303,18 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
     }
 
     protected void processAnnotations(FacesContext ctx, Class<? extends Annotation> annotationType) {
-        ApplicationAssociate.getInstance(ctx.getExternalContext()).getAnnotationManager().applyConfigAnnotations(ctx, annotationType,
-                ConfigManager.getAnnotatedClasses(ctx).get(annotationType));
+        ApplicationAssociate.getInstance(ctx.getExternalContext()).getAnnotationManager().applyConfigAnnotations(
+            ctx, annotationType,
+            ConfigManager.getAnnotatedClasses(ctx).get(annotationType)
+        );
     }
 
     // --------------------------------------------------------- Private Methods
 
     /**
-     * Perform Jakarta EE resource injection ({@code @Resource}, {@code @Inject}, ...) and invoke {@code @PostConstruct} on
-     * a faces-config-declared artifact via CDI's non-contextual {@link InjectionTarget}. This delegates resource resolution
-     * to the container the same way {@code FactoryFinderInstance} already injects factories; the legacy container-provided
-     * {@code InjectionProvider} is no longer available in all environments.
+     * Perform Jakarta EE resource injection ({@code @Resource}, {@code @Inject}, ...) and invoke {@code @PostConstruct} on a faces-config-declared artifact via
+     * CDI's non-contextual {@link InjectionTarget}. This delegates resource resolution to the container the same way {@code FactoryFinderInstance} already
+     * injects factories; the legacy container-provided {@code InjectionProvider} is no longer available in all environments.
      */
     private static <T> void injectAndPostConstruct(Class<T> clazz, Object instance) {
         BeanManager beanManager = CDI.current().getBeanManager();
@@ -317,9 +331,8 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
     }
 
     private static boolean isDevelopment(FacesContext facesContext) {
-    	ProjectStage projectStage = FacesContextParam.PROJECT_STAGE.getEnum(facesContext);
+        ProjectStage projectStage = FacesContextParam.PROJECT_STAGE.getEnum(facesContext);
         return projectStage == Development;
     }
-
 
 }

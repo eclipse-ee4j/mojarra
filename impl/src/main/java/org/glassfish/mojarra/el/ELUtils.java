@@ -43,8 +43,8 @@ import org.glassfish.mojarra.config.MojarraContextParam;
 public class ELUtils {
 
     /**
-     * The literal marker every composite component EL expression must contain ("cc"); used as a cheap
-     * {@link String#contains(CharSequence)} guard to skip the regex for the common non-composite case.
+     * The literal marker every composite component EL expression must contain ("cc"); used as a cheap {@link String#contains(CharSequence)} guard to skip the
+     * regex for the common non-composite case.
      */
     private static final String COMPOSITE_COMPONENT_MARKER = "cc";
 
@@ -69,8 +69,7 @@ public class ELUtils {
     private static final Pattern COMPOSITE_COMPONENT_LOOKUP_WITH_ARGS = Pattern.compile("(?:[ ]+|[\\[{,(])cc[.]attrs[.]\\w+[(].+[)]");
 
     /**
-     * Use to determine if an expression being considered as a MethodExpression is a simple lookup (i.e.
-     * #{cc.attrs.myaction}).
+     * Use to determine if an expression being considered as a MethodExpression is a simple lookup (i.e. #{cc.attrs.myaction}).
      */
     private static final Pattern METHOD_EXPRESSION_LOOKUP = Pattern.compile(".[{]cc[.]attrs[.]\\w+[}]");
 
@@ -205,7 +204,6 @@ public class ELUtils {
             throw new NullPointerException(getExceptionMessageString(NULL_PARAMETERS_ERROR_MESSAGE_ID, "composite"));
         }
     }
-
 
     /*
      * First look in the ApplicationAssociate. If that fails, return null;

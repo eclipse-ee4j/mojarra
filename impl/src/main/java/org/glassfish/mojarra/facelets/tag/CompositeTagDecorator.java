@@ -22,8 +22,8 @@ import jakarta.faces.view.facelets.TagDecorator;
 import org.glassfish.mojarra.util.Util;
 
 /**
- * A TagDecorator that is composed of 1 or more TagDecorator instances. It uses the chain of responsibility pattern to
- * stop processing if any of the TagDecorators return a value other than null.
+ * A TagDecorator that is composed of 1 or more TagDecorator instances. It uses the chain of responsibility pattern to stop processing if any of the
+ * TagDecorators return a value other than null.
  *
  * @author Jacob Hookom
  * @version $Id$
@@ -41,8 +41,7 @@ public final class CompositeTagDecorator implements TagDecorator {
     }
 
     /**
-     * Uses the chain of responsibility pattern to stop processing if any of the TagDecorators return a value other than
-     * null.
+     * Uses the chain of responsibility pattern to stop processing if any of the TagDecorators return a value other than null.
      */
     @Override
     public Tag decorate(Tag tag) {

@@ -22,8 +22,7 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_3">
- * The FacesContextProducer is the CDI producer that allows injection of the FacesContext using @Inject and allows EL
- * resolving of #{facesContext}
+ * The FacesContextProducer is the CDI producer that allows injection of the FacesContext using @Inject and allows EL resolving of #{facesContext}
  * </p>
  *
  * @since 2.3

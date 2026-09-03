@@ -79,4 +79,5 @@ public class StateHolderSaverTestCase extends UIComponentBaseTestCase {
         postSave = (IntegerConverter) saver.restore(facesContext);
         assertTrue(postSave != null); // lack of ClassCastException
     }
+
 }

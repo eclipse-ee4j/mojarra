@@ -28,10 +28,9 @@ import org.glassfish.mojarra.renderkit.AttributeManager.Key;
 import org.junit.jupiter.api.Test;
 
 /**
- * Rendering decides whether to emit a component's attribute by asking the renderer's table for it by name, so an
- * attribute the table cannot find under its own name is an attribute that silently stops rendering. These tables are
- * hand-maintained literals of up to 27 entries, and the lookup is what frees them from having to be declared in any
- * particular order.
+ * Rendering decides whether to emit a component's attribute by asking the renderer's table for it by name, so an attribute the table cannot find under its own
+ * name is an attribute that silently stops rendering. These tables are hand-maintained literals of up to 27 entries, and the lookup is what frees them from
+ * having to be declared in any particular order.
  */
 class AttributesLookupTest {
 
@@ -60,9 +59,9 @@ class AttributesLookupTest {
     }
 
     /**
-     * A renderer that composes an attribute's value itself must not also declare it as a pass-through attribute, or the
-     * attribute is written twice on the same element. Both button renderers compose {@code onclick} -- they append the
-     * navigation script to the author's own handler -- so neither table may declare it.
+     * A renderer that composes an attribute's value itself must not also declare it as a pass-through attribute, or the attribute is written twice on the same
+     * element. Both button renderers compose {@code onclick} -- they append the navigation script to the author's own handler -- so neither table may declare
+     * it.
      */
     @Test
     void anAttributeTheRendererComposesIsNotAlsoAPassThroughAttribute() {
@@ -71,8 +70,7 @@ class AttributesLookupTest {
     }
 
     /**
-     * Declaration order is not part of the contract, so a table whose attributes are out of alphabetical order still
-     * resolves every one of them.
+     * Declaration order is not part of the contract, so a table whose attributes are out of alphabetical order still resolves every one of them.
      */
     @Test
     void aTableDeclaredOutOfOrderStillResolves() {
@@ -83,4 +81,5 @@ class AttributesLookupTest {
         assertNotNull(attributes.get("onclick"));
         assertNull(attributes.get("lang"));
     }
+
 }

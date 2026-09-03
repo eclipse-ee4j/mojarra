@@ -15,8 +15,6 @@
  */
 package org.glassfish.mojarra.test.perf.converters;
 
-import org.glassfish.mojarra.test.perf.beans.AppConfig;
-
 import jakarta.enterprise.context.Dependent;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
@@ -24,9 +22,12 @@ import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.FacesConverter;
 import jakarta.inject.Inject;
 
-/** CDI-managed converter looked up by id.
- *  {@code @Dependent} is the bean-defining annotation that makes this class
- *  discoverable under the CDI 4.0 default {@code bean-discovery-mode=annotated}. */
+import org.glassfish.mojarra.test.perf.beans.AppConfig;
+
+/**
+ * CDI-managed converter looked up by id. {@code @Dependent} is the bean-defining annotation that makes this class discoverable under the CDI 4.0 default
+ * {@code bean-discovery-mode=annotated}.
+ */
 @FacesConverter(value = "upperCaseConverter", managed = true)
 @Dependent
 public class UpperCaseConverter implements Converter<String> {
@@ -47,4 +48,5 @@ public class UpperCaseConverter implements Converter<String> {
     public String getAsString(FacesContext context, UIComponent component, String value) {
         return value == null ? "" : value.toUpperCase();
     }
+
 }

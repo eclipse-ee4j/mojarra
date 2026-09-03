@@ -36,11 +36,10 @@ import org.junit.jupiter.api.function.ThrowingConsumer;
 /**
  * Tests for {@link HtmlUtils}.
  *
- * <p>Covers the per-character escape paths in {@code writeText} and {@code writeAttribute}
- * (regression guard for any refactor of the escape logic -- range-emit, pre-scan, sorted-table
- * approaches, etc. must produce byte-identical output), the URL writing variants in
- * {@code writeURL}, and the XML-mode variants ({@code writeTextForXML},
- * {@code writeUnescapedTextForXML}, {@code writeAttribute} with forXml=true).
+ * <p>
+ * Covers the per-character escape paths in {@code writeText} and {@code writeAttribute} (regression guard for any refactor of the escape logic -- range-emit,
+ * pre-scan, sorted-table approaches, etc. must produce byte-identical output), the URL writing variants in {@code writeURL}, and the XML-mode variants
+ * ({@code writeTextForXML}, {@code writeUnescapedTextForXML}, {@code writeAttribute} with forXml=true).
  */
 class HtmlUtilsTest {
 
@@ -485,15 +484,17 @@ class HtmlUtilsTest {
     @Test
     void writeURL_nonAsciiInUriPathPercentEncoded() throws IOException {
         assertEquals(
-                "/%CE%B5%CE%BB/%D7%99%D7%AA/%D0%BA%D0%B8/%D9%8A%D8%A9%D9%8F%E2%80%8E%E2%80%8E/%ED%95%9C%EA%B8%80/index.jsf",
-                writeURL("/ελ/ית/ки/يةُ‎‎/한글/index.jsf"));
+            "/%CE%B5%CE%BB/%D7%99%D7%AA/%D0%BA%D0%B8/%D9%8A%D8%A9%D9%8F%E2%80%8E%E2%80%8E/%ED%95%9C%EA%B8%80/index.jsf",
+            writeURL("/ελ/ית/ки/يةُ‎‎/한글/index.jsf")
+        );
     }
 
     @Test
     void writeURL_nonAsciiInQueryStringPercentEncoded() throws IOException {
         assertEquals(
-                "/index.jsf?greek=%CE%B5%CE%BB&amp;cyrillic=%D0%BA%D0%B8&amp;hebrew=%D7%99%D7%AA&amp;arabic=%D9%8A%D8%A9%D9%8F%E2%80%8E%E2%80%8E&amp;korean=%ED%95%9C%EA%B8%80",
-                writeURL("/index.jsf?greek=ελ&cyrillic=ки&hebrew=ית&arabic=يةُ‎‎&korean=한글"));
+            "/index.jsf?greek=%CE%B5%CE%BB&amp;cyrillic=%D0%BA%D0%B8&amp;hebrew=%D7%99%D7%AA&amp;arabic=%D9%8A%D8%A9%D9%8F%E2%80%8E%E2%80%8E&amp;korean=%ED%95%9C%EA%B8%80",
+            writeURL("/index.jsf?greek=ελ&cyrillic=ки&hebrew=ית&arabic=يةُ‎‎&korean=한글")
+        );
     }
 
     /**
@@ -502,17 +503,20 @@ class HtmlUtilsTest {
     @Test
     void writeURL_questionMarkInFragmentIsPreserved() throws IOException {
         // RFC 3986 section 3.5: '?' inside a fragment is just a regular char (not a query start).
-        assertEquals("https://server.com/sap?query#fragment?p=v",
-                writeURL("https://server.com/sap?query#fragment?p=v"));
-        assertEquals("https://server.com/sap?query=foo%3Fbar#fragment?p=v",
-                writeURL("https://server.com/sap?query=foo?bar#fragment?p=v"));
+        assertEquals(
+            "https://server.com/sap?query#fragment?p=v",
+            writeURL("https://server.com/sap?query#fragment?p=v")
+        );
+        assertEquals(
+            "https://server.com/sap?query=foo%3Fbar#fragment?p=v",
+            writeURL("https://server.com/sap?query=foo?bar#fragment?p=v")
+        );
     }
 
     // -------- XML mode variants --------------------------------------------
 
     /**
-     * https://github.com/eclipse-ee4j/mojarra/issues/4516
-     * https://github.com/eclipse-ee4j/mojarra/issues/5464
+     * https://github.com/eclipse-ee4j/mojarra/issues/4516 https://github.com/eclipse-ee4j/mojarra/issues/5464
      */
     @Test
     void testAllowedXmlCharacter() {
@@ -654,8 +658,8 @@ class HtmlUtilsTest {
     }
 
     /**
-     * HtmlResponseWriter uppercases the encoding before asking, so the BOM aliases must be
-     * recognized in upper case as well as in the mixed case the JDK canonically uses.
+     * HtmlResponseWriter uppercases the encoding before asking, so the BOM aliases must be recognized in upper case as well as in the mixed case the JDK
+     * canonically uses.
      */
     @Test
     void isUTFencoding_bomAliasesMatchInBothCases() {
@@ -724,4 +728,5 @@ class HtmlUtilsTest {
 
         return writer.toString();
     }
+
 }

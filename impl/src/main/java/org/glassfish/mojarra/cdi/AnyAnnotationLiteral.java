@@ -25,5 +25,7 @@ import jakarta.enterprise.util.AnnotationLiteral;
  */
 @SuppressWarnings("all")
 class AnyAnnotationLiteral extends AnnotationLiteral<Any> implements Any {
+
     private static final long serialVersionUID = 1L;
+
 }

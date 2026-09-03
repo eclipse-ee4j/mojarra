@@ -26,8 +26,8 @@ import java.io.Writer;
 import org.junit.jupiter.api.Test;
 
 /**
- * Every method here overrides a {@link Writer} method whose behavior the base class already specifies, so each test
- * pins one clause of that specification against the {@link StringBuilder} call it delegates to.
+ * Every method here overrides a {@link Writer} method whose behavior the base class already specifies, so each test pins one clause of that specification
+ * against the {@link StringBuilder} call it delegates to.
  */
 public class FastStringWriterTest {
 
@@ -54,8 +54,8 @@ public class FastStringWriterTest {
     }
 
     /**
-     * {@link Writer#write(char[], int, int)} takes an offset and a length, where {@link StringBuilder} takes an offset
-     * and a length as well, so the arguments pass through unchanged.
+     * {@link Writer#write(char[], int, int)} takes an offset and a length, where {@link StringBuilder} takes an offset and a length as well, so the arguments
+     * pass through unchanged.
      */
     @Test
     public void writeCharArrayPortionTakesOffsetAndLength() throws IOException {
@@ -66,8 +66,7 @@ public class FastStringWriterTest {
     }
 
     /**
-     * A range outside the array is rejected, which is what allows the bounds check to be left to
-     * {@link StringBuilder}.
+     * A range outside the array is rejected, which is what allows the bounds check to be left to {@link StringBuilder}.
      */
     @Test
     public void writeCharArrayPortionRejectsRangeOutsideTheArray() {
@@ -80,8 +79,8 @@ public class FastStringWriterTest {
     }
 
     /**
-     * {@link Writer#write(String, int, int)} takes an offset and a length, where {@link StringBuilder} takes a start
-     * and an end, so the length has to be converted.
+     * {@link Writer#write(String, int, int)} takes an offset and a length, where {@link StringBuilder} takes a start and an end, so the length has to be
+     * converted.
      */
     @Test
     public void writeStringPortionConvertsLengthToEndIndex() {
@@ -103,8 +102,8 @@ public class FastStringWriterTest {
     }
 
     /**
-     * {@link Writer#append(CharSequence)} and {@link Writer#append(CharSequence, int, int)} treat a <code>null</code>
-     * sequence as if it contained the four characters <code>null</code>.
+     * {@link Writer#append(CharSequence)} and {@link Writer#append(CharSequence, int, int)} treat a <code>null</code> sequence as if it contained the four
+     * characters <code>null</code>.
      */
     @Test
     public void appendTreatsNullAsTheFourCharactersNull() throws IOException {
@@ -144,8 +143,8 @@ public class FastStringWriterTest {
     }
 
     /**
-     * {@link FastStringWriter#reset()} empties the buffer without replacing it, so a reference handed out through
-     * {@link FastStringWriter#getBuffer()} stays valid.
+     * {@link FastStringWriter#reset()} empties the buffer without replacing it, so a reference handed out through {@link FastStringWriter#getBuffer()} stays
+     * valid.
      */
     @Test
     public void resetEmptiesTheBufferInPlace() {

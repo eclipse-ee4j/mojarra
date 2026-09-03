@@ -46,7 +46,8 @@ public class InputValidatorTestImpl implements Validator<Object> {
     public static void trace(String text) {
         if (text == null) {
             trace.setLength(0);
-        } else {
+        }
+        else {
             trace.append('/');
             trace.append(text);
         }
@@ -56,4 +57,5 @@ public class InputValidatorTestImpl implements Validator<Object> {
     public static String trace() {
         return trace.toString();
     }
+
 }

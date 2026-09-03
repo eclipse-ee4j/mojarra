@@ -34,11 +34,9 @@ import jakarta.faces.view.facelets.TagAttributeException;
 import org.glassfish.mojarra.facelets.tag.faces.ComponentSupport;
 
 /**
- * Register a DateTimeConverter instance on the UIComponent associated with the closest parent UIComponent custom
- * action.
- * 
- * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/convertDateTime.html">tag
- * documentation</a>.
+ * Register a DateTimeConverter instance on the UIComponent associated with the closest parent UIComponent custom action.
+ *
+ * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/convertDateTime.html">tag documentation</a>.
  *
  * @author Jacob Hookom
  * @version $Id$
@@ -46,12 +44,13 @@ import org.glassfish.mojarra.facelets.tag.faces.ComponentSupport;
 public final class ConvertDateTimeHandler extends ConverterHandler {
 
     /**
-     * The values of the {@code type} attribute which represent a {@code java.time} class, as listed in
-     * {@link DateTimeConverter#setType(String)}. Only for these may {@code pattern} and {@code type} co-exist.
+     * The values of the {@code type} attribute which represent a {@code java.time} class, as listed in {@link DateTimeConverter#setType(String)}. Only for
+     * these may {@code pattern} and {@code type} co-exist.
      */
     private static final Set<String> JAVA_TIME_TYPES = Set.of(
         "localDate", "localDateTime", "localTime", "offsetTime", "offsetDateTime", "zonedDateTime",
-        "instant", "year", "yearMonth", "monthDay");
+        "instant", "year", "yearMonth", "monthDay"
+    );
 
     private final TagAttribute dateStyle;
 
@@ -108,7 +107,8 @@ public final class ConvertDateTimeHandler extends ConverterHandler {
                 }
             }
 
-        } else {
+        }
+        else {
             if (type != null) {
                 c.setType(type.getValue(ctx));
             }
@@ -125,12 +125,16 @@ public final class ConvertDateTimeHandler extends ConverterHandler {
             if (t != null) {
                 if (t instanceof TimeZone) {
                     c.setTimeZone((TimeZone) t);
-                } else if (t instanceof String) {
+                }
+                else if (t instanceof String) {
                     TimeZone tz = TimeZone.getTimeZone((String) t);
                     c.setTimeZone(tz);
-                } else {
-                    throw new TagAttributeException(tag, timeZone,
-                            "Illegal TimeZone, must evaluate to either a java.util.TimeZone or String, is type: " + t.getClass());
+                }
+                else {
+                    throw new TagAttributeException(
+                        tag, timeZone,
+                        "Illegal TimeZone, must evaluate to either a java.util.TimeZone or String, is type: " + t.getClass()
+                    );
                 }
             }
         }
@@ -140,4 +144,5 @@ public final class ConvertDateTimeHandler extends ConverterHandler {
     public MetaRuleset createMetaRuleset(Class<?> type) {
         return super.createMetaRuleset(type).ignoreAll();
     }
+
 }

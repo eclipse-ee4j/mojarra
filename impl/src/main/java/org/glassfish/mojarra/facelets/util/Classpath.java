@@ -52,7 +52,8 @@ public final class Classpath {
     private static final String[] EXTENSIONS_TO_EXCLUDE = { ".rar", ".sar" };
 
     public enum SearchAdvice {
-        FirstMatchOnly, AllMatches
+        FirstMatchOnly,
+        AllMatches
     }
 
     public static URL[] search(String prefix, String suffix) throws IOException {
@@ -86,12 +87,14 @@ public final class Classpath {
                 conn.setUseCaches(false);
                 if (conn instanceof JarURLConnection) {
                     jarFile = ((JarURLConnection) conn).getJarFile();
-                } else {
+                }
+                else {
                     jarFile = getAlternativeJarFile(url);
                 }
                 if (jarFile != null) {
                     searchJar(cl, all, jarFile, prefix, suffix, advice);
-                } else {
+                }
+                else {
                     boolean searchDone = searchDir(all, new File(URLDecoder.decode(url.getFile(), UTF_8)), suffix);
                     if (!searchDone) {
                         searchFromURL(all, prefix, suffix, url);
@@ -117,7 +120,8 @@ public final class Classpath {
                 path = value.getAbsolutePath().replace('\\', '/');
                 if (value.isDirectory()) {
                     searchDir(result, value, suffix);
-                } else if (path.endsWith(suffix)) {
+                }
+                else if (path.endsWith(suffix)) {
                     // result.add(new URL("file:/" + path));
                     result.add(value.toURI().toURL());
                 }
@@ -205,15 +209,15 @@ public final class Classpath {
     private static InputStream getInputStream(URL url) {
         try {
             return url.openStream();
-        } catch (Throwable t) {
+        }
+        catch (Throwable t) {
             return null;
         }
     }
 
     /**
-     * For URLs to JARs that do not use JarURLConnection - allowed by the servlet spec - attempt to produce a JarFile object
-     * all the same. Known servlet engines that function like this include Weblogic and OC4J. This is not a full solution,
-     * since an unpacked WAR or EAR will not have JAR "files" as such.
+     * For URLs to JARs that do not use JarURLConnection - allowed by the servlet spec - attempt to produce a JarFile object all the same. Known servlet engines
+     * that function like this include Weblogic and OC4J. This is not a full solution, since an unpacked WAR or EAR will not have JAR "files" as such.
      */
     private static JarFile getAlternativeJarFile(URL url) throws IOException {
         String urlFile = url.getFile();
@@ -232,7 +236,8 @@ public final class Classpath {
         if (-1 != bangSlash || -1 != bang) {
             if (bangSlash < bang) {
                 separatorIndex = bangSlash;
-            } else {
+            }
+            else {
                 separatorIndex = bang;
             }
         }
@@ -254,7 +259,8 @@ public final class Classpath {
             if (!foundExclusion) {
                 try {
                     result = new JarFile(jarFileUrl);
-                } catch (ZipException ze) {
+                }
+                catch (ZipException ze) {
                     result = null;
                 }
             }
@@ -271,7 +277,8 @@ public final class Classpath {
         while (e.hasMoreElements()) {
             try {
                 entry = e.nextElement();
-            } catch (Throwable t) {
+            }
+            catch (Throwable t) {
                 continue;
             }
             name = entry.getName();

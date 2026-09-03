@@ -26,16 +26,14 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 
 /**
- * Backs {@code dynamic-toggle-ajax.xhtml}. Each {@link #toggle()} adds or removes an input subtree under the
- * in-view {@code container} via {@code getChildren().add()/clear()} in the action. Because the mutation happens
- * <em>after</em> the view's initial state was marked, it drives Mojarra's dynamic add/remove path — the
- * {@code StateContext} dynamic-action tracking, the {@code DYNAMIC_COMPONENT} marker, and full-state-save/restore
- * of the dynamic subtree — which no structurally-static scenario reaches. This is the scenario for benchmarking
- * that path.
+ * Backs {@code dynamic-toggle-ajax.xhtml}. Each {@link #toggle()} adds or removes an input subtree under the in-view {@code container} via
+ * {@code getChildren().add()/clear()} in the action. Because the mutation happens <em>after</em> the view's initial state was marked, it drives Mojarra's
+ * dynamic add/remove path — the {@code StateContext} dynamic-action tracking, the {@code DYNAMIC_COMPONENT} marker, and full-state-save/restore of the dynamic
+ * subtree — which no structurally-static scenario reaches. This is the scenario for benchmarking that path.
  * <p>
- * The branch is chosen from the live tree, not a flag: on Mojarra the dynamic subtree is replayed on restore, so
- * toggles alternate add/remove; MyFaces does not persist it across postback the same way, so it re-adds each
- * request. Both are valid — the divergence is itself the cross-impl observation — and neither errors.
+ * The branch is chosen from the live tree, not a flag: on Mojarra the dynamic subtree is replayed on restore, so toggles alternate add/remove; MyFaces does not
+ * persist it across postback the same way, so it re-adds each request. Both are valid — the divergence is itself the cross-impl observation — and neither
+ * errors.
  */
 @Named
 @ViewScoped
@@ -64,4 +62,5 @@ public class DynamicToggleBean implements Serializable {
 
         return null;
     }
+
 }

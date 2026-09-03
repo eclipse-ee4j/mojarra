@@ -79,4 +79,5 @@ public class UISelectBooleanTestCase extends UIInputTestCase {
         component.setRendererType(null);
         return component;
     }
+
 }

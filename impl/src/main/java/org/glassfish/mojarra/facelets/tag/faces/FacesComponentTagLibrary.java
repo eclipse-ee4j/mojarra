@@ -82,7 +82,8 @@ public class FacesComponentTagLibrary extends LazyTagLibrary {
                     result = cur;
                     break;
                 }
-            } else if (null != tagName) {
+            }
+            else if (null != tagName) {
                 tagName = cur.getTarget().getSimpleName();
                 tagName = tagName.substring(0, 1).toLowerCase(Locale.ROOT) + tagName.substring(1);
                 if (localName.equals(tagName)) {

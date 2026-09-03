@@ -34,9 +34,8 @@ import jakarta.faces.context.FacesContext;
 import org.glassfish.mojarra.config.InitFacesContext;
 
 /**
- * Concrete implementation of {@link jakarta.el.ELContext}. ELContext's constructor is protected to control creation of
- * ELContext objects through their appropriate factory methods. This version of ELContext forces construction through
- * FacesContextImpl.
+ * Concrete implementation of {@link jakarta.el.ELContext}. ELContext's constructor is protected to control creation of ELContext objects through their
+ * appropriate factory methods. This version of ELContext forces construction through FacesContextImpl.
  *
  */
 public class ELContextImpl extends ELContext {
@@ -119,6 +118,7 @@ public class ELContextImpl extends ELContext {
         public ValueExpression setVariable(String variable, ValueExpression valueExpression) {
             return variables.put(variable, valueExpression);
         }
+
     }
 
     private static class NoopFunctionMapper extends FunctionMapper {

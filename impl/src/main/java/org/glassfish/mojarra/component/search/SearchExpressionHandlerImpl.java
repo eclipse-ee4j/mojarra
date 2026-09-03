@@ -42,7 +42,8 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler {
     public String resolveClientId(SearchExpressionContext searchExpressionContext, String expression) {
         if (expression == null) {
             expression = "";
-        } else {
+        }
+        else {
             expression = expression.trim();
         }
 
@@ -64,14 +65,17 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler {
         String clientId = internalCallback.getClientId();
 
         if (clientId == null && !isHintSet(searchExpressionContext, SearchExpressionHint.IGNORE_NO_RESULT)) {
-            throw new ComponentNotFoundException("Cannot find component for expression \"" + expression + "\" referenced from \""
-                    + searchExpressionContext.getSource().getClientId(facesContext) + "\".");
+            throw new ComponentNotFoundException(
+                "Cannot find component for expression \"" + expression + "\" referenced from \""
+                    + searchExpressionContext.getSource().getClientId(facesContext) + "\"."
+            );
         }
 
         return clientId;
     }
 
     private static class ResolveClientIdCallback implements ContextCallback {
+
         private String clientId = null;
 
         @Override
@@ -84,13 +88,15 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler {
         public String getClientId() {
             return clientId;
         }
+
     }
 
     @Override
     public List<String> resolveClientIds(SearchExpressionContext searchExpressionContext, String expressions) {
         if (expressions == null) {
             expressions = "";
-        } else {
+        }
+        else {
             expressions = expressions.trim();
         }
 
@@ -103,15 +109,18 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler {
             for (String expression : handler.splitExpressions(facesContext, expressions)) {
                 if (handler.isPassthroughExpression(searchExpressionContext, expression)) {
                     internalCallback.addClientId(expression);
-                } else {
+                }
+                else {
                     handler.invokeOnComponent(searchExpressionContext, expression, internalCallback);
                 }
             }
         }
 
         if (internalCallback.getClientIds() == null && !isHintSet(searchExpressionContext, SearchExpressionHint.IGNORE_NO_RESULT)) {
-            throw new ComponentNotFoundException("Cannot find component for expressions \"" + expressions + "\" referenced from \""
-                    + searchExpressionContext.getSource().getClientId(facesContext) + "\".");
+            throw new ComponentNotFoundException(
+                "Cannot find component for expressions \"" + expressions + "\" referenced from \""
+                    + searchExpressionContext.getSource().getClientId(facesContext) + "\"."
+            );
         }
 
         List<String> clientIds = internalCallback.getClientIds();
@@ -123,6 +132,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler {
     }
 
     private static class ResolveClientIdsCallback implements ContextCallback {
+
         private List<String> clientIds = null;
 
         @Override
@@ -140,6 +150,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler {
             }
             clientIds.add(clientId);
         }
+
     }
 
     @Override
@@ -158,12 +169,15 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler {
         handler.invokeOnComponent(searchExpressionContext, expression, internalCallback);
 
         if (!internalCallback.isInvoked() && !isHintSet(searchExpressionContext, SearchExpressionHint.IGNORE_NO_RESULT)) {
-            throw new ComponentNotFoundException("Cannot find component for expression \"" + expression + "\" referenced from \""
-                    + searchExpressionContext.getSource().getClientId(facesContext) + "\".");
+            throw new ComponentNotFoundException(
+                "Cannot find component for expression \"" + expression + "\" referenced from \""
+                    + searchExpressionContext.getSource().getClientId(facesContext) + "\"."
+            );
         }
     }
 
     private static class ResolveComponentCallback implements ContextCallback {
+
         private final ContextCallback callback;
         private boolean invoked;
 
@@ -183,6 +197,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler {
         public boolean isInvoked() {
             return invoked;
         }
+
     }
 
     @Override
@@ -204,12 +219,15 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler {
         }
 
         if (!internalCallback.isInvoked() && !isHintSet(searchExpressionContext, SearchExpressionHint.IGNORE_NO_RESULT)) {
-            throw new ComponentNotFoundException("Cannot find component for expressions \"" + expressions + "\" referenced from \""
-                    + searchExpressionContext.getSource().getClientId(facesContext) + "\".");
+            throw new ComponentNotFoundException(
+                "Cannot find component for expressions \"" + expressions + "\" referenced from \""
+                    + searchExpressionContext.getSource().getClientId(facesContext) + "\"."
+            );
         }
     }
 
     private static class ResolveComponentsCallback implements ContextCallback {
+
         private final ContextCallback callback;
         private boolean invoked;
 
@@ -227,6 +245,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler {
         public boolean isInvoked() {
             return invoked;
         }
+
     }
 
     @Override
@@ -265,34 +284,43 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler {
 
                 if (remainingExpression == null) {
                     invokeKeywordResolvers(searchExpressionContext, previous, keyword, null, callback);
-                } else {
+                }
+                else {
 
                     if (facesContext.getApplication().getSearchKeywordResolver().isLeaf(searchExpressionContext, keyword)) {
                         throw new FacesException(
-                                "It's not valid to place a keyword or id after a leaf keyword: " + KEYWORD_PREFIX + keyword + ". Expression: " + expression);
+                            "It's not valid to place a keyword or id after a leaf keyword: " + KEYWORD_PREFIX + keyword + ". Expression: " + expression
+                        );
                     }
 
                     final String finalRemainingExpression = remainingExpression;
 
-                    invokeKeywordResolvers(searchExpressionContext, previous, keyword, remainingExpression, (facesContext1, target) -> handler.invokeOnComponent(searchExpressionContext, target, finalRemainingExpression, callback));
+                    invokeKeywordResolvers(
+                        searchExpressionContext, previous, keyword, remainingExpression,
+                        (facesContext1, target) -> handler.invokeOnComponent(searchExpressionContext, target, finalRemainingExpression, callback)
+                    );
                 }
-            } else {
+            }
+            else {
                 String id = command;
 
                 UIComponent target = previous.findComponent(id);
                 if (target != null) {
                     if (remainingExpression == null) {
                         callback.invokeContextCallback(facesContext, target);
-                    } else {
+                    }
+                    else {
                         handler.invokeOnComponent(searchExpressionContext, target, remainingExpression, callback);
                     }
                 }
             }
-        } else {
+        }
+        else {
             UIComponent target = previous.findComponent(expression);
             if (target != null) {
                 callback.invokeContextCallback(facesContext, target);
-            } else if (!isHintSet(searchExpressionContext, SearchExpressionHint.SKIP_VIRTUAL_COMPONENTS)) {
+            }
+            else if (!isHintSet(searchExpressionContext, SearchExpressionHint.SKIP_VIRTUAL_COMPONENTS)) {
                 // fallback
                 // invokeOnComponent doesnt work with the leading ':'
                 char separatorChar = facesContext.getNamingContainerSeparatorChar();
@@ -305,8 +333,11 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler {
         }
     }
 
-    protected void invokeKeywordResolvers(SearchExpressionContext searchExpressionContext, UIComponent previous, String keyword, String remainingExpression,
-            ContextCallback callback) {
+    protected void invokeKeywordResolvers(
+        SearchExpressionContext searchExpressionContext, UIComponent previous, String keyword, String remainingExpression,
+        ContextCallback callback
+    )
+    {
         // take the keyword and resolve it using the chain of responsibility pattern.
         SearchKeywordContext searchContext = new SearchKeywordContext(searchExpressionContext, callback, remainingExpression);
 
@@ -349,10 +380,12 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler {
                     }
                     // now we need to clear buffer
                     buffer.delete(0, buffer.length());
-                } else {
+                }
+                else {
                     buffer.append(c);
                 }
-            } else {
+            }
+            else {
                 buffer.append(c);
             }
         }
@@ -442,7 +475,8 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler {
 
                     return handler.isValidExpression(searchExpressionContext, remainingExpression);
                 }
-            } else {
+            }
+            else {
                 if (remainingExpression != null) {
                     return handler.isValidExpression(searchExpressionContext, remainingExpression);
                 }
@@ -495,8 +529,10 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler {
 
         if (count == -1) {
             return expression;
-        } else {
+        }
+        else {
             return expression.substring(0, count);
         }
     }
+
 }

@@ -34,9 +34,11 @@ public class ViewNodeImpl extends ViewNode implements Serializable {
 
         if (-1 != i) {
             vdlDocumentIdIn = vdlDocumentIdIn.substring(i + 14);
-        } else if (vdlDocumentIdIn.startsWith("/WEB-INF")) {
+        }
+        else if (vdlDocumentIdIn.startsWith("/WEB-INF")) {
             vdlDocumentIdIn = vdlDocumentIdIn.substring(8);
-        } else if (vdlDocumentIdIn.startsWith("WEB-INF")) {
+        }
+        else if (vdlDocumentIdIn.startsWith("WEB-INF")) {
             vdlDocumentIdIn = vdlDocumentIdIn.substring(7);
         }
         vdlDocumentId = vdlDocumentIdIn;

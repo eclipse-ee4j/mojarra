@@ -43,8 +43,10 @@ public class ExceptionHandlerFactoryImpl extends ExceptionHandlerFactory {
         FacesContext fc = FacesContext.getCurrentInstance();
         ApplicationAssociate myAssociate = getAssociate(fc);
 
-        ExceptionHandler result = new AjaxNoAjaxExceptionHandler(new AjaxExceptionHandlerImpl(new ExceptionHandlerImpl(fc, Boolean.TRUE)),
-                new ExceptionHandlerImpl(fc, myAssociate != null ? myAssociate.isErrorPagePresent() : Boolean.TRUE));
+        ExceptionHandler result = new AjaxNoAjaxExceptionHandler(
+            new AjaxExceptionHandlerImpl(new ExceptionHandlerImpl(fc, Boolean.TRUE)),
+            new ExceptionHandlerImpl(fc, myAssociate != null ? myAssociate.isErrorPagePresent() : Boolean.TRUE)
+        );
         return result;
 
     }

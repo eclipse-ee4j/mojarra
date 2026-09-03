@@ -24,9 +24,8 @@ import jakarta.faces.view.facelets.ValidatorHandler;
 
 /**
  * Register a named Validator instance on the UIComponent associated with the closest parent UIComponent custom action.
- * 
- * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/validator.html">tag
- * documentation</a>.
+ *
+ * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/validator.html">tag documentation</a>.
  *
  * @author Jacob Hookom
  * @version $Id$
@@ -41,8 +40,7 @@ public final class ValidateDelegateHandler extends ValidatorHandler {
     }
 
     /**
-     * Resolve the validator id from the attribute "validatorId", which is then used to create a new Validator instance from
-     * the Application.
+     * Resolve the validator id from the attribute "validatorId", which is then used to create a new Validator instance from the Application.
      *
      * @see jakarta.faces.application.Application#createValidator(java.lang.String)
      */

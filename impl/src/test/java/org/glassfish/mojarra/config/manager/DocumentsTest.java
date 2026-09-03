@@ -43,9 +43,9 @@ import org.junit.jupiter.api.io.TempDir;
 class DocumentsTest {
 
     private static final String FACES_CONFIG = """
-            <?xml version="1.0" encoding="UTF-8"?>
-            <faces-config xmlns="https://jakarta.ee/xml/ns/jakartaee" version="5.0"/>
-            """;
+        <?xml version="1.0" encoding="UTF-8"?>
+        <faces-config xmlns="https://jakarta.ee/xml/ns/jakartaee" version="5.0"/>
+        """;
 
     private final ServletContext servletContext = mock(ServletContext.class);
 
@@ -54,8 +54,8 @@ class DocumentsTest {
 
     /**
      * The documents must come back in the order in which the providers offered them, because that order is what
-     * {@link Documents#sortDocuments(DocumentInfo[], FacesConfigInfo)} subsequently interprets as the classpath order to
-     * apply <code>absolute-ordering</code> against.
+     * {@link Documents#sortDocuments(DocumentInfo[], FacesConfigInfo)} subsequently interprets as the classpath order to apply <code>absolute-ordering</code>
+     * against.
      */
     @Test
     void documentsAreReturnedInProviderOrder() throws Exception {
@@ -69,8 +69,7 @@ class DocumentsTest {
     }
 
     /**
-     * The same configuration resource offered by more than one provider must be parsed exactly once, at the position
-     * where it was first offered.
+     * The same configuration resource offered by more than one provider must be parsed exactly once, at the position where it was first offered.
      */
     @Test
     void duplicateUriAcrossProvidersIsParsedOnce() throws Exception {
@@ -83,29 +82,34 @@ class DocumentsTest {
     }
 
     /**
-     * A provider which blows up must fail the configuration rather than being skipped, otherwise the application starts
-     * with silently incomplete configuration.
+     * A provider which blows up must fail the configuration rather than being skipped, otherwise the application starts with silently incomplete configuration.
      */
     @Test
     void providerFailureIsNotSwallowed() {
         ConfigurationException expected = new ConfigurationException("Provider is broken");
 
-        ConfigurationException actual = assertThrows(ConfigurationException.class,
-            () -> getXMLDocuments(servletContext, of(context -> { throw expected; }), false));
+        ConfigurationException actual = assertThrows(
+            ConfigurationException.class,
+            () -> getXMLDocuments(servletContext, of(context -> {
+                throw expected;
+            }), false)
+        );
 
         assertSame(expected, actual);
     }
 
     /**
-     * A configuration resource which cannot be read must fail the configuration as well, wrapped so that the caller sees
-     * the same exception type regardless of what the parser threw.
+     * A configuration resource which cannot be read must fail the configuration as well, wrapped so that the caller sees the same exception type regardless of
+     * what the parser threw.
      */
     @Test
     void unreadableResourceIsNotSwallowed() {
         URI absent = folder.resolve("absent-faces-config.xml").toUri();
 
-        ConfigurationException e = assertThrows(ConfigurationException.class,
-            () -> getXMLDocuments(servletContext, of(provider(absent)), false));
+        ConfigurationException e = assertThrows(
+            ConfigurationException.class,
+            () -> getXMLDocuments(servletContext, of(provider(absent)), false)
+        );
 
         assertInstanceOf(IOException.class, e.getCause());
     }
@@ -122,4 +126,5 @@ class DocumentsTest {
     private static URI[] sourceURIs(DocumentInfo[] documents) {
         return stream(documents).map(DocumentInfo::getSourceURI).toArray(URI[]::new);
     }
+
 }

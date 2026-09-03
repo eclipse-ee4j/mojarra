@@ -75,19 +75,31 @@ public class JUnitFacesTestCaseBase {
         reInitializeFactoryManager.invoke(null, (Object[]) null);
 
         // Create something to stand-in as the InitFacesContext
-        new MockFacesContext(new MockExternalContext(servletContext, request, response),
-                new MockLifecycle());
+        new MockFacesContext(
+            new MockExternalContext(servletContext, request, response),
+            new MockLifecycle()
+        );
 
-        FactoryFinder.setFactory(FactoryFinder.FACES_SERVLET_FACTORY,
-                "org.glassfish.mojarra.mock.MockFacesServletFactory");
-        FactoryFinder.setFactory(FactoryFinder.FACES_CONTEXT_FACTORY,
-                "org.glassfish.mojarra.mock.MockFacesContextFactory");
-        FactoryFinder.setFactory(FactoryFinder.LIFECYCLE_FACTORY,
-                "org.glassfish.mojarra.mock.MockLifecycleFactory");
-        FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY,
-                "org.glassfish.mojarra.mock.MockApplicationFactory");
-        FactoryFinder.setFactory(FactoryFinder.RENDER_KIT_FACTORY,
-                "org.glassfish.mojarra.mock.MockRenderKitFactory");
+        FactoryFinder.setFactory(
+            FactoryFinder.FACES_SERVLET_FACTORY,
+            "org.glassfish.mojarra.mock.MockFacesServletFactory"
+        );
+        FactoryFinder.setFactory(
+            FactoryFinder.FACES_CONTEXT_FACTORY,
+            "org.glassfish.mojarra.mock.MockFacesContextFactory"
+        );
+        FactoryFinder.setFactory(
+            FactoryFinder.LIFECYCLE_FACTORY,
+            "org.glassfish.mojarra.mock.MockLifecycleFactory"
+        );
+        FactoryFinder.setFactory(
+            FactoryFinder.APPLICATION_FACTORY,
+            "org.glassfish.mojarra.mock.MockApplicationFactory"
+        );
+        FactoryFinder.setFactory(
+            FactoryFinder.RENDER_KIT_FACTORY,
+            "org.glassfish.mojarra.mock.MockRenderKitFactory"
+        );
         FacesContextFactory fcFactory = (FacesContextFactory) FactoryFinder.getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
         LifecycleFactory lFactory = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
         lifecycle = (MockLifecycle) lFactory.getLifecycle(LifecycleFactory.DEFAULT_LIFECYCLE);
@@ -120,4 +132,5 @@ public class JUnitFacesTestCaseBase {
         servletContext = null;
         session = null;
     }
+
 }

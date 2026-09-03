@@ -20,7 +20,8 @@ import java.security.Principal;
 
 /**
  * <p>
- * Mock <strong>Principal</strong> object for low-level unit tests.</p>
+ * Mock <strong>Principal</strong> object for low-level unit tests.
+ * </p>
  */
 public class MockPrincipal implements Principal {
 
@@ -71,7 +72,8 @@ public class MockPrincipal implements Principal {
         Principal p = (Principal) o;
         if (name == null) {
             return (p.getName() == null);
-        } else {
+        }
+        else {
             return (name.equals(p.getName()));
         }
     }
@@ -80,8 +82,10 @@ public class MockPrincipal implements Principal {
     public int hashCode() {
         if (name == null) {
             return ("".hashCode());
-        } else {
+        }
+        else {
             return (name.hashCode());
         }
     }
+
 }

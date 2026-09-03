@@ -93,4 +93,5 @@ public final class FastWriter extends Writer {
     public String toString() {
         return new String(buff, 0, size);
     }
+
 }

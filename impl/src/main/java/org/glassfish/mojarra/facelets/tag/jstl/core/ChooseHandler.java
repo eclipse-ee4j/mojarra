@@ -43,8 +43,8 @@ public final class ChooseHandler extends TagHandlerImpl {
     private final ChooseWhenHandler[] when;
 
     /**
-     * Whether one build of a view can take another branch here than another build, which a choose whose tests are all
-     * literal cannot: it takes the same branch every time and there is nothing to replay.
+     * Whether one build of a view can take another branch here than another build, which a choose whose tests are all literal cannot: it takes the same branch
+     * every time and there is nothing to replay.
      */
     private final boolean dynamic;
 
@@ -64,7 +64,8 @@ public final class ChooseHandler extends TagHandlerImpl {
         Iterator<ChooseOtherwiseHandler> itr2 = this.findNextByType(ChooseOtherwiseHandler.class);
         if (itr2.hasNext()) {
             otherwise = itr2.next();
-        } else {
+        }
+        else {
             otherwise = null;
         }
 

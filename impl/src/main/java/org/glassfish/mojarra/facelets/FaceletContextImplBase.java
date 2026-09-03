@@ -34,10 +34,9 @@ import org.glassfish.mojarra.facelets.impl.IdMapper;
 public abstract class FaceletContextImplBase extends FaceletContext {
 
     /**
-     * Returns the Facelet a tag handler applying under this context reserves its unique-id counter slot from, or
-     * {@code null} when this context generates unique ids by tag id alone. A handler pairs the returned Facelet with
-     * the slot it reserves, so that it can tell an unchanged pairing (the common case, where its counter is a plain
-     * array index) from one it has to resolve again.
+     * Returns the Facelet a tag handler applying under this context reserves its unique-id counter slot from, or {@code null} when this context generates
+     * unique ids by tag id alone. A handler pairs the returned Facelet with the slot it reserves, so that it can tell an unchanged pairing (the common case,
+     * where its counter is a plain array index) from one it has to resolve again.
      *
      * @return the Facelet being applied, or {@code null} when slot-based id generation is unsupported
      */
@@ -46,8 +45,8 @@ public abstract class FaceletContextImplBase extends FaceletContext {
     }
 
     /**
-     * Returns the unique-id counter slot the Facelet returned by {@link #getUniqueIdSlotOwner()} holds for the given
-     * tag, for a tag handler to hold onto for as long as it lives. Asking twice for the same tag yields the same slot.
+     * Returns the unique-id counter slot the Facelet returned by {@link #getUniqueIdSlotOwner()} holds for the given tag, for a tag handler to hold onto for as
+     * long as it lives. Asking twice for the same tag yields the same slot.
      *
      * @param tagId the tag id to get a slot for
      * @return the tag's slot, or -1 when slot-based id generation is unsupported
@@ -57,9 +56,8 @@ public abstract class FaceletContextImplBase extends FaceletContext {
     }
 
     /**
-     * Slot-based variant of {@link #generateUniqueId(String)}, generating the same id from a counter held at
-     * {@code slot} in {@code owner}'s counter array. Implementations that do not support slot-based generation
-     * ignore both and count by tag id.
+     * Slot-based variant of {@link #generateUniqueId(String)}, generating the same id from a counter held at {@code slot} in {@code owner}'s counter array.
+     * Implementations that do not support slot-based generation ignore both and count by tag id.
      *
      * @param base the tag id
      * @param owner the Facelet the slot was reserved from
@@ -71,10 +69,9 @@ public abstract class FaceletContextImplBase extends FaceletContext {
     }
 
     /**
-     * Returns the alias the {@link IdMapper} in effect for this build gives to the given id, or the id itself when no
-     * mapper is in effect. The mapper is fixed for the duration of a build, so an implementation that resolves it once
-     * answers this without the lookup in {@link jakarta.faces.context.FacesContext#getAttributes()} that this default
-     * performs per call.
+     * Returns the alias the {@link IdMapper} in effect for this build gives to the given id, or the id itself when no mapper is in effect. The mapper is fixed
+     * for the duration of a build, so an implementation that resolves it once answers this without the lookup in
+     * {@link jakarta.faces.context.FacesContext#getAttributes()} that this default performs per call.
      *
      * @param id the id to alias
      * @return the aliased id
@@ -102,8 +99,8 @@ public abstract class FaceletContextImplBase extends FaceletContext {
     public abstract void extendClient(TemplateClient client);
 
     /**
-     * This method will walk through the TemplateClient stack to resolve and apply the definition for the passed name. If
-     * it's been resolved and applied, this method will return true.
+     * This method will walk through the TemplateClient stack to resolve and apply the definition for the passed name. If it's been resolved and applied, this
+     * method will return true.
      *
      * @param parent the UIComponent to apply to
      * @param name name or null of the definition you want to apply

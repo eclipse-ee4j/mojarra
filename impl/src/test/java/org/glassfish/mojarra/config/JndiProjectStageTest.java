@@ -36,9 +36,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 /**
- * The project stage may be configured through a JNDI environment entry, which every Jakarta EE server supports and
- * which takes precedence over the context parameter. Nothing else can reach that path, since a mock ServletContext has
- * no JNDI.
+ * The project stage may be configured through a JNDI environment entry, which every Jakarta EE server supports and which takes precedence over the context
+ * parameter. Nothing else can reach that path, since a mock ServletContext has no JNDI.
  */
 class JndiProjectStageTest {
 
@@ -59,14 +58,15 @@ class JndiProjectStageTest {
 
         if (originalFactory == null) {
             System.clearProperty(FACTORY_PROPERTY);
-        } else {
+        }
+        else {
             System.setProperty(FACTORY_PROPERTY, originalFactory);
         }
     }
 
     /**
-     * Reading the entry is what decides the stage, and the stage is what decides at which level the entries themselves
-     * are reported, so the two cannot simply be done in one pass.
+     * Reading the entry is what decides the stage, and the stage is what decides at which level the entries themselves are reported, so the two cannot simply
+     * be done in one pass.
      */
     @Test
     void theEnvironmentEntryDecidesTheStage() {
@@ -114,5 +114,7 @@ class JndiProjectStageTest {
 
             return context;
         }
+
     }
+
 }

@@ -31,17 +31,15 @@ import javax.naming.spi.ObjectFactory;
 import org.glassfish.mojarra.util.FacesLogger;
 
 /**
- * Allows configuring ProjectStage at a server (or in GlassFish's case domain) level. This allows for the concept of
- * development and test servers where each application doesn't need to be individually configured, but will instead rely
- * on global JNDI configuration instead.
+ * Allows configuring ProjectStage at a server (or in GlassFish's case domain) level. This allows for the concept of development and test servers where each
+ * application doesn't need to be individually configured, but will instead rely on global JNDI configuration instead.
  */
 public class ProjectStageJndiFactory implements ObjectFactory {
 
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
 
     /**
-     * Lookup the configured stage by looking for the parameter <code>stage</code>.
-     * If the value of <code>stage</code> cannot be determined, the default
+     * Lookup the configured stage by looking for the parameter <code>stage</code>. If the value of <code>stage</code> cannot be determined, the default
      * {@link jakarta.faces.application.ProjectStage#Production} is returned.
      *
      * @see ObjectFactory#getObjectInstance(Object, javax.naming.Name, javax.naming.Context, java.util.Hashtable)
@@ -56,7 +54,8 @@ public class ProjectStageJndiFactory implements ObjectFactory {
                 if (val != null) {
                     return val.trim();
                 }
-            } else {
+            }
+            else {
                 if (LOGGER.isLoggable(WARNING)) {
                     LOGGER.warning("'stage' property not defined.  Defaulting to Production");
                 }
@@ -65,4 +64,5 @@ public class ProjectStageJndiFactory implements ObjectFactory {
 
         return Production.toString();
     }
+
 }

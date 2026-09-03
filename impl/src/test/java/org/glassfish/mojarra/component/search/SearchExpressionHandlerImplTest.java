@@ -88,4 +88,5 @@ public class SearchExpressionHandlerImplTest {
         String[] expressions = handler.splitExpressions(mockedFacesContext, "@this, , that");
         assertEquals(List.of("@this", "that"), asList(expressions));
     }
+
 }

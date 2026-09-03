@@ -26,22 +26,22 @@ import org.junit.jupiter.api.Test;
 
 public class FactoryFinderTestCase2 {
 
-        public static String FACTORIES[][] = {
-	{ FactoryFinder.APPLICATION_FACTORY,
-	  "org.glassfish.mojarra.mock.MockApplicationFactory"
-	},
-	{ FactoryFinder.EXTERNAL_CONTEXT_FACTORY,
-	  "org.glassfish.mojarra.mock.MockExternalContextFactory"
-	},
-	{ FactoryFinder.FACES_CONTEXT_FACTORY,
-	  "org.glassfish.mojarra.mock.MockFacesContextFactory"
-	},
-	{ FactoryFinder.LIFECYCLE_FACTORY,
-	  "org.glassfish.mojarra.mock.MockLifecycleFactory"
-	},
-	{ FactoryFinder.RENDER_KIT_FACTORY,
-	  "org.glassfish.mojarra.mock.MockRenderKitFactory"
-	}
+    public static String FACTORIES[][] = {
+        { FactoryFinder.APPLICATION_FACTORY,
+            "org.glassfish.mojarra.mock.MockApplicationFactory"
+        },
+        { FactoryFinder.EXTERNAL_CONTEXT_FACTORY,
+            "org.glassfish.mojarra.mock.MockExternalContextFactory"
+        },
+        { FactoryFinder.FACES_CONTEXT_FACTORY,
+            "org.glassfish.mojarra.mock.MockFacesContextFactory"
+        },
+        { FactoryFinder.LIFECYCLE_FACTORY,
+            "org.glassfish.mojarra.mock.MockLifecycleFactory"
+        },
+        { FactoryFinder.RENDER_KIT_FACTORY,
+            "org.glassfish.mojarra.mock.MockRenderKitFactory"
+        }
     };
 
     // ---------------------------------------------------- Overall Test Methods
@@ -65,9 +65,10 @@ public class FactoryFinderTestCase2 {
     // ------------------------------------------------- Individual Test Methods
     /**
      * <p>
-     * In the absence of webapp faces-config.xml and META-INF/services, verify
-     * that the overrides specified in the implementation faces-config.xml take
-     * precedence.</p>
+     * In the absence of webapp faces-config.xml and META-INF/services, verify that the overrides specified in the implementation faces-config.xml take
+     * precedence.
+     * </p>
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -78,22 +79,27 @@ public class FactoryFinderTestCase2 {
         FactoryFinder.releaseFactories();
         int len, i = 0;
 
-	// this testcase only simulates the "faces implementation
+        // this testcase only simulates the "faces implementation
         // specific" part
         for (i = 0, len = FactoryFinderTestCase2.FACTORIES.length; i < len; i++) {
-            FactoryFinder.setFactory(FactoryFinderTestCase2.FACTORIES[i][0],
-                    FactoryFinderTestCase2.FACTORIES[i][1]);
+            FactoryFinder.setFactory(
+                FactoryFinderTestCase2.FACTORIES[i][0],
+                FactoryFinderTestCase2.FACTORIES[i][1]
+            );
         }
 
         for (i = 0, len = FactoryFinderTestCase2.FACTORIES.length; i < len; i++) {
             clazz = Class.forName(FactoryFinderTestCase2.FACTORIES[i][0]);
             factory = FactoryFinder.getFactory(FactoryFinderTestCase2.FACTORIES[i][0]);
             assertTrue(
-                    clazz.isAssignableFrom(factory.getClass()), "Factory for " + clazz.getName()
-                    + " not of expected type.");
+                clazz.isAssignableFrom(factory.getClass()), "Factory for " + clazz.getName()
+                    + " not of expected type."
+            );
             clazz = Class.forName(FactoryFinderTestCase2.FACTORIES[i][1]);
             assertTrue(
-                    clazz.isAssignableFrom(factory.getClass()), "Factory " + FactoryFinderTestCase2.FACTORIES[i][1] + " not of expected type");
+                clazz.isAssignableFrom(factory.getClass()), "Factory " + FactoryFinderTestCase2.FACTORIES[i][1] + " not of expected type"
+            );
         }
     }
+
 }

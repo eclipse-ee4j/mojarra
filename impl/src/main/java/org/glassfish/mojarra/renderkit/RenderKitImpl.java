@@ -18,7 +18,6 @@
 
 package org.glassfish.mojarra.renderkit;
 
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
@@ -50,7 +49,7 @@ import org.glassfish.mojarra.util.Util;
 
 /**
  * <B>RenderKitImpl</B> is a class ...
- * 
+ *
  * <B>Lifetime And Scope</B>
  *
  */
@@ -59,20 +58,19 @@ public class RenderKitImpl extends RenderKit {
     private static final Logger LOGGER = FacesLogger.RENDERKIT.getLogger();
 
     private static final String[] SUPPORTED_CONTENT_TYPES_ARRAY = new String[] { RIConstants.HTML_CONTENT_TYPE, RIConstants.XHTML_CONTENT_TYPE,
-            RIConstants.APPLICATION_XML_CONTENT_TYPE, RIConstants.TEXT_XML_CONTENT_TYPE };
+        RIConstants.APPLICATION_XML_CONTENT_TYPE, RIConstants.TEXT_XML_CONTENT_TYPE };
 
     private static final String SUPPORTED_CONTENT_TYPES = RIConstants.HTML_CONTENT_TYPE + ',' + RIConstants.XHTML_CONTENT_TYPE + ','
-            + RIConstants.APPLICATION_XML_CONTENT_TYPE + ',' + RIConstants.TEXT_XML_CONTENT_TYPE;
+        + RIConstants.APPLICATION_XML_CONTENT_TYPE + ',' + RIConstants.TEXT_XML_CONTENT_TYPE;
 
     /**
-     * Keys are String renderer family. Values are HashMaps. Nested HashMap keys are Strings for the rendererType, and
-     * values are the Renderer instances themselves.
+     * Keys are String renderer family. Values are HashMaps. Nested HashMap keys are Strings for the rendererType, and values are the Renderer instances
+     * themselves.
      */
     private ConcurrentHashMap<String, HashMap<String, Renderer<?>>> rendererFamilies = new ConcurrentHashMap<>();
 
     /**
-     * For Behavior Renderers: Keys are Strings for the behaviorRendererType, and values are the behaviorRenderer instances
-     * themselves.
+     * For Behavior Renderers: Keys are Strings for the behaviorRendererType, and values are the behaviorRenderer instances themselves.
      */
     private ConcurrentHashMap<String, ClientBehaviorRenderer> behaviorRenderers = new ConcurrentHashMap<>();
 
@@ -105,8 +103,10 @@ public class RenderKitImpl extends RenderKit {
         }
 
         if (LOGGER.isLoggable(Level.FINE) && renderers.containsKey(rendererType)) {
-            LOGGER.log(Level.FINE, "rendererType {0} has already been registered for family {1}.  Replacing existing renderer class type {2} with {3}.",
-                    new Object[] { rendererType, family, renderers.get(rendererType).getClass().getName(), renderer.getClass().getName() });
+            LOGGER.log(
+                Level.FINE, "rendererType {0} has already been registered for family {1}.  Replacing existing renderer class type {2} with {3}.",
+                new Object[] { rendererType, family, renderers.get(rendererType).getClass().getName(), renderer.getClass().getName() }
+            );
         }
         renderers.put(rendererType, renderer);
 
@@ -133,9 +133,11 @@ public class RenderKitImpl extends RenderKit {
         Util.notNull("behaviorRenderer", behaviorRenderer);
 
         if (LOGGER.isLoggable(Level.FINE) && behaviorRenderers.containsKey(behaviorRendererType)) {
-            LOGGER.log(Level.FINE, "behaviorRendererType {0} has already been registered.  Replacing existing behavior renderer class type {1} with {2}.",
-                    new Object[] { behaviorRendererType, behaviorRenderers.get(behaviorRendererType).getClass().getName(),
-                            behaviorRenderer.getClass().getName() });
+            LOGGER.log(
+                Level.FINE, "behaviorRendererType {0} has already been registered.  Replacing existing behavior renderer class type {1} with {2}.",
+                new Object[] { behaviorRendererType, behaviorRenderers.get(behaviorRendererType).getClass().getName(),
+                    behaviorRenderer.getClass().getName() }
+            );
         }
         behaviorRenderers.put(behaviorRendererType, behaviorRenderer);
 
@@ -211,8 +213,10 @@ public class RenderKitImpl extends RenderKit {
             }
 
             if (null != desiredContentTypeList) {
-                desiredContentTypeList = RenderKitUtils.determineContentType(desiredContentTypeList, SUPPORTED_CONTENT_TYPES,
-                		preferXhtml ? RIConstants.XHTML_CONTENT_TYPE : null);
+                desiredContentTypeList = RenderKitUtils.determineContentType(
+                    desiredContentTypeList, SUPPORTED_CONTENT_TYPES,
+                    preferXhtml ? RIConstants.XHTML_CONTENT_TYPE : null
+                );
                 if (null != desiredContentTypeList) {
                     contentType = findMatch(desiredContentTypeList, SUPPORTED_CONTENT_TYPES_ARRAY);
                 }
@@ -223,7 +227,8 @@ public class RenderKitImpl extends RenderKit {
         if (contentType == null) {
             if (null == desiredContentTypeList) {
                 contentType = getDefaultContentType();
-            } else {
+            }
+            else {
                 String[] desiredContentTypes = contentTypeSplit(desiredContentTypeList);
                 for (String desiredContentType : desiredContentTypes) {
                     if (RIConstants.ALL_MEDIA.equals(desiredContentType.trim())) {
@@ -278,7 +283,11 @@ public class RenderKitImpl extends RenderKit {
                 if (curDesiredType.contains(curContentType)) {
                     if (curContentType.contains(RIConstants.HTML_CONTENT_TYPE)) {
                         contentType = RIConstants.HTML_CONTENT_TYPE;
-                    } else if (curContentType.contains(RIConstants.XHTML_CONTENT_TYPE) || curContentType.contains(RIConstants.APPLICATION_XML_CONTENT_TYPE) || curContentType.contains(RIConstants.TEXT_XML_CONTENT_TYPE)) {
+                    }
+                    else if (
+                        curContentType.contains(RIConstants.XHTML_CONTENT_TYPE) || curContentType.contains(RIConstants.APPLICATION_XML_CONTENT_TYPE)
+                            || curContentType.contains(RIConstants.TEXT_XML_CONTENT_TYPE)
+                    ) {
                         contentType = RIConstants.XHTML_CONTENT_TYPE;
                     }
                     break;
@@ -295,6 +304,7 @@ public class RenderKitImpl extends RenderKit {
     public ResponseStream createResponseStream(OutputStream out) {
         final OutputStream output = out;
         return new ResponseStream() {
+
             @Override
             public void write(int b) throws IOException {
                 output.write(b);
@@ -319,6 +329,7 @@ public class RenderKitImpl extends RenderKit {
             public void close() throws IOException {
                 output.close();
             }
+
         };
     }
 
@@ -341,7 +352,8 @@ public class RenderKitImpl extends RenderKit {
         Map<String, Renderer<?>> family = rendererFamilies.get(componentFamily);
         if (family != null) {
             return family.keySet().iterator();
-        } else {
+        }
+        else {
             Set<String> empty = Collections.emptySet();
             return empty.iterator();
         }

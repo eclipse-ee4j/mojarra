@@ -81,10 +81,12 @@ public final class CompositionHandler extends TagHandlerImpl implements Template
                 for (int i = 0; i < params.length; i++) {
                     params[i] = paramC.get(i);
                 }
-            } else {
+            }
+            else {
                 params = null;
             }
-        } else {
+        }
+        else {
             params = null;
             handlers = null;
         }
@@ -105,7 +107,8 @@ public final class CompositionHandler extends TagHandlerImpl implements Template
             Integer compositionCount = (Integer) facesContext.getAttributes().get("org.glassfish.mojarra.uiCompositionCount");
             if (compositionCount == null) {
                 compositionCount = 1;
-            } else {
+            }
+            else {
                 compositionCount++;
             }
             facesContext.getAttributes().put("org.glassfish.mojarra.uiCompositionCount", compositionCount);
@@ -131,12 +134,14 @@ public final class CompositionHandler extends TagHandlerImpl implements Template
                     throw new TagAttributeException(tag, template, "Invalid path : " + path);
                 }
                 ctx.includeFacelet(parent, path);
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 if (log.isLoggable(Level.FINE)) {
                     log.log(Level.FINE, e.toString(), e);
                 }
                 throw new TagAttributeException(tag, template, "Invalid path : " + path, e);
-            } finally {
+            }
+            finally {
                 ctx.popClient(this);
                 ctx.setVariableMapper(orig);
 
@@ -145,11 +150,13 @@ public final class CompositionHandler extends TagHandlerImpl implements Template
 
                 if (compositionCount == 0) {
                     facesContext.getAttributes().remove("org.glassfish.mojarra.uiCompositionCount");
-                } else {
+                }
+                else {
                     facesContext.getAttributes().put("org.glassfish.mojarra.uiCompositionCount", compositionCount);
                 }
             }
-        } else {
+        }
+        else {
             nextHandler.apply(ctx, parent);
         }
     }
@@ -164,10 +171,12 @@ public final class CompositionHandler extends TagHandlerImpl implements Template
             if (handler != null) {
                 handler.applyDefinition(ctx, parent);
                 return true;
-            } else {
+            }
+            else {
                 return false;
             }
-        } else {
+        }
+        else {
             nextHandler.apply(ctx, parent);
             return true;
         }

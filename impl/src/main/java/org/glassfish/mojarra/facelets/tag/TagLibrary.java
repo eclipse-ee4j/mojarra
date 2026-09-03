@@ -78,4 +78,5 @@ public interface TagLibrary {
      * @return a Method instance for the passed namespace and name
      */
     Method createFunction(String ns, String name);
+
 }

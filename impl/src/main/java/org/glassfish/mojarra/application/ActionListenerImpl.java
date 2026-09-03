@@ -34,13 +34,12 @@ import jakarta.faces.event.ActionListener;
 import org.glassfish.mojarra.util.FacesLogger;
 
 /**
- * This action listener implementation processes action events during the <em>Apply Request Values</em> or <em>Invoke
- * Application</em> phase of the request processing lifecycle (depending upon the <code>immediate</code> property of the
- * {@link ActionSource} that queued this event. 
- * 
+ * This action listener implementation processes action events during the <em>Apply Request Values</em> or <em>Invoke Application</em> phase of the request
+ * processing lifecycle (depending upon the <code>immediate</code> property of the {@link ActionSource} that queued this event.
+ *
  * <p>
- * It invokes the specified application action method, and uses the logical
- * outcome value to invoke the default navigation handler mechanism to determine which view should be displayed next.
+ * It invokes the specified application action method, and uses the logical outcome value to invoke the default navigation handler mechanism to determine which
+ * view should be displayed next.
  */
 public class ActionListenerImpl implements ActionListener {
 
@@ -77,7 +76,8 @@ public class ActionListenerImpl implements ActionListener {
             }
 
             return invokeResult.toString();
-        } catch (ELException | NullPointerException e) {
+        }
+        catch (ELException | NullPointerException e) {
             LOGGER.log(FINE, e, e::getMessage);
 
             throw new FacesException(expression.getExpressionString() + ": " + e.getMessage(), e);
@@ -90,15 +90,18 @@ public class ActionListenerImpl implements ActionListener {
         String toFlowDocumentId = (String) source.getAttributes().get(TO_FLOW_DOCUMENT_ID_ATTR_NAME);
 
         if (toFlowDocumentId == null) {
-            navHandler.handleNavigation(context,
-                    expression != null ?
-                    expression.getExpressionString() : null,
-                    outcome);
-        } else {
-            navHandler.handleNavigation(context,
-                    expression != null ?
-                    expression.getExpressionString() : null,
-                    outcome, toFlowDocumentId);
+            navHandler.handleNavigation(
+                context,
+                expression != null ? expression.getExpressionString() : null,
+                outcome
+            );
+        }
+        else {
+            navHandler.handleNavigation(
+                context,
+                expression != null ? expression.getExpressionString() : null,
+                outcome, toFlowDocumentId
+            );
         }
     }
 

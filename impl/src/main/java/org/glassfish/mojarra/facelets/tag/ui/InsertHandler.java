@@ -46,10 +46,12 @@ public final class InsertHandler extends TagHandlerImpl implements TemplateClien
                 FacesContext context = FacesContext.getCurrentInstance();
                 FaceletContext ctx = (FaceletContext) context.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
                 name = (String) attr.getValueExpression(ctx, String.class).getValue(ctx);
-            } else {
+            }
+            else {
                 name = attr.getValue();
             }
-        } else {
+        }
+        else {
             name = null;
         }
     }
@@ -67,7 +69,8 @@ public final class InsertHandler extends TagHandlerImpl implements TemplateClien
         boolean found = false;
         try {
             found = ctx.includeDefinition(parent, name);
-        } finally {
+        }
+        finally {
             ctx.popClient(this);
         }
         if (!found) {
@@ -83,4 +86,5 @@ public final class InsertHandler extends TagHandlerImpl implements TemplateClien
         }
         return false;
     }
+
 }

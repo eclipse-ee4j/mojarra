@@ -63,7 +63,8 @@ public class ValidatorTagHandlerDelegateImpl extends TagHandlerDelegate implemen
         ComponentSupport.copyPassthroughAttributes(ctx, parent, owner.getTag());
         if (wrapping) {
             applyWrapping(ctx, parent);
-        } else {
+        }
+        else {
             applyNested(ctx, parent);
         }
 
@@ -138,7 +139,8 @@ public class ValidatorTagHandlerDelegateImpl extends TagHandlerDelegate implemen
         if (null != attr) {
             if (attr.isLiteral()) {
                 result = attr.getValue();
-            } else {
+            }
+            else {
                 FacesContext context = FacesContext.getCurrentInstance();
                 FaceletContext ctx = (FaceletContext) context.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
                 result = (String) attr.getValueExpression(ctx, String.class).getValue(ctx);
@@ -167,7 +169,7 @@ public class ValidatorTagHandlerDelegateImpl extends TagHandlerDelegate implemen
         // We assume that if we've got a TagHandler or CompositeFaceletHandler
         // as our nextHandler, we are not a leaf.
         return owner.getValidatorConfig().getNextHandler() instanceof TagHandler
-                || owner.getValidatorConfig().getNextHandler() instanceof CompositeFaceletHandler;
+            || owner.getValidatorConfig().getNextHandler() instanceof CompositeFaceletHandler;
 
     }
 
@@ -189,7 +191,8 @@ public class ValidatorTagHandlerDelegateImpl extends TagHandlerDelegate implemen
 
         if (parent instanceof EditableValueHolder) {
             applyAttachedObject(ctx.getFacesContext(), parent);
-        } else if (UIComponent.isCompositeComponent(parent)) {
+        }
+        else if (UIComponent.isCompositeComponent(parent)) {
             if (null == owner.getFor()) {
                 // PENDING(): I18N
                 throw new TagException(owner.getTag(), "validator tags nested within composite components must have a non-null \"for\" attribute");
@@ -197,7 +200,8 @@ public class ValidatorTagHandlerDelegateImpl extends TagHandlerDelegate implemen
             // Allow the composite component to know about the target
             // component.
             CompositeComponentTagHandler.getAttachedObjectHandlers(parent).add(owner);
-        } else {
+        }
+        else {
             throw new TagException(owner.getTag(), "Parent not an instance of EditableValueHolder: " + parent);
         }
 
@@ -213,8 +217,10 @@ public class ValidatorTagHandlerDelegateImpl extends TagHandlerDelegate implemen
 
         String id = owner.getValidatorId(ctx);
         if (id == null) {
-            throw new TagException(owner.getTag(),
-                    "A validator id was not specified. Typically the validator id is set in the constructor ValidateHandler(ValidatorConfig)");
+            throw new TagException(
+                owner.getTag(),
+                "A validator id was not specified. Typically the validator id is set in the constructor ValidateHandler(ValidatorConfig)"
+            );
         }
         return ctx.getFacesContext().getApplication().createValidator(id);
 

@@ -32,7 +32,8 @@ public class DelegatedResourceScanner implements Scanner {
     public DelegatedResourceScanner() {
         try {
             delegate = new ResourceScanner();
-        } catch (Throwable throwable) {
+        }
+        catch (Throwable throwable) {
             throwable.printStackTrace(System.err);
         }
     }
@@ -63,4 +64,5 @@ public class DelegatedResourceScanner implements Scanner {
         }
         return null;
     }
+
 }

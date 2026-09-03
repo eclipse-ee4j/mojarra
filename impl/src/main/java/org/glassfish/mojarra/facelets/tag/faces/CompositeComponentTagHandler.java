@@ -72,8 +72,8 @@ import org.glassfish.mojarra.util.Util;
 
 /**
  * <p>
- * Facelet handler responsible for, building the component tree representation of a composite component based on the
- * metadata contained in the composite interface and implementation sections of the composite component template.
+ * Facelet handler responsible for, building the component tree representation of a composite component based on the metadata contained in the composite
+ * interface and implementation sections of the composite component template.
  * </p>
  */
 public class CompositeComponentTagHandler extends ComponentHandler implements CreateComponentDelegate {
@@ -116,7 +116,8 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
                 cc.setValueExpression("binding", ve);
                 ve.setValue(ctx, cc);
             }
-        } else {
+        }
+        else {
             cc = context.getApplication().createComponent(context, ccResource);
         }
         setCompositeComponent(context, cc);
@@ -155,7 +156,7 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
             vdl.retargetMethodExpressions(context, c);
             getAttachedObjectHandlers(c).clear();
 
-//            getAttachedObjectHandlers(c, false).clear();
+            // getAttachedObjectHandlers(c, false).clear();
         }
 
     }
@@ -194,7 +195,8 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
             if (ctx.getFacesContext().isProjectStage(ProjectStage.Development)) {
                 Metadata meta = createMetaRuleset(instance.getClass()).finish();
                 meta.applyMetadata(ctx, instance);
-            } else {
+            }
+            else {
                 super.setAttributes(ctx, instance);
             }
         }
@@ -202,11 +204,9 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
     }
 
     /**
-     * This is basically a copy of what's define in ComponentTagHandlerDelegateImpl except for the MetaRuleset
-     * implementation that's being used.
+     * This is basically a copy of what's define in ComponentTagHandlerDelegateImpl except for the MetaRuleset implementation that's being used.
      *
-     * This also allows us to treat composite component's backed by custom component implementation classes based on their
-     * type.
+     * This also allows us to treat composite component's backed by custom component implementation classes based on their type.
      *
      * @param type the <code>Class</code> for which the <code>MetaRuleset</code> must be created.
      * @return
@@ -282,7 +282,8 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
             if (create) {
                 result = new ArrayList<>();
                 attrs.put(ATTACHED_OBJECT_HANDLERS_KEY, result);
-            } else {
+            }
+            else {
                 result = Collections.EMPTY_LIST;
             }
         }
@@ -304,7 +305,8 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
             facetComponent.setRendererType("jakarta.faces.Group");
             facetComponent.setId((c instanceof UniqueIdVendor ? (UniqueIdVendor) c : getViewRoot(ctx, c)).createUniqueId(facesContext, null));
             c.getFacets().put(UIComponent.COMPOSITE_FACET_NAME, facetComponent);
-        } else {
+        }
+        else {
             facetComponent = (UIPanel) c.getFacets().get(UIComponent.COMPOSITE_FACET_NAME);
         }
         assert null != facetComponent;
@@ -322,11 +324,11 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
             ctx.setVariableMapper(wrapper);
 
             /*
-             * We need to use includeFacelet because our facelet component map expects each Facelet component to generate a unique
-             * id (MARK_ID).
+             * We need to use includeFacelet because our facelet component map expects each Facelet component to generate a unique id (MARK_ID).
              */
             ctx.includeFacelet(facetComponent, ccResource.getURL());
-        } finally {
+        }
+        finally {
             ctx.setVariableMapper(parentVariableMapper);
             ctx.setAttribute(LOCATION_KEY, parentLocation);
         }
@@ -354,7 +356,8 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
         protected MetadataTarget getMetadataTarget() {
             try {
                 return new CompositeMetadataTarget(type, compBeanInfo);
-            } catch (IntrospectionException ie) {
+            }
+            catch (IntrospectionException ie) {
                 throw new FacesException(ie);
             }
         }
@@ -364,9 +367,8 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
         /**
          * This class is responsible for creating ValueExpression instances with the expected type based off the following:
          *
-         * - if the composite:attribute metadata is present, then use the type if specified by the author, or default to
-         * Object.class - if no composite:attribute is specified, then attempt to return the type based off the bean info for
-         * this component
+         * - if the composite:attribute metadata is present, then use the type if specified by the author, or default to Object.class - if no
+         * composite:attribute is specified, then attempt to return the type based off the bean info for this component
          */
         private static final class CompositeMetadataTarget extends MetadataTargetImpl {
 
@@ -396,16 +398,20 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
                             className = prefix(className);
                             try {
                                 return ReflectionUtil.forName(className);
-                            } catch (ClassNotFoundException cnfe) {
+                            }
+                            catch (ClassNotFoundException cnfe) {
                                 throw new FacesException(cnfe);
                             }
-                        } else {
+                        }
+                        else {
                             return Object.class;
                         }
-                    } else {
+                    }
+                    else {
                         return (Class<?>) obj;
                     }
-                } else {
+                }
+                else {
                     // defer to the default processing which will inspect the
                     // PropertyDescriptor of the UIComponent type
                     return super.getPropertyType(name);
@@ -431,11 +437,13 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
 
                 if (className.indexOf('.') == -1 && Character.isUpperCase(className.charAt(0))) {
                     return "java.lang." + className;
-                } else {
+                }
+                else {
                     return className;
                 }
 
             }
+
         }
 
     } // END CompositeComponentMetaRuleset
@@ -460,7 +468,8 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
 
                 if (!attribute.isLiteral()) {
                     return new CompositeExpressionMetadata(name, type, attribute);
-                } else {
+                }
+                else {
                     return new LiteralAttributeMetadata(name, type, attribute);
                 }
             }
@@ -471,8 +480,8 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
         // ------------------------------------------------------ Nested Classes
 
         /**
-         * For literal expressions, coerce the literal value to the type as provided to the constructor prior to setting the
-         * value into the component's attribute map.
+         * For literal expressions, coerce the literal value to the type as provided to the constructor prior to setting the value into the component's
+         * attribute map.
          */
         private static final class LiteralAttributeMetadata extends Metadata {
 
@@ -508,9 +517,9 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
         } // END LiteralAttributeMetadata
 
         /**
-         * CompositeExpressionMetadata sets up specialized wrapper ValueExpression instances around the source ValueExpression
-         * that, when evaluated, will cause the parent composite component of the currently available composite component to be
-         * pushed onto a stack that the {@link CompositeComponentELResolver} will check for.
+         * CompositeExpressionMetadata sets up specialized wrapper ValueExpression instances around the source ValueExpression that, when evaluated, will cause
+         * the parent composite component of the currently available composite component to be pushed onto a stack that the {@link CompositeComponentELResolver}
+         * will check for.
          */
         private static final class CompositeExpressionMetadata extends Metadata {
 
@@ -558,7 +567,8 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
                 }
                 try {
                     cc.setValueExpression(name, ve);
-                } finally {
+                }
+                finally {
                     if (writeAsInitialState) {
                         cc.markInitialState();
                     }

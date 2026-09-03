@@ -53,11 +53,10 @@ import jakarta.faces.context.FacesContext;
 import org.junit.jupiter.api.Test;
 
 /**
- * A postback rebuilds its view from the markup rather than from the response it was submitted from, so a build time
- * conditional evaluating to another value than it did leaves the state of a rendered component with nothing to be
- * restored into, or with the wrong component. Under {@code ProjectStage.Development} the tag each client id was built
- * from is saved with the state, and comparing it against the rebuilt view is what turns that into a diagnosable
- * report. This holds what the comparison reports.
+ * A postback rebuilds its view from the markup rather than from the response it was submitted from, so a build time conditional evaluating to another value
+ * than it did leaves the state of a rendered component with nothing to be restored into, or with the wrong component. Under {@code ProjectStage.Development}
+ * the tag each client id was built from is saved with the state, and comparing it against the rebuilt view is what turns that into a diagnosable report. This
+ * holds what the comparison reports.
  */
 class FaceletStateManagementStrategyTest {
 
@@ -96,9 +95,9 @@ class FaceletStateManagementStrategyTest {
     }
 
     /**
-     * Two tags may carry the same component id as long as only one of them is ever built, which is what sibling
-     * {@code c:if} tags and the branches of a {@code c:choose} do. Their components then share a client id and, when
-     * they are of the same type, everything else the state knows about them, so the tag is what tells them apart.
+     * Two tags may carry the same component id as long as only one of them is ever built, which is what sibling {@code c:if} tags and the branches of a
+     * {@code c:choose} do. Their components then share a client id and, when they are of the same type, everything else the state knows about them, so the tag
+     * is what tells them apart.
      */
     @Test
     void aClientIdTheRebuildProducedFromAnotherTagIsReportedAsRebuiltFromAnotherTag() {
@@ -126,8 +125,8 @@ class FaceletStateManagementStrategyTest {
     }
 
     /**
-     * A rebuild adding components the render did not produce is what a build time conditional turning true does, and
-     * it costs nothing: they hold no state to be restored and no value was submitted for them.
+     * A rebuild adding components the render did not produce is what a build time conditional turning true does, and it costs nothing: they hold no state to be
+     * restored and no value was submitted for them.
      */
     @Test
     void aClientIdOnlyTheRebuildProducedReportsNothing() {
@@ -139,8 +138,8 @@ class FaceletStateManagementStrategyTest {
     }
 
     /**
-     * Two components of the same type built from two tags are told apart by the tag, which is what a shared component
-     * id leaves as the only difference between them.
+     * Two components of the same type built from two tags are told apart by the tag, which is what a shared component id leaves as the only difference between
+     * them.
      */
     @Test
     void twoComponentsOfTheSameTypeAreIdentifiedByTheTagThatBuiltThem() {
@@ -154,11 +153,10 @@ class FaceletStateManagementStrategyTest {
     }
 
     /**
-     * A component no facelet built - the view root, a component resource, anything added programmatically - is not
-     * compared across the two builds at all. No build time condition governs whether it is there, and one left
-     * without an id of its own is numbered from a counter which the build leaves where the previous request's state
-     * then moves it, so it holds another client id on every request and comparing it by client id would report it as
-     * vanished on every postback.
+     * A component no facelet built - the view root, a component resource, anything added programmatically - is not compared across the two builds at all. No
+     * build time condition governs whether it is there, and one left without an id of its own is numbered from a counter which the build leaves where the
+     * previous request's state then moves it, so it holds another client id on every request and comparing it by client id would report it as vanished on every
+     * postback.
      */
     @Test
     void aComponentBuiltByNoTagIsNotCompared() {
@@ -177,8 +175,8 @@ class FaceletStateManagementStrategyTest {
     }
 
     /**
-     * A container left positioned on a row by a render which iterated it hands its children a client id no request
-     * which does not iterate it reproduces, the rebuild of the postback included.
+     * A container left positioned on a row by a render which iterated it hands its children a client id no request which does not iterate it reproduces, the
+     * rebuild of the postback included.
      */
     @Test
     void aComponentUnderANamingContainerPositionedOnARowIsNotCompared() {
@@ -189,8 +187,8 @@ class FaceletStateManagementStrategyTest {
     }
 
     /**
-     * A container nested in a positioned one is itself positioned on no row, yet holds the row of the one above it in
-     * its own client id, so the whole chain decides.
+     * A container nested in a positioned one is itself positioned on no row, yet holds the row of the one above it in its own client id, so the whole chain
+     * decides.
      */
     @Test
     void aComponentUnderANamingContainerNestedInAPositionedOneIsNotCompared() {
@@ -224,8 +222,8 @@ class FaceletStateManagementStrategyTest {
     }
 
     /**
-     * A form which prepends no id hands its children the client id of the container above it rather than one
-     * extending its own, and none at all when no container holds it, so it stands on no row either way.
+     * A form which prepends no id hands its children the client id of the container above it rather than one extending its own, and none at all when no
+     * container holds it, so it stands on no row either way.
      */
     @Test
     void aComponentUnderAFormWhichPrependsNoIdIsCompared() {
@@ -284,8 +282,7 @@ class FaceletStateManagementStrategyTest {
     }
 
     /**
-     * A report reads as often about one component as about many, so each count it names agrees with the words that
-     * follow it.
+     * A report reads as often about one component as about many, so each count it names agrees with the words that follow it.
      */
     @Test
     void everyReportAgreesWithTheCountItNames() {
@@ -298,9 +295,9 @@ class FaceletStateManagementStrategyTest {
     }
 
     /**
-     * A component the rebuild does not produce is as often an output or a panel as it is an input, so a report which
-     * always named the submitted values among them would name a count of zero and an empty list on the majority of
-     * postbacks. Only the report logged when there is at least one holds the placeholders for them.
+     * A component the rebuild does not produce is as often an output or a panel as it is an input, so a report which always named the submitted values among
+     * them would name a count of zero and an empty list on the majority of postbacks. Only the report logged when there is at least one holds the placeholders
+     * for them.
      */
     @Test
     void onlyTheReportLoggedForASubmittedValueHoldsThePlaceholdersForOne() {
@@ -309,8 +306,8 @@ class FaceletStateManagementStrategyTest {
     }
 
     /**
-     * Every report is a {@link MessageFormat} pattern, in which a lone apostrophe quotes the text that follows it
-     * rather than fail, so it silently swallows both the placeholders it precedes and itself.
+     * Every report is a {@link MessageFormat} pattern, in which a lone apostrophe quotes the text that follows it rather than fail, so it silently swallows
+     * both the placeholders it precedes and itself.
      */
     @Test
     void noReportHoldsALoneApostrophe() {
@@ -320,8 +317,8 @@ class FaceletStateManagementStrategyTest {
     }
 
     /**
-     * The remedy of every report names the parameter which replays the build time decisions of the render, taken from
-     * the parameter itself so that renaming it cannot leave the report naming one which no longer exists.
+     * The remedy of every report names the parameter which replays the build time decisions of the render, taken from the parameter itself so that renaming it
+     * cannot leave the report naming one which no longer exists.
      */
     @Test
     void everyReportNamesTheParameterWhichReplaysTheBuildTimeDecisionsOfTheRender() {
@@ -358,6 +355,7 @@ class FaceletStateManagementStrategyTest {
         public String getContainerClientId(FacesContext context) {
             return containerClientId;
         }
+
     }
 
     private static List<String> clientIds(int count) {
@@ -380,4 +378,5 @@ class FaceletStateManagementStrategyTest {
             assertTrue(message.contains(String.valueOf(argument)), message);
         }
     }
+
 }

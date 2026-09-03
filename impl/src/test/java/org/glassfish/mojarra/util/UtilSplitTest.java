@@ -25,14 +25,14 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 /**
- * Util.split splits around a character, so it must produce exactly what splitting around that character quoted as a
- * regular expression produces -- quoting being what makes it literal -- including for the limit, which decides whether
- * trailing empty strings survive.
+ * Util.split splits around a character, so it must produce exactly what splitting around that character quoted as a regular expression produces -- quoting
+ * being what makes it literal -- including for the limit, which decides whether trailing empty strings survive.
  */
 class UtilSplitTest {
 
     @ParameterizedTest
-    @CsvSource(quoteCharacter = '\'', value = {
+    @CsvSource(
+        quoteCharacter = '\'', value = {
             // the delimiters the implementation itself passes
             "'a,b,c', ',', 0",
             "'a:b:c', ':', 0",
@@ -66,10 +66,13 @@ class UtilSplitTest {
             "',,a,b', ',', 0",
             "',,a,b', ',', -1",
             "'a,b', ',', 1",
-    })
+        }
+    )
     void splitsAroundTheCharacterTakenLiterally(String toSplit, char delimiter, int splitLimit) {
-        assertArrayEquals(Pattern.compile(Pattern.quote(String.valueOf(delimiter))).split(toSplit, splitLimit),
-                Util.split(toSplit, delimiter, splitLimit));
+        assertArrayEquals(
+            Pattern.compile(Pattern.quote(String.valueOf(delimiter))).split(toSplit, splitLimit),
+            Util.split(toSplit, delimiter, splitLimit)
+        );
     }
 
     /**
@@ -82,9 +85,8 @@ class UtilSplitTest {
     }
 
     /**
-     * A character delimiter cannot be a regular expression, which is the reason the method takes one. The case that
-     * would differ under regular expression semantics gets an assertion of its own rather than only being covered
-     * against a quoted oracle.
+     * A character delimiter cannot be a regular expression, which is the reason the method takes one. The case that would differ under regular expression
+     * semantics gets an assertion of its own rather than only being covered against a quoted oracle.
      */
     @Test
     void aMetacharacterDelimiterIsNotTreatedAsARegularExpression() {
@@ -92,4 +94,5 @@ class UtilSplitTest {
         assertArrayEquals(new String[] { "abc" }, Util.split("abc", '.'));
         assertArrayEquals(new String[] { "a", "b" }, Util.split("a\\b", '\\'));
     }
+
 }

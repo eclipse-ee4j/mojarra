@@ -30,8 +30,7 @@ import org.glassfish.mojarra.application.ApplicationAssociate;
 import org.glassfish.mojarra.application.NamedEventManager;
 
 /**
- * This class handles the processing the NamedEvent annotation. For each class with this annotation, the following logic
- * is applied:
+ * This class handles the processing the NamedEvent annotation. For each class with this annotation, the following logic is applied:
  * <ol>
  * <li>Get the unqualified class name (e.g., UserLoginEvent)</li>
  * <li>Strip off the trailing "Event", if present (e.g., UserLogin)</li>
@@ -89,12 +88,14 @@ public class NamedEventConfigHandler implements ConfigAnnotationHandler {
 
         String shortName = ((NamedEvent) annotation).shortName();
 
-        if ( !shortName.isEmpty() ) {
+        if (!shortName.isEmpty()) {
             if (nem.isDuplicateNamedEvent(shortName)) {
                 nem.addDuplicateName(shortName, (Class<? extends SystemEvent>) annotatedClass);
-            } else {
+            }
+            else {
                 nem.addNamedEvent(shortName, (Class<? extends SystemEvent>) annotatedClass);
             }
         }
     }
+
 }

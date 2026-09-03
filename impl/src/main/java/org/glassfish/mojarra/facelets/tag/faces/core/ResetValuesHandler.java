@@ -42,8 +42,8 @@ public final class ResetValuesHandler extends ActionListenerHandlerBase implemen
     private final TagAttribute render;
     private final TagAttribute clearModel;
 
-
     private final static class LazyActionListener implements ActionListener, Serializable {
+
         final Collection<String> render;
         final boolean clearModel;
 
@@ -60,6 +60,7 @@ public final class ResetValuesHandler extends ActionListenerHandlerBase implemen
             UIViewRoot root = context.getViewRoot();
             root.resetValues(context, render, clearModel);
         }
+
     }
 
     /**

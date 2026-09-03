@@ -97,7 +97,8 @@ public class MockHttpSession implements HttpSession {
     public void setAttribute(String name, Object value) {
         if (value == null) {
             attributes.remove(name);
-        } else {
+        }
+        else {
             attributes.put(name, value);
         }
     }
@@ -106,4 +107,5 @@ public class MockHttpSession implements HttpSession {
     public void setMaxInactiveInterval(int interval) {
         throw new UnsupportedOperationException();
     }
+
 }

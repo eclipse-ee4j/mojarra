@@ -104,7 +104,10 @@ public class DefaultFaceletFactory {
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public final void init(FacesContext facesContext, Compiler compiler, DefaultResourceResolver resolver, final long refreshPeriodInSeconds, FaceletCache cache) {
+    public final void init(
+        FacesContext facesContext, Compiler compiler, DefaultResourceResolver resolver, final long refreshPeriodInSeconds, FaceletCache cache
+    )
+    {
         notNull("compiler", compiler);
         notNull("resolver", resolver);
 
@@ -152,9 +155,8 @@ public class DefaultFaceletFactory {
 
     /**
      * Resolves a path based on the passed URL. If the path starts with '/', then resolve the path against
-     * {@link jakarta.faces.context.ExternalContext#getResource(java.lang.String)
-     * jakarta.faces.context.ExternalContext#getResource(java.lang.String)}. Otherwise create a new URL via
-     * {@link URL#URL(java.net.URL, java.lang.String) URL(URL, String)}.
+     * {@link jakarta.faces.context.ExternalContext#getResource(java.lang.String) jakarta.faces.context.ExternalContext#getResource(java.lang.String)}.
+     * Otherwise create a new URL via {@link URL#URL(java.net.URL, java.lang.String) URL(URL, String)}.
      *
      * @param source base to resolve from
      * @param path relative path to the source
@@ -202,8 +204,8 @@ public class DefaultFaceletFactory {
     }
 
     /**
-     * A nested scheme carries no authority: every {@code jar:} URL has a null one, so a remote archive would compare
-     * equal to the local archive holding the facelet. The archive a resource lives in is therefore its origin.
+     * A nested scheme carries no authority: every {@code jar:} URL has a null one, so a remote archive would compare equal to the local archive holding the
+     * facelet. The archive a resource lives in is therefore its origin.
      *
      * @return the origin to compare a resolved URL against the facelet it was resolved from.
      */
@@ -229,14 +231,12 @@ public class DefaultFaceletFactory {
     }
 
     /**
-     * Returns true if the facelet at the given source url may not access the given path because it points into the
-     * resource library contracts directory. A contract's own facelets may reference each other; any facelet outside the
-     * contracts directory may not reach into it.
+     * Returns true if the facelet at the given source url may not access the given path because it points into the resource library contracts directory. A
+     * contract's own facelets may reference each other; any facelet outside the contracts directory may not reach into it.
      * <p>
-     * The path is evaluated as it is declared rather than as it resolves: a template which a contract supplies resolves
-     * to a location inside that contract, which is legitimate and must not be denied. An absolute path is therefore
-     * taken as-is, because resolving it against the source url would discard the webapp base and hide the contracts
-     * directory from the check.
+     * The path is evaluated as it is declared rather than as it resolves: a template which a contract supplies resolves to a location inside that contract,
+     * which is legitimate and must not be denied. An absolute path is therefore taken as-is, because resolving it against the source url would discard the
+     * webapp base and hide the contracts directory from the check.
      *
      * @param src url of the facelet declaring the path.
      * @param relativePath path as declared by that facelet.
@@ -256,6 +256,7 @@ public class DefaultFaceletFactory {
 
     /**
      * Returns the given url as a path relative to the webapp root, or null if it does not reside in the webapp.
+     *
      * @param url url to express relative to the webapp root.
      * @return the webapp relative path, or null.
      */
@@ -265,8 +266,8 @@ public class DefaultFaceletFactory {
     }
 
     /**
-     * Create a Facelet from the passed URL. This method checks if the cached Facelet needs to be refreshed before
-     * returning. If so, uses the passed URL to build a new instance;
+     * Create a Facelet from the passed URL. This method checks if the cached Facelet needs to be refreshed before returning. If so, uses the passed URL to
+     * build a new instance;
      *
      * @param context the involved faces context
      * @param url source url
@@ -354,7 +355,8 @@ public class DefaultFaceletFactory {
             try {
                 osw.flush();
                 osw.close();
-            } catch (IOException ex) {
+            }
+            catch (IOException ex) {
                 if (log.isLoggable(FINEST)) {
                     log.log(FINEST, "Flushing and closing stream", ex);
                 }
@@ -369,15 +371,19 @@ public class DefaultFaceletFactory {
             tmp.getChildren().clear();
             osw = null;
 
-        } catch (MalformedURLException mue) {
-                log.log(FINEST, "Invalid URL", mue);
-        } catch (IOException ioe) {
-                log.log(FINEST, "I/O error", ioe);
-        } finally {
+        }
+        catch (MalformedURLException mue) {
+            log.log(FINEST, "Invalid URL", mue);
+        }
+        catch (IOException ioe) {
+            log.log(FINEST, "I/O error", ioe);
+        }
+        finally {
             if (osw != null) {
                 try {
                     osw.close();
-                } catch (IOException ioe) {
+                }
+                catch (IOException ioe) {
                     log.log(FINEST, "Closing stream", ioe);
                 }
             }
@@ -393,7 +399,8 @@ public class DefaultFaceletFactory {
         try {
             byte[] faceletPage = "facelet".getBytes(CHAR_ENCODING);
             new ByteArrayInputStream(faceletPage);
-        } catch (UnsupportedEncodingException uee) {
+        }
+        catch (UnsupportedEncodingException uee) {
             if (log.isLoggable(Level.SEVERE)) {
                 log.log(Level.SEVERE, "Unsupported encoding when creating component for " + tagName + " in " + taglibURI, uee);
             }
@@ -406,9 +413,7 @@ public class DefaultFaceletFactory {
         return result;
     }
 
-
     // ---------------------------------------------------------- Private Methods
-
 
     @SuppressWarnings("unchecked")
     private FaceletCache<DefaultFacelet> initCache(FaceletCache<DefaultFacelet> cache) {
@@ -490,7 +495,8 @@ public class DefaultFaceletFactory {
         try {
             FaceletHandler h = compiler.compile(url, alias);
             return new DefaultFacelet(this, compiler.createExpressionFactory(), url, alias, h);
-        } catch (FileNotFoundException fnfe) {
+        }
+        catch (FileNotFoundException fnfe) {
             throw new FileNotFoundException("Facelet " + alias + " not found at: " + url.toExternalForm());
         }
     }
@@ -500,11 +506,14 @@ public class DefaultFaceletFactory {
 
         String alias = '/' + url.getFile().replaceFirst(quote(baseUrl.getFile()), "");
         try {
-            return new DefaultFacelet(this,
+            return new DefaultFacelet(
+                this,
                 compiler.createExpressionFactory(),
                 url, alias,
-                compiler.metadataCompile(url, alias));
-        } catch (FileNotFoundException fnfe) {
+                compiler.metadataCompile(url, alias)
+            );
+        }
+        catch (FileNotFoundException fnfe) {
             throw new FileNotFoundException("Facelet " + alias + " not found at: " + url.toExternalForm());
         }
 
@@ -513,7 +522,6 @@ public class DefaultFaceletFactory {
     public long getRefreshPeriodInMillis() {
         return refreshPeriodInMillis;
     }
-
 
     // ---------------------------------------------------------- Nested Classes
 

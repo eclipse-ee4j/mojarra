@@ -31,9 +31,8 @@ import java.util.logging.Logger;
 import jakarta.faces.FacesException;
 
 /**
- * This class implements an abstract ConcurrentCache with objects in the cache potentially expiring. Only non-expired
- * objects will be returned from the cache or considered to be contained in the cache The cache is self-managing, so no
- * remove() method is defined
+ * This class implements an abstract ConcurrentCache with objects in the cache potentially expiring. Only non-expired objects will be returned from the cache or
+ * considered to be contained in the cache The cache is self-managing, so no remove() method is defined
  */
 public final class ExpiringConcurrentCache<K, V> extends ConcurrentCache<K, V> {
 
@@ -41,6 +40,7 @@ public final class ExpiringConcurrentCache<K, V> extends ConcurrentCache<K, V> {
      * Interface for checking whether a cached object expired
      */
     public interface ExpiryChecker<K, V> {
+
         /**
          * Checks whether a cached object expired
          *
@@ -49,6 +49,7 @@ public final class ExpiringConcurrentCache<K, V> extends ConcurrentCache<K, V> {
          * @return true if the value expired and should be removed from the cache, false otherwise
          */
         boolean isExpired(K key, V value);
+
     }
 
     /**
@@ -96,18 +97,22 @@ public final class ExpiringConcurrentCache<K, V> extends ConcurrentCache<K, V> {
                     // Note that we are using both key and value in remove() call to ensure
                     // that we are not removing the Future added after expiry check by a different thread
                     _cache.remove(key, f);
-                } else {
+                }
+                else {
                     return obj;
                 }
-            } catch (CancellationException ce) {
+            }
+            catch (CancellationException ce) {
                 if (_LOGGER.isLoggable(Level.SEVERE)) {
                     _LOGGER.log(Level.SEVERE, ce.toString(), ce);
                 }
                 _cache.remove(key, f);
-            } catch (ExecutionException ee) {
+            }
+            catch (ExecutionException ee) {
                 _cache.remove(key, f);
                 throw ee;
-            } catch (InterruptedException ie) {
+            }
+            catch (InterruptedException ie) {
                 throw new FacesException(ie);
 
             }
@@ -129,16 +134,20 @@ public final class ExpiringConcurrentCache<K, V> extends ConcurrentCache<K, V> {
                     // Note that we are using both key and value in remove() call to ensure
                     // that we are not removing the Future added after expiry check by a different thread
                     _cache.remove(key, f);
-                } else {
+                }
+                else {
 
                     return true;
                 }
-            } catch (TimeoutException | ExecutionException ce) {
-            } catch (CancellationException ce) {
+            }
+            catch (TimeoutException | ExecutionException ce) {
+            }
+            catch (CancellationException ce) {
                 if (_LOGGER.isLoggable(Level.SEVERE)) {
                     _LOGGER.log(Level.SEVERE, ce.toString(), ce);
                 }
-            } catch (InterruptedException ie) {
+            }
+            catch (InterruptedException ie) {
                 throw new FacesException(ie);
 
             }
@@ -155,4 +164,5 @@ public final class ExpiringConcurrentCache<K, V> extends ConcurrentCache<K, V> {
     private final ConcurrentMap<K, Future<V>> _cache = new ConcurrentHashMap<>();
 
     private static final Logger _LOGGER = FacesLogger.UTIL.getLogger();
+
 }

@@ -37,4 +37,5 @@ public class InputTestImpl extends UIInput {
     public boolean compareValues(Object previous, Object value) {
         return super.compareValues(previous, value);
     }
+
 }

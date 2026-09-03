@@ -75,7 +75,8 @@ public class CompositeComponentBeanInfo extends SimpleBeanInfo implements BeanIn
                 out.writeObject(propertyDescriptor.getName());
                 out.writeObject(propertyDescriptor.getValue("type"));
             }
-        } else {
+        }
+        else {
             out.writeObject(0);
         }
     }
@@ -97,9 +98,11 @@ public class CompositeComponentBeanInfo extends SimpleBeanInfo implements BeanIn
                 }
 
                 getPropertyDescriptorsList().add(pd);
-            } catch (IntrospectionException ex) {
+            }
+            catch (IntrospectionException ex) {
                 throw new FacesException(ex);
             }
         }
     }
+
 }

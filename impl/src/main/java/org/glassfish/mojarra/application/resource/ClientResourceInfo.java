@@ -28,10 +28,9 @@ import jakarta.faces.context.FacesContext;
 import org.glassfish.mojarra.util.FacesLogger;
 
 /**
- * 
- * <code>ClientResourceInfo</code> is a simple wrapper class for information pertinent to building a complete resource
- * path using a Library.
- * 
+ *
+ * <code>ClientResourceInfo</code> is a simple wrapper class for information pertinent to building a complete resource path using a Library.
+ *
  */
 public class ClientResourceInfo extends ResourceInfo {
 
@@ -45,8 +44,8 @@ public class ClientResourceInfo extends ResourceInfo {
     private volatile long lastModified = Long.MIN_VALUE;
 
     /**
-     * Constructs a new <code>ClientResourceInfo</code> using the specified details. The {@link ResourceHelper} of the
-     * resource will be the same as the {@link ResourceHelper} of the {@link LibraryInfo}.
+     * Constructs a new <code>ClientResourceInfo</code> using the specified details. The {@link ResourceHelper} of the resource will be the same as the
+     * {@link ResourceHelper} of the {@link LibraryInfo}.
      *
      * @param library the library containing this resource
      * @param contract the contract info
@@ -57,8 +56,11 @@ public class ClientResourceInfo extends ResourceInfo {
      * @param isDevStage true if this context is development stage
      * @param cacheTimestamp <code>true</code> if the modification time of the resource should be cached
      */
-    public ClientResourceInfo(LibraryInfo library, ContractInfo contract, String name, VersionInfo version, boolean compressible, boolean supportsEL,
-            boolean isDevStage, boolean cacheTimestamp) {
+    public ClientResourceInfo(
+        LibraryInfo library, ContractInfo contract, String name, VersionInfo version, boolean compressible, boolean supportsEL,
+        boolean isDevStage, boolean cacheTimestamp
+    )
+    {
         super(library, contract, name, version);
         this.compressible = compressible;
         this.supportsEL = supportsEL;
@@ -79,8 +81,11 @@ public class ClientResourceInfo extends ResourceInfo {
      * @param isDevStage true if this context is development stage
      * @param cacheTimestamp <code>true</code> if the modification time of the resource should be cached
      */
-    ClientResourceInfo(ContractInfo contract, String name, VersionInfo version, String localePrefix, ResourceHelper helper, boolean compressible,
-            boolean supportsEL, boolean isDevStage, boolean cacheTimestamp) {
+    ClientResourceInfo(
+        ContractInfo contract, String name, VersionInfo version, String localePrefix, ResourceHelper helper, boolean compressible,
+        boolean supportsEL, boolean isDevStage, boolean cacheTimestamp
+    )
+    {
         super(contract, name, version, helper);
         this.name = name;
         this.version = version;
@@ -117,8 +122,8 @@ public class ClientResourceInfo extends ResourceInfo {
     // ---------------------------------------------------------- Public Methods
 
     /**
-     * @return the path to which the compressed bits for this resource reside. If this resource isn't compressible and this
-     * method is called, it will return <code>null</code>
+     * @return the path to which the compressed bits for this resource reside. If this resource isn't compressible and this method is called, it will return
+     * <code>null</code>
      */
     public String getCompressedPath() {
         return compressedPath;
@@ -132,8 +137,7 @@ public class ClientResourceInfo extends ResourceInfo {
     }
 
     /**
-     * @return <code>true</code> if the this resource may contain EL expressions that should be evaluated, otherwise, return
-     * <code>false</code>
+     * @return <code>true</code> if the this resource may contain EL expressions that should be evaluated, otherwise, return <code>false</code>
      */
     public boolean supportsEL() {
         return supportsEL;
@@ -147,9 +151,8 @@ public class ClientResourceInfo extends ResourceInfo {
     }
 
     /**
-     * Returns the time this resource was last modified. When
-     * {@link org.glassfish.mojarra.config.MojarraContextParam#CACHE_RESOURCE_MODIFICATION_TIMESTAMP} says so, the value
-     * is read once and kept for the lifetime of this <code>ClientResourceInfo</code> instance.
+     * Returns the time this resource was last modified. When {@link org.glassfish.mojarra.config.MojarraContextParam#CACHE_RESOURCE_MODIFICATION_TIMESTAMP}
+     * says so, the value is read once and kept for the lifetime of this <code>ClientResourceInfo</code> instance.
      *
      * @param ctx the {@link FacesContext} for the current request
      *
@@ -167,7 +170,8 @@ public class ClientResourceInfo extends ResourceInfo {
                 }
             }
             return lastModified;
-        } else {
+        }
+        else {
             return helper.getLastModified(this, ctx);
         }
 
@@ -176,27 +180,29 @@ public class ClientResourceInfo extends ResourceInfo {
     @Override
     public String toString() {
         return "ResourceInfo{" + "name='" + name + '\'' + ", version=\'" + (version != null ? version : "NONE") + '\'' + ", libraryName='" + libraryName
-                + '\'' + ", contractInfo='" + (contract != null ? contract.contract : "NONE") + '\'' + ", libraryVersion='"
-                + (library != null ? library.getVersion() : "NONE") + '\'' + ", localePrefix='" + (localePrefix != null ? localePrefix : "NONE") + '\''
-                + ", path='" + path + '\'' + ", compressible='" + compressible + '\'' + ", compressedPath=" + compressedPath + '}';
+            + '\'' + ", contractInfo='" + (contract != null ? contract.contract : "NONE") + '\'' + ", libraryVersion='"
+            + (library != null ? library.getVersion() : "NONE") + '\'' + ", localePrefix='" + (localePrefix != null ? localePrefix : "NONE") + '\''
+            + ", path='" + path + '\'' + ", compressible='" + compressible + '\'' + ", compressedPath=" + compressedPath + '}';
     }
 
     // --------------------------------------------------------- Private Methods
 
     /**
-     * Create the full path to the resource. If the resource can be compressed, setup the compressedPath ivar so that the
-     * path refers to the directory referenced by the context attribute <code>jakarta.servlet.context.tempdir</code>.
+     * Create the full path to the resource. If the resource can be compressed, setup the compressedPath ivar so that the path refers to the directory
+     * referenced by the context attribute <code>jakarta.servlet.context.tempdir</code>.
      */
     private void initPath(boolean isDevStage) {
 
         StringBuilder sb = new StringBuilder(32);
         if (library != null) {
             sb.append(library.getPath());
-        } else {
+        }
+        else {
             if (null != contract) {
                 sb.append(helper.getBaseContractsPath());
                 sb.append("/").append(contract);
-            } else {
+            }
+            else {
                 sb.append(helper.getBaseResourcePath());
             }
         }
@@ -206,7 +212,8 @@ public class ClientResourceInfo extends ResourceInfo {
         // Specialcasing for handling Faces script in uncompressed state
         if (isDevStage && FACES_SCRIPT_LIBRARY_NAME.equals(libraryName) && FACES_SCRIPT_RESOURCE_NAME.equals(name)) {
             sb.append('/').append("faces-uncompressed.js");
-        } else {
+        }
+        else {
             sb.append('/').append(name);
         }
         if (version != null) {
@@ -223,12 +230,15 @@ public class ClientResourceInfo extends ResourceInfo {
             File servletTmpDir = (File) ctx.getExternalContext().getApplicationMap().get("jakarta.servlet.context.tempdir");
             if (servletTmpDir == null || !servletTmpDir.isDirectory()) {
                 if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.log(Level.FINE,
-                            "File ({0}) referenced by jakarta.servlet.context.tempdir attribute is null, or was is not a directory.  Compression for {1} will be unavailable.",
-                            new Object[] { servletTmpDir == null ? "null" : servletTmpDir.toString(), path });
+                    LOGGER.log(
+                        Level.FINE,
+                        "File ({0}) referenced by jakarta.servlet.context.tempdir attribute is null, or was is not a directory.  Compression for {1} will be unavailable.",
+                        new Object[] { servletTmpDir == null ? "null" : servletTmpDir.toString(), path }
+                    );
                 }
                 compressible = false;
-            } else {
+            }
+            else {
                 String tPath = path.charAt(0) == '/' ? path : '/' + path;
                 File newDir = new File(servletTmpDir, COMPRESSED_CONTENT_DIRECTORY + tPath);
 
@@ -236,16 +246,19 @@ public class ClientResourceInfo extends ResourceInfo {
                     if (!newDir.exists()) {
                         if (newDir.mkdirs()) {
                             compressedPath = newDir.getCanonicalPath();
-                        } else {
+                        }
+                        else {
                             compressible = false;
                             if (LOGGER.isLoggable(Level.WARNING)) {
                                 LOGGER.log(Level.WARNING, "faces.application.resource.unable_to_create_compression_directory", newDir.getCanonicalPath());
                             }
                         }
-                    } else {
+                    }
+                    else {
                         compressedPath = newDir.getCanonicalPath();
                     }
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     if (LOGGER.isLoggable(Level.SEVERE)) {
                         LOGGER.log(Level.SEVERE, e.toString(), e);
                     }

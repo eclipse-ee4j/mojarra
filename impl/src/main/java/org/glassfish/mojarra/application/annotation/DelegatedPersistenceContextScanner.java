@@ -32,7 +32,8 @@ public class DelegatedPersistenceContextScanner implements Scanner {
     public DelegatedPersistenceContextScanner() {
         try {
             delegate = new PersistenceContextScanner();
-        } catch (Throwable throwable) {
+        }
+        catch (Throwable throwable) {
             throwable.printStackTrace(System.err);
         }
     }
@@ -63,4 +64,5 @@ public class DelegatedPersistenceContextScanner implements Scanner {
         }
         return null;
     }
+
 }

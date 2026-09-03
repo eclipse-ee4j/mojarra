@@ -32,9 +32,12 @@ public class MockResourceHandler extends ResourceHandler {
         throw new UnsupportedOperationException();
     }
 
-    public Resource createResource(String resourceName,
-            String libraryName,
-            String contentType) {
+    public Resource createResource(
+        String resourceName,
+        String libraryName,
+        String contentType
+    )
+    {
         throw new UnsupportedOperationException();
     }
 
@@ -53,10 +56,13 @@ public class MockResourceHandler extends ResourceHandler {
     public String getRendererTypeForResourceName(String resourceName) {
         if (resourceName.endsWith(".js")) {
             return "jakarta.faces.resource.Script";
-        } else if (resourceName.endsWith(".css")) {
+        }
+        else if (resourceName.endsWith(".css")) {
             return "jakarta.faces.resource.Stylesheet";
-        } else {
+        }
+        else {
             return null;
         }
     }
+
 }

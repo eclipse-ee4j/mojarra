@@ -88,13 +88,16 @@ class BehaviorTagHandlerDelegateImpl extends TagHandlerDelegate implements Attac
             }
             if (supportedEvent) {
                 CompositeComponentTagHandler.getAttachedObjectHandlers(parent).add(owner);
-            } else {
+            }
+            else {
                 throw new TagException(owner.getTag(), "Error: enclosing composite component does not support event " + eventName);
             }
 
-        } else if (parent instanceof ClientBehaviorHolder) {
+        }
+        else if (parent instanceof ClientBehaviorHolder) {
             owner.applyAttachedObject(ctx.getFacesContext(), parent);
-        } else {
+        }
+        else {
             throw new TagException(owner.getTag(), "Parent not an instance of ClientBehaviorHolder: " + parent);
         }
 
@@ -120,7 +123,8 @@ class BehaviorTagHandlerDelegateImpl extends TagHandlerDelegate implements Attac
                 if (null != bindingExpr) {
                     bindingExpr.setValue(ctx, behavior);
                 }
-            } else {
+            }
+            else {
                 throw new TagException(owner.getTag(), "No behaviorId defined");
             }
         }
@@ -155,7 +159,8 @@ class BehaviorTagHandlerDelegateImpl extends TagHandlerDelegate implements Attac
         String eventName;
         if (null != owner.getEvent()) {
             eventName = owner.getEvent().getValue();
-        } else {
+        }
+        else {
             eventName = holder.getDefaultEventName();
         }
         if (null == eventName) {

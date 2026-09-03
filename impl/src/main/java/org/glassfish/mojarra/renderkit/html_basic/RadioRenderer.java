@@ -59,8 +59,7 @@ import org.glassfish.mojarra.util.RequestStateManager;
 import org.glassfish.mojarra.util.Util;
 
 /**
- * <B>ReadoRenderer</B> is a class that renders the current value of <code>UISelectOne</code> or <code>UISelectMany</code>
- * component as a list of radio buttons
+ * <B>ReadoRenderer</B> is a class that renders the current value of <code>UISelectOne</code> or <code>UISelectMany</code> component as a list of radio buttons
  */
 @ListenerFor(systemEventClass = PostAddToViewEvent.class)
 public class RadioRenderer extends SelectManyCheckboxListRenderer implements ComponentSystemEventListener {
@@ -83,8 +82,8 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
     }
 
     /**
-     * This override delegates to <code>decodeGroup(FacesContext context, UISelectOne radio, Group group)</code> when 'group' attribute is set. It
-     * will only decode when the current component is the first one of group.
+     * This override delegates to <code>decodeGroup(FacesContext context, UISelectOne radio, Group group)</code> when 'group' attribute is set. It will only
+     * decode when the current component is the first one of group.
      */
     @Override
     public void decode(FacesContext context, UIComponent component) {
@@ -93,7 +92,8 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
 
         if (group != null) {
             decodeGroup(context, radio, group);
-        } else {
+        }
+        else {
             super.decode(context, component); // Continue default decoding.
         }
     }
@@ -108,7 +108,8 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
 
         if (group != null) {
             encodeEndGroup(context, radio, group);
-        } else {
+        }
+        else {
             super.encodeEnd(context, component); // Continue default table rendering.
         }
     }
@@ -118,9 +119,9 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
     /**
      * The difference with default decoding is:
      * <ul>
-     *   <li>Submitted value is obtained by group name.
-     *   <li>Submitted value is prefixed with client ID of radio button component, this need to be compared and trimmed.
-     *   <li>If any submitted value does not belong to current radio button component, reset its value.
+     * <li>Submitted value is obtained by group name.
+     * <li>Submitted value is prefixed with client ID of radio button component, this need to be compared and trimmed.
+     * <li>If any submitted value does not belong to current radio button component, reset its value.
      * </ul>
      */
     protected void decodeGroup(FacesContext context, UISelectOne radio, Group group) {
@@ -148,10 +149,12 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
                 if (logger.isLoggable(Level.FINE)) {
                     logger.fine("submitted value for UISelectOne group component " + radio.getId() + " after decoding " + submittedValue);
                 }
-            } else {
+            }
+            else {
                 radio.resetValue();
             }
-        } else {
+        }
+        else {
             // There is no submitted value at all, but this is different from a null value.
             radio.setSubmittedValue(NO_VALUE);
         }
@@ -159,12 +162,12 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
 
     /**
      * The difference with default encoding is:
-     * 
+     *
      * <ol>
-     *   <li>Every radio button of same 'group' will have same 'name' attribute rendered, relative to UIForm parent.
-     *   <li>The 'value' attribute of every radio button is prefixed with client ID of radio button component itself.
-     *   <li>No additional (table) markup is being rendered.
-     *   <li>Label, if any, is rendered directly after radio button element, without additional markup.
+     * <li>Every radio button of same 'group' will have same 'name' attribute rendered, relative to UIForm parent.
+     * <li>The 'value' attribute of every radio button is prefixed with client ID of radio button component itself.
+     * <li>No additional (table) markup is being rendered.
+     * <li>Label, if any, is rendered directly after radio button element, without additional markup.
      * </ol>
      */
     protected void encodeEndGroup(FacesContext context, UISelectOne radio, Group group) throws IOException {
@@ -209,7 +212,8 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
                 if (null != currentValue) {
                     type = currentValue.getClass();
                 }
-            } else if (Collection.class.isAssignableFrom(type)) {
+            }
+            else if (Collection.class.isAssignableFrom(type)) {
                 Iterator<?> valueIter = ((Collection<?>) currentValue).iterator();
 
                 if (null != valueIter && valueIter.hasNext()) {
@@ -227,7 +231,8 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
 
         try {
             newValue = context.getApplication().getExpressionFactory().coerceToType(itemValue, type);
-        } catch (ELException | IllegalArgumentException e) {
+        }
+        catch (ELException | IllegalArgumentException e) {
             // If coerceToType fails, per the docs it should throw an ELException, however, SJAS 9.0 and 9.0u1 will
             // throw an IllegalArgumentException instead (see https://java.net/jira/browse/GLASSFISH-1527).
             newValue = itemValue;
@@ -237,8 +242,11 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
     }
 
     @Override
-    protected void renderOption(FacesContext context, UIComponent component, Converter<?> converter, SelectItem curItem, Object currentSelections,
-            Object[] submittedValues, Boolean newTableRow, int itemNumber, OptionComponentInfo optionInfo) throws IOException {
+    protected void renderOption(
+        FacesContext context, UIComponent component, Converter<?> converter, SelectItem curItem, Object currentSelections,
+        Object[] submittedValues, Boolean newTableRow, int itemNumber, OptionComponentInfo optionInfo
+    ) throws IOException
+    {
 
         ResponseWriter writer = context.getResponseWriter();
         assert writer != null;
@@ -277,8 +285,11 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
         }
     }
 
-    protected void renderInput(FacesContext context, ResponseWriter writer, UIComponent component, String clientId, Object itemValue, Converter<?> converter,
-            boolean checked, boolean disabled, Group group) throws IOException {
+    protected void renderInput(
+        FacesContext context, ResponseWriter writer, UIComponent component, String clientId, Object itemValue, Converter<?> converter,
+        boolean checked, boolean disabled, Group group
+    ) throws IOException
+    {
         writer.startElement("input", component);
         writer.writeAttribute("type", "radio", "type");
 
@@ -292,7 +303,8 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
             writer.writeAttribute("name", component.getClientId(context), "clientId");
             writer.writeAttribute("id", clientId, "id");
             writer.writeAttribute("value", value, "value");
-        } else {
+        }
+        else {
             writer.writeAttribute("name", group.getClientName(), "group");
             writer.writeAttribute("id", clientId, "id");
             writer.writeAttribute("value", clientId + UINamingContainer.getSeparatorChar(context) + value, "value");
@@ -307,7 +319,8 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
         // Apply HTML 4.x attributes specified on UISelectMany component to all
         // items in the list except styleClass and style which are rendered as
         // attributes of outer most table.
-        RenderKitUtils.renderPassThruAttributes(context, writer, component, clientId, false, ATTRIBUTES, HtmlElementEvent.click, FacesComponentEvent.valueChange);
+        RenderKitUtils
+            .renderPassThruAttributes(context, writer, component, clientId, false, ATTRIBUTES, HtmlElementEvent.click, FacesComponentEvent.valueChange);
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
         writer.endElement("input");
@@ -316,11 +329,13 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
     }
 
     protected void renderLabel(ResponseWriter writer, UIComponent component, String forClientId, SelectItem curItem, OptionComponentInfo optionInfo)
-            throws IOException {
+        throws IOException
+    {
         String labelClass;
         if (optionInfo.isDisabled() || curItem.isDisabled()) {
             labelClass = optionInfo.getDisabledClass();
-        } else {
+        }
+        else {
             labelClass = optionInfo.getEnabledClass();
         }
 
@@ -340,7 +355,8 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
                 // to determine if it content written should
                 // be escaped or not.
                 writer.write(itemLabel);
-            } else {
+            }
+            else {
                 writer.writeText(itemLabel, component, "label");
             }
         }
@@ -402,7 +418,8 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
             if (!clientIds.contains(clientId)) {
                 if (clientIds.isEmpty()) {
                     value = radio.getValueExpression("value");
-                } else if (radio.getValueExpression("value") == null) {
+                }
+                else if (radio.getValueExpression("value") == null) {
                     radio.setValueExpression("value", value);
                 }
 
@@ -439,7 +456,9 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
                 }
 
                 if (!iterator.hasNext()) {
-                    throw new IllegalStateException(MessageFormat.format("UISelectOne component id=\"{0}\" group=\"{1}\" has no UISelectItem", radio.getId(), radio.getGroup()));
+                    throw new IllegalStateException(
+                        MessageFormat.format("UISelectOne component id=\"{0}\" group=\"{1}\" has no UISelectItem", radio.getId(), radio.getGroup())
+                    );
                 }
 
                 selectItem = iterator.next();
@@ -477,6 +496,7 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
         public boolean isItemDisabled() {
             return getSelectItem().isDisabled();
         }
+
     }
 
 }

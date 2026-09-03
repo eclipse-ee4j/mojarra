@@ -71,6 +71,7 @@ public class ResourceImplTest extends JUnitFacesTestCaseBase {
         protected InputStream getNonCompressedInputStream(ResourceInfo resource, FacesContext ctx) {
             return null;
         }
+
     };
 
     @Test
@@ -126,6 +127,7 @@ public class ResourceImplTest extends JUnitFacesTestCaseBase {
             public jakarta.faces.application.ProjectStage getProjectStage() {
                 return Development;
             }
+
         };
         developmentApplication.setViewHandler(application.getViewHandler());
         application = developmentApplication;
@@ -164,11 +166,17 @@ public class ResourceImplTest extends JUnitFacesTestCaseBase {
         MockFacesMappingSupport.setFacesServletMappings(servletContext, servletMappings);
     }
 
-    private ResourceImpl createResource(String resourceName, String libraryName, String libraryVersion, String resourceVersion, String localePrefix, String contract) {
+    private ResourceImpl createResource(
+        String resourceName, String libraryName, String libraryVersion, String resourceVersion, String localePrefix, String contract
+    )
+    {
         return createResource(resourceName, libraryName, libraryVersion, resourceVersion, localePrefix, contract, null);
     }
 
-    private ResourceImpl createResource(String resourceName, String libraryName, String libraryVersion, String resourceVersion, String localePrefix, String contract, String queryString) {
+    private ResourceImpl createResource(
+        String resourceName, String libraryName, String libraryVersion, String resourceVersion, String localePrefix, String contract, String queryString
+    )
+    {
         ContractInfo contractInfo = contract != null ? new ContractInfo(contract) : null;
         VersionInfo libraryVersionInfo = libraryVersion != null ? new VersionInfo(libraryVersion, null) : null;
         VersionInfo resourceVersionInfo = resourceVersion != null ? new VersionInfo(resourceVersion, extensionOf(resourceName)) : null;
@@ -177,7 +185,8 @@ public class ResourceImplTest extends JUnitFacesTestCaseBase {
         if (libraryName != null) {
             LibraryInfo libraryInfo = new LibraryInfo(libraryName, libraryVersionInfo, localePrefix, contract, RESOURCE_HELPER);
             resourceInfo = new ResourceInfo(libraryInfo, contractInfo, resourceName, resourceVersionInfo);
-        } else {
+        }
+        else {
             resourceInfo = new ResourceInfo(contractInfo, resourceName, resourceVersionInfo, RESOURCE_HELPER);
         }
 
@@ -206,4 +215,5 @@ public class ResourceImplTest extends JUnitFacesTestCaseBase {
         int extensionIndex = resourceName.lastIndexOf('.');
         return extensionIndex >= 0 ? resourceName.substring(extensionIndex + 1) : null;
     }
+
 }

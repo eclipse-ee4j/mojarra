@@ -40,12 +40,9 @@ import org.glassfish.mojarra.facelets.tag.faces.CompositeComponentTagHandler;
 import org.glassfish.mojarra.facelets.util.ReflectionUtil;
 
 /**
- * Register an ValueChangeListener instance on the UIComponent associated with the closest parent UIComponent custom
- * action.
+ * Register an ValueChangeListener instance on the UIComponent associated with the closest parent UIComponent custom action.
  *
- * See
- * <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/valueChangeListener.html">tag
- * documentation</a>.
+ * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/valueChangeListener.html">tag documentation</a>.
  *
  * @author Jacob Hookom
  */
@@ -78,7 +75,8 @@ public final class ValueChangeListenerHandler extends TagHandlerImpl implements 
             if (instance == null && type != null) {
                 try {
                     instance = (ValueChangeListener<Object>) ReflectionUtil.newInstance(type);
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     throw new AbortProcessingException("Could not instantiate ValueChangeListener of type " + type, e);
                 }
                 if (binding != null) {
@@ -89,6 +87,7 @@ public final class ValueChangeListenerHandler extends TagHandlerImpl implements 
                 instance.processValueChange(event);
             }
         }
+
     }
 
     private final TagAttribute binding;
@@ -107,12 +106,14 @@ public final class ValueChangeListenerHandler extends TagHandlerImpl implements 
                 FacesContext context = FacesContext.getCurrentInstance();
                 FaceletContext ctx = (FaceletContext) context.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
                 stringType = (String) typeAttribute.getValueExpression(ctx, String.class).getValue(ctx);
-            } else {
+            }
+            else {
                 stringType = typeAttribute.getValue();
             }
             checkType(stringType);
             listenerType = stringType;
-        } else {
+        }
+        else {
             listenerType = null;
         }
     }
@@ -129,11 +130,13 @@ public final class ValueChangeListenerHandler extends TagHandlerImpl implements 
 
         if (parent instanceof EditableValueHolder) {
             applyAttachedObject(ctx.getFacesContext(), parent);
-        } else if (parent.getAttributes().containsKey(Resource.COMPONENT_RESOURCE_KEY)) {
+        }
+        else if (parent.getAttributes().containsKey(Resource.COMPONENT_RESOURCE_KEY)) {
             // Allow the composite component to know about the target
             // component.
             CompositeComponentTagHandler.getAttachedObjectHandlers(parent).add(this);
-        } else {
+        }
+        else {
             throw new TagException(tag, "Parent is not of type EditableValueHolder, type is: " + parent);
         }
     }
@@ -158,7 +161,8 @@ public final class ValueChangeListenerHandler extends TagHandlerImpl implements 
         if (null != attr) {
             if (attr.isLiteral()) {
                 result = attr.getValue();
-            } else {
+            }
+            else {
                 FacesContext context = FacesContext.getCurrentInstance();
                 FaceletContext ctx = (FaceletContext) context.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
                 result = (String) attr.getValueExpression(ctx, String.class).getValue(ctx);
@@ -171,7 +175,8 @@ public final class ValueChangeListenerHandler extends TagHandlerImpl implements 
     private void checkType(String type) {
         try {
             ReflectionUtil.forName(type);
-        } catch (ClassNotFoundException e) {
+        }
+        catch (ClassNotFoundException e) {
             throw new TagAttributeException(typeAttribute, "Couldn't qualify ValueChangeListener", e);
         }
     }

@@ -21,8 +21,8 @@ import java.util.Iterator;
 
 /**
  * <p>
- * General purpose <code>Enumeration</code> wrapper around an
- * <code>Iterator</code> specified to our controller.</p>
+ * General purpose <code>Enumeration</code> wrapper around an <code>Iterator</code> specified to our controller.
+ * </p>
  */
 public class MockEnumeration<T> implements Enumeration<T> {
 
@@ -41,4 +41,5 @@ public class MockEnumeration<T> implements Enumeration<T> {
     public T nextElement() {
         return (iterator.next());
     }
+
 }

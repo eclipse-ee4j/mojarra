@@ -38,4 +38,5 @@ public class SearchKeywordResolverImplForm extends AbstractSearchKeywordResolver
     public boolean isPassthrough(SearchExpressionContext searchExpressionContext, String keyword) {
         return isHintSet(searchExpressionContext, SearchExpressionHint.RESOLVE_CLIENT_SIDE);
     }
+
 }

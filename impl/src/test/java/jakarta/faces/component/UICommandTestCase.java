@@ -320,5 +320,7 @@ public class UICommandTestCase extends UIComponentBaseTestCase {
                 throw new NullPointerException();
             }
         }
+
     }
+
 }

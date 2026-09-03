@@ -80,7 +80,53 @@
                     </execution>
                 </executions>
             </plugin>
-            
+
+            <!-- Apply code formatting (Java via Eclipse JDT, XML/XHTML whitespace). -->
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>3.4.0</version>
+                <executions>
+                    <execution>
+                        <id>format source code</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>apply</goal>
+                        </goals>
+                        <configuration>
+                            <java>
+                                <eclipse>
+                                    <file>${maven.multiModuleProjectDirectory}/eclipse-formatter.xml</file>
+                                </eclipse>
+                                <importOrder>
+                                    <file>${maven.multiModuleProjectDirectory}/eclipse-importorder.txt</file>
+                                </importOrder>
+                                <removeUnusedImports />
+                                <trimTrailingWhitespace />
+                            </java>
+                            <formats>
+                                <format>
+                                    <includes>
+                                        <include>pom.xml</include>
+                                        <include>**/src/**/*.xml</include>
+                                        <include>**/src/**/*.xhtml</include>
+                                    </includes>
+                                    <excludes>
+                                        <exclude>**/src/**/node_modules/**</exclude>
+                                    </excludes>
+                                    <trimTrailingWhitespace />
+                                    <endWithNewline />
+                                    <indent>
+                                        <spaces>true</spaces>
+                                        <spacesPerTab>4</spacesPerTab>
+                                    </indent>
+                                </format>
+                            </formats>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <!-- Only impl is published to Maven Central, via central-publishing-maven-plugin in
                  impl/pom.xml's central-release profile. Disable the default maven-deploy-plugin
                  here so the parent pom (and any sibling module that lacks its own publishing
@@ -106,6 +152,6 @@
             </modules>
         </profile>
     </profiles>
-    
-     
+
+
 </project>

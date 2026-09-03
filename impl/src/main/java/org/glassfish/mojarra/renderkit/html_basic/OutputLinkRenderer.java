@@ -61,11 +61,13 @@ public class OutputLinkRenderer extends LinkRenderer {
         rendererParamsNotNull(context, component);
 
         UIOutput output = (UIOutput) component;
-        boolean componentDisabled = output instanceof HtmlOutputLink link ? link.isDisabled()
-                : componentIsDisabled(output);
+        boolean componentDisabled = output instanceof HtmlOutputLink link
+            ? link.isDisabled()
+            : componentIsDisabled(output);
         if (componentDisabled) {
             renderAsDisabled(context, output);
-        } else {
+        }
+        else {
             renderAsActive(context, output);
         }
 
@@ -100,7 +102,8 @@ public class OutputLinkRenderer extends LinkRenderer {
 
         if (component instanceof HtmlOutputLink link ? link.isDisabled() : componentIsDisabled(component)) {
             writer.endElement("span");
-        } else {
+        }
+        else {
             // Write Anchor inline elements
             // Done writing Anchor element
             writer.endElement("a");
@@ -118,8 +121,9 @@ public class OutputLinkRenderer extends LinkRenderer {
 
     protected String getFragment(UIComponent component) {
 
-        String fragment = component instanceof HtmlOutputLink link ? link.getFragment()
-                : (String) component.getAttributes().get("fragment");
+        String fragment = component instanceof HtmlOutputLink link
+            ? link.getFragment()
+            : (String) component.getAttributes().get("fragment");
         fragment = fragment != null ? fragment.trim() : "";
         if (fragment.length() > 0) {
             fragment = "#" + fragment;

@@ -31,8 +31,8 @@ import org.glassfish.mojarra.util.Cache;
 import org.glassfish.mojarra.util.FacesLogger;
 
 /**
- * Represent a logical association between a SystemEvent and a Source. This call will contain the Listeners specific to
- * this association as well as provide a method to construct new SystemEvents as required.
+ * Represent a logical association between a SystemEvent and a Source. This call will contain the Listeners specific to this association as well as provide a
+ * method to construct new SystemEvents as required.
  */
 public class EventInfo {
 
@@ -67,7 +67,8 @@ public class EventInfo {
         if (toInvoke != null) {
             try {
                 return (SystemEvent) toInvoke.newInstance(source);
-            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            }
+            catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                 throw new FacesException(e);
             }
         }
@@ -102,8 +103,10 @@ public class EventInfo {
             }
 
             if (eventConstructor == null && LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.log(Level.FINE, "Unable to find Constructor within {0} that accepts {1} instances.",
-                        new Object[] { systemEvent.getName(), sourceClass.getName() });
+                LOGGER.log(
+                    Level.FINE, "Unable to find Constructor within {0} that accepts {1} instances.",
+                    new Object[] { systemEvent.getName(), sourceClass.getName() }
+                );
             }
         }
 

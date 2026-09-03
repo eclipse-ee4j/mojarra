@@ -21,4 +21,5 @@ interface CompilerPackageCompilationMessageHolder extends CompilationMessageHold
     CompilationManager getCurrentCompositeComponentCompilationManager();
 
     void setCurrentCompositeComponentCompilationManager(CompilationManager manager);
+
 }

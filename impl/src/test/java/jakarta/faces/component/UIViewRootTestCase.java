@@ -57,9 +57,9 @@ import org.junit.jupiter.api.Test;
 public class UIViewRootTestCase extends UIComponentBaseTestCase {
 
     public static String FACTORIES[][] = { { FactoryFinder.APPLICATION_FACTORY, "org.glassfish.mojarra.mock.MockApplicationFactory" },
-            { FactoryFinder.FACES_CONTEXT_FACTORY, "org.glassfish.mojarra.mock.MockFacesContextFactory" },
-            { FactoryFinder.LIFECYCLE_FACTORY, "org.glassfish.mojarra.mock.MockLifecycleFactory" },
-            { FactoryFinder.RENDER_KIT_FACTORY, "org.glassfish.mojarra.mock.MockRenderKitFactory" } };
+        { FactoryFinder.FACES_CONTEXT_FACTORY, "org.glassfish.mojarra.mock.MockFacesContextFactory" },
+        { FactoryFinder.LIFECYCLE_FACTORY, "org.glassfish.mojarra.mock.MockLifecycleFactory" },
+        { FactoryFinder.RENDER_KIT_FACTORY, "org.glassfish.mojarra.mock.MockRenderKitFactory" } };
 
     @Override
     @BeforeEach
@@ -85,7 +85,8 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
         RenderKit renderKit = new MockRenderKit();
         try {
             renderKitFactory.addRenderKit(RenderKitFactory.HTML_BASIC_RENDER_KIT, renderKit);
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
         }
     }
 
@@ -354,12 +355,16 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
     @Test
     public void testPhaseListenerExceptions() throws Exception {
         PhaseId[] ids = { PhaseId.APPLY_REQUEST_VALUES, PhaseId.PROCESS_VALIDATIONS, PhaseId.UPDATE_MODEL_VALUES, PhaseId.INVOKE_APPLICATION,
-                PhaseId.RENDER_RESPONSE };
+            PhaseId.RENDER_RESPONSE };
         Class<?>[] args = new Class<?>[] { PhaseEvent.class };
-        MethodExpression beforeExpression = facesContext.getApplication().getExpressionFactory().createMethodExpression(facesContext.getELContext(),
-                "#{bean.beforePhase}", null, args);
-        MethodExpression afterExpression = facesContext.getApplication().getExpressionFactory().createMethodExpression(facesContext.getELContext(),
-                "#{bean.afterPhase}", null, args);
+        MethodExpression beforeExpression = facesContext.getApplication().getExpressionFactory().createMethodExpression(
+            facesContext.getELContext(),
+            "#{bean.beforePhase}", null, args
+        );
+        MethodExpression afterExpression = facesContext.getApplication().getExpressionFactory().createMethodExpression(
+            facesContext.getELContext(),
+            "#{bean.afterPhase}", null, args
+        );
         for (PhaseId id : ids) {
             UIViewRoot root = facesContext.getApplication().getViewHandler().createView(facesContext, null);
             PhaseListenerBean bean = new PhaseListenerBean(id, true, false);
@@ -432,10 +437,14 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
         PhaseListenerBean phaseListenerBean = new PhaseListenerBean(phaseId);
         facesContext.getExternalContext().getRequestMap().put("bean", phaseListenerBean);
         Class<?>[] args = new Class<?>[] { PhaseEvent.class };
-        MethodExpression beforeExpression = facesContext.getApplication().getExpressionFactory().createMethodExpression(facesContext.getELContext(),
-                "#{bean.beforePhase}", null, args),
-                afterExpression = facesContext.getApplication().getExpressionFactory().createMethodExpression(facesContext.getELContext(), "#{bean.afterPhase}",
-                        null, args);
+        MethodExpression beforeExpression = facesContext.getApplication().getExpressionFactory().createMethodExpression(
+            facesContext.getELContext(),
+            "#{bean.beforePhase}", null, args
+        ),
+            afterExpression = facesContext.getApplication().getExpressionFactory().createMethodExpression(
+                facesContext.getELContext(), "#{bean.afterPhase}",
+                null, args
+            );
         root.setBeforePhaseListener(beforeExpression);
         root.setAfterPhaseListener(afterExpression);
 
@@ -512,10 +521,14 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
         PhaseListenerBean phaseListenerBean = new PhaseListenerBean(phaseId);
         facesContext.getExternalContext().getRequestMap().put("bean", phaseListenerBean);
         Class<?>[] args = new Class<?>[] { PhaseEvent.class };
-        MethodExpression beforeExpression = facesContext.getApplication().getExpressionFactory().createMethodExpression(facesContext.getELContext(),
-                "#{bean.beforePhase}", null, args),
-                afterExpression = facesContext.getApplication().getExpressionFactory().createMethodExpression(facesContext.getELContext(), "#{bean.afterPhase}",
-                        null, args);
+        MethodExpression beforeExpression = facesContext.getApplication().getExpressionFactory().createMethodExpression(
+            facesContext.getELContext(),
+            "#{bean.beforePhase}", null, args
+        ),
+            afterExpression = facesContext.getApplication().getExpressionFactory().createMethodExpression(
+                facesContext.getELContext(), "#{bean.afterPhase}",
+                null, args
+            );
         root.setBeforePhaseListener(beforeExpression);
         root.setAfterPhaseListener(afterExpression);
         root.addPhaseListener(phaseListener);
@@ -528,8 +541,11 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
         assertTrue(phaseListener.isAfterPhaseCalled());
     }
 
-    private void checkEventQueuesSizes(Map<PhaseId, List<FacesEvent>> events, int applyEventsSize, int valEventsSize, int updateEventsSize,
-            int appEventsSize) {
+    private void checkEventQueuesSizes(
+        Map<PhaseId, List<FacesEvent>> events, int applyEventsSize, int valEventsSize, int updateEventsSize,
+        int appEventsSize
+    )
+    {
         List<?> applyEvents = events.get(PhaseId.APPLY_REQUEST_VALUES);
         assertEquals(applyEventsSize, applyEvents.size());
         List<?> valEvents = events.get(PhaseId.PROCESS_VALIDATIONS);
@@ -636,13 +652,17 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
     private void callRightLifecycleMethodGivenPhaseId(UIViewRoot root, PhaseId phaseId) throws Exception {
         if (phaseId.getOrdinal() == PhaseId.APPLY_REQUEST_VALUES.getOrdinal()) {
             root.processDecodes(facesContext);
-        } else if (phaseId.getOrdinal() == PhaseId.PROCESS_VALIDATIONS.getOrdinal()) {
+        }
+        else if (phaseId.getOrdinal() == PhaseId.PROCESS_VALIDATIONS.getOrdinal()) {
             root.processValidators(facesContext);
-        } else if (phaseId.getOrdinal() == PhaseId.UPDATE_MODEL_VALUES.getOrdinal()) {
+        }
+        else if (phaseId.getOrdinal() == PhaseId.UPDATE_MODEL_VALUES.getOrdinal()) {
             root.processUpdates(facesContext);
-        } else if (phaseId.getOrdinal() == PhaseId.INVOKE_APPLICATION.getOrdinal()) {
+        }
+        else if (phaseId.getOrdinal() == PhaseId.INVOKE_APPLICATION.getOrdinal()) {
             root.processApplication(facesContext);
-        } else if (phaseId.getOrdinal() == PhaseId.RENDER_RESPONSE.getOrdinal()) {
+        }
+        else if (phaseId.getOrdinal() == PhaseId.RENDER_RESPONSE.getOrdinal()) {
             root.encodeBegin(facesContext);
             root.encodeEnd(facesContext);
         }
@@ -680,21 +700,28 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
         root.processDecodes(facesContext);
         if (PhaseId.APPLY_REQUEST_VALUES.equals(phaseId) || PhaseId.ANY_PHASE.equals(phaseId)) {
             assertEquals(expected, ListenerTestImpl.trace());
-        } else {
+        }
+        else {
             assertEquals("", ListenerTestImpl.trace());
         }
         root.processValidators(facesContext);
-        if (PhaseId.PROCESS_VALIDATIONS.equals(phaseId) || PhaseId.APPLY_REQUEST_VALUES.equals(phaseId) || PhaseId.APPLY_REQUEST_VALUES.equals(phaseId)
-                || PhaseId.ANY_PHASE.equals(phaseId)) {
+        if (
+            PhaseId.PROCESS_VALIDATIONS.equals(phaseId) || PhaseId.APPLY_REQUEST_VALUES.equals(phaseId) || PhaseId.APPLY_REQUEST_VALUES.equals(phaseId)
+                || PhaseId.ANY_PHASE.equals(phaseId)
+        ) {
             assertEquals(expected, ListenerTestImpl.trace());
-        } else {
+        }
+        else {
             assertEquals("", ListenerTestImpl.trace());
         }
         root.processUpdates(facesContext);
-        if (PhaseId.UPDATE_MODEL_VALUES.equals(phaseId) || PhaseId.PROCESS_VALIDATIONS.equals(phaseId) || PhaseId.APPLY_REQUEST_VALUES.equals(phaseId)
-                || PhaseId.ANY_PHASE.equals(phaseId)) {
+        if (
+            PhaseId.UPDATE_MODEL_VALUES.equals(phaseId) || PhaseId.PROCESS_VALIDATIONS.equals(phaseId) || PhaseId.APPLY_REQUEST_VALUES.equals(phaseId)
+                || PhaseId.ANY_PHASE.equals(phaseId)
+        ) {
             assertEquals(expected, ListenerTestImpl.trace());
-        } else {
+        }
+        else {
             assertEquals("", ListenerTestImpl.trace());
         }
         root.processApplication(facesContext);
@@ -805,6 +832,7 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
         public PhaseId getPhaseId() {
             return phaseId;
         }
+
     }
 
     public static class PhaseSkipTestComponent extends UIInput {
@@ -852,6 +880,7 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
         public boolean isProcessUpdatesCalled() {
             return processUpdatesCalled;
         }
+
     }
 
     public static class Container extends UIPanel {
@@ -859,5 +888,7 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
         @Override
         public void encodeAll(FacesContext context) throws IOException {
         }
+
     }
+
 }

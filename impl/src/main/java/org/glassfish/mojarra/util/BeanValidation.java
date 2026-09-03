@@ -52,10 +52,12 @@ public class BeanValidation {
 
         if (cachedObject instanceof ValidatorFactory) {
             validatorFactory = (ValidatorFactory) cachedObject;
-        } else {
+        }
+        else {
             try {
                 validatorFactory = buildDefaultValidatorFactory();
-            } catch (ValidationException e) {
+            }
+            catch (ValidationException e) {
                 throw new FacesException("Could not build a default Bean Validator factory", e);
             }
 
@@ -88,6 +90,7 @@ public class BeanValidation {
         public String interpolate(String message, MessageInterpolator.Context context, Locale locale) {
             return delegate.interpolate(message, context, locale);
         }
+
     }
 
 }

@@ -32,4 +32,5 @@ public class CommandTestImpl extends UICommand {
     public CommandTestImpl(String id) {
         setId(id);
     }
+
 }

@@ -46,7 +46,8 @@ class ResourceDependencyScanner implements Scanner {
         ResourceDependency dep = clazz.getAnnotation(ResourceDependency.class);
         if (dep != null) {
             handler = new ResourceDependencyHandler(new ResourceDependency[] { dep });
-        } else {
+        }
+        else {
             ResourceDependencies deps = clazz.getAnnotation(ResourceDependencies.class);
             if (deps != null) {
                 handler = new ResourceDependencyHandler(deps.value());

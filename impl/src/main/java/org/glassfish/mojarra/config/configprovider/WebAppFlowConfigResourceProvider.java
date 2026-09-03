@@ -68,7 +68,8 @@ public class WebAppFlowConfigResourceProvider implements ConfigurationResourcePr
                             }
                         }
                     }
-                } else if (cur.endsWith("/")) {
+                }
+                else if (cur.endsWith("/")) {
                     list = inspectDirectory(context, cur, list);
                 }
             }
@@ -107,11 +108,13 @@ public class WebAppFlowConfigResourceProvider implements ConfigurationResourcePr
                     try {
                         curUrl = context.getResource(cur);
                         list.add(curUrl.toURI());
-                    } catch (MalformedURLException ex) {
+                    }
+                    catch (MalformedURLException ex) {
                         if (LOGGER.isLoggable(Level.SEVERE)) {
                             LOGGER.log(Level.SEVERE, "Unable to get resource for {0}" + cur, ex);
                         }
-                    } catch (URISyntaxException use) {
+                    }
+                    catch (URISyntaxException use) {
                         if (LOGGER.isLoggable(Level.SEVERE)) {
                             LOGGER.log(Level.SEVERE, "Unable to get URI for {0}" + curUrl.toExternalForm(), use);
                         }

@@ -71,7 +71,7 @@ public class ExternalContextImplTest {
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
         HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
         Cookie cookie = new Cookie("foo", "bar");
-        when(request.getCookies()).thenReturn(new Cookie[]{cookie});
+        when(request.getCookies()).thenReturn(new Cookie[] { cookie });
 
         ExternalContextImpl externalContext = new ExternalContextImpl(servletContext, request, response);
         Map<String, Object> requestCookieMap = externalContext.getRequestCookieMap();
@@ -89,8 +89,7 @@ public class ExternalContextImplTest {
     }
 
     /**
-     * Test getRequestCookieMap method (test the unmodifiable nature of the
-     * returned map).
+     * Test getRequestCookieMap method (test the unmodifiable nature of the returned map).
      */
     @Test
     public void testGetRequestCookieMap3() {
@@ -98,7 +97,7 @@ public class ExternalContextImplTest {
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
         HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
         Cookie cookie = new Cookie("foo", "bar");
-        when(request.getCookies()).thenReturn(new Cookie[]{cookie});
+        when(request.getCookies()).thenReturn(new Cookie[] { cookie });
 
         ExternalContextImpl externalContext = new ExternalContextImpl(servletContext, request, response);
         Map<String, Object> requestCookieMap = externalContext.getRequestCookieMap();
@@ -108,7 +107,8 @@ public class ExternalContextImplTest {
         try {
             entryIterator.remove();
             fail();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             assertTrue(e instanceof UnsupportedOperationException);
         }
 
@@ -117,7 +117,8 @@ public class ExternalContextImplTest {
         try {
             keyIterator.remove();
             fail();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             assertTrue(e instanceof UnsupportedOperationException);
         }
 
@@ -126,28 +127,30 @@ public class ExternalContextImplTest {
         try {
             valueIterator.remove();
             fail();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             assertTrue(e instanceof UnsupportedOperationException);
         }
 
         try {
             requestCookieMap.keySet().remove("test");
             fail();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             assertTrue(e instanceof UnsupportedOperationException);
         }
 
         try {
             requestCookieMap.values().remove("test");
             fail();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             assertTrue(e instanceof UnsupportedOperationException);
         }
     }
 
     /**
-     * Test getRequestCookieMap method (test the unsupported methods throw an
-     * UnsupportedOperationException).
+     * Test getRequestCookieMap method (test the unsupported methods throw an UnsupportedOperationException).
      */
     @SuppressWarnings("unchecked")
     @Test
@@ -156,14 +159,15 @@ public class ExternalContextImplTest {
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
         HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
         Cookie cookie = new Cookie("foo", "bar");
-        when(request.getCookies()).thenReturn(new Cookie[]{cookie});
+        when(request.getCookies()).thenReturn(new Cookie[] { cookie });
 
         ExternalContextImpl externalContext = new ExternalContextImpl(servletContext, request, response);
         Map<String, Object> requestCookieMap = externalContext.getRequestCookieMap();
         boolean exceptionThrown = false;
         try {
             requestCookieMap.clear();
-        } catch (UnsupportedOperationException e) {
+        }
+        catch (UnsupportedOperationException e) {
             exceptionThrown = true;
         }
 
@@ -174,9 +178,8 @@ public class ExternalContextImplTest {
     }
 
     /**
-     * Test that responseReset discards render output which is still buffered in the response output writer. The writer
-     * is deliberately held on to across the reset, as that is what the response writer created earlier in the request
-     * does.
+     * Test that responseReset discards render output which is still buffered in the response output writer. The writer is deliberately held on to across the
+     * reset, as that is what the response writer created earlier in the request does.
      */
     @Test
     public void testResponseResetDiscardsBufferedOutput() throws IOException {
@@ -209,8 +212,8 @@ public class ExternalContextImplTest {
     }
 
     /**
-     * Test that render output which has already been drained to the container's writer is beyond the reach of
-     * responseReset, which matches the container's own semantics.
+     * Test that render output which has already been drained to the container's writer is beyond the reach of responseReset, which matches the container's own
+     * semantics.
      */
     @Test
     public void testResponseResetDoesNotDiscardAlreadyDrainedOutput() throws IOException {
@@ -227,9 +230,8 @@ public class ExternalContextImplTest {
     }
 
     /**
-     * Test that release drains buffered render output to the container's writer without flushing it. Flushing would
-     * commit the response, even when nothing is left to write, and thereby defeat the error page of a request which is
-     * being aborted.
+     * Test that release drains buffered render output to the container's writer without flushing it. Flushing would commit the response, even when nothing is
+     * left to write, and thereby defeat the error page of a request which is being aborted.
      */
     @Test
     public void testReleaseDrainsWithoutFlushing() throws IOException {
@@ -274,7 +276,8 @@ public class ExternalContextImplTest {
 
         try {
             consumer.accept(argument);
-        } catch (UnsupportedOperationException e) {
+        }
+        catch (UnsupportedOperationException e) {
             exceptionThrown = true;
         }
 
@@ -291,7 +294,8 @@ public class ExternalContextImplTest {
 
         try {
             supplier.get();
-        } catch (UnsupportedOperationException e) {
+        }
+        catch (UnsupportedOperationException e) {
             exceptionThrown = true;
         }
 
@@ -306,4 +310,5 @@ public class ExternalContextImplTest {
         when(servletContext.getInitParameterNames()).thenAnswer(invocation -> Collections.enumeration(Collections.emptyList()));
         return servletContext;
     }
+
 }

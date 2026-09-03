@@ -37,8 +37,8 @@ public class ViewHandlingStrategyManager {
 
     /**
      * <p>
-     * Iterate through the available {@link org.glassfish.mojarra.application.view.ViewHandlingStrategy} implementations. The first
-     * one to return true from {@link org.glassfish.mojarra.application.view.ViewHandlingStrategy#handlesViewId(String)} will be the
+     * Iterate through the available {@link org.glassfish.mojarra.application.view.ViewHandlingStrategy} implementations. The first one to return true from
+     * {@link org.glassfish.mojarra.application.view.ViewHandlingStrategy#handlesViewId(String)} will be the
      * {@link org.glassfish.mojarra.application.view.ViewHandlingStrategy} returned.
      *
      * @param viewId the viewId to match a {@link org.glassfish.mojarra.application.view.ViewHandlingStrategy} to
@@ -67,8 +67,7 @@ public class ViewHandlingStrategyManager {
     }
 
     /**
-     * Update the {@link org.glassfish.mojarra.application.view.ViewHandlingStrategy} implementations to be applied when processing
-     * Faces requests.
+     * Update the {@link org.glassfish.mojarra.application.view.ViewHandlingStrategy} implementations to be applied when processing Faces requests.
      *
      * @param strategies the new view handling strategies
      */

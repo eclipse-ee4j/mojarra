@@ -28,9 +28,8 @@ import jakarta.faces.view.facelets.TagAttribute;
 
 /**
  * Register a named Converter instance on the UIComponent associated with the closest parent UIComponent custom action.
- * 
- * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/converter.html">tag
- * documentation</a>.
+ *
+ * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/converter.html">tag documentation</a>.
  *
  * @author Jacob Hookom
  */
@@ -59,4 +58,5 @@ public final class ConvertDelegateHandler extends ConverterHandler {
     protected MetaRuleset createMetaRuleset(Class<?> type) {
         return super.createMetaRuleset(type).ignoreAll();
     }
+
 }

@@ -16,7 +16,6 @@
 
 package org.glassfish.mojarra.facelets.util;
 
-
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -56,8 +55,7 @@ import org.glassfish.mojarra.util.Util;
  * Utility class for displaying Facelet error/debug information.
  *
  * <p>
- * The public static methods of this class are exposed as EL functions under the namespace
- * <code>mojarra.private.functions</code>
+ * The public static methods of this class are exposed as EL functions under the namespace <code>mojarra.private.functions</code>
  * </p>
  *
  */
@@ -97,24 +95,24 @@ public final class DevTools {
         for (String ERROR_PART : ERROR_PARTS) {
             if (null != ERROR_PART) {
                 switch (ERROR_PART) {
-                case "message":
-                    writeMessage(writer, e);
-                    break;
-                case "trace":
-                    writeException(writer, e);
-                    break;
-                case "now":
-                    writer.write(DateFormat.getDateTimeInstance().format(now));
-                    break;
-                case "tree":
-                    writeComponent(writer, faces.getViewRoot());
-                    break;
-                case "vars":
-                    writeVariables(writer, faces);
-                    break;
-                default:
-                    writer.write(ERROR_PART);
-                    break;
+                    case "message" :
+                        writeMessage(writer, e);
+                        break;
+                    case "trace" :
+                        writeException(writer, e);
+                        break;
+                    case "now" :
+                        writer.write(DateFormat.getDateTimeInstance().format(now));
+                        break;
+                    case "tree" :
+                        writeComponent(writer, faces.getViewRoot());
+                        break;
+                    case "vars" :
+                        writeVariables(writer, faces);
+                        break;
+                    default :
+                        writer.write(ERROR_PART);
+                        break;
                 }
             }
         }
@@ -127,7 +125,8 @@ public final class DevTools {
             String msg = e.getMessage();
             if (msg != null) {
                 writer.write(msg.replace("<", TS));
-            } else {
+            }
+            else {
                 writer.write(e.getClass().getName());
             }
         }
@@ -155,21 +154,21 @@ public final class DevTools {
         for (String DEBUG_PART : DEBUG_PARTS) {
             if (null != DEBUG_PART) {
                 switch (DEBUG_PART) {
-                case "message":
-                    writer.write(faces.getViewRoot().getViewId());
-                    break;
-                case "now":
-                    writer.write(DateFormat.getDateTimeInstance().format(now));
-                    break;
-                case "tree":
-                    writeComponent(writer, faces.getViewRoot());
-                    break;
-                case "vars":
-                    writeVariables(writer, faces);
-                    break;
-                default:
-                    writer.write(DEBUG_PART);
-                    break;
+                    case "message" :
+                        writer.write(faces.getViewRoot().getViewId());
+                        break;
+                    case "now" :
+                        writer.write(DateFormat.getDateTimeInstance().format(now));
+                        break;
+                    case "tree" :
+                        writeComponent(writer, faces.getViewRoot());
+                        break;
+                    case "vars" :
+                        writeVariables(writer, faces);
+                        break;
+                    default :
+                        writer.write(DEBUG_PART);
+                        break;
                 }
             }
         }
@@ -184,29 +183,34 @@ public final class DevTools {
             Map<String, Object> viewMap = faces.getViewRoot().getViewMap(false);
             if (viewMap != null) {
                 writeVariables(writer, viewMap, "View Attributes");
-            } else {
+            }
+            else {
                 writeVariables(writer, Collections.<String, Object>emptyMap(), "View Attributes");
             }
-        } else {
+        }
+        else {
             writeVariables(writer, Collections.<String, Object>emptyMap(), "View Attributes");
         }
         writeVariables(writer, ctx.getRequestMap(), "Request Attributes");
         Flash flash = ctx.getFlash();
         try {
             flash = ctx.getFlash();
-        } catch (UnsupportedOperationException uoe) {
+        }
+        catch (UnsupportedOperationException uoe) {
             if (LOGGER.isLoggable(Level.FINEST)) {
                 LOGGER.log(Level.FINEST, "Flash not supported", uoe);
             }
         }
         if (flash != null) {
             writeVariables(writer, flash, "Flash Attributes");
-        } else {
+        }
+        else {
             writeVariables(writer, Collections.<String, Object>emptyMap(), "Flash Attributes");
         }
         if (ctx.getSession(false) != null) {
             writeVariables(writer, ctx.getSessionMap(), "Session Attributes");
-        } else {
+        }
+        else {
             writeVariables(writer, Collections.<String, Object>emptyMap(), "Session Attributes");
         }
         writeVariables(writer, ctx.getApplicationMap(), "Application Attributes");
@@ -216,7 +220,8 @@ public final class DevTools {
     public static void writeComponent(Writer writer, UIComponent c) throws IOException {
 
         writer.write(
-                "<dl style=\"color: #006;\"><dt style=\"border: 1px solid #DDD; padding: 4px; border-left: 2px solid #666; font-family: 'Courier New', Courier, mono; font-size: small;");
+            "<dl style=\"color: #006;\"><dt style=\"border: 1px solid #DDD; padding: 4px; border-left: 2px solid #666; font-family: 'Courier New', Courier, mono; font-size: small;"
+        );
         if (c != null) {
             if (isText(c)) {
                 writer.write("color: #999;");
@@ -250,7 +255,8 @@ public final class DevTools {
                 }
             }
             writer.write(
-                    "<dt style=\"border: 1px solid #DDD; padding: 4px; border-left: 2px solid #666; font-family: 'Courier New', Courier, mono; font-size: small;\">");
+                "<dt style=\"border: 1px solid #DDD; padding: 4px; border-left: 2px solid #666; font-family: 'Courier New', Courier, mono; font-size: small;\">"
+            );
             writeEnd(writer, c);
             writer.write("</dt>");
         }
@@ -293,7 +299,8 @@ public final class DevTools {
                 baos.write(buff, 0, read);
             }
             str = baos.toString(RIConstants.CHAR_ENCODING);
-        } finally {
+        }
+        finally {
             if (null != is) {
                 is.close();
             }
@@ -305,10 +312,12 @@ public final class DevTools {
     private static void writeVariables(Writer writer, Map<String, ?> vars, String caption) throws IOException {
 
         writer.write(
-                "<table style=\"border: 1px solid #CCC; border-collapse: collapse; border-spacing: 0px; width: 100%; text-align: left;\"><caption style=\"text-align: left; padding: 10px 0; font-size: large;\">");
+            "<table style=\"border: 1px solid #CCC; border-collapse: collapse; border-spacing: 0px; width: 100%; text-align: left;\"><caption style=\"text-align: left; padding: 10px 0; font-size: large;\">"
+        );
         writer.write(caption);
         writer.write(
-                "</caption><thead stype=\"padding: 2px; color: #030; background-color: #F9F9F9;\"><tr style=\"padding: 2px; color: #030; background-color: #F9F9F9;\"><th style=\"padding: 2px; color: #030; background-color: #F9F9F9;width: 10%; \">Name</th><th style=\"padding: 2px; color: #030; background-color: #F9F9F9;width: 90%; \">Value</th></tr></thead><tbody style=\"padding: 10px 6px;\">");
+            "</caption><thead stype=\"padding: 2px; color: #030; background-color: #F9F9F9;\"><tr style=\"padding: 2px; color: #030; background-color: #F9F9F9;\"><th style=\"padding: 2px; color: #030; background-color: #F9F9F9;width: 10%; \">Name</th><th style=\"padding: 2px; color: #030; background-color: #F9F9F9;width: 90%; \">Value</th></tr></thead><tbody style=\"padding: 10px 6px;\">"
+        );
         boolean written = false;
         if (!vars.isEmpty()) {
             SortedMap<String, Object> map = new TreeMap<>(vars);
@@ -364,17 +373,20 @@ public final class DevTools {
                             String str;
                             if (v instanceof Expression) {
                                 str = ((Expression) v).getExpressionString();
-                            } else {
+                            }
+                            else {
                                 str = v.toString();
                             }
                             writer.write(str.replace("<", TS));
                             writer.write("\"");
                         }
-                    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | IOException e) {
+                    }
+                    catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | IOException e) {
                         if (LOGGER.isLoggable(Level.FINEST)) {
                             LOGGER.log(Level.FINEST, "Error writing out attribute", e);
                         }
-                    } catch (Exception e) {
+                    }
+                    catch (Exception e) {
                         if (LOGGER.isLoggable(Level.FINEST)) {
                             LOGGER.log(Level.FINEST, "Error writing out attribute", e);
                         }
@@ -382,7 +394,8 @@ public final class DevTools {
                 }
             }
 
-        } catch (IntrospectionException e) {
+        }
+        catch (IntrospectionException e) {
             LOGGER.log(Level.FINEST, e, () -> "Error writing out attributes");
         }
 
@@ -392,13 +405,15 @@ public final class DevTools {
         if (isText(c)) {
             String str = c.toString().trim();
             writer.write(str.replace("<", TS));
-        } else {
+        }
+        else {
             writer.write(TS);
             writer.write(getName(c));
             writeAttributes(writer, c);
             if (children) {
                 writer.write('>');
-            } else {
+            }
+            else {
                 writer.write("/>");
             }
         }

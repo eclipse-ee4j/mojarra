@@ -73,8 +73,8 @@ public final class MappedValueExpression extends ValueExpression {
     }
 
     /**
-     * The entry the given key holds in the given map, rather than the one an iteration handed out, so that a row an
-     * earlier build produced is reproduced from that key alone.
+     * The entry the given key holds in the given map, rather than the one an iteration handed out, so that a row an earlier build produced is reproduced from
+     * that key alone.
      *
      * @param orig the expression the map is read from
      * @param key the key of the entry this expression reads

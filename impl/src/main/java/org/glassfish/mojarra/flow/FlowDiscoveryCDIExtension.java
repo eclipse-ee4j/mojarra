@@ -61,7 +61,6 @@ public class FlowDiscoveryCDIExtension implements Extension {
     private static final Logger LOGGER = FacesLogger.FLOW.getLogger();
     private List<Producer<Flow>> flowProducers = new CopyOnWriteArrayList<>();
 
-
     void beforeBeanDiscovery(@Observes BeforeBeanDiscovery beforeBeanDiscovery, BeanManager beanManager) {
         addAnnotatedTypes(beforeBeanDiscovery, beanManager, FlowDiscoveryCDIHelper.class);
     }

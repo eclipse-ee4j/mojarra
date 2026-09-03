@@ -35,4 +35,5 @@ public class FlowHandlerFactoryImpl extends FlowHandlerFactory {
     public FlowHandler createFlowHandler(FacesContext context) {
         return new FlowHandlerImpl();
     }
+
 }

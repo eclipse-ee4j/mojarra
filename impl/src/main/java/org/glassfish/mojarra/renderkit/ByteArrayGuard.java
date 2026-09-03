@@ -45,8 +45,8 @@ import org.glassfish.mojarra.util.FacesLogger;
 
 /**
  * <p>
- * This utility class is to provide both encryption and decryption <code>Ciphers</code> to
- * <code>ResponseStateManager</code> implementations wishing to provide encryption support.
+ * This utility class is to provide both encryption and decryption <code>Ciphers</code> to <code>ResponseStateManager</code> implementations wishing to provide
+ * encryption support.
  * </p>
  *
  * <p>
@@ -78,7 +78,8 @@ public final class ByteArrayGuard {
 
         try {
             setupKeyAndMac();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, "Unexpected exception initializing encryption." + "  No encryption will be performed.", e);
             }
@@ -89,9 +90,8 @@ public final class ByteArrayGuard {
     // ---------------------------------------------------------- Public Methods
 
     /**
-     * This method: Encrypts bytes using a cipher. Generates MAC for intialization vector of the cipher Generates MAC for
-     * encrypted data Returns a byte array consisting of the following concatenated together: |MAC for cnrypted Data | MAC
-     * for Init Vector | Encrypted Data |
+     * This method: Encrypts bytes using a cipher. Generates MAC for intialization vector of the cipher Generates MAC for encrypted data Returns a byte array
+     * consisting of the following concatenated together: |MAC for cnrypted Data | MAC for Init Vector | Encrypted Data |
      *
      * @param bytes The byte array to be encrypted.
      * @return the encrypted byte array.
@@ -115,8 +115,11 @@ public final class ByteArrayGuard {
             byte[] macBytes = encryptMac.doFinal(encdata);
             byte[] tmp = concatBytes(macBytes, iv);
             securedata = concatBytes(tmp, encdata);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalStateException
-                | IllegalBlockSizeException | BadPaddingException e) {
+        }
+        catch (
+            NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalStateException
+            | IllegalBlockSizeException | BadPaddingException e
+        ) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, "Unexpected exception initializing encryption." + "  No encryption will be performed.", e);
             }
@@ -126,8 +129,7 @@ public final class ByteArrayGuard {
     }
 
     /**
-     * This method decrypts the provided byte array. The decryption is only performed if the regenerated MAC is the same as
-     * the MAC for the received value.
+     * This method decrypts the provided byte array. The decryption is only performed if the regenerated MAC is the same as the MAC for the received value.
      *
      * @param bytes Encrypted byte array to be decrypted.
      * @return Decrypted byte array.
@@ -162,12 +164,16 @@ public final class ByteArrayGuard {
                 // System.out.println("Valid MAC found!");
                 byte[] plaindata = decryptCipher.doFinal(encdata);
                 return plaindata;
-            } else {
+            }
+            else {
                 System.err.println("ERROR: MAC did not verify!");
                 return null;
             }
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalStateException
-                | IllegalBlockSizeException | BadPaddingException e) {
+        }
+        catch (
+            NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalStateException
+            | IllegalBlockSizeException | BadPaddingException e
+        ) {
             System.err.println("ERROR: Decrypting:" + e.getCause());
             return null; // Signal to Faces runtime
         }
@@ -198,7 +204,8 @@ public final class ByteArrayGuard {
             String encodedKeyArray = (String) context.lookup("java:comp/env/faces/ClientSideSecretKey");
             byte[] keyArray = Base64.getDecoder().decode(encodedKeyArray);
             sk = new SecretKeySpec(keyArray, KEY_ALGORITHM);
-        } catch (NamingException exception) {
+        }
+        catch (NamingException exception) {
             if (LOGGER.isLoggable(Level.FINEST)) {
                 LOGGER.log(Level.FINEST, "Unable to find the encoded key.", exception);
             }
@@ -209,9 +216,10 @@ public final class ByteArrayGuard {
                 KeyGenerator kg = KeyGenerator.getInstance(KEY_ALGORITHM);
                 kg.init(KEY_LENGTH); // 256 if you're using the Unlimited Policy Files
                 sk = kg.generateKey();
-//                System.out.print("SecretKey: " + DatatypeConverter.printBase64Binary(sk.getEncoded()));
+                // System.out.print("SecretKey: " + DatatypeConverter.printBase64Binary(sk.getEncoded()));
 
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 throw new FacesException(e);
             }
         }
@@ -229,7 +237,8 @@ public final class ByteArrayGuard {
         try {
             System.arraycopy(array1, 0, cBytes, 0, array1.length);
             System.arraycopy(array2, 0, cBytes, array1.length, array2.length);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new FacesException(e);
         }
         return cBytes;
@@ -253,4 +262,5 @@ public final class ByteArrayGuard {
         }
         return result;
     }
+
 }

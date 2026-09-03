@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.Test;
+
 /**
  * <B>TestUtil_local.java</B> is a class ...
  *
@@ -42,27 +43,32 @@ public class TestUtil_local {
         try {
             Util.getLocaleFromString("aoeuhoentuhtnhtnhoaenhnhu");
             fail();
-        } catch (Exception exception) {
+        }
+        catch (Exception exception) {
         }
 
         try {
             Util.getLocaleFromString("ps_PS-at-pq-wp");
-        } catch (Exception exception) {
+        }
+        catch (Exception exception) {
         }
 
         try {
             Util.getLocaleFromString("tg-AF-oe-12");
-        } catch (Exception exception) {
+        }
+        catch (Exception exception) {
         }
 
         try {
             Util.getLocaleFromString("12-34");
-        } catch (Exception exception) {
+        }
+        catch (Exception exception) {
         }
 
         try {
             Util.getLocaleFromString("12-");
-        } catch (Exception exception) {
+        }
+        catch (Exception exception) {
         }
     }
 

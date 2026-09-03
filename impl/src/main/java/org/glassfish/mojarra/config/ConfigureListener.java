@@ -86,8 +86,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * Parse all relevant Faces configuration resources, and configure the Mojarra runtime
- * environment.
+ * Parse all relevant Faces configuration resources, and configure the Mojarra runtime environment.
  */
 public class ConfigureListener implements ServletRequestListener, HttpSessionListener, ServletContextListener {
 
@@ -95,10 +94,8 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
     private static final String[] FACES_SERVLET_MAPPINGS_WITH_XHTML = { "/faces/*", "*.jsf", "*.faces", "*.xhtml" };
     private static final String[] FACES_SERVLET_MAPPINGS_WITHOUT_XHTML = { "/faces/*", "*.jsf", "*.faces" };
 
-    private static final String ERROR_INVALID_WEBSOCKET_ENDPOINT_IDLE_TIMEOUT =
-            "Context param ''{0}'' must represent a number of milliseconds of 0 or greater, but was: ''{1}''.";
-    private static final String ERROR_INVALID_WEBSOCKET_MAX_SESSIONS_PER_CHANNEL =
-            "Context param ''{0}'' must represent a number of 1 or greater, but was: ''{1}''.";
+    private static final String ERROR_INVALID_WEBSOCKET_ENDPOINT_IDLE_TIMEOUT = "Context param ''{0}'' must represent a number of milliseconds of 0 or greater, but was: ''{1}''.";
+    private static final String ERROR_INVALID_WEBSOCKET_MAX_SESSIONS_PER_CHANNEL = "Context param ''{0}'' must represent a number of 1 or greater, but was: ''{1}''.";
 
     private ScheduledThreadPoolExecutor webResourcePool;
 
@@ -137,7 +134,8 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
         // Check to see if the FacesServlet is present in the
         // web.xml. If it is, perform faces configuration as normal,
         // otherwise, simply return.
-        ServletRegistration facesServletRegistration = (ServletRegistration) servletContext.getAttribute(FACES_SERVLET_REGISTRATION); // If found by FacesInitializer.
+        ServletRegistration facesServletRegistration = (ServletRegistration) servletContext.getAttribute(FACES_SERVLET_REGISTRATION); // If found by
+                                                                                                                                      // FacesInitializer.
 
         WebXmlProcessor webXmlProcessor = new WebXmlProcessor(servletContext);
         if (facesServletRegistration == null) {
@@ -152,10 +150,12 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
                     return;
                 }
-            } else {
+            }
+            else {
                 LOGGER.log(FINE, "FacesServlet found in deployment descriptor - processing configuration.");
             }
-        } else if (servletContext.getAttribute(FACES_SERVLET_MAPPINGS) != null) { // If automatic mapping needs to be handled.
+        }
+        else if (servletContext.getAttribute(FACES_SERVLET_MAPPINGS) != null) { // If automatic mapping needs to be handled.
             if (FacesContextParam.DISABLE_FACESSERVLET_TO_XHTML.isEnabled(initFacesContext)) {
                 facesServletRegistration.addMapping(FACES_SERVLET_MAPPINGS_WITHOUT_XHTML);
             }
@@ -186,8 +186,10 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
             }
 
             if (!isProduction()) {
-                LOGGER.log(WARNING, "faces.config.listener.projectstage.not_production",
-                        new Object[] { servletContext.getContextPath(), getProjectStage() });
+                LOGGER.log(
+                    WARNING, "faces.config.listener.projectstage.not_production",
+                    new Object[] { servletContext.getContextPath(), getProjectStage() }
+                );
 
                 Verifier.setCurrentInstance(new Verifier());
             }
@@ -233,12 +235,13 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
                 if (serverContainer == null) {
                     throw new UnsupportedOperationException(
                         "Cannot enable f:websocket." +
-                        " The current websocket container implementation does not support programmatically registering a container-provided endpoint.");
+                            " The current websocket container implementation does not support programmatically registering a container-provided endpoint."
+                    );
                 }
 
                 ServerEndpointConfig endpointConfig = ServerEndpointConfig.Builder.create(WebsocketEndpoint.class, URI_TEMPLATE)
-                        .configurator(new WebsocketEndpoint.Configurator())
-                        .build();
+                    .configurator(new WebsocketEndpoint.Configurator())
+                    .build();
                 endpointConfig.getUserProperties().put(USER_PROPERTY_IDLE_TIMEOUT, getWebsocketEndpointIdleTimeout(servletContext));
                 endpointConfig.getUserProperties().put(USER_PROPERTY_MAX_SESSIONS_PER_CHANNEL, getWebsocketMaxSessionsPerChannel(servletContext));
                 serverContainer.addEndpoint(endpointConfig);
@@ -247,11 +250,13 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
             webConfig.doPostBringupActions();
             configManager.publishPostConfigEvent();
 
-        } catch (Throwable t) {
+        }
+        catch (Throwable t) {
             LOGGER.log(SEVERE, "Critical error during deployment: ", t);
             caughtThrowable = t;
 
-        } finally {
+        }
+        finally {
             servletContextEvent.getServletContext().removeAttribute(FACES_SERVLET_MAPPINGS);
 
             Verifier.setCurrentInstance(null);
@@ -278,7 +283,9 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
         long idleTimeout = MojarraContextParam.WEBSOCKET_ENDPOINT_IDLE_TIMEOUT.getLong(servletContext);
 
         if (idleTimeout < 0) {
-            throw new IllegalArgumentException(format(ERROR_INVALID_WEBSOCKET_ENDPOINT_IDLE_TIMEOUT, MojarraContextParam.WEBSOCKET_ENDPOINT_IDLE_TIMEOUT.getName(), idleTimeout));
+            throw new IllegalArgumentException(
+                format(ERROR_INVALID_WEBSOCKET_ENDPOINT_IDLE_TIMEOUT, MojarraContextParam.WEBSOCKET_ENDPOINT_IDLE_TIMEOUT.getName(), idleTimeout)
+            );
         }
 
         return idleTimeout;
@@ -289,7 +296,10 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
         if (maxSessionsPerChannel < 1) {
             throw new IllegalArgumentException(
-                    format(ERROR_INVALID_WEBSOCKET_MAX_SESSIONS_PER_CHANNEL, MojarraContextParam.WEBSOCKET_MAX_SESSIONS_PER_CHANNEL.getName(), maxSessionsPerChannel));
+                format(
+                    ERROR_INVALID_WEBSOCKET_MAX_SESSIONS_PER_CHANNEL, MojarraContextParam.WEBSOCKET_MAX_SESSIONS_PER_CHANNEL.getName(), maxSessionsPerChannel
+                )
+            );
         }
 
         return maxSessionsPerChannel;
@@ -303,8 +313,10 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
         // The additional check for a WebConfiguration instance was added at the request of JBoss
         if (configManager == null && WebConfiguration.getInstanceWithoutCreating(context) != null) {
-            LOGGER.log(WARNING,
-               "Unexpected state during contextDestroyed: no ConfigManager instance in current ServletContext but one is expected to exist.");
+            LOGGER.log(
+                WARNING,
+                "Unexpected state during contextDestroyed: no ConfigManager instance in current ServletContext but one is expected to exist."
+            );
         }
 
         InitFacesContext initContext = null;
@@ -312,7 +324,8 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
             FacesContext facesContext = FacesContext.getCurrentInstance();
             if (facesContext instanceof InitFacesContext) {
                 initContext = (InitFacesContext) facesContext;
-            } else {
+            }
+            else {
                 initContext = new InitFacesContext(context);
             }
 
@@ -343,9 +356,11 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
             application.publishEvent(initContext, PreDestroyApplicationEvent.class, Application.class, application);
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             LOGGER.log(SEVERE, "Unexpected exception when attempting to tear down the Mojarra runtime", e);
-        } finally {
+        }
+        finally {
             ApplicationAssociate.clearInstance(context);
             ApplicationAssociate.setCurrentInstance(null);
 
@@ -353,8 +368,11 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
             if (configManager != null) {
                 configManager.destroy(context, initContext);
                 ConfigManager.removeInstance(context);
-            } else if (WebConfiguration.getInstanceWithoutCreating(context) != null && LOGGER.isLoggable(WARNING)) {
-                LOGGER.log(WARNING, "Unexpected state during contextDestroyed: no ConfigManager instance in current ServletContext but one is expected to exist.");
+            }
+            else if (WebConfiguration.getInstanceWithoutCreating(context) != null && LOGGER.isLoggable(WARNING)) {
+                LOGGER.log(
+                    WARNING, "Unexpected state during contextDestroyed: no ConfigManager instance in current ServletContext but one is expected to exist."
+                );
             }
 
             FactoryFinder.releaseFactories();
@@ -366,7 +384,6 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
         }
 
     }
-
 
     // ------------------------------------- Methods from ServletRequestListener
 
@@ -383,7 +400,6 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
             webAppListener.requestInitialized(event);
         }
     }
-
 
     // ----------------------------------------- Methods from HttpSessionListener
 
@@ -405,8 +421,6 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
         }
     }
 
-
-
     // --------------------------------------------------------- Private Methods
 
     private void initConfigMonitoring(ServletContext context) {
@@ -427,8 +441,8 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
     }
 
     /**
-     * Startup validation runs in every stage which is not Production, so that a configuration mistake is caught before
-     * it ships rather than only while developing.
+     * Startup validation runs in every stage which is not Production, so that a configuration mistake is caught before it ships rather than only while
+     * developing.
      */
     private boolean isProduction() {
         return getProjectStage() == ProjectStage.Production;
@@ -440,8 +454,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
     }
 
     /**
-     * This method will be invoked {@link WebConfigResourceMonitor} when changes to any of the faces-config.xml files
-     * included in WEB-INF are modified.
+     * This method will be invoked {@link WebConfigResourceMonitor} when changes to any of the faces-config.xml files included in WEB-INF are modified.
      */
     private void reload(ServletContext servletContext) {
         LOGGER.log(INFO, () -> format("Reloading Faces configuration for context {0}", servletContext.getContextPath()));
@@ -463,9 +476,11 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
             // Release any allocated application resources
             FactoryFinder.releaseFactories();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
-        } finally {
+        }
+        finally {
             FacesContext initContext = new InitFacesContext(servletContext);
             ApplicationAssociate.clearInstance(initContext.getExternalContext());
             ApplicationAssociate.setCurrentInstance(null);
@@ -476,7 +491,8 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
             if (configManager != null) {
                 configManager.destroy(servletContext, initContext);
                 ConfigManager.removeInstance(servletContext);
-            } else {
+            }
+            else {
                 LOGGER.log(SEVERE, "Unexpected state during reload: no ConfigManager instance in current ServletContext but one is expected to exist.");
             }
 
@@ -499,7 +515,8 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
             ConfigManager configManager = ConfigManager.createInstance(servletContext);
             if (configManager != null) {
                 configManager.initialize(servletContext, initContext);
-            } else {
+            }
+            else {
                 LOGGER.log(SEVERE, "Unexpected state during reload: no ConfigManager instance in current ServletContext but one is expected to exist.");
             }
 
@@ -512,22 +529,22 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
                     associate.setContextName(servletContext.getContextPath());
                 }
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
-        } finally {
+        }
+        finally {
             initContext.release();
         }
 
         LOGGER.log(INFO, () -> format("Reload complete. ({0})", servletContext.getContextPath()));
     }
 
-
     // ----------------------------------------------------------- Inner classes
 
     /**
      * <p>
-     * Processes a web application's deployment descriptor looking for a reference to
-     * <code>jakarta.faces.webapp.FacesServlet</code>.
+     * Processes a web application's deployment descriptor looking for a reference to <code>jakarta.faces.webapp.FacesServlet</code>.
      * </p>
      */
     private static class WebXmlProcessor {
@@ -541,8 +558,8 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
         /**
          * <p>
-         * When instantiated, the web.xml of the current application will be scanned looking for a references to the
-         * <code>FacesServlet</code>. <code>isFacesServletPresent()</code> will return the appropriate value based on the scan.
+         * When instantiated, the web.xml of the current application will be scanned looking for a references to the <code>FacesServlet</code>.
+         * <code>isFacesServletPresent()</code> will return the appropriate value based on the scan.
          * </p>
          *
          * @param context the <code>ServletContext</code> for the application of interest
@@ -554,8 +571,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
         }
 
         /**
-         * @return <code>true</code> if the <code>WebXmlProcessor</code> detected a <code>FacesServlet</code> entry, otherwise
-         * return <code>false</code>.
+         * @return <code>true</code> if the <code>WebXmlProcessor</code> detected a <code>FacesServlet</code> entry, otherwise return <code>false</code>.
          * </p>
          */
         boolean isFacesServletPresent() {
@@ -579,8 +595,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
         /**
          * <p>
-         * Parse the web.xml for the current application and scan for a FacesServlet entry, if found, set the
-         * <code>facesServletPresent</code> property to true.
+         * Parse the web.xml for the current application and scan for a FacesServlet entry, if found, set the <code>facesServletPresent</code> property to true.
          *
          * @param context the ServletContext instance for this application
          */
@@ -591,15 +606,18 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
                 try {
                     SAXParser parser = factory.newSAXParser();
                     parser.parse(in, new WebXmlHandler());
-                } catch (ParserConfigurationException | SAXException | IOException e) {
+                }
+                catch (ParserConfigurationException | SAXException | IOException e) {
                     warnProcessingError(e, context);
                     facesServletPresent = true;
                     return;
-                } finally {
+                }
+                finally {
                     if (in != null) {
                         try {
                             in.close();
-                        } catch (Exception ioe) {
+                        }
+                        catch (Exception ioe) {
                             LOGGER.log(FINEST, "Closing stream", ioe);
                         }
                     }
@@ -611,7 +629,8 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
                 Enumeration<URL> urls;
                 try {
                     urls = cl.getResources(WEB_FRAGMENT_PATH);
-                } catch (IOException ioe) {
+                }
+                catch (IOException ioe) {
                     throw new ConfigurationException(ioe);
                 }
 
@@ -624,15 +643,18 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
                             conn.setUseCaches(false);
                             fragmentStream = conn.getInputStream();
                             factory.newSAXParser().parse(fragmentStream, new WebXmlHandler());
-                        } catch (IOException | ParserConfigurationException | SAXException e) {
+                        }
+                        catch (IOException | ParserConfigurationException | SAXException e) {
                             warnProcessingError(e, context);
                             facesServletPresent = true;
                             return;
-                        } finally {
+                        }
+                        finally {
                             if (fragmentStream != null) {
                                 try {
                                     fragmentStream.close();
-                                } catch (IOException ioe) {
+                                }
+                                catch (IOException ioe) {
                                     LOGGER.log(WARNING, "Exception whil scanning for FacesServlet", ioe);
                                 }
                             }
@@ -659,7 +681,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
         }
 
         private void warnProcessingError(Exception e, ServletContext servletContext) {
-            LOGGER.log(WARNING,format("JSF1078: Unable to process deployment descriptor for context ({0}).", servletContext.getContextPath() ), e);
+            LOGGER.log(WARNING, format("JSF1078: Unable to process deployment descriptor for context ({0}).", servletContext.getContextPath()), e);
         }
 
         /**
@@ -692,7 +714,8 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
                     if (SERVLET_CLASS.equals(localName)) {
                         servletClassFound = true;
                         content = new StringBuffer();
-                    } else {
+                    }
+                    else {
                         servletClassFound = false;
                     }
                 }
@@ -720,7 +743,6 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
     } // END WebXmlProcessor
 
-
     private class WebConfigResourceMonitor implements Runnable {
 
         private List<Monitor> monitors;
@@ -737,7 +759,8 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
                 try {
                     monitors.add(new Monitor(uri));
-                } catch (IOException ioe) {
+                }
+                catch (IOException ioe) {
                     LOGGER.log(SEVERE, () -> "Unable to setup resource monitor for " + uri.toString() + ".  Resource will not be monitored for changes.");
                     LOGGER.log(FINE, ioe, ioe::toString);
                 }
@@ -761,7 +784,8 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
                             reloaded = true;
                         }
                     }
-                } catch (IOException ioe) {
+                }
+                catch (IOException ioe) {
                     if (LOGGER.isLoggable(SEVERE)) {
                         LOGGER.severe("Unable to access url " + m.uri.toString() + ".  Monitoring for this resource will no longer occur.");
                     }
@@ -818,11 +842,13 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
                     connection.connect();
                     in = connection.getInputStream();
                     return connection.getLastModified();
-                } finally {
+                }
+                finally {
                     if (in != null) {
                         try {
                             in.close();
-                        } catch (IOException ignored) {
+                        }
+                        catch (IOException ignored) {
                             LOGGER.log(FINEST, "Exception while closing stream", ignored);
                         }
                     }

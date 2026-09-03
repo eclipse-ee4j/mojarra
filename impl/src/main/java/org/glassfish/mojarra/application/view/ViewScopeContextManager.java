@@ -91,7 +91,8 @@ public class ViewScopeContextManager {
         String viewMapId = ViewScopeManager.locateViewMapId(facesContext, viewMap);
         if (viewMapId != null) {
             clear(facesContext, viewMapId, viewMap);
-        } else {
+        }
+        else {
             LOGGER.log(WARNING, "Cannot locate the view map to clear in the active maps: {0}", viewMap);
         }
     }
@@ -242,8 +243,8 @@ public class ViewScopeContextManager {
             Object session = externalContext.getSession(create);
 
             if (session != null) {
-                Map<Object, Map<String, ViewScopeContextObject>> activeViewScopeContexts = (Map<Object, Map<String, ViewScopeContextObject>>)
-                    sessionMap.get(ACTIVE_VIEW_CONTEXTS);
+                Map<Object, Map<String, ViewScopeContextObject>> activeViewScopeContexts = (Map<Object, Map<String, ViewScopeContextObject>>) sessionMap
+                    .get(ACTIVE_VIEW_CONTEXTS);
                 String viewMapId = (String) facesContext.getViewRoot().getTransientStateHelper().getTransient(VIEW_MAP_ID);
 
                 if (activeViewScopeContexts == null && create) {
@@ -256,8 +257,10 @@ public class ViewScopeContextManager {
                 if (activeViewScopeContexts != null && viewMapId != null && create) {
                     synchronized (activeViewScopeContexts) {
                         if (!activeViewScopeContexts.containsKey(viewMapId)) {
-                            activeViewScopeContexts.put(viewMapId,
-                                    new ConcurrentHashMap<String, ViewScopeContextObject>());
+                            activeViewScopeContexts.put(
+                                viewMapId,
+                                new ConcurrentHashMap<String, ViewScopeContextObject>()
+                            );
                             if (distributable) {
                                 // If we are distributable, this will result in a dirtying of the
                                 // session data, forcing replication. If we are not distributable,
@@ -291,8 +294,8 @@ public class ViewScopeContextManager {
         if (externalContext != null) {
             Map<String, Object> sessionMap = externalContext.getSessionMap();
             @SuppressWarnings("unchecked")
-            Map<Object, Map<String, ViewScopeContextObject>> activeViewScopeContexts =
-                    (Map<Object, Map<String, ViewScopeContextObject>>) sessionMap.get(ACTIVE_VIEW_CONTEXTS);
+            Map<Object, Map<String, ViewScopeContextObject>> activeViewScopeContexts = (Map<Object, Map<String, ViewScopeContextObject>>) sessionMap
+                .get(ACTIVE_VIEW_CONTEXTS);
 
             if (activeViewScopeContexts != null) {
                 result = activeViewScopeContexts.get(viewMapId);
@@ -332,8 +335,8 @@ public class ViewScopeContextManager {
 
         HttpSession session = httpSessionEvent.getSession();
 
-        Map<Object, Map<String, ViewScopeContextObject>> activeViewScopeContexts = (Map<Object, Map<String, ViewScopeContextObject>>)
-                session.getAttribute(ACTIVE_VIEW_CONTEXTS);
+        Map<Object, Map<String, ViewScopeContextObject>> activeViewScopeContexts = (Map<Object, Map<String, ViewScopeContextObject>>) session
+            .getAttribute(ACTIVE_VIEW_CONTEXTS);
         if (activeViewScopeContexts != null) {
             destroyAllBeans((Map<String, ?>) session.getAttribute(ViewScopeManager.ACTIVE_VIEW_MAPS), activeViewScopeContexts);
             destroyAllBeans(ViewScopeManager.getEvictedViewMaps(session), activeViewScopeContexts);
@@ -365,4 +368,5 @@ public class ViewScopeContextManager {
     public void fireDestroyedEvent(FacesContext facesContext, UIViewRoot root) {
         getBeanReference(beanManager, ViewScopedCDIEventFireHelperImpl.class).fireDestroyedEvent(root);
     }
+
 }

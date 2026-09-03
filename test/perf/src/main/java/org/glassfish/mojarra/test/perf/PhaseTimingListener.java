@@ -21,8 +21,7 @@ import jakarta.faces.event.PhaseId;
 import jakarta.faces.event.PhaseListener;
 
 /**
- * Records per-phase wall-clock time per scenario (view-id). Scenario name is
- * derived from the view-id: {@code /form-inputs.xhtml} → {@code form-inputs}.
+ * Records per-phase wall-clock time per scenario (view-id). Scenario name is derived from the view-id: {@code /form-inputs.xhtml} → {@code form-inputs}.
  */
 public class PhaseTimingListener implements PhaseListener {
 
@@ -64,4 +63,5 @@ public class PhaseTimingListener implements PhaseListener {
         int dot = viewId.lastIndexOf('.');
         return viewId.substring(start, dot > start ? dot : viewId.length());
     }
+
 }

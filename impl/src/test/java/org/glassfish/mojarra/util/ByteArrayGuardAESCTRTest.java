@@ -31,14 +31,13 @@ public class ByteArrayGuardAESCTRTest {
     public void testSmallerSizeBytes() throws Exception {
         ByteArrayGuardAESCTR guard = new ByteArrayGuardAESCTR();
 
-	// simulated flash value
+        // simulated flash value
         String value = "1fX_2vX";
         String encrypted = guard.encrypt(value);
         assertTrue(encrypted.length() < 33);
 
         String decryptedValue = guard.decrypt(encrypted);
         assertEquals(decryptedValue, value);
-
 
     }
 
@@ -54,4 +53,3 @@ public class ByteArrayGuardAESCTRTest {
     }
 
 }
-

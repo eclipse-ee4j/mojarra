@@ -75,7 +75,6 @@ public class UIComponentBaseAttachedStateTestCase {
         reInitializeFactoryManager.invoke(null, (Object[]) null);
     }
 
-
     @Test
     public void testAttachedObjectsSet() throws Exception {
         Set<ValueChangeListener<?>> attachedObjects = new HashSet<>();
@@ -88,7 +87,7 @@ public class UIComponentBaseAttachedStateTestCase {
         Object result = UIComponentBase.saveAttachedState(facesContext, attachedObjects);
         @SuppressWarnings("unchecked")
         Set<ValueChangeListener<?>> returnedAttachedObjects = (Set<ValueChangeListener<?>>) UIComponentBase
-                .restoreAttachedState(facesContext, result);
+            .restoreAttachedState(facesContext, result);
         assertNotNull(returnedAttachedObjects);
     }
 
@@ -104,7 +103,7 @@ public class UIComponentBaseAttachedStateTestCase {
         Object result = UIComponentBase.saveAttachedState(facesContext, attachedObjects);
         @SuppressWarnings("unchecked")
         Stack<ValueChangeListener<?>> returnedAttachedObjects = (Stack<ValueChangeListener<?>>) UIComponentBase
-                .restoreAttachedState(facesContext, result);
+            .restoreAttachedState(facesContext, result);
         assertNotNull(returnedAttachedObjects);
     }
 
@@ -120,7 +119,7 @@ public class UIComponentBaseAttachedStateTestCase {
         Object result = UIComponentBase.saveAttachedState(facesContext, attachedObjects);
         @SuppressWarnings("unchecked")
         Map<String, ValueChangeListener<?>> returnedAttachedObjects = (Map<String, ValueChangeListener<?>>) UIComponentBase
-                .restoreAttachedState(facesContext, result);
+            .restoreAttachedState(facesContext, result);
         assertNotNull(returnedAttachedObjects);
     }
 
@@ -318,5 +317,7 @@ public class UIComponentBaseAttachedStateTestCase {
         public void setTransient(boolean trans) {
             this.trans = trans;
         }
+
     }
+
 }

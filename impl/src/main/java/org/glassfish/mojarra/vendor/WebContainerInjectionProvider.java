@@ -35,8 +35,8 @@ import org.glassfish.mojarra.util.FacesLogger;
 
 /**
  * <p>
- * This <code>InjectionProvider</code> will be used if the <code>PostConstruct</code> and <code>PreDestroy</code>
- * annotations are present, but no specific <code>InjectionProvider</code> has been configured.
+ * This <code>InjectionProvider</code> will be used if the <code>PostConstruct</code> and <code>PreDestroy</code> annotations are present, but no specific
+ * <code>InjectionProvider</code> has been configured.
  * </p>
  *
  * <p>
@@ -79,9 +79,11 @@ public class WebContainerInjectionProvider implements InjectionProvider {
 
             try {
                 method.invoke(managedBean);
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            }
+            catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                 throw new InjectionProviderException(e.getMessage(), e);
-            } finally {
+            }
+            finally {
                 method.setAccessible(accessible);
             }
         }
@@ -99,6 +101,7 @@ public class WebContainerInjectionProvider implements InjectionProvider {
         public Method getMethod() {
             return method;
         }
+
     }
 
     private static Method getAnnotatedMethod(Object managedBean, Class<? extends Annotation> annotation) {
@@ -181,8 +184,10 @@ public class WebContainerInjectionProvider implements InjectionProvider {
                     }
                     if (hasChecked) {
                         if (LOGGER.isLoggable(WARNING)) {
-                            LOGGER.log(WARNING, "faces.core.web.injection.method_no_checked_exceptions",
-                                    new Object[] { method.toString(), annotation.getName() });
+                            LOGGER.log(
+                                WARNING, "faces.core.web.injection.method_no_checked_exceptions",
+                                new Object[] { method.toString(), annotation.getName() }
+                            );
                         }
                         continue;
                     }

@@ -57,7 +57,8 @@ public class PassThroughElementComponentHandler extends ComponentHandler {
         try {
             Class<?> clazz = Util.loadClass("org.glassfish.mojarra.component.PassthroughElement", this);
             result = (UIComponent) clazz.getDeclaredConstructor().newInstance();
-        } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException cnfe) {
+        }
+        catch (IllegalArgumentException | ReflectiveOperationException | SecurityException cnfe) {
             throw new FacesException(cnfe);
         }
 

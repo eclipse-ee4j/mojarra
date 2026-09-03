@@ -31,9 +31,8 @@ import org.glassfish.mojarra.facelets.tag.faces.ComponentSupport;
 
 /**
  * Register a named facet on the UIComponent associated with the closest parent UIComponent custom action.
- * 
- * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/facet.html">tag
- * documentation</a>.
+ *
+ * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/facet.html">tag documentation</a>.
  *
  * @author Jacob Hookom
  * @version $Id$
@@ -83,7 +82,8 @@ public final class FacetHandler extends TagHandlerImpl implements jakarta.faces.
                     child.getTransientStateHelper().putTransient(FACET_HAS_PASSTHROUGH_ATTRIBUTES, true);
                 }
             }
-        } finally {
+        }
+        finally {
             parent.getAttributes().remove(KEY);
         }
     }
@@ -98,4 +98,5 @@ public final class FacetHandler extends TagHandlerImpl implements jakarta.faces.
     public static boolean hasFacetPassThroughAttributes(UIComponent possibleFacet) {
         return possibleFacet.getTransientStateHelper().getTransient(FACET_HAS_PASSTHROUGH_ATTRIBUTES) != null;
     }
+
 }

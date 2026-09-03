@@ -153,15 +153,16 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         facesContext.setProcessingEvents(false);
         try {
             parent.getChildren().add(holder);
-            assertTrue(received.isEmpty());        // no event published while suppressed
-            assertTrue(holder.isInView());         // ...but in-view propagated across the added subtree
+            assertTrue(received.isEmpty()); // no event published while suppressed
+            assertTrue(holder.isInView()); // ...but in-view propagated across the added subtree
             assertTrue(child.isInView());
 
             parent.getChildren().remove(holder);
-            assertTrue(received.isEmpty());         // still no event published
-            assertTrue(!holder.isInView());         // in-view cleared across the removed subtree
+            assertTrue(received.isEmpty()); // still no event published
+            assertTrue(!holder.isInView()); // in-view cleared across the removed subtree
             assertTrue(!child.isInView());
-        } finally {
+        }
+        finally {
             facesContext.setProcessingEvents(true);
         }
     }
@@ -296,18 +297,22 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
     @Test
     public void testChildrenAndFacetsWithNullGetParent() throws Exception {
         ComponentTestImpl child = new ComponentTestImpl() {
+
             @Override
             public UIComponent getParent() {
                 return null;
             }
+
         };
         component.getChildren().add(child);
         assertNull(component.getChildren().get(0).getParent());
         ComponentTestImpl facet = new ComponentTestImpl() {
+
             @Override
             public UIComponent getParent() {
                 return null;
             }
+
         };
         component.getFacets().put("nullParent", facet);
         assertNull(component.getFacets().get("nullParent").getParent());
@@ -456,13 +461,10 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
     }
 
     /**
-     * The {@code attributesThatAreSet} delta list only carries entries added after
-     * {@code markInitialState()}. On restore it must therefore be <em>merged</em> onto the list that
-     * {@code buildView} already rebuilt for this request, not replace it. Replacing dropped every
-     * attribute the tag handlers re-registered before the delta was applied &mdash; e.g. a
-     * {@code styleClass} rendered on the first postback but gone from the second onward (issue #5880),
-     * triggered by any {@code setValueExpression(name, ve)} with a non-literal {@code ve} on a
-     * restored component, such as from a {@code PostRestoreStateEvent} listener.
+     * The {@code attributesThatAreSet} delta list only carries entries added after {@code markInitialState()}. On restore it must therefore be <em>merged</em>
+     * onto the list that {@code buildView} already rebuilt for this request, not replace it. Replacing dropped every attribute the tag handlers re-registered
+     * before the delta was applied &mdash; e.g. a {@code styleClass} rendered on the first postback but gone from the second onward (issue #5880), triggered by
+     * any {@code setValueExpression(name, ve)} with a non-literal {@code ve} on a restored component, such as from a {@code PostRestoreStateEvent} listener.
      */
     @Test
     public void testAttributesThatAreSetMergeOnRestore() throws Exception {
@@ -510,16 +512,20 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         try {
             test.setValueExpression("id", application.getExpressionFactory().createValueExpression(facesContext.getELContext(), "#{foo}", String.class));
             fail("Should have thrown IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             // Expected response
         }
 
         // "parent" property
         try {
-            test.setValueExpression("parent",
-                    application.getExpressionFactory().createValueExpression(facesContext.getELContext(), "#{foo}", UIComponent.class));
+            test.setValueExpression(
+                "parent",
+                application.getExpressionFactory().createValueExpression(facesContext.getELContext(), "#{foo}", UIComponent.class)
+            );
             fail("Should have thrown IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             // Expected response
         }
 
@@ -529,7 +535,8 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         boolean initial = test.isRendered();
         if (initial) {
             request.setAttribute("foo", Boolean.FALSE);
-        } else {
+        }
+        else {
             request.setAttribute("foo", Boolean.TRUE);
         }
         test.setValueExpression("rendered", application.getExpressionFactory().createValueExpression(facesContext.getELContext(), "#{foo}", Boolean.class));
@@ -910,7 +917,8 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
 
         try {
             iter.remove();
-        } catch (UnsupportedOperationException e) {
+        }
+        catch (UnsupportedOperationException e) {
             exceptionThrown = true;
         }
         assertTrue(exceptionThrown);
@@ -961,8 +969,8 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
      *       input4: id: input2
      * </pre></code>
      *
-     * @return a Map<String, UIComponent>. The key is the string before the first : in the above layout. The value is the
-     * component instance. Note that the keys in the map are <b>not</b> the ids.
+     * @return a Map<String, UIComponent>. The key is the string before the first : in the above layout. The value is the component instance. Note that the keys
+     * in the map are <b>not</b> the ids.
      */
     private Map<String, UIComponent> setupInvokeOnComponentTree() {
         UIViewRoot root = new UIViewRoot();
@@ -1023,11 +1031,13 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         assertNull(UIComponent.getCurrentComponent(facesContext));
 
         result = root.invokeOnComponent(facesContext, input1.getClientId(facesContext), new ContextCallback() {
+
             @Override
             public void invokeContextCallback(FacesContext context, UIComponent component) {
                 assertEquals(UIComponent.getCurrentComponent(context), component);
                 foundComponent = component;
             }
+
         });
         assertEquals(input1, foundComponent);
         assertTrue(result);
@@ -1052,7 +1062,8 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         ContextCallback nullCallback = null;
         try {
             root.invokeOnComponent(nullContext, "form:input7", nullCallback);
-        } catch (NullPointerException npe) {
+        }
+        catch (NullPointerException npe) {
             exceptionThrown = true;
         }
         assertTrue(exceptionThrown);
@@ -1060,7 +1071,8 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         exceptionThrown = false;
         try {
             root.invokeOnComponent(facesContext, null, nullCallback);
-        } catch (NullPointerException npe) {
+        }
+        catch (NullPointerException npe) {
             exceptionThrown = true;
         }
         assertTrue(exceptionThrown);
@@ -1068,17 +1080,20 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         exceptionThrown = false;
         try {
             root.invokeOnComponent(nullContext, null, nullCallback);
-        } catch (NullPointerException npe) {
+        }
+        catch (NullPointerException npe) {
             exceptionThrown = true;
         }
         assertTrue(exceptionThrown);
 
         // Negative case 1, not found component.
         result = root.invokeOnComponent(facesContext, "form:input7", new ContextCallback() {
+
             @Override
             public void invokeContextCallback(FacesContext context, UIComponent component) {
                 foundComponent = component;
             }
+
         });
         assertNull(foundComponent);
         assertTrue(!result);
@@ -1089,14 +1104,17 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         exceptionThrown = false;
         try {
             result = root.invokeOnComponent(facesContext, "form2:input2", new ContextCallback() {
+
                 @Override
                 public void invokeContextCallback(FacesContext context, UIComponent component) {
                     foundComponent = component;
                     // When else am I going to get the chance to throw this exception?
                     throw new IllegalStateException();
                 }
+
             });
-        } catch (FacesException e) {
+        }
+        catch (FacesException e) {
             assertTrue(e.getCause() instanceof IllegalStateException);
             exceptionThrown = true;
         }
@@ -1110,14 +1128,17 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         exceptionThrown = false;
         try {
             result = root.invokeOnComponent(facesContext, "form2:input6", new ContextCallback() {
+
                 @Override
                 public void invokeContextCallback(FacesContext context, UIComponent component) {
                     foundComponent = component;
                     // When else am I going to get the chance to throw this exception?
                     throw new IllegalStateException();
                 }
+
             });
-        } catch (FacesException e) {
+        }
+        catch (FacesException e) {
             assertTrue(e.getCause() instanceof IllegalStateException);
             exceptionThrown = true;
         }
@@ -1146,10 +1167,12 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
 
         // Case 1, positive find with prependId == true
         result = root.invokeOnComponent(facesContext, "form1:input2", new ContextCallback() {
+
             @Override
             public void invokeContextCallback(FacesContext context, UIComponent component) {
                 foundComponent = component;
             }
+
         });
         assertEquals(truePrependIdInput, foundComponent);
         assertTrue(result);
@@ -1159,10 +1182,12 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         result = false;
 
         result = root.invokeOnComponent(facesContext, "form9:input5", new ContextCallback() {
+
             @Override
             public void invokeContextCallback(FacesContext context, UIComponent component) {
                 foundComponent = component;
             }
+
         });
         assertNull(foundComponent);
         assertTrue(!result);
@@ -1174,13 +1199,16 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         try {
 
             result = root.invokeOnComponent(facesContext, "form1:input2", new ContextCallback() {
+
                 @Override
                 public void invokeContextCallback(FacesContext context, UIComponent component) {
                     foundComponent = component;
                     throw new IllegalStateException();
                 }
+
             });
-        } catch (FacesException e) {
+        }
+        catch (FacesException e) {
             assertTrue(e.getCause() instanceof IllegalStateException);
             exceptionThrown = true;
         }
@@ -1195,13 +1223,16 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         try {
 
             result = root.invokeOnComponent(facesContext, "formFozzy:inputKermit", new ContextCallback() {
+
                 @Override
                 public void invokeContextCallback(FacesContext context, UIComponent component) {
                     foundComponent = component;
                     throw new IllegalStateException();
                 }
+
             });
-        } catch (FacesException e) {
+        }
+        catch (FacesException e) {
             assertTrue(e.getCause() instanceof IllegalStateException);
             exceptionThrown = true;
         }
@@ -1211,10 +1242,12 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
 
         // Case 5, positive find with prependId == false
         result = root.invokeOnComponent(facesContext, "input1", new ContextCallback() {
+
             @Override
             public void invokeContextCallback(FacesContext context, UIComponent component) {
                 foundComponent = component;
             }
+
         });
         assertEquals(falsePrependIdInput, foundComponent);
         assertTrue(result);
@@ -1224,10 +1257,12 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         result = false;
 
         result = root.invokeOnComponent(facesContext, "input99", new ContextCallback() {
+
             @Override
             public void invokeContextCallback(FacesContext context, UIComponent component) {
                 foundComponent = component;
             }
+
         });
         assertNull(foundComponent);
         assertTrue(!result);
@@ -1239,13 +1274,16 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         try {
 
             result = root.invokeOnComponent(facesContext, "input1", new ContextCallback() {
+
                 @Override
                 public void invokeContextCallback(FacesContext context, UIComponent component) {
                     foundComponent = component;
                     throw new IllegalStateException();
                 }
+
             });
-        } catch (FacesException e) {
+        }
+        catch (FacesException e) {
             assertTrue(e.getCause() instanceof IllegalStateException);
             exceptionThrown = true;
         }
@@ -1260,13 +1298,16 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         try {
 
             result = root.invokeOnComponent(facesContext, "inputKermit", new ContextCallback() {
+
                 @Override
                 public void invokeContextCallback(FacesContext context, UIComponent component) {
                     foundComponent = component;
                     throw new IllegalStateException();
                 }
+
             });
-        } catch (FacesException e) {
+        }
+        catch (FacesException e) {
             assertTrue(e.getCause() instanceof IllegalStateException);
             exceptionThrown = true;
         }
@@ -1555,14 +1596,16 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
     }
 
     /**
-     * Verifies the per-component {@code cachedRenderer} invariants: cached on first lookup,
-     * invalidated on {@code setRendererType}, {@code setParent}, and {@code restoreState}.
+     * Verifies the per-component {@code cachedRenderer} invariants: cached on first lookup, invalidated on {@code setRendererType}, {@code setParent}, and
+     * {@code restoreState}.
      */
     @Test
     public void testCachedRendererInvariants() throws Exception {
         jakarta.faces.render.RenderKit renderKit = facesContext.getRenderKit();
-        jakarta.faces.render.Renderer<?> rA = new jakarta.faces.render.Renderer<UIComponent>() { };
-        jakarta.faces.render.Renderer<?> rB = new jakarta.faces.render.Renderer<UIComponent>() { };
+        jakarta.faces.render.Renderer<?> rA = new jakarta.faces.render.Renderer<UIComponent>() {
+        };
+        jakarta.faces.render.Renderer<?> rB = new jakarta.faces.render.Renderer<UIComponent>() {
+        };
         renderKit.addRenderer("Test", "TR_A", rA);
         renderKit.addRenderer("Test", "TR_B", rB);
 
@@ -1603,9 +1646,8 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
     }
 
     /**
-     * Verifies the partial-state contract for the field-backed {@code rendererType}: a value set before
-     * {@code markInitialState} (as every component's constructor does) is reconstructed by buildView and
-     * therefore carries no partial state, a value changed afterwards rides along in the delta and stays
+     * Verifies the partial-state contract for the field-backed {@code rendererType}: a value set before {@code markInitialState} (as every component's
+     * constructor does) is reconstructed by buildView and therefore carries no partial state, a value changed afterwards rides along in the delta and stays
      * there across repeated postbacks, and full state persists the value unconditionally.
      */
     @Test
@@ -1662,9 +1704,8 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
     }
 
     /**
-     * Reading a bean-property attribute through {@code getAttributes()} invokes the cached,
-     * access-suppressed property getter (the readMap fast path). It must return the live typed value on
-     * every call — the cache holds the {@code Method}, not the value, so it must reflect later mutations.
+     * Reading a bean-property attribute through {@code getAttributes()} invokes the cached, access-suppressed property getter (the readMap fast path). It must
+     * return the live typed value on every call — the cache holds the {@code Method}, not the value, so it must reflect later mutations.
      */
     @Test
     public void testPropertyBackedAttributeReadIsRepeatableAndLive() {
@@ -1706,6 +1747,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         public void reset() {
             event = null;
         }
+
     }
 
     public static final class QueueingListener implements SystemEventListener {
@@ -1729,6 +1771,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         public void reset() {
             events.clear();
         }
+
     }
 
     public static final class ComponentListener implements ComponentSystemEventListener {
@@ -1737,6 +1780,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         public void processEvent(ComponentSystemEvent event) throws AbortProcessingException {
 
         }
+
     }
 
     public static final class UIComponentListener extends UIComponentBase implements ComponentSystemEventListener {
@@ -1777,6 +1821,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         public void encodeEnd(FacesContext context) throws IOException {
             // no-op
         }
+
     }
 
     public static final class CustomAbortProcessingException extends AbortProcessingException {
@@ -1800,5 +1845,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         public CustomAbortProcessingException(String message, Throwable cause) {
             super(message, cause);
         }
+
     }
+
 }

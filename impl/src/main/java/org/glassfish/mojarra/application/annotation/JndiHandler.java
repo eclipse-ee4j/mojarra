@@ -55,7 +55,8 @@ public abstract class JndiHandler implements RuntimeAnnotationHandler {
         try {
             InitialContext context = new InitialContext();
             object = context.lookup(name);
-        } catch (NamingException ne) {
+        }
+        catch (NamingException ne) {
             if (LOGGER.isLoggable(Level.WARNING)) {
                 LOGGER.log(Level.WARNING, "Unable to lookup: " + name, ne);
             }
@@ -85,7 +86,8 @@ public abstract class JndiHandler implements RuntimeAnnotationHandler {
                 if (restoreAccess) {
                     field.setAccessible(false);
                 }
-            } catch (IllegalArgumentException | IllegalAccessException iae) {
+            }
+            catch (IllegalArgumentException | IllegalAccessException iae) {
                 if (LOGGER.isLoggable(Level.WARNING)) {
                     LOGGER.log(Level.WARNING, "Unable to set field: " + field.getName(), iae);
                 }
@@ -115,7 +117,8 @@ public abstract class JndiHandler implements RuntimeAnnotationHandler {
                 if (restoreAccess) {
                     method.setAccessible(false);
                 }
-            } catch (InvocationTargetException | IllegalArgumentException | IllegalAccessException ite) {
+            }
+            catch (InvocationTargetException | IllegalArgumentException | IllegalAccessException ite) {
                 if (LOGGER.isLoggable(Level.WARNING)) {
                     LOGGER.log(Level.WARNING, "Unable to call method: " + method.getName(), ite);
                 }
@@ -125,4 +128,5 @@ public abstract class JndiHandler implements RuntimeAnnotationHandler {
             }
         }
     }
+
 }

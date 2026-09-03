@@ -59,7 +59,8 @@ public final class IteratedValueExpression extends ValueExpression {
                 }
                 i--;
             }
-        } else {
+        }
+        else {
             result = iterator.next();
         }
         while (i < index) {

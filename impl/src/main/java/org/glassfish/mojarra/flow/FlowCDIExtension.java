@@ -53,7 +53,8 @@ public class FlowCDIExtension implements Extension {
         if (flowScoped != null) {
             flowScopedBeanFlowIds.put(
                 event.getBean(),
-                new FlowBeanInfo(flowScoped.definingDocumentId(), flowScoped.value()));
+                new FlowBeanInfo(flowScoped.definingDocumentId(), flowScoped.value())
+            );
         }
     }
 

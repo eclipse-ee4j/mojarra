@@ -65,9 +65,9 @@ public class WebsocketEndpoint extends Endpoint {
     // Actions --------------------------------------------------------------------------------------------------------
 
     /**
-     * Add given web socket session to the <code>WebocketSessionManager</code>. If web socket session is not accepted (i.e. the
-     * channel identifier is unknown or the channel has already reached its maximum number of concurrent sessions), then
-     * immediately close with reason <code>VIOLATED_POLICY</code> (close code 1008).
+     * Add given web socket session to the <code>WebocketSessionManager</code>. If web socket session is not accepted (i.e. the channel identifier is unknown or
+     * the channel has already reached its maximum number of concurrent sessions), then immediately close with reason <code>VIOLATED_POLICY</code> (close code
+     * 1008).
      *
      * @param session The opened web socket session.
      * @param config The endpoint configuration.
@@ -76,10 +76,12 @@ public class WebsocketEndpoint extends Endpoint {
     public void onOpen(Session session, EndpointConfig config) {
         if (WebsocketSessionManager.getInstance().add(session, getMaxSessionsPerChannel(config))) { // @Inject in Endpoint doesn't work in Tomcat+Weld/OWB.
             session.setMaxIdleTimeout(getIdleTimeout(config));
-        } else {
+        }
+        else {
             try {
                 session.close(REASON_UNKNOWN_CHANNEL);
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 onError(session, e);
             }
         }
@@ -99,9 +101,9 @@ public class WebsocketEndpoint extends Endpoint {
     }
 
     /**
-     * Remove given web socket session from the {@link WebsocketSessionManager}. If there is any exception from onError
-     * which was not caused by GOING_AWAY, then log it. Tomcat &lt;= 8.0.30 is known to throw an unnecessary exception when
-     * client abruptly disconnects, see also <a href="https://bz.apache.org/bugzilla/show_bug.cgi?id=57489">issue 57489</a>.
+     * Remove given web socket session from the {@link WebsocketSessionManager}. If there is any exception from onError which was not caused by GOING_AWAY, then
+     * log it. Tomcat &lt;= 8.0.30 is known to throw an unnecessary exception when client abruptly disconnects, see also
+     * <a href="https://bz.apache.org/bugzilla/show_bug.cgi?id=57489">issue 57489</a>.
      *
      * @param session The closed web socket session.
      * @param reason The close reason.
@@ -133,8 +135,8 @@ public class WebsocketEndpoint extends Endpoint {
     // Nested classes -------------------------------------------------------------------------------------------------
 
     /**
-     * This handshake configurator enforces that a session or view scoped channel can only be connected to by the HTTP
-     * session which registered it. Application scoped channels are by design not bound to any HTTP session.
+     * This handshake configurator enforces that a session or view scoped channel can only be connected to by the HTTP session which registered it. Application
+     * scoped channels are by design not bound to any HTTP session.
      *
      * @author Bauke Scholtz
      * @see WebsocketChannelManager
@@ -147,8 +149,10 @@ public class WebsocketEndpoint extends Endpoint {
         public void modifyHandshake(ServerEndpointConfig config, HandshakeRequest request, HandshakeResponse response) {
             String channelId = request.getQueryString();
 
-            if (!WebsocketChannelManager.isApplicationScopedChannelId(channelId)
-                    && !WebsocketChannelManager.isChannelIdRegisteredInSession((HttpSession) request.getHttpSession(), channelId)) {
+            if (
+                !WebsocketChannelManager.isApplicationScopedChannelId(channelId)
+                    && !WebsocketChannelManager.isChannelIdRegisteredInSession((HttpSession) request.getHttpSession(), channelId)
+            ) {
                 throw new IllegalStateException(ERROR_UNAUTHORIZED_CHANNEL);
             }
         }

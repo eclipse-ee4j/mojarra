@@ -27,9 +27,8 @@ import org.glassfish.mojarra.RIConstants;
 
 /**
  * <p>
- * This helper class is used a central location for per-request state that is needed by Mojarra. This class leverages
- * FacesContext.getAttributes() which as added in 2.0 instead of the request scope to prevent the unecessary triggering
- * of ServletRequestAttributeListeners.
+ * This helper class is used a central location for per-request state that is needed by Mojarra. This class leverages FacesContext.getAttributes() which as
+ * added in 2.0 instead of the request scope to prevent the unecessary triggering of ServletRequestAttributeListeners.
  * </p>
  */
 public class RequestStateManager {
@@ -45,8 +44,7 @@ public class RequestStateManager {
     public static final String EL_RESOLVER_CHAIN_TYPE_NAME = RIConstants.RI_PREFIX + "ELResolverChainType";
 
     /**
-     * Attribute indicating the current component being processed. This will be used when generating bytecode for custom
-     * converters.
+     * Attribute indicating the current component being processed. This will be used when generating bytecode for custom converters.
      */
     public static final String TARGET_COMPONENT_ATTRIBUTE_NAME = RIConstants.RI_PREFIX + "ComponentForValue";
 
@@ -56,8 +54,8 @@ public class RequestStateManager {
     public static final String RENDER_KIT_IMPL_REQ = RIConstants.RI_PREFIX + "renderKitImplForRequest";
 
     /**
-     * Identifies the stateful page, being one initially requested view and all of its postbacks, whose state was
-     * restored for this request. Stored during restore view so that save view writes back into the same page.
+     * Identifies the stateful page, being one initially requested view and all of its postbacks, whose state was restored for this request. Stored during
+     * restore view so that save view writes back into the same page.
      */
     public static final String STATEFUL_PAGE_MAP = RIConstants.RI_PREFIX + "statefulPageMap";
 
@@ -67,8 +65,7 @@ public class RequestStateManager {
     public static final String VIEW_STATE_MAP = RIConstants.RI_PREFIX + "viewStateMap";
 
     /**
-     * This attribute is used by the loadBundle tag for tracking views/subviews within the logical view (this is only used
-     * when 1.1 compatibility is enabled).
+     * This attribute is used by the loadBundle tag for tracking views/subviews within the logical view (this is only used when 1.1 compatibility is enabled).
      */
     public static final String VIEWTAG_STACK_ATTR_NAME = RIConstants.RI_PREFIX + "taglib.faces_core.VIEWTAG_STACK";
 
@@ -78,8 +75,7 @@ public class RequestStateManager {
     public static final String INVOCATION_PATH = RIConstants.RI_PREFIX + "INVOCATION_PATH";
 
     /**
-     * This attribute protects against infinite loops on expressions that touch a custom legacy VariableResolver that
-     * delegates to its parent VariableResolver.
+     * This attribute protects against infinite loops on expressions that touch a custom legacy VariableResolver that delegates to its parent VariableResolver.
      */
     public static final String REENTRANT_GUARD = RIConstants.RI_PREFIX + "LegacyVariableResolver";
 
@@ -89,8 +85,7 @@ public class RequestStateManager {
     public static final String FACES_VIEW_STATE = "org.glassfish.mojarra.FACES_VIEW_STATE";
 
     /**
-     * Leveraged by ResourceHandlerImpl to denote whether or not a request is a resource request. A <code>Boolean</code>
-     * value will be assoicated with this key.
+     * Leveraged by ResourceHandlerImpl to denote whether or not a request is a resource request. A <code>Boolean</code> value will be assoicated with this key.
      */
     public static final String RESOURCE_REQUEST = "org.glassfish.mojarra.RESOURCE_REQUEST";
 
@@ -153,8 +148,8 @@ public class RequestStateManager {
 
     /**
      * <p>
-     * Adds the specified key and value to the Map stored in the request. If <code>value</code> is <code>null</code>, that
-     * key/value pair will be removed from the Map.
+     * Adds the specified key and value to the Map stored in the request. If <code>value</code> is <code>null</code>, that key/value pair will be removed from
+     * the Map.
      * </p>
      *
      * @param ctx the <code>FacesContext</code> for the current request

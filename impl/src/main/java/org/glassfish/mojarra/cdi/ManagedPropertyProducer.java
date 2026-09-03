@@ -50,13 +50,13 @@ public class ManagedPropertyProducer extends CdiProducer<Object> {
             .addToId(type)
             .create(creationalContext -> {
 
-            // TODO: handle no InjectionPoint available
-            String expression = getCurrentInjectionPoint(beanManager, creationalContext).getAnnotated().getAnnotation(ManagedProperty.class).value();
+                // TODO: handle no InjectionPoint available
+                String expression = getCurrentInjectionPoint(beanManager, creationalContext).getAnnotated().getAnnotation(ManagedProperty.class).value();
 
-            return evaluateExpressionGet(beanManager, expression, expectedClass);
-        }
+                return evaluateExpressionGet(beanManager, expression, expectedClass);
+            }
 
-        );
+            );
 
         expectedClass = getExpectedClass(type);
 

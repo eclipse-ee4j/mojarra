@@ -38,7 +38,8 @@ public class ExternalContextFactoryImpl extends ExternalContextFactory {
     @Override
     public ExternalContext getExternalContext(Object servletContext, Object request, Object response)
 
-            throws FacesException {
+        throws FacesException
+    {
 
         Util.notNull("servletContext", servletContext);
         Util.notNull("request", request);

@@ -78,7 +78,8 @@ public final class DecorateHandler extends TagHandlerImpl implements TemplateCli
             for (int i = 0; i < params.length; i++) {
                 params[i] = paramC.get(i);
             }
-        } else {
+        }
+        else {
             params = null;
         }
     }
@@ -112,12 +113,14 @@ public final class DecorateHandler extends TagHandlerImpl implements TemplateCli
                 throw new TagAttributeException(tag, template, "Invalid path : " + path);
             }
             ctx.includeFacelet(parent, path);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             if (log.isLoggable(Level.FINE)) {
                 log.log(Level.FINE, e.toString(), e);
             }
             throw new TagAttributeException(tag, template, "Invalid path : " + path, e);
-        } finally {
+        }
+        finally {
             ctx.setVariableMapper(orig);
             ctx.popClient(this);
         }
@@ -130,12 +133,15 @@ public final class DecorateHandler extends TagHandlerImpl implements TemplateCli
             if (handler != null) {
                 handler.applyDefinition(ctx, parent);
                 return true;
-            } else {
+            }
+            else {
                 return false;
             }
-        } else {
+        }
+        else {
             nextHandler.apply(ctx, parent);
             return true;
         }
     }
+
 }

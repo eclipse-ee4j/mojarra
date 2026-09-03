@@ -47,7 +47,8 @@ public class ComponentTestImpl extends UIComponentBase {
         ValueExpression vb = getValueExpression("label");
         if (vb != null) {
             return ((String) vb.getValue(getFacesContext().getELContext()));
-        } else {
+        }
+        else {
             return (null);
         }
     }
@@ -99,4 +100,5 @@ public class ComponentTestImpl extends UIComponentBase {
             writer.write(id);
         }
     }
+
 }

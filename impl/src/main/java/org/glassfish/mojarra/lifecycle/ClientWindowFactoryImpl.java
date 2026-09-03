@@ -71,4 +71,5 @@ public class ClientWindowFactoryImpl extends ClientWindowFactory {
 
         return new ClientWindowImpl();
     }
+
 }

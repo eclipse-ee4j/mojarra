@@ -34,16 +34,17 @@ import org.glassfish.mojarra.application.applicationimpl.events.EventInfo;
 import org.junit.jupiter.api.Test;
 
 /**
- * Pins the dispatch contract of {@code Events.processListenersAccountingForAdds}: every matching listener is
- * invoked exactly once, a listener subscribed while the listeners are being invoked is picked up, and a
- * listener not for the source is skipped. The fast path preserves this behaviour without the per-event copy
+ * Pins the dispatch contract of {@code Events.processListenersAccountingForAdds}: every matching listener is invoked exactly once, a listener subscribed while
+ * the listeners are being invoked is picked up, and a listener not for the source is skipped. The fast path preserves this behaviour without the per-event copy
  * and map the original snapshot algorithm allocated on every published event.
  */
 class EventsTest {
 
     private static SystemEvent invoke(List<SystemEventListener> listeners, SystemEvent event, Object source) throws Exception {
-        Method method = Events.class.getDeclaredMethod("processListenersAccountingForAdds",
-                List.class, SystemEvent.class, Object.class, EventInfo.class);
+        Method method = Events.class.getDeclaredMethod(
+            "processListenersAccountingForAdds",
+            List.class, SystemEvent.class, Object.class, EventInfo.class
+        );
         method.setAccessible(true);
         return (SystemEvent) method.invoke(new Events(), listeners, event, source, mock(EventInfo.class));
     }
@@ -103,4 +104,5 @@ class EventsTest {
         verify(event, times(1)).processListener(matching);
         verify(event, never()).processListener(nonMatching);
     }
+
 }

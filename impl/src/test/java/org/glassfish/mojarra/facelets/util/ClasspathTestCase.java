@@ -35,4 +35,5 @@ public class ClasspathTestCase {
         output = Classpath.getAlternativeJarFile(input);
         assertNull(output);
     }
+
 }

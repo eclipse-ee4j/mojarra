@@ -35,12 +35,10 @@ import org.glassfish.mojarra.facelets.tag.TagAttributesImpl;
 import org.junit.jupiter.api.Test;
 
 /**
- * A pass-through attribute belongs to the component's pass-through attribute map alone, where
- * {@code ComponentSupport.copyPassthroughAttributes} puts it. The meta rules key a tag's attributes by local name, so
- * unless the pass-through namespaces are excluded a {@code p:data-row} is applied as an ordinary attribute as well:
- * stored a second time under {@code data-row}, listed in {@code attributesThatAreSet} -- which puts it in saved state
- * and in the pass-through render loop, where it can never match -- and, when its local name is a real property's,
- * displacing that property's own attribute.
+ * A pass-through attribute belongs to the component's pass-through attribute map alone, where {@code ComponentSupport.copyPassthroughAttributes} puts it. The
+ * meta rules key a tag's attributes by local name, so unless the pass-through namespaces are excluded a {@code p:data-row} is applied as an ordinary attribute
+ * as well: stored a second time under {@code data-row}, listed in {@code attributesThatAreSet} -- which puts it in saved state and in the pass-through render
+ * loop, where it can never match -- and, when its local name is a real property's, displacing that property's own attribute.
  */
 class PassthroughAttributeMetadataTest {
 
@@ -51,8 +49,10 @@ class PassthroughAttributeMetadataTest {
 
     @Test
     void aPassthroughAttributeIsNotAppliedAsAnOrdinaryAttribute() {
-        HtmlPanelGroup component = apply(attribute(PASSTHROUGH, "data-row", "1"),
-                attribute(PASSTHROUGH_JCP, "data-legacy", "2"));
+        HtmlPanelGroup component = apply(
+            attribute(PASSTHROUGH, "data-row", "1"),
+            attribute(PASSTHROUGH_JCP, "data-legacy", "2")
+        );
 
         assertNull(component.getAttributes().get("data-row"));
         assertNull(component.getAttributes().get("data-legacy"));
@@ -86,8 +86,10 @@ class PassthroughAttributeMetadataTest {
     }
 
     private static Metadata metadata(TagAttribute... attributes) {
-        Tag tag = new Tag(new Location("test.xhtml", 1, 1), HTML, "panelGroup", "h:panelGroup",
-                new TagAttributesImpl(attributes));
+        Tag tag = new Tag(
+            new Location("test.xhtml", 1, 1), HTML, "panelGroup", "h:panelGroup",
+            new TagAttributesImpl(attributes)
+        );
         MetaRulesetImpl ruleset = new MetaRulesetImpl(tag, HtmlPanelGroup.class);
         ruleset.addRule(ComponentRule.Instance);
         return ruleset.finish();
@@ -96,4 +98,5 @@ class PassthroughAttributeMetadataTest {
     private static TagAttribute attribute(String namespace, String localName, String value) {
         return new TagAttributeImpl(new Location("test.xhtml", 1, 1), namespace, localName, localName, value);
     }
+
 }

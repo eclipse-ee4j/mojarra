@@ -187,8 +187,8 @@ public class Util {
 
     /**
      * <p>
-     * Convenience method for determining if the request associated with the specified <code>FacesContext</code> is a
-     * PortletRequest submitted by the JSR-301 bridge.
+     * Convenience method for determining if the request associated with the specified <code>FacesContext</code> is a PortletRequest submitted by the JSR-301
+     * bridge.
      * </p>
      *
      * @param context the <code>FacesContext</code> associated with the request.
@@ -201,7 +201,8 @@ public class Util {
         String applicationContextPath = "unitTest";
         try {
             applicationContextPath = facesContext.getExternalContext().getApplicationContextPath();
-        } catch (Throwable e) {
+        }
+        catch (Throwable e) {
             // ignore
         }
 
@@ -211,12 +212,11 @@ public class Util {
 
     /**
      * <p>
-     * Factory method for creating the various Faces listener instances that may be referenced by <code>type</code> or
-     * <code>binding</code>.
+     * Factory method for creating the various Faces listener instances that may be referenced by <code>type</code> or <code>binding</code>.
      * </p>
      * <p>
-     * If <code>binding</code> is not <code>null</code> and the evaluation result is not <code>null</code> return that
-     * instance. Otherwise try to instantiate an instances based on <code>type</code>.
+     * If <code>binding</code> is not <code>null</code> and the evaluation result is not <code>null</code> return that instance. Otherwise try to instantiate an
+     * instances based on <code>type</code>.
      * </p>
      *
      * @param type the <code>Listener</code> type
@@ -236,7 +236,8 @@ public class Util {
         if (instance == null && type != null) {
             try {
                 instance = ReflectionUtils.newInstance(type.getValue(faces.getELContext()));
-            } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
+            }
+            catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
                 throw new AbortProcessingException(e.getMessage(), e);
             }
 
@@ -257,13 +258,16 @@ public class Util {
     }
 
     public static interface ThrowingBiConsumer<T, U> {
+
         void accept(T t, U u) throws Exception;
+
     }
 
     private static <F> void setFeature(ThrowingBiConsumer<F, Boolean> setter, F feature, Boolean flag) {
         try {
             setter.accept(feature, flag);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new IllegalArgumentException("The feature '" + feature + "' is not supported by your XML processor.", e);
         }
     }
@@ -271,7 +275,8 @@ public class Util {
     private static <F> void setPossiblyUnsupportedFeature(ThrowingBiConsumer<F, Boolean> setter, F feature, Boolean flag) {
         try {
             setFeature(setter, feature, flag);
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             LOGGER.log(Level.FINE, e.getMessage(), e);
         }
     }
@@ -285,7 +290,8 @@ public class Util {
             factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, EMPTY_STRING);
             factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, EMPTY_STRING);
             setFeature(factory::setFeature, XMLConstants.FEATURE_SECURE_PROCESSING, true);
-        } finally {
+        }
+        finally {
             Thread.currentThread().setContextClassLoader(cl);
         }
         return factory;
@@ -297,7 +303,8 @@ public class Util {
         try {
             Thread.currentThread().setContextClassLoader(Util.class.getClassLoader());
             factory = SAXParserFactory.newInstance();
-        } finally {
+        }
+        finally {
             Thread.currentThread().setContextClassLoader(cl);
         }
         return factory;
@@ -309,7 +316,8 @@ public class Util {
         try {
             Thread.currentThread().setContextClassLoader(Util.class.getClassLoader());
             factory = createLocalDocumentBuilderFactory();
-        } finally {
+        }
+        finally {
             Thread.currentThread().setContextClassLoader(cl);
         }
         return factory;
@@ -333,29 +341,30 @@ public class Util {
         try {
             Thread.currentThread().setContextClassLoader(Util.class.getClassLoader());
             factory = SchemaFactory.newInstance(uri);
-        } finally {
+        }
+        finally {
             Thread.currentThread().setContextClassLoader(cl);
         }
         return factory;
     }
 
-
-    public static final Map<String,Class<?>> primitiveTypes = Map.of(
-            "byte",     byte.class,
-            "short",    short.class,
-            "int",      int.class,
-            "long",     long.class,
-            "float",    float.class,
-            "double",   double.class,
-            "boolean",  boolean.class,
-            "char",     char.class
+    public static final Map<String, Class<?>> primitiveTypes = Map.of(
+        "byte", byte.class,
+        "short", short.class,
+        "int", int.class,
+        "long", long.class,
+        "float", float.class,
+        "double", double.class,
+        "boolean", boolean.class,
+        "char", char.class
     );
 
     @SuppressWarnings("unchecked")
     public static <T> Class<T> loadClass(String name, Object fallbackClass) throws ClassNotFoundException {
         // Primitive Type
         Class<?> primitiveType = primitiveTypes.get(name);
-        if (primitiveType != null) return (Class<T>) primitiveType;
+        if (primitiveType != null)
+            return (Class<T>) primitiveType;
 
         // Class.forName
         ClassLoader loader = getCurrentLoader(fallbackClass);
@@ -371,7 +380,8 @@ public class Util {
             }
 
             return (Class<T>) Class.forName(name, true, loader);
-        } catch (ClassNotFoundException e) {
+        }
+        catch (ClassNotFoundException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
     }
@@ -379,7 +389,8 @@ public class Util {
     public static <T> T newInstance(Class<T> clazz) {
         try {
             return clazz.getDeclaredConstructor().newInstance();
-        } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
+        }
+        catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
     }
@@ -398,9 +409,8 @@ public class Util {
 
     /**
      * <p>
-     * Whether JNDI can be reached from this application, which it cannot on every platform: Google App Engine forbids
-     * <code>javax.naming</code> outright. Asked per call rather than remembered, because the answer belongs to the
-     * class loader of the application and this class may be shared between several.
+     * Whether JNDI can be reached from this application, which it cannot on every platform: Google App Engine forbids <code>javax.naming</code> outright. Asked
+     * per call rather than remembered, because the answer belongs to the class loader of the application and this class may be shared between several.
      * </p>
      *
      * @return whether JNDI is available.
@@ -415,7 +425,8 @@ public class Util {
         try {
             loader.loadClass("javax.naming.InitialContext");
             return true;
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             LOGGER.log(Level.FINE, "javax.naming is unavailable.", e);
             return false;
         }
@@ -468,11 +479,11 @@ public class Util {
      */
     public static String fileExtension(String filename) {
         final String notBlankFilename = nullIfBlank(filename);
-        if ( notBlankFilename == null ) return null;
+        if (notBlankFilename == null)
+            return null;
         int idx = notBlankFilename.lastIndexOf('.');
-        return idx == -1 ? null : notBlankFilename.substring(idx+1);
+        return idx == -1 ? null : notBlankFilename.substring(idx + 1);
     }
-
 
     public static String removeAllButNextToLastSlashPathSegment(String input) {
         // Trim the leading lastSlash, if any.
@@ -589,10 +600,9 @@ public class Util {
     }
 
     /**
-     * Returns the given string without any leading and trailing character which {@link String#trim()} or
-     * {@link String#strip()} would remove, or null if nothing is left. Neither of those two covers the other: trim
-     * removes every character up to and including U+0020, strip removes every {@link Character#isWhitespace(char)}
-     * character, and only their union leaves a string which is safe to write out unencoded.
+     * Returns the given string without any leading and trailing character which {@link String#trim()} or {@link String#strip()} would remove, or null if
+     * nothing is left. Neither of those two covers the other: trim removes every character up to and including U+0020, strip removes every
+     * {@link Character#isWhitespace(char)} character, and only their union leaves a string which is safe to write out unencoded.
      *
      * @param string The string to be trimmed.
      * @return The trimmed string, or null if it is null or if nothing is left after trimming.
@@ -640,11 +650,13 @@ public class Util {
         return collection == null || collection.isEmpty();
     }
 
-    public static boolean isNotEmpty(Collection<?> collection) { return !isEmpty(collection); }
+    public static boolean isNotEmpty(Collection<?> collection) {
+        return !isEmpty(collection);
+    }
 
     /**
-     * Returns <code>true</code> if the given value is null or is empty. Types of String, Collection, Map, Optional and
-     * Array are recognized. If none is recognized, then examine the emptiness of the toString() representation instead.
+     * Returns <code>true</code> if the given value is null or is empty. Types of String, Collection, Map, Optional and Array are recognized. If none is
+     * recognized, then examine the emptiness of the toString() representation instead.
      *
      * @param value The value to be checked on emptiness.
      * @return <code>true</code> if the given value is null or is empty.
@@ -652,17 +664,23 @@ public class Util {
     public static boolean isEmpty(Object value) {
         if (value == null) {
             return true;
-        } else if (value instanceof String) {
+        }
+        else if (value instanceof String) {
             return ((String) value).isEmpty();
-        } else if (value instanceof Collection<?>) {
+        }
+        else if (value instanceof Collection<?>) {
             return ((Collection<?>) value).isEmpty();
-        } else if (value instanceof Map<?, ?>) {
+        }
+        else if (value instanceof Map<?, ?>) {
             return ((Map<?, ?>) value).isEmpty();
-        } else if (value instanceof Optional<?>) {
+        }
+        else if (value instanceof Optional<?>) {
             return ((Optional<?>) value).isEmpty();
-        } else if (value.getClass().isArray()) {
+        }
+        else if (value.getClass().isArray()) {
             return Array.getLength(value) == 0;
-        } else {
+        }
+        else {
             return value.toString() == null || value.toString().isEmpty();
         }
     }
@@ -751,13 +769,11 @@ public class Util {
     }
 
     /**
-     * Returns the first non-<code>null</code> object of the argument list, or <code>null</code> if there is no such
-     * element.
+     * Returns the first non-<code>null</code> object of the argument list, or <code>null</code> if there is no such element.
      *
      * @param <T> The generic object type.
      * @param objects The argument list of objects to be tested for non-<code>null</code>.
-     * @return The first non-<code>null</code> object of the argument list, or <code>null</code> if there is no such
-     * element.
+     * @return The first non-<code>null</code> object of the argument list, or <code>null</code> if there is no such element.
      */
     @SafeVarargs
     public static <T> T coalesce(T... objects) {
@@ -812,7 +828,7 @@ public class Util {
      * @return the correct initial capacity for a {@link Map} to contain numMappings elements without rehashing
      */
     public static int calculateMapCapacity(int numMappings) {
-        return (int) Math.ceil( numMappings / 0.75 );
+        return (int) Math.ceil(numMappings / 0.75);
     }
 
     // Locale --------------------------------------------------------------------------------
@@ -838,7 +854,8 @@ public class Util {
         try {
             Application application = context.getApplication();
             return application.createConverter(converterClass);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             return null;
         }
     }
@@ -850,7 +867,8 @@ public class Util {
         try {
             Application application = context.getApplication();
             return application.createConverter(converterId);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             return null;
         }
     }
@@ -863,7 +881,8 @@ public class Util {
         Objects.requireNonNull(type);
 
         Class<?> primitiveType = primitiveTypes.get(type);
-        if ( primitiveType != null ) return primitiveType;
+        if (primitiveType != null)
+            return primitiveType;
 
         if ("void".equals(type)) {
             return Void.TYPE;
@@ -877,15 +896,12 @@ public class Util {
     }
 
     /**
-     * Returns the suffixes which identify a resource as a Facelet, being the union of
-     * {@link FacesContextParam#FACELETS_SUFFIX}, the extension entries of
-     * {@link FacesContextParam#FACELETS_VIEW_MAPPINGS}, and always
-     * {@link ViewHandler#DEFAULT_FACELETS_SUFFIX}, in that precedence order.
+     * Returns the suffixes which identify a resource as a Facelet, being the union of {@link FacesContextParam#FACELETS_SUFFIX}, the extension entries of
+     * {@link FacesContextParam#FACELETS_VIEW_MAPPINGS}, and always {@link ViewHandler#DEFAULT_FACELETS_SUFFIX}, in that precedence order.
      * <p>
-     * This answers <em>whether a resource is a Facelet at all</em>, which is a wider question than whether it is
-     * reachable as a view. A template or an included fragment is a Facelet without ever being requested, so the
-     * default suffix stays in this set even when the webapp declares another view suffix, and an extension declared
-     * through the view mappings joins it.
+     * This answers <em>whether a resource is a Facelet at all</em>, which is a wider question than whether it is reachable as a view. A template or an included
+     * fragment is a Facelet without ever being requested, so the default suffix stays in this set even when the webapp declares another view suffix, and an
+     * extension declared through the view mappings joins it.
      *
      * @param context the <code>FacesContext</code> for the current request
      * @return the suffixes which identify a resource as a Facelet, deduplicated and in precedence order.
@@ -924,10 +940,9 @@ public class Util {
     }
 
     /**
-     * Coerces a boolean-attribute value to {@code boolean} without the {@code Boolean -> String -> boolean} round-trip
-     * on the common path: an absent value yields {@code defaultValue}, an already-{@code Boolean} value is returned
-     * directly, and only a non-{@code Boolean} (e.g. a literal String set on a non-typed component) is parsed. Prefer
-     * the typed getter via {@code instanceof} where the concrete {@code Html*} type is known; use this for the fallback.
+     * Coerces a boolean-attribute value to {@code boolean} without the {@code Boolean -> String -> boolean} round-trip on the common path: an absent value
+     * yields {@code defaultValue}, an already-{@code Boolean} value is returned directly, and only a non-{@code Boolean} (e.g. a literal String set on a
+     * non-typed component) is parsed. Prefer the typed getter via {@code instanceof} where the concrete {@code Html*} type is known; use this for the fallback.
      */
     public static boolean toBoolean(Object value, boolean defaultValue) {
         if (value == null) {
@@ -988,16 +1003,19 @@ public class Util {
                     // and variant, the length must be >= 8.
                     if (inputLength >= 8) {
                         variant = localeStr.substring(j + 1);
-                    } else {
+                    }
+                    else {
                         throw new IllegalArgumentException("Illegal locale String: " + localeStr);
                     }
                 }
             }
             if (variant != null && country != null && lang != null) {
                 result = new Locale(lang, country, variant);
-            } else if (lang != null && country != null) {
+            }
+            else if (lang != null && country != null) {
                 result = new Locale(lang, country);
-            } else if (lang != null) {
+            }
+            else if (lang != null) {
                 result = new Locale(lang, "");
             }
         }
@@ -1009,8 +1027,8 @@ public class Util {
      * @param str local string
      * @param set the substring
      * @param fromIndex starting index
-     * @return starting at <code>fromIndex</code>, the index of the first occurrence of any substring from <code>set</code>
-     * in <code>toSearch</code>, or -1 if no such match is found
+     * @return starting at <code>fromIndex</code>, the index of the first occurrence of any substring from <code>set</code> in <code>toSearch</code>, or -1 if
+     * no such match is found
      */
     public static int indexOfSet(String str, char[] set, int fromIndex) {
         int result = -1;
@@ -1030,14 +1048,13 @@ public class Util {
 
     /**
      * <p>
-     * Leverage the Throwable.getStackTrace() method to produce a String version of the stack trace, with a "\n" before each
-     * line.
+     * Leverage the Throwable.getStackTrace() method to produce a String version of the stack trace, with a "\n" before each line.
      * </p>
      *
      * @param e the Throwable to obtain the stacktrace from
      *
-     * @return the String representation of the stack trace obtained by calling getStackTrace() on the passed in exception.
-     * If null is passed in, we return the empty String.
+     * @return the String representation of the stack trace obtained by calling getStackTrace() on the passed in exception. If null is passed in, we return the
+     * empty String.
      */
     public static String getStackTraceString(Throwable e) {
         if (null == e) {
@@ -1054,21 +1071,22 @@ public class Util {
 
     /**
      * <p>
-     * PRECONDITION: argument <code>response</code> is non-null and has a method called <code>getContentType</code> that
-     * takes no arguments and returns a String, with no side-effects.
+     * PRECONDITION: argument <code>response</code> is non-null and has a method called <code>getContentType</code> that takes no arguments and returns a
+     * String, with no side-effects.
      * </p>
      *
      * <p>
-     * This method allows us to get the contentType in both the servlet and portlet cases, without introducing a
-     * compile-time dependency on the portlet api.
+     * This method allows us to get the contentType in both the servlet and portlet cases, without introducing a compile-time dependency on the portlet api.
      * </p>
      *
      * @param response the current response
      * @return the content type of the response
      */
     public static String getContentTypeFromResponse(Object response) {
-        if ( response == null ) return null;
-        if ( response instanceof ServletResponse ) return ((ServletResponse)response).getContentType();
+        if (response == null)
+            return null;
+        if (response instanceof ServletResponse)
+            return ((ServletResponse) response).getContentType();
 
         String result = null;
         try {
@@ -1079,7 +1097,8 @@ public class Util {
                     result = obj.toString();
                 }
             }
-        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+        }
+        catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
             throw new FacesException(e);
         }
         return result;
@@ -1087,11 +1106,9 @@ public class Util {
 
     /**
      * <p>
-     * Splits the given string around occurrences of the given delimiter character. Unlike
-     * {@link String#split(String)} the delimiter is a character rather than a regular expression, so nothing is
-     * compiled and nothing is cached. A caller that needs a real regular expression should hold its own
-     * {@link Pattern} constant and call {@link Pattern#split(CharSequence)}, which compiles it once at class
-     * initialisation rather than per call.
+     * Splits the given string around occurrences of the given delimiter character. Unlike {@link String#split(String)} the delimiter is a character rather than
+     * a regular expression, so nothing is compiled and nothing is cached. A caller that needs a real regular expression should hold its own {@link Pattern}
+     * constant and call {@link Pattern#split(CharSequence)}, which compiles it once at class initialisation rather than per call.
      * </p>
      *
      * @param toSplit the string to split
@@ -1104,10 +1121,8 @@ public class Util {
 
     /**
      * <p>
-     * As {@link #split(String, char)}, limited by splitLimit, whose meaning follows
-     * {@link String#split(String, int)}: a positive limit caps the number of parts and leaves the remainder in the
-     * last one, zero means no cap and discards trailing empty strings, and a negative limit means no cap and keeps
-     * them.
+     * As {@link #split(String, char)}, limited by splitLimit, whose meaning follows {@link String#split(String, int)}: a positive limit caps the number of
+     * parts and leaves the remainder in the last one, zero means no cap and discards trailing empty strings, and a negative limit means no cap and keeps them.
      * </p>
      *
      * @param toSplit the string to split
@@ -1145,8 +1160,8 @@ public class Util {
     }
 
     /**
-     * @param resourceName the resource name, optionally carrying a query string as specified in section 2.6.1.3
-     * "Resource Identifiers" of the Jakarta Faces Specification Document
+     * @param resourceName the resource name, optionally carrying a query string as specified in section 2.6.1.3 "Resource Identifiers" of the Jakarta Faces
+     * Specification Document
      * @return the resource name without its query string, as only the part before the '?' identifies the file
      */
     public static String removeQueryString(String resourceName) {
@@ -1159,8 +1174,8 @@ public class Util {
     }
 
     /**
-     * @param resourceName the resource name, optionally carrying a query string as specified in section 2.6.1.3
-     * "Resource Identifiers" of the Jakarta Faces Specification Document
+     * @param resourceName the resource name, optionally carrying a query string as specified in section 2.6.1.3 "Resource Identifiers" of the Jakarta Faces
+     * Specification Document
      * @return the query string of the resource name without its introducing '?', or <code>null</code> if there is none
      */
     public static String getQueryString(String resourceName) {
@@ -1169,23 +1184,23 @@ public class Util {
         }
 
         int queryStringIndex = resourceName.indexOf('?');
-        return queryStringIndex == -1 || queryStringIndex == resourceName.length() - 1 ? null
-                : resourceName.substring(queryStringIndex + 1);
+        return queryStringIndex == -1 || queryStringIndex == resourceName.length() - 1
+            ? null
+            : resourceName.substring(queryStringIndex + 1);
     }
 
     /**
      * <p>
-     * Returns the URL pattern of the {@link jakarta.faces.webapp.FacesServlet} that is executing the current request. If
-     * there are multiple URL patterns, the value returned by <code>HttpServletRequest.getServletPath()</code> and
-     * <code>HttpServletRequest.getPathInfo()</code> is used to determine which mapping to return.
+     * Returns the URL pattern of the {@link jakarta.faces.webapp.FacesServlet} that is executing the current request. If there are multiple URL patterns, the
+     * value returned by <code>HttpServletRequest.getServletPath()</code> and <code>HttpServletRequest.getPathInfo()</code> is used to determine which mapping
+     * to return.
      * </p>
      * If no mapping can be determined, it most likely means that this particular request wasn't dispatched through the
      * {@link jakarta.faces.webapp.FacesServlet}.
      *
      * @param context the {@link FacesContext} of the current request
      *
-     * @return the URL pattern of the {@link jakarta.faces.webapp.FacesServlet} or <code>null</code> if no mapping can be
-     * determined
+     * @return the URL pattern of the {@link jakarta.faces.webapp.FacesServlet} or <code>null</code> if no mapping can be determined
      *
      * @throws NullPointerException if <code>context</code> is null
      */
@@ -1198,8 +1213,7 @@ public class Util {
     /**
      * Checks if the FacesServlet is exact mapped to the given resource.
      * <p>
-     * Not to be confused with <code>isExactMapped(String)</code>, which checks if a string representing a mapping, not a
-     * resource, is an exact mapping.
+     * Not to be confused with <code>isExactMapped(String)</code>, which checks if a string representing a mapping, not a resource, is an exact mapping.
      *
      * @param viewId the view id to test
      * @return true if the FacesServlet is exact mapped to the given viewId, false otherwise
@@ -1211,8 +1225,7 @@ public class Util {
     /**
      * Checks if the FacesServlet is exact mapped to the given resource.
      * <p>
-     * Not to be confused with <code>isExactMapped(String)</code>, which checks if a string representing a mapping, not a
-     * resource, is an exact mapping.
+     * Not to be confused with <code>isExactMapped(String)</code>, which checks if a string representing a mapping, not a resource, is an exact mapping.
      *
      * @param externalContext the external context for this request
      * @param resource the resource to test
@@ -1276,6 +1289,7 @@ public class Util {
             public MappingMatch getMappingMatch() {
                 return isPrefixMapped(mapping) ? MappingMatch.PATH : MappingMatch.EXTENSION;
             }
+
         };
     }
 
@@ -1293,15 +1307,14 @@ public class Util {
 
     public static boolean isSpecialAttributeName(String name) {
         boolean isSpecialAttributeName = name.equals("action") || name.equals("actionListener") || name.equals("validator")
-                || name.equals("valueChangeListener");
+            || name.equals("valueChangeListener");
         return isSpecialAttributeName;
     }
 
     /**
      * @param ctx the {@link FacesContext} for the current request
      * @param viewToRender the {@link UIViewRoot} to check
-     * @return <code>true</code> if the {@link FacesContext} attributes map contains a reference to the {@link UIViewRoot}'s
-     * view ID
+     * @return <code>true</code> if the {@link FacesContext} attributes map contains a reference to the {@link UIViewRoot}'s view ID
      */
     public static boolean isViewPopulated(FacesContext ctx, UIViewRoot viewToRender) {
 
@@ -1324,8 +1337,8 @@ public class Util {
     }
 
     /**
-     * Utility method to validate ID uniqueness for the tree represented by <code>component</code>. Whether it runs at
-     * all is up to the caller, which is the one holding the answer for the view it is about to save.
+     * Utility method to validate ID uniqueness for the tree represented by <code>component</code>. Whether it runs at all is up to the caller, which is the one
+     * holding the answer for the view it is about to save.
      */
     public static void checkIdUniqueness(FacesContext context, UIComponent component, Set<String> componentIds) {
         // deal with children/facets that are marked transient.
@@ -1344,7 +1357,8 @@ public class Util {
             String id = kid.getClientId(context);
             if (componentIds.add(id)) {
                 checkIdUniqueness(context, kid, componentIds);
-            } else {
+            }
+            else {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE, "faces.duplicate_component_id_error", id);
 
@@ -1408,7 +1422,8 @@ public class Util {
 
         if (viewRoot instanceof NamingContainer) {
             return viewRoot.getContainerClientId(context) + UINamingContainer.getSeparatorChar(context);
-        } else {
+        }
+        else {
             return EMPTY_STRING;
         }
     }
@@ -1495,25 +1510,28 @@ public class Util {
 
             if (conn instanceof JarURLConnection) {
                 /*
-                 * Note this is a work around for JarURLConnection since the getLastModified method is buggy. See JAVASERVERFACES-2725
-                 * and JAVASERVERFACES-2734.
+                 * Note this is a work around for JarURLConnection since the getLastModified method is buggy. See JAVASERVERFACES-2725 and JAVASERVERFACES-2734.
                  */
                 JarURLConnection jarUrlConnection = (JarURLConnection) conn;
                 URL jarFileUrl = jarUrlConnection.getJarFileURL();
                 URLConnection jarFileConnection = jarFileUrl.openConnection();
                 lastModified = jarFileConnection.getLastModified();
                 jarFileConnection.getInputStream().close();
-            } else {
+            }
+            else {
                 is = conn.getInputStream();
                 lastModified = conn.getLastModified();
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new FacesException("Error Checking Last Modified for " + url, e);
-        } finally {
+        }
+        finally {
             if (is != null) {
                 try {
                     is.close();
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     if (LOGGER.isLoggable(Level.FINEST)) {
                         LOGGER.log(Level.FINEST, "Closing stream", e);
                     }
@@ -1545,23 +1563,32 @@ public class Util {
                     dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
                     dbf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
 
-                } catch (ParserConfigurationException ignored) {
+                }
+                catch (ParserConfigurationException ignored) {
                 }
                 dbf.setNamespaceAware(true);
                 dbf.setValidating(false);
                 dbf.setXIncludeAware(false);
                 dbf.setExpandEntityReferences(false);
-                result = xpath.evaluate("string(/" + JakartaNamespaceContext.PREFIX + ":faces-config/@version)",
-                        dbf.newDocumentBuilder().parse(stream));
+                result = xpath.evaluate(
+                    "string(/" + JakartaNamespaceContext.PREFIX + ":faces-config/@version)",
+                    dbf.newDocumentBuilder().parse(stream)
+                );
             }
-        } catch (MalformedURLException mue) {
-        } catch (XPathExpressionException | IOException xpee) {
-        } catch (Exception e) {
-        } finally {
+        }
+        catch (MalformedURLException mue) {
+        }
+        catch (XPathExpressionException | IOException xpee) {
+        }
+        catch (Exception e) {
+        }
+        finally {
             if (stream != null) {
                 try {
                     stream.close();
-                } catch (IOException ignored) {}
+                }
+                catch (IOException ignored) {
+                }
             }
         }
         return result;
@@ -1588,21 +1615,29 @@ public class Util {
                     dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
                     dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
                     dbf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-                } catch (ParserConfigurationException ignored) {}
+                }
+                catch (ParserConfigurationException ignored) {
+                }
                 dbf.setNamespaceAware(true);
                 dbf.setValidating(false);
                 dbf.setXIncludeAware(false);
                 dbf.setExpandEntityReferences(false);
                 result = xpath.evaluate("string(/" + JakartaNamespaceContext.PREFIX + ":web-app/@version)", dbf.newDocumentBuilder().parse(stream));
             }
-        } catch (MalformedURLException mue) {
-        } catch (XPathExpressionException | IOException xpee) {
-        } catch (Exception e) {
-        } finally {
+        }
+        catch (MalformedURLException mue) {
+        }
+        catch (XPathExpressionException | IOException xpee) {
+        }
+        catch (Exception e) {
+        }
+        finally {
             if (stream != null) {
                 try {
                     stream.close();
-                } catch (IOException ignored) {}
+                }
+                catch (IOException ignored) {
+                }
             }
         }
         return result;
@@ -1626,6 +1661,7 @@ public class Util {
         public Iterator<String> getPrefixes(String namespaceURI) {
             return null;
         }
+
     }
 
     /**
@@ -1639,15 +1675,19 @@ public class Util {
 
         if (facesContext != null && facesContext.getAttributes().containsKey(CDI_BEAN_MANAGER)) {
             result = (ELAwareBeanManager) facesContext.getAttributes().get(CDI_BEAN_MANAGER);
-        } else if (facesContext != null && facesContext.getExternalContext().getApplicationMap().containsKey(CDI_BEAN_MANAGER)) {
+        }
+        else if (facesContext != null && facesContext.getExternalContext().getApplicationMap().containsKey(CDI_BEAN_MANAGER)) {
             result = (ELAwareBeanManager) facesContext.getExternalContext().getApplicationMap().get(CDI_BEAN_MANAGER);
-        } else {
+        }
+        else {
             try {
-                result =  wrapIfNeeded(InitialContext.doLookup("java:comp/BeanManager"));
-            } catch (NamingException ne) {
+                result = wrapIfNeeded(InitialContext.doLookup("java:comp/BeanManager"));
+            }
+            catch (NamingException ne) {
                 try {
                     result = wrapIfNeeded(InitialContext.doLookup("java:comp/env/BeanManager"));
-                } catch (NamingException ne2) {
+                }
+                catch (NamingException ne2) {
                     try {
                         result = wrapIfNeeded(CDI.current().getBeanManager());
                     }
@@ -1690,31 +1730,41 @@ public class Util {
     public static <T> Stream<T> stream(Object object) {
         if (object == null) {
             return Stream.empty();
-        } else if (object instanceof Stream) {
+        }
+        else if (object instanceof Stream) {
             return (Stream<T>) object;
-        } else if (object instanceof Collection) {
-            return ((Collection<T>)object).stream();   // little bonus with sized spliterator...
-        } else if (object instanceof Iterable) {
+        }
+        else if (object instanceof Collection) {
+            return ((Collection<T>) object).stream(); // little bonus with sized spliterator...
+        }
+        else if (object instanceof Iterable) {
             return StreamSupport.stream(((Iterable<T>) object).spliterator(), false);
-        } else if (object instanceof Map) {
+        }
+        else if (object instanceof Map) {
             return (Stream<T>) ((Map<?, ?>) object).entrySet().stream();
-        } else if (object instanceof int[]) {
+        }
+        else if (object instanceof int[]) {
             return (Stream<T>) Arrays.stream((int[]) object).boxed();
-        } else if (object instanceof long[]) {
+        }
+        else if (object instanceof long[]) {
             return (Stream<T>) Arrays.stream((long[]) object).boxed();
-        } else if (object instanceof double[]) {
+        }
+        else if (object instanceof double[]) {
             return (Stream<T>) Arrays.stream((double[]) object).boxed();
-        } else if (object instanceof Object[]) {
+        }
+        else if (object instanceof Object[]) {
             return (Stream<T>) Arrays.stream((Object[]) object);
-        } else if ( object instanceof Enumeration) {   // recursive call using Enumeration.asIterator() (Java 9+)
-            return stream( ((Enumeration<T>)object).asIterator() );
-        } else if ( object instanceof Iterator) {      // Iterator<T> => Stream<T>
-            return StreamSupport.stream( Spliterators.spliteratorUnknownSize((Iterator<T>)object, Spliterator.ORDERED), false);
-        } else {
+        }
+        else if (object instanceof Enumeration) { // recursive call using Enumeration.asIterator() (Java 9+)
+            return stream(((Enumeration<T>) object).asIterator());
+        }
+        else if (object instanceof Iterator) { // Iterator<T> => Stream<T>
+            return StreamSupport.stream(Spliterators.spliteratorUnknownSize((Iterator<T>) object, Spliterator.ORDERED), false);
+        }
+        else {
             return (Stream<T>) Stream.of(object);
         }
     }
-
 
     public static boolean isNestedInIterator(FacesContext context, UIComponent component) {
         UIComponent parent = component.getParent();
@@ -1734,10 +1784,11 @@ public class Util {
         // But this is solid for now as all known implementing components already follow this pattern.
         // We could theoretically even remove the above instanceof checks.
         // Application scoped rather than a constant: the separator character it is built around is configurable.
-        Pattern clientIdNestedInIteratorPattern = (Pattern) context.getExternalContext().getApplicationMap().computeIfAbsent(CLIENT_ID_NESTED_IN_ITERATOR_PATTERN, k -> {
-            String separatorChar = Pattern.quote(String.valueOf(UINamingContainer.getSeparatorChar(context)));
-            return Pattern.compile(".+" + separatorChar + "[0-9]+" + separatorChar + ".+");
-        });
+        Pattern clientIdNestedInIteratorPattern = (Pattern) context.getExternalContext().getApplicationMap()
+            .computeIfAbsent(CLIENT_ID_NESTED_IN_ITERATOR_PATTERN, k -> {
+                String separatorChar = Pattern.quote(String.valueOf(UINamingContainer.getSeparatorChar(context)));
+                return Pattern.compile(".+" + separatorChar + "[0-9]+" + separatorChar + ".+");
+            });
 
         return clientIdNestedInIteratorPattern.matcher(parent.getClientId(context)).matches();
     }
@@ -1759,6 +1810,7 @@ public class Util {
      * <li>'3:button' should return 3</li>
      * <li>'4' should return 4</li>
      * </ul>
+     *
      * @param clientId the client ID
      * @param separatorChar the separator character
      * @return first numeric segment from given client ID.
@@ -1767,12 +1819,12 @@ public class Util {
     public static int extractFirstNumericSegment(String clientId, char separatorChar) {
         int nextSeparatorChar = clientId.indexOf(separatorChar);
 
-        while ( !clientId.isEmpty() && !isDigit(clientId.charAt(0)) && nextSeparatorChar >= 0 ) {
+        while (!clientId.isEmpty() && !isDigit(clientId.charAt(0)) && nextSeparatorChar >= 0) {
             clientId = clientId.substring(nextSeparatorChar + 1);
             nextSeparatorChar = clientId.indexOf(separatorChar);
         }
 
-        if ( !clientId.isEmpty() && isDigit(clientId.charAt(0)) ) {
+        if (!clientId.isEmpty() && isDigit(clientId.charAt(0))) {
             String firstNumericSegment = nextSeparatorChar >= 0 ? clientId.substring(0, nextSeparatorChar) : clientId;
             return Integer.parseInt(firstNumericSegment);
         }
@@ -1800,14 +1852,15 @@ public class Util {
             String encoding = (String) context.getViewRoot().getAttributes().get(FACELETS_ENCODING_KEY);
 
             if (encoding != null) {
-                // If found, then immediately return it, this represents either the encoding explicitly set via <f:view encoding> or the one actually set on response.
+                // If found, then immediately return it, this represents either the encoding explicitly set via <f:view encoding> or the one actually set on
+                // response.
                 // See also ViewHandler#apply() and FaceletViewHandlingStrategy#createResponseWriter().
                 return encoding;
             }
         }
 
         // 2. If none found then get it from context (this is usually set during compile/buildtime based on request character encoding).
-        //    See also SAXCompiler#doCompile() and EncodingHandler#apply().
+        // See also SAXCompiler#doCompile() and EncodingHandler#apply().
         String encoding = (String) context.getAttributes().get(FACELETS_ENCODING_KEY);
 
         if (encoding != null && LOGGER.isLoggable(FINEST)) {
@@ -1816,7 +1869,7 @@ public class Util {
 
         if (encoding == null) {
             // 3. If none found then get it from request (could happen when the view isn't built yet).
-            //    See also ViewHandler#initView() and ViewHandler#calculateCharacterEncoding().
+            // See also ViewHandler#initView() and ViewHandler#calculateCharacterEncoding().
             encoding = context.getExternalContext().getRequestCharacterEncoding();
 
             if (encoding != null && LOGGER.isLoggable(FINEST)) {
@@ -1826,7 +1879,7 @@ public class Util {
 
         if (encoding == null && context.getExternalContext().getSession(false) != null) {
             // 4. If still none found then get previously known request or response encoding from session.
-            //    See also ViewHandler#initView() and FaceletViewHandlingStrategy#renderView().
+            // See also ViewHandler#initView() and FaceletViewHandlingStrategy#renderView().
             encoding = (String) context.getExternalContext().getSessionMap().get(CHARACTER_ENCODING_KEY);
 
             if (encoding != null && LOGGER.isLoggable(FINEST)) {
@@ -1863,8 +1916,10 @@ public class Util {
 
         String exceptionClassName = ioe.getClass().getCanonicalName();
 
-        if (exceptionClassName.equals("org.apache.catalina.connector.ClientAbortException") // Tomcat
-            || exceptionClassName.equals("org.eclipse.jetty.io.EofException")) {            // Jetty
+        if (
+            exceptionClassName.equals("org.apache.catalina.connector.ClientAbortException") // Tomcat
+                || exceptionClassName.equals("org.eclipse.jetty.io.EofException")
+        ) { // Jetty
             return true;
         }
 
@@ -1876,8 +1931,9 @@ public class Util {
 
         String lowercasedExceptionMessage = exceptionMessage.toLowerCase();
 
-        return (lowercasedExceptionMessage.contains("connection") && lowercasedExceptionMessage.contains("abort"))        // #5264 Undertow (English)
-            || (lowercasedExceptionMessage.contains("connection") && lowercasedExceptionMessage.contains("closed"))       // #5583 Grizzly
+        return (lowercasedExceptionMessage.contains("connection") && lowercasedExceptionMessage.contains("abort")) // #5264 Undertow (English)
+            || (lowercasedExceptionMessage.contains("connection") && lowercasedExceptionMessage.contains("closed")) // #5583 Grizzly
             || (lowercasedExceptionMessage.contains("verbindung") && lowercasedExceptionMessage.contains("abgebrochen")); // #5527 Undertow (German)
     }
+
 }

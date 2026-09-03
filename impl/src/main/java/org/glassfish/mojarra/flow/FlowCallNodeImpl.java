@@ -28,6 +28,7 @@ import jakarta.faces.flow.FlowCallNode;
 import jakarta.faces.flow.Parameter;
 
 public class FlowCallNodeImpl extends FlowCallNode implements Serializable {
+
     private static final long serialVersionUID = 543332738561754405L;
 
     private final String id;
@@ -43,15 +44,19 @@ public class FlowCallNodeImpl extends FlowCallNode implements Serializable {
         this.id = id;
 
         if (null != calledFlowDocumentId) {
-            calledFlowDocumentIdVE = context.getApplication().getExpressionFactory().createValueExpression(context.getELContext(), calledFlowDocumentId,
-                    String.class);
-        } else {
+            calledFlowDocumentIdVE = context.getApplication().getExpressionFactory().createValueExpression(
+                context.getELContext(), calledFlowDocumentId,
+                String.class
+            );
+        }
+        else {
             calledFlowDocumentIdVE = null;
         }
 
         if (null != calledFlowId) {
             calledFlowIdVE = context.getApplication().getExpressionFactory().createValueExpression(context.getELContext(), calledFlowId, String.class);
-        } else {
+        }
+        else {
             calledFlowIdVE = null;
         }
 
@@ -80,12 +85,16 @@ public class FlowCallNodeImpl extends FlowCallNode implements Serializable {
         if (calledFlowIdVE != other.calledFlowIdVE && (calledFlowIdVE == null || !calledFlowIdVE.equals(other.calledFlowIdVE))) {
             return false;
         }
-        if (calledFlowDocumentIdVE != other.calledFlowDocumentIdVE
-                && (calledFlowDocumentIdVE == null || !calledFlowDocumentIdVE.equals(other.calledFlowDocumentIdVE))) {
+        if (
+            calledFlowDocumentIdVE != other.calledFlowDocumentIdVE
+                && (calledFlowDocumentIdVE == null || !calledFlowDocumentIdVE.equals(other.calledFlowDocumentIdVE))
+        ) {
             return false;
         }
-        if (_outboundParameters != other._outboundParameters
-                && (_outboundParameters == null || !_outboundParameters.equals(other._outboundParameters))) {
+        if (
+            _outboundParameters != other._outboundParameters
+                && (_outboundParameters == null || !_outboundParameters.equals(other._outboundParameters))
+        ) {
             return false;
         }
         return true;
@@ -136,4 +145,5 @@ public class FlowCallNodeImpl extends FlowCallNode implements Serializable {
     public Map<String, Parameter> getOutboundParameters() {
         return outboundParameters;
     }
+
 }

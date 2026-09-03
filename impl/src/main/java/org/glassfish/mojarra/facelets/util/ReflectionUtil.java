@@ -31,7 +31,7 @@ public class ReflectionUtil {
     private static final String[] PRIMITIVE_NAMES = new String[] { "boolean", "byte", "char", "double", "float", "int", "long", "short", "void" };
 
     private static final Class<?>[] PRIMITIVES = new Class<?>[] { boolean.class, byte.class, char.class, double.class, float.class, int.class, long.class,
-            short.class, Void.TYPE };
+        short.class, Void.TYPE };
 
     /**
      *
@@ -49,7 +49,8 @@ public class ReflectionUtil {
                 String nc = name.substring(0, name.length() - 2);
                 c = Class.forName(nc, false, Thread.currentThread().getContextClassLoader());
                 c = Array.newInstance(c, 0).getClass();
-            } else {
+            }
+            else {
                 c = Class.forName(name, false, Thread.currentThread().getContextClassLoader());
             }
         }
@@ -67,7 +68,9 @@ public class ReflectionUtil {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T newInstance(String name) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException {
+    public static <T> T newInstance(String name) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+        NoSuchMethodException, SecurityException, ClassNotFoundException
+    {
         return (T) forName(name).getDeclaredConstructor().newInstance();
     }
 
@@ -106,45 +109,45 @@ public class ReflectionUtil {
         return s;
     }
 
-//    /*
-//     * Get a public method form a public class or interface of a given method.
-//     * Note that if the base is an instance of a non-public class that
-//     * implements a public interface,  calling Class.getMethod() with the base
-//     * will not find the method.  To correct this, a version of the
-//     * same method must be found in a superclass or interface.
-//     **/
-//
-//    static private Method getMethod(Class cl, String methodName,
-//                                    Class[] paramTypes) {
-//
-//        Method m = null;
-//        try {
-//            m = cl.getMethod(methodName, paramTypes);
-//        } catch (NoSuchMethodException ex) {
-//            return null;
-//        }
-//
-//        Class dclass  = m.getDeclaringClass();
-//        if (Modifier.isPublic(dclass.getModifiers())) {
-//            return m;
-//        }
-//
-//        Class[] intf = dclass.getInterfaces();
-//        for (int i = 0; i < intf.length; i++) {
-//            m = getMethod(intf[i], methodName, paramTypes);
-//            if (m != null) {
-//                return m;
-//            }
-//        }
-//        Class c = dclass.getSuperclass();
-//        if (c != null) {
-//            m = getMethod(c, methodName, paramTypes);
-//            if (m != null) {
-//                return m;
-//            }
-//        }
-//        return null;
-//    }
+    // /*
+    // * Get a public method form a public class or interface of a given method.
+    // * Note that if the base is an instance of a non-public class that
+    // * implements a public interface, calling Class.getMethod() with the base
+    // * will not find the method. To correct this, a version of the
+    // * same method must be found in a superclass or interface.
+    // **/
+    //
+    // static private Method getMethod(Class cl, String methodName,
+    // Class[] paramTypes) {
+    //
+    // Method m = null;
+    // try {
+    // m = cl.getMethod(methodName, paramTypes);
+    // } catch (NoSuchMethodException ex) {
+    // return null;
+    // }
+    //
+    // Class dclass = m.getDeclaringClass();
+    // if (Modifier.isPublic(dclass.getModifiers())) {
+    // return m;
+    // }
+    //
+    // Class[] intf = dclass.getInterfaces();
+    // for (int i = 0; i < intf.length; i++) {
+    // m = getMethod(intf[i], methodName, paramTypes);
+    // if (m != null) {
+    // return m;
+    // }
+    // }
+    // Class c = dclass.getSuperclass();
+    // if (c != null) {
+    // m = getMethod(c, methodName, paramTypes);
+    // if (m != null) {
+    // return m;
+    // }
+    // }
+    // return null;
+    // }
 
     protected static String paramString(Class<?>[] types) {
         if (types != null) {
@@ -176,9 +179,11 @@ public class ReflectionUtil {
             if (clazz != null && returnObject == null) {
                 returnObject = clazz.getDeclaredConstructor().newInstance();
             }
-        } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
+        }
+        catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
             throw new ConfigurationException(
-                    buildMessage(MessageFormat.format("Unable to create a new instance of ''{0}'': {1}", clazz.getName(), e.toString())), e);
+                buildMessage(MessageFormat.format("Unable to create a new instance of ''{0}'': {1}", clazz.getName(), e.toString())), e
+            );
         }
         return returnObject;
 
@@ -194,16 +199,23 @@ public class ReflectionUtil {
                     returnObject = decorateInstance(clazz, rootType, root);
                 }
 
-            } catch (ClassNotFoundException cnfe) {
+            }
+            catch (ClassNotFoundException cnfe) {
                 throw new ConfigurationException(buildMessage(MessageFormat.format("Unable to find class ''{0}''", className)));
-            } catch (NoClassDefFoundError ncdfe) {
+            }
+            catch (NoClassDefFoundError ncdfe) {
                 throw new ConfigurationException(
-                        buildMessage(MessageFormat.format("Class ''{0}'' is missing a runtime dependency: {1}", className, ncdfe.toString())));
-            } catch (ClassCastException cce) {
+                    buildMessage(MessageFormat.format("Class ''{0}'' is missing a runtime dependency: {1}", className, ncdfe.toString()))
+                );
+            }
+            catch (ClassCastException cce) {
                 throw new ConfigurationException(buildMessage(MessageFormat.format("Class ''{0}'' is not an instance of ''{1}''", className, rootType)));
-            } catch (Exception e) {
-                throw new ConfigurationException(buildMessage(MessageFormat.format("Unable to create a new instance of ''{0}'': {1}", className, e.toString())),
-                        e);
+            }
+            catch (Exception e) {
+                throw new ConfigurationException(
+                    buildMessage(MessageFormat.format("Unable to create a new instance of ''{0}'': {1}", className, e.toString())),
+                    e
+                );
             }
         }
 

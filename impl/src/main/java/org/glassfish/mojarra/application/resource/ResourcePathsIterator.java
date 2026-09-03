@@ -67,7 +67,7 @@ public class ResourcePathsIterator implements Iterator<String> {
 
     private void visit(String resourcePath) {
         Set<String> set = externalContext.getResourcePaths(resourcePath);
-        if(set != null) {
+        if (set != null) {
             stack.addAll(set);
         }
     }
@@ -83,7 +83,8 @@ public class ResourcePathsIterator implements Iterator<String> {
                 if (!startsWithOneOf(nextCandidate, restrictedDirectories) && !directoryExceedsMaxDepth(nextCandidate, maxDepth)) {
                     visit(nextCandidate);
                 }
-            } else if (isValidCandidate(nextCandidate, extensions)) {
+            }
+            else if (isValidCandidate(nextCandidate, extensions)) {
                 next = nextCandidate;
             }
 
@@ -91,8 +92,7 @@ public class ResourcePathsIterator implements Iterator<String> {
     }
 
     /**
-     * Checks if the given resource path obtained from {@link ServletContext#getResourcePaths(String)} represents a
-     * directory.
+     * Checks if the given resource path obtained from {@link ServletContext#getResourcePaths(String)} represents a directory.
      *
      * @param resourcePath the resource path to check
      * @return true if the resource path represents a directory, false otherwise

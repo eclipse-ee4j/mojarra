@@ -32,7 +32,8 @@ public class DelegatedEJBScanner implements Scanner {
     public DelegatedEJBScanner() {
         try {
             delegate = new EJBScanner();
-        } catch (Throwable throwable) {
+        }
+        catch (Throwable throwable) {
             throwable.printStackTrace(System.err);
         }
     }
@@ -63,4 +64,5 @@ public class DelegatedEJBScanner implements Scanner {
         }
         return null;
     }
+
 }

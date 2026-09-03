@@ -27,8 +27,7 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_3">
- * The ApplicationMapProducer is the CDI producer that allows injection of the application map using @Inject and allows
- * EL resolving of #{applicationScope}
+ * The ApplicationMapProducer is the CDI producer that allows injection of the application map using @Inject and allows EL resolving of #{applicationScope}
  * </p>
  *
  * @since 2.3

@@ -37,7 +37,9 @@ class StateHolderSaver implements Serializable {
     private Serializable savedState = null;
 
     private enum StateHolderTupleIndices {
-        StateHolderSaverInstance, ComponentAddedDynamically, LastMember
+        StateHolderSaverInstance,
+        ComponentAddedDynamically,
+        LastMember
     }
 
     public boolean componentAddedDynamically() {
@@ -70,7 +72,8 @@ class StateHolderSaver implements Serializable {
     public StateHolderSaver(FacesContext context, Object toSave) {
         if (toSave == null) {
             className = null;
-        } else {
+        }
+        else {
             className = toSave.getClass().getName();
         }
 
@@ -82,14 +85,16 @@ class StateHolderSaver implements Serializable {
                 tuple[StateHolderTupleIndices.StateHolderSaverInstance.ordinal()] = (Serializable) ((StateHolder) toSave).saveState(context);
                 if (toSave instanceof UIComponent) {
                     tuple[StateHolderTupleIndices.ComponentAddedDynamically.ordinal()] = ((UIComponent) toSave).getAttributes().containsKey(DYNAMIC_COMPONENT)
-                            ? Boolean.TRUE
-                            : Boolean.FALSE;
+                        ? Boolean.TRUE
+                        : Boolean.FALSE;
                 }
                 savedState = tuple;
-            } else {
+            }
+            else {
                 className = null;
             }
-        } else if (toSave instanceof Serializable) {
+        }
+        else if (toSave instanceof Serializable) {
             savedState = (Serializable) toSave;
             className = null;
         }
@@ -120,14 +125,16 @@ class StateHolderSaver implements Serializable {
 
         try {
             toRestoreClass = loadClass(className, this);
-        } catch (ClassNotFoundException e) {
+        }
+        catch (ClassNotFoundException e) {
             throw new IllegalStateException(e);
         }
 
         if (null != toRestoreClass) {
             try {
                 result = toRestoreClass.getDeclaredConstructor().newInstance();
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 throw new IllegalStateException(e);
             }
         }
@@ -148,4 +155,5 @@ class StateHolderSaver implements Serializable {
         }
         return Class.forName(name, false, loader);
     }
+
 }

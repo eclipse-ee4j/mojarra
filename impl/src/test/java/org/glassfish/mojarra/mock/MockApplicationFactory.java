@@ -23,8 +23,10 @@ import jakarta.faces.application.ApplicationFactory;
 public class MockApplicationFactory extends ApplicationFactory {
 
     public MockApplicationFactory(ApplicationFactory oldImpl) {
-        System.setProperty(FactoryFinder.APPLICATION_FACTORY,
-                this.getClass().getName());
+        System.setProperty(
+            FactoryFinder.APPLICATION_FACTORY,
+            this.getClass().getName()
+        );
     }
 
     public MockApplicationFactory() {
@@ -44,4 +46,5 @@ public class MockApplicationFactory extends ApplicationFactory {
     public void setApplication(Application application) {
         this.application = application;
     }
+
 }

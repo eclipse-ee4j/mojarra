@@ -32,8 +32,7 @@ import jakarta.faces.FacesException;
 import org.glassfish.mojarra.util.FacesLogger;
 
 /**
- * Factory class for creating <code>ConfigurationResourceProvider</code> instances using the Java services discovery
- * mechanism.
+ * Factory class for creating <code>ConfigurationResourceProvider</code> instances using the Java services discovery mechanism.
  */
 public class ConfigurationResourceProviderFactory {
 
@@ -64,8 +63,7 @@ public class ConfigurationResourceProviderFactory {
     /**
      * @param providerType the type of providers that should be discovered and instantiated.
      *
-     * @return an array of all <code>ConfigurationResourceProviders</code> discovered that
-     *  match the specified <code>ProviderType</code>.
+     * @return an array of all <code>ConfigurationResourceProviders</code> discovered that match the specified <code>ProviderType</code>.
      */
     public static ConfigurationResourceProvider[] createProviders(ProviderType providerType) {
 
@@ -82,35 +80,40 @@ public class ConfigurationResourceProviderFactory {
                             if (!(provider instanceof FacesConfigResourceProvider)) {
                                 throw new IllegalStateException("Expected ConfigurationResourceProvider type to be an instance of FacesConfigResourceProvider");
                             }
-                        } else {
+                        }
+                        else {
                             if (!(provider instanceof FaceletConfigResourceProvider)) {
                                 throw new IllegalStateException(
-                                        "Expected ConfigurationResourceProvider type to be an instance of FaceletConfigResourceProvider");
+                                    "Expected ConfigurationResourceProvider type to be an instance of FaceletConfigResourceProvider"
+                                );
                             }
                         }
                         providers.add(provider);
                     }
-                } catch (ClassCastException cce) {
+                }
+                catch (ClassCastException cce) {
                     // we are going to ignore these for now.
-                } catch (FacesException e) {
+                }
+                catch (FacesException e) {
                     if (LOGGER.isLoggable(FINE)) {
                         LOGGER.log(Level.FINE, e.toString(), e);
                     }
                 }
             }
-        } else {
+        }
+        else {
 
             ServiceLoader<? extends ConfigurationResourceProvider> serviceLoader;
 
             switch (providerType) {
-            case FacesConfig:
-                serviceLoader = ServiceLoader.load(FacesConfigResourceProvider.class);
-                break;
-            case FaceletConfig:
-                serviceLoader = ServiceLoader.load(FaceletConfigResourceProvider.class);
-                break;
-            default:
-                throw new UnsupportedOperationException(providerType.servicesKey + " cannot be loaded via ServiceLoader API.");
+                case FacesConfig :
+                    serviceLoader = ServiceLoader.load(FacesConfigResourceProvider.class);
+                    break;
+                case FaceletConfig :
+                    serviceLoader = ServiceLoader.load(FaceletConfigResourceProvider.class);
+                    break;
+                default :
+                    throw new UnsupportedOperationException(providerType.servicesKey + " cannot be loaded via ServiceLoader API.");
             }
 
             Iterator<? extends ConfigurationResourceProvider> iterator = serviceLoader.iterator();
@@ -122,4 +125,5 @@ public class ConfigurationResourceProviderFactory {
 
         return providers.toArray(new ConfigurationResourceProvider[providers.size()]);
     }
+
 }

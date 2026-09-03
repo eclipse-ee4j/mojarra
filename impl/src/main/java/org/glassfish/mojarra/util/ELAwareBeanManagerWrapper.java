@@ -78,7 +78,8 @@ public class ELAwareBeanManagerWrapper implements ELAwareBeanManager {
      * @param beanType
      * @param ctx
      * @return
-     * @see jakarta.enterprise.inject.spi.BeanContainer#getReference(jakarta.enterprise.inject.spi.Bean, java.lang.reflect.Type, jakarta.enterprise.context.spi.CreationalContext)
+     * @see jakarta.enterprise.inject.spi.BeanContainer#getReference(jakarta.enterprise.inject.spi.Bean, java.lang.reflect.Type,
+     * jakarta.enterprise.context.spi.CreationalContext)
      */
     @Override
     public Object getReference(Bean<?> bean, Type beanType, CreationalContext<?> ctx) {
@@ -111,7 +112,8 @@ public class ELAwareBeanManagerWrapper implements ELAwareBeanManager {
      * @param ij
      * @param ctx
      * @return
-     * @see jakarta.enterprise.inject.spi.BeanManager#getInjectableReference(jakarta.enterprise.inject.spi.InjectionPoint, jakarta.enterprise.context.spi.CreationalContext)
+     * @see jakarta.enterprise.inject.spi.BeanManager#getInjectableReference(jakarta.enterprise.inject.spi.InjectionPoint,
+     * jakarta.enterprise.context.spi.CreationalContext)
      */
     @Override
     public Object getInjectableReference(InjectionPoint ij, CreationalContext<?> ctx) {
@@ -425,7 +427,8 @@ public class ELAwareBeanManagerWrapper implements ELAwareBeanManager {
      * @param beanClass
      * @param injectionTargetFactory
      * @return
-     * @see jakarta.enterprise.inject.spi.BeanManager#createBean(jakarta.enterprise.inject.spi.BeanAttributes, java.lang.Class, jakarta.enterprise.inject.spi.InjectionTargetFactory)
+     * @see jakarta.enterprise.inject.spi.BeanManager#createBean(jakarta.enterprise.inject.spi.BeanAttributes, java.lang.Class,
+     * jakarta.enterprise.inject.spi.InjectionTargetFactory)
      */
     @Override
     public <T> Bean<T> createBean(BeanAttributes<T> attributes, Class<T> beanClass, InjectionTargetFactory<T> injectionTargetFactory) {
@@ -439,7 +442,8 @@ public class ELAwareBeanManagerWrapper implements ELAwareBeanManager {
      * @param beanClass
      * @param producerFactory
      * @return
-     * @see jakarta.enterprise.inject.spi.BeanManager#createBean(jakarta.enterprise.inject.spi.BeanAttributes, java.lang.Class, jakarta.enterprise.inject.spi.ProducerFactory)
+     * @see jakarta.enterprise.inject.spi.BeanManager#createBean(jakarta.enterprise.inject.spi.BeanAttributes, java.lang.Class,
+     * jakarta.enterprise.inject.spi.ProducerFactory)
      */
     @Override
     public <T, X> Bean<T> createBean(BeanAttributes<T> attributes, Class<X> beanClass, ProducerFactory<X> producerFactory) {

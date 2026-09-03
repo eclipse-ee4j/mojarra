@@ -40,8 +40,8 @@ import org.glassfish.mojarra.context.ExceptionHandlerImpl;
 import org.glassfish.mojarra.util.Util;
 
 /**
- * A special, minimal implementation of FacesContext used at application initialization time. The ExternalContext
- * returned by this FacesContext only exposes the ApplicationMap.
+ * A special, minimal implementation of FacesContext used at application initialization time. The ExternalContext returned by this FacesContext only exposes the
+ * ApplicationMap.
  */
 public class InitFacesContext extends NoOpFacesContext {
 

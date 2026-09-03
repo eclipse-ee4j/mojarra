@@ -76,8 +76,10 @@ public class RenderFacetHandler extends ComponentHandler {
 
     private void throwRequiredException(FaceletContext ctx, String name, UIComponent compositeParent) {
 
-        throw new TagException(tag, "Unable to find facet named '" + name + "' in parent composite component with id '"
-                + compositeParent.getClientId(ctx.getFacesContext()) + '\'');
+        throw new TagException(
+            tag, "Unable to find facet named '" + name + "' in parent composite component with id '"
+                + compositeParent.getClientId(ctx.getFacesContext()) + '\''
+        );
 
     }
 

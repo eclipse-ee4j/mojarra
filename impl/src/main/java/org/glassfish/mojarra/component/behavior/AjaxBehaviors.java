@@ -85,6 +85,7 @@ public class AjaxBehaviors implements Serializable {
      * <p>
      * Push the {@link AjaxBehavior} instance onto the <code>List</code>.
      * </p>
+     *
      * @param context the faces context
      * @param ajaxBehavior the {@link AjaxBehavior} instance
      * @param eventName the name of the event that the behavior is associated with.
@@ -111,6 +112,7 @@ public class AjaxBehaviors implements Serializable {
     // Helper class for storing and creating/applying inherited
     // AjaxBehaviors
     public static class BehaviorInfo implements Serializable {
+
         private String eventName;
         private Object behaviorState;
         private static final long serialVersionUID = -7679229822647712959L;
@@ -185,6 +187,7 @@ public class AjaxBehaviors implements Serializable {
 
             return behavior;
         }
+
     }
 
 }

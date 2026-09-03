@@ -37,8 +37,8 @@ import org.glassfish.mojarra.facelets.tag.faces.ComponentSupport;
 import org.glassfish.mojarra.util.FacesLogger;
 
 /**
- * This <code>TagHandler</code> is responsible for relocating Facets defined within a composite component to a component
- * within the composite component's <code>composite:implementation</code> section.
+ * This <code>TagHandler</code> is responsible for relocating Facets defined within a composite component to a component within the composite component's
+ * <code>composite:implementation</code> section.
  */
 public class InsertFacetHandler extends TagHandlerImpl {
 
@@ -148,7 +148,8 @@ public class InsertFacetHandler extends TagHandlerImpl {
                     compositeParent.getAttributes().put(key, value);
                 }
 
-            } else {
+            }
+            else {
                 // The compositeParent no longer has the facet to be relocated as its own once it has
                 // been made a facet of the target component, so only throw the Exception if required
                 // and the target component doesn't have the facet defined either
@@ -163,8 +164,10 @@ public class InsertFacetHandler extends TagHandlerImpl {
 
         private void throwRequiredException(FaceletContext ctx, String facetName, UIComponent compositeParent) {
 
-            throw new TagException(tag, "Unable to find facet named '" + facetName + "' in parent composite component with id '"
-                    + compositeParent.getClientId(ctx.getFacesContext()) + '\'');
+            throw new TagException(
+                tag, "Unable to find facet named '" + facetName + "' in parent composite component with id '"
+                    + compositeParent.getClientId(ctx.getFacesContext()) + '\''
+            );
 
         }
 

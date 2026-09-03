@@ -29,15 +29,15 @@ import org.glassfish.mojarra.RIConstants;
 
 /**
  * <p class="changed_added_5_0">
- * Enumeration of all available {@code org.glassfish.mojarra.*} context parameters, which is every parameter this
- * implementation recognizes beyond the {@code jakarta.faces.*} ones declared by {@link FacesContextParam}.
- * A typed accessor such as {@link ContextParam#getString(jakarta.faces.context.FacesContext)} obtains the value of one.
+ * Enumeration of all available {@code org.glassfish.mojarra.*} context parameters, which is every parameter this implementation recognizes beyond the
+ * {@code jakarta.faces.*} ones declared by {@link FacesContextParam}. A typed accessor such as
+ * {@link ContextParam#getString(jakarta.faces.context.FacesContext)} obtains the value of one.
  * </p>
  *
  * <p>
- * Each one also answers to the {@code com.sun.faces.*} prefix it carried before 5.0, which
- * {@link org.glassfish.mojarra.config.WebConfiguration} resolves and reports. What each parameter does, and since when, is documented in
- * {@code CONTEXT-PARAMS.md} in the repository root, which {@code ContextParamsMdTest} holds against this enum.
+ * Each one also answers to the {@code com.sun.faces.*} prefix it carried before 5.0, which {@link org.glassfish.mojarra.config.WebConfiguration} resolves and
+ * reports. What each parameter does, and since when, is documented in {@code CONTEXT-PARAMS.md} in the repository root, which {@code ContextParamsMdTest} holds
+ * against this enum.
  * </p>
  *
  * @since 5.0
@@ -51,8 +51,7 @@ public enum MojarraContextParam implements ContextParam {
     ALLOW_TEXT_CHILDREN("allowTextChildren", false, Deprecation.DEPRECATED),
 
     /**
-     * @deprecated Replaced by {@code org.glassfish.mojarra.viewStateAutocomplete}, which expresses the value rather
-     * than one of its settings.
+     * @deprecated Replaced by {@code org.glassfish.mojarra.viewStateAutocomplete}, which expresses the value rather than one of its settings.
      */
     @Deprecated(since = "5.0", forRemoval = true)
     AUTO_COMPLETE_OFF_ON_VIEW_STATE("autoCompleteOffOnViewState", false, Deprecation.replacedBy("viewStateAutocomplete")),
@@ -60,8 +59,7 @@ public enum MojarraContextParam implements ContextParam {
     ALLOWED_HTTP_METHODS("allowedHttpMethods", EMPTY_STRING_ARRAY, Separator.SPACE),
 
     /**
-     * Whether the last modified timestamp of a resource is remembered rather than read on every request, which only
-     * Development has a reason not to do.
+     * Whether the last modified timestamp of a resource is remembered rather than read on every request, which only Development has a reason not to do.
      */
     CACHE_RESOURCE_MODIFICATION_TIMESTAMP("cacheResourceModificationTimestamp", true, projectStage -> projectStage != ProjectStage.Development),
 
@@ -137,8 +135,7 @@ public enum MojarraContextParam implements ContextParam {
     NUMBER_OF_FLASHES_BETWEEN_FLASH_REAPINGS("numberOfFlashesBetweenFlashReapings", 5000),
 
     /**
-     * @deprecated Renamed to {@code org.glassfish.mojarra.numberOfStatefulPagesPerSession}, since the old name said
-     * the opposite of what it sized.
+     * @deprecated Renamed to {@code org.glassfish.mojarra.numberOfStatefulPagesPerSession}, since the old name said the opposite of what it sized.
      */
     @Deprecated(since = "5.0", forRemoval = true)
     NUMBER_OF_LOGICAL_VIEWS("numberOfLogicalViews", 15, Deprecation.replacedBy("numberOfStatefulPagesPerSession")),
@@ -148,8 +145,7 @@ public enum MojarraContextParam implements ContextParam {
     NUMBER_OF_VIEW_STATES_PER_STATEFUL_PAGE("numberOfViewStatesPerStatefulPage", 15),
 
     /**
-     * @deprecated Renamed to {@code org.glassfish.mojarra.numberOfViewStatesPerStatefulPage}, since the old name said
-     * the opposite of what it sized.
+     * @deprecated Renamed to {@code org.glassfish.mojarra.numberOfViewStatesPerStatefulPage}, since the old name said the opposite of what it sized.
      */
     @Deprecated(since = "5.0", forRemoval = true)
     NUMBER_OF_VIEWS_IN_SESSION("numberOfViewsInSession", 15, Deprecation.replacedBy("numberOfViewStatesPerStatefulPage")),
@@ -159,8 +155,7 @@ public enum MojarraContextParam implements ContextParam {
     REFRESH_TRANSIENT_BUILD("refreshTransientBuild", false),
 
     /**
-     * @deprecated Renamed to {@code org.glassfish.mojarra.refreshTransientBuild}, since partial state saving is the
-     * only state saving there is.
+     * @deprecated Renamed to {@code org.glassfish.mojarra.refreshTransientBuild}, since partial state saving is the only state saving there is.
      */
     @Deprecated(since = "5.0", forRemoval = true)
     REFRESH_TRANSIENT_BUILD_ON_PSS("refreshTransientBuildOnPSS", false, Deprecation.replacedBy("refreshTransientBuild")),
@@ -170,8 +165,8 @@ public enum MojarraContextParam implements ContextParam {
     RESOURCE_BUFFER_SIZE("resourceBufferSize", 2048),
 
     /**
-     * How many minutes apart a cached resource is checked for modification, where a negative value drops the check.
-     * Only Development has a reason to check at all.
+     * How many minutes apart a cached resource is checked for modification, where a negative value drops the check. Only Development has a reason to check at
+     * all.
      */
     RESOURCE_UPDATE_CHECK_PERIOD("resourceUpdateCheckPeriod", -1, projectStage -> projectStage == ProjectStage.Development ? 5 : -1),
 
@@ -223,8 +218,11 @@ public enum MojarraContextParam implements ContextParam {
         this(name, defaultValue, defaultValueSupplier, null, null);
     }
 
-    private <T> MojarraContextParam(String name, T defaultValue, Function<ProjectStage, T> defaultValueSupplier, Separator separator,
-            Deprecation deprecation) {
+    private <T> MojarraContextParam(
+        String name, T defaultValue, Function<ProjectStage, T> defaultValueSupplier, Separator separator,
+        Deprecation deprecation
+    )
+    {
         requireNonNull(name, "name");
         requireNonNull(defaultValue, "defaultValue");
         this.name = qualify(name);
@@ -238,8 +236,8 @@ public enum MojarraContextParam implements ContextParam {
 
     /**
      * <p>
-     * A parameter whose default is derived from the project stage also accepts {@link Tristate#AUTO}, which asks for that
-     * default rather than pinning a value, and is what such a parameter reads as when it is left alone.
+     * A parameter whose default is derived from the project stage also accepts {@link Tristate#AUTO}, which asks for that default rather than pinning a value,
+     * and is what such a parameter reads as when it is left alone.
      * </p>
      */
     @Override
@@ -291,9 +289,8 @@ public enum MojarraContextParam implements ContextParam {
 
     /**
      * @param name the qualified name of a parameter.
-     * @return the parameter of that name, or <code>null</code> when this enum declares none. Resolving a replacement
-     * by name rather than by constant is what lets the constants stay in alphabetical order, since one may name
-     * another which is declared after it.
+     * @return the parameter of that name, or <code>null</code> when this enum declares none. Resolving a replacement by name rather than by constant is what
+     * lets the constants stay in alphabetical order, since one may name another which is declared after it.
      */
     public static MojarraContextParam of(String name) {
         for (MojarraContextParam param : values()) {
@@ -304,4 +301,5 @@ public enum MojarraContextParam implements ContextParam {
 
         return null;
     }
+
 }

@@ -43,7 +43,8 @@ public class FacesServletFactoryImpl extends FacesServletFactory {
             servlet = new FacesServletImpl();
             try {
                 servlet.init(config);
-            } catch (ServletException e) {
+            }
+            catch (ServletException e) {
                 throw new FacesException(e);
             }
             servlets.put(config, servlet);
@@ -55,4 +56,5 @@ public class FacesServletFactoryImpl extends FacesServletFactory {
     public FacesServletFactory getWrapped() {
         return null; // we don't actually wrap anything
     }
+
 }

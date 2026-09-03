@@ -30,15 +30,15 @@ import jakarta.faces.webapp.FacesServlet;
 
 /**
  * <p class="changed_added_5_0">
- * Enumeration of all available {@code jakarta.faces.*} context parameters.
- * A typed accessor such as {@link ContextParam#getString(FacesContext)} obtains the value of one.
+ * Enumeration of all available {@code jakarta.faces.*} context parameters. A typed accessor such as {@link ContextParam#getString(FacesContext)} obtains the
+ * value of one.
  * </p>
  * <p>
- * Historical note: this was originally part of FacesConfig.Context param as per https://github.com/jakartaee/faces/issues/1416
- * But it has been reverted as per https://github.com/jakartaee/faces/issues/2013,
- * because it might overlap/conflict the upcoming Jakarta Config and we'd rather not have yet another "dead on arrival" like ManagedBean/CDI in JSF 2.0.
+ * Historical note: this was originally part of FacesConfig.Context param as per https://github.com/jakartaee/faces/issues/1416 But it has been reverted as per
+ * https://github.com/jakartaee/faces/issues/2013, because it might overlap/conflict the upcoming Jakarta Config and we'd rather not have yet another "dead on
+ * arrival" like ManagedBean/CDI in JSF 2.0.
  * </p>
- * 
+ *
  * @since 5.0
  */
 public enum FacesContextParam implements ContextParam {
@@ -124,10 +124,13 @@ public enum FacesContextParam implements ContextParam {
     FACELETS_LIBRARIES(ViewHandler.FACELETS_LIBRARIES_PARAM_NAME, EMPTY_STRING_ARRAY, Separator.SEMICOLON),
 
     /**
-     * Returns {@value ViewHandler#FACELETS_REFRESH_PERIOD_PARAM_NAME} as {@link Integer} with default of {@code -1} when
-     * {@link Application#getProjectStage()} is {@link ProjectStage#Production} else default of {@code 0}.
+     * Returns {@value ViewHandler#FACELETS_REFRESH_PERIOD_PARAM_NAME} as {@link Integer} with default of {@code -1} when {@link Application#getProjectStage()}
+     * is {@link ProjectStage#Production} else default of {@code 0}.
      */
-    FACELETS_REFRESH_PERIOD(ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME, Integer.MIN_VALUE, (Function<ProjectStage, Integer>) projectStage -> projectStage == ProjectStage.Production ? -1 : 0),
+    FACELETS_REFRESH_PERIOD(
+        ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME, Integer.MIN_VALUE,
+        (Function<ProjectStage, Integer>) projectStage -> projectStage == ProjectStage.Production ? -1 : 0
+    ),
 
     /**
      * Returns {@value ViewHandler#FACELETS_SKIP_COMMENTS_PARAM_NAME} as {@link Boolean} with default of {@code false}.
@@ -150,25 +153,26 @@ public enum FacesContextParam implements ContextParam {
     INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL(UIInput.EMPTY_STRING_AS_NULL_PARAM_NAME, false),
 
     /**
-     * Returns {@value FacesServlet#LIFECYCLE_ID_ATTR} as {@link String} with default of {@value LifecycleFactory#DEFAULT_LIFECYCLE}.
-     * Note that {@link FacesServlet} first looks for a servlet init parameter of the same name, which overrides this
-     * one for that servlet only.
+     * Returns {@value FacesServlet#LIFECYCLE_ID_ATTR} as {@link String} with default of {@value LifecycleFactory#DEFAULT_LIFECYCLE}. Note that
+     * {@link FacesServlet} first looks for a servlet init parameter of the same name, which overrides this one for that servlet only.
      */
     LIFECYCLE_ID(FacesServlet.LIFECYCLE_ID_ATTR, LifecycleFactory.DEFAULT_LIFECYCLE),
 
     /**
-     * Returns {@value ClientWindow#NUMBER_OF_CLIENT_WINDOWS_PARAM_NAME} as {@link Integer} with default of {@value ClientWindow#NUMBER_OF_CLIENT_WINDOWS_DEFAULT_VALUE}.
+     * Returns {@value ClientWindow#NUMBER_OF_CLIENT_WINDOWS_PARAM_NAME} as {@link Integer} with default of
+     * {@value ClientWindow#NUMBER_OF_CLIENT_WINDOWS_DEFAULT_VALUE}.
      */
     NUMBER_OF_CLIENT_WINDOWS(ClientWindow.NUMBER_OF_CLIENT_WINDOWS_PARAM_NAME, ClientWindow.NUMBER_OF_CLIENT_WINDOWS_DEFAULT_VALUE),
 
     /**
-     * Returns {@value ProjectStage#PROJECT_STAGE_PARAM_NAME} as {@link ProjectStage} with default of {@link ProjectStage#Production}.
-     * Note that this value can be overridden via JNDI entry {@value ProjectStage#PROJECT_STAGE_JNDI_NAME}.
+     * Returns {@value ProjectStage#PROJECT_STAGE_PARAM_NAME} as {@link ProjectStage} with default of {@link ProjectStage#Production}. Note that this value can
+     * be overridden via JNDI entry {@value ProjectStage#PROJECT_STAGE_JNDI_NAME}.
      */
     PROJECT_STAGE(ProjectStage.PROJECT_STAGE_PARAM_NAME, ProjectStage.Production),
 
     /**
-     * Returns {@value ResourceHandler#RESOURCE_EXCLUDES_PARAM_NAME} as {@link String} array with default of {@value ResourceHandler#RESOURCE_EXCLUDES_DEFAULT_VALUE}.
+     * Returns {@value ResourceHandler#RESOURCE_EXCLUDES_PARAM_NAME} as {@link String} array with default of
+     * {@value ResourceHandler#RESOURCE_EXCLUDES_DEFAULT_VALUE}.
      */
     RESOURCE_EXCLUDES(ResourceHandler.RESOURCE_EXCLUDES_PARAM_NAME, ResourceHandler.RESOURCE_EXCLUDES_DEFAULT_VALUE.split(" "), Separator.SPACE),
 
@@ -184,6 +188,7 @@ public enum FacesContextParam implements ContextParam {
 
     /**
      * Returns {@value StateManager#STATE_SAVING_METHOD_PARAM_NAME} as {@link String} with default of {@link StateSavingMethod#SERVER}.
+     *
      * @see StateManager#STATE_SAVING_METHOD_PARAM_NAME
      */
     STATE_SAVING_METHOD(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateSavingMethod.SERVER),
@@ -199,17 +204,20 @@ public enum FacesContextParam implements ContextParam {
     VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS(UIViewRoot.VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS_PARAM_NAME, false),
 
     /**
-     * Returns {@value ResourceHandler#WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME} as {@link String} with default of {@value ResourceHandler#WEBAPP_CONTRACTS_DIRECTORY_DEFAULT_VALUE}.
+     * Returns {@value ResourceHandler#WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME} as {@link String} with default of
+     * {@value ResourceHandler#WEBAPP_CONTRACTS_DIRECTORY_DEFAULT_VALUE}.
      */
     WEBAPP_CONTRACTS_DIRECTORY(ResourceHandler.WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME, ResourceHandler.WEBAPP_CONTRACTS_DIRECTORY_DEFAULT_VALUE),
 
     /**
-     * Returns {@value ResourceHandler#WEBAPP_RESOURCES_DIRECTORY_PARAM_NAME} as {@link String} with default of {@value ResourceHandler#WEBAPP_RESOURCES_DIRECTORY_DEFAULT_VALUE}.
+     * Returns {@value ResourceHandler#WEBAPP_RESOURCES_DIRECTORY_PARAM_NAME} as {@link String} with default of
+     * {@value ResourceHandler#WEBAPP_RESOURCES_DIRECTORY_DEFAULT_VALUE}.
      */
     WEBAPP_RESOURCES_DIRECTORY(ResourceHandler.WEBAPP_RESOURCES_DIRECTORY_PARAM_NAME, ResourceHandler.WEBAPP_RESOURCES_DIRECTORY_DEFAULT_VALUE),
 
     /**
-     * Returns {@value PushContext#WEBSOCKET_ENDPOINT_PORT_PARAM_NAME} as {@link Integer} with default of {@code 0} (default 0 means the code will take the port from the request).
+     * Returns {@value PushContext#WEBSOCKET_ENDPOINT_PORT_PARAM_NAME} as {@link Integer} with default of {@code 0} (default 0 means the code will take the port
+     * from the request).
      */
     WEBSOCKET_ENDPOINT_PORT(PushContext.WEBSOCKET_ENDPOINT_PORT_PARAM_NAME, 0),
 
@@ -241,8 +249,11 @@ public enum FacesContextParam implements ContextParam {
         this(name, defaultValue, defaultValueSupplier, null, null);
     }
 
-    private <T> FacesContextParam(String name, T defaultValue, Function<ProjectStage, T> defaultValueSupplier, Separator separator,
-            Deprecation deprecation) {
+    private <T> FacesContextParam(
+        String name, T defaultValue, Function<ProjectStage, T> defaultValueSupplier, Separator separator,
+        Deprecation deprecation
+    )
+    {
         requireNonNull(name, "name");
         requireNonNull(defaultValue, "defaultValue");
         this.name = name;
@@ -281,6 +292,7 @@ public enum FacesContextParam implements ContextParam {
     /**
      * <p>
      * Returns {@code true} when the value of the context parameter equals to the default value, irrespective of whether it is explicitly set.
+     *
      * @param context The involved faces context.
      * @return {@code true} when the value of the context parameter equals to the default value, irrespective of whether it is explicitly set.
      */
@@ -288,4 +300,5 @@ public enum FacesContextParam implements ContextParam {
         WebConfiguration webConfiguration = WebConfiguration.getInstance(context);
         return Objects.deepEquals(webConfiguration.getValue(this), getDefaultValue(webConfiguration.getProjectStage()));
     }
+
 }

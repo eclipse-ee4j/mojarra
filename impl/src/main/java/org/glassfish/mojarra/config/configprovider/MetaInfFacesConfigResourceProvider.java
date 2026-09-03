@@ -98,11 +98,13 @@ public class MetaInfFacesConfigResourceProvider implements ConfigurationResource
 
                     Set<URI> uris = sortedJarMap.computeIfAbsent(jarName, k -> new HashSet<>());
                     uris.add(uri);
-                } else {
+                }
+                else {
                     unsortedResourceList.add(0, uri);
                 }
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new FacesException(e);
         }
         // Load the sorted resources first:
@@ -146,10 +148,12 @@ public class MetaInfFacesConfigResourceProvider implements ConfigurationResource
                     }
                 }
             }
-        } catch (URISyntaxException ex) {
+        }
+        catch (URISyntaxException ex) {
             throw new IOException(ex);
         }
         return urls;
 
     }
+
 }

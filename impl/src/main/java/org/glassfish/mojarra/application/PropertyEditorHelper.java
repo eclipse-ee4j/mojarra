@@ -43,6 +43,7 @@ public class PropertyEditorHelper {
 
     /**
      * Convert the <code>textValue</code> to an object of type targetClass by delegating to a converter.
+     *
      * @param targetClass the target class
      * @param textValue the text value
      * @return the conversion result
@@ -53,13 +54,15 @@ public class PropertyEditorHelper {
         if (null == converter) {
             // PENDING(edburns): I18N
             FacesException e = new FacesException(
-                    "Cannot create Converter to convert value " + textValue + " to instance of target class " + targetClass.getName() + '.');
+                "Cannot create Converter to convert value " + textValue + " to instance of target class " + targetClass.getName() + '.'
+            );
             throw e;
         }
         FacesContext currentInstance = FacesContext.getCurrentInstance();
         try {
             return converter.getAsObject(currentInstance, component, textValue);
-        } catch (ConverterException ce) {
+        }
+        catch (ConverterException ce) {
             addConversionErrorMessage(currentInstance, component, ce);
             return null;
         }
@@ -67,6 +70,7 @@ public class PropertyEditorHelper {
 
     /**
      * Convert an object of type targetClass to text by delegating to a converter obtained from the Faces application.
+     *
      * @param targetClass the target class
      * @param value the value
      * @return the conversion result
@@ -81,7 +85,8 @@ public class PropertyEditorHelper {
         FacesContext currentInstance = FacesContext.getCurrentInstance();
         try {
             return converter.getAsString(currentInstance, component, value);
-        } catch (ConverterException ce) {
+        }
+        catch (ConverterException ce) {
             addConversionErrorMessage(currentInstance, component, ce);
             return null;
         }
@@ -118,7 +123,8 @@ public class PropertyEditorHelper {
         }
         if (null != converterMessageString) {
             message = new FacesMessage(FacesMessage.Severity.ERROR, converterMessageString, converterMessageString);
-        } else {
+        }
+        else {
             message = ce.getFacesMessage();
             if (message == null) {
                 message = MessageFactory.getMessage(context, UIInput.CONVERSION_MESSAGE_ID);
@@ -129,4 +135,5 @@ public class PropertyEditorHelper {
         }
         context.addMessage(component != null ? component.getClientId(context) : null, message);
     }
+
 }

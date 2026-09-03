@@ -42,8 +42,7 @@ import org.glassfish.mojarra.util.FacesLogger;
 
 /**
  * <p>
- * Base class for shared behavior between Script and Stylesheet renderers. Maybe composition would be better, but
- * inheritance is easier
+ * Base class for shared behavior between Script and Stylesheet renderers. Maybe composition would be better, but inheritance is easier
  * </p>
  */
 @ListenerFor(systemEventClass = PostAddToViewEvent.class)
@@ -59,10 +58,9 @@ public abstract class ScriptStyleBaseRenderer extends Renderer<UIComponent> impl
      */
 
     /*
-     * When this method is called, we know that there is a component with a script renderer somewhere in the view. We need
-     * to make it so that when an element with a name given by the value of the optional "target" component attribute is
-     * encountered, this component can be called upon to render itself. This method will add the component (associated with
-     * this Renderer) to a facet in the view only if a "target" component attribute is set.
+     * When this method is called, we know that there is a component with a script renderer somewhere in the view. We need to make it so that when an element
+     * with a name given by the value of the optional "target" component attribute is encountered, this component can be called upon to render itself. This
+     * method will add the component (associated with this Renderer) to a facet in the view only if a "target" component attribute is set.
      *
      */
     @Override
@@ -106,7 +104,8 @@ public abstract class ScriptStyleBaseRenderer extends Renderer<UIComponent> impl
             if (-1 != ccID.indexOf(sep)) {
                 // use the UIViewRoot's findComponent.
                 cc = context.getViewRoot().findComponent(':' + ccID);
-            } else {
+            }
+            else {
                 // ... otherwise use our special findComponent.
                 cc = findComponentIgnoringNamingContainers(context.getViewRoot(), ccID, true);
             }
@@ -138,15 +137,18 @@ public abstract class ScriptStyleBaseRenderer extends Renderer<UIComponent> impl
             if (0 == childCount) {
                 // this is user error, so put up a message if desired
                 if (context.isProjectStage(ProjectStage.Development)) {
-                    FacesMessage message = new FacesMessage(FacesMessage.Severity.WARN,
-                            "outputScript or outputStylesheet with no library, no name, and no body content", "Is body content intended?");
+                    FacesMessage message = new FacesMessage(
+                        FacesMessage.Severity.WARN,
+                        "outputScript or outputStylesheet with no library, no name, and no body content", "Is body content intended?"
+                    );
                     context.addMessage(component.getClientId(context), message);
                 }
                 // We have no children, but don't bother with the method
                 // invocation anyway.
                 renderChildren = false;
             }
-        } else if (0 < childCount) {
+        }
+        else if (0 < childCount) {
             // If we have a "name" and also have child content, ignore
             // the child content and log a message.
             logger.info("outputScript or outputStylesheet with name attribute and nested content. Ignoring nested content.");
@@ -198,7 +200,8 @@ public abstract class ScriptStyleBaseRenderer extends Renderer<UIComponent> impl
                 String msg = "Unable to find resource " + (library == null ? "" : library + ", ") + name;
                 context.addMessage(component.getClientId(context), new FacesMessage(FacesMessage.Severity.ERROR, msg, msg));
             }
-        } else {
+        }
+        else {
             resourceUrl = context.getExternalContext().encodeResourceURL(resource.getRequestPath());
         }
 
@@ -233,7 +236,8 @@ public abstract class ScriptStyleBaseRenderer extends Renderer<UIComponent> impl
             result = findComponentIgnoringNamingContainers(kid, id, true);
             if (result != null) {
                 break;
-            } else if (id.equals(kid.getId())) {
+            }
+            else if (id.equals(kid.getId())) {
                 result = kid;
                 break;
             }

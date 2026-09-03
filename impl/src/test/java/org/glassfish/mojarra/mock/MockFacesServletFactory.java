@@ -25,6 +25,7 @@ import jakarta.servlet.ServletException;
 import org.glassfish.mojarra.webapp.FacesServletImpl;
 
 public class MockFacesServletFactory extends FacesServletFactory {
+
     public MockFacesServletFactory() {
         System.setProperty(FactoryFinder.FACES_SERVLET_FACTORY, this.getClass().getName());
     }
@@ -34,7 +35,8 @@ public class MockFacesServletFactory extends FacesServletFactory {
         Servlet facesServlet = new FacesServletImpl();
         try {
             facesServlet.init(config);
-        } catch (ServletException e) {
+        }
+        catch (ServletException e) {
             throw new IllegalStateException(e);
         }
         return facesServlet;
@@ -44,4 +46,5 @@ public class MockFacesServletFactory extends FacesServletFactory {
     public FacesServletFactory getWrapped() {
         return null;
     }
+
 }

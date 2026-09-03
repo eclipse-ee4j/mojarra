@@ -27,6 +27,7 @@ import jakarta.faces.context.ResponseWriter;
 import org.glassfish.mojarra.facelets.el.ELText;
 
 final class AttributeInstruction implements Instruction {
+
     private final String alias;
 
     private final String attr;
@@ -48,9 +49,11 @@ final class AttributeInstruction implements Instruction {
             if (val != null && val.length() != 0) {
                 out.writeAttribute(attr, val, null);
             }
-        } catch (ELException e) {
+        }
+        catch (ELException e) {
             throw new ELException(alias + ": " + e.getMessage(), e.getCause());
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new ELException(alias + ": " + e.getMessage(), e);
         }
     }
@@ -69,4 +72,5 @@ final class AttributeInstruction implements Instruction {
     public boolean isLiteral() {
         return txt.isLiteral();
     }
+
 }

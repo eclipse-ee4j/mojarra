@@ -74,15 +74,20 @@ public final class JstlFunction {
             char c = value.charAt(i);
             if (c == '<') {
                 b.append("&lt;");
-            } else if (c == '>') {
+            }
+            else if (c == '>') {
                 b.append("&gt;");
-            } else if (c == '\'') {
+            }
+            else if (c == '\'') {
                 b.append("&#039;");
-            } else if (c == '"') {
+            }
+            else if (c == '"') {
                 b.append("&#034;");
-            } else if (c == '&') {
+            }
+            else if (c == '&') {
                 b.append("&amp;");
-            } else {
+            }
+            else {
                 b.append(c);
             }
         }

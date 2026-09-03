@@ -28,7 +28,8 @@ public class RowFactory {
     public List<Row> generate(int count) {
         List<Row> rows = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
-            rows.add(new Row(
+            rows.add(
+                new Row(
                     i,
                     "Item " + i,
                     // Non-ASCII + HTML metacharacters exercise the slow char-by-char escaping path in
@@ -37,8 +38,11 @@ public class RowFactory {
                     i * 3 + 1,
                     new BigDecimal("9.99").add(BigDecimal.valueOf(i)),
                     LocalDate.of(2026, 1, 1).plusDays(i % 365),
-                    i % 2 == 0));
+                    i % 2 == 0
+                )
+            );
         }
         return rows;
     }
+
 }

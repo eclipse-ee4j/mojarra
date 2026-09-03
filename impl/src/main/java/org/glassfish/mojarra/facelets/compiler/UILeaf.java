@@ -47,11 +47,11 @@ public class UILeaf extends UIComponentBase implements UntargetableComponent {
         public UIComponent put(String name, UIComponent value) {
             return null;
         }
+
     };
 
     private UIComponent parent;
     private boolean returnLocalTransient = true;
-
 
     @Override
     public ValueExpression getValueExpression(String name) {

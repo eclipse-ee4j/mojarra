@@ -26,9 +26,8 @@ import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.context.FacesContext;
 
 /**
- * A naming container which renders its children once per row, handing them a client id carrying the row it is
- * positioned on, and which is left positioned on the last row it rendered. Its children therefore hold another client
- * id while the response is rendered than they do on any request which does not iterate it.
+ * A naming container which renders its children once per row, handing them a client id carrying the row it is positioned on, and which is left positioned on
+ * the last row it rendered. Its children therefore hold another client id while the response is rendered than they do on any request which does not iterate it.
  */
 @FacesComponent(createTag = true, namespace = "eclipse.mojarra.test", tagName = "iterating")
 public class IteratingContainer extends UIComponentBase implements NamingContainer {
@@ -67,8 +66,8 @@ public class IteratingContainer extends UIComponentBase implements NamingContain
     }
 
     /**
-     * Position on the given row, dropping the client id each child cached while standing on the previous one, which
-     * is what {@link UIData#setRowIndex(int)} does with {@code setId} as well.
+     * Position on the given row, dropping the client id each child cached while standing on the previous one, which is what {@link UIData#setRowIndex(int)}
+     * does with {@code setId} as well.
      *
      * @param row the row to position on.
      */
@@ -79,4 +78,5 @@ public class IteratingContainer extends UIComponentBase implements NamingContain
             child.setId(child.getId());
         }
     }
+
 }

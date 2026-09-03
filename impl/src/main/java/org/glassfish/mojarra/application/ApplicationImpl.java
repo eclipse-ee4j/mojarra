@@ -62,9 +62,8 @@ import org.glassfish.mojarra.el.FacesCompositeELResolver;
 import org.glassfish.mojarra.util.FacesLogger;
 
 /**
- * <strong>Application</strong> represents a per-web-application singleton object where applications based on
- * Faces (or implementations wishing to provide extended functionality) can register application-wide singletons that
- * provide functionality required by Faces.
+ * <strong>Application</strong> represents a per-web-application singleton object where applications based on Faces (or implementations wishing to provide
+ * extended functionality) can register application-wide singletons that provide functionality required by Faces.
  */
 public class ApplicationImpl extends Application {
 

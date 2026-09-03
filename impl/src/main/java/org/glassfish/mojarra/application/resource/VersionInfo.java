@@ -32,8 +32,7 @@ public class VersionInfo implements Comparable<VersionInfo> {
      * Constructs a new VersionInfo instance.
      *
      * @param version the version
-     * @param extension the extension (only pertains to versioned resources, not libraries, and thus may be
-     * <code>null</code>)
+     * @param extension the extension (only pertains to versioned resources, not libraries, and thus may be <code>null</code>)
      */
     public VersionInfo(String version, String extension) {
         this.version = version;
@@ -87,4 +86,5 @@ public class VersionInfo implements Comparable<VersionInfo> {
         assert versionInfo != null;
         return version.compareTo(versionInfo.version);
     }
+
 }

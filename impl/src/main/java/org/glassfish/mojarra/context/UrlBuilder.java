@@ -34,18 +34,17 @@ import org.glassfish.mojarra.util.Util;
 
 /**
  * <p>
- * The <strong>UrlBuilder</strong> provides a convenient way to assemble a URL. It follows the standard Builder Pattern.
- * A seed URL is provided, which is broken into parts to allow for dynamic assembly. When the URL is to be build, a call
- * to createUrl() assembles the parts into a relative URL. This class should be extended if the developer wishes to have
- * it deal with absolute URLs.
+ * The <strong>UrlBuilder</strong> provides a convenient way to assemble a URL. It follows the standard Builder Pattern. A seed URL is provided, which is broken
+ * into parts to allow for dynamic assembly. When the URL is to be build, a call to createUrl() assembles the parts into a relative URL. This class should be
+ * extended if the developer wishes to have it deal with absolute URLs.
  * </p>
  *
  * <p>
- * Note that this class is optimized to parse the query string lazily so as to avoid unnecessary work if the seed URL
- * differs little from the URL to be built.
+ * Note that this class is optimized to parse the query string lazily so as to avoid unnecessary work if the seed URL differs little from the URL to be built.
  * </p>
  */
 class UrlBuilder {
+
     public static final char QUERY_STRING_SEPARATOR = '?';
     public static final char PARAMETER_PAIR_SEPARATOR = '&';
     public static final char PARAMETER_NAME_VALUE_SEPARATOR = '=';
@@ -111,8 +110,8 @@ class UrlBuilder {
     }
 
     /**
-     * Setting a query string consecutively will replace all but the last one. Otherwise, the name/value pairs in the query
-     * string contribute to the parameters already established.
+     * Setting a query string consecutively will replace all but the last one. Otherwise, the name/value pairs in the query string contribute to the parameters
+     * already established.
      */
     public UrlBuilder setQueryString(String queryString) {
         this.queryString = queryString;
@@ -121,8 +120,8 @@ class UrlBuilder {
     }
 
     /**
-     * The fragment is appended at the end of the url after a hash mark. It represents the fragment of the document that
-     * should be brought into focus when the document is rendered. Setting the fragment replaces the previous value.
+     * The fragment is appended at the end of the url after a hash mark. It represents the fragment of the document that should be brought into focus when the
+     * document is rendered. Setting the fragment replaces the previous value.
      */
     public UrlBuilder setFragment(String fragment) {
         this.fragment = fragment;
@@ -158,7 +157,6 @@ class UrlBuilder {
             return;
         }
 
-
         String[] pairs = Util.split(queryString, PARAMETER_PAIR_SEPARATOR);
         for (String pair : pairs) {
             String[] nameAndValue = Util.split(pair, PARAMETER_NAME_VALUE_SEPARATOR);
@@ -184,7 +182,8 @@ class UrlBuilder {
             char nextSeparatorChar;
             if (queryString == null) {
                 nextSeparatorChar = QUERY_STRING_SEPARATOR;
-            } else {
+            }
+            else {
                 nextSeparatorChar = PARAMETER_PAIR_SEPARATOR;
                 url.append(QUERY_STRING_SEPARATOR).append(queryString);
             }
@@ -199,7 +198,8 @@ class UrlBuilder {
                 }
             }
             hasQueryString = true;
-        } else if (queryString != null) {
+        }
+        else if (queryString != null) {
             url.append(QUERY_STRING_SEPARATOR).append(queryString);
             hasQueryString = true;
         }
@@ -215,7 +215,8 @@ class UrlBuilder {
                 String clientWindow = cw.getId();
                 if (!hasQueryString) {
                     url.append(QUERY_STRING_SEPARATOR);
-                } else {
+                }
+                else {
                     url.append(PARAMETER_PAIR_SEPARATOR);
                 }
                 url.append(ResponseStateManager.CLIENT_WINDOW_URL_PARAM).append(PARAMETER_NAME_VALUE_SEPARATOR).append(clientWindow);
@@ -251,7 +252,8 @@ class UrlBuilder {
             queryString = url.substring(queryStringIndex + 1);
             cleanQueryString();
             path = url.substring(0, queryStringIndex);
-        } else {
+        }
+        else {
             path = url;
         }
     }
@@ -277,7 +279,8 @@ class UrlBuilder {
 
         if (replace) {
             parameters.put(name, values);
-        } else {
+        }
+        else {
             List<String> oldValues = parameters.get(name);
             if (oldValues != null) {
                 oldValues.addAll(values);
@@ -308,4 +311,5 @@ class UrlBuilder {
             queryString = q.isEmpty() ? null : q;
         }
     }
+
 }

@@ -56,6 +56,7 @@ public class CollectionsUtils {
         public Map<T, V> fix() {
             return unmodifiableMap(this);
         }
+
     }
 
     /**
@@ -90,11 +91,25 @@ public class CollectionsUtils {
 
         private final Iterator<T> iterator;
 
-        public UnmodifiableIterator(Iterator<T> iterator) {this.iterator = iterator;}
+        public UnmodifiableIterator(Iterator<T> iterator) {
+            this.iterator = iterator;
+        }
 
-        @Override public boolean hasNext() {return iterator.hasNext();}
-        @Override public T next() {return iterator.next();}
-        @Override public void remove() {throw new UnsupportedOperationException();}
+        @Override
+        public boolean hasNext() {
+            return iterator.hasNext();
+        }
+
+        @Override
+        public T next() {
+            return iterator.next();
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+
     }
 
 }

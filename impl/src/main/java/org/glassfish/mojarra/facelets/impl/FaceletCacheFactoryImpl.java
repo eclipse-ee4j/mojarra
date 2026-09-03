@@ -37,4 +37,5 @@ public class FaceletCacheFactoryImpl extends FaceletCacheFactory {
         FaceletCache<DefaultFacelet> result = new DefaultFaceletCache(refreshPeriodInSeconds);
         return result;
     }
+
 }

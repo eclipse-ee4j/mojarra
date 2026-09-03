@@ -45,24 +45,23 @@ public abstract class StateHelper {
 
     /**
      * <p>
-     * Factory for serialization streams. These are pluggable via the
-     * MojarraContextParam#SERIALIZATION_PROVIDER.
+     * Factory for serialization streams. These are pluggable via the MojarraContextParam#SERIALIZATION_PROVIDER.
      * </p>
      */
     protected SerializationProvider serialProvider;
 
     /**
      * <p>
-     * Flag indicating whether or not view state should be compressed to reduce the memory/bandwidth footprint. This option
-     * is common to both types of state saving.
+     * Flag indicating whether or not view state should be compressed to reduce the memory/bandwidth footprint. This option is common to both types of state
+     * saving.
      * </p>
      */
     protected boolean compressViewState;
 
     /**
      * <p>
-     * The value written as the <code>autocomplete</code> attribute of the hidden fields this helper renders, which keeps
-     * password managers and browser autofill away from them.
+     * The value written as the <code>autocomplete</code> attribute of the hidden fields this helper renders, which keeps password managers and browser autofill
+     * away from them.
      * </p>
      */
     protected final String viewStateAutocomplete;
@@ -85,14 +84,12 @@ public abstract class StateHelper {
 
     /**
      * <p>
-     * Returns the value to write as the <code>autocomplete</code> attribute of the hidden fields which carry the view
-     * state.
+     * Returns the value to write as the <code>autocomplete</code> attribute of the hidden fields which carry the view state.
      * </p>
      *
      * <p>
-     * The deprecated <code>autoCompleteOffOnViewState</code> is honored when the replacement was not set, where
-     * <code>true</code> maps to <code>off</code> and <code>false</code> to the default, which is what those two meant
-     * before the replacement existed.
+     * The deprecated <code>autoCompleteOffOnViewState</code> is honored when the replacement was not set, where <code>true</code> maps to <code>off</code> and
+     * <code>false</code> to the default, which is what those two meant before the replacement existed.
      * </p>
      *
      * @return the attribute value.
@@ -140,8 +137,8 @@ public abstract class StateHelper {
 
     /**
      * <p>
-     * Functionally similar to ResponseStateManager#writeState(FacesContext, Object) with an option to write the state
-     * directly to the provided <code>StringBuilder</code> without sending any markup to the client.
+     * Functionally similar to ResponseStateManager#writeState(FacesContext, Object) with an option to write the state directly to the provided
+     * <code>StringBuilder</code> without sending any markup to the client.
      * </p>
      *
      * @see ResponseStateManager#writeState(jakarta.faces.context.FacesContext, java.lang.Object)
@@ -180,8 +177,8 @@ public abstract class StateHelper {
 
     /**
      * <p>
-     * If a custom <code>RenderKit</code> is used, write out the ID of the <code>RenderKit</code> out as a hidden field.
-     * This will be used when restoring the view state.
+     * If a custom <code>RenderKit</code> is used, write out the ID of the <code>RenderKit</code> out as a hidden field. This will be used when restoring the
+     * view state.
      * </p>
      *
      * @param context the <code>FacesContext</code> for the current request
@@ -224,4 +221,5 @@ public abstract class StateHelper {
             writer.endElement("input");
         }
     }
+
 }

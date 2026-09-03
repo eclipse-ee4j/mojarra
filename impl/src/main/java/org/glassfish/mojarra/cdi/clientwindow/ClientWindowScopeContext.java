@@ -34,8 +34,7 @@ import jakarta.faces.lifecycle.ClientWindowScoped;
  * The CDI context for CDI ClientWindowScoped beans.
  */
 @Typed()
-public class ClientWindowScopeContext implements Context, Serializable
-{
+public class ClientWindowScopeContext implements Context, Serializable {
 
     /**
      * Stores the logger.

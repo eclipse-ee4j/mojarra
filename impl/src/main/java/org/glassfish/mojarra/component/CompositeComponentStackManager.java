@@ -26,23 +26,19 @@ import jakarta.faces.view.Location;
 
 /**
  * <p>
- * <code>CompositeComponentStackManager</code> is responsible for managing the two different composite component stacks
- * currently used by Mojarra.
+ * <code>CompositeComponentStackManager</code> is responsible for managing the two different composite component stacks currently used by Mojarra.
  * </p>
  *
  * <p>
- * The stacks are identified by the {@link StackType} enum which has two elements,
- * <code>TreeCreation</code> and <code>Evaluation</code>.
+ * The stacks are identified by the {@link StackType} enum which has two elements, <code>TreeCreation</code> and <code>Evaluation</code>.
  * </p>
  *
  * <p>
- * The <code>TreeCreation</code> stack represents the composite components that have been pushed by the TagHandlers
- * responsible for building the tree.
+ * The <code>TreeCreation</code> stack represents the composite components that have been pushed by the TagHandlers responsible for building the tree.
  * </p>
  *
  * <p>
- * The <code>Evaluation</code> stack is used by the EL in order to properly resolve nested composite component
- * expressions.
+ * The <code>Evaluation</code> stack is used by the EL in order to properly resolve nested composite component expressions.
  * </p>
  */
 public class CompositeComponentStackManager {
@@ -50,7 +46,8 @@ public class CompositeComponentStackManager {
     private static final String MANAGER_KEY = CompositeComponentStackManager.class.getName();
 
     public enum StackType {
-        TreeCreation, Evaluation
+        TreeCreation,
+        Evaluation
     }
 
     private final StackHandler treeCreation = new TreeCreationStackHandler();
@@ -180,7 +177,8 @@ public class CompositeComponentStackManager {
                     return cc;
                 }
             }
-        } else {
+        }
+        else {
             // runtime eval
             String path = location.getPath();
             UIComponent cc = UIComponent.getCurrentCompositeComponent(ctx);
@@ -201,8 +199,8 @@ public class CompositeComponentStackManager {
 
     /**
      * <p>
-     * Return <code>true</code> if <code>path</code> ends with the composite component's resource name, preceded by a
-     * <code>/</code>, and contains its library name.
+     * Return <code>true</code> if <code>path</code> ends with the composite component's resource name, preceded by a <code>/</code>, and contains its library
+     * name.
      * </p>
      */
     private static boolean isResourceOf(String path, UIComponent compositeComponent) {
@@ -228,12 +226,12 @@ public class CompositeComponentStackManager {
 
         StackHandler handler = null;
         switch (type) {
-        case TreeCreation:
-            handler = treeCreation;
-            break;
-        case Evaluation:
-            handler = runtime;
-            break;
+            case TreeCreation :
+                handler = treeCreation;
+                break;
+            case Evaluation :
+                handler = runtime;
+                break;
         }
         return handler;
 
@@ -263,9 +261,8 @@ public class CompositeComponentStackManager {
 
     /**
      * <p>
-     * Both stacks are confined to a single request and are never shared across threads. The backing list must support
-     * indexed access: {@link #findCompositeComponentUsingLocation} and
-     * {@link TreeCreationStackHandler#getParentCompositeComponent} address the stack by index.
+     * Both stacks are confined to a single request and are never shared across threads. The backing list must support indexed access:
+     * {@link #findCompositeComponentUsingLocation} and {@link TreeCreationStackHandler#getParentCompositeComponent} address the stack by index.
      * </p>
      */
     private abstract class BaseStackHandler implements StackHandler {
@@ -348,7 +345,8 @@ public class CompositeComponentStackManager {
                 // current composite component within the stack to locate the
                 // parent.
                 ccp = compositeComponent;
-            } else {
+            }
+            else {
                 // no tree creation stack available, so use the runtime stack.
                 // If the current stack isn't empty, then use the component
                 // on the stack as the current composite component.
@@ -357,10 +355,12 @@ public class CompositeComponentStackManager {
                 if (compositeComponent == null) {
                     if (stack != null && !stack.isEmpty()) {
                         ccp = getCompositeParent(last(stack));
-                    } else {
+                    }
+                    else {
                         ccp = getCompositeParent(UIComponent.getCurrentCompositeComponent(FacesContext.getCurrentInstance()));
                     }
-                } else {
+                }
+                else {
                     ccp = compositeComponent;
                 }
             }
@@ -436,7 +436,8 @@ public class CompositeComponentStackManager {
             List<UIComponent> s = getStack(false);
             if (s == null) {
                 return null;
-            } else {
+            }
+            else {
                 int idx = s.indexOf(forComponent);
                 if (idx == 0) { // no parent
                     return null;

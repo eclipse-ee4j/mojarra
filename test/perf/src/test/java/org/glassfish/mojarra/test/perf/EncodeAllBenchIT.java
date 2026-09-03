@@ -32,13 +32,12 @@ import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import ee.jakarta.tck.faces.util.selenium.BaseITNG;
 
 /**
- * Drives {@link EncodeAllBenchServlet} so a JFR recording captures only the encode walk (no
- * buildView, no state save/restore). Run on Mojarra and on MyFaces (via the {@code -*-myfaces}
- * profiles) and diff the recordings to see where Mojarra's render does more work.
+ * Drives {@link EncodeAllBenchServlet} so a JFR recording captures only the encode walk (no buildView, no state save/restore). Run on Mojarra and on MyFaces
+ * (via the {@code -*-myfaces} profiles) and diff the recordings to see where Mojarra's render does more work.
  *
- * <p>Gated behind {@code -Drender=true}. Iteration counts reuse {@code -Dperf.warmup}/{@code
- * -Dperf.runs} (defaults 50/2000); {@code -Dperf.scenarios=<one>} selects the view (default
- * composite-build).
+ * <p>
+ * Gated behind {@code -Drender=true}. Iteration counts reuse {@code -Dperf.warmup}/{@code
+ * -Dperf.runs} (defaults 50/2000); {@code -Dperf.scenarios=<one>} selects the view (default composite-build).
  */
 @EnabledIfSystemProperty(named = "render", matches = "true")
 class EncodeAllBenchIT extends BaseITNG {
@@ -54,9 +53,9 @@ class EncodeAllBenchIT extends BaseITNG {
         }
 
         HttpClient client = HttpClient.newBuilder()
-                .version(HttpClient.Version.HTTP_1_1)
-                .connectTimeout(ofSeconds(10))
-                .build();
+            .version(HttpClient.Version.HTTP_1_1)
+            .connectTimeout(ofSeconds(10))
+            .build();
 
         String url = webUrl + "encodeall-bench?scenario=" + scenario + "&warmup=" + WARMUP + "&runs=" + RUNS;
         HttpRequest request = HttpRequest.newBuilder(URI.create(url)).timeout(ofSeconds(600)).GET().build();
@@ -66,4 +65,5 @@ class EncodeAllBenchIT extends BaseITNG {
         System.out.println();
         System.out.println(response.body());
     }
+
 }

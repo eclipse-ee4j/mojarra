@@ -43,11 +43,12 @@ public class ImportConstantsRenderer extends Renderer<UIImportConstants> impleme
     // Actions --------------------------------------------------------------------------------------------------------
 
     /**
-     * After adding component to view, run {@link ViewMetadataImpl#importConstants(jakarta.faces.context.FacesContext, UIImportConstants)} immediately.
-     * NOTE: when declared inside f:metadata, the component isn't added to the component tree, so this renderer wouldn't run in first place, so no precheck needed.
+     * After adding component to view, run {@link ViewMetadataImpl#importConstants(jakarta.faces.context.FacesContext, UIImportConstants)} immediately. NOTE:
+     * when declared inside f:metadata, the component isn't added to the component tree, so this renderer wouldn't run in first place, so no precheck needed.
      */
     @Override
     public void processEvent(ComponentSystemEvent event) throws AbortProcessingException {
         ViewMetadataImpl.importConstants(event.getFacesContext(), (UIImportConstants) event.getComponent());
     }
+
 }

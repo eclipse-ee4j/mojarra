@@ -31,8 +31,7 @@ import org.glassfish.mojarra.spi.ConfigurationResourceProvider;
 
 /**
  * <p>
- * This <code>Callable</code> will be used by <code>getXMLDocuments</code>
- * It represents one or more URIs to configuration resources that require processing.
+ * This <code>Callable</code> will be used by <code>getXMLDocuments</code> It represents one or more URIs to configuration resources that require processing.
  * </p>
  */
 public class FindConfigResourceURIsTask implements Callable<Collection<URI>> {
@@ -45,8 +44,7 @@ public class FindConfigResourceURIsTask implements Callable<Collection<URI>> {
     /**
      * Constructs a new <code>URITask</code> instance.
      *
-     * @param provider the <code>ConfigurationResourceProvider</code> from which zero or more <code>URL</code>s will be
-     * returned
+     * @param provider the <code>ConfigurationResourceProvider</code> from which zero or more <code>URL</code>s will be returned
      * @param servletContext the <code>ServletContext</code> of the current application
      */
     public FindConfigResourceURIsTask(ConfigurationResourceProvider provider, ServletContext servletContext) {
@@ -78,7 +76,8 @@ public class FindConfigResourceURIsTask implements Callable<Collection<URI>> {
                     cur = untypedCollectionIterator.next();
                     result.add(new URI(((URL) cur).toExternalForm()));
                 }
-            } else {
+            }
+            else {
                 result = untypedCollection;
             }
         }

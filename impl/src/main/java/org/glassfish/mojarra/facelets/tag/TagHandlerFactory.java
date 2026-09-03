@@ -29,6 +29,7 @@ import jakarta.faces.view.facelets.TagHandler;
  * @version $Id$
  */
 interface TagHandlerFactory {
+
     /**
      * A new TagHandler instantiated with the passed TagConfig
      *
@@ -38,4 +39,5 @@ interface TagHandlerFactory {
      * @throws ELException
      */
     TagHandler createHandler(TagConfig cfg) throws FacesException, ELException;
+
 }

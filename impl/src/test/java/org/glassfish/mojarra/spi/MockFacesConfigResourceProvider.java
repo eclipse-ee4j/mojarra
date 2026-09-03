@@ -15,4 +15,5 @@ class MockFacesConfigResourceProvider implements FacesConfigResourceProvider {
     public Collection<URI> getResources(ServletContext context) {
         return new ArrayList<>();
     }
+
 }

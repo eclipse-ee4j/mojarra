@@ -28,8 +28,7 @@ import org.glassfish.mojarra.mock.MockServletContext;
 import org.junit.jupiter.api.Test;
 
 /**
- * Covers how <code>org.glassfish.mojarra.viewStateAutocomplete</code> resolves, including the deprecated boolean it
- * replaces.
+ * Covers how <code>org.glassfish.mojarra.viewStateAutocomplete</code> resolves, including the deprecated boolean it replaces.
  */
 class ViewStateAutocompleteTest {
 
@@ -57,9 +56,12 @@ class ViewStateAutocompleteTest {
      */
     @Test
     void replacementWinsOverDeprecatedBoolean() {
-        assertEquals("on", resolve(
+        assertEquals(
+            "on", resolve(
                 MojarraContextParam.AUTO_COMPLETE_OFF_ON_VIEW_STATE.getName(), "true",
-                MojarraContextParam.VIEW_STATE_AUTOCOMPLETE.getName(), "on"));
+                MojarraContextParam.VIEW_STATE_AUTOCOMPLETE.getName(), "on"
+            )
+        );
     }
 
     private static String resolve(String... initParameterNamesAndValues) {
@@ -69,9 +71,12 @@ class ViewStateAutocompleteTest {
             servletContext.addInitParameter(initParameterNamesAndValues[i], initParameterNamesAndValues[i + 1]);
         }
 
-        ExternalContextImpl externalContext = new ExternalContextImpl(servletContext, new MockHttpServletRequest(new MockHttpSession()),
-                new MockHttpServletResponse());
+        ExternalContextImpl externalContext = new ExternalContextImpl(
+            servletContext, new MockHttpServletRequest(new MockHttpSession()),
+            new MockHttpServletResponse()
+        );
 
         return StateHelper.getViewStateAutocomplete(new MockFacesContext(externalContext));
     }
+
 }

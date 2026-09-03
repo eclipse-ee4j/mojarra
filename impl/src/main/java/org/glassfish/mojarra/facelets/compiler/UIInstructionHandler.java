@@ -87,11 +87,13 @@ final class UIInstructionHandler extends AbstractUIHandler {
                 suppressEvents = ComponentSupport.suppressViewModificationEvents(ctx.getFacesContext());
                 // mark all children for cleaning
                 ComponentSupport.markForDeletion(c);
-            } else {
+            }
+            else {
                 Instruction[] applied;
                 if (literal) {
                     applied = instructions;
-                } else {
+                }
+                else {
                     int size = instructions.length;
                     applied = new Instruction[size];
                     // Create a new list with all of the necessary applied
@@ -110,7 +112,8 @@ final class UIInstructionHandler extends AbstractUIHandler {
                 UIComponent ancestorNamingContainer = parent.getNamingContainer();
                 if (null != ancestorNamingContainer && ancestorNamingContainer instanceof UniqueIdVendor) {
                     uid = ((UniqueIdVendor) ancestorNamingContainer).createUniqueId(ctx.getFacesContext(), mid);
-                } else {
+                }
+                else {
                     uid = ComponentSupport.getViewRoot(ctx, parent).createUniqueId(ctx.getFacesContext(), mid);
                 }
 
@@ -155,7 +158,8 @@ final class UIInstructionHandler extends AbstractUIHandler {
         Writer writer = new FastWriter(length);
         try {
             txt.apply(ctx.getExpressionFactory(), ctx).write(writer, ctx);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new ELException(alias + ": " + e.getMessage(), e.getCause());
         }
         return writer.toString();

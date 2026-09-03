@@ -27,8 +27,7 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_3">
- * The ViewMapProducer is the CDI producer that allows injection of the view map using @Inject and allows EL resolving
- * of #{viewScope}
+ * The ViewMapProducer is the CDI producer that allows injection of the view map using @Inject and allows EL resolving of #{viewScope}
  * </p>
  *
  * @since 2.3

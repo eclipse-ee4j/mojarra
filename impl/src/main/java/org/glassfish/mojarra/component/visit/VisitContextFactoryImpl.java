@@ -45,7 +45,8 @@ public class VisitContextFactoryImpl extends VisitContextFactory {
         // can add ids to visit after they create the VisitContext.
         if (null == ids) {
             result = new FullVisitContext(context, hints);
-        } else {
+        }
+        else {
             result = new PartialVisitContext(context, ids, hints);
         }
 

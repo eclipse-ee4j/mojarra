@@ -107,10 +107,12 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
                     handled = event;
                     if (unwrapped != null) {
                         throwIt(context.getContext(), new FacesException(unwrapped.getMessage(), unwrapped));
-                    } else {
+                    }
+                    else {
                         if (t instanceof FacesException) {
                             throwIt(context.getContext(), (FacesException) t);
-                        } else {
+                        }
+                        else {
                             throwIt(context.getContext(), new FacesException(t.getMessage(), t));
                         }
                     }
@@ -118,11 +120,13 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
                         log(context);
                     }
 
-                } else if (loggable) {
+                }
+                else if (loggable) {
                     log(context);
                 }
 
-            } finally {
+            }
+            finally {
                 if (handledExceptions == null) {
                     handledExceptions = new LinkedList<>();
                 }
@@ -173,10 +177,12 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
                 Throwable tmp = getRootCause(root);
                 if (tmp == null) {
                     return root;
-                } else {
+                }
+                else {
                     return tmp;
                 }
-            } else {
+            }
+            else {
                 return t;
             }
         }
@@ -216,9 +222,12 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
                 types.add((Class<? extends Throwable>) Class.forName(typeParam));
             }
             catch (ClassNotFoundException e) {
-                throw new IllegalArgumentException(String.format(
-                        "Context parameter '%s' references a class which cannot be found in runtime classpath: '%s'", 
-                        FacesContextParam.EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING.getName(), typeParam), e);
+                throw new IllegalArgumentException(
+                    String.format(
+                        "Context parameter '%s' references a class which cannot be found in runtime classpath: '%s'",
+                        FacesContextParam.EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING.getName(), typeParam
+                    ), e
+                );
             }
         }
 
@@ -232,8 +241,9 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
         Throwable wrapped = fe.getCause();
         try {
             extContext.responseReset();
-        } catch (Exception e) {
-            boolean isConnectionAbort = wrapped instanceof IOException && Util.isConnectionAbort((IOException)wrapped);
+        }
+        catch (Exception e) {
+            boolean isConnectionAbort = wrapped instanceof IOException && Util.isConnectionAbort((IOException) wrapped);
             if (!isConnectionAbort) {
                 if (LOGGER.isLoggable(Level.WARNING)) {
                     LOGGER.log(Level.WARNING, "Exception when handling error trying to reset the response.", wrapped);
@@ -242,7 +252,8 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
         }
         if (wrapped instanceof FacesFileNotFoundException) {
             extContext.setResponseStatus(404);
-        } else {
+        }
+        else {
             extContext.setResponseStatus(500);
         }
 
@@ -252,7 +263,8 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
             // types are going to render this properly. This should be addressed
             // in 2.1
             RenderKitUtils.renderHtmlErrorPage(ctx, fe);
-        } else {
+        }
+        else {
             if (isDevelopment) {
                 // store the view root where the exception occurred into the
                 // request scope so that the error page can display that component
@@ -296,11 +308,14 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
         Level level = LOGGER.isLoggable(INCIDENT_ERROR) && LOGGER.isLoggable(Level.SEVERE) ? INCIDENT_ERROR : Level.SEVERE;
 
         if (LOGGER.isLoggable(level)) {
-            LOGGER.log(level, key, new Object[] { t.getClass().getName(), phaseId.toString(), c != null ? c.getClientId(exceptionContext.getContext()) : "",
-                    t.getMessage() });
+            LOGGER.log(
+                level, key, new Object[] { t.getClass().getName(), phaseId.toString(), c != null ? c.getClientId(exceptionContext.getContext()) : "",
+                    t.getMessage() }
+            );
             if (t.getMessage() != null) {
                 LOGGER.log(level, t.getMessage(), t);
-            } else {
+            }
+            else {
                 LOGGER.log(level, "No associated message", t);
             }
         }
@@ -310,9 +325,11 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
     private String getLoggingKey(boolean beforePhase, boolean afterPhase) {
         if (beforePhase) {
             return LOG_BEFORE_KEY;
-        } else if (afterPhase) {
+        }
+        else if (afterPhase) {
             return LOG_AFTER_KEY;
-        } else {
+        }
+        else {
             return LOG_KEY;
         }
     }

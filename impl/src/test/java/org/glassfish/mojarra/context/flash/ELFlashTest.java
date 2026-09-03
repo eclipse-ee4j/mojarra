@@ -5,12 +5,12 @@ import static jakarta.faces.event.PhaseId.RESTORE_VIEW;
 import static java.util.Collections.emptyEnumeration;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.emptySet;
-import static org.glassfish.mojarra.context.flash.ELFlash.FLASH_COOKIE_NAME;
 import static org.glassfish.mojarra.context.flash.ELFlash.CONSTANTS.DidWriteCookieAttributeName;
 import static org.glassfish.mojarra.context.flash.ELFlash.CONSTANTS.ForceSetMaxAgeZero;
 import static org.glassfish.mojarra.context.flash.ELFlash.CONSTANTS.KeepAllMessagesAttributeName;
 import static org.glassfish.mojarra.context.flash.ELFlash.CONSTANTS.RequestFlashManager;
 import static org.glassfish.mojarra.context.flash.ELFlash.CONSTANTS.SavedResponseCompleteFlagValue;
+import static org.glassfish.mojarra.context.flash.ELFlash.FLASH_COOKIE_NAME;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -44,7 +44,7 @@ public class ELFlashTest {
     private FacesContext mockedFacesContext;
     private ExternalContext mockedExternalContext;
     private ServletContext mockedServletContext;
-    
+
     private Map<Object, Object> contextMap;
     private Map<String, Object> applicationMap;
     private Map<String, Object> cookieMap;
@@ -75,7 +75,8 @@ public class ELFlashTest {
 
             if (mockedFacesContext.getCurrentPhaseId() == RESTORE_VIEW) {
                 flash.doPrePhaseActions(mockedFacesContext);
-            } else {
+            }
+            else {
                 flash.doPostPhaseActions(mockedFacesContext);
             }
             return flash;
@@ -169,7 +170,7 @@ public class ELFlashTest {
         PreviousNextFlashInfoManager flashInfo = (PreviousNextFlashInfoManager) contextMap.get(RequestFlashManager);
         assertEquals(1, flashInfo.getPreviousRequestFlashInfo().getSequenceNumber());
         assertEquals(2, flashInfo.getNextRequestFlashInfo().getSequenceNumber());
-        
+
         when(mockedFacesContext.getCurrentPhaseId()).thenReturn(RENDER_RESPONSE);
 
         flash = mockedExternalContext.getFlash();
@@ -529,11 +530,14 @@ public class ELFlashTest {
     private PreviousNextFlashInfoManager mockPreviousNextFlashInfoManager(Map<String, Map<String, Object>> flashInnerMap) {
         PreviousNextFlashInfoManager manager = new PreviousNextFlashInfoManager(new ByteArrayGuardAESCTR(), flashInnerMap);
         manager.initializeBaseCase(new ELFlash(mockedExternalContext) {
+
             @Override
             long getNewSequenceNumber() {
                 return 1L;
             }
+
         });
         return manager;
     }
+
 }

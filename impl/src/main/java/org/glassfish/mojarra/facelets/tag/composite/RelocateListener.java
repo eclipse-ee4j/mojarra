@@ -72,8 +72,7 @@ abstract class RelocateListener implements ComponentSystemEventListener, StateHo
     }
 
     /**
-     * @return <code>true</code> if the argument handler is from the same template source as the argument
-     * <code>Resource</code> otherwise <code>false</code>
+     * @return <code>true</code> if the argument handler is from the same template source as the argument <code>Resource</code> otherwise <code>false</code>
      */
     protected boolean resourcesMatch(Resource compositeResource, Location handlerLocation) {
 

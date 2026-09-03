@@ -106,12 +106,12 @@ public class BehaviorConfigProcessor extends AbstractConfigProcessor {
                 Node n = children.item(c);
                 if (n.getNodeType() == Node.ELEMENT_NODE) {
                     switch (n.getLocalName()) {
-                    case BEHAVIOR_ID:
-                        behaviorId = getNodeText(n);
-                        break;
-                    case BEHAVIOR_CLASS:
-                        behaviorClass = getNodeText(n);
-                        break;
+                        case BEHAVIOR_ID :
+                            behaviorId = getNodeText(n);
+                            break;
+                        case BEHAVIOR_CLASS :
+                            behaviorClass = getNodeText(n);
+                            break;
                     }
                 }
             }

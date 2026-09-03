@@ -16,7 +16,6 @@
 
 package org.glassfish.mojarra.facelets.tag.faces;
 
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
@@ -79,7 +78,8 @@ public class CompositeComponentTagLibrary extends LazyTagLibrary {
 
             try (InputStream componentStream = ccResource.getInputStream();) {
                 result = componentStream != null;
-            } catch (IOException ex) {
+            }
+            catch (IOException ex) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE, ex.toString(), ex);
                 }
@@ -124,10 +124,13 @@ public class CompositeComponentTagLibrary extends LazyTagLibrary {
         if (null != (resourceId = getCompositeComponentLibraryName(toTest))) {
             if (enableMissingResourceLibraryDetection) {
                 result = FacesContext.getCurrentInstance().getApplication().getResourceHandler().libraryExists(resourceId);
-            } else {
+            }
+            else {
                 if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.log(Level.FINE, "Skipping call to libraryExists().  Please set context-param {0} to true to verify if library {1} actually exists",
-                            new Object[] { MojarraContextParam.ENABLE_MISSING_RESOURCE_LIBRARY_DETECTION.getName(), toTest });
+                    LOGGER.log(
+                        Level.FINE, "Skipping call to libraryExists().  Please set context-param {0} to true to verify if library {1} actually exists",
+                        new Object[] { MojarraContextParam.ENABLE_MISSING_RESOURCE_LIBRARY_DETECTION.getName(), toTest }
+                    );
                 }
                 result = true;
             }
@@ -140,21 +143,24 @@ public class CompositeComponentTagLibrary extends LazyTagLibrary {
         boolean result = false;
 
         Resource scriptComponentResource = context.getApplication().getViewHandler().getViewDeclarationLanguage(context, context.getViewRoot().getViewId())
-                .getScriptComponentResource(context, componentResource);
+            .getScriptComponentResource(context, componentResource);
         InputStream is = null;
         try {
             is = scriptComponentResource.getInputStream();
             result = null != scriptComponentResource && null != is;
-        } catch (IOException ex) {
+        }
+        catch (IOException ex) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, ex.toString(), ex);
             }
-        } finally {
+        }
+        finally {
             try {
                 if (null != is) {
                     is.close();
                 }
-            } catch (IOException ex) {
+            }
+            catch (IOException ex) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE, ex.toString(), ex);
                 }
@@ -168,7 +174,8 @@ public class CompositeComponentTagLibrary extends LazyTagLibrary {
         String resourceId = null;
         if (null != compositeLibraryName) {
             resourceId = compositeLibraryName;
-        } else {
+        }
+        else {
             int resourceIdIndex;
             for (String namespace : CompositeLibrary.NAMESPACES) {
                 String prefix = namespace + "/";

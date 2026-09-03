@@ -36,6 +36,7 @@ import org.glassfish.mojarra.facelets.tag.faces.PassThroughAttributeLibrary;
  * @version $Id$
  */
 public final class TagAttributesImpl extends TagAttributes {
+
     private final static TagAttribute[] EMPTY = new TagAttribute[0];
 
     private final TagAttribute[] attrs;
@@ -107,9 +108,8 @@ public final class TagAttributesImpl extends TagAttributes {
     }
 
     /**
-     * Return the attributes that are in a pass-through namespace, in the order the tag declares them. Every applied
-     * component tag is asked for these and almost none has any, so they are singled out once here, when the tag is
-     * compiled, rather than searched per namespace on every apply.
+     * Return the attributes that are in a pass-through namespace, in the order the tag declares them. Every applied component tag is asked for these and almost
+     * none has any, so they are singled out once here, when the tag is compiled, rather than searched per namespace on every apply.
      *
      * @return a non-null array of TagAttribute
      */
@@ -163,7 +163,8 @@ public final class TagAttributesImpl extends TagAttributes {
         int idx = 0;
         if (namespace == null) {
             idx = Arrays.binarySearch(ns, "");
-        } else {
+        }
+        else {
             idx = Arrays.binarySearch(ns, namespace);
         }
         if (idx >= 0) {
@@ -212,4 +213,5 @@ public final class TagAttributesImpl extends TagAttributes {
         }
         return sb.toString();
     }
+
 }

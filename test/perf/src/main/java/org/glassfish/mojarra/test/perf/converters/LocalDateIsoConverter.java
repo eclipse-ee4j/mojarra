@@ -26,9 +26,10 @@ import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.ConverterException;
 import jakarta.faces.convert.FacesConverter;
 
-/** CDI-managed converter looked up by class (forClass).
- *  {@code @Dependent} is the bean-defining annotation that makes this class
- *  discoverable under the CDI 4.0 default {@code bean-discovery-mode=annotated}. */
+/**
+ * CDI-managed converter looked up by class (forClass). {@code @Dependent} is the bean-defining annotation that makes this class discoverable under the CDI 4.0
+ * default {@code bean-discovery-mode=annotated}.
+ */
 @FacesConverter(forClass = LocalDate.class, managed = true)
 @Dependent
 public class LocalDateIsoConverter implements Converter<LocalDate> {
@@ -40,9 +41,14 @@ public class LocalDateIsoConverter implements Converter<LocalDate> {
         }
         try {
             return LocalDate.parse(value);
-        } catch (DateTimeParseException e) {
-            throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Invalid date: " + value, "Use ISO YYYY-MM-DD"));
+        }
+        catch (DateTimeParseException e) {
+            throw new ConverterException(
+                new FacesMessage(
+                    FacesMessage.SEVERITY_ERROR,
+                    "Invalid date: " + value, "Use ISO YYYY-MM-DD"
+                )
+            );
         }
     }
 
@@ -50,4 +56,5 @@ public class LocalDateIsoConverter implements Converter<LocalDate> {
     public String getAsString(FacesContext context, UIComponent component, LocalDate value) {
         return value == null ? "" : value.toString();
     }
+
 }

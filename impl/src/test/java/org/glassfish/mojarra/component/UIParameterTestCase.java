@@ -126,4 +126,5 @@ public class UIParameterTestCase extends UIComponentBaseTestCase {
         component.setRendererType(null);
         return component;
     }
+
 }

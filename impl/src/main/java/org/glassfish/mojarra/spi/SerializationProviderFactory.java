@@ -58,8 +58,8 @@ public class SerializationProviderFactory {
 
     /**
      * <p>
-     * Creates a new instance of the class specified by the <code>org.glassfish.mojarra.InjectionProvider</code> system property. If
-     * this propery is not defined, then a default, no-op, <code>InjectionProvider</code> will be returned.
+     * Creates a new instance of the class specified by the <code>org.glassfish.mojarra.InjectionProvider</code> system property. If this propery is not
+     * defined, then a default, no-op, <code>InjectionProvider</code> will be returned.
      *
      * @param extContext the ExternalContext for this application
      * @return an implementation of the <code>InjectionProvider</code> interfaces
@@ -85,16 +85,19 @@ public class SerializationProviderFactory {
                 Class<?> clazz = Util.loadClass(className, SerializationProviderFactory.class);
                 if (implementsSerializationProvider(clazz)) {
                     provider = (SerializationProvider) clazz.getDeclaredConstructor().newInstance();
-                } else {
+                }
+                else {
                     if (LOGGER.isLoggable(Level.SEVERE)) {
                         LOGGER.log(Level.SEVERE, "faces.spi.serialization.provider_not_implemented", new Object[] { className });
                     }
                 }
-            } catch (ClassNotFoundException cnfe) {
+            }
+            catch (ClassNotFoundException cnfe) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE, "faces.spi.serialization.provider_not_found", new Object[] { className });
                 }
-            } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException ie) {
+            }
+            catch (IllegalArgumentException | ReflectiveOperationException | SecurityException ie) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE, "faces.spi.serialization.provider_cannot_instantiate", new Object[] { className });
                     LOGGER.log(Level.SEVERE, "", ie);
@@ -118,8 +121,7 @@ public class SerializationProviderFactory {
     }
 
     /**
-     * Tries to find a provider class in a web context parameter. If not present it tries to find it as a System property.
-     * If still not found returns null.
+     * Tries to find a provider class in a web context parameter. If not present it tries to find it as a System property. If still not found returns null.
      *
      * @param extContext The ExternalContext for this request
      * @return The provider class name specified in the container configuration, or <code>null</code> if not found.
@@ -130,7 +132,8 @@ public class SerializationProviderFactory {
 
         if (!provider.isEmpty()) {
             return provider;
-        } else {
+        }
+        else {
             return System.getProperty(SERIALIZATION_PROVIDER_PROPERTY);
         }
     }
@@ -169,6 +172,7 @@ public class SerializationProviderFactory {
         public ObjectInputStream createObjectInputStream(InputStream source) throws IOException {
             return new ApplicationObjectInputStream(source);
         }
+
     }
 
 } // END InjectionProviderFactory

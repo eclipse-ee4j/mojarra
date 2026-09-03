@@ -41,9 +41,9 @@ import org.glassfish.mojarra.config.MojarraContextParam;
 import org.junit.jupiter.api.Test;
 
 /**
- * Covers the <code>auto</code> value of <code>org.glassfish.mojarra.disableIdUniquenessCheck</code>, which skips the
- * whole-tree duplicate id walk outside {@link ProjectStage#Development}. The parameter is what the callers of the walk
- * gate on, so it is asserted here rather than through {@link Util#checkIdUniqueness}, which walks whatever it is given.
+ * Covers the <code>auto</code> value of <code>org.glassfish.mojarra.disableIdUniquenessCheck</code>, which skips the whole-tree duplicate id walk outside
+ * {@link ProjectStage#Development}. The parameter is what the callers of the walk gate on, so it is asserted here rather than through
+ * {@link Util#checkIdUniqueness}, which walks whatever it is given.
  */
 class IdUniquenessCheckTest {
 
@@ -51,8 +51,8 @@ class IdUniquenessCheckTest {
     private static final String CLIENT_ID = "id";
 
     /**
-     * The walk is the per-request cost the parameter exists to avoid, so <code>auto</code> disables it in every stage
-     * which is not <code>Development</code>, including the test stages.
+     * The walk is the per-request cost the parameter exists to avoid, so <code>auto</code> disables it in every stage which is not <code>Development</code>,
+     * including the test stages.
      */
     @Test
     void autoDisablesTheCheckOutsideDevelopment() {
@@ -70,8 +70,8 @@ class IdUniquenessCheckTest {
     }
 
     /**
-     * And the walk itself no longer asks: it visits every component it is handed, because the caller has already
-     * decided whether the view it is about to save is worth walking.
+     * And the walk itself no longer asks: it visits every component it is handed, because the caller has already decided whether the view it is about to save
+     * is worth walking.
      */
     @Test
     void theWalkVisitsWhateverItIsGiven() {
@@ -106,7 +106,7 @@ class IdUniquenessCheckTest {
         when(servletContext.getInitParameter(ProjectStage.PROJECT_STAGE_PARAM_NAME)).thenReturn(stage.name());
         when(servletContext.getAttribute(any())).thenAnswer(invocation -> attributes.get(invocation.<String>getArgument(0)));
         doAnswer(invocation -> attributes.put(invocation.getArgument(0), invocation.getArgument(1)))
-                .when(servletContext).setAttribute(any(), any());
+            .when(servletContext).setAttribute(any(), any());
 
         ExternalContext externalContext = mock(ExternalContext.class);
         when(externalContext.getApplicationMap()).thenReturn(new HashMap<>());
@@ -118,4 +118,5 @@ class IdUniquenessCheckTest {
 
         return context;
     }
+
 }

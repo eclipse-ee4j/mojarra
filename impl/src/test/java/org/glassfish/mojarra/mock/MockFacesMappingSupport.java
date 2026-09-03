@@ -64,6 +64,7 @@ public final class MockFacesMappingSupport {
             public MappingMatch getMappingMatch() {
                 return match;
             }
+
         };
     }
 
@@ -81,6 +82,7 @@ public final class MockFacesMappingSupport {
         public HttpServletMapping getHttpServletMapping() {
             return mapping;
         }
+
     }
 
     private static final class MappingExternalContext extends MockExternalContext {
@@ -116,5 +118,7 @@ public final class MockFacesMappingSupport {
         public String encodeResourceURL(String url) {
             return url;
         }
+
     }
+
 }

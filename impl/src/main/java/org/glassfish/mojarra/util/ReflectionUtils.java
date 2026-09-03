@@ -65,15 +65,15 @@ public final class ReflectionUtils {
     /**
      * Sets a collection of properties of a given object to the values associated with those properties.
      * <p>
-     * In the map that represents these properties, each key represents the name of the property, with the value associated
-     * with that key being the value that is set for the property.
+     * In the map that represents these properties, each key represents the name of the property, with the value associated with that key being the value that
+     * is set for the property.
      * <p>
-     * E.g. map entry key = foo, value = "bar", which "bar" an instance of String, will conceptually result in the following
-     * call: <code>object.setFoo("string");</code>
+     * E.g. map entry key = foo, value = "bar", which "bar" an instance of String, will conceptually result in the following call:
+     * <code>object.setFoo("string");</code>
      *
      * <p>
-     * NOTE: This particular method assumes that there's a write method for each property in the map with the right type. No
-     * specific checking is done whether this is indeed the case.
+     * NOTE: This particular method assumes that there's a write method for each property in the map with the right type. No specific checking is done whether
+     * this is indeed the case.
      *
      * @param object the object on which properties will be set
      * @param propertiesToSet the map containing properties and their values to be set on the object
@@ -90,34 +90,32 @@ public final class ReflectionUtils {
                 availableProperties.get(propertyToSet.getKey()).getWriteMethod().invoke(object, propertyToSet.getValue());
             }
 
-        } catch (IntrospectionException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+        }
+        catch (IntrospectionException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
             throw new IllegalStateException(e);
         }
     }
 
     /**
-     * Sets a collection of properties of a given object to the (optionally coerced) values associated with those
-     * properties.
+     * Sets a collection of properties of a given object to the (optionally coerced) values associated with those properties.
      * <p>
-     * In the map that represents these properties, each key represents the name of the property, with the value associated
-     * with that key being the value that is set for the property.
+     * In the map that represents these properties, each key represents the name of the property, with the value associated with that key being the value that
+     * is set for the property.
      * <p>
-     * E.g. map entry key = foo, value = "bar", which "bar" an instance of String, will conceptually result in the following
-     * call: <code>object.setFoo("string");</code>
+     * E.g. map entry key = foo, value = "bar", which "bar" an instance of String, will conceptually result in the following call:
+     * <code>object.setFoo("string");</code>
      *
      * <p>
-     * NOTE 1: In case the value is a String, and the target type is not String, the standard property editor mechanism will
-     * be used to attempt a conversion.
+     * NOTE 1: In case the value is a String, and the target type is not String, the standard property editor mechanism will be used to attempt a conversion.
      *
      * <p>
-     * Note 2: This method operates somewhat as the reverse of <code>Reflection#setProperties(Object, Map)</code> Here only the
-     * available writable properties of the object are matched against the map with properties to set. Properties in the map
-     * for which there isn't a corresponding writable property on the object are ignored.
+     * Note 2: This method operates somewhat as the reverse of <code>Reflection#setProperties(Object, Map)</code> Here only the available writable properties of
+     * the object are matched against the map with properties to set. Properties in the map for which there isn't a corresponding writable property on the
+     * object are ignored.
      *
      * <p>
-     * Following the above two notes, use this method when attempting to set properties on an object in a lenient best
-     * effort basis. Use <code>Reflection#setProperties(Object, Map)</code> when all properties need to be set with the exact
-     * type as the value appears in the map.
+     * Following the above two notes, use this method when attempting to set properties on an object in a lenient best effort basis. Use
+     * <code>Reflection#setProperties(Object, Map)</code> when all properties need to be set with the exact type as the value appears in the map.
      *
      *
      * @param object the object on which properties will be set
@@ -148,7 +146,8 @@ public final class ReflectionUtils {
                 }
 
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new IllegalStateException(e);
         }
     }
@@ -156,9 +155,8 @@ public final class ReflectionUtils {
     /**
      * Finds a method based on the method name, amount of parameters and limited typing, if necessary prefixed with "get".
      * <p>
-     * Note that this supports overloading, but a limited one. Given an actual parameter of type Long, this will select a
-     * method accepting Number when the choice is between Number and a non-compatible type like String. However, it will NOT
-     * select the best match if the choice is between Number and Long.
+     * Note that this supports overloading, but a limited one. Given an actual parameter of type Long, this will select a method accepting Number when the
+     * choice is between Number and a non-compatible type like String. However, it will NOT select the best match if the choice is between Number and Long.
      *
      * @param base the object in which the method is to be found
      * @param methodName name of the method to be found
@@ -205,8 +203,8 @@ public final class ReflectionUtils {
     }
 
     /**
-     * Returns the Class instance associated with the class of the given string, using the context class loader and if that
-     * fails the defining class loader of the current class.
+     * Returns the Class instance associated with the class of the given string, using the context class loader and if that fails the defining class loader of
+     * the current class.
      *
      * @param className fully qualified class name of the class for which a Class instance needs to be created
      * @return the Class object for the class with the given name.
@@ -215,10 +213,12 @@ public final class ReflectionUtils {
     public static Class<?> toClass(String className) {
         try {
             return Class.forName(className, true, Thread.currentThread().getContextClassLoader());
-        } catch (ClassNotFoundException e) {
+        }
+        catch (ClassNotFoundException e) {
             try {
                 return Class.forName(className);
-            } catch (Exception ignore) {
+            }
+            catch (Exception ignore) {
                 ignore = null; // Just continue to IllegalStateException on original ClassNotFoundException.
             }
 
@@ -232,7 +232,8 @@ public final class ReflectionUtils {
     public static Optional<Class<?>> findClass(String className) {
         try {
             return Optional.of(toClass(className));
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             return Optional.empty();
         }
     }
@@ -256,13 +257,13 @@ public final class ReflectionUtils {
      * @param <T> The generic object type.
      * @param clazz the Class object for which an instance needs to be created
      * @return an instance of the class as given by the clazz parameter
-     * @throws IllegalStateException if the class cannot be found, or cannot be instantiated or when a security manager
-     * prevents this operation
+     * @throws IllegalStateException if the class cannot be found, or cannot be instantiated or when a security manager prevents this operation
      */
     public static <T> T instance(Class<T> clazz) {
         try {
             return clazz.getDeclaredConstructor().newInstance();
-        } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
+        }
+        catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
             throw new IllegalStateException(e);
         }
     }
@@ -360,7 +361,8 @@ public final class ReflectionUtils {
      * @throws IllegalAccessException if there is a security violation
      */
     public static Object newInstance(String className)
-            throws IllegalArgumentException, ReflectiveOperationException, SecurityException {
+        throws IllegalArgumentException, ReflectiveOperationException, SecurityException
+    {
 
         ClassLoader loader = Util.getCurrentLoader(null);
         if (loader == null) {
@@ -392,8 +394,7 @@ public final class ReflectionUtils {
     /**
      * @param className the fully qualified class name
      * @param propertyName a JavaBeans property name
-     * @return a method suitable for setting a JavaBeans property, or <code>null</code> if the property doesn't exist or is
-     * readonly.
+     * @return a method suitable for setting a JavaBeans property, or <code>null</code> if the property doesn't exist or is readonly.
      */
     public static Method lookupWriteMethod(String className, String propertyName) {
 
@@ -409,8 +410,7 @@ public final class ReflectionUtils {
     /**
      * @param className the fully qualified class name
      * @param propertyName a JavaBeans property name
-     * @return a method suitable for obtaining the value of a JavaBeans property, or <code>null</code> if the property
-     * doesn't exist or can't be read.
+     * @return a method suitable for obtaining the value of a JavaBeans property, or <code>null</code> if the property doesn't exist or can't be read.
      */
     public static Method lookupReadMethod(String className, String propertyName) {
 
@@ -431,8 +431,8 @@ public final class ReflectionUtils {
      * </p>
      *
      * <p>
-     * This will check the cache associated with the specified <code>ClassLoader</code>. If there is no cache hit, then a
-     * new <code>MetaData</code> instance will be created and stored.
+     * This will check the cache associated with the specified <code>ClassLoader</code>. If there is no cache hit, then a new <code>MetaData</code> instance
+     * will be created and stored.
      *
      * @param loader <code>ClassLoader</code>
      * @param clazz the Class of interest
@@ -463,8 +463,8 @@ public final class ReflectionUtils {
      * </p>
      *
      * <p>
-     * This will check the cache associated with the specified <code>ClassLoader</code>. If there is no cache hit, then a
-     * new <code>MetaData</code> instance will be created and stored.
+     * This will check the cache associated with the specified <code>ClassLoader</code>. If there is no cache hit, then a new <code>MetaData</code> instance
+     * will be created and stored.
      *
      * @param loader <code>ClassLoader</code>
      * @param className the class of interest
@@ -485,7 +485,8 @@ public final class ReflectionUtils {
                 Class<?> clazz = Util.loadClass(className, cache);
                 meta = new MetaData(clazz);
                 cache.put(className, meta);
-            } catch (ClassNotFoundException cnfe) {
+            }
+            catch (ClassNotFoundException cnfe) {
                 return null;
             }
         }
@@ -528,7 +529,7 @@ public final class ReflectionUtils {
             for (Method method : meths) {
                 name = method.getName();
                 methods.computeIfAbsent(name, k -> new HashMap<>(4, 1.0f))
-                       .put(getKey(method.getParameterTypes()), method);
+                    .put(getKey(method.getParameterTypes()), method);
             }
 
             meths = clazz.getDeclaredMethods();
@@ -536,7 +537,7 @@ public final class ReflectionUtils {
             for (Method meth : meths) {
                 name = meth.getName();
                 declaredMethods.computeIfAbsent(name, k -> new HashMap<>(4, 1.0f))
-                               .put(getKey(meth.getParameterTypes()), meth);
+                    .put(getKey(meth.getParameterTypes()), meth);
             }
 
             try {
@@ -550,7 +551,8 @@ public final class ReflectionUtils {
                         propertyDescriptors.put(pd.getName(), pd);
                     }
                 }
-            } catch (IntrospectionException ie) {
+            }
+            catch (IntrospectionException ie) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE, ie.toString(), ie);
                 }
@@ -611,8 +613,7 @@ public final class ReflectionUtils {
 
         /**
          * @param propName a JavaBeans property name
-         * @return a method suitable for setting a JavaBeans property, or <code>null</code> if the property doesn't exist or is
-         * readonly.
+         * @return a method suitable for setting a JavaBeans property, or <code>null</code> if the property doesn't exist or is readonly.
          */
         public Method lookupWriteMethod(String propName) {
 
@@ -630,8 +631,7 @@ public final class ReflectionUtils {
 
         /**
          * @param propName a JavaBeans property name
-         * @return a method suitable for obtaining the value of a JavaBeans property, or <code>null</code> if the property
-         * doesn't exist or can't be read.
+         * @return a method suitable for obtaining the value of a JavaBeans property, or <code>null</code> if the property doesn't exist or can't be read.
          */
         public Method lookupReadMethod(String propName) {
 

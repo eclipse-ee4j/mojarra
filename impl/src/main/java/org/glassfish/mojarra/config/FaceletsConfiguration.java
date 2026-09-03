@@ -26,14 +26,12 @@ import jakarta.servlet.ServletContext;
 
 /**
  * <p>
- * How a facelet is processed, per file extension, as declared by the <code>facelets-processing</code> elements of
- * <code>faces-config.xml</code>. This is configuration which is not expressible as a context parameter, which is why
- * it is held here rather than by {@link WebConfiguration}.
+ * How a facelet is processed, per file extension, as declared by the <code>facelets-processing</code> elements of <code>faces-config.xml</code>. This is
+ * configuration which is not expressible as a context parameter, which is why it is held here rather than by {@link WebConfiguration}.
  * </p>
  *
  * <p>
- * The mappings are registered while the configuration is read and only queried afterwards, so a facelet compiled at any
- * later point sees all of them.
+ * The mappings are registered while the configuration is read and only queried afterwards, so a facelet compiled at any later point sees all of them.
  * </p>
  */
 public class FaceletsConfiguration {
@@ -65,8 +63,8 @@ public class FaceletsConfiguration {
 
     /**
      * @param context the involved faces context.
-     * @return the instance for this application, remembered on the context, because a facelet is queried about while it
-     * renders and every one of those queries would otherwise walk out to the servlet context.
+     * @return the instance for this application, remembered on the context, because a facelet is queried about while it renders and every one of those queries
+     * would otherwise walk out to the servlet context.
      */
     public static FaceletsConfiguration getInstance(FacesContext context) {
         Map<Object, Object> attributes = context.getAttributes();

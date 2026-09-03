@@ -20,6 +20,7 @@ package org.glassfish.mojarra.el;
  * @author jhook
  */
 public interface ELConstants {
+
     int APPLICATION = 0;
 
     int APPLICATION_SCOPE = 1;

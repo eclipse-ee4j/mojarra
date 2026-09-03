@@ -43,10 +43,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
- * An attribute whose name starts with "on" becomes a client event listener only when the component names the event
- * after "on" in its <code>ClientBehaviorHolder#getEventNames()</code>, so that a page author writing an event the
- * component cannot chain behaviors on does not silently get a listener for it. A component which is no
- * <code>ClientBehaviorHolder</code> has no such list to check against, so all of its event attributes are honored.
+ * An attribute whose name starts with "on" becomes a client event listener only when the component names the event after "on" in its
+ * <code>ClientBehaviorHolder#getEventNames()</code>, so that a page author writing an event the component cannot chain behaviors on does not silently get a
+ * listener for it. A component which is no <code>ClientBehaviorHolder</code> has no such list to check against, so all of its event attributes are honored.
  */
 class BehaviorEventAttributeTest {
 
@@ -113,4 +112,5 @@ class BehaviorEventAttributeTest {
         setCurrentInstance.setAccessible(true);
         setCurrentInstance.invoke(null, facesContext);
     }
+
 }

@@ -23,4 +23,5 @@ public interface ViewScopedCDIEventFireHelper {
     void fireInitializedEvent(UIViewRoot root);
 
     void fireDestroyedEvent(UIViewRoot root);
+
 }

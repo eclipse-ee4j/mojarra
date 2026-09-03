@@ -41,8 +41,8 @@ import jakarta.faces.FacesException;
 
 /**
  * <p>
- * This utility class is to provide both encryption and decryption <code>Ciphers</code> to
- * <code>ResponseStateManager</code> implementations wishing to provide encryption support.
+ * This utility class is to provide both encryption and decryption <code>Ciphers</code> to <code>ResponseStateManager</code> implementations wishing to provide
+ * encryption support.
  * </p>
  *
  * <p>
@@ -73,7 +73,8 @@ public final class ByteArrayGuardAESCTR {
 
         try {
             setupKeyAndCharset();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, "Unexpected exception initializing encryption." + "  No encryption will be performed.", e);
             }
@@ -84,9 +85,8 @@ public final class ByteArrayGuardAESCTR {
     // ---------------------------------------------------------- Public Methods
 
     /**
-     * This method: Encrypts bytes using a cipher. Generates MAC for intialization vector of the cipher Generates MAC for
-     * encrypted data Returns a byte array consisting of the following concatenated together: |MAC for cnrypted Data | MAC
-     * for Init Vector | Encrypted Data |
+     * This method: Encrypts bytes using a cipher. Generates MAC for intialization vector of the cipher Generates MAC for encrypted data Returns a byte array
+     * consisting of the following concatenated together: |MAC for cnrypted Data | MAC for Init Vector | Encrypted Data |
      *
      * @param value The value to be encrypted.
      * @return the encrypted value.
@@ -110,8 +110,11 @@ public final class ByteArrayGuardAESCTR {
 
             // Base64 encode the encrypted bytes
             securedata = Base64.getEncoder().encodeToString(temp);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException
-                | BadPaddingException e) {
+        }
+        catch (
+            NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException
+            | BadPaddingException e
+        ) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, "Unexpected exception initializing encryption." + "  No encryption will be performed.", e);
             }
@@ -149,8 +152,11 @@ public final class ByteArrayGuardAESCTR {
                 }
             }
             return new String(plaindata, utf8);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException | IllegalBlockSizeException
-                | BadPaddingException nsae) {
+        }
+        catch (
+            NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException | IllegalBlockSizeException
+            | BadPaddingException nsae
+        ) {
             throw new InvalidKeyException(nsae);
         }
     }
@@ -169,11 +175,13 @@ public final class ByteArrayGuardAESCTR {
                 }
                 sk = new SecretKeySpec(keyArray, KEY_ALGORITHM);
             }
-        } catch (NamingException exception) {
+        }
+        catch (NamingException exception) {
             if (LOGGER.isLoggable(Level.FINEST)) {
                 LOGGER.log(Level.FINEST, "Unable to find the encoded key.", exception);
             }
-        } catch (FacesException e) {
+        }
+        catch (FacesException e) {
             throw new FacesException(e);
         }
 
@@ -182,7 +190,8 @@ public final class ByteArrayGuardAESCTR {
                 KeyGenerator kg = KeyGenerator.getInstance(KEY_ALGORITHM);
                 kg.init(KEY_LENGTH); // 256 if you're using the Unlimited Policy Files
                 sk = kg.generateKey();
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 throw new FacesException(e);
             }
         }
@@ -190,9 +199,11 @@ public final class ByteArrayGuardAESCTR {
         SortedMap<String, Charset> availableCharsets = Charset.availableCharsets();
         if (availableCharsets.containsKey("UTF-8")) {
             utf8 = availableCharsets.get("UTF-8");
-        } else if (availableCharsets.containsKey("UTF8")) {
+        }
+        else if (availableCharsets.containsKey("UTF8")) {
             utf8 = availableCharsets.get("UTF8");
-        } else {
+        }
+        else {
             throw new FacesException("Unable to get UTF-8 Charset.");
         }
 
@@ -210,7 +221,8 @@ public final class ByteArrayGuardAESCTR {
         try {
             System.arraycopy(array1, 0, cBytes, 0, array1.length);
             System.arraycopy(array2, 0, cBytes, array1.length, array2.length);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new FacesException(e);
         }
         return cBytes;

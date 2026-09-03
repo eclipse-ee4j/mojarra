@@ -37,14 +37,14 @@ import org.glassfish.mojarra.facelets.tag.faces.ComponentSupport;
 import org.glassfish.mojarra.util.FacesLogger;
 
 /**
- * This <code>TagHandler</code> is responsible for relocating children defined within a composite component to a
- * component within the composite component's <code>composite:implementation</code> section.
+ * This <code>TagHandler</code> is responsible for relocating children defined within a composite component to a component within the composite component's
+ * <code>composite:implementation</code> section.
  */
 public class InsertChildrenHandler extends TagHandlerImpl {
 
     private final Logger LOGGER = FacesLogger.TAGLIB.getLogger();
     private static final String REQUIRED_ATTRIBUTE = "required";
-    
+
     public static final String INDEX_ATTRIBUTE = "InsertChildrenHandler.idx";
 
     // This attribute is not required. If not defined, then assume the facet
@@ -142,7 +142,8 @@ public class InsertChildrenHandler extends TagHandlerImpl {
 
             if (parentChildren.size() < getIdx()) {
                 parentChildren.addAll(compositeChildren);
-            } else {
+            }
+            else {
                 parentChildren.addAll(getIdx(), compositeChildren);
             }
 
@@ -157,8 +158,10 @@ public class InsertChildrenHandler extends TagHandlerImpl {
 
         private void throwRequiredException(FaceletContext ctx, UIComponent compositeParent) {
 
-            throw new TagException(tag, "Unable to find any children components " + "nested within parent composite component with id '"
-                    + compositeParent.getClientId(ctx.getFacesContext()) + '\'');
+            throw new TagException(
+                tag, "Unable to find any children components " + "nested within parent composite component with id '"
+                    + compositeParent.getClientId(ctx.getFacesContext()) + '\''
+            );
 
         }
 

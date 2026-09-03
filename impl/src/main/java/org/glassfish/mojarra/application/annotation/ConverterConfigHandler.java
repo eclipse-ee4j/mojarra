@@ -73,7 +73,8 @@ public class ConverterConfigHandler implements ConfigAnnotationHandler {
 
         if (converterAnnotation.value().isEmpty()) {
             key = converterAnnotation.forClass();
-        } else {
+        }
+        else {
             key = converterAnnotation.value();
         }
         converters.put(key, target.getName());
@@ -91,7 +92,8 @@ public class ConverterConfigHandler implements ConfigAnnotationHandler {
             for (Map.Entry<Object, String> entry : converters.entrySet()) {
                 if (entry.getKey() instanceof Class) {
                     app.addConverter((Class<?>) entry.getKey(), entry.getValue());
-                } else {
+                }
+                else {
                     app.addConverter((String) entry.getKey(), entry.getValue());
                 }
             }

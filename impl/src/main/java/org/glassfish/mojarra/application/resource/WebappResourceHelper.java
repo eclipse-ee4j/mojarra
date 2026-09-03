@@ -40,8 +40,7 @@ import org.glassfish.mojarra.util.FacesLogger;
 
 /**
  * <p>
- * A {@link ResourceHelper} implementation for finding/serving resources found within
- * <code>&lt;contextroot&gt;/resources</code> directory of a web application.
+ * A {@link ResourceHelper} implementation for finding/serving resources found within <code>&lt;contextroot&gt;/resources</code> directory of a web application.
  * </p>
  *
  * @since 2.0
@@ -101,21 +100,20 @@ public class WebappResourceHelper extends ResourceHelper {
         return BASE_CONTRACTS_PATH;
     }
 
-    /**	
-     * @see ResourceHelper#getNonCompressedInputStream(org.glassfish.mojarra.application.resource.ResourceInfo,
-     * jakarta.faces.context.FacesContext)
+    /**
+     * @see ResourceHelper#getNonCompressedInputStream(org.glassfish.mojarra.application.resource.ResourceInfo, jakarta.faces.context.FacesContext)
      */
     @Override
     protected InputStream getNonCompressedInputStream(ResourceInfo resource, FacesContext ctx) throws IOException {
-       	List<String> localizedPaths = getLocalizedPaths(resource.getPath(), ctx);
-    	InputStream in = null;
-    	for (String path_: localizedPaths) {
-    		in = ctx.getExternalContext().getResourceAsStream(path_);
-    		if (in != null) {
-    			break;
-    		}
-    	}
-    	return in;
+        List<String> localizedPaths = getLocalizedPaths(resource.getPath(), ctx);
+        InputStream in = null;
+        for (String path_ : localizedPaths) {
+            in = ctx.getExternalContext().getResourceAsStream(path_);
+            if (in != null) {
+                break;
+            }
+        }
+        return in;
     }
 
     /**
@@ -127,7 +125,8 @@ public class WebappResourceHelper extends ResourceHelper {
 
         try {
             return ctx.getExternalContext().getResource(path);
-        } catch (MalformedURLException e) {
+        }
+        catch (MalformedURLException e) {
             return null;
         }
 
@@ -143,7 +142,8 @@ public class WebappResourceHelper extends ResourceHelper {
 
         if (localePrefix == null) {
             path = getBasePath(contract) + '/' + libraryName;
-        } else {
+        }
+        else {
             path = getBasePath(contract) + '/' + localePrefix + '/' + libraryName;
         }
         Set<String> resourcePaths = ctx.getExternalContext().getResourcePaths(path);
@@ -175,10 +175,12 @@ public class WebappResourceHelper extends ResourceHelper {
             if (library != null) {
                 // PENDING(fcaputo) no need to iterate over the contracts, if we have a library
                 basePath = library.getPath(localePrefix) + '/' + resourceName;
-            } else {
+            }
+            else {
                 if (localePrefix == null) {
                     basePath = getBaseResourcePath() + '/' + resourceName;
-                } else {
+                }
+                else {
                     basePath = getBaseResourcePath() + '/' + localePrefix + '/' + resourceName;
                 }
             }
@@ -189,7 +191,8 @@ public class WebappResourceHelper extends ResourceHelper {
                 if (ctx.getExternalContext().getResource(basePath) == null) {
                     return null;
                 }
-            } catch (MalformedURLException e) {
+            }
+            catch (MalformedURLException e) {
                 throw new FacesException(e);
             }
         }
@@ -202,24 +205,35 @@ public class WebappResourceHelper extends ResourceHelper {
         ClientResourceInfo value;
         if (resourcePaths == null || resourcePaths.isEmpty()) {
             if (library != null) {
-                value = new ClientResourceInfo(library, outContract[0], resourceName, null, compressable,
-                        resourceSupportsEL(resourceName, library.getName(), ctx), ctx.isProjectStage(ProjectStage.Development), cacheTimestamp);
-            } else {
-                value = new ClientResourceInfo(outContract[0], resourceName, null, localePrefix, this, compressable,
-                        resourceSupportsEL(resourceName, null, ctx), ctx.isProjectStage(ProjectStage.Development), cacheTimestamp);
+                value = new ClientResourceInfo(
+                    library, outContract[0], resourceName, null, compressable,
+                    resourceSupportsEL(resourceName, library.getName(), ctx), ctx.isProjectStage(ProjectStage.Development), cacheTimestamp
+                );
             }
-        } else {
+            else {
+                value = new ClientResourceInfo(
+                    outContract[0], resourceName, null, localePrefix, this, compressable,
+                    resourceSupportsEL(resourceName, null, ctx), ctx.isProjectStage(ProjectStage.Development), cacheTimestamp
+                );
+            }
+        }
+        else {
             // ok, subdirectories exist, so find the latest 'version' directory
             VersionInfo version = getVersion(resourcePaths, true);
             if (version == null && LOGGER.isLoggable(Level.WARNING)) {
                 LOGGER.log(Level.WARNING, "faces.application.resource.unable_to_determine_resource_version.", resourceName);
             }
             if (library != null) {
-                value = new ClientResourceInfo(library, outContract[0], resourceName, version, compressable,
-                        resourceSupportsEL(resourceName, library.getName(), ctx), ctx.isProjectStage(ProjectStage.Development), cacheTimestamp);
-            } else {
-                value = new ClientResourceInfo(outContract[0], resourceName, version, localePrefix, this, compressable,
-                        resourceSupportsEL(resourceName, null, ctx), ctx.isProjectStage(ProjectStage.Development), cacheTimestamp);
+                value = new ClientResourceInfo(
+                    library, outContract[0], resourceName, version, compressable,
+                    resourceSupportsEL(resourceName, library.getName(), ctx), ctx.isProjectStage(ProjectStage.Development), cacheTimestamp
+                );
+            }
+            else {
+                value = new ClientResourceInfo(
+                    outContract[0], resourceName, version, localePrefix, this, compressable,
+                    resourceSupportsEL(resourceName, null, ctx), ctx.isProjectStage(ProjectStage.Development), cacheTimestamp
+                );
             }
         }
 
@@ -237,17 +251,21 @@ public class WebappResourceHelper extends ResourceHelper {
         if (library != null) {
             if (library.getContract() == null) {
                 contracts = Collections.emptyList();
-            } else {
+            }
+            else {
                 contracts = List.of(library.getContract());
             }
-        } else if (root == null) {
+        }
+        else if (root == null) {
             String contractName = ctx.getExternalContext().getRequestParameterMap().get("con");
             if (contractName != null && !contractName.isEmpty() && !ResourceManager.nameContainsForbiddenSequence(contractName)) {
                 contracts = List.of(contractName);
-            } else {
+            }
+            else {
                 return null;
             }
-        } else {
+        }
+        else {
             contracts = ctx.getResourceLibraryContracts();
         }
 
@@ -258,10 +276,12 @@ public class WebappResourceHelper extends ResourceHelper {
             if (library != null) {
                 // PENDING(fcaputo) no need to iterate over the contracts, if we have a library
                 basePath = library.getPath(localePrefix) + '/' + resourceName;
-            } else {
+            }
+            else {
                 if (localePrefix == null) {
                     basePath = getBaseContractsPath() + '/' + curContract + '/' + resourceName;
-                } else {
+                }
+                else {
                     basePath = getBaseContractsPath() + '/' + curContract + '/' + localePrefix + '/' + resourceName;
                 }
             }
@@ -270,14 +290,17 @@ public class WebappResourceHelper extends ResourceHelper {
                 if (ctx.getExternalContext().getResource(basePath) != null) {
                     outContract[0] = new ContractInfo(curContract);
                     break;
-                } else {
+                }
+                else {
                     basePath = null;
                 }
-            } catch (MalformedURLException e) {
+            }
+            catch (MalformedURLException e) {
                 throw new FacesException(e);
             }
         }
 
         return basePath;
     }
+
 }

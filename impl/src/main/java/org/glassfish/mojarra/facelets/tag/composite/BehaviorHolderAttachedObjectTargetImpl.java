@@ -70,5 +70,5 @@ public class BehaviorHolderAttachedObjectTargetImpl extends AttachedObjectTarget
         }
         return wrappedTargets;
     }
-    
+
 }

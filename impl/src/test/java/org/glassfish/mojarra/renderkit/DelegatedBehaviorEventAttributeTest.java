@@ -43,11 +43,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
- * The <code>load</code> and <code>error</code> of an element whose fetch of an external resource starts as the element
- * is parsed can be dispatched before any script following the element runs, so such a handler is carried by a
- * <code>data-mojarra-on*</code> attribute and run by a bootstrap which the writer puts immediately ahead of that very
- * element. Any other behavior event attribute is wired afterwards by <code>mojarra.ael()</code>, which locates its
- * element by the component's client id and therefore needs the element to carry that very id.
+ * The <code>load</code> and <code>error</code> of an element whose fetch of an external resource starts as the element is parsed can be dispatched before any
+ * script following the element runs, so such a handler is carried by a <code>data-mojarra-on*</code> attribute and run by a bootstrap which the writer puts
+ * immediately ahead of that very element. Any other behavior event attribute is wired afterwards by <code>mojarra.ael()</code>, which locates its element by
+ * the component's client id and therefore needs the element to carry that very id.
  */
 class DelegatedBehaviorEventAttributeTest {
 
@@ -89,8 +88,8 @@ class DelegatedBehaviorEventAttributeTest {
     }
 
     /**
-     * Under XHTML the response is parsed as XML, where the script body is not character data, so it needs the same
-     * CDATA section that every other script this writer emits gets.
+     * Under XHTML the response is parsed as XML, where the script body is not character data, so it needs the same CDATA section that every other script this
+     * writer emits gets.
      */
     @Test
     void theBootstrapIsWrappedInCdataForXhtml() throws Exception {
@@ -102,8 +101,8 @@ class DelegatedBehaviorEventAttributeTest {
     }
 
     /**
-     * The element and attribute names keep the case the page author wrote them in, and the delegation rule is about
-     * the element and event, not about the spelling.
+     * The element and attribute names keep the case the page author wrote them in, and the delegation rule is about the element and event, not about the
+     * spelling.
      */
     @Test
     void delegationIgnoresTheCaseOfTheElementAndAttributeName() throws Exception {
@@ -114,8 +113,7 @@ class DelegatedBehaviorEventAttributeTest {
     }
 
     /**
-     * The pass-through localName renames the element, and it is the rendered element which decides whether its
-     * handler can outrun the wiring.
+     * The pass-through localName renames the element, and it is the rendered element which decides whether its handler can outrun the wiring.
      */
     @Test
     void delegationFollowsTheRenamedElement() throws Exception {
@@ -159,8 +157,7 @@ class DelegatedBehaviorEventAttributeTest {
     }
 
     /**
-     * The <code>load</code> of a body is dispatched at the window rather than at the element, where the bootstrap
-     * would never see it, so it stays inline.
+     * The <code>load</code> of a body is dispatched at the window rather than at the element, where the bootstrap would never see it, so it stays inline.
      */
     @Test
     void aBodyIsNotDelegated() throws Exception {
@@ -193,8 +190,7 @@ class DelegatedBehaviorEventAttributeTest {
     }
 
     /**
-     * Constructs a writer without a current faces context, as its constructor reads that context, which the mock set
-     * up here does not serve.
+     * Constructs a writer without a current faces context, as its constructor reads that context, which the mock set up here does not serve.
      */
     private HtmlResponseWriter newWriter(String contentType) throws Exception {
         FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -239,7 +235,8 @@ class DelegatedBehaviorEventAttributeTest {
         Map<Object, Object> transientState = new HashMap<>();
         TransientStateHelper transientStateHelper = mock(TransientStateHelper.class);
         when(transientStateHelper.getTransient(any())).thenAnswer(invocation -> transientState.get(invocation.getArgument(0)));
-        when(transientStateHelper.putTransient(any(), any())).thenAnswer(invocation -> transientState.put(invocation.getArgument(0), invocation.getArgument(1)));
+        when(transientStateHelper.putTransient(any(), any()))
+            .thenAnswer(invocation -> transientState.put(invocation.getArgument(0), invocation.getArgument(1)));
 
         UIComponent component = mock(UIComponent.class);
         when(component.getClientId(any(FacesContext.class))).thenReturn(clientId);
@@ -253,4 +250,5 @@ class DelegatedBehaviorEventAttributeTest {
         setCurrentInstance.setAccessible(true);
         setCurrentInstance.invoke(null, facesContext);
     }
+
 }

@@ -66,7 +66,8 @@ public class NamedEventManager {
         if (namedEvent == null) {
             try {
                 namedEvent = loadClass(name, this);
-            } catch (ClassNotFoundException ex) {
+            }
+            catch (ClassNotFoundException ex) {
                 throw new FacesException("An unknown event type was specified:  " + name, ex);
             }
         }
@@ -92,4 +93,5 @@ public class NamedEventManager {
     public boolean isDuplicateNamedEvent(String name) {
         return namedEvents.get(name) != null || duplicateNames.get(name) != null;
     }
+
 }

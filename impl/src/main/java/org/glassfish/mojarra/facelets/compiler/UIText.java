@@ -50,9 +50,11 @@ public final class UIText extends UILeaf {
             ResponseWriter out = context.getResponseWriter();
             try {
                 txt.write(out, context.getELContext());
-            } catch (ELException e) {
+            }
+            catch (ELException e) {
                 throw new ELException(alias + ": " + e.getMessage(), e.getCause());
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 throw new ELException(alias + ": " + e.getMessage(), e);
             }
         }
@@ -72,4 +74,5 @@ public final class UIText extends UILeaf {
     public String toString() {
         return txt.toString();
     }
+
 }

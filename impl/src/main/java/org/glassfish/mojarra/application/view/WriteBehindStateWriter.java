@@ -154,8 +154,8 @@ final class WriteBehindStateWriter extends Writer {
     }
 
     /**
-     * When called, the original writer is backed up and replaced with a new FastStringWriter. All content written after
-     * this method is called will then be buffered and written out later after the entire view has been rendered.
+     * When called, the original writer is backed up and replaced with a new FastStringWriter. All content written after this method is called will then be
+     * buffered and written out later after the entire view has been rendered.
      */
     public void writingState() {
         if (!stateWritten) {
@@ -201,7 +201,8 @@ final class WriteBehindStateWriter extends Writer {
                     builder.getChars(pos, pos + bufSize, buf, 0);
                     orig.write(buf);
                     pos += bufSize;
-                } else {
+                }
+                else {
                     // Write all content up to the first '~'
                     builder.getChars(pos, tildeIdx, buf, 0);
                     int len = tildeIdx - pos;
@@ -218,7 +219,8 @@ final class WriteBehindStateWriter extends Writer {
                                 stateBuilder.getChars(statePos, statePos + bufSize, buf, 0);
                                 orig.write(buf);
                                 statePos += bufSize;
-                            } else {
+                            }
+                            else {
                                 int slen = stateLen - statePos;
                                 stateBuilder.getChars(statePos, stateLen, buf, 0);
                                 orig.write(buf, 0, slen);
@@ -232,12 +234,14 @@ final class WriteBehindStateWriter extends Writer {
 
                         stateBuilder = getState(stateManager, origWriter);
                         stateLen = stateBuilder.length();
-                    } else {
+                    }
+                    else {
                         pos = tildeIdx;
                         tildeIdx = getNextDelimiterIndex(builder, tildeIdx + 1);
                     }
                 }
-            } else {
+            }
+            else {
                 // We've written all of the state field markers.
                 // finish writing content
                 if (totalLen - pos > bufSize) {
@@ -245,7 +249,8 @@ final class WriteBehindStateWriter extends Writer {
                     builder.getChars(pos, pos + bufSize, buf, 0);
                     orig.write(buf);
                     pos += bufSize;
-                } else {
+                }
+                else {
                     // We're near the end of the response
                     builder.getChars(pos, totalLen, buf, 0);
                     int len = totalLen - pos;
@@ -265,8 +270,8 @@ final class WriteBehindStateWriter extends Writer {
      * Get the state.
      *
      * <p>
-     * In Faces it is required by the specification that the view state hidden input in each h:form has a unique id. So we
-     * have to call this method multiple times as each h:form needs to generate the element id for itself.
+     * In Faces it is required by the specification that the view state hidden input in each h:form has a unique id. So we have to call this method multiple
+     * times as each h:form needs to generate the element id for itself.
      * </p>
      *
      * @param stateManager the state manager.
@@ -287,8 +292,9 @@ final class WriteBehindStateWriter extends Writer {
                     contextAttributes.put(IS_SAVING_STATE, TRUE);
 
                     state = vdl.getStateManagementStrategy(context, viewId)
-                                      .saveView(context);
-                } finally {
+                        .saveView(context);
+                }
+                finally {
                     contextAttributes.remove(IS_SAVING_STATE);
                 }
             }

@@ -60,29 +60,30 @@ public class WebConfiguration {
 
     /**
      * <p>
-     * Maps a specification context parameter to the unqualified name it had while it was Mojarra specific. Both
-     * prefixes are accepted for it: the one it actually carried, and the one the 5.0 rename produces for anybody
-     * replacing com.sun.faces with org.glassfish.mojarra throughout, which is a name it never had, but is the single
-     * most likely wrong spelling in this release.
+     * Maps a specification context parameter to the unqualified name it had while it was Mojarra specific. Both prefixes are accepted for it: the one it
+     * actually carried, and the one the 5.0 rename produces for anybody replacing com.sun.faces with org.glassfish.mojarra throughout, which is a name it never
+     * had, but is the single most likely wrong spelling in this release.
      * </p>
      *
      * <p>
-     * This lives here rather than beside the parameters themselves because it is Mojarra's own history. Those
-     * parameters belong to the specification now, and so does the enum which declares them.
+     * This lives here rather than beside the parameters themselves because it is Mojarra's own history. Those parameters belong to the specification now, and
+     * so does the enum which declares them.
      * </p>
      */
     private static final Map<FacesContextParam, String> PROMOTED_PARAMETERS = Map.of(
-            FacesContextParam.ENABLE_CSP_NONCE, "enableCspNonce",
-            FacesContextParam.CSP_POLICY, "cspPolicy",
-            FacesContextParam.EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING, "exceptionTypesToIgnoreInLogging");
+        FacesContextParam.ENABLE_CSP_NONCE, "enableCspNonce",
+        FacesContextParam.CSP_POLICY, "cspPolicy",
+        FacesContextParam.EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING, "exceptionTypesToIgnoreInLogging"
+    );
 
     /**
-     * Parameters which exist to make debugging easier and would weaken a deployment if honored anywhere else, so outside
-     * Development they revert to their default, which is in each case the safe value.
+     * Parameters which exist to make debugging easier and would weaken a deployment if honored anywhere else, so outside Development they revert to their
+     * default, which is in each case the safe value.
      */
     private static final Set<MojarraContextParam> DEVELOPMENT_ONLY_OPTIONS = EnumSet.of(
-            MojarraContextParam.ENABLE_CLIENT_STATE_DEBUGGING,
-            MojarraContextParam.GENERATE_UNIQUE_SERVER_STATE_IDS);
+        MojarraContextParam.ENABLE_CLIENT_STATE_DEBUGGING,
+        MojarraContextParam.GENERATE_UNIQUE_SERVER_STATE_IDS
+    );
 
     private static final String LEGACY_PARAM_PREFIX = "com.sun.faces.";
     private static final String CURRENT_PARAM_PREFIX = RIConstants.RI_PREFIX;
@@ -126,14 +127,14 @@ public class WebConfiguration {
 
     /**
      * <p>
-     * Reports every <code>org.glassfish.mojarra.*</code> name the application declared which this release does not
-     * recognize, so that a typo or a parameter which has been removed says so rather than being silently ignored.
+     * Reports every <code>org.glassfish.mojarra.*</code> name the application declared which this release does not recognize, so that a typo or a parameter
+     * which has been removed says so rather than being silently ignored.
      * </p>
      *
      * <p>
-     * Only Mojarra's own namespace is checked, because it is the only one this release is authoritative about. It also
-     * covers the legacy <code>com.sun.faces</code> spelling, which {@link #initSetList()} normalizes into
-     * it. This does not run in Production, where nothing can be done about it any more anyway.
+     * Only Mojarra's own namespace is checked, because it is the only one this release is authoritative about. It also covers the legacy
+     * <code>com.sun.faces</code> spelling, which {@link #initSetList()} normalizes into it. This does not run in Production, where nothing can be done about it
+     * any more anyway.
      * </p>
      */
     private void warnAboutUnrecognizedParameters() {
@@ -152,30 +153,33 @@ public class WebConfiguration {
         }
 
         setParams.stream()
-                 .filter(name -> name.startsWith(CURRENT_PARAM_PREFIX) && !recognized.contains(name))
-                 .sorted()
-                 .forEach(name -> LOGGER.log(Level.WARNING, "faces.config.webconfig.param.unrecognized", new Object[] { getContextName(), name }));
+            .filter(name -> name.startsWith(CURRENT_PARAM_PREFIX) && !recognized.contains(name))
+            .sorted()
+            .forEach(name -> LOGGER.log(Level.WARNING, "faces.config.webconfig.param.unrecognized", new Object[] { getContextName(), name }));
     }
 
     /**
      * <p>
-     * Reports the JNDI environment entries, which have to be read before the level at which they are reported can be
-     * resolved, because one of them decides the project stage which that level derives from.
+     * Reports the JNDI environment entries, which have to be read before the level at which they are reported can be resolved, because one of them decides the
+     * project stage which that level derives from.
      * </p>
      */
     private void logEnvironmentEntries() {
         if (LOGGER.isLoggable(loggingLevel)) {
-            envEntries.forEach((entry, value) -> LOGGER.log(loggingLevel, "faces.config.webconfig.enventryinfo",
-                    new Object[] { getContextName(), entry.getQualifiedName(), value }));
+            envEntries.forEach(
+                (entry, value) -> LOGGER.log(
+                    loggingLevel, "faces.config.webconfig.enventryinfo",
+                    new Object[] { getContextName(), entry.getQualifiedName(), value }
+                )
+            );
         }
     }
 
     /**
      * <p>
-     * The level at which every recognized parameter is logged, which is informational outside Production so that a
-     * deployment can be read back from its own log, and fine grained there so that it stays out of the way. Setting
-     * <code>displayConfiguration</code> explicitly overrules that either way, which is what keeps it usable in
-     * Production for a deployment whose parameters are substituted at build time.
+     * The level at which every recognized parameter is logged, which is informational outside Production so that a deployment can be read back from its own
+     * log, and fine grained there so that it stays out of the way. Setting <code>displayConfiguration</code> explicitly overrules that either way, which is
+     * what keeps it usable in Production for a deployment whose parameters are substituted at build time.
      * </p>
      */
     private Level resolveLoggingLevel() {
@@ -184,8 +188,8 @@ public class WebConfiguration {
 
     /**
      * <p>
-     * The value as declared, under either prefix and without reporting the legacy one, which the regular pass over the
-     * parameters does later. This exists because the level at which that pass reports has to be known before it runs.
+     * The value as declared, under either prefix and without reporting the legacy one, which the regular pass over the parameters does later. This exists
+     * because the level at which that pass reports has to be known before it runs.
      * </p>
      */
     /**
@@ -204,9 +208,12 @@ public class WebConfiguration {
         try {
             // Via the parameter itself, whose conversion matches an enum constant regardless of case.
             return FacesContextParam.PROJECT_STAGE.<ProjectStage>toValue(value).orElse(ProjectStage.Production);
-        } catch (IllegalArgumentException e) {
-            LOGGER.log(Level.WARNING, "faces.config.webconfig.boolconfig.invalidvalue", new Object[] { getContextName(), value,
-                    ProjectStage.PROJECT_STAGE_PARAM_NAME, Arrays.toString(ProjectStage.values()), asText(ProjectStage.Production) });
+        }
+        catch (IllegalArgumentException e) {
+            LOGGER.log(
+                Level.WARNING, "faces.config.webconfig.boolconfig.invalidvalue", new Object[] { getContextName(), value,
+                    ProjectStage.PROJECT_STAGE_PARAM_NAME, Arrays.toString(ProjectStage.values()), asText(ProjectStage.Production) }
+            );
             return ProjectStage.Production;
         }
     }
@@ -214,8 +221,7 @@ public class WebConfiguration {
     // ---------------------------------------------------------- Public Methods
 
     /**
-     * Returns the WebConfiguration instance for this application, by passing the current faces context to
-     * {@link #getInstance(FacesContext)}.
+     * Returns the WebConfiguration instance for this application, by passing the current faces context to {@link #getInstance(FacesContext)}.
      *
      * @return the WebConfiguration for this application or <code>null</code> if no FacesContext is available.
      */
@@ -263,8 +269,8 @@ public class WebConfiguration {
 
     /**
      * <p>
-     * Overrides what a parameter resolved to, for the one setting which is not expressible as a context parameter:
-     * <code>web.xml</code> declaring <code>&lt;distributable/&gt;</code>, which no parameter can observe.
+     * Overrides what a parameter resolved to, for the one setting which is not expressible as a context parameter: <code>web.xml</code> declaring
+     * <code>&lt;distributable/&gt;</code>, which no parameter can observe.
      * </p>
      *
      * @param param the parameter of interest.
@@ -286,9 +292,8 @@ public class WebConfiguration {
 
     /**
      * <p>
-     * Returns the value a context parameter resolved to for this application, in the type it declares. The resolution
-     * happens once, while this configuration is being read, so that a parameter costs a lookup rather than a parse
-     * wherever it is consulted.
+     * Returns the value a context parameter resolved to for this application, in the type it declares. The resolution happens once, while this configuration is
+     * being read, so that a parameter costs a lookup rather than a parse wherever it is consulted.
      * </p>
      *
      * @param <T> the expected type of the value.
@@ -311,12 +316,11 @@ public class WebConfiguration {
 
     /**
      * <p>
-     * Every name a parameter answers to as an application may spell it, most preferred first: the one it declares,
-     * followed by the ones it only still answers to for compatibility. A Mojarra parameter accepts the
-     * <code>com.sun.faces</code> prefix it carried before 5.0. A specification parameter which used to be a Mojarra one
-     * accepts the unqualified name it had then, under both prefixes: the one it actually carried, and the one the 5.0
-     * rename produces for anybody replacing <code>com.sun.faces</code> with <code>org.glassfish.mojarra</code>
-     * throughout, which is a name it never had, but is the single most likely wrong spelling in this release.
+     * Every name a parameter answers to as an application may spell it, most preferred first: the one it declares, followed by the ones it only still answers
+     * to for compatibility. A Mojarra parameter accepts the <code>com.sun.faces</code> prefix it carried before 5.0. A specification parameter which used to be
+     * a Mojarra one accepts the unqualified name it had then, under both prefixes: the one it actually carried, and the one the 5.0 rename produces for anybody
+     * replacing <code>com.sun.faces</code> with <code>org.glassfish.mojarra</code> throughout, which is a name it never had, but is the single most likely
+     * wrong spelling in this release.
      * </p>
      */
     private static List<String> declaredNamesOf(ContextParam param) {
@@ -335,8 +339,8 @@ public class WebConfiguration {
     }
 
     /**
-     * @return the same names as {@link #declaredNamesOf(ContextParam)}, in the spelling
-     * {@link #initSetList()} records them under and {@link #isSet(String)} therefore answers to.
+     * @return the same names as {@link #declaredNamesOf(ContextParam)}, in the spelling {@link #initSetList()} records them under and {@link #isSet(String)}
+     * therefore answers to.
      */
     private static List<String> namesOf(ContextParam param) {
         return declaredNamesOf(param).stream().map(WebConfiguration::normalize).distinct().collect(toList());
@@ -348,10 +352,9 @@ public class WebConfiguration {
 
     /**
      * <p>
-     * Resolves every context parameter to the value this application will see, once, so that consulting one costs a
-     * lookup rather than a parse. A value which cannot be converted to the type the parameter declares is reported and
-     * behaves as though the parameter was never declared, rather than as whatever a lenient parse happens to make of
-     * it, which for a boolean would silently be <code>false</code>.
+     * Resolves every context parameter to the value this application will see, once, so that consulting one costs a lookup rather than a parse. A value which
+     * cannot be converted to the type the parameter declares is reported and behaves as though the parameter was never declared, rather than as whatever a
+     * lenient parse happens to make of it, which for a boolean would silently be <code>false</code>.
      * </p>
      */
     private void processContextParams() {
@@ -371,8 +374,8 @@ public class WebConfiguration {
         resolvedValues.put(FacesContextParam.PROJECT_STAGE, projectStage);
 
         String decidedBy = getEnvironmentEntry(WebEnvironmentEntry.ProjectStage) != null
-                ? WebEnvironmentEntry.ProjectStage.getQualifiedName()
-                : ProjectStage.PROJECT_STAGE_PARAM_NAME;
+            ? WebEnvironmentEntry.ProjectStage.getQualifiedName()
+            : ProjectStage.PROJECT_STAGE_PARAM_NAME;
 
         report(decidedBy, projectStage);
     }
@@ -392,9 +395,12 @@ public class WebConfiguration {
 
                 return distinct;
             }
-        } catch (IllegalArgumentException e) {
-            LOGGER.log(Level.WARNING, "faces.config.webconfig.boolconfig.invalidvalue",
-                    new Object[] { getContextName(), value, param.getName(), allowedValuesOf(param), asText(param.getDefaultValue(projectStage)) });
+        }
+        catch (IllegalArgumentException e) {
+            LOGGER.log(
+                Level.WARNING, "faces.config.webconfig.boolconfig.invalidvalue",
+                new Object[] { getContextName(), value, param.getName(), allowedValuesOf(param), asText(param.getDefaultValue(projectStage)) }
+            );
         }
 
         return param.getDefaultValue(projectStage);
@@ -402,22 +408,23 @@ public class WebConfiguration {
 
     /**
      * <p>
-     * What a parameter resolves to, without reporting it, for the one parameter which has to be resolved before the
-     * level at which parameters are reported is known. {@link #processContextParams()} resolves it again along with all
-     * others, which is where it does get reported, and where an unusable value gets warned about.
+     * What a parameter resolves to, without reporting it, for the one parameter which has to be resolved before the level at which parameters are reported is
+     * known. {@link #processContextParams()} resolves it again along with all others, which is where it does get reported, and where an unusable value gets
+     * warned about.
      * </p>
      */
     private Object resolveUnreported(ContextParam param) {
         try {
             return param.toValue(getDeclaredValue(param)).orElseGet(() -> param.getDefaultValue(projectStage));
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             return param.getDefaultValue(projectStage);
         }
     }
 
     /**
-     * @return the value the application declared for the parameter, under whichever of its names it used, reporting the
-     * ones which only exist for compatibility.
+     * @return the value the application declared for the parameter, under whichever of its names it used, reporting the ones which only exist for
+     * compatibility.
      */
     private String getDeclaredValue(ContextParam param) {
         for (String name : declaredNamesOf(param)) {
@@ -454,9 +461,9 @@ public class WebConfiguration {
 
     /**
      * <p>
-     * Resolves a tri-state parameter, whose value is <code>true</code>, <code>false</code> or <code>auto</code>. An
-     * unusable value is reported and behaves as though the parameter was never set, rather than as <code>false</code>,
-     * which is what a bare {@link Boolean#parseBoolean(String)} would silently make of a typo.
+     * Resolves a tri-state parameter, whose value is <code>true</code>, <code>false</code> or <code>auto</code>. An unusable value is reported and behaves as
+     * though the parameter was never set, rather than as <code>false</code>, which is what a bare {@link Boolean#parseBoolean(String)} would silently make of a
+     * typo.
      * </p>
      *
      * @param param the parameter of interest.
@@ -464,8 +471,8 @@ public class WebConfiguration {
      * @return whether the option is enabled.
      */
     /**
-     * @return the trimmed value of a tri-state parameter, or <code>null</code> when it says <code>auto</code> or
-     * says something which cannot be used, in which case that is reported first.
+     * @return the trimmed value of a tri-state parameter, or <code>null</code> when it says <code>auto</code> or says something which cannot be used, in which
+     * case that is reported first.
      */
     /**
      * @return the name every message about this configuration reports the application under.
@@ -485,14 +492,13 @@ public class WebConfiguration {
 
     /**
      * <p>
-     * Reverts every development only parameter which was explicitly set away from its default to that default, unless
-     * the project stage is Development, and says so. Silently ignoring a setting which weakens the deployment would be
-     * worse than honoring it, so the warning matters as much as the gating.
+     * Reverts every development only parameter which was explicitly set away from its default to that default, unless the project stage is Development, and
+     * says so. Silently ignoring a setting which weakens the deployment would be worse than honoring it, so the warning matters as much as the gating.
      * </p>
      *
      * <p>
-     * This runs after bringup rather than during construction because it needs the project stage, and therefore a
-     * FacesContext, which does not exist yet while the parameters are being read.
+     * This runs after bringup rather than during construction because it needs the project stage, and therefore a FacesContext, which does not exist yet while
+     * the parameters are being read.
      * </p>
      */
     void processDevelopmentOnlyParameters() {
@@ -506,22 +512,22 @@ public class WebConfiguration {
             Object defaultValue = param.getDefaultValue(projectStage);
 
             if (!defaultValue.equals(getValue(param))) {
-                LOGGER.log(Level.WARNING, "faces.config.webconfig.param.development_only",
-                        new Object[] { getContextName(), param.getName(), projectStage, asText(defaultValue) });
+                LOGGER.log(
+                    Level.WARNING, "faces.config.webconfig.param.development_only",
+                    new Object[] { getContextName(), param.getName(), projectStage, asText(defaultValue) }
+                );
 
                 resolvedValues.put(param, defaultValue);
             }
         }
     }
 
-
     // ------------------------------------------------- Package Private Methods
 
     /**
      * <p>
-     * Discards the configuration read for the given context, so that the next reader reads it afresh. A container fixes
-     * its context parameters before anything can read them, so this exists for the one moment which is not that:
-     * bringup, which reads a provisional configuration before the application is known.
+     * Discards the configuration read for the given context, so that the next reader reads it afresh. A container fixes its context parameters before anything
+     * can read them, so this exists for the one moment which is not that: bringup, which reads a provisional configuration before the application is known.
      * </p>
      */
     static void clear(ServletContext servletContext) {
@@ -532,19 +538,19 @@ public class WebConfiguration {
 
     private static List<ContextParam> deprecatedParams() {
         return Stream.of(Stream.of(FacesContextParam.values()), Stream.of(MojarraContextParam.values()))
-                .flatMap(params -> params.filter(ContextParam::isDeprecated))
-                .collect(toList());
+            .flatMap(params -> params.filter(ContextParam::isDeprecated))
+            .collect(toList());
     }
 
     /**
      * <p>
-     * Warns about every deprecated context initialization parameter which was explicitly set, and carries the value of
-     * each one over to the parameter which replaces it, unless that one was explicitly set as well.
+     * Warns about every deprecated context initialization parameter which was explicitly set, and carries the value of each one over to the parameter which
+     * replaces it, unless that one was explicitly set as well.
      * </p>
      *
      * <p>
-     * A carried over value is reported under the name it moved to, because that is the parameter which governs the
-     * behaviour from here on, and the pass which reports the others has already run by then.
+     * A carried over value is reported under the name it moved to, because that is the parameter which governs the behaviour from here on, and the pass which
+     * reports the others has already run by then.
      * </p>
      */
     private void processDeprecatedParameters() {
@@ -565,17 +571,15 @@ public class WebConfiguration {
 
     /**
      * <p>
-     * The warning is deliberately not gated on the project stage. It announces a change in the runtime rather than a
-     * mistake in the application, and an application which is going to break on the next upgrade needs to hear about that
-     * in production too.
+     * The warning is deliberately not gated on the project stage. It announces a change in the runtime rather than a mistake in the application, and an
+     * application which is going to break on the next upgrade needs to hear about that in production too.
      * </p>
      *
      * @param alternateName the qualified name of the replacement, or <code>null</code> when there is no replacement.
      */
     /**
-     * @return the parameter which replaces this one and which can hold its value, or <code>null</code> when there is
-     * none. A replacement of another type cannot take the value over, which is what tells a rename apart from a
-     * successor which happens to cover the same ground.
+     * @return the parameter which replaces this one and which can hold its value, or <code>null</code> when there is none. A replacement of another type cannot
+     * take the value over, which is what tells a rename apart from a successor which happens to cover the same ground.
      */
     private static MojarraContextParam alternateOf(ContextParam param) {
         MojarraContextParam alternate = MojarraContextParam.of(param.getAlternateName());
@@ -584,8 +588,8 @@ public class WebConfiguration {
     }
 
     /**
-     * @return whether what this parameter resolves to ends up under the name of its replacement, which is the case
-     * when it has one of its type and the application did not declare that one itself.
+     * @return whether what this parameter resolves to ends up under the name of its replacement, which is the case when it has one of its type and the
+     * application did not declare that one itself.
      */
     private boolean isCarriedOver(ContextParam param) {
         MojarraContextParam alternate = alternateOf(param);
@@ -594,9 +598,9 @@ public class WebConfiguration {
     }
 
     /**
-     * Drops the values a multi-valued parameter lists more than once, naming them. A repeat gets this far because the
-     * separator only trims entries and drops empty ones, and past here every reader of the parameter would do the work
-     * behind that value a second time. A parameter of any other type cannot hold one and is handed back untouched.
+     * Drops the values a multi-valued parameter lists more than once, naming them. A repeat gets this far because the separator only trims entries and drops
+     * empty ones, and past here every reader of the parameter would do the work behind that value a second time. A parameter of any other type cannot hold one
+     * and is handed back untouched.
      */
     private Object withoutDuplicateValues(ContextParam param, Object value) {
         if (param.getType() != String[].class) {
@@ -618,16 +622,17 @@ public class WebConfiguration {
         }
 
         if (!isCarriedOver(param)) {
-            LOGGER.log(Level.WARNING, "faces.config.webconfig.param.duplicate_values",
-                    new Object[] { getContextName(), param.getName(), String.join(", ", duplicated) });
+            LOGGER.log(
+                Level.WARNING, "faces.config.webconfig.param.duplicate_values",
+                new Object[] { getContextName(), param.getName(), String.join(", ", duplicated) }
+            );
         }
 
         return distinct.toArray(String[]::new);
     }
 
     /**
-     * Reports what a parameter resolved to, under the name which decided it, so that a deployment can be read back
-     * from its own log.
+     * Reports what a parameter resolved to, under the name which decided it, so that a deployment can be read back from its own log.
      */
     private void report(String name, Object value) {
         if (LOGGER.isLoggable(loggingLevel)) {
@@ -636,9 +641,8 @@ public class WebConfiguration {
     }
 
     /**
-     * @return the value as it would be written in <code>web.xml</code>. A log message is a format pattern, which would
-     * otherwise render a number the way the reader's locale groups it, and a value which cannot be pasted back into a
-     * deployment descriptor is worse than no value at all.
+     * @return the value as it would be written in <code>web.xml</code>. A log message is a format pattern, which would otherwise render a number the way the
+     * reader's locale groups it, and a value which cannot be pasted back into a deployment descriptor is worse than no value at all.
      */
     private static String asText(Object value) {
         return value instanceof String[] values ? String.join(" ", values) : String.valueOf(value);
@@ -648,14 +652,14 @@ public class WebConfiguration {
 
         if (alternateName == null) {
             LOGGER.log(Level.WARNING, "faces.config.webconfig.param.deprecated.no_replacement", new Object[] { getContextName(), qualifiedName });
-        } else {
+        }
+        else {
             LOGGER.log(Level.WARNING, "faces.config.webconfig.param.deprecated", new Object[] { getContextName(), qualifiedName, alternateName });
         }
     }
 
     /**
-     * Adds all org.glassfish.mojarra init parameter names to a list. This allows callers to determine if a parameter was explicitly
-     * set.
+     * Adds all org.glassfish.mojarra init parameter names to a list. This allows callers to determine if a parameter was explicitly set.
      *
      */
     private void initSetList() {
@@ -663,15 +667,16 @@ public class WebConfiguration {
             String name = e.nextElement();
             if (name.startsWith(CURRENT_PARAM_PREFIX) || name.startsWith("jakarta.faces")) {
                 setParams.add(name);
-            } else if (name.startsWith(LEGACY_PARAM_PREFIX)) {
+            }
+            else if (name.startsWith(LEGACY_PARAM_PREFIX)) {
                 setParams.add(CURRENT_PARAM_PREFIX + name.substring(LEGACY_PARAM_PREFIX.length()));
             }
         }
     }
 
     /**
-     * Returns the init parameter value for the given qualified name, falling back to the legacy {@code com.sun.faces.*} equivalent
-     * if the current {@code org.glassfish.mojarra.*} name is not set. Logs a deprecation warning when the legacy name is used.
+     * Returns the init parameter value for the given qualified name, falling back to the legacy {@code com.sun.faces.*} equivalent if the current
+     * {@code org.glassfish.mojarra.*} name is not set. Logs a deprecation warning when the legacy name is used.
      */
     /**
      * @param name the param name
@@ -698,10 +703,12 @@ public class WebConfiguration {
 
         try {
             initialContext = new InitialContext();
-        } catch (NoClassDefFoundError nde) {
+        }
+        catch (NoClassDefFoundError nde) {
             // On google app engine InitialContext is forbidden to use and GAE throws NoClassDefFoundError
             LOGGER.log(FINE, nde, nde::toString);
-        } catch (NamingException ne) {
+        }
+        catch (NamingException ne) {
             LOGGER.log(Level.WARNING, ne, ne::toString);
         }
 
@@ -713,7 +720,8 @@ public class WebConfiguration {
 
                 try {
                     value = (String) initialContext.lookup(entryName);
-                } catch (NamingException root) {
+                }
+                catch (NamingException root) {
                     LOGGER.log(Level.FINE, root::toString);
                 }
 
@@ -752,7 +760,8 @@ public class WebConfiguration {
 
             if (qualifiedName.startsWith(JNDI_PREFIX)) {
                 this.qualifiedName = qualifiedName;
-            } else {
+            }
+            else {
                 this.qualifiedName = JNDI_PREFIX + qualifiedName;
             }
 

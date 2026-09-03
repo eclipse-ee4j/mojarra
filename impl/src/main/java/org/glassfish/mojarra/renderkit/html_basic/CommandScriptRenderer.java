@@ -33,8 +33,7 @@ import jakarta.faces.event.PhaseId;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 
 /**
- * <b>CommandScriptRenderer</b> is a class that renders the current value of <code>UICommand</code> as a Script that acts
- * like an Ajax Button.
+ * <b>CommandScriptRenderer</b> is a class that renders the current value of <code>UICommand</code> as a Script that acts like an Ajax Button.
  */
 public class CommandScriptRenderer extends HtmlBasicRenderer {
 

@@ -32,4 +32,5 @@ public class UserSession implements Serializable {
     public long getHits() {
         return hits.incrementAndGet();
     }
+
 }

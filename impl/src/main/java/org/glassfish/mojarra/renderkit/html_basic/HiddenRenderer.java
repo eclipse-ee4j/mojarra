@@ -27,8 +27,7 @@ import jakarta.faces.context.ResponseWriter;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 
 /**
- * <B>HiddenRenderer</B> is a class that renders the current value of <code>UIInput</code> component as a HTML hidden
- * variable.
+ * <B>HiddenRenderer</B> is a class that renders the current value of <code>UIInput</code> component as a HTML hidden variable.
  */
 public class HiddenRenderer extends HtmlBasicInputRenderer {
 

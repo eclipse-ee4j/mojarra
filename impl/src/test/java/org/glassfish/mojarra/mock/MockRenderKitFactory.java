@@ -28,8 +28,10 @@ import jakarta.faces.render.RenderKitFactory;
 public class MockRenderKitFactory extends RenderKitFactory {
 
     public MockRenderKitFactory(RenderKitFactory oldImpl) {
-        System.setProperty(FactoryFinder.RENDER_KIT_FACTORY,
-                this.getClass().getName());
+        System.setProperty(
+            FactoryFinder.RENDER_KIT_FACTORY,
+            this.getClass().getName()
+        );
     }
 
     public MockRenderKitFactory() {
@@ -70,4 +72,5 @@ public class MockRenderKitFactory extends RenderKitFactory {
             return (renderKits.keySet().iterator());
         }
     }
+
 }

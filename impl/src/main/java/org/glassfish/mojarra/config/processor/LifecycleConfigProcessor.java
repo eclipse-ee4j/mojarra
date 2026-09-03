@@ -111,8 +111,10 @@ public class LifecycleConfigProcessor extends AbstractConfigProcessor {
                 if (phaseListenerClassName != null) {
                     boolean[] didPerformInjection = { false };
 
-                    PhaseListener phaseListener = (PhaseListener) createInstance(sc, facesContext, phaseListenerClassName, PhaseListener.class, null,
-                            phaseListenerNode, true, didPerformInjection);
+                    PhaseListener phaseListener = (PhaseListener) createInstance(
+                        sc, facesContext, phaseListenerClassName, PhaseListener.class, null,
+                        phaseListenerNode, true, didPerformInjection
+                    );
 
                     if (phaseListener != null) {
                         if (didPerformInjection[0]) {

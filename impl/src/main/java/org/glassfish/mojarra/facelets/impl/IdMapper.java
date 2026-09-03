@@ -50,7 +50,8 @@ public class IdMapper {
         Util.notNull("ctx", ctx);
         if (mapper == null) {
             ctx.getAttributes().remove(KEY);
-        } else {
+        }
+        else {
             ctx.getAttributes().put(KEY, mapper);
         }
 
@@ -64,8 +65,7 @@ public class IdMapper {
     }
 
     /**
-     * Returns the alias the mapper in effect for the current build gives to the given id, or the id itself when no
-     * mapper is in effect.
+     * Returns the alias the mapper in effect for the current build gives to the given id, or the id itself when no mapper is in effect.
      *
      * @param ctx the current FacesContext
      * @param id the id to alias
@@ -94,4 +94,5 @@ public class IdMapper {
         }
 
     }
+
 }

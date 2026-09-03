@@ -36,8 +36,7 @@ final class DefaultFaceletCache extends FaceletCache<DefaultFacelet> {
     /**
      * Constructor
      *
-     * @param refreshPeriod cache refresh period (in seconds). 0 means 'always refresh', negative value means 'never
-     * refresh'
+     * @param refreshPeriod cache refresh period (in seconds). 0 means 'always refresh', negative value means 'never refresh'
      */
     DefaultFaceletCache(final long refreshPeriodInSeconds) {
 
@@ -66,7 +65,8 @@ final class DefaultFaceletCache extends FaceletCache<DefaultFacelet> {
         if (refreshPeriodInSeconds == 0) {
             _faceletCache = new NoCache(faceletFactory);
             _metadataFaceletCache = new NoCache(metadataFaceletFactory);
-        } else {
+        }
+        else {
             ExpiringConcurrentCache.ExpiryChecker<URL, Record> checker = refreshPeriodInSeconds > 0 ? new ExpiryChecker() : new NeverExpired();
             _faceletCache = new ExpiringConcurrentCache<>(faceletFactory, checker);
             _metadataFaceletCache = new ExpiringConcurrentCache<>(metadataFaceletFactory, checker);
@@ -80,7 +80,8 @@ final class DefaultFaceletCache extends FaceletCache<DefaultFacelet> {
 
         try {
             f = _faceletCache.get(url).getFacelet();
-        } catch (ExecutionException e) {
+        }
+        catch (ExecutionException e) {
             _unwrapIOException(e);
         }
         return f;
@@ -101,7 +102,8 @@ final class DefaultFaceletCache extends FaceletCache<DefaultFacelet> {
 
         try {
             f = _metadataFaceletCache.get(url).getFacelet();
-        } catch (ExecutionException e) {
+        }
+        catch (ExecutionException e) {
             _unwrapIOException(e);
         }
         return f;
@@ -132,10 +134,10 @@ final class DefaultFaceletCache extends FaceletCache<DefaultFacelet> {
     private final ConcurrentCache<URL, Record> _metadataFaceletCache;
 
     /**
-     * This class holds the Facelet instance and its original URL's last modified time. It also produces the time when the
-     * next expiry check should be performed
+     * This class holds the Facelet instance and its original URL's last modified time. It also produces the time when the next expiry check should be performed
      */
     private static class Record {
+
         Record(long creationTime, long lastModified, DefaultFacelet facelet, long refreshIntervalInMillis) {
             _facelet = facelet;
             _lastModified = lastModified;
@@ -167,6 +169,7 @@ final class DefaultFaceletCache extends FaceletCache<DefaultFacelet> {
         private final long _refreshInterval;
         private final AtomicLong _nextRefreshTime;
         private final DefaultFacelet _facelet;
+
     }
 
     private static class ExpiryChecker implements ExpiringConcurrentCache.ExpiryChecker<URL, Record> {
@@ -182,19 +185,23 @@ final class DefaultFaceletCache extends FaceletCache<DefaultFacelet> {
             }
             return false;
         }
+
     }
 
     private static class NeverExpired implements ExpiringConcurrentCache.ExpiryChecker<URL, Record> {
+
         @Override
         public boolean isExpired(URL key, Record value) {
             return false;
         }
+
     }
 
     /**
      * ConcurrentCache implementation that does no caching (always creates new instances)
      */
     private static class NoCache extends ConcurrentCache<URL, Record> {
+
         public NoCache(ConcurrentCache.Factory<URL, Record> f) {
             super(f);
         }
@@ -203,7 +210,8 @@ final class DefaultFaceletCache extends FaceletCache<DefaultFacelet> {
         public Record get(final URL key) throws ExecutionException {
             try {
                 return getFactory().newInstance(key);
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 throw new ExecutionException(e);
             }
         }
@@ -212,5 +220,7 @@ final class DefaultFaceletCache extends FaceletCache<DefaultFacelet> {
         public boolean containsKey(final URL key) {
             return false;
         }
+
     }
+
 }

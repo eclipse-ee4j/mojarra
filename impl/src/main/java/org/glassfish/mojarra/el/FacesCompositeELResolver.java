@@ -39,4 +39,5 @@ public abstract class FacesCompositeELResolver extends CompositeELResolver {
     public abstract void addRootELResolver(ELResolver elResolver);
 
     public abstract void addPropertyELResolver(ELResolver elResolver);
+
 }

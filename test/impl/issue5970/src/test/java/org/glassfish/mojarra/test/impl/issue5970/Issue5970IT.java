@@ -26,12 +26,11 @@ import ee.jakarta.tck.faces.util.selenium.BaseITNG;
 import ee.jakarta.tck.faces.util.selenium.WebPage;
 
 /**
- * A postback rebuilds its view from the markup rather than from the response it was submitted from, so a build time
- * condition evaluating to another value than it did leaves the state of a rendered component with nothing to be
- * restored into. Under {@code ProjectStage.Development} that is reported, which is only worth reading when the
- * components it names are the ones a build time condition governs: the components a facelet built. A component no
- * facelet built is none of the report's business, and one of those left without an id of its own does not even hold
- * a stable client id, so comparing it would report every view holding one on every postback.
+ * A postback rebuilds its view from the markup rather than from the response it was submitted from, so a build time condition evaluating to another value than
+ * it did leaves the state of a rendered component with nothing to be restored into. Under {@code ProjectStage.Development} that is reported, which is only
+ * worth reading when the components it names are the ones a build time condition governs: the components a facelet built. A component no facelet built is none
+ * of the report's business, and one of those left without an id of its own does not even hold a stable client id, so comparing it would report every view
+ * holding one on every postback.
  *
  * @see org.glassfish.mojarra.application.view.FaceletStateManagementStrategy
  */
@@ -51,9 +50,8 @@ class Issue5970IT extends BaseITNG {
     private static final String NO_REPORTS = "[]";
 
     /**
-     * The input a <code>c:if</code> held while the response was rendered, and no longer holds while the postback is
-     * restored, is named by the report. The webapp leaves <code>restoreBuildTimeDecisions</code> off, since replaying
-     * the condition rebuilds the input and so leaves nothing to report on.
+     * The input a <code>c:if</code> held while the response was rendered, and no longer holds while the postback is restored, is named by the report. The
+     * webapp leaves <code>restoreBuildTimeDecisions</code> off, since replaying the condition rebuilds the input and so leaves nothing to report on.
      */
     @Test
     void testComponentDroppedByABuildTimeCondition() {
@@ -68,9 +66,8 @@ class Issue5970IT extends BaseITNG {
     }
 
     /**
-     * A form which prepends no id hands its children the client id of the container above it rather than one
-     * extending its own, so it stands on no row and the input a <code>c:if</code> drops is reported as it is
-     * anywhere else.
+     * A form which prepends no id hands its children the client id of the container above it rather than one extending its own, so it stands on no row and the
+     * input a <code>c:if</code> drops is reported as it is anywhere else.
      */
     @Test
     void testComponentDroppedByABuildTimeConditionInAFormWhichPrependsNoId() {
@@ -85,9 +82,8 @@ class Issue5970IT extends BaseITNG {
     }
 
     /**
-     * A component the render left holding the row of an iterating naming container is reported on by neither
-     * postback: it holds another client id on every request which does not iterate that container, so comparing it
-     * would report it as vanished on every postback.
+     * A component the render left holding the row of an iterating naming container is reported on by neither postback: it holds another client id on every
+     * request which does not iterate that container, so comparing it would report it as vanished on every postback.
      *
      * @see <a href="https://github.com/eclipse-ee4j/mojarra/issues/5984">GitHub issue #5984</a>
      */
@@ -102,10 +98,9 @@ class Issue5970IT extends BaseITNG {
     }
 
     /**
-     * A view holding no build time condition at all is reported on by neither postback, even though it holds the
-     * component resources which <code>f:ajax</code> installs: no facelet built those, and they are numbered from a
-     * counter which the build leaves where the state of the previous request then moves it, so they hold another
-     * client id on every request.
+     * A view holding no build time condition at all is reported on by neither postback, even though it holds the component resources which <code>f:ajax</code>
+     * installs: no facelet built those, and they are numbered from a counter which the build leaves where the state of the previous request then moves it, so
+     * they hold another client id on every request.
      */
     @Test
     void testViewHoldingOnlyComponentsNoBuildTimeConditionGoverns() {
@@ -117,4 +112,5 @@ class Issue5970IT extends BaseITNG {
         page.guardAjax(page.findElement(AJAX_SUBMIT)::click);
         assertEquals(NO_REPORTS, page.findElement(REPORTS).getText(), "no report after an ajax postback");
     }
+
 }

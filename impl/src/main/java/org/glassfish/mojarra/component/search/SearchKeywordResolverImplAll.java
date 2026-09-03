@@ -34,7 +34,8 @@ public class SearchKeywordResolverImplAll extends AbstractSearchKeywordResolverI
             }
 
             searchKeywordContext.invokeContextCallback(parent);
-        } else {
+        }
+        else {
             searchKeywordContext.setKeywordResolved(true);
         }
     }
@@ -53,4 +54,5 @@ public class SearchKeywordResolverImplAll extends AbstractSearchKeywordResolverI
     public boolean isLeaf(SearchExpressionContext searchExpressionContext, String keyword) {
         return true;
     }
+
 }

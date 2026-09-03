@@ -45,7 +45,8 @@ public class InputValueChangeListenerTestImpl implements ValueChangeListener<Obj
     public static void trace(String text) {
         if (text == null) {
             trace.setLength(0);
-        } else {
+        }
+        else {
             trace.append('/');
             trace.append(text);
         }
@@ -55,4 +56,5 @@ public class InputValueChangeListenerTestImpl implements ValueChangeListener<Obj
     public static String trace() {
         return trace.toString();
     }
+
 }

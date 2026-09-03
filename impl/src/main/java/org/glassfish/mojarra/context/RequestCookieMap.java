@@ -134,7 +134,8 @@ public class RequestCookieMap extends BaseContextMap<Object> {
             curIndex++;
             if (curIndex < upperBound) {
                 return cookies[curIndex].getName();
-            } else {
+            }
+            else {
                 throw new NoSuchElementException();
             }
         }

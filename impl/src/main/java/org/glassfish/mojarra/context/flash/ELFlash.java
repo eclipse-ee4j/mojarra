@@ -61,35 +61,29 @@ import org.glassfish.mojarra.util.FacesLogger;
  * </p>
  *
  * <p>
- * This class is an application singleton. It has one ivar, innerMap. Entries are added to and removed from this map as
- * needed according to how the flash scope is defined in the spec. This implementation never touches the session, nor
- * does it cause the session to be created.
+ * This class is an application singleton. It has one ivar, innerMap. Entries are added to and removed from this map as needed according to how the flash scope
+ * is defined in the spec. This implementation never touches the session, nor does it cause the session to be created.
  * </p>
  *
  * <p>
- * Most of the hairy logic is encapsulated with in the inner class PreviousNextFlashInfoManager. An instance of this
- * class is obtained by calling one of the variants of getCurrentFlashManager(). When the instance is no longer needed
- * for this request, call releaseCurrentFlashManager().
+ * Most of the hairy logic is encapsulated with in the inner class PreviousNextFlashInfoManager. An instance of this class is obtained by calling one of the
+ * variants of getCurrentFlashManager(). When the instance is no longer needed for this request, call releaseCurrentFlashManager().
  * </p>
  *
  * <p>
- * Two very important methods are getPhaseMapForWriting() and getPhaseMapForReading(). These methods are the basis for
- * the Map implementation methods. Methods that need to write to the map use getPhaseMapForWriting(), those that need to
- * read use getPhaseMapForReading(). These methods allow for the laziness that allows us to only incur a cost when the
- * flash is actually written to.
+ * Two very important methods are getPhaseMapForWriting() and getPhaseMapForReading(). These methods are the basis for the Map implementation methods. Methods
+ * that need to write to the map use getPhaseMapForWriting(), those that need to read use getPhaseMapForReading(). These methods allow for the laziness that
+ * allows us to only incur a cost when the flash is actually written to.
  * </p>
  *
  * <p>
- * The operation of this class is intimately tied to the request processing lifecycle. Let's break down every run thru
- * the request processing lifecycle into two parts called "previous" and "next". We use the names "previous" and "next"
- * to indicate the persistence and timing of the data that is stored in the flash. Consider two runs through the requset
- * processing lifecle: N and N+1. On request N, there is no "previous" request. On Request N, any writes to the flash
- * that happen during RENDER RESPONSE go to the "next" flash map. This means they are available for the ENTIRE run
- * though the request processing lifecycle on request N+1. Any entries put into the "next" flash map on request N will
- * be expired at the end of request N+1. Now, when we get into request N+1 what was considered "next" on request N, is
- * now called "previous" from the perspective of request N+1. Any reads from the flash during request N+1 come from the
- * "previous" map. Any writes to the flash before RENDER RESPONSE go to the "previous" map. Any writes to the flash
- * during RENDER RESPNOSE go to the "next" map.
+ * The operation of this class is intimately tied to the request processing lifecycle. Let's break down every run thru the request processing lifecycle into two
+ * parts called "previous" and "next". We use the names "previous" and "next" to indicate the persistence and timing of the data that is stored in the flash.
+ * Consider two runs through the requset processing lifecle: N and N+1. On request N, there is no "previous" request. On Request N, any writes to the flash that
+ * happen during RENDER RESPONSE go to the "next" flash map. This means they are available for the ENTIRE run though the request processing lifecycle on request
+ * N+1. Any entries put into the "next" flash map on request N will be expired at the end of request N+1. Now, when we get into request N+1 what was considered
+ * "next" on request N, is now called "previous" from the perspective of request N+1. Any reads from the flash during request N+1 come from the "previous" map.
+ * Any writes to the flash before RENDER RESPONSE go to the "previous" map. Any writes to the flash during RENDER RESPNOSE go to the "next" map.
  * </p>
  */
 
@@ -99,9 +93,8 @@ public class ELFlash extends Flash {
 
     /**
      * <p>
-     * Keys in this map are the string version of sequence numbers obtained via calls to {@link #getNewSequenceNumber}.
-     * Values are the actual Map instances that back the actual Map methods on this class. All writes to and reads from this
-     * map are done by the {@link PreviousNextFlashInfoManager} inner class.
+     * Keys in this map are the string version of sequence numbers obtained via calls to {@link #getNewSequenceNumber}. Values are the actual Map instances that
+     * back the actual Map methods on this class. All writes to and reads from this map are done by the {@link PreviousNextFlashInfoManager} inner class.
      * </p>
      *
      */
@@ -119,7 +112,6 @@ public class ELFlash extends Flash {
 
     private final ByteArrayGuardAESCTR guard;
 
-
     /**
      * <p>
      * These constants are referenced from other source files in this package. This one is a disambiguator prefix.
@@ -136,16 +128,15 @@ public class ELFlash extends Flash {
 
     /**
      * <p>
-     * This constant is used as the name of the cookie sent to the client. The cookie is used to allow the flash scope to be
-     * used to support POST REDIRECT GET navigation.
+     * This constant is used as the name of the cookie sent to the client. The cookie is used to allow the flash scope to be used to support POST REDIRECT GET
+     * navigation.
      * </p>
      */
     static final String FLASH_COOKIE_NAME = PREFIX + "c";
 
     /**
      * <p>
-     * This constant is used as the key the request map used, in the FlashELResolver, to convey the name of the property
-     * being accessed via 'now'.
+     * This constant is used as the key the request map used, in the FlashELResolver, to convey the name of the property being accessed via 'now'.
      * </p>
      */
     static final String FLASH_NOW_REQUEST_KEY = FLASH_ATTRIBUTE_NAME + "n";
@@ -153,16 +144,15 @@ public class ELFlash extends Flash {
     enum CONSTANTS {
 
         /**
-         * The key in the FacesContext attributes map (hereafter referred to as contextMap) for the request scoped
-         * {@link PreviousNextFlashInfoManager}.
+         * The key in the FacesContext attributes map (hereafter referred to as contextMap) for the request scoped {@link PreviousNextFlashInfoManager}.
          */
 
         RequestFlashManager,
 
         /**
-         * At the beginning of every phase, we save the value of the facesContext.getResponseComplete() into the contextMap
-         * under this key. We check this value after the phase to see if this is the phase where the user called
-         * responseComplete(). This is important to cover cases when the user does some funny lifecycle stuff.
+         * At the beginning of every phase, we save the value of the facesContext.getResponseComplete() into the contextMap under this key. We check this value
+         * after the phase to see if this is the phase where the user called responseComplete(). This is important to cover cases when the user does some funny
+         * lifecycle stuff.
          */
 
         SavedResponseCompleteFlagValue,
@@ -174,8 +164,7 @@ public class ELFlash extends Flash {
         FacesMessageAttributeName,
 
         /**
-         * This is used as the key in the flash itself to track whether or not messages are being saved across request/response
-         * boundaries.
+         * This is used as the key in the flash itself to track whether or not messages are being saved across request/response boundaries.
          */
 
         KeepAllMessagesAttributeName,
@@ -213,9 +202,8 @@ public class ELFlash extends Flash {
 
     /**
      * <p>
-     * Returns the flash <code>Map</code> for this application. This is a convenience method that calls
-     * <code>FacesContext.getCurrentInstance()</code> and then calls the overloaded <code>getFlash()</code> that takes a
-     * <code>FacesContext</code> with it.
+     * Returns the flash <code>Map</code> for this application. This is a convenience method that calls <code>FacesContext.getCurrentInstance()</code> and then
+     * calls the overloaded <code>getFlash()</code> that takes a <code>FacesContext</code> with it.
      * </p>
      *
      * @return The flash <code>Map</code> for this session.
@@ -230,8 +218,8 @@ public class ELFlash extends Flash {
      *
      * @param extContext the <code>ExternalContext</code> for this request.
      *
-     * @param create <code>true</code> to create a new instance for this request if necessary; <code>false</code> to return
-     * <code>null</code> if there's no instance in the current <code>session</code>.
+     * @param create <code>true</code> to create a new instance for this request if necessary; <code>false</code> to return <code>null</code> if there's no
+     * instance in the current <code>session</code>.
      *
      * @return The flash <code>Map</code> for this session.
      */
@@ -249,8 +237,7 @@ public class ELFlash extends Flash {
         }
 
         /*
-         * If we are in a clustered environment and a session is active, store a helper to ensure our innerMap gets successfully
-         * replicated.
+         * If we are in a clustered environment and a session is active, store a helper to ensure our innerMap gets successfully replicated.
          */
         if (appMap.get(MojarraContextParam.ENABLE_DISTRIBUTABLE.getName()) != null) {
             synchronized (extContext.getContext()) {
@@ -320,9 +307,11 @@ public class ELFlash extends Flash {
         if (null != key) {
             if (key.equals("keepMessages")) {
                 result = isKeepMessages();
-            } else if (key.equals("redirect")) {
+            }
+            else if (key.equals("redirect")) {
                 result = isRedirect();
-            } else {
+            }
+            else {
                 if (isKeepFlagSet(context)) {
                     result = getPhaseMapForReading().get(key);
                     keep(key.toString());
@@ -438,7 +427,7 @@ public class ELFlash extends Flash {
     @Override
     public Set<Map.Entry<String, Object>> entrySet() {
         Set<Map.Entry<String, Object>> readingMapEntrySet = getPhaseMapForReading().entrySet(), writingMapEntrySet = getPhaseMapForWriting().entrySet(),
-                result = null;
+            result = null;
 
         result = new HashSet<>();
         result.addAll(readingMapEntrySet);
@@ -521,12 +510,14 @@ public class ELFlash extends Flash {
             if (isKeepMessages()) {
                 restoreAllMessages(context);
             }
-        } else if (currentPhase.equals(PhaseId.RENDER_RESPONSE) && forceAlwaysWriteFlashCookie) {
+        }
+        else if (currentPhase.equals(PhaseId.RENDER_RESPONSE) && forceAlwaysWriteFlashCookie) {
             PreviousNextFlashInfoManager flashManager = getCurrentFlashManager(contextMap, true);
             cookie = flashManager.encode();
             if (null != cookie) {
                 setCookie(context, flashManager, cookie, true);
-            } else {
+            }
+            else {
                 if (LOGGER.isLoggable(Level.WARNING)) {
                     LOGGER.log(Level.WARNING, "faces.externalcontext.flash.force.write.cookie.failed");
                 }
@@ -546,7 +537,7 @@ public class ELFlash extends Flash {
         PhaseId currentPhase = context.getCurrentPhaseId();
         Map<Object, Object> contextMap = context.getAttributes();
         boolean responseCompleteJustSetTrue = responseCompleteWasJustSetTrue(context, contextMap),
-                lastPhaseForThisRequest = responseCompleteJustSetTrue || currentPhase == PhaseId.RENDER_RESPONSE;
+            lastPhaseForThisRequest = responseCompleteJustSetTrue || currentPhase == PhaseId.RENDER_RESPONSE;
         if (lastPhaseForThisRequest) {
             doLastPhaseActions(context, false);
         }
@@ -556,32 +547,27 @@ public class ELFlash extends Flash {
 
     /**
      * <p>
-     * This is the most magic of methods. There are several scenarios in which this method can be called, but the first time
-     * it is called for a request it takes action, while on subsequent times it returns without taking action. This is due
-     * to the call to {@link #releaseCurrentFlashManager}. After this call, any calls to {@link #getCurrentFlashManager}
-     * will return null.
+     * This is the most magic of methods. There are several scenarios in which this method can be called, but the first time it is called for a request it takes
+     * action, while on subsequent times it returns without taking action. This is due to the call to {@link #releaseCurrentFlashManager}. After this call, any
+     * calls to {@link #getCurrentFlashManager} will return null.
      * </p>
      *
      * <p>
-     * Scenario 1: normal request ending. This will be called after the RENDER_RESPONSE phase executes.
-     * outgoingResponseIsRedirect will be false.
+     * Scenario 1: normal request ending. This will be called after the RENDER_RESPONSE phase executes. outgoingResponseIsRedirect will be false.
      * </p>
      *
      * <p>
-     * Scenario 2: navigationHandler asks extContext for redirect. In this case, extContext calls this method directly,
-     * outgoingResponseIsRedirect will be true.
+     * Scenario 2: navigationHandler asks extContext for redirect. In this case, extContext calls this method directly, outgoingResponseIsRedirect will be true.
      * </p>
      *
      * <p>
-     * Scenario 3: extContext.flushBuffer(): As far as I can tell, this was only called in the JSP case, but it's good to
-     * call it from there anyway, because we need to write our cookie before the response is committed.
-     * outgoingResponseIsRedirect is false.
+     * Scenario 3: extContext.flushBuffer(): As far as I can tell, this was only called in the JSP case, but it's good to call it from there anyway, because we
+     * need to write our cookie before the response is committed. outgoingResponseIsRedirect is false.
      * </p>
      *
      * <p>
-     * Scenario 4: after rendering the response in JSP, but before the buffer is flushed. In the JSP case, I've found this
-     * necessary because the call to extContext.flushBuffer() is too late, the response has already been committed by that
-     * point. outgoingResponseIsRedirect is false.
+     * Scenario 4: after rendering the response in JSP, but before the buffer is flushed. In the JSP case, I've found this necessary because the call to
+     * extContext.flushBuffer() is too late, the response has already been committed by that point. outgoingResponseIsRedirect is false.
      * </p>
      *
      * @param context the involved faces context
@@ -606,7 +592,8 @@ public class ELFlash extends Flash {
             // Next two methods are VITALLY IMPORTANT!
             previousRequestFlashInfo.setIsRedirect(true);
             flashManager.expireNext_MovePreviousToNext();
-        } else {
+        }
+        else {
             FlashInfo flashInfo = flashManager.getPreviousRequestFlashInfo();
             if (null != flashInfo && flashInfo.getLifetimeMarker() == LifetimeMarker.SecondTimeThru) {
                 flashManager.expirePrevious();
@@ -747,7 +734,8 @@ public class ELFlash extends Flash {
                 if (isDebugLog) {
                     LOGGER.log(Level.FINEST, "{0}previous[{1}]", new Object[] { getLogPrefix(context), flashInfo.getSequenceNumber() });
                 }
-            } else {
+            }
+            else {
                 flashInfo = flashManager.getNextRequestFlashInfo(this, true);
                 if (isDebugLog) {
                     LOGGER.log(Level.FINEST, "{0}next[{1}]", new Object[] { getLogPrefix(context), flashInfo.getSequenceNumber() });
@@ -763,10 +751,9 @@ public class ELFlash extends Flash {
 
     /**
      * <p>
-     * If the current phase is earlier than RENDER_RESPONSE, return the map for the "previous" request. Otherwise, return
-     * the map for the "next" request. Note that we use getCurrentFlashManager(contextMap,true). This is because if this
-     * method is being called, we know we actually need the map, so we have to ensure the underlying data structure is
-     * present before trying to access it.
+     * If the current phase is earlier than RENDER_RESPONSE, return the map for the "previous" request. Otherwise, return the map for the "next" request. Note
+     * that we use getCurrentFlashManager(contextMap,true). This is because if this method is being called, we know we actually need the map, so we have to
+     * ensure the underlying data structure is present before trying to access it.
      * </p>
      */
 
@@ -798,10 +785,9 @@ public class ELFlash extends Flash {
 
     /**
      * <p>
-     * Always return the map for the "previous" request. Note that we use getCurrentFlashManager(contextMap,false). This is
-     * because if this method is being called, and there is pre-existing data in the flash from a previous write, then the
-     * PreviousNextFlashInfoManager will already have been created. If there is not pre-existing data, we don't create the
-     * PreviousNextFlashInfoManager, and therefore just return the empty map.
+     * Always return the map for the "previous" request. Note that we use getCurrentFlashManager(contextMap,false). This is because if this method is being
+     * called, and there is pre-existing data in the flash from a previous write, then the PreviousNextFlashInfoManager will already have been created. If there
+     * is not pre-existing data, we don't create the PreviousNextFlashInfoManager, and therefore just return the empty map.
      * </p>
      */
 
@@ -926,7 +912,8 @@ public class ELFlash extends Flash {
                 if (prevFlash != null) {
                     flashManager.expirePrevious();
                 }
-            } else {
+            }
+            else {
                 Map<String, Object> properties = new HashMap<>();
                 Object val;
 
@@ -938,7 +925,8 @@ public class ELFlash extends Flash {
                 }
                 if (extContext.isSecure()) {
                     properties.put("secure", Boolean.TRUE);
-                } else if (null != (val = toSet.getSecure())) {
+                }
+                else if (null != (val = toSet.getSecure())) {
                     properties.put("secure", val);
                 }
                 if (null != (val = toSet.getPath())) {
@@ -949,7 +937,8 @@ public class ELFlash extends Flash {
                 properties = null;
             }
             contextMap.put(CONSTANTS.DidWriteCookieAttributeName, Boolean.TRUE);
-        } else {
+        }
+        else {
             removeCookie(extContext, toSet);
         }
     }
@@ -970,7 +959,8 @@ public class ELFlash extends Flash {
         }
         if (extContext.isSecure()) {
             properties.put("secure", Boolean.TRUE);
-        } else if (null != (val = toRemove.getSecure())) {
+        }
+        else if (null != (val = toRemove.getSecure())) {
             properties.put("secure", val);
         }
         if (null != (val = toRemove.getPath())) {
@@ -986,7 +976,10 @@ public class ELFlash extends Flash {
 
         // these must be unique
 
-        FirstTimeThru("f"), SecondTimeThru("s"), IsRedirect("r"), IsNormal("n");
+        FirstTimeThru("f"),
+        SecondTimeThru("s"),
+        IsRedirect("r"),
+        IsNormal("n");
 
         private static char FIRST_TIME_THRU = 'f';
         private static char SECOND_TIME_THRU = 's';
@@ -1013,13 +1006,17 @@ public class ELFlash extends Flash {
 
             if (FIRST_TIME_THRU == c) {
                 result = FirstTimeThru;
-            } else if (SECOND_TIME_THRU == c) {
+            }
+            else if (SECOND_TIME_THRU == c) {
                 result = SecondTimeThru;
-            } else if (IS_REDIRECT == c) {
+            }
+            else if (IS_REDIRECT == c) {
                 result = IsRedirect;
-            } else if (IS_NORMAL == c) {
+            }
+            else if (IS_NORMAL == c) {
                 result = IsNormal;
-            } else {
+            }
+            else {
                 throw new IllegalStateException("class invariant failed: invalid lifetime marker");
             }
 
@@ -1034,8 +1031,8 @@ public class ELFlash extends Flash {
 
     /**
      * <p>
-     * Called when you need to get access to the flashManager. If argument create is true, and no instance of the
-     * FlashManager exists for this request, create it and store it in the contextMap.
+     * Called when you need to get access to the flashManager. If argument create is true, and no instance of the FlashManager exists for this request, create
+     * it and store it in the contextMap.
      * </p>
      */
     private PreviousNextFlashInfoManager getCurrentFlashManager(Map<Object, Object> contextMap, boolean create) {
@@ -1052,8 +1049,8 @@ public class ELFlash extends Flash {
 
     /**
      * <p>
-     * Called on the preRestoreView phase if the browser sent us a cookie. If no instance of the FlashManager exists for
-     * this request, create it and store it in the contextMap.
+     * Called on the preRestoreView phase if the browser sent us a cookie. If no instance of the FlashManager exists for this request, create it and store it in
+     * the contextMap.
      * </p>
      */
     private PreviousNextFlashInfoManager getCurrentFlashManager(FacesContext context, Map<Object, Object> contextMap, Cookie cookie) {
@@ -1064,7 +1061,8 @@ public class ELFlash extends Flash {
             try {
                 result.decode(context, this, cookie);
                 contextMap.put(CONSTANTS.RequestFlashManager, result);
-            } catch (InvalidKeyException ike) {
+            }
+            catch (InvalidKeyException ike) {
                 contextMap.put(CONSTANTS.ForceSetMaxAgeZero, Boolean.TRUE);
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     result = getCurrentFlashManager(contextMap, true);
@@ -1079,15 +1077,13 @@ public class ELFlash extends Flash {
 
     /**
      * <p>
-     * On any given request, there are actually two maps behind the flash. Which one is actually used on a given Map method
-     * depends on the current lifecycle phase at the time the method is invoked. There is a "next" map, and a "previous"
-     * map. This class manages the complexities of dealing with these two maps, and does so by relying on another inner
-     * class, FlashInfo.
+     * On any given request, there are actually two maps behind the flash. Which one is actually used on a given Map method depends on the current lifecycle
+     * phase at the time the method is invoked. There is a "next" map, and a "previous" map. This class manages the complexities of dealing with these two maps,
+     * and does so by relying on another inner class, FlashInfo.
      * </p>
      *
      * <p>
-     * The "next" map is used in only one case, which happens to be a VERY common case: write operations to the flash that
-     * happen during render response.
+     * The "next" map is used in only one case, which happens to be a VERY common case: write operations to the flash that happen during render response.
      * </p>
      *
      * <p>
@@ -1143,7 +1139,7 @@ public class ELFlash extends Flash {
             String result = null;
 
             result = "previousRequestSequenceNumber: " + (null != previousRequestFlashInfo ? previousRequestFlashInfo.getSequenceNumber() : "null")
-                    + " nextRequestSequenceNumber: " + (null != nextRequestFlashInfo ? nextRequestFlashInfo.getSequenceNumber() : "null");
+                + " nextRequestSequenceNumber: " + (null != nextRequestFlashInfo ? nextRequestFlashInfo.getSequenceNumber() : "null");
 
             return result;
         }
@@ -1167,8 +1163,10 @@ public class ELFlash extends Flash {
                 // clear the old map
                 if (null != (flashMap = previousRequestFlashInfo.getFlashMap())) {
                     if (LOGGER.isLoggable(Level.FINEST)) {
-                        LOGGER.log(Level.FINEST, "{0} expire previous[{1}]",
-                                new Object[] { getLogPrefix(FacesContext.getCurrentInstance()), previousRequestFlashInfo.getSequenceNumber() });
+                        LOGGER.log(
+                            Level.FINEST, "{0} expire previous[{1}]",
+                            new Object[] { getLogPrefix(FacesContext.getCurrentInstance()), previousRequestFlashInfo.getSequenceNumber() }
+                        );
 
                     }
                     FacesContext context = FacesContext.getCurrentInstance();
@@ -1188,8 +1186,10 @@ public class ELFlash extends Flash {
                 // clear the old map
                 if (null != (flashMap = nextRequestFlashInfo.getFlashMap())) {
                     if (LOGGER.isLoggable(Level.FINEST)) {
-                        LOGGER.log(Level.FINEST, "{0} expire next[{1}]",
-                                new Object[] { getLogPrefix(FacesContext.getCurrentInstance()), nextRequestFlashInfo.getSequenceNumber() });
+                        LOGGER.log(
+                            Level.FINEST, "{0} expire next[{1}]",
+                            new Object[] { getLogPrefix(FacesContext.getCurrentInstance()), nextRequestFlashInfo.getSequenceNumber() }
+                        );
 
                     }
                     FacesContext context = FacesContext.getCurrentInstance();
@@ -1205,8 +1205,10 @@ public class ELFlash extends Flash {
         void expireNext_MovePreviousToNext() {
             if (null != nextRequestFlashInfo) {
                 if (LOGGER.isLoggable(Level.FINEST)) {
-                    LOGGER.log(Level.FINEST, "{0} expire next[{1}], move previous to next",
-                            new Object[] { getLogPrefix(FacesContext.getCurrentInstance()), nextRequestFlashInfo.getSequenceNumber() });
+                    LOGGER.log(
+                        Level.FINEST, "{0} expire next[{1}], move previous to next",
+                        new Object[] { getLogPrefix(FacesContext.getCurrentInstance()), nextRequestFlashInfo.getSequenceNumber() }
+                    );
 
                 }
                 Map<String, Object> flashMap = nextRequestFlashInfo.getFlashMap();
@@ -1227,14 +1229,13 @@ public class ELFlash extends Flash {
 
         /**
          * <p>
-         * Decode the state of the PreviousNextFlashInfoManager from a Cookie. This entire method is wrapped in a try-catch
-         * block to prevent any errors from malformed cookies from polluting the system. When any error occurs, the flash is not
-         * usable for this request, and a nice error message is logged.
+         * Decode the state of the PreviousNextFlashInfoManager from a Cookie. This entire method is wrapped in a try-catch block to prevent any errors from
+         * malformed cookies from polluting the system. When any error occurs, the flash is not usable for this request, and a nice error message is logged.
          * </p>
          *
          * <p>
-         * This method is where the LifetimeMarker is incremented, UNLESS the incoming request is the GET after the REDIRECT
-         * after POST, in which case we don't increment it because the system will expire the entries in the doLastPhaseActions.
+         * This method is where the LifetimeMarker is incremented, UNLESS the incoming request is the GET after the REDIRECT after POST, in which case we don't
+         * increment it because the system will expire the entries in the doLastPhaseActions.
          * </p>
          *
          */
@@ -1262,7 +1263,8 @@ public class ELFlash extends Flash {
                 if (previousRequestFlashInfo.isIsRedirect()) {
                     setIncomingCookieCameFromRedirect(true);
                     previousRequestFlashInfo.setIsRedirect(false);
-                } else {
+                }
+                else {
                     // Don't make the flash older on debug requests
                     if (!UIDebug.debugRequest(context)) {
                         previousRequestFlashInfo.setLifetimeMarker(LifetimeMarker.SecondTimeThru);
@@ -1294,7 +1296,8 @@ public class ELFlash extends Flash {
                     }
                     nextRequestFlashInfo.setFlashMap(flashMap);
                 }
-            } catch (Throwable t) {
+            }
+            catch (Throwable t) {
                 previousRequestFlashInfo = new FlashInfo();
                 previousRequestFlashInfo.setLifetimeMarker(LifetimeMarker.FirstTimeThru);
                 previousRequestFlashInfo.setFlashMap(new HashMap<>(1));
@@ -1314,7 +1317,7 @@ public class ELFlash extends Flash {
          */
         Cookie encode() {
             String value = (null != previousRequestFlashInfo ? previousRequestFlashInfo.encode() : "") + "_"
-                    + (null != nextRequestFlashInfo ? nextRequestFlashInfo.encode() : "");
+                + (null != nextRequestFlashInfo ? nextRequestFlashInfo.encode() : "");
             String encryptedValue = guard.encrypt(value);
             Cookie result = new Cookie(FLASH_COOKIE_NAME, URLEncoder.encode(encryptedValue, UTF_8));
 
@@ -1400,8 +1403,7 @@ public class ELFlash extends Flash {
 
         /**
          * <p>
-         * The Map that stores the data. This map itself is stored in innerMap under the key given by the value of
-         * sequenceNumber.
+         * The Map that stores the data. This map itself is stored in innerMap under the key given by the value of sequenceNumber.
          * </p>
          */
         private Map<String, Object> flashMap;
@@ -1478,7 +1480,8 @@ public class ELFlash extends Flash {
             // lifetime marker, and the redirect flag
             if (isIsRedirect()) {
                 value = Long.toString(getSequenceNumber()) + "X" + getLifetimeMarker().encode() + LifetimeMarker.IsRedirect.encode();
-            } else {
+            }
+            else {
                 value = Long.toString(getSequenceNumber()) + "X" + getLifetimeMarker().encode() + LifetimeMarker.IsNormal.encode();
             }
 

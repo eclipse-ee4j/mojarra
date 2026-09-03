@@ -39,12 +39,11 @@ public class RIConstants {
     public static final String SAVED_STATE = RI_PREFIX + "savedState";
 
     /**
-     * Request-scoped flag recording whether the render-time {@code buildView} re-applied the facelet ({@code TRUE}) or
-     * skipped the re-apply for an already-populated static view ({@code FALSE}, see {@code refreshTransientBuild}).
-     * Since {@code buildView} runs immediately before {@code renderView}, this reflects whether the tree the state
-     * manager is about to save was (re)built from the facelet this request. {@code saveView} reads it to skip the
-     * redundant whole-tree duplicate-id walk when the tree was not rebuilt (its ids were already validated when it was
-     * first built). Absence is treated as rebuilt, so the check runs by default.
+     * Request-scoped flag recording whether the render-time {@code buildView} re-applied the facelet ({@code TRUE}) or skipped the re-apply for an
+     * already-populated static view ({@code FALSE}, see {@code refreshTransientBuild}). Since {@code buildView} runs immediately before {@code renderView},
+     * this reflects whether the tree the state manager is about to save was (re)built from the facelet this request. {@code saveView} reads it to skip the
+     * redundant whole-tree duplicate-id walk when the tree was not rebuilt (its ids were already validated when it was first built). Absence is treated as
+     * rebuilt, so the check runs by default.
      */
     public static final String VIEW_REBUILT_AT_RENDER = RI_PREFIX + "viewRebuiltAtRender";
 
@@ -84,17 +83,16 @@ public class RIConstants {
     public static final String DYNAMIC_ACTIONS = RI_PREFIX + "DynamicActions";
 
     /**
-     * Marker used when saving, under {@link jakarta.faces.application.ProjectStage#Development} only, the tag each
-     * client id was built from, so that the build which restores the view can be told where it produced another
-     * component than the one that was rendered. It holds every component rather than only those carrying a delta: a
-     * component the restore fails to produce is the one to report, and it need never have held state of its own.
+     * Marker used when saving, under {@link jakarta.faces.application.ProjectStage#Development} only, the tag each client id was built from, so that the build
+     * which restores the view can be told where it produced another component than the one that was rendered. It holds every component rather than only those
+     * carrying a delta: a component the restore fails to produce is the one to report, and it need never have held state of its own.
      */
     public static final String RENDERED_TAGS = RI_PREFIX + "RenderedTags";
 
     /**
-     * Marker used when saving, under {@code org.glassfish.mojarra.restoreBuildTimeDecisions} only, the value each
-     * build time condition evaluated to while the response was rendered, so that the build which restores the view
-     * reproduces the view that was submitted rather than the one the current state of the model asks for.
+     * Marker used when saving, under {@code org.glassfish.mojarra.restoreBuildTimeDecisions} only, the value each build time condition evaluated to while the
+     * response was rendered, so that the build which restores the view reproduces the view that was submitted rather than the one the current state of the
+     * model asks for.
      */
     public static final String BUILD_TIME_DECISIONS = RI_PREFIX + "BuildTimeDecisions";
 
@@ -124,28 +122,25 @@ public class RIConstants {
     public static final String FACES_CONFIG_VERSION = RI_PREFIX + "facesConfigVersion";
 
     /**
-     * App map key under which a {@code Map<String, Object>} exposing {@code version} /
-     * {@code specversion} / {@code implversion} of this Mojarra build is published so EL
-     * inside resources (e.g. {@code faces.js}) can read it via
-     * {@code #{applicationScope["org.glassfish.mojarra.mojarraVersion"]}}.
+     * App map key under which a {@code Map<String, Object>} exposing {@code version} / {@code specversion} / {@code implversion} of this Mojarra build is
+     * published so EL inside resources (e.g. {@code faces.js}) can read it via {@code #{applicationScope["org.glassfish.mojarra.mojarraVersion"]}}.
      */
     public static final String MOJARRA_VERSION = RI_PREFIX + "mojarraVersion";
 
     /**
-     * Key to annotate the mappings for the FacesServlet. Since servlet 3.0 the ConfigureListener
-     * cannot access the servlet mappings because it is initialized by a TLD and it is programmatic.
-     * So this key will store the mappings during the initialization.
+     * Key to annotate the mappings for the FacesServlet. Since servlet 3.0 the ConfigureListener cannot access the servlet mappings because it is initialized
+     * by a TLD and it is programmatic. So this key will store the mappings during the initialization.
      */
     public static final String FACES_SERVLET_MAPPINGS = RI_PREFIX + "FacesServletMappings";
 
     /**
-     * Key to annotate the registration for the FacesServlet. Since servlet 3.0 the ConfigureListener
-     * cannot access the servlet registration because it is initialized by a TLD and it is programmatic.
-     * So this key will store the registration during the initialization.
+     * Key to annotate the registration for the FacesServlet. Since servlet 3.0 the ConfigureListener cannot access the servlet registration because it is
+     * initialized by a TLD and it is programmatic. So this key will store the registration during the initialization.
      */
     public static final String FACES_SERVLET_REGISTRATION = RI_PREFIX + "FacesServletRegistration";
 
     private RIConstants() {
         throw new IllegalStateException();
     }
+
 }

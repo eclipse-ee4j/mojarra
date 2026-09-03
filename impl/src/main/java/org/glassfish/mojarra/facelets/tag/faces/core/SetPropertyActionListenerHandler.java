@@ -58,14 +58,16 @@ public class SetPropertyActionListenerHandler extends TagHandlerImpl implements 
 
         if (parent instanceof ActionSource) {
             applyAttachedObject(ctx.getFacesContext(), parent);
-        } else if (UIComponent.isCompositeComponent(parent)) {
+        }
+        else if (UIComponent.isCompositeComponent(parent)) {
             if (getFor() == null) {
                 throw new TagException(tag, "actionListener tags nested within composite components must have a non-null \"for\" attribute");
             }
             // Allow the composite component to know about the target
             // component.
             CompositeComponentTagHandler.getAttachedObjectHandlers(parent).add(this);
-        } else {
+        }
+        else {
             throw new TagException(tag, "Parent is not of type ActionSource, type is: " + parent);
         }
     }
@@ -89,7 +91,8 @@ public class SetPropertyActionListenerHandler extends TagHandlerImpl implements 
         if (attr != null) {
             if (attr.isLiteral()) {
                 result = attr.getValue();
-            } else {
+            }
+            else {
                 FaceletContext ctx = (FaceletContext) FacesContext.getCurrentInstance().getAttributes().get(FACELET_CONTEXT_KEY);
                 result = (String) attr.getValueExpression(ctx, String.class).getValue(ctx);
             }
@@ -118,8 +121,8 @@ public class SetPropertyActionListenerHandler extends TagHandlerImpl implements 
             Object valueObj = value.getValue(elContext);
             if (valueObj != null) {
                 valueObj = facesContext.getApplication()
-                                       .getExpressionFactory()
-                                       .coerceToType(valueObj, target.getType(elContext));
+                    .getExpressionFactory()
+                    .coerceToType(valueObj, target.getType(elContext));
             }
 
             target.setValue(elContext, valueObj);

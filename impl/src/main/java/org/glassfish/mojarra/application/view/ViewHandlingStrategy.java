@@ -72,7 +72,8 @@ public abstract class ViewHandlingStrategy extends ViewDeclarationLanguage {
                 if (!extContext.isResponseCommitted()) {
                     extContext.redirect(extContext.getRequestContextPath());
                 }
-            } catch (IOException ioe) {
+            }
+            catch (IOException ioe) {
                 throw new FacesException(ioe);
             }
 
@@ -83,8 +84,8 @@ public abstract class ViewHandlingStrategy extends ViewDeclarationLanguage {
 
         // This is necessary to allow decorated implementations.
         return viewHandler.getViewDeclarationLanguage(ctx, viewId)
-                          .getStateManagementStrategy(ctx, viewId)
-                          .restoreView(ctx, viewId, viewHandler.calculateRenderKitId(ctx));
+            .getStateManagementStrategy(ctx, viewId)
+            .restoreView(ctx, viewId, viewHandler.calculateRenderKitId(ctx));
     }
 
     /**
@@ -120,7 +121,8 @@ public abstract class ViewHandlingStrategy extends ViewDeclarationLanguage {
             if (logger.isLoggable(FINE)) {
                 logger.fine("Locale for this view as determined by calculateLocale " + locale);
             }
-        } else {
+        }
+        else {
             if (logger.isLoggable(FINE)) {
                 logger.fine("Using locale from previous view " + locale);
             }
@@ -132,7 +134,8 @@ public abstract class ViewHandlingStrategy extends ViewDeclarationLanguage {
             if (logger.isLoggable(FINE)) {
                 logger.fine("RenderKitId for this view as determined by calculateRenderKitId " + renderKitId);
             }
-        } else {
+        }
+        else {
             if (logger.isLoggable(FINE)) {
                 logger.fine("Using renderKitId from previous view " + renderKitId);
             }
@@ -148,8 +151,7 @@ public abstract class ViewHandlingStrategy extends ViewDeclarationLanguage {
     /**
      *
      * @param viewId the view ID
-     * @return <code>true</code> if this <code>ViewHandlingStrategy</code> handles the the view type represented by
-     * <code>viewId</code>
+     * @return <code>true</code> if this <code>ViewHandlingStrategy</code> handles the the view type represented by <code>viewId</code>
      */
     public abstract boolean handlesViewId(String viewId);
 

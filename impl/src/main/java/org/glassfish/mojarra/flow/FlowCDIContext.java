@@ -108,12 +108,12 @@ public class FlowCDIContext implements Context, Serializable {
 
     // -------------------------------------------------------- Private Methods
 
-
     /*
      * Encapsulate access to the two maps we need to provide.
      *
      */
     private static class FlowScopeMapHelper {
+
         private transient String flowBeansForClientWindowKey;
         private transient String creationalForClientWindowKey;
         private transient final Map<String, Object> sessionMap;
@@ -147,7 +147,8 @@ public class FlowCDIContext implements Context, Serializable {
                 flowBeansForClientWindowKey = clientWindow + ":" + flowDepth + "_beans";
                 creationalForClientWindowKey = clientWindow + ":" + flowDepth + "_creational";
 
-            } else {
+            }
+            else {
                 flowBeansForClientWindowKey = creationalForClientWindowKey = null;
             }
         }
@@ -209,6 +210,7 @@ public class FlowCDIContext implements Context, Serializable {
                 sessionMap.put(PER_SESSION_CREATIONAL_LIST, obj);
             }
         }
+
     }
 
     private static void ensureBeanMapCleanupOnSessionDestroyed(Map<String, Object> sessionMap, String flowBeansForClientWindow) {
@@ -251,7 +253,6 @@ public class FlowCDIContext implements Context, Serializable {
 
         return flowHandler.getCurrentFlow(context);
     }
-
 
     /*
      * Called from WebappLifecycleListener.sessionDestroyed()

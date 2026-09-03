@@ -15,6 +15,7 @@
  */
 
 package org.glassfish.mojarra.util;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
@@ -50,7 +51,7 @@ public class TestLRUMap_local {
         map.put("five", "five");
         map.put("three", "three");
         map.put("six", "six");
-        control = new String[]{
+        control = new String[] {
             "six", "three", "five", "four", "two"
         };
         count = 5;
@@ -58,4 +59,5 @@ public class TestLRUMap_local {
             assertEquals(control[--count], s);
         }
     }
+
 }

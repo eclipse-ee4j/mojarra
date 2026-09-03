@@ -40,8 +40,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * This class is used by the config system to order <code>faces-config</code> documents found on the classpath or
- * configured explicitly via the <code>jakarta.faces.CONFIG_FILES</code> context init parameter.
+ * This class is used by the config system to order <code>faces-config</code> documents found on the classpath or configured explicitly via the
+ * <code>jakarta.faces.CONFIG_FILES</code> context init parameter.
  */
 public class DocumentOrderingWrapper {
 
@@ -56,8 +56,7 @@ public class DocumentOrderingWrapper {
     private static final Comparator<DocumentOrderingWrapper> COMPARATOR = new DocumentOrderingComparator();
 
     /**
-     * This is the limit on the number of attempts made to sort the documents. Any attempt to exceed this limit will result
-     * in an Exception being thrown.
+     * This is the limit on the number of attempts made to sort the documents. Any attempt to exceed this limit will result in an Exception being thrown.
      */
     private static final int MAX_SORT_PASSED = 1000;
 
@@ -125,6 +124,7 @@ public class DocumentOrderingWrapper {
 
     /**
      * Constructs a new <code>DocumentOrderingWrapper</code> for the specified <code>Document</code>.
+     *
      * @param document the document info
      */
     public DocumentOrderingWrapper(DocumentInfo document) {
@@ -216,7 +216,7 @@ public class DocumentOrderingWrapper {
     @Override
     public String toString() {
         return "Document{" + "id='" + id + '\'' + ", beforeIds=" + (beforeIds == null ? null : Arrays.asList(beforeIds)) + ", afterIds="
-                + (afterIds == null ? null : Arrays.asList(afterIds)) + '}';
+            + (afterIds == null ? null : Arrays.asList(afterIds)) + '}';
     }
 
     /**
@@ -241,7 +241,8 @@ public class DocumentOrderingWrapper {
                     found = true;
                     targetList.add(wrapper);
                     sourceList.remove(wrapper);
-                } else if (found && name.equals(wrapper.getDocumentId())) {
+                }
+                else if (found && name.equals(wrapper.getDocumentId())) {
                     // we've already processed a document with this name
                     if (LOGGER.isLoggable(Level.WARNING)) {
                         LOGGER.log(Level.WARNING, "faces.configuration.absolute.order.duplicate.document", new Object[] { name });
@@ -269,8 +270,9 @@ public class DocumentOrderingWrapper {
     }
 
     /**
-     * Sort the provided array of <code>Document</code>s per the requirements of the 2.0 specification. Note, that this
-     * method only provides partial ordering and not absolute ordering.
+     * Sort the provided array of <code>Document</code>s per the requirements of the 2.0 specification. Note, that this method only provides partial ordering
+     * and not absolute ordering.
+     *
      * @param documents the documents to sort
      */
     public static void sort(DocumentOrderingWrapper[] documents) {
@@ -281,7 +283,8 @@ public class DocumentOrderingWrapper {
         }
         try {
             enhanceOrderingData(documents);
-        } catch (CircularDependencyException re) {
+        }
+        catch (CircularDependencyException re) {
             String msg = "Circular dependencies detected!\nDocument Info\n==================\n";
             for (DocumentOrderingWrapper w : documents) {
                 msg += "  " + w.toString() + '\n';
@@ -328,8 +331,10 @@ public class DocumentOrderingWrapper {
                 }
                 if (documents[i].isBefore(documentId)) {
                     if (LOGGER.isLoggable(Level.FINE)) {
-                        LOGGER.log(Level.FINE, "done: " + documentId + " should be after " + documents[i].getDocumentId() + " given that it should be before: "
-                                + Arrays.asList(documents[i].getBeforeIds()));
+                        LOGGER.log(
+                            Level.FINE, "done: " + documentId + " should be after " + documents[i].getDocumentId() + " given that it should be before: "
+                                + Arrays.asList(documents[i].getBeforeIds())
+                        );
                     }
 
                     // we have a document that is out of order, and his index is ii, he belongs at index i, and all the documents in between
@@ -375,7 +380,9 @@ public class DocumentOrderingWrapper {
             numberOfPasses++;
             if (numberOfPasses == MAX_SORT_PASSED) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
-                    StringBuilder msg = new StringBuilder("Exceeded maximum number of attempts to sort the application's faces-config documents.\nDocument Info\n==================");
+                    StringBuilder msg = new StringBuilder(
+                        "Exceeded maximum number of attempts to sort the application's faces-config documents.\nDocument Info\n=================="
+                    );
                     for (DocumentOrderingWrapper w : documents) {
                         msg.append("  ").append(w.toString()).append('\n');
                     }
@@ -423,17 +430,16 @@ public class DocumentOrderingWrapper {
     // ----------------------------------------------------- Private Methods
 
     /**
-     * Update before/after knowledge of all nodes in the array. Consider the case of A after B, B after C, C after D, and D
-     * with no ordering characteristics. When the code below executes, the before/after of specific nodes will be updated so
-     * that in the case of the example above we'd have:
+     * Update before/after knowledge of all nodes in the array. Consider the case of A after B, B after C, C after D, and D with no ordering characteristics.
+     * When the code below executes, the before/after of specific nodes will be updated so that in the case of the example above we'd have:
      *
      * A -> after B B -> before A, after C C -> before B, A after D D -> before C, B, A
      *
-     * So when an attempt is made to sort [A, B, C, D] the end result is [D, C, B, A] No extra enhancement of after ID
-     * information is necessary outside of the single node information due to the way the algorithm processes the array.
+     * So when an attempt is made to sort [A, B, C, D] the end result is [D, C, B, A] No extra enhancement of after ID information is necessary outside of the
+     * single node information due to the way the algorithm processes the array.
      *
-     * This method also performs cyclic detection. If, after updating the before/after information, the before/after
-     * information contains a reference to the document ID we're currently processing, throw an exception.
+     * This method also performs cyclic detection. If, after updating the before/after information, the before/after information contains a reference to the
+     * document ID we're currently processing, throw an exception.
      */
     private static void enhanceOrderingData(DocumentOrderingWrapper[] wrappers) throws CircularDependencyException {
 
@@ -678,7 +684,8 @@ public class DocumentOrderingWrapper {
 
             if ((w.id == null || "".equals(w.id)) && !w.isOrdered()) {
                 anonymousAndUnorderedList.add(w);
-            } else {
+            }
+            else {
                 linkedMap.put(i, knowledge);
             }
             i++;
@@ -766,4 +773,5 @@ public class DocumentOrderingWrapper {
         }
 
     } // END CircularDependencyException
+
 }

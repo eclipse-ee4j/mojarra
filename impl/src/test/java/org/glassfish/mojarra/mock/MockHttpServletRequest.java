@@ -54,15 +54,21 @@ public class MockHttpServletRequest implements HttpServletRequest {
         setHttpSession(session);
     }
 
-    public MockHttpServletRequest(String contextPath, String servletPath,
-            String pathInfo, String queryString) {
+    public MockHttpServletRequest(
+        String contextPath, String servletPath,
+        String pathInfo, String queryString
+    )
+    {
         super();
         setPathElements(contextPath, servletPath, pathInfo, queryString);
     }
 
-    public MockHttpServletRequest(String contextPath, String servletPath,
-            String pathInfo, String queryString,
-            HttpSession session) {
+    public MockHttpServletRequest(
+        String contextPath, String servletPath,
+        String pathInfo, String queryString,
+        HttpSession session
+    )
+    {
         super();
         setPathElements(contextPath, servletPath, pathInfo, queryString);
         setHttpSession(session);
@@ -83,7 +89,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
     public void addParameter(String name, String value) {
         String values[] = parameters.get(name);
         if (values == null) {
-            String results[] = new String[]{value};
+            String results[] = new String[] { value };
             parameters.put(name, results);
             return;
         }
@@ -105,8 +111,11 @@ public class MockHttpServletRequest implements HttpServletRequest {
         this.method = method;
     }
 
-    public void setPathElements(String contextPath, String servletPath,
-            String pathInfo, String queryString) {
+    public void setPathElements(
+        String contextPath, String servletPath,
+        String pathInfo, String queryString
+    )
+    {
 
         this.contextPath = contextPath;
         this.servletPath = servletPath;
@@ -184,7 +193,8 @@ public class MockHttpServletRequest implements HttpServletRequest {
     public String getRemoteUser() {
         if (principal != null) {
             return (principal.getName());
-        } else {
+        }
+        else {
             return (null);
         }
     }
@@ -259,7 +269,8 @@ public class MockHttpServletRequest implements HttpServletRequest {
     public boolean isUserInRole(String role) {
         if ((principal != null) && (principal instanceof MockPrincipal)) {
             return (((MockPrincipal) principal).isUserInRole(role));
-        } else {
+        }
+        else {
             return (false);
         }
     }
@@ -333,7 +344,8 @@ public class MockHttpServletRequest implements HttpServletRequest {
         String[] values = parameters.get(name);
         if (values != null) {
             return (values[0]);
-        } else {
+        }
+        else {
             return (null);
         }
     }
@@ -407,7 +419,8 @@ public class MockHttpServletRequest implements HttpServletRequest {
     public void setAttribute(String name, Object value) {
         if (value == null) {
             attributes.remove(name);
-        } else {
+        }
+        else {
             attributes.put(name, value);
         }
     }
@@ -479,17 +492,17 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
     @Override
     public String changeSessionId() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public <T extends HttpUpgradeHandler> T upgrade(Class<T> handlerClass) throws IOException, ServletException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public long getContentLengthLong() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -506,4 +519,5 @@ public class MockHttpServletRequest implements HttpServletRequest {
     public ServletConnection getServletConnection() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
 }

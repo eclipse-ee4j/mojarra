@@ -81,9 +81,8 @@ public class Events {
     private volatile Set<Class<?>> cdiObservedSystemEventTypes;
 
     /*
-     * This class encapsulates the behavior to prevent infinite loops when the publishing of one event leads to the queueing
-     * of another event of the same type. Special provision is made to allow the case where this guaring mechanims happens
-     * on a per-FacesContext, per-SystemEvent.class type basis.
+     * This class encapsulates the behavior to prevent infinite loops when the publishing of one event leads to the queueing of another event of the same type.
+     * Special provision is made to allow the case where this guaring mechanims happens on a per-FacesContext, per-SystemEvent.class type basis.
      */
 
     private final ReentrantLisneterInvocationGuard listenerInvocationGuard = new ReentrantLisneterInvocationGuard();
@@ -91,8 +90,11 @@ public class Events {
     /*
      * @see jakarta.faces.application.Application#publishEvent(FacesContext, Class, Class, Object)
      */
-    public void publishEvent(FacesContext context, Class<? extends SystemEvent> systemEventClass, Class<?> sourceBaseType, Object source,
-            ProjectStage projectStage) {
+    public void publishEvent(
+        FacesContext context, Class<? extends SystemEvent> systemEventClass, Class<?> sourceBaseType, Object source,
+        ProjectStage projectStage
+    )
+    {
 
         notNull(CONTEXT, context);
         notNull(SYSTEM_EVENT_CLASS, systemEventClass);
@@ -106,7 +108,8 @@ public class Events {
         // Log a warning that the types are incompatible and return.
         if (projectStage == Development && sourceBaseType != null && !sourceBaseType.isInstance(source)) {
             if (LOGGER.isLoggable(WARNING)) {
-                LOGGER.log(WARNING, "faces.application.publish.event.base_type_mismatch", new Object[] { source.getClass().getName(), sourceBaseType.getName() });
+                LOGGER
+                    .log(WARNING, "faces.application.publish.event.base_type_mismatch", new Object[] { source.getClass().getName(), sourceBaseType.getName() });
             }
             return;
         }
@@ -135,7 +138,8 @@ public class Events {
 
             // Fire system event as CDI event
             fireCdiSystemEvent(context, systemEventClass, event, source);
-        } catch (AbortProcessingException ape) {
+        }
+        catch (AbortProcessingException ape) {
             context.getApplication().publishEvent(context, ExceptionQueuedEvent.class, new ExceptionQueuedEventContext(context, ape));
         }
     }
@@ -193,8 +197,8 @@ public class Events {
     }
 
     /**
-     * @return process any listeners for the specified SystemEventListenerHolder and return any SystemEvent that may have
-     * been created as a side-effect of processing the listeners.
+     * @return process any listeners for the specified SystemEventListenerHolder and return any SystemEvent that may have been created as a side-effect of
+     * processing the listeners.
      */
     private SystemEvent invokeComponentListenersFor(Class<? extends SystemEvent> systemEventClass, Object source) {
 
@@ -231,7 +235,8 @@ public class Events {
         try {
             EventInfo rootEventInfo = systemEventHelper.getEventInfo(systemEventClass, UIViewRoot.class);
             return processListenersAccountingForAdds(listeners, event, source, rootEventInfo);
-        } finally {
+        }
+        finally {
             listenerInvocationGuard.clearGuard(ctx, systemEventClass);
         }
     }
@@ -241,8 +246,11 @@ public class Events {
      *
      * @throws jakarta.faces.event.AbortProcessingException propagated from the listener invocation
      */
-    private SystemEvent invokeListenersFor(Class<? extends SystemEvent> systemEventClass, SystemEvent event, Object source, Class<?> sourceBaseType,
-            boolean useSourceLookup) throws AbortProcessingException {
+    private SystemEvent invokeListenersFor(
+        Class<? extends SystemEvent> systemEventClass, SystemEvent event, Object source, Class<?> sourceBaseType,
+        boolean useSourceLookup
+    ) throws AbortProcessingException
+    {
 
         EventInfo eventInfo = systemEventHelper.getEventInfo(systemEventClass, source, sourceBaseType, useSourceLookup);
         if (eventInfo != null) {
@@ -354,7 +362,8 @@ public class Events {
                     listenersCopy = copyListWithExclusions(listeners, processedListeners);
                 }
             }
-        } while (originalDiffersFromCopy && processedSomeEvents);
+        }
+        while (originalDiffersFromCopy && processedSomeEvents);
 
         return event;
     }
@@ -371,7 +380,8 @@ public class Events {
                 copyItem = copy[i++];
                 foundDifference = originalItem != copyItem;
             }
-        } else {
+        }
+        else {
             foundDifference = true;
         }
 
@@ -413,8 +423,8 @@ public class Events {
 
         if (event == null) {
             var eventInfo = (source instanceof SystemEventListenerHolder)
-                    ? compSysEventHelper.getEventInfo(systemEventClass, source.getClass())
-                    : systemEventHelper.getEventInfo(systemEventClass, source.getClass());
+                ? compSysEventHelper.getEventInfo(systemEventClass, source.getClass())
+                : systemEventHelper.getEventInfo(systemEventClass, source.getClass());
             event = eventInfo.createSystemEvent(source);
         }
 
@@ -431,9 +441,8 @@ public class Events {
     }
 
     /**
-     * @return whether any CDI observer observes a type assignable from the given system event class, so that
-     * an observer registered for it (or any supertype, e.g. {@code SystemEvent} or {@code ComponentSystemEvent})
-     * would be notified. Decided once per event class against the types collected by
+     * @return whether any CDI observer observes a type assignable from the given system event class, so that an observer registered for it (or any supertype,
+     * e.g. {@code SystemEvent} or {@code ComponentSystemEvent}) would be notified. Decided once per event class against the types collected by
      * {@link CdiExtension#getObservedSystemEventTypes()}.
      */
     private boolean hasCdiObserverFor(ELAwareBeanManager beanManager, Class<? extends SystemEvent> systemEventClass) {
@@ -454,9 +463,8 @@ public class Events {
     }
 
     /**
-     * @return the system-event types observed by some CDI observer (immutable after CDI bootstrap, so captured
-     * once and reused), or {@code null} when {@link CdiExtension} is not registered -- notably during
-     * {@code contextDestroyed}, where {@code BeanManager.getExtension(CdiExtension.class)} throws
+     * @return the system-event types observed by some CDI observer (immutable after CDI bootstrap, so captured once and reused), or {@code null} when
+     * {@link CdiExtension} is not registered -- notably during {@code contextDestroyed}, where {@code BeanManager.getExtension(CdiExtension.class)} throws
      * {@code IllegalArgumentException} (WELD-001325) because the container has already deregistered it.
      */
     private Set<Class<?>> cdiObservedSystemEventTypes(ELAwareBeanManager beanManager) {
@@ -465,7 +473,8 @@ public class Events {
             try {
                 observedTypes = beanManager.getExtension(CdiExtension.class).getObservedSystemEventTypes();
                 cdiObservedSystemEventTypes = observedTypes;
-            } catch (IllegalArgumentException e) {
+            }
+            catch (IllegalArgumentException e) {
                 return null;
             }
         }

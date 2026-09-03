@@ -94,4 +94,5 @@ public class ClientWindowScopeManager implements HttpSessionListener {
             contextManager.sessionDestroyed(httpSessionEvent);
         }
     }
+
 }

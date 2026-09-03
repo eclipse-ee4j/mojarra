@@ -48,7 +48,7 @@ public class WebsocketUserManager {
     private static final int ESTIMATED_USER_CHANNELS_PER_SESSION = 1;
     private static final int ESTIMATED_SESSIONS_PER_USER = 2;
     private static final int ESTIMATED_CHANNELS_IDS_PER_USER = ESTIMATED_SESSIONS_PER_USER * ESTIMATED_USER_CHANNELS_PER_APPLICATION
-            * ESTIMATED_USER_CHANNELS_PER_SESSION;
+        * ESTIMATED_USER_CHANNELS_PER_SESSION;
 
     // Properties -----------------------------------------------------------------------------------------------------
 
@@ -155,8 +155,8 @@ public class WebsocketUserManager {
     // Internal (static because package private methods in CDI beans are subject to memory leaks) ---------------------
 
     /**
-     * For internal usage only. This makes it possible to save and restore user specific channels during server
-     * restart/failover in {@link WebsocketChannelManager}.
+     * For internal usage only. This makes it possible to save and restore user specific channels during server restart/failover in
+     * {@link WebsocketChannelManager}.
      */
     static ConcurrentMap<String, ConcurrentMap<String, Set<String>>> getUserChannels() {
         return getBeanInstance(WebsocketUserManager.class, true).userChannels;

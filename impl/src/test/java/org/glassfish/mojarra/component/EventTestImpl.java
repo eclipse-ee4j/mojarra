@@ -51,4 +51,5 @@ public class EventTestImpl extends FacesEvent {
     public void processListener(FacesListener listener) {
         ((ListenerTestImpl) listener).processTest(this);
     }
+
 }

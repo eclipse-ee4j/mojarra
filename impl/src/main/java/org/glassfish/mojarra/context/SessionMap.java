@@ -157,7 +157,8 @@ public class SessionMap extends BaseContextMap<Object> {
         HttpSession session = getSession(false);
         if (session != null) {
             return new EntryIterator(session.getAttributeNames());
-        } else {
+        }
+        else {
             return Collections.emptyIterator();
         }
     }
@@ -167,7 +168,8 @@ public class SessionMap extends BaseContextMap<Object> {
         HttpSession session = getSession(false);
         if (session != null) {
             return new KeyIterator(session.getAttributeNames());
-        } else {
+        }
+        else {
             return Collections.emptyIterator();
         }
     }
@@ -177,7 +179,8 @@ public class SessionMap extends BaseContextMap<Object> {
         HttpSession session = getSession(false);
         if (session != null) {
             return new ValueIterator(session.getAttributeNames());
-        } else {
+        }
+        else {
             return Collections.emptyIterator();
         }
     }
@@ -191,7 +194,9 @@ public class SessionMap extends BaseContextMap<Object> {
     // ----------------------------------------------------------- Session Mutex
 
     private static final class Mutex implements Serializable {
+
         private static final long serialVersionUID = 1L;
+
     }
 
     public static void createMutex(HttpSession session) {

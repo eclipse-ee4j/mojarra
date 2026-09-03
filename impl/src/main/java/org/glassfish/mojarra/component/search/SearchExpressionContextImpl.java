@@ -67,4 +67,5 @@ public class SearchExpressionContextImpl extends SearchExpressionContext {
     public FacesContext getFacesContext() {
         return facesContext;
     }
+
 }

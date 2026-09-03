@@ -25,8 +25,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests the parsing and matching of the {@link jakarta.faces.application.ResourceHandler#RESOURCE_EXCLUDES_PARAM_NAME}
- * init parameter, which is a space separated list of plain file extension suffixes.
+ * Tests the parsing and matching of the {@link jakarta.faces.application.ResourceHandler#RESOURCE_EXCLUDES_PARAM_NAME} init parameter, which is a space
+ * separated list of plain file extension suffixes.
  */
 class ResourceHandlerImplExcludesTest {
 
@@ -38,13 +38,14 @@ class ResourceHandlerImplExcludesTest {
 
     @Test
     void parsesDefaultValue() {
-        assertArrayEquals(new String[] { ".class", ".jsp", ".jspx", ".properties", ".xhtml", ".groovy" },
-                parse(RESOURCE_EXCLUDES_DEFAULT_VALUE));
+        assertArrayEquals(
+            new String[] { ".class", ".jsp", ".jspx", ".properties", ".xhtml", ".groovy" },
+            parse(RESOURCE_EXCLUDES_DEFAULT_VALUE)
+        );
     }
 
     /**
-     * A leading, trailing or repeated space must not yield an empty suffix, as that would match every resource id and
-     * thus exclude the whole application.
+     * A leading, trailing or repeated space must not yield an empty suffix, as that would match every resource id and thus exclude the whole application.
      */
     @Test
     void skipsEmptyTokens() {
@@ -112,4 +113,5 @@ class ResourceHandlerImplExcludesTest {
         assertTrue(isExcluded(excludes, "/jakarta.faces.resource/notes.txt"));
         assertFalse(isExcluded(excludes, "/jakarta.faces.resource/foo.xhtml"));
     }
+
 }

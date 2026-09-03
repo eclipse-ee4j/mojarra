@@ -412,5 +412,7 @@ public class UIInputTestCase extends UIOutputTestCase {
         public int hashCode() {
             return System.identityHashCode(this);
         }
+
     }
+
 }

@@ -45,7 +45,7 @@ import org.glassfish.mojarra.renderkit.RenderKitUtils;
 
 /**
  * <B>DebugUtil</B> is a class ...
- * 
+ *
  * <B>Lifetime And Scope</B>
  */
 public class DebugUtil {
@@ -64,7 +64,6 @@ public class DebugUtil {
     protected void init() {
     }
 
-
     public static void setKeepWaiting(boolean keepWaiting) {
         DebugUtil.keepWaiting = keepWaiting;
     }
@@ -72,17 +71,17 @@ public class DebugUtil {
     /**
      * Usage:
      * <P>
-     * 
-     * Place a call to this method in the earliest possible entry point of your servlet app. It will cause the app to enter
-     * into an infinite loop, sleeping until the static var keepWaiting is set to false. The idea is that you attach your
-     * debugger to the servlet, then, set a breakpoint in this method. When it is hit, you use the debugger to set the
-     * keepWaiting class var to false.
+     *
+     * Place a call to this method in the earliest possible entry point of your servlet app. It will cause the app to enter into an infinite loop, sleeping
+     * until the static var keepWaiting is set to false. The idea is that you attach your debugger to the servlet, then, set a breakpoint in this method. When
+     * it is hit, you use the debugger to set the keepWaiting class var to false.
      */
     public static void waitForDebugger() {
         while (keepWaiting) {
             try {
                 Thread.sleep(5000);
-            } catch (InterruptedException e) {
+            }
+            catch (InterruptedException e) {
                 System.out.println("DebugUtil.waitForDebugger(): Exception: " + e.getMessage());
             }
         }
@@ -95,7 +94,8 @@ public class DebugUtil {
                 out.write("  ");
             }
             out.write(str + "\n");
-        } catch (IOException ioe) {
+        }
+        catch (IOException ioe) {
             if (LOGGER.isLoggable(Level.FINEST)) {
                 LOGGER.log(Level.FINEST, "Unable to write indent", ioe);
             }
@@ -109,7 +109,8 @@ public class DebugUtil {
             ObjectOutputStream oos = new ObjectOutputStream(base);
             doos = new DebugObjectOutputStream(oos);
             doos.writeObject(toPrint);
-        } catch (IOException ioe) {
+        }
+        catch (IOException ioe) {
             List<Object> pathToBadObject = doos.getStack();
             builder.append("Path to non-Serializable Object: \n");
             for (Object cur : pathToBadObject) {
@@ -139,8 +140,7 @@ public class DebugUtil {
 
     /**
      * @param root the root component
-     * @return the output of printTree() as a String. Useful when used with a Logger. For example:
-     * logger.log(DebugUtil.printTree(root));
+     * @return the output of printTree() as a String. Useful when used with a Logger. For example: logger.log(DebugUtil.printTree(root));
      */
     public static String printTree(UIComponent root) {
         Writer writer = new FastStringWriter(1024);
@@ -161,7 +161,8 @@ public class DebugUtil {
             printTree(root, writer);
             writer.flush();
 
-        } catch (UnsupportedEncodingException ex) {
+        }
+        catch (UnsupportedEncodingException ex) {
             System.out.println(ex.getMessage());
         }
     }
@@ -188,7 +189,8 @@ public class DebugUtil {
             Iterator<SelectItem> items = null;
             try {
                 items = RenderKitUtils.getSelectItems(FacesContext.getCurrentInstance(), root);
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 // select items couldn't be resolved at this time
                 indentPrintln(out, " { SelectItem(s) not resolvable at this point in time }");
             }
@@ -200,19 +202,22 @@ public class DebugUtil {
                 }
                 indentPrintln(out, " }");
             }
-        } else {
+        }
+        else {
             ValueExpression ve = null;
             if (root instanceof ValueHolder) {
                 ve = root.getValueExpression("value");
                 try {
                     value = ((ValueHolder) root).getValue();
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     value = "UNAVAILABLE";
                 }
             }
             if (ve != null) {
                 indentPrintln(out, "expression/value = " + ve.getExpressionString() + " : " + value);
-            } else {
+            }
+            else {
                 indentPrintln(out, "value = " + value);
             }
 
@@ -228,12 +233,14 @@ public class DebugUtil {
                     String val;
                     try {
                         val = root.getAttributes().get(attrName).toString();
-                    } catch (Exception e) {
+                    }
+                    catch (Exception e) {
                         val = "UNAVAILABLE";
                     }
                     if (expr != null) {
                         indentPrintln(out, "attr = " + attrName + " : [" + expr + " : " + val + " ]");
-                    } else {
+                    }
+                    else {
                         indentPrintln(out, "attr = " + attrName + " : " + val);
                     }
                 }
@@ -260,7 +267,8 @@ public class DebugUtil {
 
         if (duplicateId.equals(root.getClientId())) {
             indentPrintln(out, "+id: " + root.getId() + "  <===============");
-        } else {
+        }
+        else {
             indentPrintln(out, "+id: " + root.getId());
         }
         indentPrintln(out, " type: " + root.toString());
@@ -308,12 +316,14 @@ public class DebugUtil {
             obj = root[i];
             if (null == obj) {
                 indentPrintln(out, "null");
-            } else {
+            }
+            else {
                 if (obj.getClass().isArray()) {
                     curDepth++;
                     printTree((Object[]) obj, out);
                     curDepth--;
-                } else {
+                }
+                else {
                     indentPrintln(out, obj.toString());
                 }
 
@@ -334,14 +344,17 @@ public class DebugUtil {
             obj = root[i];
             if (null == obj) {
                 indentPrintln(out, "null");
-            } else {
+            }
+            else {
                 if (obj.getClass().isArray()) {
                     curDepth++;
                     printTree((Object[]) obj, out);
                     curDepth--;
-                } else if (obj instanceof List) {
+                }
+                else if (obj instanceof List) {
                     printList((List<?>) obj, out);
-                } else {
+                }
+                else {
                     indentPrintln(out, obj);
                 }
 
@@ -356,7 +369,8 @@ public class DebugUtil {
                 curDepth++;
                 printList((List<?>) cur, out);
                 curDepth--;
-            } else {
+            }
+            else {
                 indentPrintln(out, cur);
             }
         }

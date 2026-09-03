@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-	Copyright (c) 2021, 2026 Contributors to Eclipse Foundation.
+    Copyright (c) 2021, 2026 Contributors to Eclipse Foundation.
     Copyright (c) 2017, 2021 Oracle and/or its affiliates. All rights reserved.
 
     This program and the accompanying materials are made available under the
@@ -77,7 +77,7 @@
            <artifactId>jakarta.faces-api</artifactId>
            <version>5.0.0-SNAPSHOT</version>
        </dependency>
-       
+
         <!-- Jakarta EE Dependencies -->
 
         <dependency>
@@ -106,14 +106,14 @@
             <version>6.1.0-M2</version>
             <scope>provided</scope>
         </dependency>
-    
+
         <dependency>
             <groupId>jakarta.cdi</groupId>
             <artifactId>jakarta.cdi-api</artifactId>
             <version>5.0.0.Alpha5</version>
             <scope>provided</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>jakarta.cdi</groupId>
             <artifactId>jakarta.cdi-el-api</artifactId>
@@ -127,10 +127,10 @@
             <version>4.0.0-M1</version>
             <scope>provided</scope>
         </dependency>
-        
-        
+
+
         <!-- Optional -->
-        
+
         <dependency>
             <groupId>jakarta.transaction</groupId>
             <artifactId>jakarta.transaction-api</artifactId>
@@ -138,7 +138,7 @@
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
-        
+
         <dependency>
             <groupId>jakarta.json</groupId>
             <artifactId>jakarta.json-api</artifactId>
@@ -176,38 +176,38 @@
             <artifactId>jakarta.annotation-api</artifactId>
             <version>3.0.0</version>
         </dependency>
-        
-        
+
+
         <!-- TEST DEPENDENCIES -->
-        
+
         <dependency>
             <groupId>org.glassfish.expressly</groupId>
             <artifactId>expressly</artifactId>
             <version>6.0.0</version>
             <scope>test</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <version>5.23.0</version>
             <scope>test</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>5.10.2</version>
             <scope>test</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
             <version>1.11.0</version>
             <scope>test</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>commons-digester</groupId>
             <artifactId>commons-digester</artifactId>
@@ -270,13 +270,13 @@
         </resources>
 
         <plugins>
-			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>3.5.0</version>
-				<configuration>
-					<propertiesEncoding>UTF-8</propertiesEncoding>
-				</configuration>
-			</plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.5.0</version>
+                <configuration>
+                    <propertiesEncoding>UTF-8</propertiesEncoding>
+                </configuration>
+            </plugin>
 
             <!-- Show all compiler warnings except deprecation/removal (we are aware). -->
             <plugin>
@@ -301,7 +301,7 @@
                 </configuration>
             </plugin>
 
-			<!-- Bundles faces.ts via Rollup, minifies via Terser, and runs JavaScript unit tests via Jest. -->
+            <!-- Bundles faces.ts via Rollup, minifies via Terser, and runs JavaScript unit tests via Jest. -->
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
@@ -366,7 +366,7 @@
                 </executions>
             </plugin>
 
-			<!-- Creates the OSGi MANIFEST.MF file -->
+            <!-- Creates the OSGi MANIFEST.MF file -->
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -386,21 +386,21 @@
                         <Bundle-Version>${project.version}</Bundle-Version>
                         <Bundle-Name>Mojarra Faces Implementation ${project.version}</Bundle-Name>
                         <Bundle-Description>Eclipse Faces Implementation (jakarta.faces/5.0) ${project.version}</Bundle-Description>
-                        
+
                         <Specification-Title>Jakarta Faces</Specification-Title>
                         <Specification-Version>5.0</Specification-Version>
-                        
-                        <Implementation-Title>Mojarra</Implementation-Title> 
+
+                        <Implementation-Title>Mojarra</Implementation-Title>
                         <Implementation-Version>5.0.0-M1</Implementation-Version>
-                        <Implementation-Vendor>Eclipse</Implementation-Vendor> 
+                        <Implementation-Vendor>Eclipse</Implementation-Vendor>
                         <Implementation-Vendor-Id>org.glassfish</Implementation-Vendor-Id>
-                        
+
                         <Extension-Name>jakarta.faces</Extension-Name>
-                        
+
                         <Export-Package>
                             org.glassfish.mojarra.*
                         </Export-Package>
-                        
+
                         <Import-Package>
                             jakarta.faces.*,
                             org.glassfish.mojarra.*,
@@ -424,7 +424,7 @@
                             org.xml.sax.*,
                             javax.naming.*
                         </Import-Package>
-						<!--
+                        <!--
                             Allow Mojarra to load alternative FaceletConfigResourceProvider,
                             FacesConfigResourceProvider, and ApplicationConfigurationPopulator SPI
                             implementations. Mojarra provides default implementations, so each capability is marked as
@@ -445,7 +445,7 @@
                 </configuration>
             </plugin>
 
-			<!-- Adds the manifest file created by the org.apache.felix:maven-bundle-plugin -->
+            <!-- Adds the manifest file created by the org.apache.felix:maven-bundle-plugin -->
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
@@ -459,7 +459,7 @@
                 </configuration>
             </plugin>
 
-			<!-- Creates the source jar -->
+            <!-- Creates the source jar -->
             <plugin>
                 <artifactId>maven-source-plugin</artifactId>
                 <executions>
@@ -472,7 +472,7 @@
                 </executions>
             </plugin>
 
-			<!-- 
+            <!--
                Create Javadoc for API jar
             -->
             <plugin>
@@ -483,10 +483,10 @@
                         <configuration>
                             <excludePackageNames>com</excludePackageNames>
                             <quiet>true</quiet>
-					        <additionalOptions>
-					            <additionalOption>-Xdoclint:all,-missing</additionalOption>
-					        </additionalOptions>
-					        <failOnError>true</failOnError>
+                            <additionalOptions>
+                                <additionalOption>-Xdoclint:all,-missing</additionalOption>
+                            </additionalOptions>
+                            <failOnError>true</failOnError>
                         </configuration>
                         <goals>
                             <goal>jar</goal>
@@ -495,7 +495,7 @@
                 </executions>
             </plugin>
 
-			<!-- Check licenses of dependencies (Eclipse requirement) -->
+            <!-- Check licenses of dependencies (Eclipse requirement) -->
             <plugin>
                 <groupId>org.eclipse.dash</groupId>
                 <artifactId>license-tool-plugin</artifactId>
@@ -510,7 +510,7 @@
                 </executions>
             </plugin>
 
-			<!-- Generate a "consumer pom" for Maven Central release -->
+            <!-- Generate a "consumer pom" for Maven Central release -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>

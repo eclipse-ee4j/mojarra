@@ -159,9 +159,11 @@ public class FlowHandlerImpl extends FlowHandler {
                 do {
                     result = stackIter.next();
                     i++;
-                } while (i < returnDepth);
+                }
+                while (i < returnDepth);
             }
-        } else {
+        }
+        else {
             result = getFlowStack(context).peekFirst();
         }
         return result;
@@ -242,7 +244,8 @@ public class FlowHandlerImpl extends FlowHandler {
             performPops(context, sourceFlow, targetFlow);
             if (null != targetFlow && !targetFlow.equals(FlowImpl.ABANDONED_FLOW)) {
                 pushFlow(context, targetFlow, toViewId, evaluatedParams);
-            } else {
+            }
+            else {
                 assignInboundParameters(context, targetFlow, evaluatedParams);
             }
         }
@@ -282,7 +285,8 @@ public class FlowHandlerImpl extends FlowHandler {
                 if (null != targetFlow && null != sourceFlow) {
                     flowCallNode = sourceFlow.getFlowCall(targetFlow);
                 }
-            } else {
+            }
+            else {
                 String maxReturnDepthStr = requestParamMap.get(FLOW_RETURN_DEPTH_PARAM_NAME);
                 int maxReturnDepth = Integer.parseInt(maxReturnDepthStr);
                 FlowDeque<Flow> flowStack = getFlowStack(context);
@@ -329,17 +333,18 @@ public class FlowHandlerImpl extends FlowHandler {
     }
 
     /*
-     * The Flow.equals() method alone is insufficient because we need to account for the case where one or the other or both
-     * operands may be null.
+     * The Flow.equals() method alone is insufficient because we need to account for the case where one or the other or both operands may be null.
      *
      */
     private boolean flowsEqual(Flow flow1, Flow flow2) {
         boolean result = false;
         if (flow1 == flow2) {
             result = true;
-        } else if (null == flow1 || null == flow2) {
+        }
+        else if (null == flow1 || null == flow2) {
             result = false;
-        } else {
+        }
+        else {
             result = flow1.equals(flow2);
         }
         return result;
@@ -415,6 +420,7 @@ public class FlowHandlerImpl extends FlowHandler {
         private ArrayDeque<E> data;
 
         private static class RideAlong implements Serializable {
+
             private static final long serialVersionUID = -1899365746835118058L;
             String lastDisplayedViewId;
 
@@ -492,9 +498,11 @@ public class FlowHandlerImpl extends FlowHandler {
                     do {
                         helper = stackIter.next();
                         i++;
-                    } while (i < myReturnDepth);
+                    }
+                    while (i < myReturnDepth);
                 }
-            } else {
+            }
+            else {
                 helper = rideAlong.peekFirst();
             }
 
@@ -528,7 +536,8 @@ public class FlowHandlerImpl extends FlowHandler {
             Map<Object, Object> attrs = context.getAttributes();
             if (!attrs.containsKey(FLOW_RETURN_DEPTH_PARAM_NAME)) {
                 attrs.put(FLOW_RETURN_DEPTH_PARAM_NAME, 1);
-            } else {
+            }
+            else {
                 Integer cur = (Integer) attrs.get(FLOW_RETURN_DEPTH_PARAM_NAME);
                 attrs.put(FLOW_RETURN_DEPTH_PARAM_NAME, cur + 1);
             }
@@ -544,7 +553,8 @@ public class FlowHandlerImpl extends FlowHandler {
 
                 if (cur > 1) {
                     attrs.put(FLOW_RETURN_DEPTH_PARAM_NAME, cur - 1);
-                } else {
+                }
+                else {
                     attrs.remove(FLOW_RETURN_DEPTH_PARAM_NAME);
                 }
             }

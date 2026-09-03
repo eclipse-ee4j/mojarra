@@ -45,7 +45,7 @@ public class AttributeHandler extends TagHandlerImpl {
     private final Logger LOGGER = FacesLogger.TAGLIB.getLogger();
 
     private static final String[] COMPOSITE_ATTRIBUTE_ATTRIBUTES = { "required", "targets", "targetAttributeName", "default", "displayName", "preferred",
-            "hidden", "expert", "shortDescription", "method-signature", "type",
+        "hidden", "expert", "shortDescription", "method-signature", "type",
 
     };
 
@@ -88,7 +88,8 @@ public class AttributeHandler extends TagHandlerImpl {
         try {
             propertyDescriptor = new CCAttributePropertyDescriptor(strValue, null, null);
             declaredAttributes.add(propertyDescriptor);
-        } catch (IntrospectionException ex) {
+        }
+        catch (IntrospectionException ex) {
             throw new TagException(tag, "Unable to create property descriptor for property " + strValue, ex);
         }
 
@@ -103,7 +104,8 @@ public class AttributeHandler extends TagHandlerImpl {
                 // applied first.
                 defaultTagAttribute = tagAttribute;
                 defaultHandler = ATTRIBUTE_MANAGER.getHandler(ctx, "default");
-            } else {
+            }
+            else {
                 PropertyHandler handler = ATTRIBUTE_MANAGER.getHandler(ctx, attributeName);
                 if (handler != null) {
                     handler.apply(ctx, attributeName, propertyDescriptor, tagAttribute);
@@ -117,7 +119,8 @@ public class AttributeHandler extends TagHandlerImpl {
             // was already applied
             try {
                 defaultHandler.apply(ctx, "default", propertyDescriptor, defaultTagAttribute);
-            } catch (IllegalArgumentException ex) {
+            }
+            catch (IllegalArgumentException ex) {
                 // If the type (according to the type-attribute) can not be
                 // found, the DefaultPropertyHandler will wrapp the
                 // ClassNotFoundException into an IllegalArgumentException,
@@ -149,14 +152,16 @@ public class AttributeHandler extends TagHandlerImpl {
                             result = ReflectionUtil.forName(classStr);
 
                             setValue(attributeName, result);
-                        } catch (ClassNotFoundException ex) {
+                        }
+                        catch (ClassNotFoundException ex) {
                             classStr = "java.lang." + classStr;
                             boolean throwException = false;
                             try {
                                 result = ReflectionUtil.forName(classStr);
 
                                 setValue(attributeName, result);
-                            } catch (ClassNotFoundException ex2) {
+                            }
+                            catch (ClassNotFoundException ex2) {
                                 throwException = true;
                             }
                             if (throwException) {

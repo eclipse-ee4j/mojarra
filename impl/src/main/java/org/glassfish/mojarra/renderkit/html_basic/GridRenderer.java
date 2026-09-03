@@ -152,8 +152,9 @@ public class GridRenderer extends BaseTableRenderer {
 
         TableMetaInfo info = getMetaInfo(context, table);
         UIComponent header = getFacet(table, "header");
-        String headerClass = table instanceof HtmlPanelGrid grid ? grid.getHeaderClass()
-                : (String) table.getAttributes().get("headerClass");
+        String headerClass = table instanceof HtmlPanelGrid grid
+            ? grid.getHeaderClass()
+            : (String) table.getAttributes().get("headerClass");
         if (header != null) {
             writer.startElement("thead", table);
             writer.writeText("\n", table, null);
@@ -179,8 +180,9 @@ public class GridRenderer extends BaseTableRenderer {
 
         TableMetaInfo info = getMetaInfo(context, table);
         UIComponent footer = getFacet(table, "footer");
-        String footerClass = table instanceof HtmlPanelGrid grid ? grid.getFooterClass()
-                : (String) table.getAttributes().get("footerClass");
+        String footerClass = table instanceof HtmlPanelGrid grid
+            ? grid.getFooterClass()
+            : (String) table.getAttributes().get("footerClass");
         if (footer != null) {
             writer.startElement("tfoot", table);
             writer.writeText("\n", table, null);

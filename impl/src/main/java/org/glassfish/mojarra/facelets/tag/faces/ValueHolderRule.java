@@ -45,6 +45,7 @@ final class ValueHolderRule extends MetaRule {
         public void applyMetadata(FaceletContext ctx, Object instance) {
             ((ValueHolder) instance).setConverter(ctx.getFacesContext().getApplication().createConverter(converterId));
         }
+
     }
 
     final static class DynamicConverterMetadata2 extends Metadata {
@@ -59,6 +60,7 @@ final class ValueHolderRule extends MetaRule {
         public void applyMetadata(FaceletContext ctx, Object instance) {
             ((UIComponent) instance).setValueExpression("converter", attr.getValueExpression(ctx, Converter.class));
         }
+
     }
 
     final static class LiteralValueMetadata extends Metadata {
@@ -73,6 +75,7 @@ final class ValueHolderRule extends MetaRule {
         public void applyMetadata(FaceletContext ctx, Object instance) {
             ((ValueHolder) instance).setValue(value);
         }
+
     }
 
     final static class DynamicValueExpressionMetadata extends Metadata {
@@ -88,6 +91,7 @@ final class ValueHolderRule extends MetaRule {
             UIComponent c = (UIComponent) instance;
             c.setValueExpression("value", attr.getValueExpression(ctx, c instanceof UISelectBoolean ? Boolean.class : Object.class));
         }
+
     }
 
     public final static ValueHolderRule Instance = new ValueHolderRule();

@@ -36,8 +36,7 @@ import org.glassfish.mojarra.facelets.el.VariableMapperWrapper;
 import org.glassfish.mojarra.facelets.tag.ui.DefineHandler;
 
 /**
- * A Tag that is specified in a FaceletFile. Takes all attributes specified and sets them on the FaceletContext before
- * including the targeted Facelet file.
+ * A Tag that is specified in a FaceletFile. Takes all attributes specified and sets them on the FaceletContext before including the targeted Facelet file.
  *
  * @author Jacob Hookom
  * @version $Id$
@@ -66,19 +65,19 @@ final class UserTagHandler extends TagHandlerImpl implements TemplateClient {
                 d = itr.next();
                 handlers.put(d.getName(), d);
             }
-        } else {
+        }
+        else {
             handlers = null;
         }
     }
 
     /**
-     * Iterate over all TagAttributes and set them on the FaceletContext's VariableMapper, then include the target Facelet.
-     * Finally, replace the old VariableMapper.
+     * Iterate over all TagAttributes and set them on the FaceletContext's VariableMapper, then include the target Facelet. Finally, replace the old
+     * VariableMapper.
      *
      * @see TagAttribute#getValueExpression(FaceletContext, Class)
      * @see VariableMapper
-     * @see jakarta.faces.view.facelets.FaceletHandler#apply(jakarta.faces.view.facelets.FaceletContext,
-     * jakarta.faces.component.UIComponent)
+     * @see jakarta.faces.view.facelets.FaceletHandler#apply(jakarta.faces.view.facelets.FaceletContext, jakarta.faces.component.UIComponent)
      */
     @Override
     public void apply(FaceletContext ctxObj, UIComponent parent) throws IOException {
@@ -98,9 +97,11 @@ final class UserTagHandler extends TagHandlerImpl implements TemplateClient {
         try {
             ctx.pushClient(this);
             ctx.includeFacelet(parent, location);
-        } catch (FileNotFoundException e) {
+        }
+        catch (FileNotFoundException e) {
             throw new TagException(tag, e.getMessage());
-        } finally {
+        }
+        finally {
 
             // make sure we undo our changes
             ctx.popClient(this);
@@ -118,10 +119,12 @@ final class UserTagHandler extends TagHandlerImpl implements TemplateClient {
             if (handler != null) {
                 handler.applyDefinition(ctx, parent);
                 return true;
-            } else {
+            }
+            else {
                 return false;
             }
-        } else {
+        }
+        else {
             nextHandler.apply(ctx, parent);
             return true;
         }

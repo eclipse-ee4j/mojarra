@@ -33,10 +33,9 @@ import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
 
 /**
- * A build keeps its per-tag unique-id counters in an {@code int[]} sized from {@link DefaultFacelet#getIdSlotCount()}
- * and indexed by the slot a tag reserved, and {@link FirstIdCache} caches the first id a tag generates against that
- * same slot. The slots a Facelet hands out therefore have to stay dense and one-to-one however many builds reserve
- * them at once: a slot at or past the count indexes past that array, and two tags sharing a slot share both a counter
+ * A build keeps its per-tag unique-id counters in an {@code int[]} sized from {@link DefaultFacelet#getIdSlotCount()} and indexed by the slot a tag reserved,
+ * and {@link FirstIdCache} caches the first id a tag generates against that same slot. The slots a Facelet hands out therefore have to stay dense and
+ * one-to-one however many builds reserve them at once: a slot at or past the count indexes past that array, and two tags sharing a slot share both a counter
  * and a cached id, so one of them generates the other's id.
  */
 class DefaultFaceletIdSlotTest {
@@ -89,7 +88,8 @@ class DefaultFaceletIdSlotTest {
             assertEquals(0, beyondTheCount, "every slot stays within the count a build sizes its counters from");
             assertEquals(TAGS, slots.size(), "every tag has a slot to itself");
             assertEquals(TAGS, facelet.getIdSlotCount(), "and the count covers exactly the slots handed out");
-        } finally {
+        }
+        finally {
             executor.shutdownNow();
         }
     }
@@ -97,4 +97,5 @@ class DefaultFaceletIdSlotTest {
     private static DefaultFacelet facelet() {
         return new DefaultFacelet(mock(DefaultFaceletFactory.class), null, null, "test.xhtml", null);
     }
+
 }

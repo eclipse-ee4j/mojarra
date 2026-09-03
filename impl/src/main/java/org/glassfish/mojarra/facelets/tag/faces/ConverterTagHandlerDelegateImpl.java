@@ -55,7 +55,8 @@ public class ConverterTagHandlerDelegateImpl extends TagHandlerDelegate implemen
         ComponentSupport.copyPassthroughAttributes(ctx, parent, owner.getTag());
         if (parent instanceof ValueHolder) {
             owner.applyAttachedObject(ctx.getFacesContext(), parent);
-        } else if (UIComponent.isCompositeComponent(parent)) {
+        }
+        else if (UIComponent.isCompositeComponent(parent)) {
             if (null == owner.getFor()) {
                 // PENDING(): I18N
                 throw new TagException(owner.getTag(), "converter tags nested within composite components must have a non-null \"for\" attribute");
@@ -63,7 +64,8 @@ public class ConverterTagHandlerDelegateImpl extends TagHandlerDelegate implemen
             // Allow the composite component to know about the target
             // component.
             CompositeComponentTagHandler.getAttachedObjectHandlers(parent).add(owner);
-        } else {
+        }
+        else {
             throw new TagException(owner.getTag(), "Parent not an instance of ValueHolder: " + parent);
         }
     }
@@ -84,7 +86,8 @@ public class ConverterTagHandlerDelegateImpl extends TagHandlerDelegate implemen
         if (null != attr) {
             if (attr.isLiteral()) {
                 result = attr.getValue();
-            } else {
+            }
+            else {
                 FacesContext context = FacesContext.getCurrentInstance();
                 FaceletContext ctx = (FaceletContext) context.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
                 result = (String) attr.getValueExpression(ctx, String.class).getValue(ctx);
@@ -131,8 +134,10 @@ public class ConverterTagHandlerDelegateImpl extends TagHandlerDelegate implemen
      */
     private Converter<?> createConverter(FaceletContext ctx) {
         if (owner.getConverterId(ctx) == null) {
-            throw new TagException(owner.getTag(),
-                    "Default behavior invoked of requiring a converter-id passed in the constructor, must override ConvertHandler(ConverterConfig)");
+            throw new TagException(
+                owner.getTag(),
+                "Default behavior invoked of requiring a converter-id passed in the constructor, must override ConvertHandler(ConverterConfig)"
+            );
         }
         return ctx.getFacesContext().getApplication().createConverter(owner.getConverterId(ctx));
     }

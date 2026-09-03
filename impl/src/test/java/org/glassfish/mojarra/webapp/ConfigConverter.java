@@ -18,7 +18,8 @@ package org.glassfish.mojarra.webapp;
 
 /**
  * <p>
- * Config Bean for a Converter.</p>
+ * Config Bean for a Converter.
+ * </p>
  */
 public class ConfigConverter extends ConfigFeature {
 
@@ -41,4 +42,5 @@ public class ConfigConverter extends ConfigFeature {
     public void setConverterClass(String converterClass) {
         this.converterClass = converterClass;
     }
+
 }

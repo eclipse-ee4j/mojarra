@@ -44,7 +44,6 @@ public class MetaInfFaceletTaglibraryConfigProvider implements ConfigurationReso
     private static final String SUFFIX = ".taglib.xml";
     private static final String WEB_INF_CLASSES = "/WEB-INF/classes/META-INF";
 
-
     // -------------------------------------------- Methods from ConfigProcessor
 
     @Override
@@ -64,10 +63,11 @@ public class MetaInfFaceletTaglibraryConfigProvider implements ConfigurationReso
             }
 
             return resourceURLs.stream()
-                               .map( url -> transformToURI(url) )
-                               .collect(toList());
+                .map(url -> transformToURI(url))
+                .collect(toList());
 
-        } catch (IOException ioe) {
+        }
+        catch (IOException ioe) {
             throw new FacesException("Error searching classpath from facelet-taglib documents", ioe);
         }
     }
@@ -77,7 +77,8 @@ public class MetaInfFaceletTaglibraryConfigProvider implements ConfigurationReso
     private static URI transformToURI(URL url) {
         try {
             return new URI(url.toExternalForm().replace(" ", "%20"));
-        } catch (URISyntaxException ex) {
+        }
+        catch (URISyntaxException ex) {
             throw new FacesException(ex);
         }
     }

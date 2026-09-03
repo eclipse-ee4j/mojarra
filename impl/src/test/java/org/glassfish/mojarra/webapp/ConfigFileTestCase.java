@@ -277,4 +277,5 @@ public class ConfigFileTestCase {
         File file = new File(System.getProperty("base.dir"), relativePath);
         return (file.toURI().toURL());
     }
+
 }

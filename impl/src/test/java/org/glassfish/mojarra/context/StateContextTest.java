@@ -30,8 +30,7 @@ import org.glassfish.mojarra.util.ComponentStruct;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests the static helpers of {@link StateContext}: {@link StateContext#pruneDynamicActions(List)} and
- * {@link StateContext#stripIterationIndex(char, String)}.
+ * Tests the static helpers of {@link StateContext}: {@link StateContext#pruneDynamicActions(List)} and {@link StateContext#stripIterationIndex(char, String)}.
  */
 class StateContextTest {
 
@@ -163,4 +162,5 @@ class StateContextTest {
     private static ComponentStruct remove(String clientId) {
         return new ComponentStruct(REMOVE, null, "parent", clientId, clientId);
     }
+
 }

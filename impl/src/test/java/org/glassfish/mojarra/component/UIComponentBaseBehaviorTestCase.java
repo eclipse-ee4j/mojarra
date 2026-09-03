@@ -53,7 +53,7 @@ public class UIComponentBaseBehaviorTestCase extends UIComponentTestCase {
     private static final String ONCLICK = "onclick";
     private static final String ONCHANGE = "onchange";
     private static final String TEST_FAMILY = "jakarta.faces.Test";
-	private static final Collection<String> EVENTS = Set.of(ONTEST, ONCLICK, ONCHANGE);
+    private static final Collection<String> EVENTS = Set.of(ONTEST, ONCLICK, ONCHANGE);
 
     public static class BehaviorComponent extends UIComponentBase implements ClientBehaviorHolder {
 
@@ -145,6 +145,7 @@ public class UIComponentBaseBehaviorTestCase extends UIComponentTestCase {
         public String toString() {
             return "Behavior #" + id;
         }
+
     }
 
     /**
@@ -184,15 +185,15 @@ public class UIComponentBaseBehaviorTestCase extends UIComponentTestCase {
         UIInput input = new UIInput();
         try {
             input.addClientBehavior(ONTEST, new TestBehavior());
-        } catch (IllegalStateException e) {
+        }
+        catch (IllegalStateException e) {
             return;
         }
         assertFalse(true);
     }
 
     /**
-     * Test method for
-     * {@link jakarta.faces.component.UIComponentBase#addClientBehavior(java.lang.String, jakarta.faces.component.behavior.ClientBehavior)}.
+     * Test method for {@link jakarta.faces.component.UIComponentBase#addClientBehavior(java.lang.String, jakarta.faces.component.behavior.ClientBehavior)}.
      */
     @Test
     public void testAddBehavior() {

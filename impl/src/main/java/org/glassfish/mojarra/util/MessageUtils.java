@@ -22,8 +22,8 @@ import jakarta.faces.application.FacesMessage;
 
 /**
  * <p>
- * This class contains all message constants and utility methods for creating <code>FacesMessage</code> instances or
- * localized <code>String</code>s for said constants.
+ * This class contains all message constants and utility methods for creating <code>FacesMessage</code> instances or localized <code>String</code>s for said
+ * constants.
  * </p>
  */
 public class MessageUtils {
@@ -217,7 +217,8 @@ public class MessageUtils {
 
         if (null == result) {
             result = "null MessageFactory";
-        } else {
+        }
+        else {
             if (params != null) {
                 result = MessageFormat.format(result, params);
             }

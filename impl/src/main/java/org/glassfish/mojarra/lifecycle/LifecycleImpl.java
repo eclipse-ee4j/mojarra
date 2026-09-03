@@ -55,8 +55,8 @@ public class LifecycleImpl extends Lifecycle {
     // The set of Phase instances that are executed by the execute() method
     // in order by the ordinal property of each phase
     private Phase[] phases = { null, // ANY_PHASE placeholder, not a real Phase
-            new RestoreViewPhase(), new ApplyRequestValuesPhase(), new ProcessValidationsPhase(), new UpdateModelValuesPhase(), new InvokeApplicationPhase(),
-            response };
+        new RestoreViewPhase(), new ApplyRequestValuesPhase(), new ProcessValidationsPhase(), new UpdateModelValuesPhase(), new InvokeApplicationPhase(),
+        response };
 
     // List for registered PhaseListeners
     private List<PhaseListener> listeners = new CopyOnWriteArrayList<>();
@@ -66,7 +66,6 @@ public class LifecycleImpl extends Lifecycle {
 
     public LifecycleImpl(FacesContext context) {
     }
-
 
     // ------------------------------------------------------- Lifecycle Methods
 
@@ -97,7 +96,8 @@ public class LifecycleImpl extends Lifecycle {
 
         if (Util.isUnitTestModeEnabled()) {
             clientWindowFactory = new ClientWindowFactoryImpl(false);
-        } else {
+        }
+        else {
             clientWindowFactory = (ClientWindowFactory) FactoryFinder.getFactory(FactoryFinder.CLIENT_WINDOW_FACTORY);
         }
 
@@ -162,7 +162,8 @@ public class LifecycleImpl extends Lifecycle {
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.log(Level.FINE, "faces.lifecycle.duplicate_phase_listener_detected", listener.getClass().getName());
             }
-        } else {
+        }
+        else {
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.log(Level.FINE, "addPhaseListener({0},{1})", new Object[] { listener.getPhaseId().toString(), listener.getClass().getName() });
             }

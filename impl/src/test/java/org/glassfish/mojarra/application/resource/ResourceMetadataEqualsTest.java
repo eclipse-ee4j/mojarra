@@ -60,12 +60,13 @@ public class ResourceMetadataEqualsTest {
         protected InputStream getNonCompressedInputStream(ResourceInfo resource, FacesContext ctx) {
             return null;
         }
+
     };
 
     /**
-     * A subclass carries state that the base class knows nothing about, so it must never compare equal to a base
-     * instance holding the same base state, in either direction. Both hierarchies are therefore safe to mix within one
-     * <code>Collection&lt;? extends ResourceInfo&gt;</code> or <code>Collection&lt;? extends LibraryInfo&gt;</code>.
+     * A subclass carries state that the base class knows nothing about, so it must never compare equal to a base instance holding the same base state, in
+     * either direction. Both hierarchies are therefore safe to mix within one <code>Collection&lt;? extends ResourceInfo&gt;</code> or
+     * <code>Collection&lt;? extends LibraryInfo&gt;</code>.
      */
     @Test
     public void subclassIsNeverEqualToBaseClassWithSameBaseState() throws MalformedURLException {

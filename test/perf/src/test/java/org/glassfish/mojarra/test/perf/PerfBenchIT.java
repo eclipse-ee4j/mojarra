@@ -48,18 +48,18 @@ import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import ee.jakarta.tck.faces.util.selenium.BaseITNG;
 
 /**
- * Drives every scenario page through GET and (where applicable) POST cycles,
- * lets the {@link PhaseTimingListener} accumulate per-phase timings server-side,
- * then dumps the table from {@code /perf-stats} to stdout and to
- * {@code target/perf-stats-<timestamp>.txt}.
+ * Drives every scenario page through GET and (where applicable) POST cycles, lets the {@link PhaseTimingListener} accumulate per-phase timings server-side,
+ * then dumps the table from {@code /perf-stats} to stdout and to {@code target/perf-stats-<timestamp>.txt}.
  *
- * <p>Iteration counts are tunable:
+ * <p>
+ * Iteration counts are tunable:
  * <ul>
- *   <li>{@code -Dperf.warmup=N} (default 50)</li>
- *   <li>{@code -Dperf.runs=N}   (default 1000)</li>
+ * <li>{@code -Dperf.warmup=N} (default 50)</li>
+ * <li>{@code -Dperf.runs=N} (default 1000)</li>
  * </ul>
  *
- * <p>Gated behind {@code -Dperf=true} so a normal {@code mvn install} does not run it.
+ * <p>
+ * Gated behind {@code -Dperf=true} so a normal {@code mvn install} does not run it.
  */
 @EnabledIfSystemProperty(named = "perf", matches = "true")
 class PerfBenchIT extends BaseITNG {
@@ -68,8 +68,8 @@ class PerfBenchIT extends BaseITNG {
     private static final int RUNS = getInteger("perf.runs", 1000);
 
     /**
-     * Optional scenario filter for diagnostics: {@code -Dperf.scenarios=a,b,c} restricts the run to
-     * the named scenarios (empty = all). Lets you isolate e.g. large-output renders from the rest.
+     * Optional scenario filter for diagnostics: {@code -Dperf.scenarios=a,b,c} restricts the run to the named scenarios (empty = all). Lets you isolate e.g.
+     * large-output renders from the rest.
      */
     private static final Set<String> ONLY = parseScenarioFilter();
 
@@ -105,7 +105,8 @@ class PerfBenchIT extends BaseITNG {
     }
 
     /** Plain GETs. Most fire RESTORE_VIEW + RENDER_RESPONSE; {@code viewparam-get} fires all 6. */
-    private static final Map<String, String> GET_ONLY = only(Map.ofEntries(
+    private static final Map<String, String> GET_ONLY = only(
+        Map.ofEntries(
             Map.entry("index", "index.xhtml"),
             Map.entry("table-readonly", "table-readonly.xhtml"),
             Map.entry("repeat-readonly", "repeat-readonly.xhtml"),
@@ -116,11 +117,16 @@ class PerfBenchIT extends BaseITNG {
             Map.entry("flat-nopassthru", "flat-nopassthru.xhtml"),
             Map.entry("flat-allattrs", "flat-allattrs.xhtml"),
             Map.entry("flat-text", "flat-text.xhtml"),
-            Map.entry("viewparam-get", "viewparam-get.xhtml?id=42")));
+            Map.entry("viewparam-get", "viewparam-get.xhtml?id=42")
+        )
+    );
 
-    /** Full (non-ajax) form postbacks. The {@code *-build} scenarios are readonly (no input fields), so their
-     *  postback isolates state restore + encode from any input-processing cost. */
-    private static final List<String> POSTBACK = only(List.of(
+    /**
+     * Full (non-ajax) form postbacks. The {@code *-build} scenarios are readonly (no input fields), so their postback isolates state restore + encode from any
+     * input-processing cost.
+     */
+    private static final List<String> POSTBACK = only(
+        List.of(
             "form-inputs",
             "form-invalid",
             "table-inputs",
@@ -137,11 +143,15 @@ class PerfBenchIT extends BaseITNG {
             "foreach-build",
             "flat-build",
             "flat-table-facets",
-            "flat-table-nofacets"));
+            "flat-table-nofacets"
+        )
+    );
 
-    /** Ajax-partial postbacks. Same body fields as their non-ajax twin plus the
-     *  {@code jakarta.faces.partial.*} markers and the {@code Faces-Request} header. */
-    private static final List<String> POSTBACK_AJAX = only(List.of(
+    /**
+     * Ajax-partial postbacks. Same body fields as their non-ajax twin plus the {@code jakarta.faces.partial.*} markers and the {@code Faces-Request} header.
+     */
+    private static final List<String> POSTBACK_AJAX = only(
+        List.of(
             "form-inputs-ajax",
             "form-invalid-ajax",
             "table-inputs-ajax",
@@ -153,13 +163,17 @@ class PerfBenchIT extends BaseITNG {
             "composite-nested-ajax",
             "foreach-nested-ajax",
             "dynamic-form-ajax",
-            "dynamic-toggle-ajax"));
+            "dynamic-toggle-ajax"
+        )
+    );
 
     private static final Pattern VIEW_STATE = Pattern.compile(
-            "name=\"jakarta\\.faces\\.ViewState\"[^>]*value=\"([^\"]+)\"" +
-            "|value=\"([^\"]+)\"[^>]*name=\"jakarta\\.faces\\.ViewState\"");
+        "name=\"jakarta\\.faces\\.ViewState\"[^>]*value=\"([^\"]+)\"" +
+            "|value=\"([^\"]+)\"[^>]*name=\"jakarta\\.faces\\.ViewState\""
+    );
     private static final Pattern AJAX_UPDATE = Pattern.compile(
-            "<update\\s+id=\"([^\"]+)\"><!\\[CDATA\\[(.*?)\\]\\]></update>", Pattern.DOTALL);
+        "<update\\s+id=\"([^\"]+)\"><!\\[CDATA\\[(.*?)\\]\\]></update>", Pattern.DOTALL
+    );
     private static final Pattern INPUT_TAG = Pattern.compile("<input\\b([^>]*)/?>", Pattern.CASE_INSENSITIVE);
     private static final Pattern TEXTAREA_TAG = Pattern.compile("<textarea\\b([^>]*)>(.*?)</textarea>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
     private static final Pattern SELECT_TAG = Pattern.compile("<select\\b([^>]*)>(.*?)</select>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
@@ -168,11 +182,12 @@ class PerfBenchIT extends BaseITNG {
     private static final Pattern FORM_ID = Pattern.compile("<form\\b[^>]*\\bid=\"([^\"]+)\"", Pattern.CASE_INSENSITIVE);
     /**
      * The rendered ajax-behavior call, impl-agnostic: Mojarra emits {@code mojarra.ab(this,event,<event>,<execute>,
-     * <render>)} and MyFaces {@code myfaces.ab(this,event,<event>,<execute>,<render>,{})}. Same arg positions; an
-     * arg is a quoted string, {@code 0} (Mojarra "no execute") or {@code ''} (MyFaces "no execute").
+     * <render>)} and MyFaces {@code myfaces.ab(this,event,<event>,<execute>,<render>,{})}. Same arg positions; an arg is a quoted string, {@code 0} (Mojarra
+     * "no execute") or {@code ''} (MyFaces "no execute").
      */
     private static final Pattern AJAX_AB = Pattern.compile(
-            "(?:mojarra|myfaces)\\.ab\\(this,\\s*event,\\s*('[^']*'|0)\\s*,\\s*('[^']*'|0)\\s*,\\s*('[^']*'|0)\\s*[,)]");
+        "(?:mojarra|myfaces)\\.ab\\(this,\\s*event,\\s*('[^']*'|0)\\s*,\\s*('[^']*'|0)\\s*,\\s*('[^']*'|0)\\s*[,)]"
+    );
 
     private static int totalScenarios() {
         return GET_ONLY.size() + POSTBACK.size() + POSTBACK_AJAX.size();
@@ -184,10 +199,10 @@ class PerfBenchIT extends BaseITNG {
         // would otherwise send a GOAWAY to the default HTTP/2 client. The bench measures server-side Faces
         // phase timings, so the wire protocol is immaterial; forcing 1.1 keeps every server on equal footing.
         HttpClient client = HttpClient.newBuilder()
-                .version(HttpClient.Version.HTTP_1_1)
-                .cookieHandler(new CookieManager())
-                .connectTimeout(ofSeconds(10))
-                .build();
+            .version(HttpClient.Version.HTTP_1_1)
+            .cookieHandler(new CookieManager())
+            .connectTimeout(ofSeconds(10))
+            .build();
 
         // bootstrap each postback scenario once (GET → extract ViewState + form fields)
         Map<String, FormSpec> forms = new LinkedHashMap<>();
@@ -249,8 +264,9 @@ class PerfBenchIT extends BaseITNG {
 
         String stats = get(client, "perf-stats");
         String header = String.format(
-                "# warmup=%d runs=%d scenarios=%d elapsed=%d ms%n",
-                WARMUP, RUNS, totalScenarios(), elapsedMs);
+            "# warmup=%d runs=%d scenarios=%d elapsed=%d ms%n",
+            WARMUP, RUNS, totalScenarios(), elapsedMs
+        );
         String report = header + stats;
         System.out.println();
         System.out.println(report);
@@ -263,24 +279,29 @@ class PerfBenchIT extends BaseITNG {
         // Sanity: every scenario should have at least RUNS RENDER_RESPONSE samples.
         int minimumExpected = RUNS;
         for (String scenario : GET_ONLY.keySet()) {
-            assertTrue(scenarioCount(stats, scenario, "RENDER_RESPONSE") >= minimumExpected,
-                    scenario + " RENDER_RESPONSE count below " + minimumExpected);
+            assertTrue(
+                scenarioCount(stats, scenario, "RENDER_RESPONSE") >= minimumExpected,
+                scenario + " RENDER_RESPONSE count below " + minimumExpected
+            );
         }
         for (String scenario : POSTBACK) {
-            assertTrue(scenarioCount(stats, scenario, "RENDER_RESPONSE") >= minimumExpected,
-                    scenario + " RENDER_RESPONSE count below " + minimumExpected);
+            assertTrue(
+                scenarioCount(stats, scenario, "RENDER_RESPONSE") >= minimumExpected,
+                scenario + " RENDER_RESPONSE count below " + minimumExpected
+            );
         }
         for (String scenario : POSTBACK_AJAX) {
-            assertTrue(scenarioCount(stats, scenario, "RENDER_RESPONSE") >= minimumExpected,
-                    scenario + " RENDER_RESPONSE count below " + minimumExpected);
+            assertTrue(
+                scenarioCount(stats, scenario, "RENDER_RESPONSE") >= minimumExpected,
+                scenario + " RENDER_RESPONSE count below " + minimumExpected
+            );
         }
     }
 
     /**
-     * The "unhappy path": replace the happy-path field values with ones that fail conversion/validation, so every run
-     * exercises FacesMessage creation, UIInput invalid-marking, the skipped UPDATE_MODEL/INVOKE phases, redisplay of
-     * the submitted (rejected) value and h:messages rendering with content. "forbidden" trips the CDI prohibited-words
-     * validator; the non-numeric quantity/price trip convertNumber. Injected once; reposted verbatim each run.
+     * The "unhappy path": replace the happy-path field values with ones that fail conversion/validation, so every run exercises FacesMessage creation, UIInput
+     * invalid-marking, the skipped UPDATE_MODEL/INVOKE phases, redisplay of the submitted (rejected) value and h:messages rendering with content. "forbidden"
+     * trips the CDI prohibited-words validator; the non-numeric quantity/price trip convertNumber. Injected once; reposted verbatim each run.
      */
     private static void injectInvalidValues(FormSpec form) {
         if (form != null) {
@@ -292,11 +313,15 @@ class PerfBenchIT extends BaseITNG {
     /** Kept separate from {@link #injectInvalidValues} so a re-harvest can restore the unhappy path. */
     private static void reapplyInvalidValues(FormSpec form) {
         if (form.invalid) {
-            form.fields.replaceAll((name, value) ->
-                      name.endsWith(":name")     ? "forbidden"
-                    : name.endsWith(":quantity") ? "not-a-number"
-                    : name.endsWith(":price")    ? "xyz"
-                    : value);
+            form.fields.replaceAll(
+                (name, value) -> name.endsWith(":name")
+                    ? "forbidden"
+                    : name.endsWith(":quantity")
+                        ? "not-a-number"
+                        : name.endsWith(":price")
+                            ? "xyz"
+                            : value
+            );
         }
     }
 
@@ -318,10 +343,9 @@ class PerfBenchIT extends BaseITNG {
     }
 
     /**
-     * Re-GET the scenario page to install a live view into the form: in the block-wise measurement loop a form's
-     * stored ViewState goes stale (and, under server-side state saving, gets evicted) while the previous
-     * scenario's block runs, so the block's first post would otherwise submit an expired ViewState. The field
-     * names are re-read from the same response, since the fresh view may name its components differently.
+     * Re-GET the scenario page to install a live view into the form: in the block-wise measurement loop a form's stored ViewState goes stale (and, under
+     * server-side state saving, gets evicted) while the previous scenario's block runs, so the block's first post would otherwise submit an expired ViewState.
+     * The field names are re-read from the same response, since the fresh view may name its components differently.
      */
     private void refreshViewState(HttpClient client, String scenario, FormSpec form) throws IOException, InterruptedException {
         String html = get(client, scenario + ".xhtml");
@@ -329,18 +353,17 @@ class PerfBenchIT extends BaseITNG {
     }
 
     /**
-     * Walks the partial response once: the ViewState update refreshes the token, and the remaining updates carry
-     * the re-rendered markup the field names are re-read from when the ids drifted. Every {@code <update>} covers
-     * one container; across this suite those containers hold all of their form's inputs (each scenario renders
-     * either {@code @form} or the container wrapping every row), so together they are a complete source of fresh
-     * names. The {@code jakarta.faces.*} markers and the source button are kept as-is: they are generated rather
-     * than harvested, and the button sits outside the re-rendered container when the render target is not @form.
+     * Walks the partial response once: the ViewState update refreshes the token, and the remaining updates carry the re-rendered markup the field names are
+     * re-read from when the ids drifted. Every {@code <update>} covers one container; across this suite those containers hold all of their form's inputs (each
+     * scenario renders either {@code @form} or the container wrapping every row), so together they are a complete source of fresh names. The
+     * {@code jakarta.faces.*} markers and the source button are kept as-is: they are generated rather than harvested, and the button sits outside the
+     * re-rendered container when the render target is not @form.
      */
     private void ajaxPostAndRefresh(HttpClient client, FormSpec form) throws IOException, InterruptedException {
         String responseBody = ajaxPost(client, form);
         boolean drifted = drifted(form, responseBody);
         Map<String, String> fresh = new LinkedHashMap<>();
-        for (Matcher update = AJAX_UPDATE.matcher(responseBody); update.find(); ) {
+        for (Matcher update = AJAX_UPDATE.matcher(responseBody); update.find();) {
             if (update.group(1).contains("ViewState")) {
                 form.fields.put("jakarta.faces.ViewState", update.group(2));
             }
@@ -358,11 +381,10 @@ class PerfBenchIT extends BaseITNG {
     }
 
     /**
-     * Whether the component ids moved under us: an impl is free to hand a component a different auto-generated id
-     * on a later view build, and the field names harvested from an earlier response then address nothing. Faces
-     * silently ignores unmatched request parameters, so the postback would decode, convert, validate and update
-     * NOTHING while still reporting healthy per-phase timings -- an invisibly empty benchmark. The probe field is
-     * cheap to look for, so the common case (stable ids, nothing to do) costs one substring search per request.
+     * Whether the component ids moved under us: an impl is free to hand a component a different auto-generated id on a later view build, and the field names
+     * harvested from an earlier response then address nothing. Faces silently ignores unmatched request parameters, so the postback would decode, convert,
+     * validate and update NOTHING while still reporting healthy per-phase timings -- an invisibly empty benchmark. The probe field is cheap to look for, so the
+     * common case (stable ids, nothing to do) costs one substring search per request.
      */
     private static boolean drifted(FormSpec form, String responseBody) {
         return form.probe != null && !responseBody.contains(form.probe);
@@ -389,9 +411,9 @@ class PerfBenchIT extends BaseITNG {
     private String post(HttpClient client, FormSpec form) throws IOException, InterruptedException {
         String body = encodeForm(form.fields);
         HttpRequest request = HttpRequest.newBuilder(URI.create(webUrl + form.action))
-                .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
-                .POST(BodyPublishers.ofString(body, UTF_8))
-                .build();
+            .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+            .POST(BodyPublishers.ofString(body, UTF_8))
+            .build();
         HttpResponse<String> response = client.send(request, ofString(UTF_8));
         assertEquals(200, response.statusCode(), "POST " + form.action);
         return response.body();
@@ -400,11 +422,11 @@ class PerfBenchIT extends BaseITNG {
     private String ajaxPost(HttpClient client, FormSpec form) throws IOException, InterruptedException {
         String body = encodeForm(form.fields);
         HttpRequest request = HttpRequest.newBuilder(URI.create(webUrl + form.action))
-                .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
-                .header("Faces-Request", "partial/ajax")
-                .header("Accept", "application/xml")
-                .POST(BodyPublishers.ofString(body, UTF_8))
-                .build();
+            .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+            .header("Faces-Request", "partial/ajax")
+            .header("Accept", "application/xml")
+            .POST(BodyPublishers.ofString(body, UTF_8))
+            .build();
         HttpResponse<String> response = client.send(request, ofString(UTF_8));
         assertEquals(200, response.statusCode(), "AJAX " + form.action);
         return response.body();
@@ -426,15 +448,12 @@ class PerfBenchIT extends BaseITNG {
     }
 
     /**
-     * Pulls every named &lt;input&gt; tag (hidden, text, submit, etc.), &lt;textarea&gt;
-     * (its text content) and &lt;select&gt; (its selected, else first, option) plus the
-     * jakarta.faces.ViewState marker. Good enough for the deterministic markup
-     * Mojarra emits for our perf pages.
+     * Pulls every named &lt;input&gt; tag (hidden, text, submit, etc.), &lt;textarea&gt; (its text content) and &lt;select&gt; (its selected, else first,
+     * option) plus the jakarta.faces.ViewState marker. Good enough for the deterministic markup Mojarra emits for our perf pages.
      *
-     * <p>When {@code ajax} is true, the submitted "button" is replaced by the
-     * {@code jakarta.faces.partial.*} markers that {@code faces.js} would
-     * normally add to an ajax POST body — so an ajax request gets the same
-     * input population as a full postback would.
+     * <p>
+     * When {@code ajax} is true, the submitted "button" is replaced by the {@code jakarta.faces.partial.*} markers that {@code faces.js} would normally add to
+     * an ajax POST body — so an ajax request gets the same input population as a full postback would.
      */
     private static FormSpec parseForm(String html, String action, boolean ajax) {
         Map<String, String> fields = new LinkedHashMap<>();
@@ -471,7 +490,8 @@ class PerfBenchIT extends BaseITNG {
             // faces.js always executes the source so its behavior decodes; ensure it is present.
             if (execute.isEmpty()) {
                 execute = submitName;
-            } else if (!(" " + execute + " ").contains(" " + submitName + " ")) {
+            }
+            else if (!(" " + execute + " ").contains(" " + submitName + " ")) {
                 execute = submitName + " " + execute;
             }
             fields.put("jakarta.faces.partial.ajax", "true");
@@ -487,13 +507,13 @@ class PerfBenchIT extends BaseITNG {
     }
 
     /**
-     * Scans {@code html} for every named &lt;input&gt; (hidden, text, submit, etc.), &lt;textarea&gt; (its text
-     * content) and &lt;select&gt; (its selected, else first, option) into {@code fields}, and returns the first
-     * submit input found. Shared by the initial full-page parse and the re-harvest of an ajax partial response.
+     * Scans {@code html} for every named &lt;input&gt; (hidden, text, submit, etc.), &lt;textarea&gt; (its text content) and &lt;select&gt; (its selected, else
+     * first, option) into {@code fields}, and returns the first submit input found. Shared by the initial full-page parse and the re-harvest of an ajax partial
+     * response.
      */
     private static Submit collectFields(String html, Map<String, String> fields) {
         Submit submit = null;
-        for (Matcher m = INPUT_TAG.matcher(html); m.find(); ) {
+        for (Matcher m = INPUT_TAG.matcher(html); m.find();) {
             String attrs = m.group(1);
             String name = attribute(attrs, "name");
             if (name == null) {
@@ -516,13 +536,13 @@ class PerfBenchIT extends BaseITNG {
             }
             fields.put(name, value == null ? "" : value);
         }
-        for (Matcher ta = TEXTAREA_TAG.matcher(html); ta.find(); ) {
+        for (Matcher ta = TEXTAREA_TAG.matcher(html); ta.find();) {
             String name = attribute(ta.group(1), "name");
             if (name != null) {
                 fields.put(name, ta.group(2).trim());
             }
         }
-        for (Matcher se = SELECT_TAG.matcher(html); se.find(); ) {
+        for (Matcher se = SELECT_TAG.matcher(html); se.find();) {
             String name = attribute(se.group(1), "name");
             if (name != null) {
                 fields.put(name, selectedOptionValue(se.group(2)));
@@ -534,16 +554,15 @@ class PerfBenchIT extends BaseITNG {
     /** First field name that can drift: not a {@code jakarta.faces.*} marker and not the stable submit button. */
     private static String probeOf(Map<String, String> fields, String submitName) {
         return fields.keySet().stream()
-                .filter(name -> !name.startsWith("jakarta.faces.") && !name.equals(submitName))
-                .findFirst()
-                .orElse(null);
+            .filter(name -> !name.startsWith("jakarta.faces.") && !name.equals(submitName))
+            .findFirst()
+            .orElse(null);
     }
 
     /**
-     * Resolve a faces.js execute/render argument to the concrete client ids the server expects, mirroring
-     * faces.js: {@code @form}/{@code @this} become the form/source client id, {@code @all}/{@code @none} stay
-     * keywords, {@code 0} (mojarra.ab's "default, i.e. @this only") yields nothing extra, and any other token is
-     * already an absolute client id (Faces resolves named targets at render time). Returns a space-separated list.
+     * Resolve a faces.js execute/render argument to the concrete client ids the server expects, mirroring faces.js: {@code @form}/{@code @this} become the
+     * form/source client id, {@code @all}/{@code @none} stay keywords, {@code 0} (mojarra.ab's "default, i.e. @this only") yields nothing extra, and any other
+     * token is already an absolute client id (Faces resolves named targets at render time). Returns a space-separated list.
      */
     private static String resolveAjaxTargets(String raw, String source, String formId) {
         String value = unquote(raw);
@@ -591,7 +610,7 @@ class PerfBenchIT extends BaseITNG {
     /** Value a {@code <select>} submits: the selected option, else the first option (browser default), else empty. */
     private static String selectedOptionValue(String optionsHtml) {
         String first = null;
-        for (Matcher opt = OPTION_TAG.matcher(optionsHtml); opt.find(); ) {
+        for (Matcher opt = OPTION_TAG.matcher(optionsHtml); opt.find();) {
             String attrs = opt.group(1);
             String value = attribute(attrs, "value");
             if (first == null) {
@@ -605,23 +624,26 @@ class PerfBenchIT extends BaseITNG {
     }
 
     private static final class FormSpec {
+
         final String action;
         final Map<String, String> fields;
         /** Re-apply the unhappy-path values after a re-harvest; see {@link #injectInvalidValues}. */
         boolean invalid;
         /**
-         * A field name whose absence from a response means the component ids drifted, so the field names
-         * this form submits went stale. Deliberately an auto-generated id (never the explicitly-id'd
-         * submit button, which is stable by construction), because those are the ones that drift.
+         * A field name whose absence from a response means the component ids drifted, so the field names this form submits went stale. Deliberately an
+         * auto-generated id (never the explicitly-id'd submit button, which is stable by construction), because those are the ones that drift.
          */
         String probe;
+
         FormSpec(String action, Map<String, String> fields) {
             this.action = action;
             this.fields = fields;
         }
+
     }
 
     /** First named submit input of a parsed form, carrying the attributes its ajax markers are derived from. */
     private record Submit(String name, String attrs) {
     }
+
 }

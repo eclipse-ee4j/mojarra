@@ -25,6 +25,7 @@ import org.glassfish.mojarra.util.Util;
  * Concrete implementation for defining Facelet tag libraries in Java.
  */
 public class TagLibraryImpl extends AbstractTagLibrary {
+
     public TagLibraryImpl(String namespace) {
         super(namespace);
     }
@@ -103,4 +104,5 @@ public class TagLibraryImpl extends AbstractTagLibrary {
         Util.notNull("method", method);
         addFunction(name, method);
     }
+
 }

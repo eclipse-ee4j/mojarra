@@ -32,7 +32,8 @@ public class MockViewHandler extends ViewHandler {
 
     @Override
     public void renderView(FacesContext context, UIViewRoot viewToRender)
-            throws IOException, FacesException {
+        throws IOException, FacesException
+    {
     }
 
     @Override
@@ -69,7 +70,8 @@ public class MockViewHandler extends ViewHandler {
     public String getResourceURL(FacesContext context, String path) {
         if (path.startsWith("/")) {
             return context.getExternalContext().getRequestContextPath() + path;
-        } else {
+        }
+        else {
             return (path);
         }
     }

@@ -112,8 +112,8 @@ class ComponentBindingScopeCheckerTest {
     }
 
     /**
-     * A mock {@link FacesContext} standing in for one request: its own request map (so each gets a distinct request
-     * sequence) and a shared message list that {@code addMessage} appends to and {@code getMessageList} returns.
+     * A mock {@link FacesContext} standing in for one request: its own request map (so each gets a distinct request sequence) and a shared message list that
+     * {@code addMessage} appends to and {@code getMessageList} returns.
      */
     private static FacesContext request(boolean development, List<FacesMessage> messages) {
         Map<String, Object> requestMap = new HashMap<>();
@@ -137,4 +137,5 @@ class ComponentBindingScopeCheckerTest {
         when(binding.getExpressionString()).thenReturn(expressionString);
         return binding;
     }
+
 }

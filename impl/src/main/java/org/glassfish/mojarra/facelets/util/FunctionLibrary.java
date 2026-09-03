@@ -16,7 +16,6 @@
 
 package org.glassfish.mojarra.facelets.util;
 
-
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
@@ -33,8 +32,8 @@ import org.glassfish.mojarra.util.Util;
 
 /**
  * <p>
- * This <code>TagLibrary</code> exposes the <code>public static</code> methods defined on the
- * <code>functionsClass</code> provided to the constructor as EL functions.
+ * This <code>TagLibrary</code> exposes the <code>public static</code> methods defined on the <code>functionsClass</code> provided to the constructor as EL
+ * functions.
  * </p>
  */
 public class FunctionLibrary implements TagLibrary {
@@ -66,7 +65,8 @@ public class FunctionLibrary implements TagLibrary {
                     functions.put(method.getName(), method);
                 }
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new RuntimeException(e);
         }
 

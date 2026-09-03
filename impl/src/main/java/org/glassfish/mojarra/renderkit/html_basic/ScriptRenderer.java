@@ -36,7 +36,7 @@ public class ScriptRenderer extends ScriptStyleBaseRenderer {
     public static final String FILE_EXTENSION = ".js";
 
     public static final String DEFAULT_CONTENT_TYPE = "text/javascript";
-    
+
     @Override
     protected void startInlineElement(FacesContext context, ResponseWriter writer, UIComponent component) throws IOException {
         writer.startElement("script", component);
@@ -44,9 +44,9 @@ public class ScriptRenderer extends ScriptStyleBaseRenderer {
         if (!RenderKitUtils.isOutputHtml5Doctype(context)) {
             writer.writeAttribute("type", DEFAULT_CONTENT_TYPE, "type");
         }
-        
+
         String nonce = context.getApplication().getResourceHandler().getCurrentNonce(context);
-        
+
         if (nonce != null) {
             writer.writeAttribute("nonce", nonce, "nonce");
         }

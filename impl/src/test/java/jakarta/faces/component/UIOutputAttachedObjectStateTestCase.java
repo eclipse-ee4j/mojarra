@@ -152,4 +152,5 @@ public class UIOutputAttachedObjectStateTestCase {
         converter = (DateTimeConverter) c;
         assertEquals("dd-MM-yy", converter.getPattern());
     }
+
 }

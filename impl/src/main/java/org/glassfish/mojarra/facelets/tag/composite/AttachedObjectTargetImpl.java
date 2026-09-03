@@ -56,7 +56,8 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget {
                     result.add(comp);
                 }
             }
-        } else {
+        }
+        else {
             result = new ArrayList<>(1);
             UIComponent comp = topLevelComponent.findComponent(augmentSearchId(ctx, topLevelComponent, name));
             if (null != comp) {
@@ -72,7 +73,7 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget {
     void setTargetsList(ValueExpression targetsList) {
         this.targetsList = targetsList;
     }
-    
+
     ValueExpression getTargetsList() {
         return targetsList;
     }

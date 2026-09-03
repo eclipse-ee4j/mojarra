@@ -22,14 +22,14 @@
         were static, but the code would be harder to read too.
     -->
     <Match>
-	<Bug pattern="SIC_INNER_SHOULD_BE_STATIC_ANON"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC_ANON"/>
     </Match>
 
     <!--
         We ignore Exception all over the place.  Mostly it's on purpose.
     -->
     <Match>
-	<Bug pattern="DE_MIGHT_IGNORE"/>
+    <Bug pattern="DE_MIGHT_IGNORE"/>
     </Match>
 
     <!--
@@ -37,7 +37,7 @@
         just to be sure to catch any problems that might occur.
     -->
     <Match>
-	<Bug pattern="REC_CATCH_EXCEPTION"/>
+    <Bug pattern="REC_CATCH_EXCEPTION"/>
     </Match>
 
     <!--
@@ -56,7 +56,7 @@
         Yes, zero length arrays are preferred, but this isn't worth fixing.
     -->
     <Match>
-	<Bug pattern="PZLA_PREFER_ZERO_LENGTH_ARRAYS"/>
+    <Bug pattern="PZLA_PREFER_ZERO_LENGTH_ARRAYS"/>
     </Match>
 
     <!--
@@ -64,7 +64,7 @@
         on their serialized state, so we don't worry about this.
     -->
     <Match>
-	<Bug pattern="SE_NO_SERIALVERSIONID"/>
+    <Bug pattern="SE_NO_SERIALVERSIONID"/>
     </Match>
 
     <!--
@@ -74,22 +74,22 @@
         are not.
     -->
     <Match>
-	<Bug pattern="DM_DEFAULT_ENCODING"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
     </Match>
 
     <!--
         Exclude all low priority bugs in the EJB CMP code,
-	which we really don't want to touch.
+    which we really don't want to touch.
     -->
     <Match>
-	<Or>
-	    <Priority value="2"/>
-	    <Priority value="3"/>
-	</Or>
-	<Or>
-	    <Class name="~com\.sun\.jdo\.spi\.persistence\..*"/>
-	    <Class name="~com\.sun\.jdo\.api\.persistence\..*"/>
-	</Or>
+    <Or>
+        <Priority value="2"/>
+        <Priority value="3"/>
+    </Or>
+    <Or>
+        <Class name="~com\.sun\.jdo\.spi\.persistence\..*"/>
+        <Class name="~com\.sun\.jdo\.api\.persistence\..*"/>
+    </Or>
     </Match>
 
     <!--
@@ -98,9 +98,9 @@
         the error count before we can check these by default.
     -->
     <Match>
-	<Or>
+    <Or>
             <Bug pattern="GF_MISSING_LOGMESSAGE_INFO_ANNOTATION"/>
             <Bug pattern="GF_INVALID_MSG_ID_PATTERN"/>
-	</Or>
+    </Or>
     </Match>
 </FindBugsFilter>

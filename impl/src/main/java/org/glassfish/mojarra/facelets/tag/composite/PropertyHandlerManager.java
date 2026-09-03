@@ -137,6 +137,7 @@ class PropertyHandlerManager {
             }
 
         }
+
     }
 
     private static final class ShortDescriptionPropertyHandler extends StringFeatureDescriptorPropertyHandler {
@@ -173,8 +174,7 @@ class PropertyHandlerManager {
     } // END ObjectValueExpressionPropertyHandler
 
     /**
-     * This PropertyHandler will apply the default-value of a cc:attribute tag, taking an eventually provided type into
-     * account.
+     * This PropertyHandler will apply the default-value of a cc:attribute tag, taking an eventually provided type into account.
      */
     private static class DefaultPropertyHandler implements PropertyHandler {
 
@@ -190,17 +190,20 @@ class PropertyHandlerManager {
                 Object value = typeVE.getValue(ctx);
                 if (value instanceof Class<?>) {
                     type = (Class<?>) value;
-                } else if (value != null) {
+                }
+                else if (value != null) {
                     try {
                         type = Util.loadClass(String.valueOf(value), this);
-                    } catch (ClassNotFoundException ex) {
+                    }
+                    catch (ClassNotFoundException ex) {
                         // Wrap the ClassNotFoundException into a
                         // RuntimeException, so that it can be unwrapped in the
                         // caller
                         throw new IllegalArgumentException(ex);
                     }
                 }
-            } else {
+            }
+            else {
                 type = null != obj ? (Class<?>) obj : Object.class;
             }
             target.setValue(propName, attribute.getValueExpression(ctx, type));

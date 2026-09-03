@@ -204,22 +204,22 @@ public class NavigationConfigProcessor extends AbstractConfigProcessor {
                     Node n = children.item(c);
                     if (n.getNodeType() == Node.ELEMENT_NODE) {
                         switch (n.getLocalName()) {
-                        case FROM_VIEW_ID:
-                            String t = getNodeText(n);
-                            fromViewId = t == null ? FROM_VIEW_ID_DEFAULT : t;
-                            if (!fromViewId.equals(FROM_VIEW_ID_DEFAULT) && fromViewId.charAt(0) != '/') {
-                                if (LOGGER.isLoggable(Level.WARNING)) {
-                                    LOGGER.log(Level.WARNING, "faces.config.navigation.from_view_id_leading_slash", new String[] { fromViewId });
+                            case FROM_VIEW_ID :
+                                String t = getNodeText(n);
+                                fromViewId = t == null ? FROM_VIEW_ID_DEFAULT : t;
+                                if (!fromViewId.equals(FROM_VIEW_ID_DEFAULT) && fromViewId.charAt(0) != '/') {
+                                    if (LOGGER.isLoggable(Level.WARNING)) {
+                                        LOGGER.log(Level.WARNING, "faces.config.navigation.from_view_id_leading_slash", new String[] { fromViewId });
+                                    }
+                                    fromViewId = '/' + fromViewId;
                                 }
-                                fromViewId = '/' + fromViewId;
-                            }
-                            break;
-                        case NAVIGATION_CASE:
-                            if (navigationCases == null) {
-                                navigationCases = new ArrayList<>(csize);
-                            }
-                            navigationCases.add(n);
-                            break;
+                                break;
+                            case NAVIGATION_CASE :
+                                if (navigationCases == null) {
+                                    navigationCases = new ArrayList<>(csize);
+                                }
+                                navigationCases.add(n);
+                                break;
                         }
                     }
                 }
@@ -253,47 +253,53 @@ public class NavigationConfigProcessor extends AbstractConfigProcessor {
                     Node n = children.item(i);
                     if (n.getNodeType() == Node.ELEMENT_NODE) {
                         switch (n.getLocalName()) {
-                        case FROM_OUTCOME:
-                            outcome = getNodeText(n);
-                            break;
-                        case FROM_ACTION:
-                            action = getNodeText(n);
-                            break;
-                        case IF:
-                            String expression = getNodeText(n);
-                            if (SharedUtils.isExpression(expression) && !SharedUtils.isMixedExpression(expression)) {
-                                condition = expression;
-                            } else {
-                                if (LOGGER.isLoggable(Level.WARNING)) {
-                                    LOGGER.log(Level.WARNING, "faces.config.navigation.if_invalid_expression", new String[] { expression, fromViewId });
+                            case FROM_OUTCOME :
+                                outcome = getNodeText(n);
+                                break;
+                            case FROM_ACTION :
+                                action = getNodeText(n);
+                                break;
+                            case IF :
+                                String expression = getNodeText(n);
+                                if (SharedUtils.isExpression(expression) && !SharedUtils.isMixedExpression(expression)) {
+                                    condition = expression;
                                 }
-                            }
-                            break;
-                        case TO_VIEW_ID:
-                            String toViewIdString = getNodeText(n);
-                            if (toViewIdString.charAt(0) != '/' && toViewIdString.charAt(0) != '#') {
-                                if (LOGGER.isLoggable(Level.WARNING)) {
-                                    LOGGER.log(Level.WARNING, "faces.config.navigation.to_view_id_leading_slash", new String[] { toViewIdString, fromViewId });
+                                else {
+                                    if (LOGGER.isLoggable(Level.WARNING)) {
+                                        LOGGER.log(Level.WARNING, "faces.config.navigation.if_invalid_expression", new String[] { expression, fromViewId });
+                                    }
                                 }
-                                toViewId = '/' + toViewIdString;
-                            } else {
-                                toViewId = toViewIdString;
-                            }
-                            break;
-                        case TO_FLOW_DOCUMENT_ID:
-                            toFlowDocumentId = getNodeText(n);
-                            break;
-                        case REDIRECT:
-                            parameters = processParameters(n.getChildNodes());
-                            includeViewParams = isIncludeViewParams(n);
-                            redirect = true;
-                            break;
+                                break;
+                            case TO_VIEW_ID :
+                                String toViewIdString = getNodeText(n);
+                                if (toViewIdString.charAt(0) != '/' && toViewIdString.charAt(0) != '#') {
+                                    if (LOGGER.isLoggable(Level.WARNING)) {
+                                        LOGGER.log(
+                                            Level.WARNING, "faces.config.navigation.to_view_id_leading_slash", new String[] { toViewIdString, fromViewId }
+                                        );
+                                    }
+                                    toViewId = '/' + toViewIdString;
+                                }
+                                else {
+                                    toViewId = toViewIdString;
+                                }
+                                break;
+                            case TO_FLOW_DOCUMENT_ID :
+                                toFlowDocumentId = getNodeText(n);
+                                break;
+                            case REDIRECT :
+                                parameters = processParameters(n.getChildNodes());
+                                includeViewParams = isIncludeViewParams(n);
+                                redirect = true;
+                                break;
                         }
                     }
                 }
 
-                NavigationCase cnc = new NavigationCase(fromViewId, action, outcome, condition, toViewId, toFlowDocumentId, parameters, null, redirect,
-                        includeViewParams);
+                NavigationCase cnc = new NavigationCase(
+                    fromViewId, action, outcome, condition, toViewId, toFlowDocumentId, parameters, null, redirect,
+                    includeViewParams
+                );
                 if (LOGGER.isLoggable(Level.FINE)) {
                     LOGGER.log(Level.FINE, MessageFormat.format("Adding NavigationCase: {0}", cnc.toString()));
                 }

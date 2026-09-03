@@ -49,6 +49,7 @@ final class ComponentRule extends MetaRule {
         public void applyMetadata(FaceletContext ctx, Object instance) {
             ((UIComponent) instance).getAttributes().put(name, value);
         }
+
     }
 
     final static class ValueExpressionMetadata extends Metadata {
@@ -91,7 +92,8 @@ final class ComponentRule extends MetaRule {
                     type = Object.class;
                 }
                 return new ValueExpressionMetadata(name, type, attribute);
-            } else if (meta.getWriteMethod(name) == null) {
+            }
+            else if (meta.getWriteMethod(name) == null) {
 
                 // this was an attribute literal, but not property
                 warnAttr(attribute, meta.getTargetClass(), name);

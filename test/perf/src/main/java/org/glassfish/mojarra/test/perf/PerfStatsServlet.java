@@ -19,21 +19,21 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
 
-import org.glassfish.mojarra.test.perf.PerfStats.Snapshot;
-
 import jakarta.faces.event.PhaseId;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import org.glassfish.mojarra.test.perf.PerfStats.Snapshot;
+
 /**
  * Dumps accumulated phase timings.
  *
  * <ul>
- *   <li>{@code GET /perf-stats} → fixed-width plain-text table.</li>
- *   <li>{@code GET /perf-stats?format=json} → JSON (easier to diff between runs).</li>
- *   <li>{@code GET /perf-stats?reset=1} → clear all and return {@code RESET OK}.</li>
+ * <li>{@code GET /perf-stats} → fixed-width plain-text table.</li>
+ * <li>{@code GET /perf-stats?format=json} → JSON (easier to diff between runs).</li>
+ * <li>{@code GET /perf-stats?reset=1} → clear all and return {@code RESET OK}.</li>
  * </ul>
  */
 @WebServlet("/perf-stats")
@@ -42,8 +42,8 @@ public class PerfStatsServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     private static final PhaseId[] MATRIX_PHASES = {
-            PhaseId.RESTORE_VIEW, PhaseId.APPLY_REQUEST_VALUES, PhaseId.PROCESS_VALIDATIONS,
-            PhaseId.UPDATE_MODEL_VALUES, PhaseId.INVOKE_APPLICATION, PhaseId.RENDER_RESPONSE };
+        PhaseId.RESTORE_VIEW, PhaseId.APPLY_REQUEST_VALUES, PhaseId.PROCESS_VALIDATIONS,
+        PhaseId.UPDATE_MODEL_VALUES, PhaseId.INVOKE_APPLICATION, PhaseId.RENDER_RESPONSE };
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -72,8 +72,10 @@ public class PerfStatsServlet extends HttpServlet {
     private static void writeText(PrintWriter out, Map<String, Map<PhaseId, Snapshot>> data, Map<PhaseId, Snapshot> totals) {
         out.println("# Faces perf stats (times in microseconds)");
         out.println();
-        out.printf("%-22s %-26s %8s %12s %10s %10s %10s%n",
-                "scenario", "phase", "count", "total_us", "avg_us", "min_us", "max_us");
+        out.printf(
+            "%-22s %-26s %8s %12s %10s %10s %10s%n",
+            "scenario", "phase", "count", "total_us", "avg_us", "min_us", "max_us"
+        );
         out.println("--------------------------------------------------------------------------------------------------------");
 
         for (Map.Entry<String, Map<PhaseId, Snapshot>> scenarioEntry : data.entrySet()) {
@@ -84,14 +86,16 @@ public class PerfStatsServlet extends HttpServlet {
                 if (s == null) {
                     continue;
                 }
-                out.printf("%-22s %-26s %8d %12d %10d %10d %10d%n",
-                        scenario,
-                        phaseId.getName(),
-                        s.count,
-                        s.totalNanos / 1000,
-                        s.avgNanos() / 1000,
-                        s.minNanos / 1000,
-                        s.maxNanos / 1000);
+                out.printf(
+                    "%-22s %-26s %8d %12d %10d %10d %10d%n",
+                    scenario,
+                    phaseId.getName(),
+                    s.count,
+                    s.totalNanos / 1000,
+                    s.avgNanos() / 1000,
+                    s.minNanos / 1000,
+                    s.maxNanos / 1000
+                );
             }
         }
 
@@ -102,20 +106,24 @@ public class PerfStatsServlet extends HttpServlet {
             if (s == null) {
                 continue;
             }
-            out.printf("%-22s %-26s %8d %12d %10d %10d %10d%n",
-                    "<TOTAL>",
-                    phaseId.getName(),
-                    s.count,
-                    s.totalNanos / 1000,
-                    s.avgNanos() / 1000,
-                    s.minNanos / 1000,
-                    s.maxNanos / 1000);
+            out.printf(
+                "%-22s %-26s %8d %12d %10d %10d %10d%n",
+                "<TOTAL>",
+                phaseId.getName(),
+                s.count,
+                s.totalNanos / 1000,
+                s.avgNanos() / 1000,
+                s.minNanos / 1000,
+                s.maxNanos / 1000
+            );
         }
 
         out.println("--------------------------------------------------------------------------------------------------------");
         out.println("# Averages by scenario (avg_us per phase; total_us = summed total across all phases)");
-        out.printf("%-22s %8s %8s %8s %8s %8s %8s %12s%n",
-                "scenario", "RV", "ARV", "PV", "UMV", "IA", "RR", "total_us");
+        out.printf(
+            "%-22s %8s %8s %8s %8s %8s %8s %12s%n",
+            "scenario", "RV", "ARV", "PV", "UMV", "IA", "RR", "total_us"
+        );
         for (Map.Entry<String, Map<PhaseId, Snapshot>> scenarioEntry : data.entrySet()) {
             Map<PhaseId, Snapshot> byPhase = scenarioEntry.getValue();
             StringBuilder row = new StringBuilder(String.format("%-22s", scenarioEntry.getKey()));
@@ -182,4 +190,5 @@ public class PerfStatsServlet extends HttpServlet {
         out.print(s.maxNanos);
         out.write('}');
     }
+
 }

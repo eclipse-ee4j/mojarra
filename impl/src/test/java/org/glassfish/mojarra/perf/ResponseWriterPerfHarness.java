@@ -29,21 +29,20 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 /**
- * Manual performance harness for the response-writer hot paths exercised during Render Response
- * and Ajax responses: per-character escaping in {@code writeText}/{@code writeAttribute}/
- * {@code writeURIAttribute}, element framing in {@code startElement}/{@code endElement}, and the
- * wrapping cost of {@link PartialResponseWriter} for Ajax updates.
+ * Manual performance harness for the response-writer hot paths exercised during Render Response and Ajax responses: per-character escaping in
+ * {@code writeText}/{@code writeAttribute}/ {@code writeURIAttribute}, element framing in {@code startElement}/{@code endElement}, and the wrapping cost of
+ * {@link PartialResponseWriter} for Ajax updates.
  *
- * <p>Output goes through a {@link NullWriter} (discards bytes without buffering or allocation) so
- * each scenario measures pure encode/escape/dispatch cost without I/O or buffering noise. Each
- * scenario reports the median ns/op over {@value #RUNS} measurement runs of {@value #ITERATIONS}
- * iterations each (after {@value #WARMUP} warmup iterations).
+ * <p>
+ * Output goes through a {@link NullWriter} (discards bytes without buffering or allocation) so each scenario measures pure encode/escape/dispatch cost without
+ * I/O or buffering noise. Each scenario reports the median ns/op over {@value #RUNS} measurement runs of {@value #ITERATIONS} iterations each (after
+ * {@value #WARMUP} warmup iterations).
  *
- * <p>Disabled by default. To run:
- * {@code mvn -pl impl test -Dtest=ResponseWriterPerfHarness -Dperf=true}.
+ * <p>
+ * Disabled by default. To run: {@code mvn -pl impl test -Dtest=ResponseWriterPerfHarness -Dperf=true}.
  *
- * <p>Scenarios cover both common cases (plain ASCII -- no escape branches hit) and worst cases
- * (text containing every HTML-special character).
+ * <p>
+ * Scenarios cover both common cases (plain ASCII -- no escape branches hit) and worst cases (text containing every HTML-special character).
  */
 @EnabledIfSystemProperty(named = "perf", matches = "true")
 public class ResponseWriterPerfHarness extends JUnitFacesTestCaseBase {
@@ -57,13 +56,13 @@ public class ResponseWriterPerfHarness extends JUnitFacesTestCaseBase {
     private HtmlResponseWriter htmlWriter;
     private NullWriter sink;
 
-    private static final String SHORT_PLAIN_TEXT = "Submit";                       // 6 ASCII chars, button label
-    private static final String SHORT_HTML_TEXT  = "a > b & c < d";                // 13 chars, hits <, >, & escapes
-    private static final String LONG_PLAIN_TEXT  = "The quick brown fox jumps over the lazy dog 1234567890";   // >16 chars, fast path
-    private static final String LONG_HTML_TEXT   = "<p class=\"x\">a > b & c < d & e</p> and \"quoted\" too"; // >16 chars, lots of escapes
-    private static final String PLAIN_ID         = "form:input123";                // typical client id, no escapes
+    private static final String SHORT_PLAIN_TEXT = "Submit"; // 6 ASCII chars, button label
+    private static final String SHORT_HTML_TEXT = "a > b & c < d"; // 13 chars, hits <, >, & escapes
+    private static final String LONG_PLAIN_TEXT = "The quick brown fox jumps over the lazy dog 1234567890"; // >16 chars, fast path
+    private static final String LONG_HTML_TEXT = "<p class=\"x\">a > b & c < d & e</p> and \"quoted\" too"; // >16 chars, lots of escapes
+    private static final String PLAIN_ID = "form:input123"; // typical client id, no escapes
     private static final String ATTR_WITH_QUOTES = "background: url('x.png'); color: \"red\"";
-    private static final String URI_VALUE        = "/app/path?foo=bar&baz=qux#section";
+    private static final String URI_VALUE = "/app/path?foo=bar&baz=qux#section";
 
     @Override
     @BeforeEach
@@ -88,7 +87,8 @@ public class ResponseWriterPerfHarness extends JUnitFacesTestCaseBase {
         measure("writeText -- short plain ASCII (no escapes)", () -> {
             try {
                 htmlWriter.writeText(SHORT_PLAIN_TEXT, null);
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
@@ -99,7 +99,8 @@ public class ResponseWriterPerfHarness extends JUnitFacesTestCaseBase {
         measure("writeText -- short with <, >, &", () -> {
             try {
                 htmlWriter.writeText(SHORT_HTML_TEXT, null);
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
@@ -110,7 +111,8 @@ public class ResponseWriterPerfHarness extends JUnitFacesTestCaseBase {
         measure("writeText -- long plain ASCII", () -> {
             try {
                 htmlWriter.writeText(LONG_PLAIN_TEXT, null);
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
@@ -121,7 +123,8 @@ public class ResponseWriterPerfHarness extends JUnitFacesTestCaseBase {
         measure("writeText -- long with mixed escapes", () -> {
             try {
                 htmlWriter.writeText(LONG_HTML_TEXT, null);
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
@@ -136,7 +139,8 @@ public class ResponseWriterPerfHarness extends JUnitFacesTestCaseBase {
         measure("writeAttribute -- id with colons (no escapes)", () -> {
             try {
                 htmlWriter.writeAttribute("id", PLAIN_ID, null);
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
@@ -148,7 +152,8 @@ public class ResponseWriterPerfHarness extends JUnitFacesTestCaseBase {
         measure("writeAttribute -- style with quotes (escapes)", () -> {
             try {
                 htmlWriter.writeAttribute("style", ATTR_WITH_QUOTES, null);
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
@@ -160,7 +165,8 @@ public class ResponseWriterPerfHarness extends JUnitFacesTestCaseBase {
         measure("writeURIAttribute -- href with query and fragment", () -> {
             try {
                 htmlWriter.writeURIAttribute("href", URI_VALUE, null);
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
@@ -174,7 +180,8 @@ public class ResponseWriterPerfHarness extends JUnitFacesTestCaseBase {
             try {
                 htmlWriter.startElement("div", null);
                 htmlWriter.endElement("div");
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
@@ -196,7 +203,8 @@ public class ResponseWriterPerfHarness extends JUnitFacesTestCaseBase {
                 htmlWriter.endElement("input");
                 htmlWriter.writeText(SHORT_PLAIN_TEXT, null);
                 htmlWriter.endElement("div");
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
@@ -213,7 +221,8 @@ public class ResponseWriterPerfHarness extends JUnitFacesTestCaseBase {
                 partial.startUpdate("form:fragment");
                 partial.write(LONG_PLAIN_TEXT);
                 partial.endUpdate();
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
@@ -224,7 +233,8 @@ public class ResponseWriterPerfHarness extends JUnitFacesTestCaseBase {
     private void startElementOnce(String name) {
         try {
             htmlWriter.startElement(name, null);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -256,11 +266,31 @@ public class ResponseWriterPerfHarness extends JUnitFacesTestCaseBase {
 
     /** Discards all writes -- isolates encode/escape cost from I/O or buffering. */
     private static final class NullWriter extends Writer {
-        @Override public void write(int c) { /* discard */ }
-        @Override public void write(char[] cbuf, int off, int len) { /* discard */ }
-        @Override public void write(String str) { /* discard */ }
-        @Override public void write(String str, int off, int len) { /* discard */ }
-        @Override public void flush() { /* no-op */ }
-        @Override public void close() { /* no-op */ }
+
+        @Override
+        public void write(int c) {
+            /* discard */ }
+
+        @Override
+        public void write(char[] cbuf, int off, int len) {
+            /* discard */ }
+
+        @Override
+        public void write(String str) {
+            /* discard */ }
+
+        @Override
+        public void write(String str, int off, int len) {
+            /* discard */ }
+
+        @Override
+        public void flush() {
+            /* no-op */ }
+
+        @Override
+        public void close() {
+            /* no-op */ }
+
     }
+
 }

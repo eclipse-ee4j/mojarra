@@ -78,12 +78,12 @@ public class ViewMetadataImpl extends ViewMetadata {
             context.setProcessingEvents(false);
             if (faceletFactory == null) {
                 faceletFactory = ApplicationAssociate.getInstance(context.getExternalContext())
-                                                     .getFaceletFactory();
+                    .getFaceletFactory();
             }
 
             metadataView = context.getApplication()
-                                  .getViewHandler()
-                                  .createView(context, viewId);
+                .getViewHandler()
+                .createView(context, viewId);
 
             // If the currentViewRoot has a viewMap, make sure the entries are
             // copied to the temporary UIViewRoot before invoking handlers.
@@ -93,7 +93,7 @@ public class ViewMetadataImpl extends ViewMetadata {
                 if (!isEmpty(currentViewMap)) {
                     currentViewMapShallowCopy = new HashMap<>(currentViewMap);
                     metadataView.getViewMap(true)
-                                .putAll(currentViewMapShallowCopy);
+                        .putAll(currentViewMapShallowCopy);
                 }
             }
 
@@ -108,22 +108,27 @@ public class ViewMetadataImpl extends ViewMetadata {
 
             try {
                 faceletFactory.getMetadataFacelet(context, metadataView.getViewId())
-                              .applyMetadata(context, metadataView);
-            } finally {
+                    .applyMetadata(context, metadataView);
+            }
+            finally {
                 SavedBuildTimeDecisions.resume(context);
             }
 
             importConstantsIfNecessary(context, metadataView);
 
-        } catch (FacesFileNotFoundException ffnfe) {
+        }
+        catch (FacesFileNotFoundException ffnfe) {
             try {
                 context.getExternalContext().responseSendError(404, ffnfe.getMessage());
-            } catch (IOException ioe) {
+            }
+            catch (IOException ioe) {
             }
             context.responseComplete();
-        } catch (IOException ioe) {
+        }
+        catch (IOException ioe) {
             throw new FacesException(ioe);
-        } finally {
+        }
+        finally {
             if (currentViewRoot != null) {
                 context.setViewRoot(currentViewRoot);
                 if (!currentViewMapShallowCopy.isEmpty()) {
@@ -136,7 +141,6 @@ public class ViewMetadataImpl extends ViewMetadata {
 
         return metadataView;
     }
-
 
     // ----------------------------------------------------------------------------------------------- UIImportConstants
 
@@ -184,16 +188,19 @@ public class ViewMetadataImpl extends ViewMetadata {
             for (Object enumConstant : clazz.getEnumConstants()) {
                 constants.put(((Enum<?>) enumConstant).name(), enumConstant);
             }
-        } else {
+        }
+        else {
             for (Field field : clazz.getFields()) {
                 int modifiers = field.getModifiers();
 
                 if (isPublic(modifiers) && isStatic(modifiers) && isFinal(modifiers)) {
                     try {
                         constants.put(field.getName(), field.get(null));
-                    } catch (Exception e) {
+                    }
+                    catch (Exception e) {
                         throw new IllegalArgumentException(
-                                String.format("UIImportConstants cannot access constant field '%s' of type '%s'.", type, field.getName()), e);
+                            String.format("UIImportConstants cannot access constant field '%s' of type '%s'.", type, field.getName()), e
+                        );
                     }
                 }
             }
@@ -212,7 +219,8 @@ public class ViewMetadataImpl extends ViewMetadata {
     private static Class<?> toClass(String type) {
         try {
             return Class.forName(type, true, Thread.currentThread().getContextClassLoader());
-        } catch (ClassNotFoundException e) {
+        }
+        catch (ClassNotFoundException e) {
             // Perhaps it's an inner enum which is incorrectly specified as com.example.SomeClass.SomeEnum.
             // Let's be lenient on that although the proper type notation should be com.example.SomeClass$SomeEnum.
             int i = type.lastIndexOf('.');
@@ -220,7 +228,8 @@ public class ViewMetadataImpl extends ViewMetadata {
             if (i > 0) {
                 try {
                     return toClass(new StringBuilder(type).replace(i, i + 1, "$").toString());
-                } catch (Exception ignore) {
+                }
+                catch (Exception ignore) {
                     ignore = null; // Just continue to IllegalArgumentException on original ClassNotFoundException.
                 }
             }
@@ -230,8 +239,8 @@ public class ViewMetadataImpl extends ViewMetadata {
     }
 
     /**
-     * Specific map implementation which wraps the given map in {@link Collections#unmodifiableMap(Map)} and throws an
-     * {@link IllegalArgumentException} in {@link ConstantsMap#get(Object)} method when the key doesn't exist at all.
+     * Specific map implementation which wraps the given map in {@link Collections#unmodifiableMap(Map)} and throws an {@link IllegalArgumentException} in
+     * {@link ConstantsMap#get(Object)} method when the key doesn't exist at all.
      *
      * @author Bauke Scholtz
      * @since 2.3

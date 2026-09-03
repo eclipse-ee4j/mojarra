@@ -23,8 +23,8 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Tests that the renderer type is derived from the resource name itself, as specified by
- * {@link jakarta.faces.application.ResourceHandler#getRendererTypeForResourceName(String)}, and hence does not depend on
- * the content type the container happens to map the file extension to.
+ * {@link jakarta.faces.application.ResourceHandler#getRendererTypeForResourceName(String)}, and hence does not depend on the content type the container happens
+ * to map the file extension to.
  */
 class ResourceHandlerImplRendererTypeTest {
 

@@ -78,7 +78,8 @@ public final class ForEachHandler extends TagHandlerImpl {
         public Object next() {
             try {
                 return Array.get(array, i++);
-            } catch (ArrayIndexOutOfBoundsException ioob) {
+            }
+            catch (ArrayIndexOutOfBoundsException ioob) {
                 throw new NoSuchElementException();
             }
         }
@@ -87,6 +88,7 @@ public final class ForEachHandler extends TagHandlerImpl {
         public void remove() {
             throw new UnsupportedOperationException();
         }
+
     }
 
     private static final Logger LOGGER = FacesLogger.FACELETS_FACELET.getLogger();
@@ -95,29 +97,27 @@ public final class ForEachHandler extends TagHandlerImpl {
      * Reported for the rows a build reproduced over items which no longer hold their elements.
      */
     private static final String VANISHED_ITEMS_REPORT = "The build which restored this postback reproduced {0,number,#} of the {1,number,#} rows {2} rendered"
-            + " over items which no longer hold their elements, so a value submitted for such a row is decoded into a stand-in for the element"
-            + " that is gone rather than into the model. The items a c:forEach iterated must still hold the elements its rows were rendered"
-            + " for while the postback which submits them is restored. Hold them in a @ViewScoped bean, or recompute them from the relevant"
-            + " request parameters in the @PostConstruct of the request scoped one.";
+        + " over items which no longer hold their elements, so a value submitted for such a row is decoded into a stand-in for the element"
+        + " that is gone rather than into the model. The items a c:forEach iterated must still hold the elements its rows were rendered"
+        + " for while the postback which submits them is restored. Hold them in a @ViewScoped bean, or recompute them from the relevant"
+        + " request parameters in the @PostConstruct of the request scoped one.";
 
     /**
-     * Reported for the rows a build could not reproduce because the items are no longer the map they were rendered
-     * over.
+     * Reported for the rows a build could not reproduce because the items are no longer the map they were rendered over.
      */
     private static final String OTHER_ITEMS_REPORT = "The items {0} iterates no longer hand out their elements the way the {1,number,#} rows of"
-            + " this view were rendered over them - a map hands them out by key and every other items by position - so those rows are not"
-            + " reproduced and a value submitted for one of them is decoded by nothing. The items a c:forEach iterated must still be what its"
-            + " rows were rendered over while the postback which submits them is restored.";
+        + " this view were rendered over them - a map hands them out by key and every other items by position - so those rows are not"
+        + " reproduced and a value submitted for one of them is decoded by nothing. The items a c:forEach iterated must still be what its"
+        + " rows were rendered over while the postback which submits them is restored.";
 
     /**
-     * Reported for an iteration whose rows cannot be reproduced because the keys they were rendered for cannot be
-     * saved with the state.
+     * Reported for an iteration whose rows cannot be reproduced because the keys they were rendered for cannot be saved with the state.
      */
     private static final String UNSAVABLE_KEYS_REPORT = "The entries {0} iterates are keyed by {1}, which is not serializable, so the rows of"
-            + " this iteration are not reproduced when the postback which submits them is restored and a value submitted for one of them is"
-            + " decoded by nothing. Everything the state holds has to be serializable, since a session is serialized as well when it is"
-            + " passivated or fails over - a key which is serializable but holds something which is not fails later instead, while the state"
-            + " is written.";
+        + " this iteration are not reproduced when the postback which submits them is restored and a value submitted for one of them is"
+        + " decoded by nothing. Everything the state holds has to be serializable, since a session is serialized as well when it is"
+        + " passivated or fails over - a key which is serializable but holds something which is not fails later instead, while the state"
+        + " is written.";
 
     private final TagAttribute begin;
 
@@ -134,8 +134,8 @@ public final class ForEachHandler extends TagHandlerImpl {
     private final TagAttribute varStatus;
 
     /**
-     * Whether the keys of this iteration have been reported as unsavable. Their type is what makes them so, which does
-     * not change, so reporting it once says everything every further build of this tag would say again.
+     * Whether the keys of this iteration have been reported as unsavable. Their type is what makes them so, which does not change, so reporting it once says
+     * everything every further build of this tag would say again.
      */
     private volatile boolean unsavableKeysReported;
 
@@ -183,8 +183,10 @@ public final class ForEachHandler extends TagHandlerImpl {
         tranzient = getAttribute("transient");
 
         if (items == null && begin != null && end == null) {
-            throw new TagAttributeException(tag, begin,
-                    "If the 'items' attribute is not specified, but the 'begin' attribute is, then the 'end' attribute is required");
+            throw new TagAttributeException(
+                tag, begin,
+                "If the 'items' attribute is not specified, but the 'begin' attribute is, then the 'end' attribute is required"
+            );
         }
     }
 
@@ -250,7 +252,8 @@ public final class ForEachHandler extends TagHandlerImpl {
             e = renderedRange[END];
             m = renderedRange[STEP];
             replayCount = renderedRange[COUNT];
-        } else {
+        }
+        else {
             s = getBegin(ctx);
             e = getEnd(ctx);
             m = getStep(ctx);
@@ -307,7 +310,8 @@ public final class ForEachHandler extends TagHandlerImpl {
                 childrenBeforeBuild = new ArrayList<>(parent.getChildren());
                 decisionsBeforeBody = BuildTimeDecisions.size(facesContext);
                 unreproducibleMarksBeforeBody = BuildTimeDecisions.unreproducibleMarks(facesContext);
-            } else {
+            }
+            else {
                 Object[] state = (Object[]) contextAttributes.get(stateKey);
                 if (state != null && sameIteration(state, range, srcVE == null ? null : src)) {
                     // Unchanged since the restore-time build: retain the existing subtree (undo the pending-deletion
@@ -320,7 +324,8 @@ public final class ForEachHandler extends TagHandlerImpl {
                     return;
                 }
             }
-        } else {
+        }
+        else {
             markUnreproducibleBuild(ctx);
         }
 
@@ -384,12 +389,14 @@ public final class ForEachHandler extends TagHandlerImpl {
                             if (!element.supplies(ctx)) {
                                 vanished++;
                                 value = RestoredItemValueExpression.vanishedItem(position, keyedRow);
-                            } else if (keyedRow && (t || vs != null)) {
+                            }
+                            else if (keyedRow && (t || vs != null)) {
                                 // A positional row is the one the iterator stands on, so only a keyed row has to read
                                 // its element, and only where a transient var or a varStatus reads the element itself.
                                 value = element.getValue(ctx);
                             }
-                        } else if (srcVE != null) {
+                        }
+                        else if (srcVE != null) {
                             if (keys != null) {
                                 rowKey = ((Map.Entry<?, ?>) value).getKey();
                             }
@@ -401,7 +408,8 @@ public final class ForEachHandler extends TagHandlerImpl {
                         if (keys != null) {
                             if (rowKey == null || rowKey instanceof Serializable) {
                                 keys.add(rowKey);
-                            } else {
+                            }
+                            else {
                                 // Without its keys the iteration cannot be reproduced at all: replaying its rows by
                                 // position would reach every entry of a map by an index no entry of it answers to.
                                 unsavableKey = rowKey.getClass();
@@ -413,7 +421,8 @@ public final class ForEachHandler extends TagHandlerImpl {
                         if (v != null) {
                             if (t || srcVE == null) {
                                 ctx.setAttribute(v, value);
-                            } else {
+                            }
+                            else {
                                 vars.setVariable(v, ve);
                             }
                         }
@@ -424,7 +433,8 @@ public final class ForEachHandler extends TagHandlerImpl {
                             JstlIterationStatus itrS = new JstlIterationStatus(first, last, i, sO, eO, mO, value, count);
                             if (t || srcVE == null) {
                                 ctx.setAttribute(vs, itrS);
-                            } else {
+                            }
+                            else {
                                 ve = new IterationStatusExpression(itrS);
                                 vars.setVariable(vs, ve);
                             }
@@ -448,7 +458,8 @@ public final class ForEachHandler extends TagHandlerImpl {
 
                         first = false;
                     }
-                } finally {
+                }
+                finally {
                     if (v != null) {
                         vars.setVariable(v, vO);
                     }
@@ -482,7 +493,7 @@ public final class ForEachHandler extends TagHandlerImpl {
             // The body just applied recorded a decision of its own, or marked the build unreproducible, iff it holds
             // nested build-time-dynamic content.
             boolean nestedDynamic = BuildTimeDecisions.size(facesContext) > decisionsBeforeBody
-                    || BuildTimeDecisions.unreproducibleMarks(facesContext) > unreproducibleMarksBeforeBody;
+                || BuildTimeDecisions.unreproducibleMarks(facesContext) > unreproducibleMarksBeforeBody;
 
             List<UIComponent> created = new ArrayList<>();
             for (UIComponent child : parent.getChildren()) {
@@ -500,16 +511,16 @@ public final class ForEachHandler extends TagHandlerImpl {
     }
 
     /**
-     * Whether one build of a view can iterate this tag differently than another, which a range of literals cannot: it
-     * produces the same rows every time and there is nothing to replay.
+     * Whether one build of a view can iterate this tag differently than another, which a range of literals cannot: it produces the same rows every time and
+     * there is nothing to replay.
      */
     private boolean isReplayable() {
         return items != null || isDynamic(begin) || isDynamic(end) || isDynamic(step);
     }
 
     /**
-     * Whether the given range was saved by this tag rather than by another one of the same facelet, which is what it
-     * is placed at that tells apart: an edit which moves a tag is an edit which moves what its decision describes.
+     * Whether the given range was saved by this tag rather than by another one of the same facelet, which is what it is placed at that tells apart: an edit
+     * which moves a tag is an edit which moves what its decision describes.
      */
     private boolean isTagOf(int[] range) {
         Location location = tag.getLocation();
@@ -517,8 +528,8 @@ public final class ForEachHandler extends TagHandlerImpl {
     }
 
     /**
-     * What this build iterated, to be saved with the state: the range it iterated over, how many iterations it
-     * produced and, over a map, the key each of those iterations was produced for.
+     * What this build iterated, to be saved with the state: the range it iterated over, how many iterations it produced and, over a map, the key each of those
+     * iterations was produced for.
      */
     private static Object decision(int[] range, List<Object> keys) {
         return keys == null ? range : new Object[] { range, keys.toArray() };
@@ -533,8 +544,8 @@ public final class ForEachHandler extends TagHandlerImpl {
     }
 
     /**
-     * The key each iteration of the build which rendered the view was produced for, or {@code null} where its rows are
-     * reproduced by position rather than by key.
+     * The key each iteration of the build which rendered the view was produced for, or {@code null} where its rows are reproduced by position rather than by
+     * key.
      */
     private static Object[] renderedKeys(Object decision) {
         Object keys = decision instanceof Object[] ? part((Object[]) decision, KEYS) : null;
@@ -542,18 +553,17 @@ public final class ForEachHandler extends TagHandlerImpl {
     }
 
     /**
-     * The given part of a decision, or {@code null} where what stands under the key is not one this handler saved: the
-     * keys of the decisions of a facelet edited since the response was rendered name other decisions than they did.
+     * The given part of a decision, or {@code null} where what stands under the key is not one this handler saved: the keys of the decisions of a facelet
+     * edited since the response was rendered name other decisions than they did.
      */
     private static Object part(Object[] decision, int index) {
         return decision.length == PARTS ? decision[index] : null;
     }
 
     /**
-     * The var expression of a row the build which restores the view reproduces: it reads its element from the items
-     * the model holds now, at the position or under the key the row was rendered for, and reads a stand-in for it
-     * where the model no longer holds it. Whether the row is reached by key follows from what was saved for the
-     * iteration, never from the type of the position: a map may be keyed by the very type an index has.
+     * The var expression of a row the build which restores the view reproduces: it reads its element from the items the model holds now, at the position or
+     * under the key the row was rendered for, and reads a stand-in for it where the model no longer holds it. Whether the row is reached by key follows from
+     * what was saved for the iteration, never from the type of the position: a map may be keyed by the very type an index has.
      */
     private RestoredItemValueExpression restoredVarExpr(ValueExpression srcVE, Object src, Object position, int start, boolean keyed) {
         ValueExpression element;
@@ -562,10 +572,12 @@ public final class ForEachHandler extends TagHandlerImpl {
         if (keyed) {
             element = new MappedValueExpression(srcVE, position);
             access = Access.KEYED;
-        } else if (src instanceof Collection && !(src instanceof List)) {
+        }
+        else if (src instanceof Collection && !(src instanceof List)) {
             element = new IteratedValueExpression(srcVE, start, (Integer) position);
             access = Access.ITERATED;
-        } else {
+        }
+        else {
             element = new IndexedValueExpression(srcVE, (Integer) position);
             access = Access.INDEXED;
         }
@@ -574,11 +586,10 @@ public final class ForEachHandler extends TagHandlerImpl {
     }
 
     /**
-     * Records what this build iterated over, so the redundant render-time re-apply is skipped as long as it would
-     * iterate the same way and is performed when it would not (see {@code refreshTransientBuild}). The item
-     * sequence takes a decision of its own, since it is a comparison over every element rather than a single value;
-     * the body's own decisions stand beside it, each captured with this iteration's index-based var expression and
-     * therefore reading its own element live.
+     * Records what this build iterated over, so the redundant render-time re-apply is skipped as long as it would iterate the same way and is performed when it
+     * would not (see {@code refreshTransientBuild}). The item sequence takes a decision of its own, since it is a comparison over every element rather than a
+     * single value; the body's own decisions stand beside it, each captured with this iteration's index-based var expression and therefore reading its own
+     * element live.
      */
     private void recordDecisions(FaceletContext ctx, ValueExpression srcVE, Object src, int begin, int end, int step, boolean tranzient) {
         recordBuildTimeDecision(ctx, this.begin, Integer.class, begin);
@@ -596,9 +607,9 @@ public final class ForEachHandler extends TagHandlerImpl {
     }
 
     /**
-     * Records that this build produced the iterations the build which rendered the view produced rather than the ones
-     * the items hold now, so that the render time re-apply which would produce another count is performed rather than
-     * skipped. A begin/end range needs none of this: its count follows from the range, which is recorded already.
+     * Records that this build produced the iterations the build which rendered the view produced rather than the ones the items hold now, so that the render
+     * time re-apply which would produce another count is performed rather than skipped. A begin/end range needs none of this: its count follows from the range,
+     * which is recorded already.
      */
     private void recordIterationCount(FaceletContext ctx, ValueExpression srcVE, int begin, int end, int step, int count) {
         if (srcVE != null) {
@@ -608,18 +619,17 @@ public final class ForEachHandler extends TagHandlerImpl {
     }
 
     /**
-     * Whether each element of the given items is read by position, which is what lets a row of the subtree built over
-     * them read its own element live rather than from a value saved with the state.
+     * Whether each element of the given items is read by position, which is what lets a row of the subtree built over them read its own element live rather
+     * than from a value saved with the state.
      */
     private static boolean isIndexable(Object src) {
         return src instanceof List || src != null && src.getClass().isArray();
     }
 
     /**
-     * How many iterations the given items produce over the given range, which is none where they are not the indexable
-     * sequence they were iterated as: this is re-evaluated after the build, when they may hold anything at all. A
-     * range which reaches before the first element or does not advance is counted the way the iteration walks it,
-     * which is from the first element and one element at a time.
+     * How many iterations the given items produce over the given range, which is none where they are not the indexable sequence they were iterated as: this is
+     * re-evaluated after the build, when they may hold anything at all. A range which reaches before the first element or does not advance is counted the way
+     * the iteration walks it, which is from the first element and one element at a time.
      */
     private static int iterationCount(Object src, int begin, int end, int step) {
         if (!isIndexable(src)) {
@@ -637,18 +647,17 @@ public final class ForEachHandler extends TagHandlerImpl {
     }
 
     /**
-     * Whether the current items are still the indexable sequence of elements that was recorded, which is what makes
-     * the subtree built over them reproducible.
+     * Whether the current items are still the indexable sequence of elements that was recorded, which is what makes the subtree built over them reproducible.
      */
     private static boolean sameItems(List<Object> recordedItems, Object currentItems) {
         return currentItems != null && (currentItems instanceof List || currentItems.getClass().isArray())
-                && sameElements(recordedItems, currentItems);
+            && sameElements(recordedItems, currentItems);
     }
 
     /**
-     * Whether the recorded iteration matches the current one: same range and, for items, the same element sequence
-     * (element-wise {@link Object#equals equality}; items without a value-based {@code equals} fall back to identity,
-     * as a per-element refresh diff would). {@code currentItems} is {@code null} for a begin/end integer range.
+     * Whether the recorded iteration matches the current one: same range and, for items, the same element sequence (element-wise {@link Object#equals
+     * equality}; items without a value-based {@code equals} fall back to identity, as a per-element refresh diff would). {@code currentItems} is {@code null}
+     * for a begin/end integer range.
      */
     private static boolean sameIteration(Object[] state, int[] range, Object currentItems) {
         if (!Arrays.equals((int[]) state[0], range)) {
@@ -727,9 +736,11 @@ public final class ForEachHandler extends TagHandlerImpl {
     private ValueExpression getVarExpr(ValueExpression ve, Object src, Object value, int i, int start) {
         if (src instanceof List || src.getClass().isArray()) {
             return new IndexedValueExpression(ve, i);
-        } else if (src instanceof Map && value instanceof Map.Entry) {
+        }
+        else if (src instanceof Map && value instanceof Map.Entry) {
             return new MappedValueExpression(ve, (Map.Entry<?, ?>) value);
-        } else if (src instanceof Collection) {
+        }
+        else if (src instanceof Collection) {
             return new IteratedValueExpression(ve, start, i);
         }
         throw new IllegalStateException("Cannot create VE for: " + src);
@@ -752,13 +763,17 @@ public final class ForEachHandler extends TagHandlerImpl {
     private Iterator<?> toIterator(Object src) {
         if (src == null) {
             return null;
-        } else if (src instanceof Collection) {
+        }
+        else if (src instanceof Collection) {
             return ((Collection<?>) src).iterator();
-        } else if (src instanceof Map) {
+        }
+        else if (src instanceof Map) {
             return ((Map<?, ?>) src).entrySet().iterator();
-        } else if (src.getClass().isArray()) {
+        }
+        else if (src.getClass().isArray()) {
             return new ArrayIterator(src);
-        } else {
+        }
+        else {
             throw new TagAttributeException(tag, items, "Must evaluate to a Collection, Map, Array, or null.");
         }
     }

@@ -82,10 +82,12 @@ public class FileRenderer extends TextRenderer {
             }
             if (((HtmlInputFile) component).isMultiple()) {
                 setSubmittedValue(component, submittedValues);
-            } else if (!submittedValues.isEmpty()) {
+            }
+            else if (!submittedValues.isEmpty()) {
                 setSubmittedValue(component, submittedValues.iterator().next());
             }
-        } catch (IOException | ServletException ioe) {
+        }
+        catch (IOException | ServletException ioe) {
             throw new FacesException(ioe);
         }
 
@@ -104,14 +106,17 @@ public class FileRenderer extends TextRenderer {
                 if (null == encType || !encType.equals("multipart/form-data")) {
                     produceMessage = true;
                 }
-            } else {
+            }
+            else {
                 produceMessage = true;
             }
 
             if (produceMessage) {
-                FacesMessage message = new FacesMessage(FacesMessage.Severity.WARN,
-                        "File upload component requires a form with an enctype of multipart/form-data",
-                        "File upload component requires a form with an enctype of multipart/form-data");
+                FacesMessage message = new FacesMessage(
+                    FacesMessage.Severity.WARN,
+                    "File upload component requires a form with an enctype of multipart/form-data",
+                    "File upload component requires a form with an enctype of multipart/form-data"
+                );
                 context.addMessage(component.getClientId(context), message);
             }
         }
@@ -133,7 +138,8 @@ public class FileRenderer extends TextRenderer {
             if (isEmpty(part)) {
                 return null;
             }
-        } else if (submittedValue instanceof Collection) {
+        }
+        else if (submittedValue instanceof Collection) {
             Collection<Part> parts = (Collection<Part>) submittedValue;
             return Collections.unmodifiableList(parts.stream().filter(part -> !isEmpty(part)).collect(Collectors.toList()));
         }

@@ -83,18 +83,20 @@ public class RenderResponsePhase extends Phase {
                 String afterPublishViewId = facesContext.getViewRoot().getViewId();
 
                 viewIdsUnchanged = beforePublishViewId == null && afterPublishViewId == null
-                        || beforePublishViewId != null && afterPublishViewId != null && beforePublishViewId.equals(afterPublishViewId);
+                    || beforePublishViewId != null && afterPublishViewId != null && beforePublishViewId.equals(afterPublishViewId);
                 if (facesContext.getResponseComplete()) {
                     return;
                 }
-            } while (!viewIdsUnchanged);
+            }
+            while (!viewIdsUnchanged);
 
             // render the view
             vh.renderView(facesContext, facesContext.getViewRoot());
 
             application.publishEvent(facesContext, PostRenderViewEvent.class, facesContext.getViewRoot());
 
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new FacesException(e.getMessage(), e);
         }
 
@@ -116,6 +118,6 @@ public class RenderResponsePhase extends Phase {
 
     }
 
-// The testcase for this class is TestRenderResponsePhase.java
+    // The testcase for this class is TestRenderResponsePhase.java
 
 } // end of class RenderResponsePhase

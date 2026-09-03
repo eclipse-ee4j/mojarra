@@ -76,8 +76,8 @@ public class InjectionProviderFactory {
 
     /**
      * <p>
-     * Creates a new instance of the class specified by the <code>org.glassfish.mojarra.InjectionProvider</code> system property. If
-     * this propery is not defined, then a default, no-op, <code>InjectionProvider</code> will be returned.
+     * Creates a new instance of the class specified by the <code>org.glassfish.mojarra.InjectionProvider</code> system property. If this propery is not
+     * defined, then a default, no-op, <code>InjectionProvider</code> will be returned.
      *
      * @param context FacesContext for the current request
      *
@@ -96,10 +96,12 @@ public class InjectionProviderFactory {
                 LOGGER.log(Level.FINE, "faces.spi.injection.provider_configured", new Object[] { provider.getClass().getName() });
             }
             return provider;
-        } else if (WebContainerInjectionProvider.class.equals(provider.getClass())) {
+        }
+        else if (WebContainerInjectionProvider.class.equals(provider.getClass())) {
             LOGGER.info("faces.core.injection.provider_generic_web_configured");
             return provider;
-        } else {
+        }
+        else {
             LOGGER.log(WARNING, "faces.spi.injection.no_injection");
             return provider;
         }
@@ -108,9 +110,11 @@ public class InjectionProviderFactory {
 
     private static void warnWhenDeprecatedInterfaceIsImplemented(InjectionProvider provider, Class<?> deprecatedInterface, String reason) {
         if (deprecatedInterface.isInstance(provider)) {
-            LOGGER.log(WARNING, "InjectionProvider {0} implements deprecated {1} interface which is no longer used. {2}"
+            LOGGER.log(
+                WARNING, "InjectionProvider {0} implements deprecated {1} interface which is no longer used. {2}"
                     + " Please remove the {1} interface from the implementation.",
-                    new Object[] { provider.getClass().getName(), deprecatedInterface.getSimpleName(), reason });
+                new Object[] { provider.getClass().getName(), deprecatedInterface.getSimpleName(), reason }
+            );
         }
     }
 
@@ -124,24 +128,29 @@ public class InjectionProviderFactory {
                     try {
                         Constructor<?> ctor = clazz.getConstructor(ServletContext.class);
                         return (InjectionProvider) ctor.newInstance((ServletContext) extContext.getContext());
-                    } catch (NoSuchMethodException nsme) {
+                    }
+                    catch (NoSuchMethodException nsme) {
                         return (InjectionProvider) clazz.getDeclaredConstructor().newInstance();
-                    } catch (InvocationTargetException ite) {
+                    }
+                    catch (InvocationTargetException ite) {
                         if (LOGGER.isLoggable(Level.SEVERE)) {
                             LOGGER.log(Level.SEVERE, "faces.spi.injection.provider_cannot_instantiate", new Object[] { className });
                             LOGGER.log(Level.SEVERE, "", ite);
                         }
                     }
-                } else {
+                }
+                else {
                     if (LOGGER.isLoggable(Level.SEVERE)) {
                         LOGGER.log(Level.SEVERE, "faces.spi.injection.provider_not_implemented", new Object[] { className });
                     }
                 }
-            } catch (ClassNotFoundException cnfe) {
+            }
+            catch (ClassNotFoundException cnfe) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE, "faces.spi.injection.provider_not_found", new Object[] { className });
                 }
-            } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException ie) {
+            }
+            catch (IllegalArgumentException | ReflectiveOperationException | SecurityException ie) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE, "faces.spi.injection.provider_cannot_instantiate", new Object[] { className });
                     LOGGER.log(Level.SEVERE, "", ie);
@@ -159,7 +168,8 @@ public class InjectionProviderFactory {
                 if (Util.loadClass("jakarta.annotation.PostConstruct", null) != null && Util.loadClass("jakarta.annotation.PreDestroy", null) != null) {
                     provider = GENERIC_WEB_PROVIDER;
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 provider = NOOP_PROVIDER;
             }
         }
@@ -201,16 +211,14 @@ public class InjectionProviderFactory {
      * Attempt to find an <code>InjectionProvider</code> based on the following algorithm:
      * </p>
      * <ul>
-     * <li>Check for an explicit configuration within the web.xml using the key
-     * <code>org.glassfish.mojarra.injectionProvider</code>. If found, return the value.</li>
-     * <li>Check for a system property keyed by <code>org.glassfish.mojarra.InjectionProvider</code>. If found, return the
+     * <li>Check for an explicit configuration within the web.xml using the key <code>org.glassfish.mojarra.injectionProvider</code>. If found, return the
      * value.</li>
-     * <li>Check for entries within <code>META-INF/services/org.glassfish.mojarra.injectionprovider</code>. If entries are found and
-     * the entries extend <code>DiscoverableInjectionProvider</code>, invoke
-     * <code>isInjectionFeatureAvailable(String)</code> passing in the configured delegate. If
+     * <li>Check for a system property keyed by <code>org.glassfish.mojarra.InjectionProvider</code>. If found, return the value.</li>
+     * <li>Check for entries within <code>META-INF/services/org.glassfish.mojarra.injectionprovider</code>. If entries are found and the entries extend
+     * <code>DiscoverableInjectionProvider</code>, invoke <code>isInjectionFeatureAvailable(String)</code> passing in the configured delegate. If
      * <code>isInjectionFeatureAvailable(String)</code> returns <code>true</code> return the service entry.</li>
-     * <li>If no <code>InjectionProviders are found, return <code>null</code></li> Tries to find a provider class in a web
-     * context parameter. If not present it tries to find it as a System property. If still not found returns null.
+     * <li>If no <code>InjectionProviders are found, return <code>null</code></li> Tries to find a provider class in a web context parameter. If not present it
+     * tries to find it as a System property. If still not found returns null.
      * <ul>
      *
      * @param context FacesContext for the current request
@@ -222,13 +230,15 @@ public class InjectionProviderFactory {
 
         if (!provider.isEmpty()) {
             return provider;
-        } else {
+        }
+        else {
             provider = System.getProperty(INJECTION_PROVIDER_PROPERTY);
         }
 
         if (provider != null) {
             return provider;
-        } else {
+        }
+        else {
             String[] serviceEntries = getServiceEntries();
             if (serviceEntries.length > 0) {
                 for (int i = 0; i < serviceEntries.length; i++) {
@@ -237,7 +247,8 @@ public class InjectionProviderFactory {
                         break;
                     }
                 }
-            } else {
+            }
+            else {
                 return provider;
             }
         }
@@ -266,13 +277,15 @@ public class InjectionProviderFactory {
                 if (DiscoverableInjectionProvider.isInjectionFeatureAvailable(parts[1])) {
                     return parts[0];
                 }
-            } else {
+            }
+            else {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE, "faces.spi.injection.provider.entry_not_discoverable", new Object[] { parts[0] });
                 }
                 return null;
             }
-        } catch (ClassNotFoundException cnfe) {
+        }
+        catch (ClassNotFoundException cnfe) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, "faces.spi.injection.provider_not_found", new Object[] { parts[0] });
             }
@@ -294,7 +307,8 @@ public class InjectionProviderFactory {
         Enumeration<URL> urls = null;
         try {
             urls = loader.getResources(INJECTION_SERVICE);
-        } catch (IOException ioe) {
+        }
+        catch (IOException ioe) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, ioe.toString(), ioe);
             }
@@ -315,7 +329,8 @@ public class InjectionProviderFactory {
                     if (input != null) {
                         try {
                             reader = new BufferedReader(new InputStreamReader(input, "UTF-8"));
-                        } catch (Exception e) {
+                        }
+                        catch (Exception e) {
                             // The DM_DEFAULT_ENCODING warning is acceptable here
                             // because we explicitly *want* to use the Java runtime's
                             // default encoding.
@@ -325,16 +340,19 @@ public class InjectionProviderFactory {
                             results.add(line.trim());
                         }
                     }
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     if (LOGGER.isLoggable(Level.SEVERE)) {
                         LOGGER.log(Level.SEVERE, "faces.spi.provider.cannot_read_service", new Object[] { INJECTION_SERVICE });
                         LOGGER.log(Level.SEVERE, e.toString(), e);
                     }
-                } finally {
+                }
+                finally {
                     if (input != null) {
                         try {
                             input.close();
-                        } catch (Exception e) {
+                        }
+                        catch (Exception e) {
                             if (LOGGER.isLoggable(Level.FINEST)) {
                                 LOGGER.log(Level.FINEST, "Closing stream", e);
                             }
@@ -343,7 +361,8 @@ public class InjectionProviderFactory {
                     if (reader != null) {
                         try {
                             reader.close();
-                        } catch (Exception e) {
+                        }
+                        catch (Exception e) {
                             if (LOGGER.isLoggable(Level.FINEST)) {
                                 LOGGER.log(Level.FINEST, "Closing stream", e);
                             }
@@ -359,8 +378,7 @@ public class InjectionProviderFactory {
 
     /**
      * <p>
-     * A no-op implementation of <code>InjectionProvider</code> which will be used when the #INJECTION_PROVIDER_PROPERTY is
-     * not specified or is invalid.
+     * A no-op implementation of <code>InjectionProvider</code> which will be used when the #INJECTION_PROVIDER_PROPERTY is not specified or is invalid.
      * </p>
      */
     private static final class NoopInjectionProvider implements InjectionProvider, AnnotationScanner {
@@ -378,7 +396,8 @@ public class InjectionProviderFactory {
 
         @Override
         public Map<String, List<AnnotationScanner.ScannedAnnotation>> getAnnotatedClassesInCurrentModule(ServletContext extContext)
-                throws InjectionProviderException {
+            throws InjectionProviderException
+        {
             return Collections.emptyMap();
         }
 

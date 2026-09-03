@@ -41,8 +41,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Covers schema validation of the configuration documents, which reports what it finds and never fails the deployment
- * over it.
+ * Covers schema validation of the configuration documents, which reports what it finds and never fails the deployment over it.
  */
 class SchemaValidationTest {
 
@@ -69,6 +68,7 @@ class SchemaValidationTest {
         @Override
         public void close() {
         }
+
     };
 
     @BeforeEach
@@ -99,8 +99,7 @@ class SchemaValidationTest {
     }
 
     /**
-     * A configuration file which a previous release accepted has to keep deploying, so a violation is a warning and the
-     * document is still returned.
+     * A configuration file which a previous release accepted has to keep deploying, so a violation is a warning and the document is still returned.
      */
     @Test
     void aSchemaViolationDoesNotFailTheDeployment() throws Exception {
@@ -110,8 +109,8 @@ class SchemaValidationTest {
     }
 
     /**
-     * A library on the classpath may declare a newer configuration version than this release knows, which skips
-     * validation of that document rather than taking the application down.
+     * A library on the classpath may declare a newer configuration version than this release knows, which skips validation of that document rather than taking
+     * the application down.
      */
     @Test
     void anUnknownVersionSkipsValidationInsteadOfFailing() throws Exception {
@@ -122,8 +121,8 @@ class SchemaValidationTest {
     }
 
     /**
-     * A namespace written with the wrong scheme is the mistake behind an otherwise baffling schema violation, which
-     * blames whatever sits in that namespace rather than the declaration which is actually wrong.
+     * A namespace written with the wrong scheme is the mistake behind an otherwise baffling schema violation, which blames whatever sits in that namespace
+     * rather than the declaration which is actually wrong.
      */
     @Test
     void aNamespaceWrittenWithTheWrongSchemeIsNamed() throws Exception {
@@ -133,8 +132,7 @@ class SchemaValidationTest {
     }
 
     /**
-     * And the same document with the namespace spelled correctly is silent, which is what makes the warning above a
-     * diagnosis rather than noise.
+     * And the same document with the namespace spelled correctly is silent, which is what makes the warning above a diagnosis rather than noise.
      */
     @Test
     void theSameDocumentIsSilentWithTheCorrectScheme() throws Exception {
@@ -155,22 +153,22 @@ class SchemaValidationTest {
 
     private String facesConfigWithXsi(String xsiNamespace) {
         return """
-                <?xml version="1.0" encoding="UTF-8"?>
-                <faces-config xmlns="https://jakarta.ee/xml/ns/jakartaee"
-                    xmlns:xsi="%s"
-                    xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-facesconfig_5_0.xsd"
-                    version="5.0">
-                </faces-config>
-                """.formatted(xsiNamespace);
+            <?xml version="1.0" encoding="UTF-8"?>
+            <faces-config xmlns="https://jakarta.ee/xml/ns/jakartaee"
+                xmlns:xsi="%s"
+                xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-facesconfig_5_0.xsd"
+                version="5.0">
+            </faces-config>
+            """.formatted(xsiNamespace);
     }
 
     private String facesConfig(String version, String body) {
         return """
-                <?xml version="1.0" encoding="UTF-8"?>
-                <faces-config xmlns="https://jakarta.ee/xml/ns/jakartaee" version="%s">
-                    %s
-                </faces-config>
-                """.formatted(version, body);
+            <?xml version="1.0" encoding="UTF-8"?>
+            <faces-config xmlns="https://jakarta.ee/xml/ns/jakartaee" version="%s">
+                %s
+            </faces-config>
+            """.formatted(version, body);
     }
 
     private DocumentInfo[] parse(String facesConfig, boolean validating) throws Exception {
@@ -185,4 +183,5 @@ class SchemaValidationTest {
 
         return records.stream().map(LogRecord::getMessage).toList();
     }
+
 }

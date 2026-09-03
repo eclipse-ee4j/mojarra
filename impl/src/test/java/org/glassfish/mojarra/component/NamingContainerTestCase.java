@@ -64,7 +64,8 @@ public class NamingContainerTestCase extends JUnitFacesTestCaseBase {
         RenderKit renderKit = new MockRenderKit();
         try {
             renderKitFactory.addRenderKit(RenderKitFactory.HTML_BASIC_RENDER_KIT, renderKit);
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
         }
         Map<String, String> map = new HashMap<>();
         externalContext.setRequestParameterMap(map);
@@ -461,55 +462,64 @@ public class NamingContainerTestCase extends JUnitFacesTestCaseBase {
         try {
             a.findComponent(null);
             fail("Should have thrown NullPointerException");
-        } catch (NullPointerException ex) {
+        }
+        catch (NullPointerException ex) {
             // Expected result
         }
         try {
             a.findComponent("a:c:h");
             fail("Should have thrown IllegalArgumentException");
-        } catch (IllegalArgumentException ex) {
+        }
+        catch (IllegalArgumentException ex) {
             // Expected result
         }
         try {
             a.findComponent("a:c:i");
             fail("Should have thrown IllegalArgumentException");
-        } catch (IllegalArgumentException ex) {
+        }
+        catch (IllegalArgumentException ex) {
             // Expected result
         }
         try {
             a.findComponent(":a:c:h");
             fail("Should have thrown IllegalArgumentException");
-        } catch (IllegalArgumentException ex) {
+        }
+        catch (IllegalArgumentException ex) {
             // Expected result
         }
         try {
             a.findComponent(":a:c:i");
             fail("Should have thrown IllegalArgumentException");
-        } catch (IllegalArgumentException ex) {
+        }
+        catch (IllegalArgumentException ex) {
             // Expected result
         }
         try {
             a.findComponent("c:h");
             fail("Should have thrown IllegalArgumentException");
-        } catch (IllegalArgumentException ex) {
+        }
+        catch (IllegalArgumentException ex) {
             // Expected result
         }
         try {
             a.findComponent("c:i");
             fail("Should have thrown IllegalArgumentException");
-        } catch (IllegalArgumentException ex) {
+        }
+        catch (IllegalArgumentException ex) {
             // Expected result
         }
         try {
             a.findComponent(":c:h");
             fail("Should have thrown IllegalArgumentException");
-        } catch (IllegalArgumentException ex) {
+        }
+        catch (IllegalArgumentException ex) {
             // Expected result
         }
         try {
             a.findComponent(":c:i");
             fail("Should have thrown IllegalArgumentException");
-        } catch (IllegalArgumentException ex) {
+        }
+        catch (IllegalArgumentException ex) {
             // Expected result
         }
 

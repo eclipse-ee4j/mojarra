@@ -70,7 +70,8 @@ public class ResponseStateManagerImpl extends ResponseStateManager {
                 if (state != null) {
                     RequestStateManager.set(context, FACES_VIEW_STATE, state);
                 }
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 throw new FacesException(e);
             }
         }
@@ -94,7 +95,8 @@ public class ResponseStateManagerImpl extends ResponseStateManager {
         StringBuilder sb = new StringBuilder(32);
         try {
             helper.writeState(context, state, sb);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new FacesException(e);
         }
 
@@ -111,4 +113,5 @@ public class ResponseStateManagerImpl extends ResponseStateManager {
     public boolean isStateless(FacesContext facesContext, String viewId) {
         return helper.isStateless(facesContext, viewId);
     }
+
 }

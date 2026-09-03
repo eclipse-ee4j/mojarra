@@ -47,8 +47,11 @@ public class MethodCallNodeImpl extends MethodCallNode implements Serializable {
         _parameters = new CopyOnWriteArrayList<>();
     }
 
-    public MethodCallNodeImpl(FacesContext context, String id, String methodExpressionString, String defaultOutcomeString,
-            List<Parameter> parametersFromConfig) {
+    public MethodCallNodeImpl(
+        FacesContext context, String id, String methodExpressionString, String defaultOutcomeString,
+        List<Parameter> parametersFromConfig
+    )
+    {
         this(id);
         if (null != parametersFromConfig) {
             _parameters.addAll(parametersFromConfig);
@@ -64,13 +67,15 @@ public class MethodCallNodeImpl extends MethodCallNode implements Serializable {
                 if (null != cur.getName()) {
                     try {
                         paramTypes[i] = ReflectionUtil.forName(cur.getName());
-                    } catch (ClassNotFoundException cnfe) {
+                    }
+                    catch (ClassNotFoundException cnfe) {
                         if (LOGGER.isLoggable(Level.SEVERE)) {
                             LOGGER.log(Level.SEVERE, "parameter " + cur.getName() + "incorrect type", cnfe);
                         }
                         paramTypes[i] = null;
                     }
-                } else {
+                }
+                else {
                     paramTypes[i] = String.class;
                 }
                 i++;

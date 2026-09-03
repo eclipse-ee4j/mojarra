@@ -113,7 +113,8 @@ public abstract class Compiler {
                         log.warning("No default ExpressionFactory from Faces Implementation, attempting to load from Feature[" + EXPRESSION_FACTORY + "]");
                     }
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 if (log.isLoggable(Level.FINEST)) {
                     log.log(Level.FINEST, "Unable to get ExpressionFactory because of: ", e);
                 }
@@ -131,7 +132,8 @@ public abstract class Compiler {
         if (type != null) {
             try {
                 return ReflectionUtil.forName(type).getDeclaredConstructor().newInstance();
-            } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
+            }
+            catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
                 throw new FaceletException("Could not instantiate feature[" + name + "]: " + type);
             }
         }
@@ -183,4 +185,5 @@ public abstract class Compiler {
     public final void setValidating(boolean validating) {
         this.validating = validating;
     }
+
 }

@@ -40,9 +40,8 @@ import org.glassfish.mojarra.util.MessageUtils;
 
 /**
  * <p>
- * ValidateFormComponentNesting performs component tree validation to assure {@link ActionSource}
- * and {@link EditableValueHolder} components are placed inside a form.
- * ValidateFormComponentNesting is installed automatically if {@link ProjectStage#Development} is active.
+ * ValidateFormComponentNesting performs component tree validation to assure {@link ActionSource} and {@link EditableValueHolder} components are placed inside a
+ * form. ValidateFormComponentNesting is installed automatically if {@link ProjectStage#Development} is active.
  * </p>
  *
  * @author dueni
@@ -85,7 +84,8 @@ public class ValidateComponentNesting implements SystemEventListener {
                 // stop tree walk if component is of type UIForm or component family ends on "Form"
                 // or if the component is the UIPanel with id METADATA_FACET_NAME
                 result = VisitResult.REJECT;
-            } else if (target instanceof UIViewParameter || target instanceof UIViewAction) {
+            }
+            else if (target instanceof UIViewParameter || target instanceof UIViewAction) {
                 if (reportedOmittedMetadataOnce) {
                     // report first detected problem only, then stop tree walk
                     result = VisitResult.COMPLETE;
@@ -93,7 +93,8 @@ public class ValidateComponentNesting implements SystemEventListener {
                 addOmittedMessage(context.getFacesContext(), target.getClientId(context.getFacesContext()), MessageUtils.MISSING_METADATA_ERROR);
                 reportedOmittedMetadataOnce = true;
 
-            } else if (target instanceof EditableValueHolder || target instanceof ActionSource) {
+            }
+            else if (target instanceof EditableValueHolder || target instanceof ActionSource) {
                 if (reportedOmittedFormOnce) {
                     // report first detected problem only, then stop tree walk
                     result = VisitResult.COMPLETE;
@@ -106,6 +107,7 @@ public class ValidateComponentNesting implements SystemEventListener {
             }
             return result;
         }
+
     }
 
     /**

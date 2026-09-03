@@ -1,6 +1,5 @@
 package org.glassfish.mojarra.application;
 
-
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.context.FacesContext;
@@ -14,7 +13,6 @@ import org.glassfish.mojarra.mock.MockHttpServletRequest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
 
 public class WebappLifecycleListenerTestCase extends JUnitFacesTestCaseBase {
 
@@ -37,9 +35,10 @@ public class WebappLifecycleListenerTestCase extends JUnitFacesTestCaseBase {
 
         FactoryFinder.releaseFactories();
     }
+
     /**
-     * Tests that exception handling in WebappLifecycleListener.requestDestroyed(event) works. The application has to be
-     * distributable, because that is the only case in which requestDestroyed touches the request at all.
+     * Tests that exception handling in WebappLifecycleListener.requestDestroyed(event) works. The application has to be distributable, because that is the only
+     * case in which requestDestroyed touches the request at all.
      */
     @Test
     public void testRequestDestroyedExceptionHandling() {
@@ -50,6 +49,7 @@ public class WebappLifecycleListenerTestCase extends JUnitFacesTestCaseBase {
 
         // Create a request event. Make it cause an exception inside the lifecycleListener.requestDestroyed(event) call.
         ServletRequestEvent event = new ServletRequestEvent(servletContext, new MockHttpServletRequest()) {
+
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -58,6 +58,7 @@ public class WebappLifecycleListenerTestCase extends JUnitFacesTestCaseBase {
                 // exception would come from a surrounding code, not from this particular method.
                 throw new RuntimeException(SYNTHETIC_EXCEPTION_MESSAGE);
             }
+
         };
 
         try {
@@ -67,10 +68,12 @@ public class WebappLifecycleListenerTestCase extends JUnitFacesTestCaseBase {
             // instead.
             lifecycleListener.requestDestroyed(event);
             Assertions.fail("We expect a FacesException to be thrown from lifecycleListener.requestDestroyed(event)");
-        } catch (FacesException e) {
+        }
+        catch (FacesException e) {
             // FacesException has been produced as expected. The exception message should be the original synthetic
             // exception message.
             Assertions.assertEquals(SYNTHETIC_EXCEPTION_MESSAGE, e.getMessage());
         }
     }
+
 }

@@ -27,8 +27,8 @@ import jakarta.faces.event.PhaseId;
 import org.glassfish.mojarra.util.FacesLogger;
 
 /**
- * ApplyRequestValuesPhase executes <code>processDecodes</code> on each component in the tree so that it may update it's
- * current value from the information included in the current request (parameters, headers, c cookies and so on.)
+ * ApplyRequestValuesPhase executes <code>processDecodes</code> on each component in the tree so that it may update it's current value from the information
+ * included in the current request (parameters, headers, c cookies and so on.)
  */
 public class ApplyRequestValuesPhase extends Phase {
 
@@ -49,7 +49,8 @@ public class ApplyRequestValuesPhase extends Phase {
 
         try {
             component.processDecodes(facesContext);
-        } catch (RuntimeException re) {
+        }
+        catch (RuntimeException re) {
             String exceptionMessage = re.getMessage();
             if (null != exceptionMessage) {
                 if (LOGGER.isLoggable(Level.FINE)) {

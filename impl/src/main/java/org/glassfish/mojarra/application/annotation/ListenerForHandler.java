@@ -49,7 +49,8 @@ class ListenerForHandler implements RuntimeAnnotationHandler {
             // handling @ListenerFor on a Renderer
             listener = params[0];
             target = (UIComponent) params[1];
-        } else {
+        }
+        else {
             // handling @ListenerFor on a UIComponent
             listener = params[0];
             target = (UIComponent) params[0];
@@ -59,14 +60,16 @@ class ListenerForHandler implements RuntimeAnnotationHandler {
             for (ListenerFor listenerFor : listenersFor) {
                 target.subscribeToEvent(listenerFor.systemEventClass(), (ComponentSystemEventListener) listener);
             }
-        } else if (listener instanceof SystemEventListener) {
+        }
+        else if (listener instanceof SystemEventListener) {
             Class<?> sourceClassValue;
             Application app = ctx.getApplication();
             for (ListenerFor listenerFor : listenersFor) {
                 sourceClassValue = listenerFor.sourceClass();
                 if (sourceClassValue == Void.class) {
                     app.subscribeToEvent(listenerFor.systemEventClass(), (SystemEventListener) listener);
-                } else {
+                }
+                else {
                     app.subscribeToEvent(listenerFor.systemEventClass(), listenerFor.sourceClass(), (SystemEventListener) listener);
                 }
             }

@@ -57,8 +57,7 @@ public class Documents {
      * </p>
      *
      * @param servletContext the <code>ServletContext</code> for the application to be processed
-     * @param providers <code>List</code> of <code>ConfigurationResourceProvider</code> instances that provide the URL of
-     * the documents to parse.
+     * @param providers <code>List</code> of <code>ConfigurationResourceProvider</code> instances that provide the URL of the documents to parse.
      * @param validating flag indicating whether or not the documents should be validated
      * @return an array of <code>DocumentInfo</code>s
      */
@@ -82,9 +81,11 @@ public class Documents {
             }
 
             return documents.toArray(DocumentInfo[]::new);
-        } catch (ConfigurationException e) {
+        }
+        catch (ConfigurationException e) {
             throw e;
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new ConfigurationException(e);
         }
     }
@@ -102,10 +103,13 @@ public class Documents {
                 populator.populateApplicationConfiguration(facesConfigDoc);
 
                 programmaticDocuments.add(new DocumentInfo(facesConfigDoc, null));
-            } catch (Throwable e) {
+            }
+            catch (Throwable e) {
                 if (LOGGER.isLoggable(INFO)) {
-                    LOGGER.log(INFO, "{0} thrown when invoking {1}.populateApplicationConfigurationResources: {2}",
-                            new String[] { e.getClass().getName(), populator.getClass().getName(), e.getMessage() });
+                    LOGGER.log(
+                        INFO, "{0} thrown when invoking {1}.populateApplicationConfigurationResources: {2}",
+                        new String[] { e.getClass().getName(), populator.getClass().getName(), e.getMessage() }
+                    );
                 }
             }
         }
@@ -140,8 +144,8 @@ public class Documents {
 
     /**
      * <p>
-     * Sort the <code>faces-config</code> documents found on the classpath and those specified by the
-     * <code>jakarta.faces.CONFIG_FILES</code> context init parameter.
+     * Sort the <code>faces-config</code> documents found on the classpath and those specified by the <code>jakarta.faces.CONFIG_FILES</code> context init
+     * parameter.
      * </p>
      *
      * @param facesDocuments an array of <em>all</em> <code>faces-config</code> documents
@@ -172,7 +176,8 @@ public class Documents {
                 }
 
                 return facesDocuments;
-            } else {
+            }
+            else {
                 DocumentOrderingWrapper[] result = DocumentOrderingWrapper.sort(ordering, absoluteOrdering);
                 DocumentInfo[] ret = new DocumentInfo[webInfFacesConfig.isWebInfFacesConfig() ? result.length + 2 : result.length + 1];
 

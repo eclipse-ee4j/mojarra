@@ -84,4 +84,5 @@ public class CompositeComponentAttributesELResolverTest {
         assertTrue(facesContext1 != ctxField2.get(evalMap2));
         assertTrue(facesContext2 == ctxField2.get(evalMap2));
     }
+
 }

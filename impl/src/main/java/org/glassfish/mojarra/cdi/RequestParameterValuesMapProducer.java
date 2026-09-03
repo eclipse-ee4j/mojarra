@@ -27,8 +27,7 @@ import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_3">
- * The request parameter values map producer is the CDI producer that allows injection of the request parameter values
- * map using @Inject.
+ * The request parameter values map producer is the CDI producer that allows injection of the request parameter values map using @Inject.
  * </p>
  *
  * @since 2.3

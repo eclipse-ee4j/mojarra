@@ -26,9 +26,8 @@ import jakarta.faces.component.html.HtmlOutputText;
 import org.junit.jupiter.api.Test;
 
 /**
- * A standard component records the pass-through HTML attributes that were set on it, and rendering emits them in the
- * order of that list. The list is therefore kept in natural order as it is written, which is what lets the render side
- * walk it as it finds it instead of sorting it once per component render.
+ * A standard component records the pass-through HTML attributes that were set on it, and rendering emits them in the order of that list. The list is therefore
+ * kept in natural order as it is written, which is what lets the render side walk it as it finds it instead of sorting it once per component render.
  */
 class HtmlAttributesThatAreSetTest {
 
@@ -56,10 +55,9 @@ class HtmlAttributesThatAreSetTest {
     }
 
     /**
-     * An attribute that has no component property is recorded by {@code UIComponentBase.AttributesMap} at the tail of
-     * the very same list, so the list as a whole is not necessarily ordered. Recording a component property after one
-     * of those must still neither duplicate it nor lose its place among the other properties - a duplicate would emit
-     * the HTML attribute twice.
+     * An attribute that has no component property is recorded by {@code UIComponentBase.AttributesMap} at the tail of the very same list, so the list as a
+     * whole is not necessarily ordered. Recording a component property after one of those must still neither duplicate it nor lose its place among the other
+     * properties - a duplicate would emit the HTML attribute twice.
      */
     @Test
     void propertylessAttributesNeitherDuplicateNorDisplaceTheProperties() {
@@ -89,4 +87,5 @@ class HtmlAttributesThatAreSetTest {
     private static List<String> attributesThatAreSet(HtmlOutputText component) {
         return (List<String>) component.getAttributes().get(ATTRIBUTES_THAT_ARE_SET);
     }
+
 }

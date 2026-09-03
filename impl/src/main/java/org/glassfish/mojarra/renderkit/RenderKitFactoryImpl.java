@@ -27,24 +27,24 @@ import org.glassfish.mojarra.util.MessageUtils;
 
 public class RenderKitFactoryImpl extends RenderKitFactory {
 
-//
-// Protected Constants
-//
+    //
+    // Protected Constants
+    //
     protected String renderKitId;
     protected String className;
     protected ConcurrentHashMap<String, RenderKit> renderKits;
 
-//
-// Class Variables
-//
+    //
+    // Class Variables
+    //
 
-// Attribute Instance Variables
+    // Attribute Instance Variables
 
-// Relationship Instance Variables
+    // Relationship Instance Variables
 
-//
-// Constructors and Initializers
-//
+    //
+    // Constructors and Initializers
+    //
     /**
      * Constructor registers default Render kit.
      */

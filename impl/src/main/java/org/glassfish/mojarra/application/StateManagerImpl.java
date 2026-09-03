@@ -38,8 +38,8 @@ public class StateManagerImpl extends StateManager {
     @Override
     public void writeState(FacesContext context, Object state) throws IOException {
         context.getRenderKit()
-               .getResponseStateManager()
-               .writeState(context, state);
+            .getResponseStateManager()
+            .writeState(context, state);
     }
 
 }

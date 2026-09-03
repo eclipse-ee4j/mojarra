@@ -26,8 +26,7 @@ import org.glassfish.mojarra.mock.MockServletContext;
 import org.junit.jupiter.api.Test;
 
 /**
- * Covers the deprecation support of {@link WebConfiguration}, both for a parameter which has a replacement and for one
- * which has none.
+ * Covers the deprecation support of {@link WebConfiguration}, both for a parameter which has a replacement and for one which has none.
  */
 class DeprecatedContextParamTest extends ConfigurationLoggingTestBase {
 
@@ -36,12 +35,11 @@ class DeprecatedContextParamTest extends ConfigurationLoggingTestBase {
     private static final String CONFIG_INFO = "faces.config.webconfig.configinfo";
 
     /**
-     * The warning is not gated on the project stage, because it announces a change in the runtime rather than a mistake
-     * in the application.
+     * The warning is not gated on the project stage, because it announces a change in the runtime rather than a mistake in the application.
      */
     /**
-     * A replacement is named rather than pointed at, because an enum constant may not refer to one declared after it
-     * and the constants are in alphabetical order, so this is what a compiler would otherwise have caught.
+     * A replacement is named rather than pointed at, because an enum constant may not refer to one declared after it and the constants are in alphabetical
+     * order, so this is what a compiler would otherwise have caught.
      */
     @Test
     void everyReplacementNamesADeclaredParameter() {
@@ -89,8 +87,8 @@ class DeprecatedContextParamTest extends ConfigurationLoggingTestBase {
     }
 
     /**
-     * A renamed parameter hands its value to the parameter which replaces it, so that an application which was not
-     * migrated yet keeps the setting it configured rather than silently falling back to the default.
+     * A renamed parameter hands its value to the parameter which replaces it, so that an application which was not migrated yet keeps the setting it configured
+     * rather than silently falling back to the default.
      */
     @Test
     void aRenamedParameterHandsItsValueToItsReplacement() {
@@ -102,9 +100,8 @@ class DeprecatedContextParamTest extends ConfigurationLoggingTestBase {
     }
 
     /**
-     * And it is reported under the name it moved to, and only under that one, because that is the one governing the
-     * behaviour from here on. Reporting it under the name it was declared with would leave the log naming a parameter
-     * which decides nothing, and the replacement appearing nowhere at all.
+     * And it is reported under the name it moved to, and only under that one, because that is the one governing the behaviour from here on. Reporting it under
+     * the name it was declared with would leave the log naming a parameter which decides nothing, and the replacement appearing nowhere at all.
      */
     @Test
     void aCarriedOverValueIsReportedUnderItsNewName() {
@@ -140,12 +137,13 @@ class DeprecatedContextParamTest extends ConfigurationLoggingTestBase {
 
     private List<String> reportedValuesOf(ContextParam param) {
         return records.stream()
-                .filter(record -> CONFIG_INFO.equals(record.getMessage()) && param.getName().equals(record.getParameters()[1]))
-                .map(record -> String.valueOf(record.getParameters()[2]))
-                .toList();
+            .filter(record -> CONFIG_INFO.equals(record.getMessage()) && param.getName().equals(record.getParameters()[1]))
+            .map(record -> String.valueOf(record.getParameters()[2]))
+            .toList();
     }
 
     private List<String> warnedParameterNames(String messageKey) {
         return loggedArguments(messageKey, 1);
     }
+
 }

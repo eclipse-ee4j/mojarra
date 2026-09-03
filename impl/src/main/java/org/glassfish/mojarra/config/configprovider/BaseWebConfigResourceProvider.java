@@ -56,7 +56,8 @@ public abstract class BaseWebConfigResourceProvider implements ConfigurationReso
                 URI u = getContextURLForPath(context, path);
                 if (u != null) {
                     urls.add(u);
-                } else {
+                }
+                else {
                     if (LOGGER.isLoggable(WARNING)) {
                         LOGGER.log(WARNING, "faces.config.web_resource_not_found", new Object[] { path, getParameter().getName() });
                     }
@@ -73,14 +74,14 @@ public abstract class BaseWebConfigResourceProvider implements ConfigurationReso
 
     protected abstract String[] getExcludedResources();
 
-
     protected URI getContextURLForPath(ServletContext context, String path) {
         try {
             URL url = context.getResource(path);
             if (url != null) {
                 return new URI(url.toExternalForm().replace(" ", "%20"));
             }
-        } catch (MalformedURLException | URISyntaxException mue) {
+        }
+        catch (MalformedURLException | URISyntaxException mue) {
             throw new FacesException(mue);
         }
 

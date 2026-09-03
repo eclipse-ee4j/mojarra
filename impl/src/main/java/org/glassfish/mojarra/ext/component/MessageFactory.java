@@ -63,7 +63,8 @@ public class MessageFactory {
         // viewRoot may not have been initialized at this point.
         if (context.getViewRoot() != null) {
             locale = context.getViewRoot().getLocale();
-        } else {
+        }
+        else {
             locale = Locale.getDefault();
         }
 
@@ -106,7 +107,8 @@ public class MessageFactory {
                 try {
                     summary = bundle.getString(messageId);
                     detail = bundle.getString(messageId + "_detail");
-                } catch (MissingResourceException e) {
+                }
+                catch (MissingResourceException e) {
                     // ignore
                 }
             }
@@ -123,7 +125,8 @@ public class MessageFactory {
             try {
                 summary = bundle.getString(messageId);
                 detail = bundle.getString(messageId + "_detail");
-            } catch (MissingResourceException e) {
+            }
+            catch (MissingResourceException e) {
                 // ignore
             }
         }
@@ -139,7 +142,8 @@ public class MessageFactory {
             // see if we have a hit
             try {
                 summary = bundle.getString(messageId);
-            } catch (MissingResourceException e) {
+            }
+            catch (MissingResourceException e) {
                 return null;
             }
         }
@@ -149,7 +153,6 @@ public class MessageFactory {
         ret.setSeverity(FacesMessage.Severity.ERROR);
         return ret;
     }
-
 
     /**
      * <p>
@@ -183,7 +186,7 @@ public class MessageFactory {
         return afactory.getApplication();
     }
 
-    private static ClassLoader getCurrentLoader(Class<?>fallbackClass) {
+    private static ClassLoader getCurrentLoader(Class<?> fallbackClass) {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         if (loader == null) {
             loader = fallbackClass.getClassLoader();
@@ -192,20 +195,24 @@ public class MessageFactory {
     }
 
     /**
-     * This class overrides FacesMessage to provide the evaluation of binding expressions in addition to Strings. It is
-     * often the case, that a binding expression may reference a localized property value that would be used as a
-     * substitution parameter in the message. For example: <code>#{bundle.userLabel}</code> "bundle" may not be available
-     * until the page is rendered. The "late" binding evaluation in <code>getSummary</code> and <code>getDetail</code> allow
-     * the expression to be evaluated when that property is available.
+     * This class overrides FacesMessage to provide the evaluation of binding expressions in addition to Strings. It is often the case, that a binding
+     * expression may reference a localized property value that would be used as a substitution parameter in the message. For example:
+     * <code>#{bundle.userLabel}</code> "bundle" may not be available until the page is rendered. The "late" binding evaluation in <code>getSummary</code> and
+     * <code>getDetail</code> allow the expression to be evaluated when that property is available.
      */
     static class BindingFacesMessage extends FacesMessage {
+
         /**
          *
          */
         private static final long serialVersionUID = 7020392746585505562L;
-        BindingFacesMessage(Locale locale, String messageFormat, String detailMessageFormat,
-                // array of parameters, both Strings and ValueBindings
-                Object[] parameters) {
+
+        BindingFacesMessage(
+            Locale locale, String messageFormat, String detailMessageFormat,
+            // array of parameters, both Strings and ValueBindings
+            Object[] parameters
+        )
+        {
 
             super(messageFormat, detailMessageFormat);
             this.locale = locale;
@@ -268,6 +275,7 @@ public class MessageFactory {
         private Locale locale;
         private Object[] parameters;
         private Object[] resolvedParameters;
+
     }
 
 } // end of class MessageFactory

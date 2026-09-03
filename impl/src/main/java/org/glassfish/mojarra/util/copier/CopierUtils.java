@@ -48,7 +48,8 @@ public class CopierUtils {
 
             if (isCopierTypeSimpleName(copierType)) {
                 copierType = COPIER_PREFIX.concat(copierType);
-            } else if (!isName(copierType)) {
+            }
+            else if (!isName(copierType)) {
                 throw new IllegalArgumentException(ERROR_COPIER_NAME);
             }
 
@@ -56,7 +57,8 @@ public class CopierUtils {
 
             if (expressionResult instanceof Copier) {
                 copier = (Copier) expressionResult;
-            } else if (expressionResult instanceof String) {
+            }
+            else if (expressionResult instanceof String) {
                 copier = instance((String) expressionResult);
             }
         }

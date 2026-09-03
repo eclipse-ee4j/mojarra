@@ -23,9 +23,11 @@ import jakarta.el.ExpressionFactory;
 import jakarta.faces.context.FacesContext;
 
 interface Instruction {
+
     void write(FacesContext context) throws IOException;
 
     Instruction apply(ExpressionFactory factory, ELContext ctx);
 
     boolean isLiteral();
+
 }

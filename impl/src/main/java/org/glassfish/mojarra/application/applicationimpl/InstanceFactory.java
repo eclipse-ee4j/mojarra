@@ -108,21 +108,21 @@ public class InstanceFactory {
     private static final String COMPONENT_CLASS = "componentClass";
 
     private static final Map<String, Class<?>[]> STANDARD_CONV_ID_TO_TYPE_MAP = Map.of(
-            ByteConverter.CONVERTER_ID, new Class<?>[] { Byte.TYPE, Byte.class },
-            BooleanConverter.CONVERTER_ID, new Class<?>[] { Boolean.TYPE, Boolean.class },
-            CharacterConverter.CONVERTER_ID, new Class<?>[] { Character.TYPE, Character.class },
-            ShortConverter.CONVERTER_ID, new Class<?>[] { Short.TYPE, Short.class },
-            IntegerConverter.CONVERTER_ID, new Class<?>[] { Integer.TYPE, Integer.class },
-            LongConverter.CONVERTER_ID, new Class<?>[] { Long.TYPE, Long.class },
-            FloatConverter.CONVERTER_ID, new Class<?>[] { Float.TYPE, Float.class },
-            DoubleConverter.CONVERTER_ID, new Class<?>[] { Double.TYPE, Double.class },
-            UUIDConverter.CONVERTER_ID, new Class<?>[] { UUID.class },
-            EnumConverter.CONVERTER_ID, new Class<?>[] { Enum.class }
+        ByteConverter.CONVERTER_ID, new Class<?>[] { Byte.TYPE, Byte.class },
+        BooleanConverter.CONVERTER_ID, new Class<?>[] { Boolean.TYPE, Boolean.class },
+        CharacterConverter.CONVERTER_ID, new Class<?>[] { Character.TYPE, Character.class },
+        ShortConverter.CONVERTER_ID, new Class<?>[] { Short.TYPE, Short.class },
+        IntegerConverter.CONVERTER_ID, new Class<?>[] { Integer.TYPE, Integer.class },
+        LongConverter.CONVERTER_ID, new Class<?>[] { Long.TYPE, Long.class },
+        FloatConverter.CONVERTER_ID, new Class<?>[] { Float.TYPE, Float.class },
+        DoubleConverter.CONVERTER_ID, new Class<?>[] { Double.TYPE, Double.class },
+        UUIDConverter.CONVERTER_ID, new Class<?>[] { UUID.class },
+        EnumConverter.CONVERTER_ID, new Class<?>[] { Enum.class }
     );
 
     private static final Map<Class<?>, String> STANDARD_TYPE_TO_CONV_ID_MAP;
     static {
-        Map<Class<?>,String> map = new HashMap<>(STANDARD_CONV_ID_TO_TYPE_MAP.size(), 1.0f);
+        Map<Class<?>, String> map = new HashMap<>(STANDARD_CONV_ID_TO_TYPE_MAP.size(), 1.0f);
         for (Map.Entry<String, Class<?>[]> entry : STANDARD_CONV_ID_TO_TYPE_MAP.entrySet()) {
             Class<?>[] types = entry.getValue();
             String key = entry.getKey();
@@ -134,7 +134,7 @@ public class InstanceFactory {
     }
 
     private final String[] STANDARD_BY_TYPE_CONVERTER_CLASSES = { "java.math.BigDecimal", "java.lang.Boolean", "java.lang.Byte", "java.lang.Character",
-            "java.lang.Double", "java.lang.Float", "java.lang.Integer", "java.lang.Long", "java.lang.Short", "java.lang.Enum", "java.util.UUID" };
+        "java.lang.Double", "java.lang.Float", "java.lang.Integer", "java.lang.Long", "java.lang.Short", "java.lang.Enum", "java.util.UUID" };
 
     private final Map<Class<?>, Object> converterTypeMap;
     private final boolean registerPropertyEditors;
@@ -191,8 +191,10 @@ public class InstanceFactory {
         notNull(COMPONENT_CLASS, componentClass);
 
         if (LOGGER.isLoggable(FINE) && componentMap.containsKey(componentType)) {
-            LOGGER.log(FINE, "componentType {0} has already been registered.  Replacing existing component class type {1} with {2}.",
-                    new Object[] { componentType, componentMap.get(componentType), componentClass });
+            LOGGER.log(
+                FINE, "componentType {0} has already been registered.  Replacing existing component class type {1} with {2}.",
+                new Object[] { componentType, componentMap.get(componentType), componentClass }
+            );
         }
 
         componentMap.put(componentType, componentClass);
@@ -275,11 +277,13 @@ public class InstanceFactory {
                     }
                     result = (UIComponent) clazz.getDeclaredConstructor().newInstance();
                 }
-            } catch (ClassNotFoundException ex) {
+            }
+            catch (ClassNotFoundException ex) {
                 if (!associate.isDevelopment()) {
                     componentMap.put(className, ComponentResourceClassNotFound.class);
                 }
-            } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException ie) {
+            }
+            catch (IllegalArgumentException | ReflectiveOperationException | SecurityException ie) {
                 throw new FacesException(ie);
             }
         }
@@ -331,8 +335,10 @@ public class InstanceFactory {
         notNull("behaviorClass", behaviorClass);
 
         if (LOGGER.isLoggable(FINE) && behaviorMap.containsKey(behaviorId)) {
-            LOGGER.log(FINE, "behaviorId {0} has already been registered.  Replacing existing behavior class type {1} with {2}.",
-                    new Object[] { behaviorId, behaviorMap.get(behaviorId), behaviorClass });
+            LOGGER.log(
+                FINE, "behaviorId {0} has already been registered.  Replacing existing behavior class type {1} with {2}.",
+                new Object[] { behaviorId, behaviorMap.get(behaviorId), behaviorClass }
+            );
         }
 
         behaviorMap.put(behaviorId, behaviorClass);
@@ -379,8 +385,10 @@ public class InstanceFactory {
         notNull("converterClass", converterClass);
 
         if (LOGGER.isLoggable(FINE) && converterIdMap.containsKey(converterId)) {
-            LOGGER.log(FINE, "converterId {0} has already been registered.  Replacing existing converter class type {1} with {2}.",
-                    new Object[] { converterId, converterIdMap.get(converterId), converterClass });
+            LOGGER.log(
+                FINE, "converterId {0} has already been registered.  Replacing existing converter class type {1} with {2}.",
+                new Object[] { converterId, converterIdMap.get(converterId), converterClass }
+            );
         }
 
         converterIdMap.put(converterId, converterClass);
@@ -409,10 +417,13 @@ public class InstanceFactory {
         String converterId = STANDARD_TYPE_TO_CONV_ID_MAP.get(targetClass);
         if (converterId != null) {
             addConverter(converterId, converterClass);
-        } else {
+        }
+        else {
             if (LOGGER.isLoggable(FINE) && converterTypeMap.containsKey(targetClass)) {
-                LOGGER.log(FINE, "converter target class {0} has already been registered.  Replacing existing converter class type {1} with {2}.",
-                        new Object[] { targetClass.getName(), converterTypeMap.get(targetClass), converterClass });
+                LOGGER.log(
+                    FINE, "converter target class {0} has already been registered.  Replacing existing converter class type {1} with {2}.",
+                    new Object[] { targetClass.getName(), converterTypeMap.get(targetClass), converterClass }
+                );
             }
 
             converterTypeMap.put(targetClass, converterClass);
@@ -510,10 +521,9 @@ public class InstanceFactory {
     }
 
     /**
-     * A by-type converter may be reused per target class when it is one of the standard built-in converters
-     * (package {@code jakarta.faces.convert}); these are effectively immutable once resolved for a given target class
-     * (EnumConverter's target enum type and any application-scoped default time zone are fixed). Custom
-     * {@code converter-for-class} registrations are excluded as they may be stateful or scoped.
+     * A by-type converter may be reused per target class when it is one of the standard built-in converters (package {@code jakarta.faces.convert}); these are
+     * effectively immutable once resolved for a given target class (EnumConverter's target enum type and any application-scoped default time zone are fixed).
+     * Custom {@code converter-for-class} registrations are excluded as they may be stateful or scoped.
      */
     private static boolean isReusableByType(Converter<?> converter) {
         return converter.getClass().getName().startsWith("jakarta.faces.convert.");
@@ -542,8 +552,10 @@ public class InstanceFactory {
         notNull("validatorClass", validatorClass);
 
         if (LOGGER.isLoggable(Level.FINE) && validatorMap.containsKey(validatorId)) {
-            LOGGER.log(Level.FINE, "validatorId {0} has already been registered.  Replacing existing validator class type {1} with {2}.",
-                    new Object[] { validatorId, validatorMap.get(validatorId), validatorClass });
+            LOGGER.log(
+                Level.FINE, "validatorId {0} has already been registered.  Replacing existing validator class type {1} with {2}.",
+                new Object[] { validatorId, validatorMap.get(validatorId), validatorClass }
+            );
         }
 
         validatorMap.put(validatorId, validatorClass);
@@ -612,7 +624,8 @@ public class InstanceFactory {
                             if (null != result) {
                                 if (result instanceof Class) {
                                     validatorClass = ((Class<?>) result).getName();
-                                } else {
+                                }
+                                else {
                                     validatorClass = result.toString();
                                 }
                                 defaultValidatorInfo.put(id, validatorClass);
@@ -650,7 +663,8 @@ public class InstanceFactory {
                 componentMap.put(className, componentClass);
             }
             result = (UIComponent) componentClass.getDeclaredConstructor().newInstance();
-        } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException ex) {
+        }
+        catch (IllegalArgumentException | ReflectiveOperationException | SecurityException ex) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, null, ex);
             }
@@ -664,7 +678,8 @@ public class InstanceFactory {
             context.getAttributes().put(THIS_LIBRARY, componentResource.getLibraryName());
             try {
                 associate.getAnnotationManager().applyComponentAnnotations(context, result);
-            } finally {
+            }
+            finally {
                 context.getAttributes().remove(THIS_LIBRARY);
             }
         }
@@ -674,13 +689,15 @@ public class InstanceFactory {
     }
 
     /**
-     * Leveraged by
-     * {@link Application#createComponent(jakarta.el.ValueExpression, jakarta.faces.context.FacesContext, String)} and
-     * {@link Application#createComponent(jakarta.el.ValueExpression, jakarta.faces.context.FacesContext, String, String)}.
-     * This method will apply any component and render annotations that may be present.
+     * Leveraged by {@link Application#createComponent(jakarta.el.ValueExpression, jakarta.faces.context.FacesContext, String)} and
+     * {@link Application#createComponent(jakarta.el.ValueExpression, jakarta.faces.context.FacesContext, String, String)}. This method will apply any component
+     * and render annotations that may be present.
      */
-    private UIComponent createComponentApplyAnnotations(FacesContext ctx, ValueExpression componentExpression, String componentType, String rendererType,
-            boolean applyAnnotations) {
+    private UIComponent createComponentApplyAnnotations(
+        FacesContext ctx, ValueExpression componentExpression, String componentType, String rendererType,
+        boolean applyAnnotations
+    )
+    {
 
         UIComponent c;
 
@@ -690,10 +707,12 @@ public class InstanceFactory {
             if (c == null) {
                 c = this.createComponentApplyAnnotations(ctx, componentType, rendererType, applyAnnotations);
                 componentExpression.setValue(ctx.getELContext(), c);
-            } else if (applyAnnotations) {
+            }
+            else if (applyAnnotations) {
                 applyAnnotations(ctx, rendererType, c);
             }
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             throw new FacesException(ex);
         }
 
@@ -704,16 +723,16 @@ public class InstanceFactory {
     }
 
     /**
-     * Leveraged by {@link Application#createComponent(String)} and
-     * {@link Application#createComponent(jakarta.faces.context.FacesContext, String, String)} This method will apply any
-     * component and render annotations that may be present.
+     * Leveraged by {@link Application#createComponent(String)} and {@link Application#createComponent(jakarta.faces.context.FacesContext, String, String)} This
+     * method will apply any component and render annotations that may be present.
      */
     private UIComponent createComponentApplyAnnotations(FacesContext ctx, String componentType, String rendererType, boolean applyAnnotations) {
 
         UIComponent component;
         try {
             component = newThing(componentType, componentMap);
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             if (LOGGER.isLoggable(SEVERE)) {
                 LOGGER.log(Level.SEVERE, "faces.cannot_instantiate_component_error", componentType);
             }
@@ -751,8 +770,10 @@ public class InstanceFactory {
                     }
                 }
                 if ((rk == null || r == null) && LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.log(Level.FINE, "Unable to create Renderer with rendererType {0} for component with component type of {1}",
-                            new Object[] { rendererType, c.getFamily() });
+                    LOGGER.log(
+                        Level.FINE, "Unable to create Renderer with rendererType {0} for component with component type of {1}",
+                        new Object[] { rendererType, c.getFamily() }
+                    );
                 }
             }
         }
@@ -760,14 +781,12 @@ public class InstanceFactory {
 
     /**
      * <p>
-     * PRECONDITIONS: the values in the Map are either Strings representing fully qualified java class names, or
-     * java.lang.Class instances.
+     * PRECONDITIONS: the values in the Map are either Strings representing fully qualified java class names, or java.lang.Class instances.
      * </p>
      * <p>
-     * ALGORITHM: Look in the argument map for a value for the argument key. If found, if the value is instanceof String,
-     * assume the String specifies a fully qualified java class name and obtain the java.lang.Class instance for that String
-     * using Util.loadClass(). Replace the String instance in the argument map with the Class instance. If the value is
-     * instanceof Class, proceed. Assert that the value is either instanceof java.lang.Class or java.lang.String.
+     * ALGORITHM: Look in the argument map for a value for the argument key. If found, if the value is instanceof String, assume the String specifies a fully
+     * qualified java class name and obtain the java.lang.Class instance for that String using Util.loadClass(). Replace the String instance in the argument map
+     * with the Class instance. If the value is instanceof Class, proceed. Assert that the value is either instanceof java.lang.Class or java.lang.String.
      * </p>
      * <p>
      * Now that you have a java.lang.class, call its newInstance and return it as the result of this method.
@@ -797,23 +816,27 @@ public class InstanceFactory {
                     map.put(key, clazz);
                 }
                 assert clazz != null;
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 throw new FacesException(e.getMessage(), e);
             }
-        } else {
+        }
+        else {
             clazz = (Class<?>) value;
         }
 
         try {
             result = getCachedConstructor(clazz).newInstance();
-        } catch (Throwable t) {
+        }
+        catch (Throwable t) {
             Throwable previousT;
             do {
                 previousT = t;
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE, "Unable to load class: ", t);
                 }
-            } while (null != (t = t.getCause()));
+            }
+            while (null != (t = t.getCause()));
             t = previousT;
 
             throw new FacesException(MessageUtils.getExceptionMessageString(MessageUtils.CANT_INSTANTIATE_CLASS_ERROR_MESSAGE_ID, clazz.getName()), t);
@@ -823,10 +846,9 @@ public class InstanceFactory {
     }
 
     /**
-     * Returns the cached no-arg constructor for the given class, resolving and caching it on first use. The access check
-     * is suppressed up front (mirroring the cached read/write accessors in {@code UIComponentBase}) since components have
-     * a public no-arg constructor; a rare suppression failure leaves the per-call check in place. Not cached in dev mode,
-     * where classes may be reloaded, matching {@link #newThing}'s handling of the resolved {@code Class}.
+     * Returns the cached no-arg constructor for the given class, resolving and caching it on first use. The access check is suppressed up front (mirroring the
+     * cached read/write accessors in {@code UIComponentBase}) since components have a public no-arg constructor; a rare suppression failure leaves the per-call
+     * check in place. Not cached in dev mode, where classes may be reloaded, matching {@link #newThing}'s handling of the resolved {@code Class}.
      */
     private Constructor<?> getCachedConstructor(Class<?> clazz) throws NoSuchMethodException {
         Constructor<?> constructor = constructorCache.get(clazz);
@@ -834,7 +856,8 @@ public class InstanceFactory {
             constructor = clazz.getDeclaredConstructor();
             try {
                 constructor.setAccessible(true);
-            } catch (RuntimeException accessNotGranted) {
+            }
+            catch (RuntimeException accessNotGranted) {
                 // leave the per-call access check in place
             }
             if (!associate.isDevelopment()) {
@@ -845,14 +868,16 @@ public class InstanceFactory {
     }
 
     /*
-     * This method makes it so that any cc:attribute elements that have a "default" attribute value have those values pushed
-     * into the composite component attribute map so that programmatic access (as opposed to EL access) will find the
-     * attribute values.
+     * This method makes it so that any cc:attribute elements that have a "default" attribute value have those values pushed into the composite component
+     * attribute map so that programmatic access (as opposed to EL access) will find the attribute values.
      *
      */
     @SuppressWarnings("unchecked")
-    private void pushDeclaredDefaultValuesToAttributesMap(FacesContext context, BeanInfo componentMetadata, Map<String, Object> attrs, UIComponent component,
-            ExpressionFactory expressionFactory) {
+    private void pushDeclaredDefaultValuesToAttributesMap(
+        FacesContext context, BeanInfo componentMetadata, Map<String, Object> attrs, UIComponent component,
+        ExpressionFactory expressionFactory
+    )
+    {
 
         Collection<String> attributesWithDeclaredDefaultValues = null;
 
@@ -882,9 +907,9 @@ public class InstanceFactory {
 
     /**
      * <p>
-     * To enable EL Coercion to use Faces Custom converters, this method will call
-     * <code>PropertyEditorManager.registerEditor()</code>, passing the <code>ConverterPropertyEditor</code> class for the
-     * <code>targetClass</code> if the target class is not one of the standard by-type converter target classes.
+     * To enable EL Coercion to use Faces Custom converters, this method will call <code>PropertyEditorManager.registerEditor()</code>, passing the
+     * <code>ConverterPropertyEditor</code> class for the <code>targetClass</code> if the target class is not one of the standard by-type converter target
+     * classes.
      *
      * @param targetClass the target class for which a PropertyEditor may or may not be created
      */
@@ -914,7 +939,8 @@ public class InstanceFactory {
         Class<?> editorClass = ConverterPropertyEditorFactory.getDefaultInstance().definePropertyEditorClassFor(targetClass);
         if (editorClass != null) {
             PropertyEditorManager.registerEditor(targetClass, editorClass);
-        } else {
+        }
+        else {
             if (LOGGER.isLoggable(WARNING)) {
                 LOGGER.warning(MessageFormat.format("definePropertyEditorClassFor({0}) returned null.", targetClass.getName()));
             }
@@ -962,19 +988,16 @@ public class InstanceFactory {
 
     /**
      * <p>
-     * The same as newThing except that a single argument constructor that accepts a Class is looked for before calling the
-     * no-arg version.
+     * The same as newThing except that a single argument constructor that accepts a Class is looked for before calling the no-arg version.
      * </p>
      *
      * <p>
-     * PRECONDITIONS: the values in the Map are either Strings representing fully qualified java class names, or
-     * java.lang.Class instances.
+     * PRECONDITIONS: the values in the Map are either Strings representing fully qualified java class names, or java.lang.Class instances.
      * </p>
      * <p>
-     * ALGORITHM: Look in the argument map for a value for the argument key. If found, if the value is instanceof String,
-     * assume the String specifies a fully qualified java class name and obtain the java.lang.Class instance for that String
-     * using Util.loadClass(). Replace the String instance in the argument map with the Class instance. If the value is
-     * instanceof Class, proceed. Assert that the value is either instanceof java.lang.Class or java.lang.String.
+     * ALGORITHM: Look in the argument map for a value for the argument key. If found, if the value is instanceof String, assume the String specifies a fully
+     * qualified java class name and obtain the java.lang.Class instance for that String using Util.loadClass(). Replace the String instance in the argument map
+     * with the Class instance. If the value is instanceof Class, proceed. Assert that the value is either instanceof java.lang.Class or java.lang.String.
      * </p>
      * <p>
      * Now that you have a java.lang.class, call its newInstance and return it as the result of this method.
@@ -1005,10 +1028,12 @@ public class InstanceFactory {
                     map.put(key, clazz);
                 }
                 assert clazz != null;
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 throw new FacesException(e.getMessage(), e);
             }
-        } else {
+        }
+        else {
             clazz = (Class<?>) value;
         }
 
@@ -1017,13 +1042,16 @@ public class InstanceFactory {
         if (ctor != null) {
             try {
                 result = ctor.newInstance(targetClass);
-            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            }
+            catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                 cause = e;
             }
-        } else {
+        }
+        else {
             try {
                 result = clazz.getDeclaredConstructor().newInstance();
-            } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
+            }
+            catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
                 cause = e;
             }
         }
@@ -1039,10 +1067,9 @@ public class InstanceFactory {
      * Get the bean manager.
      *
      * <p>
-     * Resolved per call rather than cached, so that a transient/incomplete BeanManager observed during
-     * application bootstrap (e.g. before all CDI extensions have published their beans into JNDI) cannot
-     * permanently bind this factory to the wrong instance. {@link Util#getCdiBeanManager(FacesContext)}
-     * already caches the resolved BeanManager into the application map, so the cost is one map lookup.
+     * Resolved per call rather than cached, so that a transient/incomplete BeanManager observed during application bootstrap (e.g. before all CDI extensions
+     * have published their beans into JNDI) cannot permanently bind this factory to the wrong instance. {@link Util#getCdiBeanManager(FacesContext)} already
+     * caches the resolved BeanManager into the application map, so the cost is one map lookup.
      *
      * @return the bean manager.
      */
@@ -1055,21 +1082,24 @@ public class InstanceFactory {
     }
 
     /**
-     * Issue #5708: when a Faces artifact is annotated with {@code managed=true} it must be resolved via CDI;
-     * if we get here it was instantiated by reflection (no {@code @Inject} support), which produces an NPE
-     * on first use of any injected field. This typically points at a CDI bootstrap/timing problem (e.g. the
-     * {@link BeanManager} seen by Faces does not (yet) have the bean registered). Fail loudly rather than
-     * returning a half-initialized instance.
+     * Issue #5708: when a Faces artifact is annotated with {@code managed=true} it must be resolved via CDI; if we get here it was instantiated by reflection
+     * (no {@code @Inject} support), which produces an NPE on first use of any injected field. This typically points at a CDI bootstrap/timing problem (e.g. the
+     * {@link BeanManager} seen by Faces does not (yet) have the bean registered). Fail loudly rather than returning a half-initialized instance.
      */
-    private static <A extends Annotation> void assertCdiResolved(Object instance, String identifier,
-            Class<A> annotationType, Predicate<A> isManaged) {
+    private static <A extends Annotation> void assertCdiResolved(
+        Object instance, String identifier,
+        Class<A> annotationType, Predicate<A> isManaged
+    )
+    {
         A annotation = instance.getClass().getAnnotation(annotationType);
         if (annotation != null && isManaged.test(annotation)) {
-            throw new FacesException("@" + annotationType.getSimpleName() + "(\"" + identifier
+            throw new FacesException(
+                "@" + annotationType.getSimpleName() + "(\"" + identifier
                     + "\", managed=true) on " + instance.getClass().getName()
                     + " could not be resolved by CDI. Check that beans.xml is present and that the"
                     + " BeanManager is fully initialized before " + annotationType.getSimpleName()
-                    + " instances are created.");
+                    + " instances are created."
+            );
         }
     }
 

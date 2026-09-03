@@ -76,11 +76,13 @@ class PersistenceUnitScanner implements Scanner {
 
         if (!fieldAnnotations.isEmpty() || !methodAnnotations.isEmpty()) {
             handler = new PersistenceUnitHandler(
-                    methods.toArray(new Method[methods.size()]),
-                    methodAnnotations.toArray(new PersistenceUnit[methodAnnotations.size()]),
-                    fields.toArray(new Field[fields.size()]),
-                    fieldAnnotations.toArray(new PersistenceUnit[fieldAnnotations.size()]));
+                methods.toArray(new Method[methods.size()]),
+                methodAnnotations.toArray(new PersistenceUnit[methodAnnotations.size()]),
+                fields.toArray(new Field[fields.size()]),
+                fieldAnnotations.toArray(new PersistenceUnit[fieldAnnotations.size()])
+            );
         }
         return handler;
     }
+
 }

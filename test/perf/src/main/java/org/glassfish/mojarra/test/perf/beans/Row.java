@@ -99,4 +99,5 @@ public class Row implements Serializable {
     public void setActive(boolean active) {
         this.active = active;
     }
+
 }

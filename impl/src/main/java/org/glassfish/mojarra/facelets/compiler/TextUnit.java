@@ -78,7 +78,8 @@ final class TextUnit extends CompilationUnit {
             obj = children.get(i);
             if (obj instanceof FaceletHandler) {
                 h[i] = (FaceletHandler) obj;
-            } else {
+            }
+            else {
                 h[i] = ((CompilationUnit) obj).createFaceletHandler();
             }
         }
@@ -105,7 +106,8 @@ final class TextUnit extends CompilationUnit {
                 if (txt != null) {
                     if (txt.isLiteral()) {
                         instructionBuffer.add(new LiteralTextInstruction(txt.toString()));
-                    } else {
+                    }
+                    else {
                         instructionBuffer.add(new TextInstruction(alias, txt));
                     }
                 }
@@ -126,7 +128,8 @@ final class TextUnit extends CompilationUnit {
         ELText el = ELText.parse(text);
         if (el.isLiteral()) {
             addInstruction(new LiteralXMLInstruction(text));
-        } else {
+        }
+        else {
             addInstruction(new XMLInstruction(el));
         }
         buffer.append(text);
@@ -138,7 +141,8 @@ final class TextUnit extends CompilationUnit {
         ELText el = ELText.parse(text);
         if (el.isLiteral()) {
             addInstruction(new LiteralCommentInstruction(text));
-        } else {
+        }
+        else {
             addInstruction(new CommentInstruction(el));
         }
 
@@ -169,7 +173,8 @@ final class TextUnit extends CompilationUnit {
             if (txt != null) {
                 if (txt.isLiteral()) {
                     addInstruction(new LiteralAttributeInstruction(qname, txt.toString()));
-                } else {
+                }
+                else {
                     addInstruction(new AttributeInstruction(alias, qname, txt));
                 }
             }
@@ -194,7 +199,8 @@ final class TextUnit extends CompilationUnit {
         if (startTagOpen) {
             buffer.append("/>");
             startTagOpen = false;
-        } else {
+        }
+        else {
             buffer.append("</").append(tag.getQName()).append('>');
         }
     }
@@ -210,8 +216,8 @@ final class TextUnit extends CompilationUnit {
 
     protected void flushBufferToConfig(boolean child) {
 
-//        // NEW IMPLEMENTATION
-//        if (true) {
+        // // NEW IMPLEMENTATION
+        // if (true) {
 
         flushTextBuffer(child);
 
@@ -229,46 +235,48 @@ final class TextUnit extends CompilationUnit {
                     instructionBuffer.clear();
                 }
 
-            } catch (ELException e) {
+            }
+            catch (ELException e) {
                 if (tags.size() > 0) {
                     throw new TagException(tags.peek(), e.getMessage());
-                } else {
+                }
+                else {
                     throw new ELException(alias + ": " + e.getMessage(), e.getCause());
                 }
             }
         }
 
-//            // KEEP THESE SEPARATE SO LOGIC DOESN'T GET FUBARED
-//        } else if (this.buffer.length() > 0) {
-//            String s = this.buffer.toString();
-//            if (s.trim().length() > 0) {
-//                if (child) {
-//                    s = trimRight(s);
-//                }
-//                if (s.length() > 0) {
-//                    try {
-//                        ELText txt = ELText.parse(s);
-//                        if (txt != null) {
-//                            if (txt.isLiteral()) {
-//                                this.children.add(new UILiteralTextHandler(txt
-//                                        .toString()));
-//                            } else {
-//                                this.children.add(new UITextHandler(this.alias,
-//                                        txt));
-//                            }
-//                        }
-//                    } catch (ELException e) {
-//                        if (this.tags.size() > 0) {
-//                            throw new TagException((Tag) this.tags.peek(), e
-//                                    .getMessage());
-//                        } else {
-//                            throw new ELException(this.alias + ": "
-//                                    + e.getMessage(), e.getCause());
-//                        }
-//                    }
-//                }
-//            }
-//        }
+        // // KEEP THESE SEPARATE SO LOGIC DOESN'T GET FUBARED
+        // } else if (this.buffer.length() > 0) {
+        // String s = this.buffer.toString();
+        // if (s.trim().length() > 0) {
+        // if (child) {
+        // s = trimRight(s);
+        // }
+        // if (s.length() > 0) {
+        // try {
+        // ELText txt = ELText.parse(s);
+        // if (txt != null) {
+        // if (txt.isLiteral()) {
+        // this.children.add(new UILiteralTextHandler(txt
+        // .toString()));
+        // } else {
+        // this.children.add(new UITextHandler(this.alias,
+        // txt));
+        // }
+        // }
+        // } catch (ELException e) {
+        // if (this.tags.size() > 0) {
+        // throw new TagException((Tag) this.tags.peek(), e
+        // .getMessage());
+        // } else {
+        // throw new ELException(this.alias + ": "
+        // + e.getMessage(), e.getCause());
+        // }
+        // }
+        // }
+        // }
+        // }
 
         // ALWAYS CLEAR FOR BOTH IMPL
         buffer.setLength(0);
@@ -283,7 +291,8 @@ final class TextUnit extends CompilationUnit {
         while (i >= 0) {
             if (Character.isWhitespace(s.charAt(i))) {
                 i--;
-            } else {
+            }
+            else {
                 return s;
             }
         }
@@ -294,6 +303,5 @@ final class TextUnit extends CompilationUnit {
     public String toString() {
         return "TextUnit[" + children.size() + "]";
     }
-
 
 }

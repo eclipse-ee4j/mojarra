@@ -18,13 +18,13 @@ package org.glassfish.mojarra.spi;
 
 /**
  * <p>
- * This interface defines an integration point for Jakarta EE vendors. Each vendor will need to provide an implementation
- * of this interface which will provide the Faces implementation the necessary hooks to perform resource injection.
+ * This interface defines an integration point for Jakarta EE vendors. Each vendor will need to provide an implementation of this interface which will provide
+ * the Faces implementation the necessary hooks to perform resource injection.
  * </p>
  *
  * <p>
- * The implementation of this interface *must* be thread-safe and must provider either a no-arg constructor, or a
- * constructor accepting a <code>ServletContext</code> instance.
+ * The implementation of this interface *must* be thread-safe and must provider either a no-arg constructor, or a constructor accepting a
+ * <code>ServletContext</code> instance.
  * </p>
  */
 public interface InjectionProvider {
@@ -35,7 +35,7 @@ public interface InjectionProvider {
      * <ul>
      * <li>Inject the supported resources per the Servlet 2.5 specification into the provided object</li>
      * </ul>
-     * 
+     *
      * <p>
      * This method <em>must not</em> invoke any methods annotated with <code>@PostConstruct</code>
      *
@@ -46,23 +46,20 @@ public interface InjectionProvider {
 
     /**
      * <p>
-     * The implemenation of this method must invoke any method marked with the <code>@PreDestroy</code> annotation (per the
-     * Common Annotations Specification).
+     * The implemenation of this method must invoke any method marked with the <code>@PreDestroy</code> annotation (per the Common Annotations Specification).
      *
      * @param managedBean the target managed bean
-     * @throws InjectionProviderException if an error occurs when invoking the method annotated by the
-     * <code>@PreDestroy</code> annotation
+     * @throws InjectionProviderException if an error occurs when invoking the method annotated by the <code>@PreDestroy</code> annotation
      */
     void invokePreDestroy(Object managedBean) throws InjectionProviderException;
 
     /**
      * <p>
-     * The implemenation of this method must invoke any method marked with the <code>@PostConstruct</code> annotation (per
-     * the Common Annotations Specification).
+     * The implemenation of this method must invoke any method marked with the <code>@PostConstruct</code> annotation (per the Common Annotations
+     * Specification).
      *
      * @param managedBean the target managed bean
-     * @throws InjectionProviderException if an error occurs when invoking the method annotated by the
-     * <code>@PostConstruct</code> annotation
+     * @throws InjectionProviderException if an error occurs when invoking the method annotated by the <code>@PostConstruct</code> annotation
      */
     void invokePostConstruct(Object managedBean) throws InjectionProviderException;
 

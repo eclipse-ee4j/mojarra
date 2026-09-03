@@ -34,49 +34,55 @@ import org.mockito.stubbing.Answer;
 
 public class UIRepeatTest {
 
-	private FacesContext ctx;
+    private FacesContext ctx;
 
-	private FacesMessage.Severity maximumSeverity = FacesMessage.Severity.WARN;
+    private FacesMessage.Severity maximumSeverity = FacesMessage.Severity.WARN;
 
-	private Method uiRepeatHasErrorMessages;
+    private Method uiRepeatHasErrorMessages;
 
-	@Test
-	public void testVarAndVarStatusRejectValueExpression() {
-		UIRepeat repeat = new UIRepeat();
-		ValueExpression expression = Mockito.mock(ValueExpression.class);
+    @Test
+    public void testVarAndVarStatusRejectValueExpression() {
+        UIRepeat repeat = new UIRepeat();
+        ValueExpression expression = Mockito.mock(ValueExpression.class);
 
-		assertThrows(IllegalArgumentException.class, () -> repeat.setValueExpression("var", expression));
-		assertThrows(IllegalArgumentException.class, () -> repeat.setValueExpression("varStatus", expression));
-	}
+        assertThrows(IllegalArgumentException.class, () -> repeat.setValueExpression("var", expression));
+        assertThrows(IllegalArgumentException.class, () -> repeat.setValueExpression("varStatus", expression));
+    }
 
-	@Test
-	public void testHasErrorMessages() throws Exception {
-		ctx = Mockito.mock(FacesContext.class);
-		when(ctx.getMaximumSeverity()).thenAnswer(new Answer<Severity>() {
-		    @Override
-		    public Severity answer(InvocationOnMock invocation) throws Throwable {
+    @Test
+    public void testHasErrorMessages() throws Exception {
+        ctx = Mockito.mock(FacesContext.class);
+        when(ctx.getMaximumSeverity()).thenAnswer(new Answer<Severity>() {
+
+            @Override
+            public Severity answer(InvocationOnMock invocation) throws Throwable {
                 return maximumSeverity;
-		    }
-		});
+            }
 
-		maximumSeverity = FacesMessage.Severity.WARN;
-		assertEquals(false, hasErrorMessages(ctx));
-		maximumSeverity = FacesMessage.Severity.INFO;
-		assertEquals(false, hasErrorMessages(ctx));
-		maximumSeverity = FacesMessage.Severity.ERROR;
-		assertEquals(true, hasErrorMessages(ctx));
-		maximumSeverity = FacesMessage.Severity.FATAL;
-		assertEquals(true, hasErrorMessages(ctx));
-	}
+        });
 
-	private boolean hasErrorMessages(FacesContext context) throws Exception {
-		if (uiRepeatHasErrorMessages == null) {
-			Class<?> uiRepeatClass = Class.forName(UIRepeat.class.getName());
-			uiRepeatHasErrorMessages = uiRepeatClass.getDeclaredMethod(
-					"hasErrorMessages", new Class<?>[] { FacesContext.class });
-			uiRepeatHasErrorMessages.setAccessible(true);
-		}
-		return (Boolean)uiRepeatHasErrorMessages.invoke(new UIRepeat(),
-				new Object[] { context });
-	}
+        maximumSeverity = FacesMessage.Severity.WARN;
+        assertEquals(false, hasErrorMessages(ctx));
+        maximumSeverity = FacesMessage.Severity.INFO;
+        assertEquals(false, hasErrorMessages(ctx));
+        maximumSeverity = FacesMessage.Severity.ERROR;
+        assertEquals(true, hasErrorMessages(ctx));
+        maximumSeverity = FacesMessage.Severity.FATAL;
+        assertEquals(true, hasErrorMessages(ctx));
+    }
+
+    private boolean hasErrorMessages(FacesContext context) throws Exception {
+        if (uiRepeatHasErrorMessages == null) {
+            Class<?> uiRepeatClass = Class.forName(UIRepeat.class.getName());
+            uiRepeatHasErrorMessages = uiRepeatClass.getDeclaredMethod(
+                "hasErrorMessages", new Class<?>[] { FacesContext.class }
+            );
+            uiRepeatHasErrorMessages.setAccessible(true);
+        }
+        return (Boolean) uiRepeatHasErrorMessages.invoke(
+            new UIRepeat(),
+            new Object[] { context }
+        );
+    }
+
 }

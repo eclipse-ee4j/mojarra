@@ -50,7 +50,7 @@ public class MetaRulesetImpl extends MetaRuleset {
 
     private final static Logger LOGGER = FacesLogger.FACELETS_META.getLogger();
     private final static Map<Class<?>, WeakReference<MetadataTarget>> metadata = Collections
-            .synchronizedMap(new WeakHashMap<>());
+        .synchronizedMap(new WeakHashMap<>());
 
     private final Tag tag;
     private final Class<?> type;
@@ -76,7 +76,8 @@ public class MetaRulesetImpl extends MetaRuleset {
             }
             if (attrs[i].getLocalName().equals("class")) {
                 attributes.put("styleClass", attrs[i]);
-            } else {
+            }
+            else {
                 attributes.put(attrs[i].getLocalName(), attrs[i]);
             }
         }
@@ -140,7 +141,8 @@ public class MetaRulesetImpl extends MetaRuleset {
                         LOGGER.severe(itr.next() + " Unhandled by MetaTagHandler for type " + type.getName());
                     }
                 }
-            } else {
+            }
+            else {
                 MetadataTarget target = getMetadataTarget();
                 // now iterate over attributes
                 int ruleEnd = rules.size() - 1;
@@ -156,7 +158,8 @@ public class MetaRulesetImpl extends MetaRuleset {
                         if (LOGGER.isLoggable(Level.SEVERE)) {
                             LOGGER.severe(entry.getValue() + " Unhandled by MetaTagHandler for type " + type.getName());
                         }
-                    } else {
+                    }
+                    else {
                         mappers.add(data);
                     }
                 }
@@ -165,7 +168,8 @@ public class MetaRulesetImpl extends MetaRuleset {
 
         if (mappers.isEmpty()) {
             return NONE;
-        } else {
+        }
+        else {
             return new MetadataImpl(mappers.toArray(new Metadata[mappers.size()]));
         }
 
@@ -187,7 +191,8 @@ public class MetaRulesetImpl extends MetaRuleset {
         if (meta == null) {
             try {
                 meta = new MetadataTargetImpl(type);
-            } catch (IntrospectionException e) {
+            }
+            catch (IntrospectionException e) {
                 throw new TagException(tag, "Error Creating TargetMetadata", e);
             }
             metadata.put(type, new WeakReference<>(meta));

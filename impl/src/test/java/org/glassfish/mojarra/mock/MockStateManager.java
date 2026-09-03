@@ -32,13 +32,19 @@ public class MockStateManager extends StateManager {
         return null;
     }
 
-    public UIViewRoot restoreView(FacesContext context, String viewId,
-            String renderKitId) {
+    public UIViewRoot restoreView(
+        FacesContext context, String viewId,
+        String renderKitId
+    )
+    {
         return null;
     }
 
-    protected UIViewRoot restoreTreeStructure(FacesContext context,
-            String viewId, String renderKitId) {
+    protected UIViewRoot restoreTreeStructure(
+        FacesContext context,
+        String viewId, String renderKitId
+    )
+    {
         return null;
     }
 

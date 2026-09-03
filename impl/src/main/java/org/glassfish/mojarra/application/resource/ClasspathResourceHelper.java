@@ -35,8 +35,7 @@ import org.glassfish.mojarra.util.Util;
 
 /**
  * <p>
- * A {@link ResourceHelper} implementation for finding/serving resources found on the classpath within the
- * <code>META-INF/resources directory</code>.
+ * A {@link ResourceHelper} implementation for finding/serving resources found on the classpath within the <code>META-INF/resources directory</code>.
  * </p>
  *
  * @since 2.0
@@ -92,8 +91,7 @@ public class ClasspathResourceHelper extends ResourceHelper {
     }
 
     /**
-     * @see ResourceHelper#getNonCompressedInputStream(org.glassfish.mojarra.application.resource.ResourceInfo,
-     * jakarta.faces.context.FacesContext)
+     * @see ResourceHelper#getNonCompressedInputStream(org.glassfish.mojarra.application.resource.ResourceInfo, jakarta.faces.context.FacesContext)
      */
     @Override
     protected InputStream getNonCompressedInputStream(ResourceInfo resource, FacesContext ctx) throws IOException {
@@ -105,9 +103,10 @@ public class ClasspathResourceHelper extends ResourceHelper {
             String path = resource.getPath();
             URL url = getResourceURL(loader, path, ctx);
             if (url != null) {
-            	in = url.openStream();
+                in = url.openStream();
             }
-        } else {
+        }
+        else {
             ClassLoader loader = Util.getCurrentLoader(getClass());
             String path = resource.getPath();
             in = getResourceAsStream(loader, path, ctx);
@@ -141,7 +140,8 @@ public class ClasspathResourceHelper extends ResourceHelper {
         String basePath;
         if (localePrefix == null) {
             basePath = getBasePath(contract) + '/' + libraryName + '/';
-        } else {
+        }
+        else {
             basePath = getBasePath(contract) + '/' + localePrefix + '/' + libraryName + '/';
         }
 
@@ -164,7 +164,8 @@ public class ClasspathResourceHelper extends ResourceHelper {
         String basePath;
         if (localePrefix == null) {
             basePath = getBasePath(contract) + '/' + libraryName + '/';
-        } else {
+        }
+        else {
             basePath = getBasePath(contract) + '/' + localePrefix + '/' + libraryName + '/';
         }
 
@@ -217,7 +218,8 @@ public class ClasspathResourceHelper extends ResourceHelper {
                 // Try it without the localePrefix
                 if (library != null) {
                     basePath = library.getPath(null) + '/' + resourceName;
-                } else {
+                }
+                else {
                     basePath = getBaseResourcePath() + '/' + resourceName;
                 }
                 basePathURL = loader.getResource(basePath);
@@ -236,11 +238,16 @@ public class ClasspathResourceHelper extends ResourceHelper {
         ClientResourceInfo value;
 
         if (library != null) {
-            value = new ClientResourceInfo(library, outContract[0], resourceName, null, compressable, resourceSupportsEL(resourceName, library.getName(), ctx),
-                    ctx.isProjectStage(ProjectStage.Development), cacheTimestamp);
-        } else {
-            value = new ClientResourceInfo(outContract[0], resourceName, null, localePrefix, this, compressable, resourceSupportsEL(resourceName, null, ctx),
-                    ctx.isProjectStage(ProjectStage.Development), cacheTimestamp);
+            value = new ClientResourceInfo(
+                library, outContract[0], resourceName, null, compressable, resourceSupportsEL(resourceName, library.getName(), ctx),
+                ctx.isProjectStage(ProjectStage.Development), cacheTimestamp
+            );
+        }
+        else {
+            value = new ClientResourceInfo(
+                outContract[0], resourceName, null, localePrefix, this, compressable, resourceSupportsEL(resourceName, null, ctx),
+                ctx.isProjectStage(ProjectStage.Development), cacheTimestamp
+            );
         }
 
         if (value.isCompressable()) {
@@ -254,18 +261,23 @@ public class ClasspathResourceHelper extends ResourceHelper {
         String basePath = null;
         if (library != null) {
             basePath = library.getPath(localePrefix) + '/' + resourceName;
-        } else {
+        }
+        else {
             if (localePrefix == null) {
                 basePath = getBaseResourcePath() + '/' + resourceName;
-            } else {
+            }
+            else {
                 basePath = getBaseResourcePath() + '/' + localePrefix + '/' + resourceName;
             }
         }
         return basePath;
     }
 
-    private URL findPathConsideringContracts(ClassLoader loader, LibraryInfo library, String resourceName, String localePrefix, ContractInfo[] outContract,
-            String[] outBasePath, FacesContext ctx) {
+    private URL findPathConsideringContracts(
+        ClassLoader loader, LibraryInfo library, String resourceName, String localePrefix, ContractInfo[] outContract,
+        String[] outBasePath, FacesContext ctx
+    )
+    {
         UIViewRoot root = ctx.getViewRoot();
         final List<String> contracts;
         URL result = null;
@@ -273,17 +285,21 @@ public class ClasspathResourceHelper extends ResourceHelper {
         if (library != null) {
             if (library.getContract() == null) {
                 contracts = Collections.emptyList();
-            } else {
+            }
+            else {
                 contracts = List.of(library.getContract());
             }
-        } else if (root == null) {
+        }
+        else if (root == null) {
             String contractName = ctx.getExternalContext().getRequestParameterMap().get("con");
             if (contractName != null && !contractName.isEmpty() && !ResourceManager.nameContainsForbiddenSequence(contractName)) {
                 contracts = List.of(contractName);
-            } else {
+            }
+            else {
                 return null;
             }
-        } else {
+        }
+        else {
             contracts = ctx.getResourceLibraryContracts();
         }
 
@@ -294,10 +310,12 @@ public class ClasspathResourceHelper extends ResourceHelper {
             if (library != null) {
                 // PENDING(fcaputo) no need to iterate over the contracts, if we have a library
                 basePath = library.getPath(localePrefix) + '/' + resourceName;
-            } else {
+            }
+            else {
                 if (localePrefix == null) {
                     basePath = getBaseContractsPath() + '/' + curContract + '/' + resourceName;
-                } else {
+                }
+                else {
                     basePath = getBaseContractsPath() + '/' + curContract + '/' + localePrefix + '/' + resourceName;
                 }
             }
@@ -306,7 +324,8 @@ public class ClasspathResourceHelper extends ResourceHelper {
                 outContract[0] = new ContractInfo(curContract);
                 outBasePath[0] = basePath;
                 break;
-            } else {
+            }
+            else {
                 basePath = null;
             }
         }
@@ -315,43 +334,43 @@ public class ClasspathResourceHelper extends ResourceHelper {
     }
 
     private InputStream getResourceAsStream(ClassLoader loader, String path, FacesContext ctx) {
-    	InputStream in = null;
-      	List<String> localizedPaths = getLocalizedPaths(path, ctx);
-      	for (String path_: localizedPaths) {
-      		in = getResourceAsStream(loader, path_);
-      		if (in != null) {
-      			break;
-      		}
-      	}
-      	return in;
+        InputStream in = null;
+        List<String> localizedPaths = getLocalizedPaths(path, ctx);
+        for (String path_ : localizedPaths) {
+            in = getResourceAsStream(loader, path_);
+            if (in != null) {
+                break;
+            }
+        }
+        return in;
     }
-    
+
     private URL getResourceURL(ClassLoader loader, String path, FacesContext ctx) {
-    	List<String> localizedPaths = getLocalizedPaths(path, ctx);
-    	URL url = null;
-    	for (String path_: localizedPaths) {
-    		url = getResource_(loader, path_);
-    		if (url != null) {
-    			break;
-    		}
-    	}
-    	return url;
+        List<String> localizedPaths = getLocalizedPaths(path, ctx);
+        URL url = null;
+        for (String path_ : localizedPaths) {
+            url = getResource_(loader, path_);
+            if (url != null) {
+                break;
+            }
+        }
+        return url;
     }
-    
+
     private InputStream getResourceAsStream(ClassLoader loader, String path) {
-    	InputStream in = loader.getResourceAsStream(path);
-    	if (in == null) {
-    		in = getClass().getClassLoader().getResourceAsStream(path);
-    	}
-    	return in;
+        InputStream in = loader.getResourceAsStream(path);
+        if (in == null) {
+            in = getClass().getClassLoader().getResourceAsStream(path);
+        }
+        return in;
     }
 
     private URL getResource_(ClassLoader loader, String path) {
-    	URL res = loader.getResource(path);
-    	if (res == null) {
-    		res = getClass().getClassLoader().getResource(path);
-    	}
-    	return res;
+        URL res = loader.getResource(path);
+        if (res == null) {
+            res = getClass().getClassLoader().getResource(path);
+        }
+        return res;
     }
-    
+
 }

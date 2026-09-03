@@ -176,7 +176,8 @@ public class RestoreViewPhase extends Phase {
                 if (LOGGER.isLoggable(FINE)) {
                     LOGGER.fine("Postback: restored view for " + viewId);
                 }
-            } else {
+            }
+            else {
                 if (LOGGER.isLoggable(FINE)) {
                     LOGGER.fine("New request: creating a view for " + viewId);
                 }
@@ -212,13 +213,16 @@ public class RestoreViewPhase extends Phase {
                 }
                 facesContext.setViewRoot(viewRoot);
             }
-        } catch (Throwable fe) {
+        }
+        catch (Throwable fe) {
             if (fe instanceof FacesException) {
                 thrownException = (FacesException) fe;
-            } else {
+            }
+            else {
                 thrownException = new FacesException(fe);
             }
-        } finally {
+        }
+        finally {
             if (thrownException == null) {
                 FlowHandler flowHandler = facesContext.getApplication().getFlowHandler();
                 if (flowHandler != null) {
@@ -226,7 +230,8 @@ public class RestoreViewPhase extends Phase {
                 }
 
                 deliverPostRestoreStateEvent(facesContext);
-            } else {
+            }
+            else {
                 throw thrownException;
             }
         }
@@ -259,8 +264,10 @@ public class RestoreViewPhase extends Phase {
 
             String correctSecretKeyValue = rsm.getCryptographicallyStrongTokenFromSession(context);
             if (incomingSecretKeyValue == null || !correctSecretKeyValue.equals(incomingSecretKeyValue)) {
-                LOGGER.log(SEVERE, "correctSecretKeyValue = {0} incomingSecretKeyValue = {1}",
-                        new Object[] { correctSecretKeyValue, incomingSecretKeyValue });
+                LOGGER.log(
+                    SEVERE, "correctSecretKeyValue = {0} incomingSecretKeyValue = {1}",
+                    new Object[] { correctSecretKeyValue, incomingSecretKeyValue }
+                );
                 throw new ProtectedViewException();
             }
 
@@ -272,7 +279,8 @@ public class RestoreViewPhase extends Phase {
                     boolean refererOriginatesInThisWebapp = false;
                     try {
                         refererOriginatesInThisWebapp = originatesInWebapp(context, referer, vdl);
-                    } catch (URISyntaxException ue) {
+                    }
+                    catch (URISyntaxException ue) {
                         throw new ProtectedViewException(ue);
                     }
 
@@ -292,7 +300,8 @@ public class RestoreViewPhase extends Phase {
                     boolean originOriginatesInThisWebapp = false;
                     try {
                         originOriginatesInThisWebapp = originatesInWebapp(context, origin, vdl);
-                    } catch (URISyntaxException ue) {
+                    }
+                    catch (URISyntaxException ue) {
                         throw new ProtectedViewException(ue);
                     }
 
@@ -342,7 +351,8 @@ public class RestoreViewPhase extends Phase {
 
         if (uri.getHost() == null) {
             hostsMatch = false;
-        } else {
+        }
+        else {
             hostsMatch = uri.getHost().equals(extContext.getRequestServerName());
         }
 
@@ -350,7 +360,8 @@ public class RestoreViewPhase extends Phase {
             // When running on default http/https ports the uri will not contain the port number
             // to verify run test-javaee7-protectedView.war on port 80
             portsMatch = isOneOf(extContext.getRequestServerPort(), 80, 443);
-        } else {
+        }
+        else {
             portsMatch = uri.getPort() == extContext.getRequestServerPort();
         }
 
@@ -367,7 +378,8 @@ public class RestoreViewPhase extends Phase {
             }
             if (path == null || !vdl.viewExists(context, path)) {
                 doesOriginate = false;
-            } else {
+            }
+            else {
                 doesOriginate = true;
             }
         }
@@ -386,14 +398,15 @@ public class RestoreViewPhase extends Phase {
                 target.processEvent(postRestoreStateEvent);
                 return VisitResult.ACCEPT;
             });
-        } catch (AbortProcessingException e) {
+        }
+        catch (AbortProcessingException e) {
             facesContext.getApplication()
-                        .publishEvent(
-                            facesContext, ExceptionQueuedEvent.class,
-                            new ExceptionQueuedEventContext(facesContext, e, null, PhaseId.RESTORE_VIEW));
+                .publishEvent(
+                    facesContext, ExceptionQueuedEvent.class,
+                    new ExceptionQueuedEventContext(facesContext, e, null, PhaseId.RESTORE_VIEW)
+                );
         }
     }
-
 
     // --------------------------------------------------------- Private Methods
 
@@ -414,10 +427,13 @@ public class RestoreViewPhase extends Phase {
             try {
                 PhaseEvent event = new PhaseEvent(context, RESTORE_VIEW, lifecycle);
                 afterPhase.invoke(context.getELContext(), new Object[] { event });
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 if (LOGGER.isLoggable(SEVERE)) {
-                    LOGGER.log(SEVERE, "severe.component.unable_to_process_expression",
-                            new Object[] { afterPhase.getExpressionString(), "afterPhase" });
+                    LOGGER.log(
+                        SEVERE, "severe.component.unable_to_process_expression",
+                        new Object[] { afterPhase.getExpressionString(), "afterPhase" }
+                    );
                 }
                 return;
             }
@@ -425,17 +441,17 @@ public class RestoreViewPhase extends Phase {
     }
 
     /**
-     * The Servlet specification states that if an error occurs in the application and there is a matching error-page
-     * declaration, the that original request the cause the error is forwarded to the error page.
+     * The Servlet specification states that if an error occurs in the application and there is a matching error-page declaration, the that original request the
+     * cause the error is forwarded to the error page.
      *
-     * If the error occurred during a post-back and a matching error-page definition was found, then an attempt to restore
-     * the error view would be made as the jakarta.faces.ViewState marker would still be in the request parameters.
+     * If the error occurred during a post-back and a matching error-page definition was found, then an attempt to restore the error view would be made as the
+     * jakarta.faces.ViewState marker would still be in the request parameters.
      *
      * Use this method to determine if the current request is an error page to avoid the above condition.
      *
      * @param context the FacesContext for the current request
-     * @return <code>true</code> if <code>WEBAPP_ERROR_MESSAGE_MARKER</code> or <code>WEBAPP_ERROR_EXCEPTION_MARKER</code>
-     * is found in the request, otherwise return <code>false</code>
+     * @return <code>true</code> if <code>WEBAPP_ERROR_MESSAGE_MARKER</code> or <code>WEBAPP_ERROR_EXCEPTION_MARKER</code> is found in the request, otherwise
+     * return <code>false</code>
      */
     private static boolean isErrorPage(FacesContext context) {
         Map<String, Object> requestMap = context.getExternalContext().getRequestMap();

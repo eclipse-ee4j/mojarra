@@ -48,13 +48,13 @@ public final class Resource {
      * Get an URL of an internal resource.
      *
      * <p>
-     * First, {@link jakarta.faces.context.ExternalContext#getResource(String)} is checked for an non-null URL return value.
-     * In the case of a null return value (as it is the case for Weblogic 8.1 for a packed war), a URL with a special URL
-     * handler is constructed, which can be used for <em>opening</em> a servlet resource later.
+     * First, {@link jakarta.faces.context.ExternalContext#getResource(String)} is checked for an non-null URL return value. In the case of a null return value
+     * (as it is the case for Weblogic 8.1 for a packed war), a URL with a special URL handler is constructed, which can be used for <em>opening</em> a servlet
+     * resource later.
      *
      * <p>
-     * Internally, this special URL handler will call {@link ServletContext#getResourceAsStream(String)} when an inputstream
-     * is requested. This even works on Weblogic 8.1
+     * Internally, this special URL handler will call {@link ServletContext#getResourceAsStream(String)} when an inputstream is requested. This even works on
+     * Weblogic 8.1
      *
      * @param ctx the faces context from which to retrieve the resource
      * @param path an URL path
@@ -100,7 +100,8 @@ public final class Resource {
             if (stream != null) {
                 try {
                     stream.close();
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     if (LOGGER.isLoggable(FINEST)) {
                         LOGGER.log(FINEST, "Closing stream", e);
                     }
@@ -143,14 +144,18 @@ public final class Resource {
                                 throw new FileNotFoundException("Cannot open resource " + file);
                             }
                             return stream;
-                        } else {
+                        }
+                        else {
                             throw new IOException("Cannot open resource for an context of " + (ctx != null ? ctx.getClass() : null));
                         }
                     }
+
                 };
             }
+
         };
 
         return new URL("internal", null, 0, path, handler);
     }
+
 }

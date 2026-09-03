@@ -215,20 +215,23 @@ public class TableRenderer extends BaseTableRenderer {
         if (footer == null && !info.hasFooterFacets) {
             return;
         }
-        String footerClass = table instanceof HtmlDataTable dataTable ? dataTable.getFooterClass()
-                : (String) table.getAttributes().get("footerClass");
+        String footerClass = table instanceof HtmlDataTable dataTable
+            ? dataTable.getFooterClass()
+            : (String) table.getAttributes().get("footerClass");
         writer.startElement("tfoot", table);
         writer.writeText("\n", table, null);
         if (info.hasFooterFacets) {
             writer.startElement("tr", table);
             writer.writeText("\n", table, null);
             for (UIColumn column : info.columns) {
-                String columnFooterClass = column instanceof HtmlColumn htmlColumn ? htmlColumn.getFooterClass()
-                        : (String) column.getAttributes().get("footerClass");
+                String columnFooterClass = column instanceof HtmlColumn htmlColumn
+                    ? htmlColumn.getFooterClass()
+                    : (String) column.getAttributes().get("footerClass");
                 writer.startElement("td", column);
                 if (columnFooterClass != null) {
                     writer.writeAttribute("class", columnFooterClass, "columnFooterClass");
-                } else if (footerClass != null) {
+                }
+                else if (footerClass != null) {
                     writer.writeAttribute("class", footerClass, "footerClass");
                 }
                 UIComponent facet = getFacet(column, "footer");
@@ -267,8 +270,9 @@ public class TableRenderer extends BaseTableRenderer {
         if (header == null && !info.hasHeaderFacets) {
             return;
         }
-        String headerClass = table instanceof HtmlDataTable dataTable ? dataTable.getHeaderClass()
-                : (String) table.getAttributes().get("headerClass");
+        String headerClass = table instanceof HtmlDataTable dataTable
+            ? dataTable.getHeaderClass()
+            : (String) table.getAttributes().get("headerClass");
         writer.startElement("thead", table);
         writer.writeText("\n", table, null);
         if (header != null) {
@@ -289,12 +293,14 @@ public class TableRenderer extends BaseTableRenderer {
             writer.startElement("tr", table);
             writer.writeText("\n", table, null);
             for (UIColumn column : info.columns) {
-                String columnHeaderClass = column instanceof HtmlColumn htmlColumn ? htmlColumn.getHeaderClass()
-                        : (String) column.getAttributes().get("headerClass");
+                String columnHeaderClass = column instanceof HtmlColumn htmlColumn
+                    ? htmlColumn.getHeaderClass()
+                    : (String) column.getAttributes().get("headerClass");
                 writer.startElement("th", column);
                 if (columnHeaderClass != null) {
                     writer.writeAttribute("class", columnHeaderClass, "columnHeaderClass");
-                } else if (headerClass != null) {
+                }
+                else if (headerClass != null) {
                     writer.writeAttribute("class", headerClass, "headerClass");
                 }
                 writer.writeAttribute("scope", "col", null);
@@ -321,12 +327,14 @@ public class TableRenderer extends BaseTableRenderer {
         for (UIColumn column : info.columns) {
 
             // Render the beginning of this cell
-            boolean isRowHeader = column instanceof HtmlColumn htmlColumn ? htmlColumn.isRowHeader()
-                    : RenderKitUtils.attributeIsTrue(column, "rowHeader", false);
+            boolean isRowHeader = column instanceof HtmlColumn htmlColumn
+                ? htmlColumn.isRowHeader()
+                : RenderKitUtils.attributeIsTrue(column, "rowHeader", false);
             if (isRowHeader) {
                 writer.startElement("th", column);
                 writer.writeAttribute("scope", "row", null);
-            } else {
+            }
+            else {
                 writer.startElement("td", column);
             }
 
@@ -356,7 +364,8 @@ public class TableRenderer extends BaseTableRenderer {
             // Render the ending of this cell
             if (isRowHeader) {
                 writer.endElement("th");
-            } else {
+            }
+            else {
                 writer.endElement("td");
             }
             writer.writeText("\n", table, null);
@@ -390,8 +399,8 @@ public class TableRenderer extends BaseTableRenderer {
 
     /**
      * <p>
-     * Return an Iterator over the <code>UIColumn</code> children of the specified <code>UIData</code> that have a
-     * <code>rendered</code> property of <code>true</code>.
+     * Return an Iterator over the <code>UIColumn</code> children of the specified <code>UIData</code> that have a <code>rendered</code> property of
+     * <code>true</code>.
      * </p>
      *
      * @param table the table from which to extract children
@@ -408,8 +417,10 @@ public class TableRenderer extends BaseTableRenderer {
                 }
             }
             return results;
-        } else {
+        }
+        else {
             return Collections.emptyList();
         }
     }
+
 }

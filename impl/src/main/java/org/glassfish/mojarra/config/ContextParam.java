@@ -27,14 +27,13 @@ import jakarta.servlet.ServletContext;
 
 /**
  * <p class="changed_added_5_0">
- * A context parameter recognized by this implementation, declaring the name it is read under, the type its value is
- * converted to, and the default which applies when it is not set.
+ * A context parameter recognized by this implementation, declaring the name it is read under, the type its value is converted to, and the default which applies
+ * when it is not set.
  * </p>
  *
  * <p>
- * A declaration is stateless, because the constants declaring it are global to the class loader and this
- * implementation is routinely loaded by one which is shared between deployed applications. The value a parameter
- * resolves to is therefore held per application, by
+ * A declaration is stateless, because the constants declaring it are global to the class loader and this implementation is routinely loaded by one which is
+ * shared between deployed applications. The value a parameter resolves to is therefore held per application, by
  * {@link org.glassfish.mojarra.config.WebConfiguration}, and never by the declaration itself.
  * </p>
  *
@@ -66,8 +65,7 @@ public interface ContextParam {
     Class<?> getType();
 
     /**
-     * @return what separates the entries of a {@link String}{@code []} valued parameter, or <code>null</code> when the
-     * parameter holds a single value.
+     * @return what separates the entries of a {@link String}{@code []} valued parameter, or <code>null</code> when the parameter holds a single value.
      */
     Separator getSeparator();
 
@@ -86,8 +84,8 @@ public interface ContextParam {
     }
 
     /**
-     * @return the name of the parameter which replaces this one, or <code>null</code> when it has no replacement,
-     * which is the case for one whose behaviour goes away rather than moving elsewhere.
+     * @return the name of the parameter which replaces this one, or <code>null</code> when it has no replacement, which is the case for one whose behaviour
+     * goes away rather than moving elsewhere.
      */
     default String getAlternateName() {
         return null;
@@ -95,9 +93,8 @@ public interface ContextParam {
 
     /**
      * <p>
-     * What a declaration says about being on its way out. This is a type rather than a pair of constructor arguments,
-     * because a boolean would be ambiguous with the default value of a boolean parameter and a name with that of a
-     * string one.
+     * What a declaration says about being on its way out. This is a type rather than a pair of constructor arguments, because a boolean would be ambiguous with
+     * the default value of a boolean parameter and a name with that of a string one.
      * </p>
      *
      * @param alternateName the name of the replacement, or <code>null</code> when there is none.
@@ -116,6 +113,7 @@ public interface ContextParam {
         public static Deprecation replacedBy(String alternateName) {
             return new Deprecation(alternateName);
         }
+
     }
 
     /**
@@ -248,8 +246,7 @@ public interface ContextParam {
 
     /**
      * @param context the involved faces context.
-     * @return whether the parameter was explicitly declared, under any of the names it answers to, which is a
-     * different question from what it resolved to.
+     * @return whether the parameter was explicitly declared, under any of the names it answers to, which is a different question from what it resolved to.
      */
     default boolean isSet(FacesContext context) {
         return WebConfiguration.getInstance(context).isSet(this);
@@ -325,9 +322,8 @@ public interface ContextParam {
 
     /**
      * <p>
-     * A three valued switch, for a parameter where {@link #AUTO} is a behaviour of its own rather than a request for
-     * the default. A parameter whose <code>auto</code> only asks for a stage derived default is plain
-     * {@link Boolean} and says so through its default instead.
+     * A three valued switch, for a parameter where {@link #AUTO} is a behaviour of its own rather than a request for the default. A parameter whose
+     * <code>auto</code> only asks for a stage derived default is plain {@link Boolean} and says so through its default instead.
      * </p>
      */
     enum Tristate {
@@ -355,12 +351,14 @@ public interface ContextParam {
         }
 
         /**
-         * Splits around the separator, dropping whatever whitespace surrounds each entry, and any entry left empty.
-         * The separator therefore does not have to describe that whitespace itself, which lets the single character
-         * ones stay characters: {@link String#split(String)} splits by index for those, compiling nothing.
+         * Splits around the separator, dropping whatever whitespace surrounds each entry, and any entry left empty. The separator therefore does not have to
+         * describe that whitespace itself, which lets the single character ones stay characters: {@link String#split(String)} splits by index for those,
+         * compiling nothing.
          */
         public String[] split(String value) {
             return stream(value.split(separator)).map(String::trim).filter(not(String::isEmpty)).toArray(String[]::new);
         }
+
     }
+
 }

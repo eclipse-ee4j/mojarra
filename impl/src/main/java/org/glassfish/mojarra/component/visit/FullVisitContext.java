@@ -130,4 +130,5 @@ public class FullVisitContext extends VisitContext {
 
     // Our visit hints
     private final Set<VisitHint> hints;
+
 }

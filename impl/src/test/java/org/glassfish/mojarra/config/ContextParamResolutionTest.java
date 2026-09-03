@@ -33,8 +33,8 @@ import org.glassfish.mojarra.mock.MockServletContext;
 import org.junit.jupiter.api.Test;
 
 /**
- * A specification context parameter is resolved once, when this configuration is read, and every reader sees that same
- * value. This covers what the resolution does beyond handing the declared value back.
+ * A specification context parameter is resolved once, when this configuration is read, and every reader sees that same value. This covers what the resolution
+ * does beyond handing the declared value back.
  */
 class ContextParamResolutionTest extends ConfigurationLoggingTestBase {
 
@@ -48,8 +48,8 @@ class ContextParamResolutionTest extends ConfigurationLoggingTestBase {
     }
 
     /**
-     * A parameter which used to be a Mojarra one answers to the unqualified name it had then, under the prefix it
-     * actually carried and under the one the 5.0 rename produces for it.
+     * A parameter which used to be a Mojarra one answers to the unqualified name it had then, under the prefix it actually carried and under the one the 5.0
+     * rename produces for it.
      */
     @Test
     void aPromotedParameterIsHonouredUnderEitherOldSpelling() {
@@ -71,9 +71,9 @@ class ContextParamResolutionTest extends ConfigurationLoggingTestBase {
     }
 
     /**
-     * A value which cannot be converted to the declared type behaves as though the parameter was never declared, rather
-     * than as whatever a lenient parse happens to make of it, which for a boolean would silently be <code>false</code>
-     * and would therefore turn a typo into the opposite of a default which is <code>true</code>.
+     * A value which cannot be converted to the declared type behaves as though the parameter was never declared, rather than as whatever a lenient parse
+     * happens to make of it, which for a boolean would silently be <code>false</code> and would therefore turn a typo into the opposite of a default which is
+     * <code>true</code>.
      */
     @Test
     void anUnusableValueFallsBackToTheDefault() {
@@ -84,8 +84,7 @@ class ContextParamResolutionTest extends ConfigurationLoggingTestBase {
     }
 
     /**
-     * And surrounding whitespace, which a container is not obliged to strip from a context parameter, does not turn a
-     * usable value into an unusable one.
+     * And surrounding whitespace, which a container is not obliged to strip from a context parameter, does not turn a usable value into an unusable one.
      */
     @Test
     void surroundingWhitespaceIsTolerated() {
@@ -100,16 +99,17 @@ class ContextParamResolutionTest extends ConfigurationLoggingTestBase {
     }
 
     /**
-     * The separator trims entries and drops empty ones, so a value listed twice would otherwise reach every reader of
-     * the parameter and have the work behind it done a second time. Each one is dropped and named, and the entries
-     * which survive keep the order and the first position they were declared at.
+     * The separator trims entries and drops empty ones, so a value listed twice would otherwise reach every reader of the parameter and have the work behind it
+     * done a second time. Each one is dropped and named, and the entries which survive keep the order and the first position they were declared at.
      */
     @Test
     void aValueListedMoreThanOnceIsDroppedAndReported() {
         ServletContext servletContext = configure(ResourceHandler.RESOURCE_EXCLUDES_PARAM_NAME, ".class .jsp .class .jspx .jsp");
 
-        assertArrayEquals(new String[] { ".class", ".jsp", ".jspx" },
-                FacesContextParam.RESOURCE_EXCLUDES.getStringArray(servletContext));
+        assertArrayEquals(
+            new String[] { ".class", ".jsp", ".jspx" },
+            FacesContextParam.RESOURCE_EXCLUDES.getStringArray(servletContext)
+        );
         assertEquals(List.of(".class, .jsp"), duplicatedValues());
     }
 
@@ -134,9 +134,8 @@ class ContextParamResolutionTest extends ConfigurationLoggingTestBase {
     }
 
     /**
-     * A parameter read through an accessor for another type says so, rather than handing the value over to a cast
-     * which fails on whichever path first reads it. The accessor is what names the type at the call site, and no
-     * compiler checks that against the declaration.
+     * A parameter read through an accessor for another type says so, rather than handing the value over to a cast which fails on whichever path first reads it.
+     * The accessor is what names the type at the call site, and no compiler checks that against the declaration.
      */
     @Test
     void readingAParameterAsTheWrongTypeIsRejected() {
@@ -152,9 +151,8 @@ class ContextParamResolutionTest extends ConfigurationLoggingTestBase {
     }
 
     /**
-     * The level at which every other parameter is reported derives from this one, so it has to be resolved before that
-     * level is known, and can therefore not be reported itself while it is being resolved. Declaring it at all is what
-     * takes that path, at either of the two values which say so.
+     * The level at which every other parameter is reported derives from this one, so it has to be resolved before that level is known, and can therefore not be
+     * reported itself while it is being resolved. Declaring it at all is what takes that path, at either of the two values which say so.
      */
     @Test
     void theParameterDecidingTheLoggingLevelResolvesBeforeThatLevelIsKnown() {
@@ -166,8 +164,7 @@ class ContextParamResolutionTest extends ConfigurationLoggingTestBase {
     }
 
     /**
-     * A duration in milliseconds outgrows an <code>int</code> after about 24 days, which is well inside what a resource
-     * cache lifetime is plausibly set to.
+     * A duration in milliseconds outgrows an <code>int</code> after about 24 days, which is well inside what a resource cache lifetime is plausibly set to.
      */
     @Test
     void aLongValuedParameterAcceptsMoreThanAnIntHolds() {
@@ -178,9 +175,9 @@ class ContextParamResolutionTest extends ConfigurationLoggingTestBase {
     }
 
     /**
-     * The provider parameters resolve to an empty name rather than to none, which is what lets their readers tell an
-     * undeclared one apart by asking whether it is empty. Were the default absent instead, an undeclared parameter
-     * would name a provider of its own and the system property and service entries behind it would never be reached.
+     * The provider parameters resolve to an empty name rather than to none, which is what lets their readers tell an undeclared one apart by asking whether it
+     * is empty. Were the default absent instead, an undeclared parameter would name a provider of its own and the system property and service entries behind it
+     * would never be reached.
      */
     @Test
     void anUndeclaredProviderParameterResolvesToAnEmptyName() {
@@ -191,9 +188,8 @@ class ContextParamResolutionTest extends ConfigurationLoggingTestBase {
     }
 
     /**
-     * A reported value is what would be written in web.xml, not what the reader's locale makes of it. A log message is
-     * a format pattern, so a default which is a number reaches it as one, and an application told to fall back to
-     * '8,192' would be told to configure something which does not parse.
+     * A reported value is what would be written in web.xml, not what the reader's locale makes of it. A log message is a format pattern, so a default which is
+     * a number reaches it as one, and an application told to fall back to '8,192' would be told to configure something which does not parse.
      */
     @Test
     void aReportedDefaultIsWrittenAsItWouldBeDeclared() {
@@ -205,10 +201,12 @@ class ContextParamResolutionTest extends ConfigurationLoggingTestBase {
 
     private List<String> fallbackDefaultsOf(ContextParam param) {
         return records.stream()
-                .filter(record -> record.getLevel() == WARNING && INVALID_VALUE.equals(record.getMessage())
-                        && param.getName().equals(record.getParameters()[2]))
-                .map(record -> String.valueOf(record.getParameters()[4]))
-                .toList();
+            .filter(
+                record -> record.getLevel() == WARNING && INVALID_VALUE.equals(record.getMessage())
+                    && param.getName().equals(record.getParameters()[2])
+            )
+            .map(record -> String.valueOf(record.getParameters()[4]))
+            .toList();
     }
 
     private static void assertResolvesToItsDefault(FacesContextParam param, String value) {
@@ -231,4 +229,5 @@ class ContextParamResolutionTest extends ConfigurationLoggingTestBase {
 
         return servletContext;
     }
+
 }

@@ -27,8 +27,8 @@ import org.glassfish.mojarra.mock.MockServletContext;
 import org.junit.jupiter.api.Test;
 
 /**
- * Nothing used to validate the names an application declares, so a typo or a parameter which no longer exists was
- * silently ignored, with no way to tell from the outside.
+ * Nothing used to validate the names an application declares, so a typo or a parameter which no longer exists was silently ignored, with no way to tell from
+ * the outside.
  */
 class UnrecognizedContextParamTest extends ConfigurationLoggingTestBase {
 
@@ -49,8 +49,8 @@ class UnrecognizedContextParamTest extends ConfigurationLoggingTestBase {
     }
 
     /**
-     * The legacy spelling is normalized into Mojarra's own namespace before this runs, so a name which is only known
-     * under the old prefix must not be mistaken for a typo.
+     * The legacy spelling is normalized into Mojarra's own namespace before this runs, so a name which is only known under the old prefix must not be mistaken
+     * for a typo.
      */
     @Test
     void aLegacySpellingIsNotReported() {
@@ -60,8 +60,8 @@ class UnrecognizedContextParamTest extends ConfigurationLoggingTestBase {
     }
 
     /**
-     * A parameter promoted to the specification keeps both of its deprecated spellings, and the one the 5.0 rename
-     * produces is a name which never existed, so it would look exactly like a typo without the alias table.
+     * A parameter promoted to the specification keeps both of its deprecated spellings, and the one the 5.0 rename produces is a name which never existed, so
+     * it would look exactly like a typo without the alias table.
      */
     @Test
     void aPromotedParameterIsNotReportedUnderEitherOldSpelling() {
@@ -91,4 +91,5 @@ class UnrecognizedContextParamTest extends ConfigurationLoggingTestBase {
     private List<String> unrecognizedParameterNames() {
         return loggedArguments(UNRECOGNIZED, 1);
     }
+
 }

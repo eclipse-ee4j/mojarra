@@ -41,9 +41,9 @@ import org.glassfish.mojarra.renderkit.Attributes;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 import org.glassfish.mojarra.util.FacesLogger;
 
-/** 
- * <B>FormRenderer</B> is a class that renders a <code>UIForm</code> as a Form. 
- * */
+/**
+ * <B>FormRenderer</B> is a class that renders a <code>UIForm</code> as a Form.
+ */
 public class FormRenderer extends HtmlBasicRenderer {
 
     private static final Logger LOGGER = FacesLogger.RENDERKIT.getLogger();
@@ -79,7 +79,8 @@ public class FormRenderer extends HtmlBasicRenderer {
                 logger.log(Level.FINE, "UIForm with client ID {0}, submitted", clientId);
             }
             ((UIForm) component).setSubmitted(true);
-        } else {
+        }
+        else {
             ((UIForm) component).setSubmitted(false);
         }
 
@@ -96,7 +97,7 @@ public class FormRenderer extends HtmlBasicRenderer {
         if (context.isProjectStage(Development) && !((UIForm) component).isPrependId()) {
             LOGGER.warning("The <h:form prependId=\"false\"> is deprecated as of Faces 5.0 and should not longer be used.");
         }
-        
+
         ResponseWriter writer = context.getResponseWriter();
         assert writer != null;
         String clientId = component.getClientId(context);
@@ -109,8 +110,9 @@ public class FormRenderer extends HtmlBasicRenderer {
         writer.writeAttribute("method", "post", null);
         writer.writeAttribute("action", getActionStr(context), null);
         writeStyleClassAttributeIfNecessary(writer, component);
-        String acceptcharset = component instanceof HtmlForm form ? form.getAcceptcharset()
-                : (String) component.getAttributes().get("acceptcharset");
+        String acceptcharset = component instanceof HtmlForm form
+            ? form.getAcceptcharset()
+            : (String) component.getAttributes().get("acceptcharset");
         if (acceptcharset != null) {
             writer.writeAttribute("accept-charset", acceptcharset, "acceptcharset");
         }
@@ -187,13 +189,12 @@ public class FormRenderer extends HtmlBasicRenderer {
     /**
      * @param context FacesContext for the response we are creating
      *
-     * @return Return the value to be rendered as the <code>action</code> attribute of the form generated for this
-     * component.
+     * @return Return the value to be rendered as the <code>action</code> attribute of the form generated for this component.
      */
     private static String getActionStr(FacesContext context) {
         String viewId = context.getViewRoot().getViewId();
         String actionURL = context.getApplication().getViewHandler().getActionURL(context, viewId);
-        
+
         return context.getExternalContext().encodeActionURL(actionURL);
 
     }

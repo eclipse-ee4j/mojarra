@@ -35,8 +35,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * <p>
- * Unit tests for {@link ValueHolder}. Any test case for a component class that implements {@link ValueHolder} should
- * extend this class.
+ * Unit tests for {@link ValueHolder}. Any test case for a component class that implements {@link ValueHolder} should extend this class.
  * </p>
  */
 public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
@@ -66,12 +65,14 @@ public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
 
         for (i = 0; i < runnables.length; i++) {
             runnables[i] = new Runnable() {
+
                 @Override
                 public void run() {
                     int threadNum = 0;
                     try {
                         threadNum = Integer.valueOf(Thread.currentThread().getName()).intValue();
-                    } catch (NumberFormatException ex) {
+                    }
+                    catch (NumberFormatException ex) {
                         fail("Expected thread name to be an integer");
                     }
                     // Even threadNums use HtmlInputText, odd use this component
@@ -81,27 +82,31 @@ public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
                     if (isEven) {
                         newComp = new HtmlInputText();
                         vh = (ValueHolder) newComp;
-                    } else {
+                    }
+                    else {
                         try {
                             newComp = ValueHolderTestCaseBase.this.component.getClass().getDeclaredConstructor()
-                                    .newInstance();
+                                .newInstance();
                             vh = (ValueHolder) newComp;
 
-                        } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException ex) {
+                        }
+                        catch (IllegalArgumentException | ReflectiveOperationException | SecurityException ex) {
                             fail("Can't instantiate class of " + ValueHolderTestCaseBase.this.component.getClass().getName());
                         }
                     }
                     try {
                         boolean result = doTestAttributesTransparency(vh, newComp);
                         outcomes[threadNum] = Boolean.valueOf(result);
-                    } catch (Throwable e) {
+                    }
+                    catch (Throwable e) {
                         e.printStackTrace();
                         outcomes[threadNum] = Boolean.FALSE;
                     }
                 }
+
             };
         }
-//        clearDescriptors();
+        // clearDescriptors();
         Thread thread = null;
         for (i = 0; i < runnables.length; i++) {
             thread = new Thread(runnables[i], "" + i);
@@ -255,4 +260,5 @@ public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
         assertEquals(nc1.getPattern(), nc2.getPattern());
         assertEquals(nc1.getType(), nc2.getType());
     }
+
 }

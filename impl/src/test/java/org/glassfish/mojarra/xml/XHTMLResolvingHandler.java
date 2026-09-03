@@ -34,8 +34,10 @@ public class XHTMLResolvingHandler extends DefaultHandler {
     private ResourceBundle bundle;
 
     public XHTMLResolvingHandler() {
-        bundle = ResourceBundle.getBundle(this.getClass().getPackage().getName() + ".Entities",
-                Locale.US);
+        bundle = ResourceBundle.getBundle(
+            this.getClass().getPackage().getName() + ".Entities",
+            Locale.US
+        );
     }
 
     @Override
@@ -57,7 +59,8 @@ public class XHTMLResolvingHandler extends DefaultHandler {
                     InputStream inputStream = null;
                     try {
                         inputStream = new ByteArrayInputStream(value.getBytes("UTF-8"));
-                    } catch (UnsupportedEncodingException ex) {
+                    }
+                    catch (UnsupportedEncodingException ex) {
                     }
                     return inputStream;
                 }
@@ -70,10 +73,12 @@ public class XHTMLResolvingHandler extends DefaultHandler {
                 }
 
             };
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
 
         }
 
         return is;
     }
+
 }

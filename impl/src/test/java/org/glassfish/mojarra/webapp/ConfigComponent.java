@@ -18,7 +18,8 @@ package org.glassfish.mojarra.webapp;
 
 /**
  * <p>
- * Config Bean for an Component.</p>
+ * Config Bean for an Component.
+ * </p>
  */
 public class ConfigComponent extends ConfigFeature {
 
@@ -41,4 +42,5 @@ public class ConfigComponent extends ConfigFeature {
     public void setComponentType(String componentType) {
         this.componentType = componentType;
     }
+
 }

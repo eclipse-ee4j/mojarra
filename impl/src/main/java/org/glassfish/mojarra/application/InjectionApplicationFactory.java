@@ -32,10 +32,9 @@ import jakarta.faces.context.FacesContext;
 import org.glassfish.mojarra.util.FacesLogger;
 
 /**
- * This {@link jakarta.faces.application.ApplicationFactory} is responsible for injecting the default
- * {@link Application} instance into the top-level {@link Application} as configured by the runtime. Doing this allows
- * us to preserve backwards compatibility as the API evolves without having the API rely on implementation specific
- * details.
+ * This {@link jakarta.faces.application.ApplicationFactory} is responsible for injecting the default {@link Application} instance into the top-level
+ * {@link Application} as configured by the runtime. Doing this allows us to preserve backwards compatibility as the API evolves without having the API rely on
+ * implementation specific details.
  */
 public class InjectionApplicationFactory extends ApplicationFactory {
 
@@ -62,7 +61,8 @@ public class InjectionApplicationFactory extends ApplicationFactory {
 
             if (application == null) {
                 throw new IllegalStateException(
-                        format("Delegate ApplicationContextFactory, {0}, returned null when calling getApplication().", getWrapped().getClass().getName()));
+                    format("Delegate ApplicationContextFactory, {0}, returned null when calling getApplication().", getWrapped().getClass().getName())
+                );
             }
 
             injectDefaultApplication();
@@ -95,11 +95,13 @@ public class InjectionApplicationFactory extends ApplicationFactory {
                 }
                 defaultApplicationField.set(application, defaultApplication);
 
-            } catch (NoSuchFieldException nsfe) {
+            }
+            catch (NoSuchFieldException nsfe) {
                 if (LOGGER.isLoggable(FINE)) {
                     LOGGER.log(FINE, "Unable to find private field named 'defaultApplication' in jakarta.faces.application.Application.");
                 }
-            } catch (SecurityException | IllegalArgumentException | IllegalAccessException e) {
+            }
+            catch (SecurityException | IllegalArgumentException | IllegalAccessException e) {
                 if (LOGGER.isLoggable(SEVERE)) {
                     LOGGER.log(SEVERE, e.toString(), e);
                 }

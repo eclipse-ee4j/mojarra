@@ -52,17 +52,24 @@ public class SelectItemUtils {
         return items;
     }
 
-    public static <S extends SelectItem> void createSelectItems(FacesContext context, UIComponent component, Object values, Supplier<S> supplier, Consumer<S> callback) {
+    public static <S extends SelectItem> void createSelectItems(
+        FacesContext context, UIComponent component, Object values, Supplier<S> supplier, Consumer<S> callback
+    )
+    {
         Map<String, Object> attributes = component.getAttributes();
         String var = coalesce((String) attributes.get("var"), "item");
-        stream(values).forEach(value -> new ScopedRunner(context).with(var, value).invoke(() -> callback.accept(createSelectItem(component, getItemValue(attributes, value), supplier))));
+        stream(values).forEach(
+            value -> new ScopedRunner(context).with(var, value)
+                .invoke(() -> callback.accept(createSelectItem(component, getItemValue(attributes, value), supplier)))
+        );
     }
 
     public static <S extends SelectItem> S createSelectItem(UIComponent component, Object value, Supplier<S> supplier) {
         Map<String, Object> attributes = component.getAttributes();
         Object itemValue = getItemValue(attributes, value);
         Object itemLabel = attributes.get("itemLabel");
-        Object itemEscaped = coalesce(attributes.get("itemEscaped"), attributes.get("itemLabelEscaped")); // f:selectItem || f:selectItems -- TODO: this should be aligned in their APIs.
+        Object itemEscaped = coalesce(attributes.get("itemEscaped"), attributes.get("itemLabelEscaped")); // f:selectItem || f:selectItems -- TODO: this should
+                                                                                                          // be aligned in their APIs.
         Object itemDisabled = attributes.get("itemDisabled");
 
         S selectItem = supplier.get();

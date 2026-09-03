@@ -48,14 +48,16 @@ public class CompositeAttributePropertyDescriptor extends PropertyDescriptor {
                     result = ReflectionUtil.forName(classStr);
 
                     setValue(attributeName, result);
-                } catch (ClassNotFoundException ex) {
+                }
+                catch (ClassNotFoundException ex) {
                     classStr = "java.lang." + classStr;
                     boolean throwException = false;
                     try {
                         result = ReflectionUtil.forName(classStr);
 
                         setValue(attributeName, result);
-                    } catch (ClassNotFoundException ex2) {
+                    }
+                    catch (ClassNotFoundException ex2) {
                         throwException = true;
                     }
                     if (throwException) {
@@ -67,4 +69,5 @@ public class CompositeAttributePropertyDescriptor extends PropertyDescriptor {
         }
         return result;
     }
+
 }

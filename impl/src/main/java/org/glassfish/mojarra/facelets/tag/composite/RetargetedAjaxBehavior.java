@@ -37,8 +37,7 @@ import jakarta.faces.render.ClientBehaviorRenderer;
  *
  * We should probably introduce {@code AjaxBehaviorWrapper} in Faces.next to reduce boilerplate like this.
  *
- * - https://github.com/jakartaee/faces/issues/1567
- * - https://github.com/eclipse-ee4j/mojarra/issues/5032
+ * - https://github.com/jakartaee/faces/issues/1567 - https://github.com/eclipse-ee4j/mojarra/issues/5032
  */
 public class RetargetedAjaxBehavior extends AjaxBehavior {
 
@@ -258,4 +257,5 @@ public class RetargetedAjaxBehavior extends AjaxBehavior {
     public void restoreState(FacesContext context, Object state) {
         retargeted.restoreState(context, state);
     }
+
 }

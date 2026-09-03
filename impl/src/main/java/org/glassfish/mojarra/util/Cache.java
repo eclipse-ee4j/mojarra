@@ -29,15 +29,16 @@ public class Cache<K, V> {
     /**
      * Factory interface for creating various cacheable objects.
      */
-    public interface Factory<K,V> extends Function<K,V> {
+    public interface Factory<K, V> extends Function<K, V> {
 
         V newInstance(final K arg) throws InterruptedException;
 
         @Override
         default V apply(K key) {
             try {
-                return newInstance( key );
-            } catch (InterruptedException e) {
+                return newInstance(key);
+            }
+            catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -54,7 +55,7 @@ public class Cache<K, V> {
      *
      * @param factory a factory to create or retrieve the element that need to be cached
      */
-    public Cache(Factory<K,V> factory) {
+    public Cache(Factory<K, V> factory) {
 
         this.factory = factory;
     }
@@ -62,11 +63,10 @@ public class Cache<K, V> {
     // ------------------------------------------------------ Public Methods
 
     /**
-     * If a value isn't associated with the specified key, a new {@link java.util.concurrent.Callable} will be created
-     * wrapping the <code>Factory</code> specified via the constructor and passed to a
-     * {@link java.util.concurrent.FutureTask}. This task will be passed to the backing ConcurrentMap. When
-     * {@link java.util.concurrent.FutureTask#get()} is invoked, the Factory will return the new Value which will be cached
-     * by the {@link java.util.concurrent.FutureTask}.
+     * If a value isn't associated with the specified key, a new {@link java.util.concurrent.Callable} will be created wrapping the <code>Factory</code>
+     * specified via the constructor and passed to a {@link java.util.concurrent.FutureTask}. This task will be passed to the backing ConcurrentMap. When
+     * {@link java.util.concurrent.FutureTask#get()} is invoked, the Factory will return the new Value which will be cached by the
+     * {@link java.util.concurrent.FutureTask}.
      *
      * @param key the key the value is associated with
      * @return the value for the specified key, if any
@@ -78,9 +78,9 @@ public class Cache<K, V> {
         // computeIfAbsent(), which does extra work even when the key is already present. Fall back to computeIfAbsent()
         // only on a miss, which still resolves the populate race atomically. The factory never caches null (a null
         // value would simply re-resolve on the next call here, exactly as computeIfAbsent() already behaves).
-        V value = cache.get( key );
-        if ( value == null ) {
-            value = cache.computeIfAbsent( key , factory );
+        V value = cache.get(key);
+        if (value == null) {
+            value = cache.computeIfAbsent(key, factory);
         }
         return value;
     }

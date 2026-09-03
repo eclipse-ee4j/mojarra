@@ -23,24 +23,24 @@ import java.sql.SQLException;
 
 /**
  * <p>
- * Mock object that implements enough of <code>java.sql.ResultSetMetaData</code>
- * to exercise the <code>ResultSetDataModel</code> functionality.</p>
+ * Mock object that implements enough of <code>java.sql.ResultSetMetaData</code> to exercise the <code>ResultSetDataModel</code> functionality.
+ * </p>
  */
 public class MockResultSetMetaData implements ResultSetMetaData {
 
     // ------------------------------------------------------------ Constructors
     /**
      * <p>
-     * Construct a new <code>ResultSetMetaData</code> object wrapping the
-     * properties of the specified Java class.</p>
+     * Construct a new <code>ResultSetMetaData</code> object wrapping the properties of the specified Java class.
+     * </p>
      *
      * @param clazz Class whose properties we treat like columns
      */
     public MockResultSetMetaData(Class<?> clazz) throws SQLException {
         try {
-            descriptors
-                    = Introspector.getBeanInfo(clazz).getPropertyDescriptors();
-        } catch (Exception e) {
+            descriptors = Introspector.getBeanInfo(clazz).getPropertyDescriptors();
+        }
+        catch (Exception e) {
             throw new SQLException(e.getMessage());
         }
     }
@@ -52,10 +52,12 @@ public class MockResultSetMetaData implements ResultSetMetaData {
 
     // ---------------------------------------------------------- Public Methods
     public PropertyDescriptor getDescriptor(int columnIndex)
-            throws SQLException {
+        throws SQLException
+    {
         try {
             return (descriptors[columnIndex - 1]);
-        } catch (IndexOutOfBoundsException e) {
+        }
+        catch (IndexOutOfBoundsException e) {
             throw new SQLException("Invalid columnIndex " + columnIndex);
         }
     }
@@ -176,4 +178,5 @@ public class MockResultSetMetaData implements ResultSetMetaData {
     public boolean isWrapperFor(Class<?> iface) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
 }

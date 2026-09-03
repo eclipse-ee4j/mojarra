@@ -34,10 +34,8 @@ public interface SerializationProvider {
      * Creates a new <code>ObjectInputStream</code> wrapping the specified <code>source</code>.
      *
      * <p>
-     * It's <em>extremely important</em> that the ObjectInputStream returned by this method extends the serialization
-     * implementation's ObjectInputStream and overrides the
-     * {@link ObjectInputStream#resolveClass(java.io.ObjectStreamClass)} of to perform the following or the equivalent
-     * thereof: <br>
+     * It's <em>extremely important</em> that the ObjectInputStream returned by this method extends the serialization implementation's ObjectInputStream and
+     * overrides the {@link ObjectInputStream#resolveClass(java.io.ObjectStreamClass)} of to perform the following or the equivalent thereof: <br>
      *
      * <pre>
      * return Class.forName(desc.getName(), true, Thread.currentThread().getContextClassLoader());

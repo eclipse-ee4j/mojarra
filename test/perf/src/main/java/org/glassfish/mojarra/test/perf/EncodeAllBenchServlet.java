@@ -33,13 +33,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * Isolates the Render Response encode cost — the {@code encodeAll} tree walk — apart from buildView,
- * state restore and state save. The scenario view is built once, then re-rendered to a discarding
- * counting writer; uses only standard {@code jakarta.faces} API, so the same endpoint runs on Mojarra
- * and MyFaces for an apples-to-apples render comparison.
+ * Isolates the Render Response encode cost — the {@code encodeAll} tree walk — apart from buildView, state restore and state save. The scenario view is built
+ * once, then re-rendered to a discarding counting writer; uses only standard {@code jakarta.faces} API, so the same endpoint runs on Mojarra and MyFaces for an
+ * apples-to-apples render comparison.
  *
- * <p>{@code GET /encodeall-bench?scenario=composite-build&warmup=50&runs=2000} reports ns per
- * render and the output character count.
+ * <p>
+ * {@code GET /encodeall-bench?scenario=composite-build&warmup=50&runs=2000} reports ns per render and the output character count.
  */
 @WebServlet("/encodeall-bench")
 public class EncodeAllBenchServlet extends HttpServlet {
@@ -87,15 +86,17 @@ public class EncodeAllBenchServlet extends HttpServlet {
             }
             elapsedNanos = System.nanoTime() - start;
             chars = sink.count;
-        } finally {
+        }
+        finally {
             context.release();
         }
 
         response.setContentType("text/plain");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().printf(
-                "# encodeall-bench scenario=%s warmup=%d runs=%d chars=%d ns_per_render=%d total_ms=%d%n",
-                scenario, warmup, runs, chars, elapsedNanos / runs, elapsedNanos / 1_000_000L);
+            "# encodeall-bench scenario=%s warmup=%d runs=%d chars=%d ns_per_render=%d total_ms=%d%n",
+            scenario, warmup, runs, chars, elapsedNanos / runs, elapsedNanos / 1_000_000L
+        );
     }
 
     private static int intParam(HttpServletRequest request, String name, int defaultValue) {
@@ -105,13 +106,15 @@ public class EncodeAllBenchServlet extends HttpServlet {
         }
         try {
             return Integer.parseInt(value.trim());
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             return defaultValue;
         }
     }
 
     /** Discards rendered output, counting characters so the work isn't dead-code-eliminated. */
     private static final class CountingWriter extends Writer {
+
         private long count;
 
         @Override
@@ -138,5 +141,7 @@ public class EncodeAllBenchServlet extends HttpServlet {
         public void close() {
             // no-op
         }
+
     }
+
 }

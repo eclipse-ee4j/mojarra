@@ -61,34 +61,29 @@ import org.glassfish.mojarra.renderkit.RenderKitUtils;
 
 /**
  * <p class="changed_added_2_0">
- * <span class="changed_modified_2_2">Enable</span> one or more components in the view to perform Ajax operations. This
- * tag handler must create an instance of {@link jakarta.faces.component.behavior.AjaxBehavior} using the tag attribute
- * values. <div class="changed_modified_2_2">The <code>events</code> attribute for this tag that can be a
- * <code>ValueExpression</code> must be evaluated at tag execution time since the event name is used in the process of
+ * <span class="changed_modified_2_2">Enable</span> one or more components in the view to perform Ajax operations. This tag handler must create an instance of
+ * {@link jakarta.faces.component.behavior.AjaxBehavior} using the tag attribute values. <div class="changed_modified_2_2">The <code>events</code> attribute for
+ * this tag that can be a <code>ValueExpression</code> must be evaluated at tag execution time since the event name is used in the process of
  * <code>Behavior</code> creation.</div> If this tag is nested within a single {@link ClientBehaviorHolder} component:
  *
  * <ul>
- * <li>If the <code>events</code> attribute value is not specified, obtain the default event name by calling
- * {@link ClientBehaviorHolder#getDefaultEventName}. If that returns <code>null</code> throw an
- * <code>exception</code>.</li>
- * <li>If the <code>events</code> attribute value is specified, ensure it that it exists in the <code>Collection</code>
- * returned from a call to {@link ClientBehaviorHolder#getEventNames} and throw an <code>exception</code> if it doesn't
- * exist.</li>
- * <li>Add the {@link AjaxBehavior} instance to the {@link ClientBehaviorHolder} component by calling
- * {@link ClientBehaviorHolder#addClientBehavior} passing <code>event</code> and the {@link AjaxBehavior} instance.</li>
+ * <li>If the <code>events</code> attribute value is not specified, obtain the default event name by calling {@link ClientBehaviorHolder#getDefaultEventName}.
+ * If that returns <code>null</code> throw an <code>exception</code>.</li>
+ * <li>If the <code>events</code> attribute value is specified, ensure it that it exists in the <code>Collection</code> returned from a call to
+ * {@link ClientBehaviorHolder#getEventNames} and throw an <code>exception</code> if it doesn't exist.</li>
+ * <li>Add the {@link AjaxBehavior} instance to the {@link ClientBehaviorHolder} component by calling {@link ClientBehaviorHolder#addClientBehavior} passing
+ * <code>event</code> and the {@link AjaxBehavior} instance.</li>
  * </ul>
  * <p>
- * Check for the existence of the Ajax resource by calling <code>UIViewRoot.getComponentResources()</code>. If the Ajax
- * resource does not exist, create a <code>UIOutput</code> component instance and set the renderer type to
- * <code>jakarta.faces.resource.Script</code>. Set the the following attributes in the component's attribute
- * <code>Map</code>: <code>library</code> with the value {@value ResourceHandler#FACES_SCRIPT_LIBRARY_NAME} and
- * <code>name</code> with the value {@value ResourceHandler#FACES_SCRIPT_RESOURCE_NAME}. Install the component resource
- * using <code>UIViewRoot.addComponentResource()</code> and specifying <code>head</code> as the <code>target</code>
- * argument.
+ * Check for the existence of the Ajax resource by calling <code>UIViewRoot.getComponentResources()</code>. If the Ajax resource does not exist, create a
+ * <code>UIOutput</code> component instance and set the renderer type to <code>jakarta.faces.resource.Script</code>. Set the the following attributes in the
+ * component's attribute <code>Map</code>: <code>library</code> with the value {@value ResourceHandler#FACES_SCRIPT_LIBRARY_NAME} and <code>name</code> with the
+ * value {@value ResourceHandler#FACES_SCRIPT_RESOURCE_NAME}. Install the component resource using <code>UIViewRoot.addComponentResource()</code> and specifying
+ * <code>head</code> as the <code>target</code> argument.
  * <p>
- * If this tag has component children, add the {@link AjaxBehavior} to {@link AjaxBehaviors} by calling
- * {@link AjaxBehaviors#pushBehavior}. As subsequent child components that implement the {@link ClientBehaviorHolder}
- * interface are evaluated this {@link AjaxBehavior} instance must be added as a behavior to the component.
+ * If this tag has component children, add the {@link AjaxBehavior} to {@link AjaxBehaviors} by calling {@link AjaxBehaviors#pushBehavior}. As subsequent child
+ * components that implement the {@link ClientBehaviorHolder} interface are evaluated this {@link AjaxBehavior} instance must be added as a behavior to the
+ * component.
  *
  * @version $Id: AjaxHandler.java 5369 2008-09-08 19:53:45Z rogerk $
  */
@@ -140,7 +135,8 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
 
         if (wrapping) {
             applyWrapping(ctx, parent, eventName);
-        } else {
+        }
+        else {
             applyNested(ctx, parent, eventName);
         }
     }
@@ -247,14 +243,17 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
             }
             if (supportedEvent) {
                 CompositeComponentTagHandler.getAttachedObjectHandlers(parent).add(this);
-            } else {
+            }
+            else {
                 if (!tagApplied) {
                     throw new TagException(tag, "Error: enclosing composite component does not support event " + eventName);
                 }
             }
-        } else if (parent instanceof ClientBehaviorHolder) {
+        }
+        else if (parent instanceof ClientBehaviorHolder) {
             applyAttachedObject(ctx, parent, eventName);
-        } else {
+        }
+        else {
             throw new TagException(tag, "Unable to attach <f:ajax> to non-ClientBehaviorHolder parent");
         }
 
@@ -276,7 +275,8 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
             if (null == eventName) {
                 throw new TagException(tag, "Event attribute could not be determined: " + eventName);
             }
-        } else {
+        }
+        else {
             Collection<String> eventNames = bHolder.getEventNames();
             if (!eventNames.contains(eventName)) {
                 throw new TagException(tag, getUnsupportedEventMessage(eventName, eventNames, parent));
@@ -317,8 +317,11 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
 
         if (null != listener) {
             behavior.addAjaxBehaviorListener(
-                    new AjaxBehaviorListenerImpl(listener.getMethodExpression(ctx, Object.class, new Class<?>[] { AjaxBehaviorEvent.class }),
-                            listener.getMethodExpression(ctx, Object.class, new Class<?>[] {})));
+                new AjaxBehaviorListenerImpl(
+                    listener.getMethodExpression(ctx, Object.class, new Class<?>[] { AjaxBehaviorEvent.class }),
+                    listener.getMethodExpression(ctx, Object.class, new Class<?>[] {})
+                )
+            );
         }
 
         return behavior;
@@ -357,15 +360,19 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
             }
         }
 
-        builder.append(".  In case you wish to add new ones, then you can specify them"
+        builder.append(
+            ".  In case you wish to add new ones, then you can specify them"
                 + " as space-separated value of context-param with name "
-                + HtmlEvents.ADDITIONAL_HTML_EVENT_NAMES_PARAM_NAME);
+                + HtmlEvents.ADDITIONAL_HTML_EVENT_NAMES_PARAM_NAME
+        );
 
         return builder.toString();
     }
+
 }
 
 class AjaxBehaviorListenerImpl implements AjaxBehaviorListener, Serializable {
+
     private static final long serialVersionUID = -6056525197409773897L;
 
     private MethodExpression oneArgListener;
@@ -385,9 +392,11 @@ class AjaxBehaviorListenerImpl implements AjaxBehaviorListener, Serializable {
         final ELContext elContext = FacesContext.getCurrentInstance().getELContext();
         try {
             noArgListener.invoke(elContext, new Object[] {});
-        } catch (MethodNotFoundException | IllegalArgumentException mnfe) {
+        }
+        catch (MethodNotFoundException | IllegalArgumentException mnfe) {
             // Attempt to call public void method(AjaxBehaviorEvent event)
             oneArgListener.invoke(elContext, new Object[] { event });
         }
     }
+
 }

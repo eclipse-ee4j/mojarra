@@ -37,10 +37,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
 /**
- * Pins which resource libraries a scan of the JARs under <code>/WEB-INF/lib</code> reports as present. A library
- * packaged under <code>META-INF/resources</code> is found by its name, and one packaged under a locale prefix is
- * found by name and prefix together, matching the key {@link ZipDirectoryEntryScanner#libraryExists(String, String)}
- * builds for each.
+ * Pins which resource libraries a scan of the JARs under <code>/WEB-INF/lib</code> reports as present. A library packaged under <code>META-INF/resources</code>
+ * is found by its name, and one packaged under a locale prefix is found by name and prefix together, matching the key
+ * {@link ZipDirectoryEntryScanner#libraryExists(String, String)} builds for each.
  */
 class ZipDirectoryEntryScannerTest {
 
@@ -91,7 +90,8 @@ class ZipDirectoryEntryScannerTest {
                 zos.write(entryName.getBytes(UTF_8));
                 zos.closeEntry();
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new UncheckedIOException(e);
         }
 

@@ -21,8 +21,7 @@ import java.lang.reflect.Method;
 import jakarta.el.FunctionMapper;
 
 /**
- * Composite FunctionMapper that attempts to load the Method from the first FunctionMapper, then the second if
- * <code>null</code>.
+ * Composite FunctionMapper that attempts to load the Method from the first FunctionMapper, then the second if <code>null</code>.
  *
  * @see jakarta.el.FunctionMapper
  * @see java.lang.reflect.Method

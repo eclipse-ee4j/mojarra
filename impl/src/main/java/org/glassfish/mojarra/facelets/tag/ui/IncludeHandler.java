@@ -96,24 +96,27 @@ public final class IncludeHandler extends TagHandlerImpl {
             try {
                 ctx.setAttribute(INCLUDED_KEY, true);
                 ctx.includeFacelet(parent, path);
-            } finally {
+            }
+            finally {
                 ctx.setAttribute(INCLUDED_KEY, included);
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             if (log.isLoggable(Level.FINE)) {
                 log.log(Level.FINE, e.toString(), e);
             }
             throw new TagAttributeException(tag, src, "Invalid path : " + path, e);
-        } finally {
+        }
+        finally {
             ctx.setVariableMapper(orig);
         }
     }
 
     /**
-     * The given path where it includes something, and {@code null} where it does not, which an absent path and an
-     * empty one both do not.
+     * The given path where it includes something, and {@code null} where it does not, which an absent path and an empty one both do not.
      */
     private static String included(Object path) {
         return path == null || path.toString().isEmpty() ? null : path.toString();
     }
+
 }

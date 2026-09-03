@@ -206,9 +206,8 @@ public abstract class HtmlBasicRenderer extends Renderer<UIComponent> {
      * Conditionally augment an id-reference value.
      * </p>
      * <p>
-     * If the <code>forValue</code> doesn't already include a generated suffix, but the id of the <code>fromComponent</code>
-     * does include a generated suffix, then append the suffix from the <code>fromComponent</code> to the
-     * <code>forValue</code>. Otherwise just return the <code>forValue</code> as is.
+     * If the <code>forValue</code> doesn't already include a generated suffix, but the id of the <code>fromComponent</code> does include a generated suffix,
+     * then append the suffix from the <code>fromComponent</code> to the <code>forValue</code>. Otherwise just return the <code>forValue</code> as is.
      * </p>
      *
      * @param forValue - the basic id-reference value.
@@ -232,14 +231,13 @@ public abstract class HtmlBasicRenderer extends Renderer<UIComponent> {
                 }
             }
         }
-        
+
         return forValue;
     }
 
     /**
      * <p>
-     * Render nested child components by invoking the encode methods on those components, but only when the
-     * <code>rendered</code> property is <code>true</code>.
+     * Render nested child components by invoking the encode methods on those components, but only when the <code>rendered</code> property is <code>true</code>.
      * </p>
      *
      * @param context FacesContext for the current request
@@ -253,8 +251,7 @@ public abstract class HtmlBasicRenderer extends Renderer<UIComponent> {
 
     /**
      * <p>
-     * Render nested child components by invoking the encode methods on those components, but only when the
-     * <code>rendered</code> property is <code>true</code>.
+     * Render nested child components by invoking the encode methods on those components, but only when the <code>rendered</code> property is <code>true</code>.
      * </p>
      *
      * @param context FacesContext for the current request
@@ -279,7 +276,8 @@ public abstract class HtmlBasicRenderer extends Renderer<UIComponent> {
         component.encodeBegin(context);
         if (component.getRendersChildren()) {
             component.encodeChildren(context);
-        } else {
+        }
+        else {
             Iterator<UIComponent> kids = getChildren(component);
             while (kids.hasNext()) {
                 UIComponent kid = kids.next();
@@ -293,15 +291,15 @@ public abstract class HtmlBasicRenderer extends Renderer<UIComponent> {
     /**
      * @param component <code>UIComponent</code> for which to extract children
      *
-     * @return an Iterator over the children of the specified component, selecting only those that have a
-     * <code>rendered</code> property of <code>true</code>.
+     * @return an Iterator over the children of the specified component, selecting only those that have a <code>rendered</code> property of <code>true</code>.
      */
     protected Iterator<UIComponent> getChildren(UIComponent component) {
 
         int childCount = component.getChildCount();
         if (childCount > 0) {
             return component.getChildren().iterator();
-        } else {
+        }
+        else {
             return Collections.<UIComponent>emptyList().iterator();
         }
 
@@ -349,8 +347,7 @@ public abstract class HtmlBasicRenderer extends Renderer<UIComponent> {
      * @param component Component from which to return a facet
      * @param name Name of the desired facet
      *
-     * @return the specified facet from the specified component, but <strong>only</strong> if its <code>rendered</code>
-     * property is set to <code>true</code>.
+     * @return the specified facet from the specified component, but <strong>only</strong> if its <code>rendered</code> property is set to <code>true</code>.
      */
     protected UIComponent getFacet(UIComponent component, String name) {
 
@@ -372,8 +369,7 @@ public abstract class HtmlBasicRenderer extends Renderer<UIComponent> {
      * @param forComponent - the component to search for
      * @param component - the starting point in which to begin the search
      *
-     * @return the component with the the <code>id</code> that matches
-     * <code>forComponent</code> otherwise null if no match is found.
+     * @return the component with the the <code>id</code> that matches <code>forComponent</code> otherwise null if no match is found.
      */
     protected UIComponent getForComponent(FacesContext context, String forComponent, UIComponent component) {
         if (forComponent == null || forComponent.length() == 0) {
@@ -402,7 +398,8 @@ public abstract class HtmlBasicRenderer extends Renderer<UIComponent> {
             if (result == null) {
                 result = findUIComponentBelow(context.getViewRoot(), forComponent);
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             if (logger.isLoggable(Level.FINEST)) {
                 logger.log(Level.FINEST, "Unable to find for component", e);
             }
@@ -489,8 +486,10 @@ public abstract class HtmlBasicRenderer extends Renderer<UIComponent> {
 
     }
 
-    private static final Set<SearchExpressionHint> EXPRESSION_HINTS = EnumSet.of(SearchExpressionHint.IGNORE_NO_RESULT,
-            SearchExpressionHint.RESOLVE_SINGLE_COMPONENT);
+    private static final Set<SearchExpressionHint> EXPRESSION_HINTS = EnumSet.of(
+        SearchExpressionHint.IGNORE_NO_RESULT,
+        SearchExpressionHint.RESOLVE_SINGLE_COMPONENT
+    );
 
     protected Iterator<FacesMessage> getMessageIter(FacesContext context, String forComponent, UIComponent component) {
         // no "for" expression - return all messages
@@ -506,7 +505,7 @@ public abstract class HtmlBasicRenderer extends Renderer<UIComponent> {
 
         SearchExpressionHandler searchExpressionHandler = context.getApplication().getSearchExpressionHandler();
         String clientId = searchExpressionHandler
-                .resolveClientId(SearchExpressionContext.createSearchExpressionContext(context, component, EXPRESSION_HINTS, null), forComponent);
+            .resolveClientId(SearchExpressionContext.createSearchExpressionContext(context, component, EXPRESSION_HINTS, null), forComponent);
 
         if (clientId == null) {
             return Collections.emptyIterator();
@@ -536,15 +535,16 @@ public abstract class HtmlBasicRenderer extends Renderer<UIComponent> {
                 }
             }
             return parameterList.toArray(new Param[parameterList.size()]);
-        } else {
+        }
+        else {
             return EMPTY_PARAMS;
         }
 
     }
 
     /**
-     * Collections parameters for use with Behavior script rendering. Similar to getParamList(), but returns a collection of
-     * ClientBehaviorContext.Parameter instances.
+     * Collections parameters for use with Behavior script rendering. Similar to getParamList(), but returns a collection of ClientBehaviorContext.Parameter
+     * instances.
      *
      * @param command the command which may have parameters
      *
@@ -619,9 +619,9 @@ public abstract class HtmlBasicRenderer extends Renderer<UIComponent> {
         }
 
         return !id.startsWith(UIViewRoot.UNIQUE_ID_PREFIX)
-                || component instanceof UICommand
-                || component instanceof ClientBehaviorHolder && !((ClientBehaviorHolder) component).getClientBehaviors().isEmpty()
-                || RenderKitUtils.hasBehaviorEventAttribute(component);
+            || component instanceof UICommand
+            || component instanceof ClientBehaviorHolder && !((ClientBehaviorHolder) component).getClientBehaviors().isEmpty()
+            || RenderKitUtils.hasBehaviorEventAttribute(component);
     }
 
     protected String writeIdAttributeIfNecessary(FacesContext context, ResponseWriter writer, UIComponent component) {
@@ -630,7 +630,8 @@ public abstract class HtmlBasicRenderer extends Renderer<UIComponent> {
         if (shouldWriteIdAttribute(component)) {
             try {
                 writer.writeAttribute("id", id = component.getClientId(context), "id");
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 if (logger.isLoggable(WARNING)) {
                     logger.warning(getExceptionMessageString(CANT_WRITE_ID_ATTRIBUTE_ERROR_MESSAGE_ID, e.getMessage()));
                 }
@@ -688,10 +689,9 @@ public abstract class HtmlBasicRenderer extends Renderer<UIComponent> {
 
     /**
      * Whether the component is disabled or read-only (and therefore should not decode). {@code disabled}/{@code
-     * readonly} only exist on editable inputs ({@link UIInput}, which includes the selects) and commands
-     * ({@link UICommand}); for anything else (outputs, panels) the reflective attributes-map read would always miss,
-     * so it is skipped. Renderers bound to a concrete input/command type override this to read the typed getters
-     * directly, avoiding the reflective lookup entirely (mirrors the typed-getter encode path from PR #5796).
+     * readonly} only exist on editable inputs ({@link UIInput}, which includes the selects) and commands ({@link UICommand}); for anything else (outputs,
+     * panels) the reflective attributes-map read would always miss, so it is skipped. Renderers bound to a concrete input/command type override this to read
+     * the typed getters directly, avoiding the reflective lookup entirely (mirrors the typed-getter encode path from PR #5796).
      */
     protected boolean isDisabledOrReadonly(UIComponent component) {
         if (component instanceof UIInput || component instanceof UICommand) {
@@ -717,8 +717,8 @@ public abstract class HtmlBasicRenderer extends Renderer<UIComponent> {
 
     /**
      * <p>
-     * Recursively searches for {@link NamingContainer}s from the given start point looking for the component with the
-     * <code>id</code> specified by <code>forComponent</code>.
+     * Recursively searches for {@link NamingContainer}s from the given start point looking for the component with the <code>id</code> specified by
+     * <code>forComponent</code>.
      *
      * @param startPoint - the starting point in which to begin the search
      * @param forComponent - the component to search for
@@ -737,7 +737,8 @@ public abstract class HtmlBasicRenderer extends Renderer<UIComponent> {
                 if (comp instanceof NamingContainer) {
                     try {
                         retComp = comp.findComponent(forComponent);
-                    } catch (IllegalArgumentException iae) {
+                    }
+                    catch (IllegalArgumentException iae) {
                         continue;
                     }
                 }
@@ -780,8 +781,7 @@ public abstract class HtmlBasicRenderer extends Renderer<UIComponent> {
     }
 
     /**
-     * Structure to hold common info used by Select* components to reduce the number of times component attributes are
-     * evaluated when rendering options.
+     * Structure to hold common info used by Select* components to reduce the number of times component attributes are evaluated when rendering options.
      */
     public static class OptionComponentInfo {
 

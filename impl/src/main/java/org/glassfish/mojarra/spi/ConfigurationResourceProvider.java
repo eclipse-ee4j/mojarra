@@ -23,8 +23,7 @@ import jakarta.servlet.ServletContext;
 
 /**
  * <p>
- * Classes that implement this interface return zero or more <code>URL</code>s which refer to application configuration
- * resources.
+ * Classes that implement this interface return zero or more <code>URL</code>s which refer to application configuration resources.
  * </p>
  *
  * @see FacesConfigResourceProvider

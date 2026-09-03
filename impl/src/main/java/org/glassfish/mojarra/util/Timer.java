@@ -22,8 +22,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * This class is a simple wrapper for timing method calls. The traditional method is to add two variables, start, and
- * stop, and display the difference of these values. Encapsulates the process.
+ * This class is a simple wrapper for timing method calls. The traditional method is to add two variables, start, and stop, and display the difference of these
+ * values. Encapsulates the process.
  */
 public class Timer {
 
@@ -43,8 +43,7 @@ public class Timer {
     // ---------------------------------------------------------- Public Methods
 
     /**
-     * @return a new <code>Timer</code> instance if the <code>TIMING</code> logging level is <code>FINE</code>, otherwise,
-     * return null;
+     * @return a new <code>Timer</code> instance if the <code>TIMING</code> logging level is <code>FINE</code>, otherwise, return null;
      */
     public static Timer getInstance() {
         return getInstance(FINE);
@@ -91,4 +90,5 @@ public class Timer {
     private long getTimingResult() {
         return stop - start;
     }
+
 }

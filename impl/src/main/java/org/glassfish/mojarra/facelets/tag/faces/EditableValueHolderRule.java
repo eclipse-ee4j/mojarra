@@ -16,7 +16,6 @@
 
 package org.glassfish.mojarra.facelets.tag.faces;
 
-
 import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
@@ -47,9 +46,11 @@ public final class EditableValueHolderRule extends MetaRule {
         public void applyMetadata(FaceletContext ctx, Object instance) {
             ((EditableValueHolder) instance).addValidator(ctx.getFacesContext().getApplication().createValidator(validatorId));
         }
+
     }
 
     final static class ValueChangedExpressionMetadata extends Metadata {
+
         private final TagAttribute attr;
 
         public ValueChangedExpressionMetadata(TagAttribute attr) {
@@ -59,11 +60,13 @@ public final class EditableValueHolderRule extends MetaRule {
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
             ((EditableValueHolder) instance)
-                    .addValueChangeListener(new MethodExpressionValueChangeListener(attr.getMethodExpression(ctx, null, VALUECHANGE_SIG)));
+                .addValueChangeListener(new MethodExpressionValueChangeListener(attr.getMethodExpression(ctx, null, VALUECHANGE_SIG)));
         }
+
     }
 
     final static class ValidatorExpressionMetadata extends Metadata {
+
         private final TagAttribute attr;
 
         public ValidatorExpressionMetadata(TagAttribute attr) {
@@ -74,6 +77,7 @@ public final class EditableValueHolderRule extends MetaRule {
         public void applyMetadata(FaceletContext ctx, Object instance) {
             ((EditableValueHolder) instance).addValidator(new MethodExpressionValidator(attr.getMethodExpression(ctx, null, VALIDATOR_SIG)));
         }
+
     }
 
     private final static Class<?>[] VALIDATOR_SIG = new Class<?>[] { FacesContext.class, UIComponent.class, Object.class };

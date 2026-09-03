@@ -38,13 +38,12 @@ import jakarta.faces.application.ProjectStage;
 import org.junit.jupiter.api.Test;
 
 /**
- * Validates <code>CONTEXT-PARAMS.md</code> in the repository root against the sources, so that a context parameter
- * cannot be added, removed, renamed or given another default value without that page being updated.
+ * Validates <code>CONTEXT-PARAMS.md</code> in the repository root against the sources, so that a context parameter cannot be added, removed, renamed or given
+ * another default value without that page being updated.
  * <p>
- * The parameters recognized by this implementation are collected from {@link FacesContextParam} and
- * {@link MojarraContextParam}, plus a scan of the main sources for <code>getInitParameter()</code> call sites which
- * read a parameter declared outside of those enums.
-
+ * The parameters recognized by this implementation are collected from {@link FacesContextParam} and {@link MojarraContextParam}, plus a scan of the main
+ * sources for <code>getInitParameter()</code> call sites which read a parameter declared outside of those enums.
+ *
  * <p>
  * This test only verifies, it never writes the page. When it fails, edit the page by hand.
  */
@@ -67,8 +66,8 @@ class ContextParamsMdTest {
     private static final Pattern IDENTIFIER = Pattern.compile("(?:\\w+\\.)*(\\w+)");
 
     /**
-     * A context parameter as declared by the sources. A <code>null</code> default value means the source derives it
-     * from the project stage, in which case the documented cell is not validated.
+     * A context parameter as declared by the sources. A <code>null</code> default value means the source derives it from the project stage, in which case the
+     * documented cell is not validated.
      */
     private static final class Param {
 
@@ -85,6 +84,7 @@ class ContextParamsMdTest {
             this.replacedBy = replacedBy;
             this.deprecated = deprecated;
         }
+
     }
 
     @Test
@@ -146,9 +146,11 @@ class ContextParamsMdTest {
 
             if (parameter.find()) {
                 name = unescape(parameter.group(1));
-            } else if (line.contains("<th>")) {
+            }
+            else if (line.contains("<th>")) {
                 columns = matchesOf(HEADER_CELL, line);
-            } else if (name != null && line.contains("<td>")) {
+            }
+            else if (name != null && line.contains("<td>")) {
                 int cells = matchesOf(DATA_CELL, line).size();
 
                 if (cells != columns.size()) {
@@ -179,8 +181,7 @@ class ContextParamsMdTest {
     }
 
     /**
-     * A parameter which the sources have deprecated says so on the page, so that it cannot be deprecated in one place
-     * and still read as current in the other.
+     * A parameter which the sources have deprecated says so on the page, so that it cannot be deprecated in one place and still read as current in the other.
      */
     @Test
     void documentsEveryDeprecatedParamAsDeprecated() {
@@ -214,8 +215,12 @@ class ContextParamsMdTest {
         Map<String, Param> params = new LinkedHashMap<>();
 
         for (ContextParam param : contextParams()) {
-            put(params, new Param(param.getName(), typeOf(param.getType()), declaredDefaultOf(param), param.getAlternateName(),
-                    param.isDeprecated()));
+            put(
+                params, new Param(
+                    param.getName(), typeOf(param.getType()), declaredDefaultOf(param), param.getAlternateName(),
+                    param.isDeprecated()
+                )
+            );
         }
 
         for (String name : scanForInitParameterReads()) {
@@ -236,8 +241,8 @@ class ContextParamsMdTest {
     }
 
     /**
-     * The default of a parameter which derives it from the project stage is not a single value, so the page states it
-     * in prose and this leaves that cell alone. Every other one reads the same whichever stage it is asked for.
+     * The default of a parameter which derives it from the project stage is not a single value, so the page states it in prose and this leaves that cell alone.
+     * Every other one reads the same whichever stage it is asked for.
      */
     private static String declaredDefaultOf(ContextParam param) {
         String inProduction = defaultOf(param, ProjectStage.Production);
@@ -264,9 +269,8 @@ class ContextParamsMdTest {
     }
 
     /**
-     * Collects every context parameter name which the main sources read through <code>getInitParameter()</code>, either
-     * as a string literal or as a constant declared anywhere in those same sources. Dynamic reads, such as the ones
-     * iterating over the enums, do not resolve to a name and are skipped.
+     * Collects every context parameter name which the main sources read through <code>getInitParameter()</code>, either as a string literal or as a constant
+     * declared anywhere in those same sources. Dynamic reads, such as the ones iterating over the enums, do not resolve to a name and are skipped.
      */
     private static List<String> scanForInitParameterReads() {
         List<String> sources = readSources(markdownFile().toAbsolutePath().getParent().resolve("impl/src/main/java"));
@@ -311,7 +315,8 @@ class ContextParamsMdTest {
     private static List<String> readSources(Path mainSources) {
         try (Stream<Path> files = Files.walk(mainSources)) {
             return files.filter(file -> file.toString().endsWith(".java")).map(ContextParamsMdTest::readString).collect(toList());
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
@@ -319,7 +324,8 @@ class ContextParamsMdTest {
     private static String readString(Path file) {
         try {
             return Files.readString(file, UTF_8);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
@@ -327,9 +333,8 @@ class ContextParamsMdTest {
     // Parsing --------------------------------------------------------------------------------------------------------
 
     /**
-     * Maps each documented parameter name to its row, keyed by the column names of the table it appears in, so that a
-     * table can gain a column or be reordered without this test having to change. The page uses raw HTML tables in
-     * which the parameter name spans the full width above the row holding its cells.
+     * Maps each documented parameter name to its row, keyed by the column names of the table it appears in, so that a table can gain a column or be reordered
+     * without this test having to change. The page uses raw HTML tables in which the parameter name spans the full width above the row holding its cells.
      */
     private static Map<String, Map<String, String>> rows() {
         Map<String, Map<String, String>> rows = new LinkedHashMap<>();
@@ -341,9 +346,11 @@ class ContextParamsMdTest {
 
             if (parameter.find()) {
                 name = unescape(parameter.group(1));
-            } else if (line.contains("<th>")) {
+            }
+            else if (line.contains("<th>")) {
                 columns = matchesOf(HEADER_CELL, line);
-            } else if (name != null && line.contains("<td>")) {
+            }
+            else if (name != null && line.contains("<td>")) {
                 List<String> cells = matchesOf(DATA_CELL, line);
                 Map<String, String> row = new LinkedHashMap<>();
 
@@ -371,8 +378,8 @@ class ContextParamsMdTest {
     }
 
     /**
-     * The plain text of a cell, so that this test compares documented values rather than the markup they are dressed
-     * in, and the page stays free to change how it renders them.
+     * The plain text of a cell, so that this test compares documented values rather than the markup they are dressed in, and the page stays free to change how
+     * it renders them.
      */
     private static String text(String html) {
         return html == null ? "" : unescape(TAG.matcher(html).replaceAll("")).trim();
@@ -386,4 +393,5 @@ class ContextParamsMdTest {
         String configured = System.getProperty("contextparams.md");
         return (configured != null ? Path.of(configured) : Path.of("..", "CONTEXT-PARAMS.md")).toAbsolutePath().normalize();
     }
+
 }

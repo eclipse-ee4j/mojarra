@@ -25,29 +25,23 @@ import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.config.MojarraContextParam;
 
 /**
- * What the build which rendered the view decided, carried in the saved state so that the build which restores the view
- * reproduces the view that was submitted.
+ * What the build which rendered the view decided, carried in the saved state so that the build which restores the view reproduces the view that was submitted.
  *
  * <p>
- * A postback rebuilds its view from the markup, so a build time condition evaluating to another value than it did
- * while the response was rendered produces another view than the one that was submitted: the state saved for a
- * component the rebuild does not produce is restored into nothing, and a value submitted for it is decoded by nothing.
- * Replaying the decision instead of evaluating it lets the restore reproduce the rendered view, and the re-apply of
- * the facelet which precedes rendering evaluates it again, so the response still follows the current state of the
- * model - one phase later.
+ * A postback rebuilds its view from the markup, so a build time condition evaluating to another value than it did while the response was rendered produces
+ * another view than the one that was submitted: the state saved for a component the rebuild does not produce is restored into nothing, and a value submitted
+ * for it is decoded by nothing. Replaying the decision instead of evaluating it lets the restore reproduce the rendered view, and the re-apply of the facelet
+ * which precedes rendering evaluates it again, so the response still follows the current state of the model - one phase later.
  *
  * <p>
- * A decision is keyed by the id its tag generates for the build, which is unique per tag and stable across the builds
- * of one view, and holds a value of a type the JDK declares, so that a runtime which does not know this state entry
- * can still deserialize the state that carries it. What a handler cannot express in one - the keys of an iteration
- * over a map, which name the entries its rows were rendered for - is carried in a JDK typed array of the application's
- * own values, which must be {@link java.io.Serializable} like everything else the state holds. What is replayed and
- * what is saved are two maps: the builds of this request record into the second, so that a decision an earlier
- * response took and this one does not is gone from the state rather than replayed by the next restore. They record
- * into it together rather than one build at a time, since the re-apply which precedes rendering is skipped for a view
- * whose decisions still hold and would otherwise leave nothing to save, which is also why a postback which navigates
- * saves what the view it restored decided beside what the view it renders did: telling the two apart costs the build
- * it was restored by.
+ * A decision is keyed by the id its tag generates for the build, which is unique per tag and stable across the builds of one view, and holds a value of a type
+ * the JDK declares, so that a runtime which does not know this state entry can still deserialize the state that carries it. What a handler cannot express in
+ * one - the keys of an iteration over a map, which name the entries its rows were rendered for - is carried in a JDK typed array of the application's own
+ * values, which must be {@link java.io.Serializable} like everything else the state holds. What is replayed and what is saved are two maps: the builds of this
+ * request record into the second, so that a decision an earlier response took and this one does not is gone from the state rather than replayed by the next
+ * restore. They record into it together rather than one build at a time, since the re-apply which precedes rendering is skipped for a view whose decisions
+ * still hold and would otherwise leave nothing to save, which is also why a postback which navigates saves what the view it restored decided beside what the
+ * view it renders did: telling the two apart costs the build it was restored by.
  *
  * <p>
  * Nothing of this happens unless {@code org.glassfish.mojarra.restoreBuildTimeDecisions} is enabled.
@@ -59,8 +53,8 @@ public final class SavedBuildTimeDecisions {
     private static final String KEY = RIConstants.RI_PREFIX + "savedBuildTimeDecisions";
 
     /**
-     * What is held under {@link #KEY} for a request which saves no decisions at all, so that the parameter is read
-     * once per request rather than once per condition.
+     * What is held under {@link #KEY} for a request which saves no decisions at all, so that the parameter is read once per request rather than once per
+     * condition.
      */
     private static final Object DISABLED = new Object();
 
@@ -73,8 +67,7 @@ public final class SavedBuildTimeDecisions {
     }
 
     /**
-     * Whether the decisions of the build which rendered a view are saved with its state and replayed by the build
-     * which restores it.
+     * Whether the decisions of the build which rendered a view are saved with its state and replayed by the build which restores it.
      *
      * @param context the {@link FacesContext} for the current request
      * @return whether build time decisions are saved and replayed
@@ -84,9 +77,8 @@ public final class SavedBuildTimeDecisions {
     }
 
     /**
-     * Stops the builds of this request from deciding anything, to be resumed with {@link #resume(FacesContext)}. A
-     * build which contributes nothing to the response has nothing to replay and nothing worth saving: the view it
-     * produces is thrown away, and the ids its tags generate are of a facelet of its own.
+     * Stops the builds of this request from deciding anything, to be resumed with {@link #resume(FacesContext)}. A build which contributes nothing to the
+     * response has nothing to replay and nothing worth saving: the view it produces is thrown away, and the ids its tags generate are of a facelet of its own.
      *
      * @param context the {@link FacesContext} for the current request
      */
@@ -112,8 +104,8 @@ public final class SavedBuildTimeDecisions {
     }
 
     /**
-     * Takes the decisions of the build which rendered the view from the state being restored, and starts replaying
-     * them, to be stopped with {@link #stopReplaying(FacesContext)} once the view is rebuilt.
+     * Takes the decisions of the build which rendered the view from the state being restored, and starts replaying them, to be stopped with
+     * {@link #stopReplaying(FacesContext)} once the view is rebuilt.
      *
      * @param context the {@link FacesContext} for the current request
      * @param state the state being restored, may be {@code null}
@@ -134,8 +126,7 @@ public final class SavedBuildTimeDecisions {
     }
 
     /**
-     * Stops replaying the decisions of the build which rendered the view, so that every build after the one which
-     * restored it decides for itself again.
+     * Stops replaying the decisions of the build which rendered the view, so that every build after the one which restored it decides for itself again.
      *
      * @param context the {@link FacesContext} for the current request
      */
@@ -148,8 +139,7 @@ public final class SavedBuildTimeDecisions {
     }
 
     /**
-     * Puts the decisions the builds of this request recorded into the state being saved, so that the build which
-     * restores this view can replay them.
+     * Puts the decisions the builds of this request recorded into the state being saved, so that the build which restores this view can replay them.
      *
      * @param context the {@link FacesContext} for the current request
      * @param state the state being saved
@@ -163,8 +153,8 @@ public final class SavedBuildTimeDecisions {
     }
 
     /**
-     * The value the build which rendered the view decided on for the given key, or {@code null} when this build is not
-     * the one which restores the view, when that build decided nothing under this key, or when the feature is off.
+     * The value the build which rendered the view decided on for the given key, or {@code null} when this build is not the one which restores the view, when
+     * that build decided nothing under this key, or when the feature is off.
      *
      * @param context the {@link FacesContext} for the current request
      * @param key the key of the decision, as generated by {@link TagHandlerImpl#buildTimeDecisionKey}
@@ -181,8 +171,8 @@ public final class SavedBuildTimeDecisions {
      *
      * @param context the {@link FacesContext} for the current request
      * @param key the key of the decision, as generated by {@link TagHandlerImpl#buildTimeDecisionKey}
-     * @param value the value this build decided on, of a type the JDK declares, or an array of serializable values of
-     * the application's own where a handler cannot express its decision in one
+     * @param value the value this build decided on, of a type the JDK declares, or an array of serializable values of the application's own where a handler
+     * cannot express its decision in one
      */
     public static void record(FacesContext context, String key, Object value) {
         SavedBuildTimeDecisions instance = active(context);
@@ -193,8 +183,7 @@ public final class SavedBuildTimeDecisions {
     }
 
     /**
-     * @return the instance for the current request, or {@code null} when the feature is off or the build in progress
-     * decides nothing.
+     * @return the instance for the current request, or {@code null} when the feature is off or the build in progress decides nothing.
      */
     private static SavedBuildTimeDecisions active(FacesContext context) {
         SavedBuildTimeDecisions instance = of(context);
@@ -215,4 +204,5 @@ public final class SavedBuildTimeDecisions {
 
         return instance == DISABLED ? null : (SavedBuildTimeDecisions) instance;
     }
+
 }

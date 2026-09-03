@@ -51,4 +51,5 @@ public class XMLInstruction implements Instruction {
     public boolean isLiteral() {
         return false;
     }
+
 }

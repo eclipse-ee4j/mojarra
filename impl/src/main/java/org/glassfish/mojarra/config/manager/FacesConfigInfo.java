@@ -33,8 +33,7 @@ import org.w3c.dom.NodeList;
 
 /**
  * <p>
- * Wrapper around the <code>/WEB-INF/faces-config.xml</code>, if present, to expose information relevant to the
- * intialization of the runtime.
+ * Wrapper around the <code>/WEB-INF/faces-config.xml</code>, if present, to expose information relevant to the intialization of the runtime.
  * </p>
  */
 public class FacesConfigInfo {
@@ -54,9 +53,8 @@ public class FacesConfigInfo {
     // -------------------------------------------------------- Constructors
 
     /**
-     * Creates a new <code>WebInfFacesConfig</code> document based on the provided <code>Document</code>. If the
-     * <code>Document</code> does not represent the <code>WEB-INF/faces-config.xml</code> the {@link #isWebInfFacesConfig()}
-     * method will return <code>false</code>
+     * Creates a new <code>WebInfFacesConfig</code> document based on the provided <code>Document</code>. If the <code>Document</code> does not represent the
+     * <code>WEB-INF/faces-config.xml</code> the {@link #isWebInfFacesConfig()} method will return <code>false</code>
      *
      * @param documentInfo DocumentInfo representing the <code>/WEB-INF/faces-config.xml</code>
      */
@@ -70,34 +68,29 @@ public class FacesConfigInfo {
             extractOrdering(document);
         }
 
-
     }
 
     // ------------------------------------------------------ Public Methods
 
     /**
      * @param version version to check
-     * @return <code>true</code> if <code>version</code> is greater or equal to the version of the
-     * <code>/WEB-INF/faces-config.xml</code>
+     * @return <code>true</code> if <code>version</code> is greater or equal to the version of the <code>/WEB-INF/faces-config.xml</code>
      */
     public boolean isVersionGreaterOrEqual(double version) {
         return this.version >= version;
     }
 
     /**
-     * @return <code>true</code> if the <code>Document</code> provided at construction time represents the
-     * <code>/WEB-INF/faces-config.xml</code>.
+     * @return <code>true</code> if the <code>Document</code> provided at construction time represents the <code>/WEB-INF/faces-config.xml</code>.
      */
     public boolean isWebInfFacesConfig() {
         return isWebInfFacesConfig;
     }
 
-
     /**
-     * @return a <code>List</code> of document names that in the order that they should be processed. The presense of the
-     * keyword "others" indicates all documents not explicitly referenced by name in the list should be places in the final
-     * parsing order at same location. If there are multiple documents that aren't named and the others element is present,
-     * the order that these documents are inserted into the final list is unspecified at this time.
+     * @return a <code>List</code> of document names that in the order that they should be processed. The presense of the keyword "others" indicates all
+     * documents not explicitly referenced by name in the list should be places in the final parsing order at same location. If there are multiple documents
+     * that aren't named and the others element is present, the order that these documents are inserted into the final list is unspecified at this time.
      */
     public List<String> getAbsoluteOrdering() {
         return absoluteOrdering != null ? unmodifiableList(absoluteOrdering) : null;
@@ -107,8 +100,7 @@ public class FacesConfigInfo {
 
     /**
      * @param document document representing <code>WEB-INF/faces-config.xml</code>
-     * @return return the value of the version attribute of the provided document. If no version attribute is specified,
-     * assume 4.0.
+     * @return return the value of the version attribute of the provided document. If no version attribute is specified, assume 4.0.
      */
     private double getVersion(Document document) {
 
@@ -127,7 +119,6 @@ public class FacesConfigInfo {
     private boolean isWebinfFacesConfig(Document document) {
         return !isEmpty(document.getDocumentElement().getAttribute(ParseConfigResourceToDOMTask.WEB_INF_MARKER));
     }
-
 
     private void extractOrdering(Document document) {
 
@@ -153,16 +144,17 @@ public class FacesConfigInfo {
                 Node n = children.item(i);
                 if (null != n.getLocalName()) {
                     switch (n.getLocalName()) {
-                    case NAME:
-                        absoluteOrdering.add(getNodeText(n));
-                        break;
-                    case OTHERS:
-                        if (absoluteOrdering.contains("others")) {
-                            throw new IllegalStateException(
-                                    "'absolute-ordering' element defined with multiple 'others' child elements found within WEB-INF/faces-config.xml");
-                        }
-                        absoluteOrdering.add("others");
-                        break;
+                        case NAME :
+                            absoluteOrdering.add(getNodeText(n));
+                            break;
+                        case OTHERS :
+                            if (absoluteOrdering.contains("others")) {
+                                throw new IllegalStateException(
+                                    "'absolute-ordering' element defined with multiple 'others' child elements found within WEB-INF/faces-config.xml"
+                                );
+                            }
+                            absoluteOrdering.add("others");
+                            break;
                     }
                 }
             }

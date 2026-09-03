@@ -92,7 +92,8 @@ public class ServletContextAdapter extends ExternalContext {
     public Flash getFlash() {
         if (isEnableTransitionTimeNoOpFlash) {
             return new NoOpFlash();
-        } else {
+        }
+        else {
             return super.getFlash();
         }
 

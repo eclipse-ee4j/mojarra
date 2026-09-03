@@ -33,9 +33,8 @@ import org.glassfish.mojarra.facelets.tag.faces.ComponentSupport;
 import org.glassfish.mojarra.facelets.tag.faces.ComponentTagHandlerDelegateImpl;
 
 /**
- * This class overrides key methods from <code>ComponentTagHandlerDelegateImpl</code> in order to properly find existing
- * component resources as well as properly handling the case when this concrete implementations of this class are
- * applied more than once for a particular request.
+ * This class overrides key methods from <code>ComponentTagHandlerDelegateImpl</code> in order to properly find existing component resources as well as properly
+ * handling the case when this concrete implementations of this class are applied more than once for a particular request.
  */
 public abstract class ComponentResourceDelegate extends ComponentTagHandlerDelegateImpl {
 
@@ -69,7 +68,8 @@ public abstract class ComponentResourceDelegate extends ComponentTagHandlerDeleg
                 }
             }
             return null;
-        } else {
+        }
+        else {
             return super.findChild(ctx, parent, tagId);
         }
 
@@ -83,7 +83,8 @@ public abstract class ComponentResourceDelegate extends ComponentTagHandlerDeleg
             // in-place. An event will be fired to move the component
             // as a UIViewRoot component resource
             super.addComponentToView(ctx, parent, c, componentFound, stateContext);
-        } else {
+        }
+        else {
             // when re-applying we supress events for existing components,
             // so if we simply relied on the default logic, the resources
             // wouldn't be be moved. We'll do it manually instead.
@@ -91,7 +92,8 @@ public abstract class ComponentResourceDelegate extends ComponentTagHandlerDeleg
             if (target != null) {
                 final UIViewRoot root = ctx.getFacesContext().getViewRoot();
                 root.addComponentResource(ctx.getFacesContext(), c, target);
-            } else {
+            }
+            else {
                 super.addComponentToView(ctx, parent, c, componentFound, stateContext);
             }
         }

@@ -128,15 +128,20 @@ public class ResourceLibraryContractsConfigProcessor extends AbstractConfigProce
                                             for (String contractString : contractStrings) {
                                                 if (!list.contains(contractString)) {
                                                     if (LOGGER.isLoggable(INFO)) {
-                                                        LOGGER.log(INFO, "Added contract: {0} for url-pattern: {1}", new Object[]{contractString, urlPattern});
+                                                        LOGGER
+                                                            .log(INFO, "Added contract: {0} for url-pattern: {1}", new Object[] { contractString, urlPattern });
                                                     }
                                                     list.add(contractString);
-                                                } else {
+                                                }
+                                                else {
                                                     /*
                                                      * We found the contract again in the list for the specified url-pattern.
                                                      */
                                                     if (LOGGER.isLoggable(INFO)) {
-                                                        LOGGER.log(INFO, "Duplicate contract: {0} found for url-pattern: {1}", new Object[]{contractString, urlPattern});
+                                                        LOGGER.log(
+                                                            INFO, "Duplicate contract: {0} found for url-pattern: {1}",
+                                                            new Object[] { contractString, urlPattern }
+                                                        );
                                                     }
                                                 }
                                             }
@@ -148,13 +153,15 @@ public class ResourceLibraryContractsConfigProcessor extends AbstractConfigProce
                                          * Now add the url-pattern and its contracts.
                                          */
                                         map.put(urlPattern, list);
-                                    } else {
+                                    }
+                                    else {
                                         /*
                                          * The list was empty, log there were no contracts specified.
                                          */
                                         LOGGER.log(INFO, "No contracts found for url-pattern: {0}", urlPattern);
                                     }
-                                } else {
+                                }
+                                else {
                                     /*
                                      * Otherwise log there is a duplicate url-pattern found.
                                      */
@@ -164,13 +171,15 @@ public class ResourceLibraryContractsConfigProcessor extends AbstractConfigProce
                         }
                     }
                 }
-            } catch (XPathExpressionException exception) {
+            }
+            catch (XPathExpressionException exception) {
                 /*
-                 * This particular exception will never happen since the above valid XPath expressions never change, but the XPath
-                 * runtime defines it as a checked exception so we have to deal with it.
+                 * This particular exception will never happen since the above valid XPath expressions never change, but the XPath runtime defines it as a
+                 * checked exception so we have to deal with it.
                  */
                 LOGGER.log(FINEST, "Unable to parse XPath expression", exception);
             }
         }
     }
+
 }

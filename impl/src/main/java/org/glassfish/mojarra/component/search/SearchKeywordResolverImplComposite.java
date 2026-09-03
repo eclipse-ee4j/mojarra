@@ -32,4 +32,5 @@ public class SearchKeywordResolverImplComposite extends SearchKeywordResolver {
     public boolean isResolverForKeyword(SearchExpressionContext searchExpressionContext, String keyword) {
         return "composite".equals(keyword);
     }
+
 }

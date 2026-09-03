@@ -18,7 +18,6 @@ package org.glassfish.mojarra.facelets.tag.jstl.core;
 
 import org.glassfish.mojarra.facelets.tag.IterationStatus;
 
-
 public class JstlIterationStatus extends IterationStatus {
 
     // ------------------------------------------------------------ Constructors
@@ -32,4 +31,5 @@ public class JstlIterationStatus extends IterationStatus {
     public JstlIterationStatus(boolean first, boolean last, int index, Integer begin, Integer end, Integer step, Object current, int iterationCount) {
         super(first, last, index, begin, end, step, current, iterationCount);
     }
+
 }

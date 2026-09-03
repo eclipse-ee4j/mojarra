@@ -31,6 +31,7 @@ import org.glassfish.mojarra.util.RequestStateManager;
  *
  */
 public final class ChainTypeCompositeELResolver extends FacesCompositeELResolver {
+
     @Override
     public void addRootELResolver(ELResolver elResolver) {
         _wrapped.addRootELResolver(elResolver);
@@ -59,7 +60,8 @@ public final class ChainTypeCompositeELResolver extends FacesCompositeELResolver
         Object result = null;
         try {
             result = _wrapped.getValue(context, base, property);
-        } finally {
+        }
+        finally {
             stateMap.remove(RequestStateManager.EL_RESOLVER_CHAIN_TYPE_NAME);
         }
 
@@ -81,7 +83,8 @@ public final class ChainTypeCompositeELResolver extends FacesCompositeELResolver
         Class<?> result = null;
         try {
             result = _wrapped.getType(context, base, property);
-        } finally {
+        }
+        finally {
             stateMap.remove(RequestStateManager.EL_RESOLVER_CHAIN_TYPE_NAME);
         }
 
@@ -100,7 +103,8 @@ public final class ChainTypeCompositeELResolver extends FacesCompositeELResolver
         stateMap.put(RequestStateManager.EL_RESOLVER_CHAIN_TYPE_NAME, _chainType);
         try {
             _wrapped.setValue(context, base, property, val);
-        } finally {
+        }
+        finally {
             stateMap.remove(RequestStateManager.EL_RESOLVER_CHAIN_TYPE_NAME);
         }
     }
@@ -118,7 +122,8 @@ public final class ChainTypeCompositeELResolver extends FacesCompositeELResolver
         boolean result = false;
         try {
             result = _wrapped.isReadOnly(context, base, property);
-        } finally {
+        }
+        finally {
             stateMap.remove(RequestStateManager.EL_RESOLVER_CHAIN_TYPE_NAME);
         }
 
@@ -159,4 +164,5 @@ public final class ChainTypeCompositeELResolver extends FacesCompositeELResolver
         return (FacesContext) elContext.getContext(FacesContext.class);
 
     }
+
 }
