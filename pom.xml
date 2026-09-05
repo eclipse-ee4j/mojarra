@@ -29,7 +29,7 @@
 
    <groupId>org.glassfish</groupId>
    <artifactId>mojarra-parent</artifactId>
-   <version>4.0.25-SNAPSHOT</version> 
+   <version>4.0.26-SNAPSHOT</version> 
    <packaging>pom</packaging>
 
    <name>Mojarra ${project.version} - Project</name>
