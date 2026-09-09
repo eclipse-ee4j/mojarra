@@ -109,11 +109,14 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
      * <li>Only here do we apply {@link org.glassfish.mojarra.facelets.tag.MetaTagHandlerImpl#setAttributes(FaceletContext, Object)}</li>
      * <li>Set the UIComponent's id</li>
      * <li>Set the RendererType of this instance</li>
+     * <li>A UIComponent which a <code>binding</code> supplies from an earlier build, recognized by the mark id it already carries, has its children
+     * {@link org.glassfish.mojarra.facelets.tag.faces.ComponentSupport#markForDeletion(jakarta.faces.component.UIComponent) marked} for deletion as well.</li>
      * </ol>
      * </li>
      * <li>Now apply the nextHandler, passing the UIComponent we've created/found.</li>
      * <li>Now add the UIComponent to the passed parent</li>
-     * <li>Lastly, if the UIComponent already existed (found), then {@link ComponentSupport#finalizeForDeletion(UIComponent) finalize} for deletion.</li>
+     * <li>Lastly, if the UIComponent already existed (found or supplied by a <code>binding</code>), then
+     * {@link ComponentSupport#finalizeForDeletion(UIComponent) finalize} for deletion.</li>
      * </ol>
      *
      * @throws TagException if the UIComponent parent is null
@@ -148,6 +151,7 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
         }
 
         boolean componentFound = false;
+        boolean componentReused = false;
         boolean parentModified = false;
         if (c != null) {
             componentFound = true;
@@ -161,6 +165,12 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
             c = owner.createComponent(ctx);
             if (c == null) {
                 c = createComponent(ctx);
+            }
+
+            // A component carrying a mark id here predates this build and arrives through its binding, with that build's children attached.
+            componentReused = c.getAttributes().containsKey(ComponentSupport.MARK_CREATED);
+            if (componentReused) {
+                ComponentSupport.markForDeletion(c);
             }
 
             doNewComponentActions(ctx, id, c);
@@ -220,6 +230,9 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
         if (componentFound) {
             parentModified = isParentChildrenModified(parent);
             doOrphanedChildCleanup(ctx, parent, c, parentModified);
+        }
+        else if (componentReused) {
+            ComponentSupport.finalizeForDeletion(c);
         }
 
         privateOnComponentPopulated(ctx, c);
