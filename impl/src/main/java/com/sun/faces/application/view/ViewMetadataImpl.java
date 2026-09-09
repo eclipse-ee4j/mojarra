@@ -29,7 +29,10 @@ import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.sun.faces.RIConstants;
 import com.sun.faces.application.ApplicationAssociate;
@@ -173,28 +176,67 @@ public class ViewMetadataImpl extends ViewMetadata {
     }
 
     /**
-     * Collect constants of the given type. That are, all public static final fields of the given type.
+     * Collect constants of the given type. That are, all public static final fields of the given type and of all its
+     * super classes and interfaces. They are collected in declaration order, starting with those of the given type
+     * itself. When the same constant field name is declared more than once in the hierarchy, then the one declared by
+     * the most specific type wins.
      *
      * @param type The fully qualified name of the type to collect constants for.
-     * @return Constants of the given type.
+     * @return Constants of the given type, in declaration order.
      */
-    private static Map<String, Object> collectConstants(String type) {
+    static Map<String, Object> collectConstants(String type) {
         Map<String, Object> constants = new LinkedHashMap<>();
 
-        for (Field field : toClass(type).getFields()) {
-            int modifiers = field.getModifiers();
+        for (Class<?> declaredType : getDeclaredTypes(toClass(type))) {
+            for (Field field : declaredType.getDeclaredFields()) {
+                int modifiers = field.getModifiers();
 
-            if (isPublic(modifiers) && isStatic(modifiers) && isFinal(modifiers)) {
-                try {
-                    constants.put(field.getName(), field.get(null));
-                } catch (Exception e) {
-                    throw new IllegalArgumentException(
-                            String.format("UIImportConstants cannot access constant field '%s' of type '%s'.", type, field.getName()), e);
+                if (isPublic(modifiers) && isStatic(modifiers) && isFinal(modifiers)) {
+                    try {
+                        constants.putIfAbsent(field.getName(), field.get(null));
+                    } catch (Exception e) {
+                        throw new IllegalArgumentException(
+                                String.format("UIImportConstants cannot access constant field '%s' of type '%s'.", field.getName(), type), e);
+                    }
                 }
             }
         }
 
         return unmodifiableMap(new ConstantsMap(constants, type));
+    }
+
+    /**
+     * Collect the given type and all its super classes and interfaces, except {@link Object}, in the order in which
+     * their constant fields must be collected. That is, the given type first, then its super classes from the most
+     * specific one on, and then their interfaces.
+     *
+     * @param type The type to collect the declared types for.
+     * @return The given type and all its super classes and interfaces, except {@link Object}.
+     */
+    private static Set<Class<?>> getDeclaredTypes(Class<?> type) {
+        Set<Class<?>> declaredTypes = new LinkedHashSet<>();
+        declaredTypes.add(type);
+        fillAllSuperClasses(type, declaredTypes);
+
+        for (Class<?> declaredType : List.copyOf(declaredTypes)) {
+            fillAllInterfaces(declaredType, declaredTypes);
+        }
+
+        return declaredTypes;
+    }
+
+    private static void fillAllSuperClasses(Class<?> type, Set<Class<?>> declaredTypes) {
+        for (Class<?> superClass = type.getSuperclass(); superClass != null && superClass != Object.class; superClass = superClass.getSuperclass()) {
+            declaredTypes.add(superClass);
+        }
+    }
+
+    private static void fillAllInterfaces(Class<?> type, Set<Class<?>> declaredTypes) {
+        for (Class<?> interfaceType : type.getInterfaces()) {
+            if (declaredTypes.add(interfaceType)) {
+                fillAllInterfaces(interfaceType, declaredTypes);
+            }
+        }
     }
 
     /**
@@ -231,7 +273,7 @@ public class ViewMetadataImpl extends ViewMetadata {
      * @author Bauke Scholtz
      * @since 2.3
      */
-    private static class ConstantsMap extends HashMap<String, Object> {
+    private static class ConstantsMap extends LinkedHashMap<String, Object> {
 
         private static final long serialVersionUID = 7036447585721834948L;
         private String type;
