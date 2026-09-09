@@ -196,7 +196,7 @@ public class ViewMetadataImpl extends ViewMetadata {
                         constants.putIfAbsent(field.getName(), field.get(null));
                     } catch (Exception e) {
                         throw new IllegalArgumentException(
-                                String.format("UIImportConstants cannot access constant field '%s' of type '%s'.", type, field.getName()), e);
+                                String.format("UIImportConstants cannot access constant field '%s' of type '%s'.", field.getName(), type), e);
                     }
                 }
             }
