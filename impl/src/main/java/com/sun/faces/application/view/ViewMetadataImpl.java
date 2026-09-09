@@ -179,7 +179,7 @@ public class ViewMetadataImpl extends ViewMetadata {
      * @return Constants of the given type.
      */
     private static Map<String, Object> collectConstants(String type) {
-        Map<String, Object> constants = new LinkedHashMap<>();
+        LinkedHashMap<String, Object> constants = new LinkedHashMap<>();
 
         for (Field field : toClass(type).getFields()) {
             int modifiers = field.getModifiers();
@@ -231,13 +231,13 @@ public class ViewMetadataImpl extends ViewMetadata {
      * @author Bauke Scholtz
      * @since 2.3
      */
-    private static class ConstantsMap extends HashMap<String, Object> {
+    private static class ConstantsMap extends LinkedHashMap<String, Object> {
 
         private static final long serialVersionUID = 7036447585721834948L;
 
         private final String type;
 
-        public ConstantsMap(Map<String, Object> map, String type) {
+        public ConstantsMap(LinkedHashMap<String, Object> map, String type) {
             this.type = type;
             putAll(map);
         }
