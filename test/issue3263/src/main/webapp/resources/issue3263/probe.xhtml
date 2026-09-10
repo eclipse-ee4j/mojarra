@@ -1,0 +1,6 @@
+<ui:composition xmlns:ui="jakarta.faces.facelets" xmlns:cc="jakarta.faces.composite">
+    <cc:interface>
+        <cc:attribute name="attribute"/>
+    </cc:interface>
+    <cc:implementation>(#{cc.attrs.attribute}:#{parameterInsideComposite}:<cc:insertChildren/>)</cc:implementation>
+</ui:composition>
