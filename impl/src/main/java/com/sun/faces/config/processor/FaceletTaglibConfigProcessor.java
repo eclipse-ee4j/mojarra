@@ -23,6 +23,8 @@ import static java.util.logging.Level.WARNING;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -123,6 +125,27 @@ public class FaceletTaglibConfigProcessor extends AbstractConfigProcessor {
      * </p>
      */
     private static final String SOURCE = "source";
+
+    /**
+     * <p>
+     * /facelet-taglib/tag/attribute
+     * </p>
+     */
+    private static final String ATTRIBUTE = "attribute";
+
+    /**
+     * <p>
+     * /facelet-taglib/tag/attribute/name
+     * </p>
+     */
+    private static final String ATTRIBUTE_NAME = "name";
+
+    /**
+     * <p>
+     * /facelet-taglib/tag/attribute/required
+     * </p>
+     */
+    private static final String REQUIRED = "required";
 
     /**
      * <p>
@@ -293,6 +316,7 @@ public class FaceletTaglibConfigProcessor extends AbstractConfigProcessor {
                 NodeList behavior = null;
                 Node source = null;
                 Node handlerClass = null;
+                Set<String> requiredAttributes = new LinkedHashSet<>();
 
                 for (int j = 0, jlen = children.getLength(); j < jlen; j++) {
                     Node n = children.item(j);
@@ -318,6 +342,9 @@ public class FaceletTaglibConfigProcessor extends AbstractConfigProcessor {
                         case SOURCE:
                             source = n;
                             break;
+                        case ATTRIBUTE:
+                            collectRequiredAttribute(n, requiredAttributes);
+                            break;
                         case HANDLER_CLASS:
                             handlerClass = n;
                             break;
@@ -334,7 +361,7 @@ public class FaceletTaglibConfigProcessor extends AbstractConfigProcessor {
                 } else if (behavior != null) {
                     processBehavior(servletContext, facesContext, behavior, taglibrary, tagName);
                 } else if (source != null) {
-                    processSource(documentElement, source, taglibrary, tagName);
+                    processSource(documentElement, source, taglibrary, tagName, requiredAttributes);
                 } else if (handlerClass != null) {
                     processHandlerClass(servletContext, facesContext, handlerClass, taglibrary, tagName);
                 }
@@ -404,13 +431,38 @@ public class FaceletTaglibConfigProcessor extends AbstractConfigProcessor {
 
     }
 
-    private void processSource(Element documentElement, Node source, TagLibraryImpl taglibrary, String name) {
+    /**
+     * Collects the name of an attribute the tag declares as required, which a tag file then enforces where it is used.
+     */
+    private void collectRequiredAttribute(Node attribute, Set<String> requiredAttributes) {
+
+        String name = null;
+        boolean required = false;
+
+        NodeList children = attribute.getChildNodes();
+
+        for (int i = 0, len = children.getLength(); i < len; i++) {
+            Node child = children.item(i);
+
+            if (ATTRIBUTE_NAME.equals(child.getLocalName())) {
+                name = getNodeText(child);
+            } else if (REQUIRED.equals(child.getLocalName())) {
+                required = Boolean.parseBoolean(getNodeText(child));
+            }
+        }
+
+        if (required && name != null) {
+            requiredAttributes.add(name);
+        }
+    }
+
+    private void processSource(Element documentElement, Node source, TagLibraryImpl taglibrary, String name, Set<String> requiredAttributes) {
 
         String docURI = documentElement.getOwnerDocument().getDocumentURI();
         String s = getNodeText(source);
         try {
             URL url = new URL(new URL(docURI), s);
-            taglibrary.putUserTag(name, url);
+            taglibrary.putUserTag(name, url, requiredAttributes);
         } catch (MalformedURLException e) {
             throw new FacesException(e);
         }

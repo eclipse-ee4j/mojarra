@@ -22,14 +22,19 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import com.sun.faces.facelets.FaceletContextImplBase;
 import com.sun.faces.facelets.TemplateClient;
+import com.sun.faces.facelets.el.UserTagParameterVariableMapper;
 import com.sun.faces.facelets.el.VariableMapperWrapper;
 import com.sun.faces.facelets.tag.ui.DefineHandler;
 
+import jakarta.el.ValueExpression;
 import jakarta.el.VariableMapper;
+import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagConfig;
@@ -50,10 +55,12 @@ final class UserTagHandler extends TagHandlerImpl implements TemplateClient {
 
     protected final Map handlers;
 
+    private final String invocation;
+
     /**
      * @param config
      */
-    public UserTagHandler(TagConfig config, URL location) {
+    public UserTagHandler(TagConfig config, URL location, Set<String> requiredAttributes) {
         super(config);
         vars = tag.getAttributes().getAll();
         this.location = location;
@@ -69,14 +76,33 @@ final class UserTagHandler extends TagHandlerImpl implements TemplateClient {
         } else {
             handlers = null;
         }
+
+        if (isDevelopment()) {
+            invocation = tag.getQName() + " at " + tag.getLocation();
+            requiredAttributes.forEach(this::getRequiredAttribute);
+        }
+        else {
+            invocation = null;
+        }
     }
 
     /**
-     * Iterate over all TagAttributes and set them on the FaceletContext's VariableMapper, then include the target Facelet.
-     * Finally, replace the old VariableMapper.
+     * Whether this application asks to be told about what it declares but does not do, which is where the required
+     * attributes of this tag are enforced and where a name resolving differently than it once did is reported.
+     */
+    private static boolean isDevelopment() {
+        FacesContext context = FacesContext.getCurrentInstance();
+
+        return context != null && context.isProjectStage(ProjectStage.Development);
+    }
+
+    /**
+     * Binds the attributes supplied at this invocation as the parameters of the target Facelet file, includes it, and
+     * restores the variable mapper afterwards, so that neither the parameters nor anything the file sets itself
+     * outlives the invocation.
      *
      * @see TagAttribute#getValueExpression(FaceletContext, Class)
-     * @see VariableMapper
+     * @see UserTagParameterVariableMapper
      * @see jakarta.faces.view.facelets.FaceletHandler#apply(jakarta.faces.view.facelets.FaceletContext,
      * jakarta.faces.component.UIComponent)
      */
@@ -85,14 +111,7 @@ final class UserTagHandler extends TagHandlerImpl implements TemplateClient {
         FaceletContextImplBase ctx = (FaceletContextImplBase) ctxObj;
         VariableMapper orig = ctx.getVariableMapper();
 
-        // setup a variable map
-        if (vars.length > 0) {
-            VariableMapper varMapper = new VariableMapperWrapper(orig);
-            for (int i = 0; i < vars.length; i++) {
-                varMapper.setVariable(vars[i].getLocalName(), vars[i].getValueExpression(ctx, Object.class));
-            }
-            ctx.setVariableMapper(varMapper);
-        }
+        ctx.setVariableMapper(new VariableMapperWrapper(UserTagParameterVariableMapper.forInvocation(orig, attributes(ctx), invocation)));
 
         // eval include
         try {
@@ -106,6 +125,20 @@ final class UserTagHandler extends TagHandlerImpl implements TemplateClient {
             ctx.popClient(this);
             ctx.setVariableMapper(orig);
         }
+    }
+
+    private Map<String, ValueExpression> attributes(FaceletContext ctx) {
+        if (vars.length == 0) {
+            return Map.of();
+        }
+
+        Map<String, ValueExpression> attributes = new HashMap<>(vars.length);
+
+        for (TagAttribute var : vars) {
+            attributes.put(var.getLocalName(), var.getValueExpression(ctx, Object.class));
+        }
+
+        return attributes;
     }
 
     @Override

@@ -1,0 +1,7 @@
+<ui:composition xmlns:ui="jakarta.faces.facelets" xmlns:cc="jakarta.faces.composite">
+    <cc:interface>
+        <cc:attribute name="requiredAttribute" required="true"/>
+        <cc:attribute name="optionalAttribute"/>
+    </cc:interface>
+    <cc:implementation>[#{cc.attrs.requiredAttribute}|#{cc.attrs.optionalAttribute}]</cc:implementation>
+</ui:composition>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:c="jakarta.tags.core"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:t="issue3263"
+      xmlns:my="jakarta.faces.composite/issue3263">
+    <h:head>
+        <title>issue3263</title>
+    </h:head>
+    <h:body>
+        <h:panelGroup id="nestedInvocation"><t:parameterized attribute="A"><t:parameterized/></t:parameterized></h:panelGroup>
+        <h:panelGroup id="variableEscape"><t:setter/>[#{setInsideTagFile}]</h:panelGroup>
+        <h:panelGroup id="parameterEscape"><t:inserting><ui:param name="parameterInsideInvocation" value="P"/></t:inserting>[#{parameterInsideInvocation}]</h:panelGroup>
+
+        <h:panelGroup id="compositeParameterEscape"><my:probe attribute="A"><ui:param name="parameterInsideComposite" value="P"/>[body]</my:probe>[#{parameterInsideComposite}]</h:panelGroup>
+
+        <c:set var="applicationVariable" value="APP" scope="application"/>
+        <c:set var="sessionVariable" value="SES" scope="session"/>
+        <c:set var="viewVariable" value="VIEW" scope="view"/>
+        <c:set var="requestVariable" value="REQ" scope="request"/>
+        <h:panelGroup id="scopedVariables"><t:scoped/></h:panelGroup>
+    </h:body>
+</html>
