@@ -37,6 +37,7 @@
         <module>example_jar_with_metadata_complete_true</module>
         <module>csp</module>
         <module>restoreBuildTimeDecisions</module>
+        <module>spec1904</module>
         <module>uiIncludeRceJar</module>
         <module>uiIncludeRce</module>
         <module>issue5741</module>

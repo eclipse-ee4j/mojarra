@@ -18,6 +18,7 @@ package com.sun.faces.facelets.tag;
 
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.util.Set;
 
 import com.sun.faces.util.Util;
 
@@ -86,10 +87,10 @@ public class TagLibraryImpl extends AbstractTagLibrary {
         this.addComponent(name, componentType, rendererType, handlerClass);
     }
 
-    public void putUserTag(String name, URL source) {
+    public void putUserTag(String name, URL source, Set<String> requiredAttributes) {
         Util.notNull("name", name);
         Util.notNull("source", source);
-        addUserTag(name, source);
+        addUserTag(name, source, requiredAttributes);
     }
 
     public void putCompositeComponentTag(String name, String resourceId) {

@@ -22,6 +22,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import com.sun.faces.facelets.FaceletContextImplBase;
 import com.sun.faces.facelets.TemplateClient;
@@ -59,7 +60,7 @@ final class UserTagHandler extends TagHandlerImpl implements TemplateClient {
     /**
      * @param config
      */
-    public UserTagHandler(TagConfig config, URL location) {
+    public UserTagHandler(TagConfig config, URL location, Set<String> requiredAttributes) {
         super(config);
         vars = tag.getAttributes().getAll();
         this.location = location;
@@ -76,21 +77,23 @@ final class UserTagHandler extends TagHandlerImpl implements TemplateClient {
             handlers = null;
         }
 
-        invocation = describeInvocation();
+        if (isDevelopment()) {
+            invocation = tag.getQName() + " at " + tag.getLocation();
+            requiredAttributes.forEach(this::getRequiredAttribute);
+        }
+        else {
+            invocation = null;
+        }
     }
 
     /**
-     * Describes this invocation for a diagnostic, or returns {@code null} outside {@code Development}, where no
-     * diagnostic is raised and nothing should be spent describing one.
+     * Whether this application asks to be told about what it declares but does not do, which is where the required
+     * attributes of this tag are enforced and where a name resolving differently than it once did is reported.
      */
-    private String describeInvocation() {
+    private static boolean isDevelopment() {
         FacesContext context = FacesContext.getCurrentInstance();
 
-        if (context == null || !context.isProjectStage(ProjectStage.Development)) {
-            return null;
-        }
-
-        return tag.getQName() + " at " + tag.getLocation();
+        return context != null && context.isProjectStage(ProjectStage.Development);
     }
 
     /**
