@@ -40,9 +40,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
 import jakarta.el.ELException;
 import jakarta.faces.FacesException;
@@ -96,6 +96,8 @@ public class DefaultFaceletFactory {
     private ConcurrentMap<String, FaceletCache<DefaultFacelet>> cachePerContract;
 
     Cache<String, IdMapper> idMappers;
+
+    private final AtomicLong fabricatedFaceletCount = new AtomicLong();
 
     // ------------------------------------------------------------ Constructors
 
@@ -363,7 +365,7 @@ public class DefaultFaceletFactory {
             }
 
             URL fabricatedFaceletPage = tempFile.toURI().toURL();
-            Facelet fabricatedFacelet = createFacelet(fabricatedFaceletPage);
+            Facelet fabricatedFacelet = createFabricatedFacelet(fabricatedFaceletPage);
             UIComponent tmp = app.createComponent("jakarta.faces.NamingContainer");
             tmp.setId(context.getViewRoot().createUniqueId());
             fabricatedFacelet.apply(context, tmp);
@@ -483,28 +485,47 @@ public class DefaultFaceletFactory {
      * @throws ELException
      */
     private DefaultFacelet createFacelet(URL url) throws IOException {
-        String escapedBaseURL = Pattern.quote(this.baseUrl.getFile());
-        String alias = '/' + url.getFile().replaceFirst(escapedBaseURL, "");
-        return createFacelet(url, alias);
+        return createFacelet(url, null);
     }
 
-    private DefaultFacelet createFacelet(URL url, String alias) throws IOException {
+    /**
+     * Creates the Facelet for the one-shot page {@link #_createComponent} fabricates. Every such page lives in its own temporary file, so its alias is a key
+     * the application scoped {@link #idMappers} cache would never see again: it gets its own mapper instead.
+     */
+    private DefaultFacelet createFabricatedFacelet(URL url) throws IOException {
+        return createFacelet(url, createFabricatedIdMapper());
+    }
+
+    /**
+     * Returns the {@link IdMapper} a fabricated Facelet installs for its own build, numbered so that its ids stay apart from those of every other mapper, or
+     * null when this application does not alias ids at all.
+     */
+    IdMapper createFabricatedIdMapper() {
+        return idMappers == null ? null : IdMapper.numbered(fabricatedFaceletCount.incrementAndGet());
+    }
+
+    private DefaultFacelet createFacelet(URL url, IdMapper ownIdMapper) throws IOException {
         if (log.isLoggable(Level.FINE)) {
             log.fine("Creating Facelet for: " + url);
         }
+        String alias = getAlias(url);
         try {
             FaceletHandler h = compiler.compile(url, alias);
-            return new DefaultFacelet(this, compiler.createExpressionFactory(), url, alias, h);
+            return new DefaultFacelet(this, compiler.createExpressionFactory(), url, alias, h, ownIdMapper);
         }
         catch (FileNotFoundException fnfe) {
             throw new FileNotFoundException("Facelet " + alias + " not found at: " + url.toExternalForm());
         }
     }
 
+    private String getAlias(URL url) {
+        return '/' + url.getFile().replaceFirst(quote(baseUrl.getFile()), "");
+    }
+
     private DefaultFacelet createMetadataFacelet(URL url) throws IOException {
         log.fine(() -> "Creating Metadata Facelet for: " + url);
 
-        String alias = '/' + url.getFile().replaceFirst(quote(baseUrl.getFile()), "");
+        String alias = getAlias(url);
         try {
             return new DefaultFacelet(
                 this,

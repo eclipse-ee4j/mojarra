@@ -79,7 +79,10 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
 
     private final URL src;
 
-    private IdMapper mapper;
+    private final IdMapper mapper;
+
+    /** Whether {@link #mapper} belongs to this Facelet alone, rather than to every Facelet sharing its alias. */
+    private final boolean ownIdMapper;
 
     /** Dense per-tag counter slots, keyed by tag id. See {@link #getIdSlot(String)}. */
     private final Map<String, Integer> idSlots = new ConcurrentHashMap<>();
@@ -93,13 +96,31 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
     private String savedXMLDecl;
 
     public DefaultFacelet(DefaultFaceletFactory factory, ExpressionFactory el, URL src, String alias, FaceletHandler root) {
+        this(factory, el, src, alias, root, null);
+    }
+
+    /**
+     * @param ownIdMapper the {@link IdMapper} this Facelet installs for its own build, or null to alias through the application scoped mapper for this alias,
+     * and through any mapper an ongoing build already installed. Pass one only for a Facelet that is not cached, whose alias would otherwise be a key the
+     * application scoped cache never sees again.
+     */
+    public DefaultFacelet(DefaultFaceletFactory factory, ExpressionFactory el, URL src, String alias, FaceletHandler root, IdMapper ownIdMapper) {
 
         this.factory = factory;
         elFactory = el;
         this.src = src;
         this.root = root;
         this.alias = alias;
-        this.mapper = factory.idMappers != null ? factory.idMappers.get(alias) : null;
+
+        if (ownIdMapper != null) {
+            mapper = ownIdMapper;
+            this.ownIdMapper = true;
+        }
+        else {
+            mapper = factory.idMappers != null ? factory.idMappers.get(alias) : null;
+            this.ownIdMapper = false;
+        }
+
         createTime = System.currentTimeMillis();
         refreshPeriodInMillis = this.factory.getRefreshPeriodInMillis();
 
@@ -130,9 +151,9 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
     @Override
     public void apply(FacesContext facesContext, UIComponent parent) throws IOException {
 
-        IdMapper idMapper = IdMapper.getMapper(facesContext);
+        IdMapper outerIdMapper = IdMapper.getMapper(facesContext);
         boolean mapperSet = false;
-        if (idMapper == null && this.mapper != null) {
+        if (mapper != null && (ownIdMapper || outerIdMapper == null)) {
             IdMapper.setMapper(facesContext, mapper);
             mapperSet = true;
         }
@@ -145,7 +166,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
         markApplied(parent);
 
         if (mapperSet) {
-            IdMapper.setMapper(facesContext, null);
+            IdMapper.setMapper(facesContext, outerIdMapper);
         }
 
     }
