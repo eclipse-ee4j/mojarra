@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import com.sun.faces.util.Cache;
 import com.sun.faces.util.Util;
 
+import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 
 /**
@@ -30,11 +31,31 @@ public class IdMapper {
 
     private static final String KEY = IdMapper.class.getName();
 
-    private Cache<String, String> idCache = new Cache<>(new IdGen());
+    private static final String DEFAULT_PREFIX = "t";
+
+    private final Cache<String, String> idCache;
 
     // ------------------------------------------------------------ Constructors
 
     IdMapper() {
+        this(DEFAULT_PREFIX);
+    }
+
+    private IdMapper(String prefix) {
+        idCache = new Cache<>(new IdGen(prefix));
+    }
+
+    /**
+     * Returns a mapper whose ids collide neither with those of the default mapper, nor with those of any other
+     * distinctly numbered one. The ids a mapper generates are seeds for
+     * {@link UIViewRoot#createUniqueId(FacesContext, String)}, which returns them verbatim behind its own prefix, so
+     * every mapper whose ids can land in one view needs a prefix of its own.
+     *
+     * @param number what distinguishes this mapper from every other numbered one
+     * @return a mapper generating ids of its own
+     */
+    static IdMapper numbered(long number) {
+        return new IdMapper(DEFAULT_PREFIX + number + '_');
     }
 
     // ---------------------------------------------------------- Public Methods
@@ -82,14 +103,21 @@ public class IdMapper {
 
     private static final class IdGen implements Cache.Factory<String, String> {
 
-        private AtomicInteger counter = new AtomicInteger(0);
+        private final String prefix;
+        private final AtomicInteger counter = new AtomicInteger(0);
+
+        // -------------------------------------------------------- Constructors
+
+        private IdGen(String prefix) {
+            this.prefix = prefix;
+        }
 
         // ------------------------------------------ Methods from Cache.Factory
 
         @Override
         public String newInstance(String arg) throws InterruptedException {
 
-            return 't' + Integer.toString(counter.incrementAndGet());
+            return prefix + counter.incrementAndGet();
 
         }
 
