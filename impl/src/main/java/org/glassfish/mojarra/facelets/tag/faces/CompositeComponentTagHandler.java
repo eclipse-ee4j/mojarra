@@ -138,8 +138,17 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
         setAttributes(ctx, c);
 
         // Allow any nested elements that reside inside the markup element
-        // for this tag to get applied
-        super.applyNextHandler(ctx, c);
+        // for this tag to get applied, bounded so that what they set does not
+        // outlive the composite component nor reach its implementation
+        VariableMapper orig = ctx.getVariableMapper();
+        ctx.setVariableMapper(new VariableMapperWrapper(orig));
+
+        try {
+            super.applyNextHandler(ctx, c);
+        }
+        finally {
+            ctx.setVariableMapper(orig);
+        }
 
         // Apply the facelet for this composite component
         applyCompositeComponent(ctx, c);

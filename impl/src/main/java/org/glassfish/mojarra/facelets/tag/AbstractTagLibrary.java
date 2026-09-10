@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import jakarta.el.ELException;
 import jakarta.faces.FacesException;
@@ -260,13 +261,16 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
         protected final URL location;
 
-        public UserTagFactory(URL location) {
+        protected final Set<String> requiredAttributes;
+
+        public UserTagFactory(URL location, Set<String> requiredAttributes) {
             this.location = location;
+            this.requiredAttributes = requiredAttributes;
         }
 
         @Override
         public TagHandler createHandler(TagConfig cfg) throws FacesException, ELException {
-            return new UserTagHandler(cfg, location);
+            return new UserTagHandler(cfg, location, requiredAttributes);
         }
 
     }
@@ -644,8 +648,8 @@ public abstract class AbstractTagLibrary implements TagLibrary {
      * @param name name to use, "foo" would be {@code <my:foo />}
      * @param source source where the Facelet (Tag) source is
      */
-    protected final void addUserTag(String name, URL source) {
-        factories.put(name, new UserTagFactory(source));
+    protected final void addUserTag(String name, URL source, Set<String> requiredAttributes) {
+        factories.put(name, new UserTagFactory(source, requiredAttributes));
     }
 
     /**

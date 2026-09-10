@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 
 import jakarta.el.ValueExpression;
-import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.Resource;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
@@ -65,9 +64,7 @@ public class InterfaceHandler extends TagHandlerImpl {
             nextHandler.apply(ctx, parent);
         }
         else {
-            if (ProjectStage.Development == context.getApplication().getProjectStage()) {
-                validateComponent(context, parent);
-            }
+            validateComponent(context, parent);
         }
     }
 
@@ -79,7 +76,14 @@ public class InterfaceHandler extends TagHandlerImpl {
 
             throw new TagException(tag, MessageUtils.getExceptionMessageString(MessageUtils.COMPONENT_NOT_FOUND_ERROR_MESSAGE_ID, clientId + ".getParent()"));
         }
+        // The tag which used the composite component is only recorded under Development, so outside it the interface
+        // tag of the composite itself is what remains to identify in the failure.
         Tag usingPageTag = ComponentSupport.getTagForComponent(context, cc);
+
+        if (usingPageTag == null) {
+            usingPageTag = tag;
+        }
+
         Map<String, Object> attrs = cc.getAttributes();
         BeanInfo componentMetadata = (BeanInfo) attrs.get(UIComponent.BEANINFO_KEY);
 

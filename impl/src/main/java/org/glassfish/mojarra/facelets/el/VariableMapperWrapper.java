@@ -62,6 +62,13 @@ public class VariableMapperWrapper extends VariableMapper {
     }
 
     /**
+     * @return the variable mapper this one resolves against when it does not hold the name itself
+     */
+    VariableMapper getTarget() {
+        return target;
+    }
+
+    /**
      * Set the ValueExpression on the inner Map instance.
      *
      * @see jakarta.el.VariableMapper#setVariable(java.lang.String, jakarta.el.ValueExpression)
