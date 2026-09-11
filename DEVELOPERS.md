@@ -1,6 +1,6 @@
 # Mojarra Developer Guide
 
-Instructions for checking out, building, and contributing to Mojarra.
+Instructions for checking out, building, testing, and contributing to Mojarra.
 
 ## Building
 
@@ -44,3 +44,39 @@ In case you want to checkout to edit the source code of Mojarra with full IDE su
 
 1. Checkout the desired branch using File -> Import -> Git
 2. Right click the Mojarra project after checkout, choose Configure -> Convert to Maven Project
+
+## Testing
+
+API-specific unit and integration tests go to the `tck` module of the [Faces project](https://github.com/jakartaee/faces/tree/main/tck).
+The TCK doesn't accept new tests for an already released version, so API-specific tests for the current version stay here until the next version.
+Impl-specific unit tests live in the `impl` module, impl-specific integration tests in the `test` module.
+
+### Unit tests
+
+Run the following command from the `impl` directory of the project:
+
+```bash
+# under the impl dir of project
+mvn clean test
+```
+
+This runs the Java unit tests as well as the Jest tests of `faces.js` in `impl/src/test/ts`.
+
+### Integration tests
+
+1. Make sure that you have JDK 21 and Google Chrome installed. GlassFish needs JDK 21 and the tests drive Chrome headless.
+2. The tests deploy a WAR on a real server which picks up the impl from the local Maven repository, so install it first:
+
+    ```bash
+    # under the impl dir of project
+    mvn clean install
+    ```
+
+3. Run the following command from the `test` directory of the project:
+
+    ```bash
+    # under the test dir of project
+    mvn clean verify
+    ```
+
+This runs on GlassFish. Use `-P wildfly`, `-P tomee`, `-P payara`, `-P liberty` or `-P tomcat` to run on another server.

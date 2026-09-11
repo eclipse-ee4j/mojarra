@@ -108,11 +108,6 @@ In case of Payara/GlassFish, just swap the `jakarta.faces.jar` file in the serve
 You can check [`org.glassfish:jakarta.faces`][16] repository to find the latest Mojarra 4.1.x version.
 
 
-## Testing
-
-Since Mojarra 4, tests have been moved to the [Faces project](https://github.com/jakartaee/faces/tree/main/tck).
-
-
 ## Hello World Example
 
 We assume that you already know how to create an empty Maven WAR Project or Dynamic Web Project in your favourite IDE with a CDI 4.0+ compatible `/WEB-INF/beans.xml` deployment descriptor file (which can be kept fully empty). Don't forget to add JARs or configure pom.xml if necessary, as instructed in previous chapter.
@@ -239,7 +234,9 @@ They are configured as a `<context-param>` in `web.xml`.
 
 ## Building and Contributing
 
-Instructions for checking out the source, building from source, importing into an IDE, and submitting pull requests are available in [DEVELOPERS.md](DEVELOPERS.md).
+Instructions for checking out the source, building from source, importing into an IDE, running tests, and submitting pull requests are available in [DEVELOPERS.md](DEVELOPERS.md).
+
+Before submitting a pull request, please review [CONTRIBUTING.md](CONTRIBUTING.md) for the Eclipse Contributor Agreement (ECA), the sign-off requirement, and the AI-assisted contribution policy.
 
 ## Resources
 
