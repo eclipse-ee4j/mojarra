@@ -43,17 +43,17 @@ https://www.eclipse.org/projects/handbook/#resources-commit
 
 Use of AI coding assistants is welcome. If an AI tool materially contributed to a
 change, it is appreciated (but not required) to credit it in the commit message
-with a `Co-authored-by` trailer. Always include the model name and version so the
+with a `Co-authored-by` trailer. Include *at least* the model name and version so the
 attribution stays meaningful over time (model versions differ in behaviour). Here
 are some examples:
 
-- `Co-authored-by: Claude Opus 4.8 <noreply@anthropic.com>`
-- `Co-authored-by: GitHub Copilot (GPT-5) <copilot@github.com>`
-- `Co-authored-by: Cursor (Claude Sonnet 4.5) <cursoragent@cursor.com>`
-- `Co-authored-by: Devin AI 2.0 <158243242+devin-ai-integration[bot]@users.noreply.github.com>`
-- `Co-authored-by: OpenAI Codex (GPT-5-Codex) <codex@openai.com>`
-- `Co-authored-by: Gemini 2.5 Pro <gemini@google.com>`
-- `Co-authored-by: Grok 4 <grok@x.ai>`
+- `Co-authored-by: Claude Opus 4.8`
+- `Co-authored-by: GitHub Copilot (GPT-5)`
+- `Co-authored-by: Cursor (Claude Sonnet 4.5)`
+- `Co-authored-by: Devin AI 2.0`
+- `Co-authored-by: OpenAI Codex (GPT-5-Codex)`
+- `Co-authored-by: Gemini 2.5 Pro`
+- `Co-authored-by: Grok 4`
 
 Use whatever model and version your tool actually reports.
 
