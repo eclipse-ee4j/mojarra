@@ -33,6 +33,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import com.sun.faces.RIConstants;
 import com.sun.faces.application.ApplicationAssociate;
@@ -267,8 +268,9 @@ public class ViewMetadataImpl extends ViewMetadata {
     }
 
     /**
-     * Specific map implementation which wraps the given map in {@link Collections#unmodifiableMap(Map)} and throws an
-     * {@link IllegalArgumentException} in {@link ConstantsMap#get(Object)} method when the key doesn't exist at all.
+     * Specific map implementation which wraps the given map in {@link Collections#unmodifiableMap(Map)}, throws an
+     * {@link IllegalArgumentException} in {@link ConstantsMap#get(Object)} method when the key doesn't exist at all,
+     * and renders its entries by name in {@link ConstantsMap#toString()} while iterating in declaration order.
      *
      * @author Bauke Scholtz
      * @since 2.3
@@ -300,6 +302,15 @@ public class ViewMetadataImpl extends ViewMetadata {
         @Override
         public int hashCode() {
             return super.hashCode() + type.hashCode();
+        }
+
+        /**
+         * Renders the constants by name, so that the rendered text of the map as a whole does not depend on the order
+         * in which the constants were collected. Iteration keeps the declaration order.
+         */
+        @Override
+        public String toString() {
+            return new TreeMap<>(this).toString();
         }
 
     }
