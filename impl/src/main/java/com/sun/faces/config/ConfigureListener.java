@@ -17,6 +17,7 @@
 package com.sun.faces.config;
 
 import static com.sun.faces.RIConstants.ANNOTATED_CLASSES;
+import static com.sun.faces.RIConstants.CDI_BEAN_MANAGER;
 import static com.sun.faces.RIConstants.ERROR_PAGE_PRESENT_KEY_NAME;
 import static com.sun.faces.RIConstants.FACES_SERVLET_MAPPINGS;
 import static com.sun.faces.RIConstants.FACES_SERVLET_REGISTRATION;
@@ -69,6 +70,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.application.WebappLifecycleListener;
+import com.sun.faces.cdi.CdiUtils;
 import com.sun.faces.el.ELContextImpl;
 import com.sun.faces.push.WebsocketEndpoint;
 import com.sun.faces.util.FacesLogger;
@@ -79,6 +81,7 @@ import com.sun.faces.util.Timer;
 import com.sun.faces.util.Util;
 
 import jakarta.el.ELManager;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
 import jakarta.faces.context.FacesContext;
@@ -365,6 +368,16 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
         } catch (Exception e) {
             LOGGER.log(SEVERE, "Unexpected exception when attempting to tear down the Mojarra runtime", e);
         } finally {
+            // Stop caching CDI bean resolutions for this application and release what was cached. The
+            // ServletContext holds the very BeanManager instance Faces registered (see
+            // Util#getCdiBeanManager), so this matches by identity and needs no assumption about
+            // BeanManager equality, which CDI leaves unspecified. CdiExtension unregisters on
+            // BeforeShutdown as well; whichever runs first wins and the other is a no-op.
+            Object cdiBeanManager = context.getAttribute(CDI_BEAN_MANAGER);
+            if (cdiBeanManager instanceof BeanManager beanManager) {
+                CdiUtils.unregisterBeanManager(beanManager);
+            }
+
             ApplicationAssociate.clearInstance(context);
             ApplicationAssociate.setCurrentInstance(null);
 

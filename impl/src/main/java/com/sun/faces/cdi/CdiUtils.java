@@ -16,7 +16,6 @@
 
 package com.sun.faces.cdi;
 
-import static java.util.Collections.synchronizedMap;
 import static java.util.Optional.empty;
 import static java.util.stream.Collectors.toSet;
 
@@ -25,6 +24,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,9 +33,10 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
-import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -85,75 +86,133 @@ public final class CdiUtils {
     }.getType();
 
     /**
-     * Cache of resolved {@code (type, beanName, qualifiers) -> Bean<?>} lookups per {@link BeanManager}.
-     * Post-bootstrap the set of beans is immutable for the application lifetime, so {@code getBeans} +
-     * {@code resolve} (the expensive part: type/qualifier matching over the whole bean registry) is a
-     * pure function of its arguments. {@link BeanManager#getReference(Bean, Type, CreationalContext)}
+     * The per-application bean-resolution caches, as an immutable snapshot keyed by {@link BeanManager}.
+     *
+     * <p>Post-bootstrap the set of beans is immutable for the application lifetime, so {@code getBeans} +
+     * {@code resolve} (the expensive part: type/qualifier matching over the whole bean registry) is a pure
+     * function of its arguments and can be cached. {@link BeanManager#getReference(Bean, Type, CreationalContext)}
      * is intentionally kept out of the cache to preserve scope semantics &mdash; that call is cheap.
-     * Negative results are cached as {@link #NO_BEAN}; built-in Faces IDs such as
-     * {@code jakarta.faces.Integer} are not CDI beans, so caching the miss avoids repeated registry
-     * walks on every component creation.
      *
-     * <p>Caveat: this assumes the {@link BeanManager} is fully bootstrapped when first observed.
-     * If a transient/incomplete BeanManager were probed here, negative entries against that
-     * identity would persist after bootstrap completes. Today the only callers are public
-     * {@code Application#create*} methods invoked during request processing, after CDI is ready.
+     * <p><strong>Why a copy-on-write snapshot rather than a concurrent or synchronized map.</strong> This map
+     * is read on every {@code Application#createConverter/createValidator/createBehavior} call, i.e. per
+     * component per render, from every request thread. A {@code synchronizedMap} serializes all of them on one
+     * process-wide monitor even for a pure cache hit, which shows up in thread dumps as request threads
+     * {@code BLOCKED} in {@code Collections$SynchronizedMap}. Entries are added and removed only at deployment
+     * boundaries (see {@link #registerBeanManager} / {@link #unregisterBeanManager}), so the hot path is a
+     * plain volatile read plus an immutable lookup, with no lock at all. The field must be {@code volatile}:
+     * readers never take the {@link #REGISTRATION_LOCK} that writers hold, so without it there is no
+     * happens-before edge and a reader could keep using a stale snapshot indefinitely &mdash; including one
+     * still holding an undeployed application's {@link Bean}s.
      *
-     * <p>The outer map uses weak keys to release the inner cache when a BeanManager becomes
-     * otherwise unreachable. Note that cached {@link Bean} instances may transitively hold a
-     * reference back to their owning BeanManager (Weld does), in which case reclamation only
-     * happens once those {@code Bean} references themselves are no longer reachable.
+     * <p><strong>The registration invariant.</strong> Nothing may enter this map except through
+     * {@link #registerBeanManager}, which is called once per application while the application is being set
+     * up. A {@link BeanManager} that is not registered &mdash; because it was never set up, or because its
+     * application has been undeployed &mdash; resolves without caching: correct, merely uncached. That single
+     * rule is what makes an unbounded map, a classloader leak and stale post-undeployment entries structurally
+     * impossible here, rather than something a cleanup hook has to be trusted to prevent.
      */
-    private static final Map<BeanManager, ConcurrentMap<BeanLookupKey, Bean<?>>> RESOLVED_BEANS =
-            synchronizedMap(new WeakHashMap<>());
+    private static volatile Map<BeanManager, CdiCache> CACHES = Map.of();
 
     /**
-     * Parallel cache for the {@link FacesContextImpl} release path: the single
-     * {@link FacesContextProducer}-typed {@link FacesContext} bean per {@link BeanManager}.
-     * Held separately because the lookup filters by {@code bean.getTypes().contains(...)}
-     * rather than by a CDI qualifier, so it does not fit the {@link BeanLookupKey} shape.
+     * Guards writes to {@link #CACHES}. Taken twice in an application's lifetime; never on the read path.
      */
-    private static final Map<BeanManager, Bean<?>> FACES_CONTEXT_PRODUCER_BEANS =
-            synchronizedMap(new WeakHashMap<>());
-
-    /**
-     * Target-class / id / view-id keyed caches of the resolved managed converter, validator, behavior and
-     * {@link View} facelet {@link Bean}s per {@link BeanManager}. The by-class converter lookup otherwise walks
-     * the superclass chain building a {@link FacesConverter} qualifier + {@link BeanLookupKey} at each level (and
-     * the by-id paths build two to four such keys) on every call -- per cell during render, and per facelet
-     * lookup for the view path. Keying directly on the target {@code Class}, id or view id collapses that to a
-     * single cheap map lookup. The resolved {@link Bean} is stable post-bootstrap;
-     * {@link BeanManager#getReference} stays per-call so scope semantics are preserved. Misses are cached as
-     * {@link #NO_BEAN}. Cleared on shutdown together with {@link #RESOLVED_BEANS} (same stale-Bean concern).
-     */
-    private static final Map<BeanManager, ConcurrentMap<Object, Bean<?>>> CONVERTER_BEANS_BY_KEY =
-            synchronizedMap(new WeakHashMap<>());
-    private static final Map<BeanManager, ConcurrentMap<Object, Bean<?>>> VALIDATOR_BEANS_BY_KEY =
-            synchronizedMap(new WeakHashMap<>());
-    private static final Map<BeanManager, ConcurrentMap<Object, Bean<?>>> BEHAVIOR_BEANS_BY_KEY =
-            synchronizedMap(new WeakHashMap<>());
-    private static final Map<BeanManager, ConcurrentMap<Object, Bean<?>>> VIEW_FACELET_BEANS_BY_KEY =
-            synchronizedMap(new WeakHashMap<>());
+    private static final Object REGISTRATION_LOCK = new Object();
 
     private static final Bean<?> NO_BEAN = new NoBean();
 
+    private static final Function<CdiCache, ConcurrentMap<Object, Bean<?>>> CONVERTERS = cache -> cache.converterBeans;
+    private static final Function<CdiCache, ConcurrentMap<Object, Bean<?>>> VALIDATORS = cache -> cache.validatorBeans;
+    private static final Function<CdiCache, ConcurrentMap<Object, Bean<?>>> BEHAVIORS = cache -> cache.behaviorBeans;
+    private static final Function<CdiCache, ConcurrentMap<Object, Bean<?>>> VIEW_FACELETS = cache -> cache.viewFaceletBeans;
+
     /**
-     * Clears the bean-resolution caches. Invoked from {@link CdiExtension} on {@code BeforeShutdown}:
-     * a {@link Bean} transitively references its owning BeanManager (Weld does), which keeps the
-     * {@link WeakHashMap} entry reachable well past application undeployment. Leaving it would let a
-     * redeployment resolve against stale {@code Bean} instances whose context is gone, which surfaces
-     * as a {@code ContextNotActiveException} on first use. The caches are keyed by the (possibly
-     * wrapped) BeanManager, so a defunct deployment's entry cannot be reliably matched by the raw
-     * BeanManager handed to {@code BeforeShutdown}; clearing wholesale is correct because the entries
-     * repopulate lazily on next resolve.
+     * Starts caching bean resolutions for {@code beanManager}, discarding anything cached for an equal key
+     * before. Called from {@link Util#getCdiBeanManager(FacesContext)} at the point where Faces settles on the
+     * {@link BeanManager} instance it will use for the application's lifetime, and from {@link CdiExtension} on
+     * {@code AfterDeploymentValidation}. Registering the very object that will later be used for lookups is
+     * deliberate: the CDI specification says nothing about {@code BeanManager} equality or instance identity
+     * (Weld derives {@code equals}/{@code hashCode} from the bean archive id, OpenWebBeans leaves them as
+     * identity), so matching by {@code ==} on both ends is the only portable guarantee.
+     *
+     * <p>Replacing rather than keeping an existing entry matters for redeployment: on an implementation whose
+     * {@code BeanManager} equality is archive-derived, a redeployed application produces a key equal to the
+     * previous deployment's, and reusing that entry would resolve against {@link Bean}s whose context is gone
+     * (a {@code ContextNotActiveException} on first use). Both call sites run at deployment time, before the
+     * application serves traffic, so nothing warm is lost.
+     *
+     * @param beanManager the bean manager to cache resolutions for; {@code null} is ignored
      */
-    public static void clearCaches() {
-        RESOLVED_BEANS.clear();
-        FACES_CONTEXT_PRODUCER_BEANS.clear();
-        CONVERTER_BEANS_BY_KEY.clear();
-        VALIDATOR_BEANS_BY_KEY.clear();
-        BEHAVIOR_BEANS_BY_KEY.clear();
-        VIEW_FACELET_BEANS_BY_KEY.clear();
+    public static void registerBeanManager(BeanManager beanManager) {
+        if (beanManager == null) {
+            return;
+        }
+
+        synchronized (REGISTRATION_LOCK) {
+            Map<BeanManager, CdiCache> updated = new HashMap<>(CACHES);
+            updated.put(beanManager, new CdiCache());
+            CACHES = Map.copyOf(updated);
+        }
+    }
+
+    /**
+     * Stops caching bean resolutions for {@code beanManager} and drops everything cached for it, so an
+     * undeployed application's {@link Bean}s (and through them its class loader) are released and can never be
+     * handed to a later deployment. Subsequent lookups for it resolve uncached.
+     *
+     * <p>Called from {@link CdiExtension} on {@code BeforeShutdown} with the instance that extension
+     * registered, and from {@code ConfigureListener#contextDestroyed} with the instance held in the
+     * {@code ServletContext}. Each call site passes back the same object it registered, so no assumption about
+     * {@code BeanManager} equality is needed. Removing an unregistered bean manager is a no-op, which makes the
+     * two call sites safe to both fire for the same application.
+     *
+     * @param beanManager the bean manager to stop caching resolutions for; {@code null} is ignored
+     */
+    public static void unregisterBeanManager(BeanManager beanManager) {
+        if (beanManager == null || !CACHES.containsKey(beanManager)) {
+            return;
+        }
+
+        synchronized (REGISTRATION_LOCK) {
+            Map<BeanManager, CdiCache> updated = new HashMap<>(CACHES);
+            if (updated.remove(beanManager) == null) {
+                return;
+            }
+            CACHES = Map.copyOf(updated);
+        }
+    }
+
+    /**
+     * One application's resolution caches. Handed out as a unit so that registering and unregistering an
+     * application is a single atomic change to {@link #CACHES}. The inner maps are concurrent because they are
+     * written on the request path; the holder itself is immutable and safely published by the volatile write to
+     * {@link #CACHES}.
+     */
+    private static final class CdiCache {
+
+        /** Resolved {@code (type, beanName, qualifiers) -> Bean<?>} lookups. Misses are cached as {@link #NO_BEAN}. */
+        final ConcurrentMap<BeanLookupKey, Bean<?>> resolvedBeans = new ConcurrentHashMap<>();
+
+        /**
+         * Target-class / id keyed caches of the resolved managed converter, validator and behavior beans. The
+         * by-class converter lookup otherwise walks the superclass chain building a {@link FacesConverter}
+         * qualifier + {@link BeanLookupKey} at each level (and the by-id paths build two to four such keys) on
+         * every call -- per cell during render. Keying directly on the target {@code Class} or id collapses
+         * that to a single cheap map lookup. Misses are cached as {@link #NO_BEAN}.
+         */
+        final ConcurrentMap<Object, Bean<?>> converterBeans = new ConcurrentHashMap<>();
+        final ConcurrentMap<Object, Bean<?>> validatorBeans = new ConcurrentHashMap<>();
+        final ConcurrentMap<Object, Bean<?>> behaviorBeans = new ConcurrentHashMap<>();
+
+        /** View-id keyed cache of the {@link View} annotated programmatic facelet beans, one lookup per view. */
+        final ConcurrentMap<Object, Bean<?>> viewFaceletBeans = new ConcurrentHashMap<>();
+
+        /**
+         * The single {@link FacesContextProducer}-typed {@link FacesContext} bean, resolved once per
+         * application for the {@link FacesContextImpl} release path. Held separately from
+         * {@link #resolvedBeans} because the lookup filters by {@code bean.getTypes().contains(...)} rather
+         * than by a CDI qualifier, so it does not fit the {@link BeanLookupKey} shape.
+         */
+        final AtomicReference<Bean<?>> facesContextProducerBean = new AtomicReference<>();
     }
 
     /**
@@ -170,7 +229,7 @@ public final class CdiUtils {
      * @return the converter, or null if we could not match one.
      */
     public static Converter<?> createConverter(BeanManager beanManager, String value) {
-        Bean<?> bean = cachedBean(CONVERTER_BEANS_BY_KEY, beanManager, value,
+        Bean<?> bean = cachedBean(CONVERTERS, beanManager, value,
                 () -> resolveConverterBean(beanManager, FacesConverter.Literal.of(value, Object.class, true)));
 
         if (bean == null) {
@@ -192,7 +251,7 @@ public final class CdiUtils {
      * @return the converter, or null if we could not match one.
      */
     public static Converter<?> createConverter(BeanManager beanManager, Class<?> forClass) {
-        Bean<?> bean = cachedBean(CONVERTER_BEANS_BY_KEY, beanManager, forClass,
+        Bean<?> bean = cachedBean(CONVERTERS, beanManager, forClass,
                 () -> resolveConverterBeanForClass(beanManager, forClass));
 
         if (bean == null) {
@@ -230,10 +289,18 @@ public final class CdiUtils {
      * Returns the resolved managed {@link Bean} for {@code key}, computing it via {@code resolver} and caching
      * the outcome (a miss as {@link #NO_BEAN}) on first use. {@code getReference} is left to the caller so
      * scope stays per-invocation.
+     *
+     * <p>If {@code beanManager} is not registered the resolution still happens, it is simply not cached; see
+     * the registration invariant on {@link #CACHES}.
      */
-    private static Bean<?> cachedBean(Map<BeanManager, ConcurrentMap<Object, Bean<?>>> cacheByManager,
+    private static Bean<?> cachedBean(Function<CdiCache, ConcurrentMap<Object, Bean<?>>> which,
             BeanManager beanManager, Object key, Supplier<Bean<?>> resolver) {
-        ConcurrentMap<Object, Bean<?>> cache = cacheByManager.computeIfAbsent(beanManager, k -> new ConcurrentHashMap<>());
+        CdiCache cdiCache = CACHES.get(beanManager);
+        if (cdiCache == null) {
+            return resolver.get();
+        }
+
+        ConcurrentMap<Object, Bean<?>> cache = which.apply(cdiCache);
         Bean<?> cached = cache.get(key);
         if (cached != null) {
             return cached == NO_BEAN ? null : cached;
@@ -255,7 +322,7 @@ public final class CdiUtils {
      * @return the behavior, or null if we could not match one.
      */
     public static Behavior createBehavior(BeanManager beanManager, String value) {
-        Bean<?> bean = cachedBean(BEHAVIOR_BEANS_BY_KEY, beanManager, value,
+        Bean<?> bean = cachedBean(BEHAVIORS, beanManager, value,
                 () -> resolveBeanUncached(beanManager, Behavior.class, null, FacesBehavior.Literal.of(value, true)));
 
         if (bean == null) {
@@ -274,7 +341,7 @@ public final class CdiUtils {
      * @return the facelet, or null if the application declares none for that view id.
      */
     public static Facelet getViewFacelet(BeanManager beanManager, String viewId) {
-        Bean<?> bean = cachedBean(VIEW_FACELET_BEANS_BY_KEY, beanManager, viewId,
+        Bean<?> bean = cachedBean(VIEW_FACELETS, beanManager, viewId,
                 () -> resolveBeanUncached(beanManager, Facelet.class, null, View.Literal.of(viewId)));
 
         if (bean == null) {
@@ -292,7 +359,7 @@ public final class CdiUtils {
      * @return the validator, or null if we could not match one.
      */
     public static Validator<?> createValidator(BeanManager beanManager, String value) {
-        Bean<?> bean = cachedBean(VALIDATOR_BEANS_BY_KEY, beanManager, value,
+        Bean<?> bean = cachedBean(VALIDATORS, beanManager, value,
                 () -> resolveValidatorBean(beanManager, value));
 
         if (bean == null) {
@@ -363,7 +430,12 @@ public final class CdiUtils {
     }
 
     private static Bean<?> resolveBean(BeanManager beanManager, Type type, String beanName, Annotation... qualifiers) {
-        ConcurrentMap<BeanLookupKey, Bean<?>> cache = RESOLVED_BEANS.computeIfAbsent(beanManager, k -> new ConcurrentHashMap<>());
+        CdiCache cdiCache = CACHES.get(beanManager);
+        if (cdiCache == null) {
+            return resolveBeanUncached(beanManager, type, beanName, qualifiers);
+        }
+
+        ConcurrentMap<BeanLookupKey, Bean<?>> cache = cdiCache.resolvedBeans;
         BeanLookupKey key = new BeanLookupKey(type, beanName, new HashSet<>(Arrays.asList(qualifiers)));
         Bean<?> cached = cache.get(key);
         if (cached != null) {
@@ -405,7 +477,12 @@ public final class CdiUtils {
      * Returns {@code null} if no bean has that name.
      */
     public static Bean<?> resolveBeanByName(BeanManager beanManager, String name) {
-        ConcurrentMap<BeanLookupKey, Bean<?>> cache = RESOLVED_BEANS.computeIfAbsent(beanManager, k -> new ConcurrentHashMap<>());
+        CdiCache cdiCache = CACHES.get(beanManager);
+        if (cdiCache == null) {
+            return beanManager.resolve(beanManager.getBeans(name));
+        }
+
+        ConcurrentMap<BeanLookupKey, Bean<?>> cache = cdiCache.resolvedBeans;
         BeanLookupKey key = new BeanLookupKey(null, name, Collections.emptySet());
         Bean<?> cached = cache.get(key);
         if (cached != null) {
@@ -423,16 +500,25 @@ public final class CdiUtils {
      * the type-containment filter on every request is wasted work.
      */
     public static Bean<?> resolveFacesContextProducerBean(BeanManager beanManager) {
-        Bean<?> cached = FACES_CONTEXT_PRODUCER_BEANS.get(beanManager);
+        CdiCache cdiCache = CACHES.get(beanManager);
+        if (cdiCache == null) {
+            return resolveFacesContextProducerBeanUncached(beanManager);
+        }
+
+        Bean<?> cached = cdiCache.facesContextProducerBean.get();
         if (cached != null) {
             return cached == NO_BEAN ? null : cached;
         }
+        Bean<?> resolved = resolveFacesContextProducerBeanUncached(beanManager);
+        cdiCache.facesContextProducerBean.set(resolved == null ? NO_BEAN : resolved);
+        return resolved;
+    }
+
+    private static Bean<?> resolveFacesContextProducerBeanUncached(BeanManager beanManager) {
         Set<Bean<?>> beans = beanManager.getBeans(FacesContext.class).stream()
             .filter(bean -> bean.getTypes().contains(FacesContextProducer.class))
             .collect(toSet());
-        Bean<?> resolved = beanManager.resolve(beans);
-        FACES_CONTEXT_PRODUCER_BEANS.put(beanManager, resolved == null ? NO_BEAN : resolved);
-        return resolved;
+        return beanManager.resolve(beans);
     }
 
     private static final class BeanLookupKey {

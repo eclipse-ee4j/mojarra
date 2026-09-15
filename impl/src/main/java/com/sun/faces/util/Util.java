@@ -113,6 +113,7 @@ import jakarta.servlet.http.MappingMatch;
 
 import com.sun.faces.RIConstants;
 import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.cdi.CdiUtils;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.config.manager.FacesSchema;
 import com.sun.faces.facelets.component.UIRepeat;
@@ -1590,6 +1591,14 @@ public class Util {
             if (result != null && facesContext != null) {
                 facesContext.getAttributes().put(CDI_BEAN_MANAGER, result);
                 facesContext.getExternalContext().getApplicationMap().put(CDI_BEAN_MANAGER, result);
+
+                // This is the instance Faces will hand to CdiUtils for the rest of the application's
+                // lifetime, so it is the one whose bean resolutions may be cached. Registering it here,
+                // rather than letting a lookup create its cache on demand, is what keeps an undeployed
+                // application (or one that was never set up) from ever entering the cache. It is reached
+                // only on this branch, which runs once per application: from the second request on, the
+                // manager is served from the FacesContext attributes or the application map above.
+                CdiUtils.registerBeanManager(result);
             }
         }
 

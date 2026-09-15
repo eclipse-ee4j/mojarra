@@ -359,6 +359,12 @@ public class CdiLookupCountTest {
         final AtomicInteger resolves = new AtomicInteger();
         final AtomicInteger references = new AtomicInteger();
 
+        CountingBeanManager() {
+            // CdiUtils only caches for registered bean managers, which is what Faces does once per
+            // application while it is being set up. Each instance here stands in for one such application.
+            CdiUtils.registerBeanManager(this);
+        }
+
         @Override
         public Set<Bean<?>> getBeans(Type beanType, Annotation... qualifiers) {
             getBeansByType.incrementAndGet();

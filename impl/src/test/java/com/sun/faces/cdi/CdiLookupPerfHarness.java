@@ -96,6 +96,12 @@ public class CdiLookupPerfHarness {
                 .addExtension(new StubFacesContextProducerExtension())
                 .initialize();
         beanManager = container.getBeanManager();
+
+        // CdiUtils only caches for registered bean managers; Faces registers the one it resolves while
+        // setting an application up. Stand in for that here, otherwise the "cached" column would be
+        // measuring the uncached path.
+        CdiUtils.registerBeanManager(beanManager);
+
         System.out.println();
         System.out.println("CdiLookupPerfHarness (warmup=" + WARMUP_ITERATIONS + ", iterations=" + ITERATIONS + ", runs=" + RUNS + ")");
         System.out.println();

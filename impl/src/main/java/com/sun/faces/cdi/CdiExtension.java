@@ -80,6 +80,16 @@ public class CdiExtension implements Extension {
     private final Set<Type> managedPropertyTargetTypes = new HashSet<>();
 
     /**
+     * The {@link BeanManager} this extension registered with {@link CdiUtils} on
+     * {@code AfterDeploymentValidation}, so that {@code BeforeShutdown} can unregister that very instance
+     * rather than the one its own event happens to carry. The CDI specification does not define
+     * {@code BeanManager} equality or instance identity, so holding on to the object is the only portable way
+     * to guarantee the two match. This extension is instantiated once per application, which is what makes an
+     * instance field the right place for it.
+     */
+    private BeanManager registeredBeanManager;
+
+    /**
      * Stores the logger.
      */
     private static final Logger LOGGER = FacesLogger.APPLICATION_VIEW.getLogger();
@@ -219,6 +229,14 @@ public class CdiExtension implements Extension {
      */
     public void afterDeploymentValidation(@Observes AfterDeploymentValidation event, BeanManager beanManager) {
 
+        // Start caching bean resolutions for this application. Faces registers the BeanManager it obtains
+        // itself (see Util#getCdiBeanManager); this covers the paths that are handed this extension's
+        // BeanManager instead, such as ManagedPropertyProducer. On an implementation whose BeanManager
+        // equality is archive-derived the two collapse into one entry, on one with identity equality they
+        // are two entries for the same application -- either way both are released on shutdown.
+        registeredBeanManager = beanManager;
+        CdiUtils.registerBeanManager(beanManager);
+
         // Sort the classes wrapped by a DataModel that we collected in processBean() such that
         // for any 2 classes X and Y from this collection, if an object of X is an instanceof an object of Y,
         // X appears in the collection before Y. The collection's sorting is otherwise arbitrary.
@@ -269,16 +287,22 @@ public class CdiExtension implements Extension {
     }
 
     /**
-     * BeforeShutdown: drop this application's cached CDI bean resolutions so a redeployment that
-     * reuses the BeanManager identity does not resolve against {@link jakarta.enterprise.inject.spi.Bean}
-     * instances left over from the now-defunct deployment (which fails with a
-     * {@code ContextNotActiveException} on first use).
+     * BeforeShutdown: drop this application's cached CDI bean resolutions so a redeployment that reuses the
+     * BeanManager identity does not resolve against {@link jakarta.enterprise.inject.spi.Bean} instances left
+     * over from the now-defunct deployment (which fails with a {@code ContextNotActiveException} on first
+     * use), and so the undeployed application's beans -- and through them its class loader -- are released.
+     *
+     * <p>Unregisters the instance this extension registered rather than the one the event carries: they need
+     * not be the same object, and {@link BeanManager} equality is not specified by CDI. Applications whose
+     * {@code ServletContext} is torn down are also unregistered by {@code ConfigureListener#contextDestroyed};
+     * unregistering twice is harmless.
      *
      * @param event the before shutdown event
      * @param beanManager the current bean manager
      */
     public void beforeShutdown(@Observes BeforeShutdown event, BeanManager beanManager) {
-        CdiUtils.clearCaches();
+        CdiUtils.unregisterBeanManager(registeredBeanManager);
+        registeredBeanManager = null;
     }
 
     /**
