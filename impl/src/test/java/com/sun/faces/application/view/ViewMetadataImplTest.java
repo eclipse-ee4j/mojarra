@@ -94,6 +94,18 @@ public class ViewMetadataImplTest {
     }
 
     /**
+     * The map renders its constants by name, so that the rendered text of <code>#{Weekday}</code> as a whole does not
+     * depend on the order in which they were collected, while iteration keeps the declaration order.
+     */
+    @Test
+    public void collectConstantsRendersConstantsByName() {
+        Map<String, Object> constants = ViewMetadataImpl.collectConstants(Weekday.class.getName());
+
+        assertEquals("{FRIDAY=FRIDAY, MONDAY=MONDAY, SATURDAY=SATURDAY, SUNDAY=SUNDAY, THURSDAY=THURSDAY, "
+                + "TUESDAY=TUESDAY, WEDNESDAY=WEDNESDAY}", constants.toString());
+    }
+
+    /**
      * A constant which does not exist at all is a typo in the view, which must not silently evaluate to empty.
      */
     @Test

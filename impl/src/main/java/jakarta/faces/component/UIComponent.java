@@ -1594,7 +1594,11 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
         if (component == null) {
             throw new NullPointerException();
         }
-        return component.isCompositeComponent;
+
+        // A component which does not own its attributes map, but delegates them to another component, never receives
+        // the COMPONENT_RESOURCE_KEY put itself, so its own flag stays false and the map must still be probed.
+        return component.isCompositeComponent
+                || !(component instanceof UIComponentBase) && component.getAttributes().containsKey(COMPONENT_RESOURCE_KEY);
 
     }
 
