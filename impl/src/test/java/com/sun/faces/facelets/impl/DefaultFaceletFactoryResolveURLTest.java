@@ -34,10 +34,11 @@ import com.sun.faces.context.FacesFileNotFoundException;
  * relative {@code src} or {@code template} must resolve within the root of the Facelet declaring it, whichever root
  * that is, and must not reach out of it.
  * <p>
- * This contract is not expressible as an integration test: a deployed test webapp has one single resource root, because
- * per the Servlet specification {@code META-INF/resources} is honored for JARs in {@code WEB-INF/lib} only, and those
- * carry a {@code jar:} url rather than the {@code file:} url of a root exploded next to the webapp. Merging a second
- * physical root takes container specific deployment configuration, which is why the resolver is stubbed here instead.
+ * This contract is not expressible as an integration test in a Jakarta EE compatible container: a deployed test webapp
+ * has one single resource root, because per the Servlet specification {@code META-INF/resources} is honored for JARs in
+ * {@code WEB-INF/lib} only, and those carry a {@code jar:} url rather than the {@code file:} url of a root exploded next
+ * to the webapp. Merging a second physical root takes container specific deployment configuration, which is why the
+ * resolver is stubbed here instead.
  */
 class DefaultFaceletFactoryResolveURLTest {
 
@@ -46,6 +47,9 @@ class DefaultFaceletFactoryResolveURLTest {
     private static final String ARCHIVED_LIBRARY = "jar:file:/app/WEB-INF/lib/library.jar!/META-INF/resources/";
     private static final String ARCHIVED_CONTRACT = "jar:file:/app/WEB-INF/lib/library.jar!/META-INF/contracts/theme/";
     private static final String ARCHIVED_FLOW = "jar:file:/app/WEB-INF/lib/library.jar!/META-INF/flows/checkout/";
+    private static final String SPACED_WEBAPP = "file:/my apps/app (1)/";
+    private static final String SPACED_LIBRARY = "jar:file:/app/WEB-INF/lib/my library (1).jar!/META-INF/resources/";
+    private static final String BRACKETED_CONTRACT = "jar:file:/app/WEB-INF/lib/library.jar!/META-INF/contracts/[theme]/";
 
     private final DefaultFaceletFactory factory = factoryWithWebappRoot(WEBAPP);
 
@@ -184,6 +188,39 @@ class DefaultFaceletFactoryResolveURLTest {
     void anAbsolutePathMayNotBePercentEncodedOrHoldABackslash() {
         assertRejected(WEBAPP + "page.xhtml", "/includes/..%2Fevil.xhtml");
         assertRejected(WEBAPP + "page.xhtml", "/includes/..\\evil.xhtml");
+    }
+
+    /**
+     * A space and a bracket are legitimate in a resource name and {@link URL} keeps either literal, so a path holding
+     * one resolves and is bounded like any other, in a file name as readily as in a whole path segment. Both are
+     * illegal in a {@link java.net.URI}, and a leading {@code [} opens an IPv6 literal to its authority parser, so the
+     * guard on a path must stay a scan for the characters that traverse and must never parse the path as a
+     * {@code URI}.
+     */
+    @Test
+    void aRelativePathMayHoldASpaceOrABracket() throws Exception {
+        assertEquals(WEBAPP + "my template.xhtml", resolve(WEBAPP + "page.xhtml", "my template.xhtml"));
+        assertEquals(WEBAPP + "[theme]/template.xhtml", resolve(WEBAPP + "page.xhtml", "[theme]/template.xhtml"));
+        assertEquals(WEBAPP + "shared dir/template [1].xhtml", resolve(WEBAPP + "sub dir (1)/page.xhtml", "../shared dir/template [1].xhtml"));
+        assertEquals(ARCHIVED_LIBRARY + "[theme]/template.xhtml", resolve(ARCHIVED_LIBRARY + "archived/page.xhtml", "../[theme]/template.xhtml"));
+        assertRejected(WEBAPP + "sub dir (1)/page.xhtml", "../../evil [1].xhtml");
+        assertRejected(WEBAPP + "page.xhtml", "../[theme]/evil.xhtml");
+    }
+
+    /**
+     * The resource root is read off the url textually, so a webapp, an archive or a named contract directory holding a
+     * space or a bracket bounds its Facelets like any other.
+     */
+    @Test
+    void aResourceRootMayHoldASpaceOrABracket() throws Exception {
+        DefaultFaceletFactory spacedWebapp = factoryWithWebappRoot(SPACED_WEBAPP);
+
+        assertEquals(SPACED_WEBAPP + "shared/template.xhtml", resolve(spacedWebapp, SPACED_WEBAPP + "page.xhtml", "shared/template.xhtml"));
+        assertRejected(spacedWebapp, SPACED_WEBAPP + "page.xhtml", "../evil.xhtml");
+        assertEquals(SPACED_LIBRARY + "shared/template.xhtml", resolve(SPACED_LIBRARY + "sub/page.xhtml", "../shared/template.xhtml"));
+        assertRejected(SPACED_LIBRARY + "sub/page.xhtml", "../../evil.xhtml");
+        assertEquals(BRACKETED_CONTRACT + "shared/template.xhtml", resolve(BRACKETED_CONTRACT + "sub/page.xhtml", "../shared/template.xhtml"));
+        assertRejected(BRACKETED_CONTRACT + "sub/page.xhtml", "../../other/template.xhtml");
     }
 
     /**
