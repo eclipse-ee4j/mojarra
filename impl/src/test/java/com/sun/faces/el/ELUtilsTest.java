@@ -1,7 +1,9 @@
 package com.sun.faces.el;
 
+import java.lang.reflect.Method;
 import java.net.URL;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -52,6 +54,17 @@ public class ELUtilsTest {
                 .get(RIConstants.FACES_PREFIX + "ApplicationAssociate");
 
         FacesContext.getCurrentInstance().getAttributes().put(RIConstants.CDI_BEAN_MANAGER, new MockBeanManager());
+    }
+
+    @AfterEach
+    public void tearDown() throws Exception {
+        // Constructing a FacesContext makes it current for the thread, and FacesContextImpl.release() needs a
+        // CDI environment this test has none of, so the protected setter is reached directly.
+        Method setCurrentInstance = FacesContext.class.getDeclaredMethod("setCurrentInstance", FacesContext.class);
+        setCurrentInstance.setAccessible(true);
+        setCurrentInstance.invoke(null, new Object[] { null });
+
+        FactoryFinder.releaseFactories();
     }
 
     @Test

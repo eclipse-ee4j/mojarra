@@ -25,7 +25,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.Bean;
@@ -36,8 +35,9 @@ import jakarta.faces.component.behavior.BehaviorBase;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.facelets.Facelet;
 
-import com.sun.faces.mock.MockBeanManager;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -51,6 +51,19 @@ import org.junit.jupiter.api.Test;
  * quantify the per-call cost and act as a regression guard against an uncached lookup path.
  */
 public class CdiLookupCountTest {
+
+    private TestApplicationScope application;
+
+    @BeforeEach
+    public void deploy() {
+        application = TestApplicationScope.deploy();
+    }
+
+    @AfterEach
+    public void undeploy() {
+        application.undeploy();
+        TestApplicationScope.clearThreadState();
+    }
 
     @Test
     public void createConverter_byId_unknown_performsTwoLookups() {
@@ -292,6 +305,7 @@ public class CdiLookupCountTest {
         Thread[] workers = new Thread[threads];
         for (int t = 0; t < threads; t++) {
             workers[t] = new Thread(() -> {
+                application.makeCurrent(); // Every request thread serves this application.
                 for (int i = 0; i < callsPerThread; i++) {
                     CdiUtils.createConverter(bm, "jakarta.faces.Integer");
                 }
@@ -350,38 +364,6 @@ public class CdiLookupCountTest {
         assertEquals(1, bm.getBeansByType.get(), "Resolution cached after first hit");
         assertEquals(1, bm.resolves.get(), "Resolution cached after first hit");
         assertEquals(10, bm.references.get(), "getReference invoked per call to preserve scope semantics");
-    }
-
-    private static class CountingBeanManager extends MockBeanManager {
-
-        final AtomicInteger getBeansByType = new AtomicInteger();
-        final AtomicInteger getBeansByName = new AtomicInteger();
-        final AtomicInteger resolves = new AtomicInteger();
-        final AtomicInteger references = new AtomicInteger();
-
-        @Override
-        public Set<Bean<?>> getBeans(Type beanType, Annotation... qualifiers) {
-            getBeansByType.incrementAndGet();
-            return Collections.emptySet();
-        }
-
-        @Override
-        public Set<Bean<?>> getBeans(String name) {
-            getBeansByName.incrementAndGet();
-            return Collections.emptySet();
-        }
-
-        @Override
-        public <X> Bean<? extends X> resolve(Set<Bean<? extends X>> beans) {
-            resolves.incrementAndGet();
-            return null;
-        }
-
-        @Override
-        public Object getReference(Bean<?> bean, Type beanType, CreationalContext<?> ctx) {
-            references.incrementAndGet();
-            return null;
-        }
     }
 
     private static final class StubBean<T> implements Bean<T> {
