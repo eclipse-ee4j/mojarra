@@ -35,6 +35,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -186,9 +188,16 @@ public class DefaultFaceletFactory {
         // A relative src/template must resolve to a Facelet inside this application. Reject absolute
         // URLs (http:, file:, jar:, ...) whose scheme discards the base, "../" traversal that escapes
         // the deployment, and any non-Facelet resource.
-        URL url = new URL(source, path);
+        requireRelativeReference(path);
+
+        URL url;
+        try {
+            url = new URL(source, path);
+        } catch (MalformedURLException malformed) {
+            throw new FacesFileNotFoundException(path + " Invalid path");
+        }
         requireSameOrigin(source, url, path);
-        requireWithinApplicationRoot(url, path);
+        requireWithinApplicationRoot(source, url, path);
         requireFaceletResource(url, path);
         return url;
     }
@@ -199,9 +208,42 @@ public class DefaultFaceletFactory {
         }
     }
 
-    private void requireWithinApplicationRoot(URL url, String path) throws FacesFileNotFoundException {
-        if (url.getProtocol().equals(baseUrl.getProtocol()) && !url.toExternalForm().startsWith(baseUrlAsString)) {
+    private void requireWithinApplicationRoot(URL source, URL url, String path) throws FacesFileNotFoundException {
+        // Debug
+        // System.out.println(">>> source=" + source + " webappPath(source)=" + getWebappPath(source) + " baseUrlAsString=" + baseUrlAsString + " url=" + url + " webappPath(url)=" + getWebappPath(url));
+        String sourceForm = source.toExternalForm();
+        int bang = sourceForm.indexOf("!/");
+        if (bang != -1) {                                    // jar-hosted → archive is the boundary
+            String archive = sourceForm.substring(0, bang + 2);
+            if (!url.toExternalForm().startsWith(archive)) {
+                throw new FacesFileNotFoundException(path + " is not within the application root");
+            }
+            return;
+        }
+        if (url.getProtocol().equals(baseUrl.getProtocol()) // file-hosted → webapp root, when comparable
+                && !url.toExternalForm().startsWith(baseUrlAsString)) {
             throw new FacesFileNotFoundException(path + " is not within the application root");
+        }
+    }
+
+    /**
+     * A relative src/template must be a plain path: no scheme (which URL would let discard the base, or would
+     * make it throw for a scheme with no handler such as data:) and no authority. Validated on the raw string
+     * before any URL is constructed from it, because the contracts check runs a new URL(src, path) of its own
+     * ahead of resolveURL.
+     */
+    private static void requireRelativeReference(String path) throws FacesFileNotFoundException {
+        if (path.startsWith("/")) {
+            return; // absolute-in-webapp, handled by the resolver / requireFaceletResource
+        }
+        URI uri;
+        try {
+            uri = new URI(path);
+        } catch (URISyntaxException e) {
+            throw new FacesFileNotFoundException(path + " Invalid path");
+        }
+        if (uri.getScheme() != null || uri.getAuthority() != null) {
+            throw new FacesFileNotFoundException(path + " Invalid path");
         }
     }
 
@@ -248,14 +290,27 @@ public class DefaultFaceletFactory {
      * @throws MalformedURLException if the path cannot be resolved against the source url.
      */
     public boolean isContractsResourceAccessDenied(URL src, String relativePath) throws MalformedURLException {
+        // A non-relative reference (scheme or authority) is not a contract resource. Return false so the
+        // include proceeds to resolveURL, which rejects it with the proper message; also avoids new URL
+        // throwing here on a scheme with no handler such as data:.
+        if (!relativePath.startsWith("/") && !isPlainRelative(relativePath)) {
+            return false;
+        }
         String targetPath = relativePath.startsWith("/") ? relativePath : getWebappPath(new URL(src, relativePath));
-
         if (targetPath == null || !manager.isContractsResource(targetPath)) {
             return false;
         }
-
         String sourcePath = getWebappPath(src);
         return sourcePath == null || !manager.isContractsResource(sourcePath);
+    }
+
+    private static boolean isPlainRelative(String path) {
+        try {
+            URI uri = new URI(path);
+            return uri.getScheme() == null && uri.getAuthority() == null;
+        } catch (URISyntaxException e) {
+            return false;
+        }
     }
 
     /**
