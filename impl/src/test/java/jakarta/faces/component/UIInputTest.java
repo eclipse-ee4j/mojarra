@@ -16,6 +16,8 @@
 
 package jakarta.faces.component;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -189,5 +191,68 @@ public class UIInputTest {
             assertTrue(v.getMinimum() == i + 1);
         }
 
+    }
+
+    /**
+     * The local value is saved in the component state, so the <code>localValueSet</code> and <code>valid</code>
+     * properties which qualify it must be saved along with it. An input whose local value outlives the request that set
+     * it is otherwise restored as "no local value", and then renders that local value forever because
+     * <code>updateModel</code> no longer recognizes it as one to push and clear.
+     */
+    @Test
+    public void testLocalValueSetAndValidAreSavedWithTheLocalValue() {
+        FacesContext context = Mockito.mock(FacesContext.class);
+        UIInput input = new UIInput();
+        input.markInitialState();
+        input.setValue("local");
+        input.setValid(false);
+
+        Object state = input.saveState(context);
+        assertNotNull(state);
+
+        UIInput restored = new UIInput();
+        restored.markInitialState();
+        restored.restoreState(context, state);
+
+        assertEquals("local", restored.getLocalValue());
+        assertTrue(restored.isLocalValueSet());
+        assertFalse(restored.isValid());
+    }
+
+    /**
+     * <code>resetValue</code> clears the local value, so it must clear the properties which qualify it from the
+     * component state as well.
+     */
+    @Test
+    public void testResetValueClearsLocalValueSetAndValidFromTheSavedState() {
+        FacesContext context = Mockito.mock(FacesContext.class);
+        UIInput input = new UIInput();
+        input.markInitialState();
+        input.setValue("local");
+        input.setValid(false);
+        input.resetValue();
+
+        UIInput restored = new UIInput();
+        restored.markInitialState();
+        restored.restoreState(context, input.saveState(context));
+
+        assertNull(restored.getLocalValue());
+        assertFalse(restored.isLocalValueSet());
+        assertTrue(restored.isValid());
+    }
+
+    /**
+     * An input left at its defaults contributes nothing to the saved state, so writing a default over an absent entry
+     * must not create one.
+     */
+    @Test
+    public void testWritingDefaultLocalValueSetAndValidSavesNothing() {
+        FacesContext context = Mockito.mock(FacesContext.class);
+        UIInput input = new UIInput();
+        input.markInitialState();
+        input.setLocalValueSet(false);
+        input.setValid(true);
+
+        assertNull(input.saveState(context));
     }
 }
