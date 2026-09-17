@@ -43,7 +43,6 @@ import org.glassfish.mojarra.util.Util;
  * A Compiler instance may handle compiling multiple sources
  *
  * @author Jacob Hookom
- * @version $Id$
  */
 public abstract class Compiler {
 

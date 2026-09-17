@@ -22,7 +22,6 @@ import jakarta.faces.view.facelets.Metadata;
 /**
  *
  * @author Jacob Hookom
- * @version $Id$
  */
 final class MetadataImpl extends Metadata {
 

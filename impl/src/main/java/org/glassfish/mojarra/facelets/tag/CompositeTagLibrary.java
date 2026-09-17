@@ -39,7 +39,6 @@ import org.glassfish.mojarra.util.Util;
  * handles the requested method.
  *
  * @author Jacob Hookom
- * @version $Id$
  */
 public final class CompositeTagLibrary implements TagLibrary {
 

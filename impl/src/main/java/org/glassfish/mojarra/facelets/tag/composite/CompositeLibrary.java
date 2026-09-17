@@ -23,7 +23,6 @@ import org.glassfish.mojarra.facelets.tag.AbstractTagLibrary;
 
 /**
  * @author Jacob Hookom
- * @version $Id$
  */
 public final class CompositeLibrary extends AbstractTagLibrary {
 

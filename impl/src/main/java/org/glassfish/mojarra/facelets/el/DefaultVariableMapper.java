@@ -31,7 +31,6 @@ import jakarta.el.VariableMapper;
  * @see java.util.Map
  *
  * @author Jacob Hookom
- * @version $Id$
  */
 public final class DefaultVariableMapper extends VariableMapper {
 

@@ -27,7 +27,6 @@ import org.glassfish.mojarra.util.Util;
  * A base tag for wiring state to an object instance based on rules populated at the time of creating a MetaRuleset.
  *
  * @author Jacob Hookom
- * @version $Id$
  */
 public abstract class MetaTagHandlerImpl extends MetaTagHandler {
 

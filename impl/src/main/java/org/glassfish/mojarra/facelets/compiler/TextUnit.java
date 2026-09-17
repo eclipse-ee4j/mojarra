@@ -34,7 +34,6 @@ import org.glassfish.mojarra.facelets.el.ELText;
 /**
  *
  * @author Jacob Hookom
- * @version $Id$
  */
 final class TextUnit extends CompilationUnit {
 

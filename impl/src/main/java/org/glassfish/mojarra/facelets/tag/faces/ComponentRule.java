@@ -32,7 +32,6 @@ import org.glassfish.mojarra.util.FacesLogger;
 /**
  *
  * @author Jacob Hookom
- * @version $Id$
  */
 final class ComponentRule extends MetaRule {
 

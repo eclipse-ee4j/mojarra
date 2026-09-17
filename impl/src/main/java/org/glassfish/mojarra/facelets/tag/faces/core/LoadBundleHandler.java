@@ -46,7 +46,6 @@ import org.glassfish.mojarra.util.Util;
  * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/loadBundle.html">tag documentation</a>.
  *
  * @author Jacob Hookom
- * @version $Id$
  */
 public final class LoadBundleHandler extends TagHandlerImpl {
 

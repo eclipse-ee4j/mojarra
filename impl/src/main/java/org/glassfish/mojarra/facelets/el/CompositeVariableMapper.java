@@ -26,7 +26,6 @@ import jakarta.el.VariableMapper;
  * @see jakarta.el.ValueExpression
  *
  * @author Jacob Hookom
- * @version $Id$
  */
 public final class CompositeVariableMapper extends VariableMapper {
 

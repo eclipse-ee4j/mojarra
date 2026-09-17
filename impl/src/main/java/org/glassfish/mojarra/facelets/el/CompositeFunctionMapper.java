@@ -27,7 +27,6 @@ import jakarta.el.FunctionMapper;
  * @see java.lang.reflect.Method
  *
  * @author Jacob Hookom
- * @version $Id$
  */
 public final class CompositeFunctionMapper extends FunctionMapper {
 

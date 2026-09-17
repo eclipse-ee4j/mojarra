@@ -38,7 +38,6 @@ import org.glassfish.mojarra.util.MessageUtils;
  * Handles parsing EL Strings in accordance with the EL-API Specification. The parser accepts either <code>${..}</code> or <code>#{..}</code>.
  *
  * @author Jacob Hookom
- * @version $Id$
  */
 public class ELText {
 

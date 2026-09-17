@@ -45,7 +45,6 @@ import org.glassfish.mojarra.facelets.tag.ui.DefineHandler;
  * A Tag that is specified in a FaceletFile. Takes all attributes specified and sets them on the FaceletContext before including the targeted Facelet file.
  *
  * @author Jacob Hookom
- * @version $Id$
  */
 final class UserTagHandler extends TagHandlerImpl implements TemplateClient {
 

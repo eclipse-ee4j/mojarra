@@ -24,7 +24,6 @@ import org.glassfish.mojarra.facelets.tag.TagLibrary;
 
 /**
  * @author Jacob Hookom
- * @version $Id$
  */
 final class NamespaceManager {
 

@@ -36,7 +36,6 @@ import org.glassfish.mojarra.facelets.tag.faces.ComponentSupport;
  * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/convertNumber.html">tag documentation</a>.
  *
  * @author Jacob Hookom
- * @version $Id$
  */
 public final class ConvertNumberHandler extends ConverterHandler {
 

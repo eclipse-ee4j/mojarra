@@ -47,7 +47,6 @@ import org.glassfish.mojarra.renderkit.html_basic.WebsocketRenderer;
  * documentation</a>.
  *
  * @author Jacob Hookom
- * @version $Id$
  */
 public final class CoreLibrary extends AbstractTagLibrary {
 

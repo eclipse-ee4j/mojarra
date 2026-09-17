@@ -57,7 +57,6 @@ import org.glassfish.mojarra.util.Util;
  * Default Facelet implementation.
  *
  * @author Jacob Hookom
- * @version $Id$
  */
 final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
 

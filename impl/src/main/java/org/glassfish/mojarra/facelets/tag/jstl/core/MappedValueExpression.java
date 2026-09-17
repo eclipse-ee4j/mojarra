@@ -25,7 +25,6 @@ import jakarta.el.ValueExpression;
 
 /**
  * @author Jacob Hookom
- * @version $Id$
  */
 public final class MappedValueExpression extends ValueExpression {
 

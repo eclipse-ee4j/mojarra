@@ -23,7 +23,6 @@ import jakarta.faces.view.facelets.MetaRuleset;
 
 /**
  * @author Jacob Hookom
- * @version $Id$
  */
 public class HtmlComponentHandler extends ComponentHandler {
 

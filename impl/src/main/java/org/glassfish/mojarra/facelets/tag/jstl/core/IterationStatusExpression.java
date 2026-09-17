@@ -24,7 +24,6 @@ import org.glassfish.mojarra.facelets.tag.IterationStatus;
 
 /**
  * @author Jacob Hookom
- * @version $Id$
  */
 public final class IterationStatusExpression extends ValueExpression {
 

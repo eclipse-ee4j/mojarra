@@ -58,7 +58,6 @@ import org.glassfish.mojarra.util.Util;
 /**
  *
  * @author Jacob Hookom
- * @version $Id$
  */
 public final class ComponentSupport {
 

@@ -20,7 +20,6 @@ import java.io.Serializable;
 
 /**
  * @author Jacob Hookom
- * @version $Id$
  */
 public class IterationStatus implements Serializable {
 

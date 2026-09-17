@@ -34,7 +34,6 @@ import org.glassfish.mojarra.facelets.tag.faces.PassThroughAttributeLibrary;
  *
  * @see jakarta.faces.view.facelets.TagAttribute
  * @author Jacob Hookom
- * @version $Id$
  */
 public final class TagAttributesImpl extends TagAttributes {
 

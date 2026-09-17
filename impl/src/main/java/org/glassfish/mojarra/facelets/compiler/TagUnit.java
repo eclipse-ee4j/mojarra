@@ -29,7 +29,6 @@ import org.glassfish.mojarra.facelets.tag.ui.UILibrary;
 /**
  *
  * @author Jacob Hookom
- * @version $Id$
  */
 class TagUnit extends CompilationUnit implements TagConfig {
 

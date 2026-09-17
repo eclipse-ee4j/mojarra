@@ -26,7 +26,6 @@ import jakarta.faces.view.facelets.TagHandler;
  *
  * @see TagLibrary
  * @author Jacob Hookom
- * @version $Id$
  */
 interface TagHandlerFactory {
 

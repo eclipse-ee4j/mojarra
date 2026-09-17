@@ -35,7 +35,6 @@ import org.glassfish.mojarra.facelets.tag.TagHandlerImpl;
  * Simplified implementation of c:set
  *
  * @author Jacob Hookom
- * @version $Id$
  */
 public class SetHandler extends TagHandlerImpl {
 

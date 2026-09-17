@@ -29,7 +29,6 @@ import jakarta.el.VariableMapper;
  * but resolve against the wrapped VariableMapper if the Map doesn't contain the ValueExpression requested.
  *
  * @author Jacob Hookom
- * @version $Id$
  */
 public class VariableMapperWrapper extends VariableMapper {
 

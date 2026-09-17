@@ -47,7 +47,6 @@ import org.glassfish.mojarra.util.Util;
  * Representation of a Tag's attribute in a Facelet File
  *
  * @author Jacob Hookom
- * @version $Id$
  */
 public class TagAttributeImpl extends TagAttribute {
 

@@ -31,7 +31,6 @@ import org.glassfish.mojarra.facelets.util.FastWriter;
 
 /**
  * @author Jacob Hookom
- * @version $Id$
  */
 final class UITextHandler extends AbstractUIHandler {
 

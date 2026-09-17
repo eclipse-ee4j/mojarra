@@ -34,7 +34,6 @@ import jakarta.faces.view.facelets.TagAttribute;
  *
  *
  * @author Jacob Hookom
- * @version $Id$
  */
 public final class TagValueExpression extends ValueExpression implements Externalizable {
 

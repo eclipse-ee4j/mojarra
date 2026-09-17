@@ -33,7 +33,6 @@ import jakarta.faces.view.facelets.TagAttribute;
  *
  *
  * @author Jacob Hookom
- * @version $Id$
  */
 public final class TagMethodExpression extends MethodExpression implements Externalizable {
 

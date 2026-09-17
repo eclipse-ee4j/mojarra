@@ -30,7 +30,6 @@ import jakarta.faces.view.facelets.TagAttributeException;
 /**
  *
  * @author Jacob Hookom
- * @version $Id$
  */
 final class BeanPropertyTagRule extends MetaRule {
 

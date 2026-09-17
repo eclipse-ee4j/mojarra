@@ -26,7 +26,6 @@ import org.glassfish.mojarra.facelets.el.ELText;
 
 /**
  * @author Jacob Hookom
- * @version $Id$
  */
 public final class UIText extends UILeaf {
 

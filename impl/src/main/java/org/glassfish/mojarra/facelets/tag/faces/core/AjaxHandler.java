@@ -86,7 +86,6 @@ import org.glassfish.mojarra.renderkit.RenderKitUtils;
  * components that implement the {@link ClientBehaviorHolder} interface are evaluated this {@link AjaxBehavior} instance must be added as a behavior to the
  * component.
  *
- * @version $Id: AjaxHandler.java 5369 2008-09-08 19:53:45Z rogerk $
  */
 public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderAttachedObjectHandler {
 

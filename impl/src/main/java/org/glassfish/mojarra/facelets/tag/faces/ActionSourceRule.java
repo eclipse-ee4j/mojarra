@@ -31,7 +31,6 @@ import jakarta.faces.view.facelets.TagAttribute;
 /**
  *
  * @author Jacob Hookom
- * @version $Id$
  */
 final class ActionSourceRule extends MetaRule {
 

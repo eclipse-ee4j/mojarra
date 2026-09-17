@@ -27,7 +27,6 @@ import org.glassfish.mojarra.util.Util;
  * TagDecorators return a value other than null.
  *
  * @author Jacob Hookom
- * @version $Id$
  */
 public final class CompositeTagDecorator implements TagDecorator {
 

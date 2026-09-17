@@ -29,7 +29,6 @@ import jakarta.faces.view.facelets.FaceletHandler;
 /**
  *
  * @author Jacob Hookom
- * @version $Id$
  */
 class CompilationUnit {
 

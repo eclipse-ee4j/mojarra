@@ -45,7 +45,6 @@ import org.glassfish.mojarra.util.Util;
 /**
  *
  * @author Jacob Hookom
- * @version $Id$
  */
 public class MetaRulesetImpl extends MetaRuleset {
 

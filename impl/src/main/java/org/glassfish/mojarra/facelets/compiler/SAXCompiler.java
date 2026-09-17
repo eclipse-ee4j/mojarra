@@ -57,7 +57,6 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  * @author Jacob Hookom
  * @see Compiler
- * @version $Id$
  */
 public final class SAXCompiler extends Compiler {
 

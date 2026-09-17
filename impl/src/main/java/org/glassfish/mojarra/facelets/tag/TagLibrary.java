@@ -28,7 +28,6 @@ import jakarta.faces.view.facelets.TagHandler;
  * A library of Tags associated with one or more namespaces.
  *
  * @author Jacob Hookom
- * @version $Id$
  */
 public interface TagLibrary {
 

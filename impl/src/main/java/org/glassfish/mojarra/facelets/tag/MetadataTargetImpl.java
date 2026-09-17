@@ -30,7 +30,6 @@ import jakarta.faces.view.facelets.MetadataTarget;
 /**
  *
  * @author Jacob Hookom
- * @version $Id$
  */
 public class MetadataTargetImpl extends MetadataTarget {
 

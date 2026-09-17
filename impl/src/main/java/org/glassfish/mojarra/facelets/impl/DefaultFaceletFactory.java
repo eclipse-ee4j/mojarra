@@ -74,7 +74,6 @@ import org.glassfish.mojarra.util.Util;
  * Default FaceletFactory implementation.
  *
  * @author Jacob Hookom
- * @version $Id: DefaultFaceletFactory.java,v 1.10 2007/04/09 01:13:17 youngm Exp $
  */
 public class DefaultFaceletFactory {
 

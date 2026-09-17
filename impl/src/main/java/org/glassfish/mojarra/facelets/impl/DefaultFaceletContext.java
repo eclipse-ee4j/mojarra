@@ -53,7 +53,6 @@ import org.glassfish.mojarra.facelets.el.DefaultVariableMapper;
  * Facelet#apply(FacesContext, UIComponent)}.
  *
  * @author Jacob Hookom
- * @version $Id: DefaultFaceletContext.java,v 1.4.4.3 2006/03/25 01:01:53 jhook Exp $
  */
 final class DefaultFaceletContext extends FaceletContextImplBase {
 
