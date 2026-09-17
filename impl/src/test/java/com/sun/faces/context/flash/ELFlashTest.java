@@ -37,7 +37,7 @@ import org.mockito.MockedStatic;
 
 import com.sun.faces.context.flash.ELFlash.CONSTANTS;
 import com.sun.faces.context.flash.ELFlash.PreviousNextFlashInfoManager;
-import com.sun.faces.util.ByteArrayGuardAESCTR;
+import com.sun.faces.util.ByteArrayGuardAESGCM;
 
 public class ELFlashTest {
 
@@ -513,7 +513,7 @@ public class ELFlashTest {
      */
     @Test
     public void testDecodeGarbageCookieResetsNextRequestFlashInfo() throws Exception {
-        ByteArrayGuardAESCTR mockGuard = mock(ByteArrayGuardAESCTR.class);
+        ByteArrayGuardAESGCM mockGuard = mock(ByteArrayGuardAESGCM.class);
         when(mockGuard.encrypt(any())).thenReturn("encrypted");
         when(mockGuard.decrypt(any())).thenReturn("some_garbage");
 
@@ -528,7 +528,7 @@ public class ELFlashTest {
     }
 
     private PreviousNextFlashInfoManager mockPreviousNextFlashInfoManager(Map<String, Map<String, Object>> flashInnerMap) {
-        PreviousNextFlashInfoManager manager = new PreviousNextFlashInfoManager(new ByteArrayGuardAESCTR(), flashInnerMap);
+        PreviousNextFlashInfoManager manager = new PreviousNextFlashInfoManager(new ByteArrayGuardAESGCM(), flashInnerMap);
         manager.initializeBaseCase(new ELFlash(mockedExternalContext) {
             @Override
             long getNewSequenceNumber() {
