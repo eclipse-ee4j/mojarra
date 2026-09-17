@@ -1,10 +1,12 @@
 package org.glassfish.mojarra.el;
 
+import java.lang.reflect.Method;
 import java.net.URL;
 
 import jakarta.el.ELResolver;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.faces.FactoryFinder;
+import jakarta.faces.context.FacesContext;
 
 import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.application.ApplicationAssociate;
@@ -16,6 +18,7 @@ import org.glassfish.mojarra.mock.MockCDIProvider;
 import org.glassfish.mojarra.mock.MockHttpServletRequest;
 import org.glassfish.mojarra.mock.MockHttpServletResponse;
 import org.glassfish.mojarra.mock.MockServletContext;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -56,6 +59,17 @@ public class ELUtilsTest {
 
         applicationAssociate = (ApplicationAssociate) externalContext.getApplicationMap()
             .get(RIConstants.RI_PREFIX + "ApplicationAssociate");
+    }
+
+    @AfterEach
+    public void tearDown() throws Exception {
+        // Constructing a FacesContext makes it current for the thread, and FacesContextImpl.release() needs a
+        // CDI environment this test has none of, so the protected setter is reached directly.
+        Method setCurrentInstance = FacesContext.class.getDeclaredMethod("setCurrentInstance", FacesContext.class);
+        setCurrentInstance.setAccessible(true);
+        setCurrentInstance.invoke(null, new Object[] { null });
+
+        FactoryFinder.releaseFactories();
     }
 
     @Test
