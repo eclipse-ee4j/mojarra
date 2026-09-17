@@ -166,6 +166,22 @@ public class UiIncludeRceIT extends BaseIT {
         assertBlocked(getPageSource());
     }
 
+    /**
+     * A double-encoded separator survives the container's one decode as a literal {@code %2F} or {@code %2E} in the
+     * include path, which stays literal through the containment check and traverses only when the file handler decodes
+     * it a second time. It must be rejected before it resolves, as a percent sign in an authored path.
+     * <p>
+     * Targets a Facelet-suffixed name, so the rejection is the path guard and not the Facelet-suffix check, and asserts
+     * the specific reason rather than {@link #assertBlocked(String)}: a resolved traversal is reported not-found, so
+     * only the reason separates a blocked traversal from one that reached the file system.
+     */
+    @Test
+    public void testDoubleEncodedSeparatorRejectedBeforeResolution() {
+        open("param.jsf?p=..%252Fsub%252Fnested.xhtml");
+        assertTrue(getPageSource().contains("must be a relative path"), "Encoded path must be rejected before resolution, but was: "
+                + getPageSource().substring(0, Math.min(500, getPageSource().length())));
+    }
+
     // ── Absolute path disclosure ──
 
     @Test

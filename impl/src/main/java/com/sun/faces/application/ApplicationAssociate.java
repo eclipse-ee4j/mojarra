@@ -49,11 +49,13 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Logger;
 
 import jakarta.el.CompositeELResolver;
 import jakarta.el.ELResolver;
 import jakarta.el.ExpressionFactory;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
@@ -79,6 +81,7 @@ import com.sun.faces.application.annotation.AnnotationManager;
 import com.sun.faces.application.annotation.FacesComponentUsage;
 import com.sun.faces.application.resource.ResourceCache;
 import com.sun.faces.application.resource.ResourceManager;
+import com.sun.faces.cdi.CdiBeanCache;
 import com.sun.faces.component.search.SearchExpressionHandlerImpl;
 import com.sun.faces.config.ConfigManager;
 import com.sun.faces.config.WebConfiguration;
@@ -174,6 +177,8 @@ public class ApplicationAssociate {
     private Map<String, List<String>> resourceLibraryContracts;
 
     private final Map<String, ApplicationResourceBundle> resourceBundles = new HashMap<>();
+
+    private final ConcurrentMap<BeanManager, CdiBeanCache> cdiBeanCaches = new ConcurrentHashMap<>();
 
     public static void setCurrentInstance(ApplicationAssociate associate) {
         if (associate == null) {
@@ -356,6 +361,26 @@ public class ApplicationAssociate {
         return resourceCache;
     }
 
+    /**
+     * Returns the CDI bean resolutions cached for the given bean manager, creating an empty cache on first use.
+     * They belong to this application: they are released along with this associate, and a redeployment starts
+     * from an empty cache.
+     *
+     * <p>An application can see more than one bean manager -- the one Faces itself resolves, and the one CDI
+     * hands to an extension -- and those need not resolve a given type to the same bean, so each gets a cache
+     * of its own. Entries are keyed by bean manager equality and live until this associate is cleared, so a
+     * bean manager an application hands out repeatedly must be equal across those handouts to stay one entry.
+     *
+     * @param beanManager the bean manager to return the cached bean resolutions for.
+     * @return the CDI bean resolutions cached for the given bean manager.
+     */
+    public CdiBeanCache getCdiBeanCache(BeanManager beanManager) {
+        // Keep the plain get: this runs per component per render, and computeIfAbsent locks the bin whenever
+        // the key is not its first node.
+        CdiBeanCache cdiBeanCache = cdiBeanCaches.get(beanManager);
+        return cdiBeanCache != null ? cdiBeanCache : cdiBeanCaches.computeIfAbsent(beanManager, key -> new CdiBeanCache());
+    }
+
     public AnnotationManager getAnnotationManager() {
         return annotationManager;
     }
@@ -380,12 +405,17 @@ public class ApplicationAssociate {
         return faceletFactory;
     }
 
+    private void clearCaches() {
+        cdiBeanCaches.clear();
+        resourceBundles.clear();
+    }
+
     public static void clearInstance(ExternalContext externalContext) {
         Map<String, Object> applicationMap = externalContext.getApplicationMap();
         ApplicationAssociate me = (ApplicationAssociate) applicationMap.get(ASSOCIATE_KEY);
 
         if (me != null) {
-            me.resourceBundles.clear();
+            me.clearCaches();
         }
 
         applicationMap.remove(ASSOCIATE_KEY);
@@ -395,7 +425,7 @@ public class ApplicationAssociate {
         ApplicationAssociate me = (ApplicationAssociate) servletContext.getAttribute(ASSOCIATE_KEY);
 
         if (me != null) {
-            me.resourceBundles.clear();
+            me.clearCaches();
         }
 
         servletContext.removeAttribute(ASSOCIATE_KEY);
