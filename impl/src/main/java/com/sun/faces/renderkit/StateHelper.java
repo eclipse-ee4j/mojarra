@@ -31,7 +31,7 @@ import com.sun.faces.RIConstants;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.spi.SerializationProvider;
 import com.sun.faces.spi.SerializationProviderFactory;
-import com.sun.faces.util.ByteArrayGuardAESCTR;
+import com.sun.faces.util.ByteArrayGuardAESGCM;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
@@ -109,7 +109,7 @@ public abstract class StateHelper {
     }
 
     public static void createAndStoreCryptographicallyStrongTokenInSession(HttpSession session) {
-        ByteArrayGuardAESCTR guard = new ByteArrayGuardAESCTR();
+        ByteArrayGuardAESGCM guard = new ByteArrayGuardAESGCM();
         String clearText = "" + System.currentTimeMillis();
         String result = guard.encrypt(clearText);
         result = URLEncoder.encode(result, UTF_8);

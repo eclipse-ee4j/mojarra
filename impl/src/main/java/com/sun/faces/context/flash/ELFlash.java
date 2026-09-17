@@ -53,7 +53,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
 import com.sun.faces.facelets.tag.ui.UIDebug;
-import com.sun.faces.util.ByteArrayGuardAESCTR;
+import com.sun.faces.util.ByteArrayGuardAESGCM;
 import com.sun.faces.util.FacesLogger;
 
 /**
@@ -116,7 +116,7 @@ public class ELFlash extends Flash {
 
     private final boolean distributable;
 
-    private ByteArrayGuardAESCTR guard;
+    private ByteArrayGuardAESGCM guard;
 
     // </editor-fold>
 
@@ -235,7 +235,7 @@ public class ELFlash extends Flash {
 
         distributable = config.isOptionEnabled(EnableDistributable);
 
-        guard = new ByteArrayGuardAESCTR();
+        guard = new ByteArrayGuardAESGCM();
 
     }
 
@@ -1184,13 +1184,13 @@ public class ELFlash extends Flash {
 
         private Map<String, Map<String, Object>> innerMap;
 
-        private ByteArrayGuardAESCTR guard;
+        private ByteArrayGuardAESGCM guard;
 
-        private PreviousNextFlashInfoManager(ByteArrayGuardAESCTR guard) {
+        private PreviousNextFlashInfoManager(ByteArrayGuardAESGCM guard) {
             this.guard = guard;
         }
 
-        PreviousNextFlashInfoManager(ByteArrayGuardAESCTR guard, Map<String, Map<String, Object>> innerMap) {
+        PreviousNextFlashInfoManager(ByteArrayGuardAESGCM guard, Map<String, Map<String, Object>> innerMap) {
             this.guard = guard;
             this.innerMap = innerMap;
         }
