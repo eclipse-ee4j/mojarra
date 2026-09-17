@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2026 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -32,7 +32,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -46,14 +46,15 @@ import jakarta.faces.FacesException;
  * </p>
  *
  * <p>
- * The algorithm used to encrypt byte array is AES with CBC.
+ * The algorithm used to encrypt the byte array is AES in GCM mode. GCM is an authenticated (AEAD) cipher, so {@link #decrypt(String)} fails when the ciphertext
+ * or nonce does not match the authentication tag produced at encryption time.
  * </p>
  *
  * <p>
  * Original author Inderjeet Singh, J2EE Blue Prints Team. Modified to suit Faces needs.
  * </p>
  */
-public final class ByteArrayGuardAESCTR {
+public final class ByteArrayGuardAESGCM {
 
     // Log instance for this class
     private static final Logger LOGGER = FacesLogger.RENDERKIT.getLogger();
@@ -61,7 +62,13 @@ public final class ByteArrayGuardAESCTR {
     private static final int KEY_LENGTH = 128;
 
     private static final String KEY_ALGORITHM = "AES";
-    private static final String CIPHER_CODE = "AES/CTR/NoPadding";
+    private static final String CIPHER_CODE = "AES/GCM/NoPadding";
+
+    // GCM standard nonce size in bytes.
+    private static final int GCM_IV_LENGTH = 12;
+
+    // GCM authentication tag size in bits.
+    private static final int GCM_TAG_LENGTH = 128;
 
     private SecretKey sk;
 
@@ -69,7 +76,7 @@ public final class ByteArrayGuardAESCTR {
 
     // ------------------------------------------------------------ Constructors
 
-    public ByteArrayGuardAESCTR() {
+    public ByteArrayGuardAESGCM() {
 
         try {
             setupKeyAndCharset();
@@ -85,8 +92,8 @@ public final class ByteArrayGuardAESCTR {
     // ---------------------------------------------------------- Public Methods
 
     /**
-     * This method: Encrypts bytes using a cipher. Generates MAC for intialization vector of the cipher Generates MAC for encrypted data Returns a byte array
-     * consisting of the following concatenated together: |MAC for cnrypted Data | MAC for Init Vector | Encrypted Data |
+     * Encrypts the value with AES-GCM under a random per-call nonce and returns the Base64 encoding of the nonce followed by the ciphertext and its
+     * authentication tag.
      *
      * @param value The value to be encrypted.
      * @return the encrypted value.
@@ -96,9 +103,9 @@ public final class ByteArrayGuardAESCTR {
         byte[] bytes = value.getBytes(utf8);
         try {
             SecureRandom rand = new SecureRandom();
-            byte[] iv = new byte[16];
+            byte[] iv = new byte[GCM_IV_LENGTH];
             rand.nextBytes(iv);
-            IvParameterSpec ivspec = new IvParameterSpec(iv);
+            GCMParameterSpec ivspec = new GCMParameterSpec(GCM_TAG_LENGTH, iv);
 
             Cipher encryptCipher = Cipher.getInstance(CIPHER_CODE);
 
@@ -128,29 +135,24 @@ public final class ByteArrayGuardAESCTR {
         byte[] bytes = Base64.getDecoder().decode(value);
 
         try {
-            byte[] iv = new byte[16];
+            byte[] iv = new byte[GCM_IV_LENGTH];
 
-            if (bytes.length < iv.length) {
+            // Shorter than nonce plus tag cannot be authenticated and makes the JCE provider throw an unchecked exception on some JDKs.
+            if (bytes.length < GCM_IV_LENGTH + GCM_TAG_LENGTH / 8) {
                 throw new InvalidKeyException("Invalid characters in decrypted value");
             }
 
             System.arraycopy(bytes, 0, iv, 0, iv.length);
-            IvParameterSpec ivspec = new IvParameterSpec(iv);
+            GCMParameterSpec ivspec = new GCMParameterSpec(GCM_TAG_LENGTH, iv);
 
             Cipher decryptCipher = Cipher.getInstance(CIPHER_CODE);
             decryptCipher.init(Cipher.DECRYPT_MODE, sk, ivspec);
 
-            byte[] encBytes = new byte[bytes.length - 16];
-            System.arraycopy(bytes, 16, encBytes, 0, encBytes.length);
+            byte[] encBytes = new byte[bytes.length - GCM_IV_LENGTH];
+            System.arraycopy(bytes, GCM_IV_LENGTH, encBytes, 0, encBytes.length);
 
             byte[] plaindata = decryptCipher.doFinal(encBytes);
 
-            for (byte cur : plaindata) {
-                // Values < 0 cause the conversion to text to fail.
-                if (cur < 0 || cur > Byte.MAX_VALUE) {
-                    throw new InvalidKeyException("Invalid characters in decrypted value");
-                }
-            }
             return new String(plaindata, utf8);
         }
         catch (

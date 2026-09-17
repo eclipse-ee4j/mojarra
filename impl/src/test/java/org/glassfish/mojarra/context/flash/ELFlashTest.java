@@ -32,7 +32,7 @@ import jakarta.servlet.http.Cookie;
 
 import org.glassfish.mojarra.context.flash.ELFlash.CONSTANTS;
 import org.glassfish.mojarra.context.flash.ELFlash.PreviousNextFlashInfoManager;
-import org.glassfish.mojarra.util.ByteArrayGuardAESCTR;
+import org.glassfish.mojarra.util.ByteArrayGuardAESGCM;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -513,7 +513,7 @@ public class ELFlashTest {
      */
     @Test
     public void testDecodeGarbageCookieResetsNextRequestFlashInfo() throws Exception {
-        ByteArrayGuardAESCTR mockGuard = mock(ByteArrayGuardAESCTR.class);
+        ByteArrayGuardAESGCM mockGuard = mock(ByteArrayGuardAESGCM.class);
         when(mockGuard.encrypt(any())).thenReturn("encrypted");
         when(mockGuard.decrypt(any())).thenReturn("some_garbage");
 
@@ -528,7 +528,7 @@ public class ELFlashTest {
     }
 
     private PreviousNextFlashInfoManager mockPreviousNextFlashInfoManager(Map<String, Map<String, Object>> flashInnerMap) {
-        PreviousNextFlashInfoManager manager = new PreviousNextFlashInfoManager(new ByteArrayGuardAESCTR(), flashInnerMap);
+        PreviousNextFlashInfoManager manager = new PreviousNextFlashInfoManager(new ByteArrayGuardAESGCM(), flashInnerMap);
         manager.initializeBaseCase(new ELFlash(mockedExternalContext) {
 
             @Override

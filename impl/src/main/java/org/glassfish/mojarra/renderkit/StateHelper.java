@@ -35,7 +35,7 @@ import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.spi.SerializationProvider;
 import org.glassfish.mojarra.spi.SerializationProviderFactory;
-import org.glassfish.mojarra.util.ByteArrayGuardAESCTR;
+import org.glassfish.mojarra.util.ByteArrayGuardAESGCM;
 import org.glassfish.mojarra.util.Util;
 
 /**
@@ -113,7 +113,7 @@ public abstract class StateHelper {
     }
 
     public static void createAndStoreCryptographicallyStrongTokenInSession(HttpSession session) {
-        ByteArrayGuardAESCTR guard = new ByteArrayGuardAESCTR();
+        ByteArrayGuardAESGCM guard = new ByteArrayGuardAESGCM();
         String clearText = String.valueOf(System.currentTimeMillis());
         String result = guard.encrypt(clearText);
         result = URLEncoder.encode(result, UTF_8);

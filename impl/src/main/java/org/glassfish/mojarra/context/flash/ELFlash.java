@@ -52,7 +52,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.facelets.tag.ui.UIDebug;
-import org.glassfish.mojarra.util.ByteArrayGuardAESCTR;
+import org.glassfish.mojarra.util.ByteArrayGuardAESGCM;
 import org.glassfish.mojarra.util.FacesLogger;
 
 /**
@@ -110,7 +110,7 @@ public class ELFlash extends Flash {
 
     private final boolean forceAlwaysWriteFlashCookie;
 
-    private final ByteArrayGuardAESCTR guard;
+    private final ByteArrayGuardAESGCM guard;
 
     /**
      * <p>
@@ -196,7 +196,7 @@ public class ELFlash extends Flash {
         distributable = MojarraContextParam.ENABLE_DISTRIBUTABLE.isEnabled(servletContext);
         forceAlwaysWriteFlashCookie = MojarraContextParam.FORCE_ALWAYS_WRITE_FLASH_COOKIE.isEnabled(servletContext);
 
-        guard = new ByteArrayGuardAESCTR();
+        guard = new ByteArrayGuardAESGCM();
 
     }
 
@@ -1109,13 +1109,13 @@ public class ELFlash extends Flash {
 
         private Map<String, Map<String, Object>> innerMap;
 
-        private ByteArrayGuardAESCTR guard;
+        private ByteArrayGuardAESGCM guard;
 
-        private PreviousNextFlashInfoManager(ByteArrayGuardAESCTR guard) {
+        private PreviousNextFlashInfoManager(ByteArrayGuardAESGCM guard) {
             this.guard = guard;
         }
 
-        PreviousNextFlashInfoManager(ByteArrayGuardAESCTR guard, Map<String, Map<String, Object>> innerMap) {
+        PreviousNextFlashInfoManager(ByteArrayGuardAESGCM guard, Map<String, Map<String, Object>> innerMap) {
             this.guard = guard;
             this.innerMap = innerMap;
         }
