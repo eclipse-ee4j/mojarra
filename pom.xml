@@ -54,6 +54,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.release>17</maven.compiler.release>
+        <maven.build.timestamp.format>yyyy</maven.build.timestamp.format>
     </properties>
 
    <build>
@@ -77,6 +78,48 @@
                                 </requireJavaVersion>
                             </rules>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Add missing license headers to source files. Existing headers are never rewritten: they carry third-party copyright lines. -->
+            <plugin>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>5.1.2</version>
+                <!-- Configured on the plugin rather than the execution so that `mvn license:check` shares it. -->
+                <configuration>
+                    <skipExistingHeaders>true</skipExistingHeaders>
+                    <mapping>
+                        <mjs>JAVADOC_STYLE</mjs> <!-- the eslint and rollup configuration -->
+                    </mapping>
+                    <properties>
+                        <year>${maven.build.timestamp}</year>
+                    </properties>
+                    <licenseSets>
+                        <licenseSet>
+                            <header>${maven.multiModuleProjectDirectory}/build/license-header.txt</header>
+                            <excludes>
+                                <exclude>**/*.txt</exclude>
+                                <exclude>**/*.options</exclude> <!-- a single substituted token -->
+                                <exclude>**/.*</exclude> <!-- dotfiles -->
+                                <exclude>**/.*/**</exclude>
+                                <exclude>**/node_modules/**</exclude>
+                                <exclude>faces/**</exclude> <!-- the API submodule, which checks its own headers -->
+                                <exclude>Jenkinsfile</exclude> <!-- release infrastructure, like the workflows -->
+                                <exclude>src/main/doc/*</exclude> <!-- javadoc image assets -->
+                                <exclude>src/main/resources/org/glassfish/mojarra/*.xsd</exclude> <!-- schemas carry their notice in xsd:annotation, per the Jakarta EE schema convention -->
+                            </excludes>
+                        </licenseSet>
+                    </licenseSets>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>add missing license headers</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
