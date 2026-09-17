@@ -87,9 +87,14 @@ public class CdiLookupPerfHarness {
 
     private static WeldContainer container;
     private static BeanManager beanManager;
+    private static TestApplicationScope application;
 
     @BeforeAll
     static void init() {
+        // CdiUtils caches per application, so without one deployed the "cached" column would time the
+        // uncached path.
+        application = TestApplicationScope.deploy();
+
         container = new Weld()
                 .disableDiscovery()
                 .beanClasses(TestConverter.class, TestValidator.class, TestBehavior.class, TestDataModelClassesMap.class)
@@ -108,6 +113,11 @@ public class CdiLookupPerfHarness {
         if (container != null) {
             container.shutdown();
         }
+
+        if (application != null) {
+            application.undeploy();
+            TestApplicationScope.clearThreadState();
+        }
     }
 
     @Test
@@ -119,9 +129,8 @@ public class CdiLookupPerfHarness {
 
     @Test
     void createConverter_byId_managed() {
-        // Measures the BM-lookup portion via getBeanReference (the wrapped CdiUtils.createConverter
-        // would also fire Mojarra's ApplicationAssociate annotation post-processing, which has no
-        // ApplicationAssociate in standalone Weld; that's downstream of the cache anyway).
+        // Measures the BM-lookup portion via getBeanReference; the wrapped CdiUtils.createConverter would
+        // also fire the annotation post-processing, which is downstream of the cache.
         FacesConverter qualifier = FacesConverter.Literal.of("testConverter", Object.class, true);
         compare("getBeanReference(Converter.class, qualifier) -- managed match",
                 () -> rawGetBeanReference(beanManager, Converter.class, qualifier),
