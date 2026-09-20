@@ -280,7 +280,7 @@ public class ELFlash extends Flash {
          * If we are in a clustered environment and a session is active, store a helper to ensure our innerMap gets successfully
          * replicated.
          */
-        if (appMap.get(EnableDistributable.getQualifiedName()) != null) {
+        if (flash != null && appMap.get(EnableDistributable.getQualifiedName()) != null) {
             synchronized (extContext.getContext()) {
                 if (extContext.getSession(false) != null) {
                     SessionHelper sessionHelper = SessionHelper.getInstance(extContext);
