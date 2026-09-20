@@ -53,7 +53,7 @@ public class SessionHelperTest {
 
     private static final String FLASH_INNER_MAP_KEY = ELFlash.FLASH_ATTRIBUTE_NAME + "FIM";
 
-    private static final String REPLICATED_SEQUENCE_NUMBER = "7";
+    private static final String REPLICATED_OWNER = "0123456789abcdef";
 
     private static final int CONCURRENT_REQUESTS = 16;
     private static final int CONTENTION_ROUNDS = 5;
@@ -108,8 +108,8 @@ public class SessionHelperTest {
     @Test
     public void testActivatedSessionAdoptsItsOwnFlashInnerMap() {
         ELFlash flash = ELFlash.getFlash(mockedExternalContext, true);
-        Map<String, Map<String, Object>> replicatedFlashInnerMap = new HashMap<>();
-        replicatedFlashInnerMap.put(REPLICATED_SEQUENCE_NUMBER, new HashMap<>());
+        Map<String, Map<String, Map<String, Object>>> replicatedFlashInnerMap = new HashMap<>();
+        replicatedFlashInnerMap.put(REPLICATED_OWNER, new HashMap<>());
         sessionMap.put(FLASH_INNER_MAP_KEY, replicatedFlashInnerMap);
         getSessionHelper().sessionDidActivate(null);
 
@@ -119,16 +119,15 @@ public class SessionHelperTest {
     }
 
     /**
-     * The flash inner map is application scoped, so an activated session which does not carry one must leave
-     * the map already in place alone rather than null it out for every session on the node, and the flash
-     * stays usable afterwards.
+     * The flash inner map is application scoped, so an activated session which does not carry one leaves the map
+     * already in place serving every session on the node, and the flash stays usable afterwards.
      *
      * https://github.com/eclipse-ee4j/mojarra/issues/6024
      */
     @Test
     public void testActivatedSessionWithoutFlashInnerMapKeepsTheExistingOne() {
         ELFlash flash = activateSessionWithoutReplicatedFlashInnerMap();
-        Map<String, Map<String, Object>> flashInnerMap = flash.getFlashInnerMap();
+        Map<String, Map<String, Map<String, Object>>> flashInnerMap = flash.getFlashInnerMap();
 
         ELFlash.getFlash(mockedExternalContext, true);
 
@@ -147,7 +146,7 @@ public class SessionHelperTest {
     @Test
     public void testPassivatedHelperWhoseSessionAttributesWereRemovedRepublishesThem() {
         ELFlash flash = ELFlash.getFlash(mockedExternalContext, true);
-        Map<String, Map<String, Object>> flashInnerMap = flash.getFlashInnerMap();
+        Map<String, Map<String, Map<String, Object>>> flashInnerMap = flash.getFlashInnerMap();
         SessionHelper sessionHelper = getSessionHelper();
         sessionHelper.remove(mockedExternalContext);
         sessionHelper.sessionWillPassivate(null);
@@ -165,14 +164,14 @@ public class SessionHelperTest {
     @Test
     public void testActivationIsConsumedByTheFirstUpdate() {
         ELFlash flash = activateSessionWithoutReplicatedFlashInnerMap();
-        Map<String, Map<String, Object>> flashInnerMap = flash.getFlashInnerMap();
+        Map<String, Map<String, Map<String, Object>>> flashInnerMap = flash.getFlashInnerMap();
 
         ELFlash.getFlash(mockedExternalContext, true);
-        sessionMap.put(FLASH_INNER_MAP_KEY, new HashMap<>(Map.of(REPLICATED_SEQUENCE_NUMBER, new HashMap<>())));
+        sessionMap.put(FLASH_INNER_MAP_KEY, new HashMap<>(Map.of(REPLICATED_OWNER, new HashMap<>())));
         ELFlash.getFlash(mockedExternalContext, true);
 
         assertSame(flashInnerMap, flash.getFlashInnerMap());
-        assertNull(flashInnerMap.get(REPLICATED_SEQUENCE_NUMBER));
+        assertNull(flashInnerMap.get(REPLICATED_OWNER));
     }
 
     /**
@@ -186,7 +185,7 @@ public class SessionHelperTest {
         AtomicInteger adoptions = new AtomicInteger();
         ELFlash flash = new ELFlash(mockedExternalContext) {
             @Override
-            void setFlashInnerMap(Map<String, Map<String, Object>> flashInnerMap) {
+            void setFlashInnerMap(Map<String, Map<String, Map<String, Object>>> flashInnerMap) {
                 adoptions.incrementAndGet();
                 super.setFlashInnerMap(flashInnerMap);
             }
@@ -194,8 +193,8 @@ public class SessionHelperTest {
 
         for (int round = 0; round < CONTENTION_ROUNDS; round++) {
             adoptions.set(0);
-            Map<String, Map<String, Object>> replicatedFlashInnerMap = new HashMap<>();
-            replicatedFlashInnerMap.put(REPLICATED_SEQUENCE_NUMBER, new HashMap<>());
+            Map<String, Map<String, Map<String, Object>>> replicatedFlashInnerMap = new HashMap<>();
+            replicatedFlashInnerMap.put(REPLICATED_OWNER, new HashMap<>());
             sessionMap.put(FLASH_INNER_MAP_KEY, replicatedFlashInnerMap);
             sessionHelper.sessionDidActivate(null);
 

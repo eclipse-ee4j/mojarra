@@ -38,8 +38,8 @@ class SessionHelper implements Serializable, HttpSessionActivationListener {
 
     void update(ExternalContext extContext, ELFlash flash) {
         Map<String, Object> sessionMap = extContext.getSessionMap();
-        Map<String, Map<String, Object>> replicatedFlashInnerMap = consumeActivation()
-                ? (Map<String, Map<String, Object>>) sessionMap.get(FLASH_INNER_MAP_KEY)
+        Map<String, Map<String, Map<String, Object>>> replicatedFlashInnerMap = consumeActivation()
+                ? (Map<String, Map<String, Map<String, Object>>>) sessionMap.get(FLASH_INNER_MAP_KEY)
                 : null;
 
         if (replicatedFlashInnerMap != null) {
