@@ -113,7 +113,7 @@ public class ELFlash extends Flash {
      * </p>
      *
      */
-    private Map<String, Map<String, Map<String, Object>>> flashInnerMap = null;
+    private final Map<String, Map<String, Map<String, Object>>> flashInnerMap = new ConcurrentHashMap<>();
 
     private final AtomicLong sequenceNumber = new AtomicLong(newSequenceNumberSeed());
 
@@ -229,7 +229,6 @@ public class ELFlash extends Flash {
 
     /** Creates a new instance of ELFlash */
     ELFlash(ExternalContext extContext) {
-        flashInnerMap = new ConcurrentHashMap<>();
         WebConfiguration config = WebConfiguration.getInstance(extContext);
         String value;
         try {
@@ -700,10 +699,6 @@ public class ELFlash extends Flash {
 
     // <editor-fold defaultstate="collapsed" desc="Helpers">
 
-    void setFlashInnerMap(Map<String, Map<String, Map<String, Object>>> flashInnerMap) {
-        this.flashInnerMap = flashInnerMap;
-    }
-
     Map<String, Map<String, Map<String, Object>>> getFlashInnerMap() {
         return flashInnerMap;
     }
@@ -718,8 +713,27 @@ public class ELFlash extends Flash {
         return getOwnerFlashInnerMap(FacesContext.getCurrentInstance().getExternalContext());
     }
 
-    private Map<String, Map<String, Object>> getOwnerFlashInnerMap(ExternalContext extContext) {
+    /**
+     * <p>
+     * The flashes of the owner of the current request, created when this node does not have any of them yet.
+     * </p>
+     */
+    Map<String, Map<String, Object>> getOwnerFlashInnerMap(ExternalContext extContext) {
         return flashInnerMap.computeIfAbsent(getOwner(extContext), owner -> new ConcurrentHashMap<>());
+    }
+
+    /**
+     * <p>
+     * Takes back the flashes which a session carried to this node, adding them to whatever the owner of the current
+     * request already has here, and leaving the flashes of every other owner alone.
+     * </p>
+     */
+    void restoreOwnerFlashInnerMap(ExternalContext extContext, Map<String, Map<String, Object>> ownerFlashInnerMap) {
+        flashInnerMap.compute(getOwner(extContext), (owner, existingFlashInnerMap) -> {
+            Map<String, Map<String, Object>> flashes = existingFlashInnerMap != null ? existingFlashInnerMap : new ConcurrentHashMap<>();
+            flashes.putAll(ownerFlashInnerMap);
+            return flashes;
+        });
     }
 
     static long newSequenceNumberSeed() {
@@ -858,16 +872,6 @@ public class ELFlash extends Flash {
                     curFlash.clear();
                 }
                 sessionlessFlashes.remove(cur);
-            }
-        }
-
-        if (distributable && FacesContext.getCurrentInstance().getExternalContext().getSession(false) != null) {
-            ExternalContext extContext = FacesContext.getCurrentInstance().getExternalContext();
-            SessionHelper sessionHelper = SessionHelper.getInstance(extContext);
-            if (null != sessionHelper) {
-                sessionHelper.remove(extContext);
-                sessionHelper = new SessionHelper();
-                sessionHelper.update(extContext, this);
             }
         }
     }
