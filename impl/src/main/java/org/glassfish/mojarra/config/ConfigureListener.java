@@ -67,6 +67,7 @@ import jakarta.servlet.ServletRequestEvent;
 import jakarta.servlet.ServletRequestListener;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpSessionEvent;
+import jakarta.servlet.http.HttpSessionIdListener;
 import jakarta.servlet.http.HttpSessionListener;
 import jakarta.websocket.server.ServerContainer;
 import jakarta.websocket.server.ServerEndpointConfig;
@@ -89,7 +90,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * Parse all relevant Faces configuration resources, and configure the Mojarra runtime environment.
  */
-public class ConfigureListener implements ServletRequestListener, HttpSessionListener, ServletContextListener {
+public class ConfigureListener implements ServletRequestListener, HttpSessionListener, HttpSessionIdListener, ServletContextListener {
 
     private static final Logger LOGGER = FacesLogger.CONFIG.getLogger();
     private static final String[] FACES_SERVLET_MAPPINGS_WITH_XHTML = { "/faces/*", "*.jsf", "*.faces", "*.xhtml" };
@@ -399,6 +400,15 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
     public void requestInitialized(ServletRequestEvent event) {
         if (webAppListener != null) {
             webAppListener.requestInitialized(event);
+        }
+    }
+
+    // --------------------------------------- Methods from HttpSessionIdListener
+
+    @Override
+    public void sessionIdChanged(HttpSessionEvent event, String oldSessionId) {
+        if (webAppListener != null) {
+            webAppListener.sessionIdChanged(event, oldSessionId);
         }
     }
 

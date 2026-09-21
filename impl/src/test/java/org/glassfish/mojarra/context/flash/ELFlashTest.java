@@ -29,6 +29,7 @@ import static org.glassfish.mojarra.context.flash.ELFlash.FLASH_COOKIE_NAME;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -36,6 +37,7 @@ import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -54,6 +56,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
 public class ELFlashTest {
+
+    private static final int SEQUENCE_NUMBER_SEED_SAMPLES = 1000;
 
     private MockedStatic<FacesContext> mockedStaticFacesContext;
     private FacesContext mockedFacesContext;
@@ -125,8 +129,7 @@ public class ELFlashTest {
         assertEquals(Set.of(SavedResponseCompleteFlagValue, RequestFlashManager), contextMap.keySet());
         assertEquals(false, contextMap.get(SavedResponseCompleteFlagValue));
         PreviousNextFlashInfoManager flashInfo = (PreviousNextFlashInfoManager) contextMap.get(RequestFlashManager);
-        assertEquals(1, flashInfo.getPreviousRequestFlashInfo().getSequenceNumber());
-        assertEquals(2, flashInfo.getNextRequestFlashInfo().getSequenceNumber());
+        assertConsecutiveSequenceNumbers(flashInfo);
     }
 
     /**
@@ -146,8 +149,7 @@ public class ELFlashTest {
         assertEquals(Set.of(SavedResponseCompleteFlagValue, RequestFlashManager), contextMap.keySet());
         assertEquals(false, contextMap.get(SavedResponseCompleteFlagValue));
         PreviousNextFlashInfoManager flashInfo = (PreviousNextFlashInfoManager) contextMap.get(RequestFlashManager);
-        assertEquals(1, flashInfo.getPreviousRequestFlashInfo().getSequenceNumber());
-        assertEquals(2, flashInfo.getNextRequestFlashInfo().getSequenceNumber());
+        assertConsecutiveSequenceNumbers(flashInfo);
     }
 
     /**
@@ -164,8 +166,7 @@ public class ELFlashTest {
         assertEquals(emptyMap(), cookieMap);
         assertEquals(Set.of(RequestFlashManager), contextMap.keySet());
         PreviousNextFlashInfoManager flashInfo = (PreviousNextFlashInfoManager) contextMap.get(RequestFlashManager);
-        assertEquals(1, flashInfo.getPreviousRequestFlashInfo().getSequenceNumber());
-        assertEquals(2, flashInfo.getNextRequestFlashInfo().getSequenceNumber());
+        assertConsecutiveSequenceNumbers(flashInfo);
     }
 
     /**
@@ -183,8 +184,7 @@ public class ELFlashTest {
         assertEquals(Set.of(SavedResponseCompleteFlagValue, RequestFlashManager), contextMap.keySet());
         assertEquals(false, contextMap.get(SavedResponseCompleteFlagValue));
         PreviousNextFlashInfoManager flashInfo = (PreviousNextFlashInfoManager) contextMap.get(RequestFlashManager);
-        assertEquals(1, flashInfo.getPreviousRequestFlashInfo().getSequenceNumber());
-        assertEquals(2, flashInfo.getNextRequestFlashInfo().getSequenceNumber());
+        long firstSequenceNumber = assertConsecutiveSequenceNumbers(flashInfo);
 
         when(mockedFacesContext.getCurrentPhaseId()).thenReturn(RENDER_RESPONSE);
 
@@ -195,8 +195,7 @@ public class ELFlashTest {
         assertEquals(Set.of(FLASH_COOKIE_NAME), cookieMap.keySet());
         assertEquals(Set.of(SavedResponseCompleteFlagValue, RequestFlashManager), contextMap.keySet());
         flashInfo = (PreviousNextFlashInfoManager) contextMap.get(RequestFlashManager);
-        assertEquals(3, flashInfo.getPreviousRequestFlashInfo().getSequenceNumber());
-        assertEquals(4, flashInfo.getNextRequestFlashInfo().getSequenceNumber());
+        assertEquals(firstSequenceNumber + 2, assertConsecutiveSequenceNumbers(flashInfo));
     }
 
     /**
@@ -215,8 +214,7 @@ public class ELFlashTest {
         assertEquals(emptyMap(), cookieMap);
         assertEquals(Set.of(RequestFlashManager), contextMap.keySet());
         PreviousNextFlashInfoManager flashInfo = (PreviousNextFlashInfoManager) contextMap.get(RequestFlashManager);
-        assertEquals(1, flashInfo.getPreviousRequestFlashInfo().getSequenceNumber());
-        assertEquals(2, flashInfo.getNextRequestFlashInfo().getSequenceNumber());
+        assertConsecutiveSequenceNumbers(flashInfo);
     }
 
     /**
@@ -321,8 +319,7 @@ public class ELFlashTest {
         assertEquals(emptyMap().toString(), flashInnerMap.toString());
         assertEquals(Set.of(RequestFlashManager), contextMap.keySet());
         PreviousNextFlashInfoManager flashInfo = (PreviousNextFlashInfoManager) contextMap.get(RequestFlashManager);
-        assertEquals(1, flashInfo.getPreviousRequestFlashInfo().getSequenceNumber());
-        assertEquals(2, flashInfo.getNextRequestFlashInfo().getSequenceNumber());
+        assertConsecutiveSequenceNumbers(flashInfo);
     }
 
     /**
@@ -355,8 +352,7 @@ public class ELFlashTest {
         assertEquals(emptyMap().toString(), flashInnerMap.toString());
         assertEquals(Set.of(SavedResponseCompleteFlagValue, RequestFlashManager, ForceSetMaxAgeZero), contextMap.keySet());
         flashInfo = (PreviousNextFlashInfoManager) contextMap.get(RequestFlashManager);
-        assertEquals(1, flashInfo.getPreviousRequestFlashInfo().getSequenceNumber());
-        assertEquals(2, flashInfo.getNextRequestFlashInfo().getSequenceNumber());
+        assertConsecutiveSequenceNumbers(flashInfo);
     }
 
     /**
@@ -376,8 +372,7 @@ public class ELFlashTest {
         assertEquals(emptyMap().toString(), flashInnerMap.toString());
         assertEquals(Set.of(RequestFlashManager), contextMap.keySet());
         PreviousNextFlashInfoManager flashInfo = (PreviousNextFlashInfoManager) contextMap.get(RequestFlashManager);
-        assertEquals(1, flashInfo.getPreviousRequestFlashInfo().getSequenceNumber());
-        assertEquals(2, flashInfo.getNextRequestFlashInfo().getSequenceNumber());
+        assertConsecutiveSequenceNumbers(flashInfo);
     }
 
     /**
@@ -396,8 +391,7 @@ public class ELFlashTest {
         assertEquals(emptyMap().toString(), flashInnerMap.toString());
         assertEquals(Set.of(RequestFlashManager), contextMap.keySet());
         PreviousNextFlashInfoManager flashInfo = (PreviousNextFlashInfoManager) contextMap.get(RequestFlashManager);
-        assertEquals(1, flashInfo.getPreviousRequestFlashInfo().getSequenceNumber());
-        assertEquals(2, flashInfo.getNextRequestFlashInfo().getSequenceNumber());
+        assertConsecutiveSequenceNumbers(flashInfo);
     }
 
     /**
@@ -431,8 +425,7 @@ public class ELFlashTest {
         assertEquals(emptyMap().toString(), flashInnerMap.toString());
         assertEquals(Set.of(SavedResponseCompleteFlagValue, RequestFlashManager, ForceSetMaxAgeZero), contextMap.keySet());
         flashInfo = (PreviousNextFlashInfoManager) contextMap.get(RequestFlashManager);
-        assertEquals(1, flashInfo.getPreviousRequestFlashInfo().getSequenceNumber());
-        assertEquals(2, flashInfo.getNextRequestFlashInfo().getSequenceNumber());
+        assertConsecutiveSequenceNumbers(flashInfo);
     }
 
     /**
@@ -452,8 +445,7 @@ public class ELFlashTest {
         assertEquals(emptyMap().toString(), flashInnerMap.toString());
         assertEquals(Set.of(RequestFlashManager), contextMap.keySet());
         PreviousNextFlashInfoManager flashInfo = (PreviousNextFlashInfoManager) contextMap.get(RequestFlashManager);
-        assertEquals(1, flashInfo.getPreviousRequestFlashInfo().getSequenceNumber());
-        assertEquals(2, flashInfo.getNextRequestFlashInfo().getSequenceNumber());
+        assertConsecutiveSequenceNumbers(flashInfo);
     }
 
     /**
@@ -473,8 +465,7 @@ public class ELFlashTest {
         assertEquals(Map.of("1", emptyMap()).toString(), flashInnerMap.toString());
         assertEquals(Set.of(RequestFlashManager), contextMap.keySet());
         PreviousNextFlashInfoManager flashInfo = (PreviousNextFlashInfoManager) contextMap.get(RequestFlashManager);
-        assertEquals(1, flashInfo.getPreviousRequestFlashInfo().getSequenceNumber());
-        assertEquals(2, flashInfo.getNextRequestFlashInfo().getSequenceNumber());
+        long firstSequenceNumber = assertConsecutiveSequenceNumbers(flashInfo);
 
         Flash nextFlash = mockedExternalContext.getFlash();
 
@@ -484,8 +475,7 @@ public class ELFlashTest {
         assertEquals(Map.of("1", emptyMap()).toString(), flashInnerMap.toString());
         assertEquals(Set.of(RequestFlashManager, DidWriteCookieAttributeName), contextMap.keySet());
         PreviousNextFlashInfoManager nextFlashInfo = (PreviousNextFlashInfoManager) contextMap.get(RequestFlashManager);
-        assertEquals(3, nextFlashInfo.getPreviousRequestFlashInfo().getSequenceNumber());
-        assertEquals(4, nextFlashInfo.getNextRequestFlashInfo().getSequenceNumber());
+        assertEquals(firstSequenceNumber + 2, assertConsecutiveSequenceNumbers(nextFlashInfo));
         assertEquals(true, contextMap.get(DidWriteCookieAttributeName));
     }
 
@@ -506,8 +496,7 @@ public class ELFlashTest {
         assertEquals(Map.of("1", emptyMap()).toString(), flashInnerMap.toString());
         assertEquals(Set.of(RequestFlashManager), contextMap.keySet());
         PreviousNextFlashInfoManager flashInfo = (PreviousNextFlashInfoManager) contextMap.get(RequestFlashManager);
-        assertEquals(1, flashInfo.getPreviousRequestFlashInfo().getSequenceNumber());
-        assertEquals(2, flashInfo.getNextRequestFlashInfo().getSequenceNumber());
+        long firstSequenceNumber = assertConsecutiveSequenceNumbers(flashInfo);
 
         Flash nextFlash = mockedExternalContext.getFlash();
         nextFlash.setKeepMessages(true);
@@ -518,8 +507,7 @@ public class ELFlashTest {
         assertEquals(Map.of("1", emptyMap()).toString(), flashInnerMap.toString());
         assertEquals(Set.of(RequestFlashManager, DidWriteCookieAttributeName), contextMap.keySet());
         PreviousNextFlashInfoManager nextFlashInfo = (PreviousNextFlashInfoManager) contextMap.get(RequestFlashManager);
-        assertEquals(3, nextFlashInfo.getPreviousRequestFlashInfo().getSequenceNumber());
-        assertEquals(4, nextFlashInfo.getNextRequestFlashInfo().getSequenceNumber());
+        assertEquals(firstSequenceNumber + 2, assertConsecutiveSequenceNumbers(nextFlashInfo));
         assertEquals(true, contextMap.get(DidWriteCookieAttributeName));
     }
 
@@ -540,6 +528,45 @@ public class ELFlashTest {
         assertEquals(null, manager.getNextRequestFlashInfo());
         assertEquals(Boolean.TRUE, contextMap.get(ForceSetMaxAgeZero));
         assertDoesNotThrow(() -> manager.encode());
+    }
+
+    /**
+     * Sequence numbers start at a random point which still leaves the counter at least half of its range to climb before reaching {@link Long#MAX_VALUE}, where
+     * it would start over at numbers a browser may still be holding.
+     */
+    @Test
+    public void testSequenceNumberSeedLeavesRoomToCountUp() {
+        for (int i = 0; i < SEQUENCE_NUMBER_SEED_SAMPLES; i++) {
+            long seed = ELFlash.newSequenceNumberSeed();
+            assertTrue(seed >= 0, () -> "seed " + seed + " is negative");
+            assertTrue(Long.MAX_VALUE - seed >= Long.MAX_VALUE / 2, () -> "seed " + seed + " leaves too little room");
+        }
+    }
+
+    /**
+     * Two nodes must not start counting at the same point, which is what keeps one node's sequence numbers out of the flashes another node files under the
+     * owner shared by every sessionless request.
+     */
+    @Test
+    public void testSequenceNumberSeedIsRandom() {
+        Set<Long> seeds = new HashSet<>();
+
+        for (int i = 0; i < SEQUENCE_NUMBER_SEED_SAMPLES; i++) {
+            seeds.add(ELFlash.newSequenceNumberSeed());
+        }
+
+        assertTrue(seeds.size() > SEQUENCE_NUMBER_SEED_SAMPLES / 2, () -> "only " + seeds.size() + " distinct seeds");
+    }
+
+    /**
+     * Sequence numbers start at a random point, so what a flash manager owes is a pair of them in order.
+     *
+     * @return the sequence number of the previous request flash info
+     */
+    private static long assertConsecutiveSequenceNumbers(PreviousNextFlashInfoManager flashInfo) {
+        long previousSequenceNumber = flashInfo.getPreviousRequestFlashInfo().getSequenceNumber();
+        assertEquals(previousSequenceNumber + 1, flashInfo.getNextRequestFlashInfo().getSequenceNumber());
+        return previousSequenceNumber;
     }
 
     private PreviousNextFlashInfoManager mockPreviousNextFlashInfoManager(Map<String, Map<String, Object>> flashInnerMap) {
