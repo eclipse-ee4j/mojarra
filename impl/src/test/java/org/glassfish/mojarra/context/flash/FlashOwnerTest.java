@@ -16,16 +16,19 @@
 
 package org.glassfish.mojarra.context.flash;
 
+import static jakarta.faces.event.PhaseId.RENDER_RESPONSE;
 import static jakarta.faces.event.PhaseId.RESTORE_VIEW;
 import static java.util.Collections.emptyEnumeration;
 import static org.glassfish.mojarra.context.flash.ELFlash.NO_SESSION_OWNER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
@@ -36,7 +39,9 @@ import java.util.Map;
 import jakarta.faces.application.Application;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PhaseId;
 import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpSessionEvent;
 
@@ -56,6 +61,7 @@ public class FlashOwnerTest {
     private ServletContext mockedServletContext;
 
     private Map<String, Object> applicationMap;
+    private Map<String, Object> cookieMap;
 
     @BeforeEach
     public void setup() {
@@ -64,6 +70,7 @@ public class FlashOwnerTest {
         mockedExternalContext = mock(ExternalContext.class);
         mockedServletContext = mock(ServletContext.class);
         applicationMap = new HashMap<>();
+        cookieMap = new HashMap<>();
 
         mockedStaticFacesContext.when(FacesContext::getCurrentInstance).thenReturn(mockedFacesContext);
         when(mockedFacesContext.getExternalContext()).thenReturn(mockedExternalContext);
@@ -72,9 +79,13 @@ public class FlashOwnerTest {
         when(mockedFacesContext.getCurrentPhaseId()).thenReturn(RESTORE_VIEW);
         when(mockedExternalContext.getContext()).thenReturn(mockedServletContext);
         when(mockedExternalContext.getApplicationMap()).thenReturn(applicationMap);
+        when(mockedExternalContext.getRequestCookieMap()).thenReturn(cookieMap);
         when(mockedExternalContext.getRequestContextPath()).thenReturn("");
         when(mockedServletContext.getInitParameterNames()).thenReturn(emptyEnumeration());
         when(mockedServletContext.getInitParameter(any())).thenReturn(null);
+
+        doAnswer(invocation -> cookieMap.put(invocation.getArgument(0), new Cookie(invocation.getArgument(0), invocation.getArgument(1))))
+            .when(mockedExternalContext).addResponseCookie(any(), any(), any());
     }
 
     @AfterEach
@@ -173,6 +184,52 @@ public class FlashOwnerTest {
         assertSame(firstFlashes, secondFlashes);
         assertEquals(1, flash.getFlashInnerMap().size());
         assertSame(firstFlashes, flash.getFlashInnerMap().get(NO_SESSION_OWNER));
+    }
+
+    /**
+     * A view writing a flash on a first visit does so before anything has created a session, so the request which reads it back is the first one with an owner
+     * to file the flash under, and it has to find the flash its cookie names. The flash ends up under that owner, which is what makes it claimable once.
+     */
+    @Test
+    public void testFlashWrittenWithoutASessionIsReadableOnceOneExists() {
+        ELFlash flash = ELFlash.getFlash(mockedExternalContext, true);
+
+        beginRequest(null, RENDER_RESPONSE);
+        flash.put("foo", "bar");
+        flash.doLastPhaseActions(mockedFacesContext, false);
+
+        beginRequest(SESSION_ID, RESTORE_VIEW);
+        flash.doPrePhaseActions(mockedFacesContext);
+
+        assertEquals("bar", flash.get("foo"));
+        assertFalse(
+            flash.getFlashInnerMap().get(NO_SESSION_OWNER).values().stream()
+                .anyMatch(flashMap -> flashMap.containsKey("foo"))
+        );
+    }
+
+    /**
+     * The sequence number in a flash cookie is what identifies a flash, so a session presenting another session's cookie must be handed a flash of its own
+     * rather than the one that cookie names.
+     */
+    @Test
+    public void testFlashWrittenWithASessionCannotBeClaimedByAnother() {
+        ELFlash flash = ELFlash.getFlash(mockedExternalContext, true);
+
+        beginRequest(SESSION_ID, RENDER_RESPONSE);
+        flash.put("foo", "bar");
+        flash.doLastPhaseActions(mockedFacesContext, false);
+
+        beginRequest(OTHER_SESSION_ID, RESTORE_VIEW);
+        flash.doPrePhaseActions(mockedFacesContext);
+
+        assertNull(flash.get("foo"));
+    }
+
+    private void beginRequest(String sessionId, PhaseId phaseId) {
+        when(mockedExternalContext.getSessionId(false)).thenReturn(sessionId);
+        when(mockedFacesContext.getCurrentPhaseId()).thenReturn(phaseId);
+        when(mockedFacesContext.getAttributes()).thenReturn(new HashMap<>());
     }
 
     private Map<String, Map<String, Object>> flashesOf(ELFlash flash, String sessionId) {

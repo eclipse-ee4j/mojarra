@@ -662,6 +662,29 @@ public class ELFlash extends Flash {
         });
     }
 
+    /**
+     * <p>
+     * The flash which a sequence number in the incoming cookie identifies, taken over from the sessionless flashes when that is still where it lives. A view
+     * writing a flash on a first visit does so before anything has created a session, so the request which reads it back is the first one to have an owner to
+     * file it under. Only the browser holding the cookie knows the sequence number, and the takeover leaves it under the owner, so the flash can be claimed
+     * once.
+     * </p>
+     */
+    private Map<String, Object> claimFlash(Map<String, Map<String, Object>> ownerFlashInnerMap, String sequenceNumber) {
+        Map<String, Object> flashMap = ownerFlashInnerMap.get(sequenceNumber);
+        Map<String, Map<String, Object>> sessionlessFlashInnerMap = flashInnerMap.get(NO_SESSION_OWNER);
+
+        if (flashMap == null && sessionlessFlashInnerMap != null) {
+            flashMap = sessionlessFlashInnerMap.remove(sequenceNumber);
+
+            if (flashMap != null) {
+                ownerFlashInnerMap.put(sequenceNumber, flashMap);
+            }
+        }
+
+        return flashMap;
+    }
+
     static long newSequenceNumberSeed() {
         return RANDOM.nextLong() >>> SEQUENCE_NUMBER_SEED_SHIFT;
     }
@@ -1385,7 +1408,7 @@ public class ELFlash extends Flash {
                 Map<String, Object> flashMap;
                 // If the browser sent a cookie that is valid, but
                 // doesn't correspond to a map in memory...
-                if (null == (flashMap = innerMap.get(previousRequestFlashInfo.getSequenceNumber() + ""))) {
+                if (null == (flashMap = flash.claimFlash(innerMap, previousRequestFlashInfo.getSequenceNumber() + ""))) {
                     // create a new map
                     previousRequestFlashInfo = new FlashInfo();
                     previousRequestFlashInfo.setSequenceNumber(flash.getNewSequenceNumber());
@@ -1396,7 +1419,7 @@ public class ELFlash extends Flash {
                 }
                 previousRequestFlashInfo.setFlashMap(flashMap);
                 if (null != nextRequestFlashInfo) {
-                    if (null == (flashMap = innerMap.get(nextRequestFlashInfo.getSequenceNumber() + ""))) {
+                    if (null == (flashMap = flash.claimFlash(innerMap, nextRequestFlashInfo.getSequenceNumber() + ""))) {
                         // create a new map
                         nextRequestFlashInfo = new FlashInfo();
                         nextRequestFlashInfo.setSequenceNumber(flash.getNewSequenceNumber());
