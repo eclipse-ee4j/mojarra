@@ -185,11 +185,13 @@ public class ClusterSimulationTest {
      * </p>
      */
     private static Object request(Node node, Session session, String writeKey, Object writeValue, String readKey, boolean redirect) {
+        MockedConstruction<InitialContext> mockedInitialContext = mockConstruction(
+            InitialContext.class,
+            (mockedContext, context) -> when(mockedContext.lookup(FLASH_SECRET_KEY_NAME)).thenReturn(FLASH_SECRET_KEY)
+        );
+
         try (
-            MockedConstruction<InitialContext> mockedInitialContext = mockConstruction(
-                InitialContext.class,
-                (mockedContext, context) -> when(mockedContext.lookup(FLASH_SECRET_KEY_NAME)).thenReturn(FLASH_SECRET_KEY)
-            );
+            mockedInitialContext;
             MockedStatic<FacesContext> mockedStaticFacesContext = mockStatic(FacesContext.class)
         ) {
 
