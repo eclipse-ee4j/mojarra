@@ -28,6 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.sun.faces.config.InitFacesContext;
 import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.context.flash.ELFlash;
 import com.sun.faces.flow.FlowCDIContext;
 import com.sun.faces.renderkit.StateHelper;
 
@@ -139,6 +140,7 @@ public class WebappLifecycleListener {
     public void sessionDestroyed(HttpSessionEvent event) {
         activeSessions.remove(event.getSession());
         FlowCDIContext.sessionDestroyed(event);
+        ELFlash.sessionDestroyed(event);
 
         for (String listenerName : SESSION_LISTENER_ATTRIBUTE_NAMES) {
             HttpSessionListener listener = (HttpSessionListener)servletContext.getAttribute(listenerName);
@@ -146,6 +148,16 @@ public class WebappLifecycleListener {
                 listener.sessionDestroyed(event);
             }
         }
+    }
+
+    /**
+     * Notification that the id of a session has changed.
+     *
+     * @param event the notification event
+     * @param oldSessionId the id which the session had before
+     */
+    public void sessionIdChanged(HttpSessionEvent event, String oldSessionId) {
+        ELFlash.sessionIdChanged(event, oldSessionId);
     }
 
     /**

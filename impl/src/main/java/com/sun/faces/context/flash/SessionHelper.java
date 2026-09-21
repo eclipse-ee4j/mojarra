@@ -38,14 +38,22 @@ class SessionHelper implements Serializable, HttpSessionActivationListener {
 
     void update(ExternalContext extContext, ELFlash flash) {
         Map<String, Object> sessionMap = extContext.getSessionMap();
-        if (didPassivate) {
-            Map<String, Map<String, Object>> flashInnerMap = (Map<String, Map<String, Object>>) sessionMap.get(FLASH_INNER_MAP_KEY);
-            flash.setFlashInnerMap(flashInnerMap);
-            didPassivate = false;
+        Map<String, Map<String, Object>> replicatedOwnerFlashInnerMap = consumeActivation()
+                ? (Map<String, Map<String, Object>>) sessionMap.get(FLASH_INNER_MAP_KEY)
+                : null;
+
+        if (replicatedOwnerFlashInnerMap != null) {
+            flash.restoreOwnerFlashInnerMap(extContext, replicatedOwnerFlashInnerMap);
         } else {
             sessionMap.put(FLASH_SESSIONACTIVATIONLISTENER_ATTRIBUTE_NAME, this);
-            sessionMap.put(FLASH_INNER_MAP_KEY, flash.getFlashInnerMap());
+            sessionMap.put(FLASH_INNER_MAP_KEY, flash.getOwnerFlashInnerMap(extContext));
         }
+    }
+
+    private synchronized boolean consumeActivation() {
+        boolean result = didPassivate;
+        didPassivate = false;
+        return result;
     }
 
     void remove(ExternalContext extContext) {
@@ -55,14 +63,13 @@ class SessionHelper implements Serializable, HttpSessionActivationListener {
     }
 
     @Override
-    public void sessionDidActivate(HttpSessionEvent hse) {
+    public synchronized void sessionDidActivate(HttpSessionEvent hse) {
         didPassivate = true;
     }
 
     @Override
-    public void sessionWillPassivate(HttpSessionEvent hse) {
+    public synchronized void sessionWillPassivate(HttpSessionEvent hse) {
         didPassivate = true;
-
     }
 
 }
