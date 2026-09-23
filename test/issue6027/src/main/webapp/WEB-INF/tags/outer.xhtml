@@ -1,0 +1,1 @@
+<ui:composition xmlns:ui="jakarta.faces.facelets" xmlns:h="jakarta.faces.html" xmlns:t="issue6027">[#{outerParameter}|<t:inner innerParameter="I">B#{outerParameter}<h:outputText value="/C#{outerParameter}"/><ui:define name="named">N#{outerParameter}</ui:define></t:inner>]</ui:composition>
