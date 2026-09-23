@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:t="issue6027">
+    <h:head>
+        <title>issue6027</title>
+    </h:head>
+    <h:body>
+        <h:panelGroup id="insertedBody"><t:outer outerParameter="O"/></h:panelGroup>
+        <h:panelGroup id="insertedParameter"><t:inner innerParameter="I"><ui:param name="parameterInBody" value="P"/>B#{parameterInBody}</t:inner></h:panelGroup>
+    </h:body>
+</html>

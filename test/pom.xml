@@ -70,6 +70,7 @@
         <module>issue6001</module>
         <module>issue6010</module>
         <module>issue6019</module>
+        <module>issue6027</module>
         <module>perf</module>
     </modules>
 

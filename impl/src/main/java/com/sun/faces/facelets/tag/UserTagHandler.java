@@ -47,7 +47,7 @@ import jakarta.faces.view.facelets.TagException;
  * @author Jacob Hookom
  * @version $Id$
  */
-final class UserTagHandler extends TagHandlerImpl implements TemplateClient {
+final class UserTagHandler extends TagHandlerImpl {
 
     protected final TagAttribute[] vars;
 
@@ -110,19 +110,20 @@ final class UserTagHandler extends TagHandlerImpl implements TemplateClient {
     public void apply(FaceletContext ctxObj, UIComponent parent) throws IOException {
         FaceletContextImplBase ctx = (FaceletContextImplBase) ctxObj;
         VariableMapper orig = ctx.getVariableMapper();
+        TemplateClient body = new InvocationBody(orig);
 
         ctx.setVariableMapper(new VariableMapperWrapper(UserTagParameterVariableMapper.forInvocation(orig, attributes(ctx), invocation)));
 
         // eval include
         try {
-            ctx.pushClient(this);
+            ctx.pushClient(body);
             ctx.includeFacelet(parent, location);
         } catch (FileNotFoundException e) {
             throw new TagException(tag, e.getMessage());
         } finally {
 
             // make sure we undo our changes
-            ctx.popClient(this);
+            ctx.popClient(body);
             ctx.setVariableMapper(orig);
         }
     }
@@ -141,23 +142,61 @@ final class UserTagHandler extends TagHandlerImpl implements TemplateClient {
         return attributes;
     }
 
-    @Override
-    public boolean apply(FaceletContext ctx, UIComponent parent, String name) throws IOException {
-        if (name != null) {
-            if (handlers == null) {
-                return false;
-            }
-            DefineHandler handler = (DefineHandler) handlers.get(name);
-            if (handler != null) {
-                handler.applyDefinition(ctx, parent);
-                return true;
-            } else {
-                return false;
-            }
-        } else {
+    /**
+     * Applies what the page wrote between the start and the end of this tag, either the definition carrying the given
+     * name or, for a nameless insertion, the whole of it.
+     *
+     * @param ctx the Facelet context to apply the body with
+     * @param parent the component to apply the body to
+     * @param name the name of the definition to apply, or {@code null} to apply the whole body
+     * @return whether the body holds what the insertion asked for
+     */
+    private boolean applyBody(FaceletContext ctx, UIComponent parent, String name) throws IOException {
+        if (name == null) {
             nextHandler.apply(ctx, parent);
             return true;
         }
+
+        DefineHandler handler = handlers == null ? null : (DefineHandler) handlers.get(name);
+
+        if (handler == null) {
+            return false;
+        }
+
+        handler.applyDefinition(ctx, parent);
+        return true;
     }
 
+    /**
+     * The body of a single invocation, applied wherever the tag file inserts it.
+     * <p>
+     * The body is markup of the page which wrote it, so it resolves its names against the scope that page is in rather
+     * than against the parameter namespace of the tag file inserting it, which holds the parameters of this invocation
+     * and hides those of any enclosing one. The scope is wrapped, so that a {@code ui:param} the body carries reaches
+     * the body alone, as it does on a {@code ui:include} or a {@code ui:decorate}.
+     *
+     * @see UserTagParameterVariableMapper
+     */
+    private final class InvocationBody implements TemplateClient {
+
+        private final VariableMapper invocationScope;
+
+        private InvocationBody(VariableMapper invocationScope) {
+            this.invocationScope = invocationScope;
+        }
+
+        @Override
+        public boolean apply(FaceletContext ctxObj, UIComponent parent, String name) throws IOException {
+            FaceletContextImplBase ctx = (FaceletContextImplBase) ctxObj;
+            VariableMapper orig = ctx.getVariableMapper();
+
+            ctx.setVariableMapper(new VariableMapperWrapper(invocationScope));
+
+            try {
+                return applyBody(ctx, parent, name);
+            } finally {
+                ctx.setVariableMapper(orig);
+            }
+        }
+    }
 }
