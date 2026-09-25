@@ -52,7 +52,20 @@ export function parseFacesJsVersion(): { specversion: number; implversion: numbe
  * Call this in beforeAll().
  */
 export function loadFacesJs(): void {
-    const source = fs.readFileSync(FACES_JS, "utf-8");
+    loadFacesJsFile(FACES_JS);
+}
+
+/**
+ * Load the uncompressed faces.js into jsdom, replacing EL expressions with test values.
+ * This is the variant served in Development stage.
+ * Call this in beforeAll().
+ */
+export function loadFacesJsUncompressed(): void {
+    loadFacesJsFile(FACES_JS_UNCOMPRESSED);
+}
+
+function loadFacesJsFile(file: string): void {
+    const source = fs.readFileSync(file, "utf-8");
     const { specversion, implversion } = parseFacesJsVersion();
     const evaluated = source
         .replace("#{facesContext.namingContainerSeparatorChar}", ":")
@@ -73,4 +86,19 @@ export function loadBehaviorEventBootstrap(): void {
     const script = document.createElement("script");
     script.textContent = fs.readFileSync(BEHAVIOR_EVENT_BOOTSTRAP_JS, "utf-8");
     document.head.appendChild(script);
+}
+
+/**
+ * Names of all own properties currently present on `window`.
+ * Capture this at module level, before faces.js is loaded, to get a clean baseline.
+ */
+export function globalNames(): Set<string> {
+    return new Set(Object.getOwnPropertyNames(window));
+}
+
+/**
+ * Names added to `window` since the given baseline, sorted.
+ */
+export function globalNamesAddedSince(baseline: Set<string>): string[] {
+    return Object.getOwnPropertyNames(window).filter(name => !baseline.has(name)).sort();
 }
