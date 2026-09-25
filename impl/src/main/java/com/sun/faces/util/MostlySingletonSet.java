@@ -21,12 +21,17 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Set;
 
-/*
- * Non-thread safe implementation of Set for use when most of the time there
+/**
+ * Non-thread safe implementation of {@link Set} for use when most of the time there
  * is only one element, but sometimes there are more than one.
  *
+ * <p>
+ * Invariant: {@code inner} is {@code null} when empty, an immutable
+ * {@link Collections#singleton(Object)} when holding exactly one element added to an empty set,
+ * otherwise a {@link HashSet} (which may temporarily hold a single element).
  */
 public class MostlySingletonSet<E> implements Set<E>, Serializable {
 
@@ -38,49 +43,57 @@ public class MostlySingletonSet<E> implements Set<E>, Serializable {
 
     }
 
-    // <editor-fold defaultstate="collapsed" desc="Mutating methods">
-
     @Override
     public boolean add(E e) {
-        boolean result = true;
-        if (null == inner) {
+        boolean modified = true;
+        if (inner == null) {
             inner = Collections.singleton(e);
         } else {
             // If we need to transition from one to more-than-one
-            if (1 == inner.size()) {
-                HashSet<E> newSet = new HashSet<>();
-                newSet.add(inner.iterator().next());
-                inner = newSet;
+            if (inner.size() == 1) {
+                Set<E> set = newHashSet(2);
+                set.add(inner.iterator().next());
+                inner = set;
             }
-            result = inner.add(e);
+            modified = inner.add(e);
         }
 
-        return result;
+        return modified;
     }
 
     @Override
     public boolean addAll(Collection<? extends E> c) {
-        boolean result = true;
+        boolean modified = true;
 
-        if (null == inner && 1 == c.size()) {
-            inner = (Set<E>) Collections.singleton(c.iterator().next());
-        } else {
-            // If we need to transition from one to more-than-one
-            if (1 == inner.size()) {
-                HashSet<E> newSet = new HashSet<>();
-                newSet.add(inner.iterator().next());
-                inner = newSet;
-            }
-            result = inner.addAll(c);
+        if (inner == null && c.size() == 1) {
+            inner = Collections.singleton(c.iterator().next());
         }
-        return result;
+        else if (inner == null) {
+            // c is empty or has more than one element: go straight to a mutable set
+            if (c.isEmpty()) {
+                return false;
+            }
+            Set<E> set = newHashSet(c.size());
+            set.addAll(c);
+            inner = set;
+        }
+        else {
+            // If we need to transition from one to more-than-one
+            if (inner.size() == 1) {
+                Set<E> set = newHashSet(1 + c.size());
+                set.add(inner.iterator().next());
+                inner = set;
+            }
+            modified = inner.addAll(c);
+        }
+        return modified;
     }
 
     @Override
     public void clear() {
-        if (null != inner) {
+        if (inner != null) {
             // If we need to transition from more-than-one to zero
-            if (1 < inner.size()) {
+            if (inner.size() > 1) {
                 inner.clear();
             }
             inner = null;
@@ -89,84 +102,78 @@ public class MostlySingletonSet<E> implements Set<E>, Serializable {
 
     @Override
     public boolean remove(Object o) {
-        boolean didRemove = false;
+        boolean modified = false;
 
-        if (null != inner) {
-            if (1 == inner.size()) {
+        if (inner != null) {
+            if (inner.size() == 1) {
                 // If we need to transition from one to zero
-                E e = inner.iterator().next();
-                // If our element is not null, and the argument is not null
-                if (null != e && null != o) {
-                    didRemove = e.equals(o);
-                } else {
-                    didRemove = null == o;
-                }
-                if (didRemove) {
+                modified = Objects.equals(inner.iterator().next(), o);
+                if (modified) {
                     inner = null;
                 }
 
             } else {
-                didRemove = inner.remove(o);
-                if (didRemove && 1 == inner.size()) {
-                    Set<E> newInner = Collections.singleton(inner.iterator().next());
+                modified = inner.remove(o);
+                if (modified && inner.size() == 1) {
+                    Set<E> set = Collections.singleton(inner.iterator().next());
                     inner.clear();
-                    inner = newInner;
+                    inner = set;
                 }
             }
 
         }
 
-        return didRemove;
+        return modified;
     }
 
     @Override
     public boolean removeAll(Collection<?> c) {
-        boolean result = false;
+        boolean modified = false;
 
         if (null != inner) {
-            if (1 == inner.size()) {
+            if (inner.size() == 1) {
                 // May throw NPE per spec for Collection.removeAll()
-                Iterator incomingIter = c.iterator();
+                Iterator<?> incomingIter = c.iterator();
                 E oneAndOnlyElement = inner.iterator().next();
                 // Iterate over the incoming collection
                 // looking for a member that is equal to our one and only
                 // element.
                 while (incomingIter.hasNext()) {
                     Object cur = incomingIter.next();
-                    if (null != oneAndOnlyElement) {
+                    if (oneAndOnlyElement != null) {
                         // This handles null == cur.
-                        if (result = oneAndOnlyElement.equals(cur)) {
+                        if (modified = oneAndOnlyElement.equals(cur)) {
                             break;
                         }
                     } else {
                         // oneAndOnlyElement is null
-                        if (result = cur == null) {
+                        if (modified = cur == null) {
                             break;
                         }
                     }
                 }
-                if (result) {
+                if (modified) {
                     inner = null;
                 }
             } else {
-                result = inner.removeAll(c);
-                if (result && 0 == inner.size()) {
+                modified = inner.removeAll(c);
+                if (modified && inner.isEmpty()) {
                     inner = null;
                 }
 
             }
         }
 
-        return result;
+        return modified;
     }
 
     @Override
     public boolean retainAll(Collection<?> c) {
-        boolean didModify = false;
+        boolean modified = false;
 
         if (null != inner) {
             if (1 == inner.size()) {
-                Iterator incomingIter = c.iterator();
+                Iterator<?> incomingIter = c.iterator();
                 E oneAndOnlyElement = inner.iterator().next();
                 // Iterate over the incoming collection
                 // looking for a member that is equal to our one and only
@@ -175,7 +182,7 @@ public class MostlySingletonSet<E> implements Set<E>, Serializable {
                 boolean found = false;
                 while (incomingIter.hasNext()) {
                     Object cur = incomingIter.next();
-                    if (null != oneAndOnlyElement) {
+                    if (oneAndOnlyElement != null) {
                         if (found = oneAndOnlyElement.equals(cur)) {
                             break;
                         }
@@ -185,59 +192,52 @@ public class MostlySingletonSet<E> implements Set<E>, Serializable {
                         }
                     }
                 }
-                if (didModify = !found) {
+                if (modified = !found) {
                     inner = null;
                 }
 
             } else {
-                didModify = inner.retainAll(c);
+                modified = inner.retainAll(c);
+                if (modified && inner.isEmpty()) {
+                    inner = null;
+                }
             }
         }
 
-        return didModify;
+        return modified;
     }
-
-    // </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="Non-mutating methods">
 
     @Override
     public boolean contains(Object o) {
-        boolean result = false;
+        boolean contains = false;
 
         if (null != inner) {
-            result = inner.contains(o);
+            contains = inner.contains(o);
         }
 
-        return result;
+        return contains;
     }
 
     @Override
     public boolean containsAll(Collection<?> c) {
-        boolean result = false;
-
-        if (null != inner) {
-            result = inner.containsAll(c);
-        }
-
-        return result;
+        return inner != null ? inner.containsAll(c) : c.isEmpty();
     }
 
     @Override
     public boolean isEmpty() {
-        boolean result = true;
+        boolean empty = true;
 
-        if (null != inner) {
-            result = inner.isEmpty();
+        if (inner != null) {
+            empty = inner.isEmpty();
         }
 
-        return result;
+        return empty;
     }
 
     @Override
     public int size() {
         int size = 0;
-        if (null != inner) {
+        if (inner != null) {
             size = inner.size();
         }
         return size;
@@ -245,80 +245,98 @@ public class MostlySingletonSet<E> implements Set<E>, Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        boolean result = false;
-        if (obj != null) {
-            if (obj instanceof MostlySingletonSet) {
-                final MostlySingletonSet<E> other = (MostlySingletonSet<E>) obj;
-                if (this.inner != other.inner && (this.inner == null || !this.inner.equals(other.inner))) {
-                    result = false;
-                } else {
-                    result = true;
-                }
-            } else if (obj instanceof Collection) {
-                Collection otherCollection = (Collection) obj;
-
-                if (null != inner) {
-                    result = inner.equals(otherCollection);
-                } else {
-                    result = otherCollection.isEmpty();
-                }
-
-            }
+        if (obj == this) {
+            return true;
         }
-        return result;
+        if (!(obj instanceof Set)) {
+            return false;
+        }
+        Set<?> other = (Set<?>) obj;
+        return inner != null ? inner.equals(other) : other.isEmpty();
     }
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 83 * hash + (this.inner != null ? this.inner.hashCode() : 0);
-        return hash;
+        // Per Set contract: sum of the element hash codes
+        return inner != null ? inner.hashCode() : 0;
     }
 
     @Override
     public String toString() {
-        String result = "empty";
-        if (null != inner) {
-            result = inner.toString();
-        }
-        return result;
+        return inner != null ? inner.toString() : "empty";
     }
-
-    // </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="Iteration and array">
 
     @Override
     public Iterator<E> iterator() {
-        Iterator<E> result;
-
-        if (null != inner) {
-            result = inner.iterator();
-        } else {
-            result = Collections.EMPTY_SET.iterator();
-        }
-
-        return result;
+        return inner != null ? new InnerIterator() : Collections.emptyIterator();
     }
 
     @Override
     public Object[] toArray() {
-        Object[] result = null;
-        if (null != inner) {
-            result = inner.toArray();
-        }
-        return result;
+        return inner != null ? inner.toArray() : new Object[0];
     }
 
     @Override
     public <T> T[] toArray(T[] a) {
-        T[] result = null;
-        if (null != inner) {
-            result = inner.toArray(a);
+        if (inner != null) {
+            return inner.toArray(a);
         }
-        return result;
+        if (a.length > 0) {
+            a[0] = null; // per Collection.toArray(T[]) contract
+        }
+        return a;
     }
 
-    // </editor-fold>
+    /**
+     * Creates the mutable set used once there is more than one element.
+     * <p>
+     * Mostly-singleton: keep the table small (at least 8 buckets) with load factor 1.0,
+     * so that {@code expectedSize} elements fit without resizing.
+     */
+    private static <E> Set<E> newHashSet(int expectedSize) {
+        return new HashSet<>(Math.max(8, expectedSize), 1.0f);
+    }
+
+    /**
+     * Supports {@link Iterator#remove()} also on the immutable singleton,
+     * and restores {@code inner == null} when the set becomes empty.
+     */
+    private final class InnerIterator implements Iterator<E> {
+
+        private final Set<E> source = inner;
+        private final Iterator<E> delegate = source.iterator();
+        private boolean canRemove;
+
+        @Override
+        public boolean hasNext() {
+            return delegate.hasNext();
+        }
+
+        @Override
+        public E next() {
+            E next = delegate.next(); // throws NoSuchElementException when exhausted
+            canRemove = true;
+            return next;
+        }
+
+        @Override
+        public void remove() {
+            if (!canRemove) {
+                throw new IllegalStateException();
+            }
+            canRemove = false;
+
+            if (source instanceof HashSet) {
+                delegate.remove();
+                if (source.isEmpty() && inner == source) {
+                    inner = null;
+                }
+            }
+            else if (inner == source) {
+                // Immutable singleton: removing its only element empties the set
+                inner = null;
+            }
+        }
+    }
 
 }

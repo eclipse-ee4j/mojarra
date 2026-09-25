@@ -16,327 +16,336 @@
 
 package com.sun.faces.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
 public class MostlySingletonTest {
-    
+
     public MostlySingletonTest() {
     }
-    
+
     @Test
     public void testAdd() {
         MostlySingletonSet<Integer> set = new MostlySingletonSet<Integer>();
-        
+
         set.add(1);
         assertTrue(1 == set.size());
-        
+
         set.add(2);
         assertTrue(2 == set.size());
-        
+
         set.add(3);
         assertTrue(3 == set.size());
-        
+
     }
-    
+
     @Test
     public void testAddWithNulls() {
-        
+
         MostlySingletonSet<Integer> set = new MostlySingletonSet<Integer>();
-        
+
         set.add(1);
         assertTrue(1 == set.size());
-        
+
         set.add(null);
         assertTrue(2 == set.size());
-        
+
         set.add(3);
         assertTrue(3 == set.size());
-        
-        
+
+
     }
-    
+
     @Test
     public void testAddAll() {
         Set<Integer> otherSet = new HashSet<Integer>();
         otherSet.add(4);
         otherSet.add(5);
         otherSet.add(6);
-        
+
         MostlySingletonSet<Integer> set = new MostlySingletonSet<Integer>();
-        
+
         set.add(1);
         assertTrue(1 == set.size());
-        
+
         set.add(2);
         assertTrue(2 == set.size());
-        
+
         set.add(3);
         assertTrue(3 == set.size());
-        
+
         set.addAll(otherSet);
         assertTrue(6 == set.size());
-        
+
         otherSet.add(3);
         assertTrue(4 == otherSet.size());
         set.clear();
         set.add(1);
         assertTrue(1 == set.size());
-        
+
         set.add(2);
         assertTrue(2 == set.size());
-        
+
         set.add(3);
         assertTrue(3 == set.size());
-        
+
         set.addAll(otherSet);
         assertTrue(6 == set.size());
-        
+
         set.clear();
         assertTrue(0 == set.size());
         set.add(1);
         set.addAll(otherSet);
         assertTrue(5 == set.size());
-        
+
         set.clear();
         otherSet.clear();
         otherSet.add(1);
         set.addAll(otherSet);
         assertTrue(1 == set.size());
-        
-        
+
+
     }
-    
-    
+
+
     @Test
     public void testRemove() {
         MostlySingletonSet<Integer> set = new MostlySingletonSet<Integer>();
-        
+
         set.add(1);
         assertTrue(1 == set.size());
-        
+
         set.add(2);
         assertTrue(2 == set.size());
-        
+
         set.add(3);
         assertTrue(3 == set.size());
-        
+
         boolean didRemove = set.remove(2);
         assertTrue(didRemove);
         assertTrue(2 == set.size());
-        
+
         didRemove = set.remove(1);
         assertTrue(didRemove);
         assertTrue(1 == set.size());
-        
+
         didRemove = set.remove(3);
         assertTrue(didRemove);
         assertTrue(0 == set.size());
-        
+
         didRemove = set.remove(4);
         assertTrue(!didRemove);
         assertTrue(0 == set.size());
-        
+
         set.clear();
         assertTrue(0 == set.size());
         set.add(1);
         set.add(2);
         assertTrue(2 == set.size());
-        
+
         set.remove(2);
         assertTrue(1 == set.size());
         set.remove(1);
         assertTrue(0 == set.size());
-        
+
     }
-    
+
     @Test
     public void testRemoveWithNulls() {
         MostlySingletonSet<Integer> set = new MostlySingletonSet<Integer>();
-        
+
         set.add(1);
         assertTrue(1 == set.size());
-        
+
         set.add(null);
         assertTrue(2 == set.size());
-        
+
         set.add(3);
         assertTrue(3 == set.size());
-        
+
         boolean didRemove = set.remove(null);
         assertTrue(didRemove);
         assertTrue(2 == set.size());
-        
+
         didRemove = set.remove(1);
         assertTrue(didRemove);
         assertTrue(1 == set.size());
-        
+
         didRemove = set.remove(3);
         assertTrue(didRemove);
         assertTrue(0 == set.size());
-        
+
         didRemove = set.remove(4);
         assertTrue(!didRemove);
         assertTrue(0 == set.size());
-        
+
         set.clear();
         assertTrue(0 == set.size());
         set.add(null);
         assertTrue(1 == set.size());
         set.remove(null);
         assertTrue(0 == set.size());
-        
+
         set.clear();
         assertTrue(0 == set.size());
         set.add(1);
         set.add(null);
         assertTrue(2 == set.size());
-        
+
         set.remove(null);
         assertTrue(1 == set.size());
         set.remove(1);
         assertTrue(0 == set.size());
-        
+
         set.clear();
         set.add(null);
         set.remove(null);
-        
-        
+
+
     }
-    
+
     @Test
     public void testRemoveAll() {
         Set<Integer> otherSet = new HashSet<Integer>();
         otherSet.add(1);
         otherSet.add(2);
         otherSet.add(3);
-        
+
         MostlySingletonSet<Integer> set = new MostlySingletonSet<Integer>();
-        
+
         set.add(1);
         assertTrue(1 == set.size());
-        
+
         set.add(2);
         assertTrue(2 == set.size());
-        
+
         set.add(3);
         assertTrue(3 == set.size());
-        
+
         boolean didRemove = set.removeAll(otherSet);
         assertTrue(didRemove);
         assertTrue(0 == set.size());
-        
-        
+
+
         set = new MostlySingletonSet<Integer>();
-        
+
         set.add(1);
         assertTrue(1 == set.size());
-        
+
         set.add(2);
         assertTrue(2 == set.size());
-        
+
         set.add(3);
-        assertTrue(3 == set.size());      
-        
+        assertTrue(3 == set.size());
+
         set.add(4);
         assertTrue(4 == set.size());
-        
+
         set.add(5);
         assertTrue(5 == set.size());
-        
+
         didRemove = set.removeAll(otherSet);
         assertTrue(didRemove);
         assertTrue(2 == set.size());
-        
+
         set.clear();
         assertTrue(0 == set.size());
         set.add(1);
         set.removeAll(otherSet);
     }
-    
+
     @Test
     public void testRemoveAllWithNulls() {
         Set<Integer> otherSet = new HashSet<Integer>();
         otherSet.add(1);
         otherSet.add(null);
         otherSet.add(3);
-        
+
         MostlySingletonSet<Integer> set = new MostlySingletonSet<Integer>();
-        
+
         set.add(1);
         assertTrue(1 == set.size());
-        
+
         set.add(null);
         assertTrue(2 == set.size());
-        
+
         set.add(3);
         assertTrue(3 == set.size());
-        
+
         boolean didRemove = set.removeAll(otherSet);
         assertTrue(didRemove);
         assertTrue(0 == set.size());
-        
+
         set = new MostlySingletonSet<Integer>();
-        
+
         set.add(1);
         assertTrue(1 == set.size());
-        
+
         set.add(null);
         assertTrue(2 == set.size());
-        
+
         set.add(3);
-        assertTrue(3 == set.size());      
-        
+        assertTrue(3 == set.size());
+
         set.add(4);
         assertTrue(4 == set.size());
-        
+
         set.add(5);
         assertTrue(5 == set.size());
-        
+
         didRemove = set.removeAll(otherSet);
         assertTrue(didRemove);
         assertTrue(2 == set.size());
-        
-        
+
+
         set.clear();
         assertTrue(0 == set.size());
         set.add(null);
         set.removeAll(otherSet);
-        
+
     }
-    
+
     @Test
     public void testRetainAll() {
         Set<Integer> otherSet = new HashSet<Integer>();
         otherSet.add(1);
         otherSet.add(2);
         otherSet.add(3);
-        
+
         MostlySingletonSet<Integer> set = new MostlySingletonSet<Integer>();
-        
+
         set.add(1);
         assertTrue(1 == set.size());
-        
+
         set.add(2);
         assertTrue(2 == set.size());
-        
+
         set.add(3);
         assertTrue(3 == set.size());
 
         boolean didRemove = set.retainAll(otherSet);
         assertTrue(!didRemove);
         assertTrue(3 == set.size());
-        
+
         set.add(4);
         assertTrue(4 == set.size()) ;
         set.retainAll(otherSet);
         assertTrue(3 == set.size());
         assertTrue(!set.contains(4));
-        
+
         set.clear();
         assertTrue(0 == set.size());
         otherSet.clear();
@@ -345,40 +354,40 @@ public class MostlySingletonTest {
         assertTrue(1 == set.size());
         otherSet.add(2);
         assertTrue(1 == otherSet.size());
-        
+
         set.retainAll(otherSet);
         assertTrue(0 == set.size());
     }
-    
-    
+
+
     @Test
     public void testRetainAllWithNulls() {
         Set<Integer> otherSet = new HashSet<Integer>();
         otherSet.add(1);
         otherSet.add(null);
         otherSet.add(3);
-        
+
         MostlySingletonSet<Integer> set = new MostlySingletonSet<Integer>();
-        
+
         set.add(1);
         assertTrue(1 == set.size());
-        
+
         set.add(null);
         assertTrue(2 == set.size());
-        
+
         set.add(3);
         assertTrue(3 == set.size());
 
         boolean didRemove = set.retainAll(otherSet);
         assertTrue(!didRemove);
         assertTrue(3 == set.size());
-        
+
         set.add(4);
         assertTrue(4 == set.size()) ;
         set.retainAll(otherSet);
         assertTrue(3 == set.size());
         assertTrue(!set.contains(4));
-        
+
         set.clear();
         assertTrue(0 == set.size());
         otherSet.clear();
@@ -387,74 +396,74 @@ public class MostlySingletonTest {
         assertTrue(1 == set.size());
         otherSet.add(2);
         assertTrue(1 == otherSet.size());
-        
+
         set.retainAll(otherSet);
         assertTrue(0 == set.size());
-        
+
     }
-    
+
     @Test
     public void testContains() {
         MostlySingletonSet<Integer> set = new MostlySingletonSet<Integer>();
-        
+
         set.add(1);
         assertTrue(set.contains(1));
         assertTrue(!set.contains(2));
-        
+
         set.add(2);
         assertTrue(set.contains(2));
-        
+
         set.remove(2);
         assertTrue(!set.contains(2));
         assertTrue(1 == set.size());
-        
+
         set.remove(1);
         assertTrue(!set.contains(1));
         assertTrue(0 == set.size());
-        
+
         set.add(1);
         assertTrue(set.contains(1));
         assertTrue(!set.contains(2));
-        
+
         set.add(2);
         assertTrue(set.contains(2));
 
-        
+
     }
-    
+
     @Test
     public void testContainsWithNulls() {
         MostlySingletonSet<Integer> set = new MostlySingletonSet<Integer>();
-        
+
         set.add(null);
         assertTrue(set.contains(null));
         assertTrue(!set.contains(2));
-        
+
         set.add(2);
         assertTrue(set.contains(2));
-        
+
         set.remove(2);
         assertTrue(!set.contains(2));
         assertTrue(1 == set.size());
-        
+
         set.remove(null);
         assertTrue(!set.contains(null));
         assertTrue(0 == set.size());
-        
+
         set.add(1);
         assertTrue(set.contains(1));
         assertTrue(!set.contains(2));
-        
+
         set.add(null);
         assertTrue(set.contains(null));
 
-        
+
     }
-    
+
     @Test
     public void testContainsAll() {
         MostlySingletonSet<Integer> set = new MostlySingletonSet<Integer>();
-        
+
         set.add(1);
         assertTrue(set.contains(1));
         assertTrue(!set.contains(2));
@@ -462,20 +471,20 @@ public class MostlySingletonTest {
         Set<Integer> otherSet = new HashSet<Integer>();
         otherSet.add(1);
         assertTrue(set.containsAll(otherSet));
-        
+
         set.add(2);
         assertTrue(set.contains(1));
         assertTrue(set.contains(2));
-        
+
         assertTrue(set.containsAll(otherSet));
         otherSet.clear();
         assertTrue(set.containsAll(otherSet));
     }
-        
+
     @Test
     public void testContainsAllWithNulls() {
         MostlySingletonSet<Integer> set = new MostlySingletonSet<Integer>();
-        
+
         set.add(null);
         assertTrue(set.contains(null));
         assertTrue(!set.contains(2));
@@ -483,70 +492,70 @@ public class MostlySingletonTest {
         Set<Integer> otherSet = new HashSet<Integer>();
         otherSet.add(null);
         assertTrue(set.containsAll(otherSet));
-        
+
         set.add(2);
         assertTrue(set.contains(null));
         assertTrue(set.contains(2));
-        
+
         assertTrue(set.containsAll(otherSet));
         otherSet.clear();
         assertTrue(set.containsAll(otherSet));
     }
-        
-    
+
+
     @Test
     public void testIsEmpty() {
         MostlySingletonSet<Integer> set = new MostlySingletonSet<Integer>();
-        
+
         assertTrue(set.isEmpty());
         set.add(1);
         assertTrue(!set.isEmpty());
-        
+
         set.remove(1);
         assertTrue(set.isEmpty());
-        
+
         set.add(1);
         set.add(2);
         assertTrue(!set.isEmpty());
         set.remove(1);
         set.remove(2);
         assertTrue(set.isEmpty());
-        
+
     }
-    
+
     @Test
     public void testIsEmptyWithNulls() {
         MostlySingletonSet<Integer> set = new MostlySingletonSet<Integer>();
-        
+
         assertTrue(set.isEmpty());
         set.add(null);
         assertTrue(!set.isEmpty());
-        
+
         set.remove(null);
         assertTrue(set.isEmpty());
-        
+
         set.add(1);
         set.add(null);
         assertTrue(!set.isEmpty());
         set.remove(1);
         set.remove(null);
         assertTrue(set.isEmpty());
-        
+
     }
-   
+
     @Test
     public void testEquals() {
         MostlySingletonSet<Integer> setA = new MostlySingletonSet<Integer>();
-        
+
         setA.add(1);
         assertTrue(1 == setA.size());
-        
+
         setA.add(2);
         assertTrue(2 == setA.size());
-        
+
         setA.add(3);
         assertTrue(3 == setA.size());
-        
+
         Set<Integer> otherSet = new HashSet<Integer>();
         otherSet.add(1);
         otherSet.add(2);
@@ -554,7 +563,7 @@ public class MostlySingletonTest {
 
         assertTrue(setA.equals(otherSet));
         assertTrue(otherSet.equals(setA));
-        
+
         setA.clear();
         otherSet.clear();
         assertTrue(setA.equals(otherSet));
@@ -563,62 +572,232 @@ public class MostlySingletonTest {
         setA.add(1);
         setA.add(2);
         setA.add(3);
-        
+
         MostlySingletonSet<Integer> setB = new MostlySingletonSet<Integer>();
         setB.add(1);
         setB.add(2);
         setB.add(3);
         assertTrue(setA.equals(setB));
         assertTrue(setB.equals(setA));
-        
+
         setA.clear();
         setB.clear();
         assertTrue(setA.equals(setB));
         assertTrue(setB.equals(setA));
     }
-    
+
     @Test
     public void testToString() {
-        
+
         MostlySingletonSet<Integer> setA = new MostlySingletonSet<Integer>();
-        
+
         setA.add(1);
         assertTrue(1 == setA.size());
-        
+
         setA.add(2);
         assertTrue(2 == setA.size());
-        
+
         setA.add(3);
         assertTrue(3 == setA.size());
-        
+
         String toString = setA.toString();
         assertTrue(toString.contains("1"));
         assertTrue(toString.contains("2"));
         assertTrue(toString.contains("3"));
         assertTrue(!toString.contains("4"));
-        
+
     }
-    
+
     @Test
     public void testToStringWithNulls() {
-        
+
         MostlySingletonSet<Integer> setA = new MostlySingletonSet<Integer>();
-        
+
         setA.add(1);
         assertTrue(1 == setA.size());
-        
+
         setA.add(null);
         assertTrue(2 == setA.size());
-        
+
         setA.add(3);
         assertTrue(3 == setA.size());
-        
+
         String toString = setA.toString();
         assertTrue(toString.contains("1"));
         assertTrue(toString.contains("null"));
         assertTrue(toString.contains("3"));
         assertTrue(!toString.contains("4"));
-        
+
     }
 
+    // ------------------------------------------------------------------ addAll
+
+    @Test
+    public void testAddAllMultipleToEmptySet() {
+        MostlySingletonSet<Integer> set = new MostlySingletonSet<>();
+        assertTrue(set.addAll(List.of(1, 2, 3)));
+        assertEquals(3, set.size());
+    }
+
+    @Test
+    public void testAddAllEmptyToEmptySet() {
+        MostlySingletonSet<Integer> set = new MostlySingletonSet<>();
+        assertFalse(set.addAll(List.of()));
+        assertTrue(set.isEmpty());
+    }
+
+    // ---------------------------------------------------------------- toArray
+
+    @Test
+    public void testToArrayOnEmptySetReturnsEmptyArray() {
+        MostlySingletonSet<Integer> set = new MostlySingletonSet<>();
+        Object[] array = set.toArray();
+        assertNotNull(array);
+        assertEquals(0, array.length);
+    }
+
+    @Test
+    public void testTypedToArrayOnEmptySetReturnsArgument() {
+        MostlySingletonSet<Integer> set = new MostlySingletonSet<>();
+        Integer[] array = { 7, 8 };
+        assertSame(array, set.toArray(array));
+        assertNull(array[0], "Element following the end of the collection must be set to null");
+    }
+
+    @Test
+    public void testCopyConstructorsOnEmptySet() {
+        // ArrayList(Collection), addAll(Collection) and Set.copyOf() all call toArray()
+        MostlySingletonSet<Integer> set = new MostlySingletonSet<>();
+        assertTrue(new ArrayList<>(set).isEmpty());
+        assertFalse(new ArrayList<Integer>().addAll(set));
+        assertTrue(Set.copyOf(set).isEmpty());
+    }
+
+    // ----------------------------------------------------------------- remove
+
+    @Test
+    public void testRemoveNullFromNonNullSingleton() {
+        MostlySingletonSet<Integer> set = new MostlySingletonSet<>();
+        set.add(1);
+        assertFalse(set.remove(null));
+        assertEquals(1, set.size());
+        assertTrue(set.contains(1));
+    }
+
+    @Test
+    public void testRemoveLeavingNullAsOnlyElement() {
+        MostlySingletonSet<Integer> set = new MostlySingletonSet<>();
+        set.add(1);
+        set.add(null);
+        assertTrue(set.remove(1));
+        assertEquals(1, set.size());
+        assertTrue(set.contains(null));
+    }
+
+    // -------------------------------------------------------------- null handling
+
+    @Test
+    public void testAddNullToEmptySet() {
+        MostlySingletonSet<Integer> set = new MostlySingletonSet<>();
+        assertTrue(set.add(null));
+        assertEquals(1, set.size());
+    }
+
+    @Test
+    public void testAddAllSingleNullToEmptySet() {
+        MostlySingletonSet<Integer> set = new MostlySingletonSet<>();
+        assertTrue(set.addAll(Collections.singleton(null)));
+        assertEquals(1, set.size());
+    }
+
+    @Test
+    public void testContainsNullOnNonNullSingleton() {
+        MostlySingletonSet<Integer> set = new MostlySingletonSet<>();
+        set.add(1);
+        assertFalse(set.contains(null));
+    }
+
+    // ------------------------------------------------------------- containsAll
+
+    @Test
+    public void testContainsAllEmptyOnEmptySet() {
+        MostlySingletonSet<Integer> set = new MostlySingletonSet<>();
+        assertTrue(set.containsAll(Set.of()));
+    }
+
+    // --------------------------------------------------------- equals/hashCode
+
+    @Test
+    public void testHashCodeConsistentWithHashSet() {
+        MostlySingletonSet<Integer> set = new MostlySingletonSet<>();
+        Set<Integer> other = new HashSet<>();
+        assertEquals(other, set);
+        assertEquals(other.hashCode(), set.hashCode(), "empty");
+
+        set.add(1);
+        other.add(1);
+        assertEquals(other, set);
+        assertEquals(other.hashCode(), set.hashCode(), "singleton");
+
+        set.add(2);
+        other.add(2);
+        assertEquals(other, set);
+        assertEquals(other.hashCode(), set.hashCode(), "multiple");
+    }
+
+    @Test
+    public void testUsableAsHashSetElement() {
+        MostlySingletonSet<Integer> set = new MostlySingletonSet<>();
+        set.add(1);
+        Set<Set<Integer>> sets = new HashSet<>();
+        sets.add(Set.of(1));
+        assertTrue(sets.contains(set));
+    }
+
+    @Test
+    public void testEmptySetNotEqualToEmptyList() {
+        MostlySingletonSet<Integer> set = new MostlySingletonSet<>();
+        List<Integer> list = List.of();
+        assertEquals(list.equals(set), set.equals(list), "equals must be symmetric");
+        assertFalse(set.equals(list));
+    }
+
+    @Test
+    public void testEqualsAfterRetainAllEmptiesSet() {
+        MostlySingletonSet<Integer> set = new MostlySingletonSet<>();
+        set.add(1);
+        set.add(2);
+        assertTrue(set.retainAll(Set.of(3)));
+        assertTrue(set.isEmpty());
+        assertEquals(new MostlySingletonSet<Integer>(), set);
+    }
+
+    // ---------------------------------------------------------------- iterator
+
+    @Test
+    public void testIteratorRemoveOnSingleton() {
+        MostlySingletonSet<Integer> set = new MostlySingletonSet<>();
+        set.add(1);
+        Iterator<Integer> it = set.iterator();
+        it.next();
+        it.remove();
+        assertTrue(set.isEmpty());
+    }
+
+    @Test
+    public void testRemoveIfOnSingleton() {
+        MostlySingletonSet<Integer> set = new MostlySingletonSet<>();
+        set.add(1);
+        assertTrue(set.removeIf(i -> i == 1));
+        assertTrue(set.isEmpty());
+    }
+
+    @Test
+    public void testEqualsAfterRemoveIfEmptiesSet() {
+        MostlySingletonSet<Integer> set = new MostlySingletonSet<>();
+        set.add(1);
+        set.add(2);
+        assertTrue(set.removeIf(i -> true));
+        assertEquals(new MostlySingletonSet<Integer>(), set);
+    }
 }
