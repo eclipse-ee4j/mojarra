@@ -290,6 +290,10 @@
                                  Rhino's effective compatibility is ES5-ish. This config is no longer used in 5.0 branch. -->
                             <closureLanguageOut>ECMASCRIPT5</closureLanguageOut>
                             <closureEmitUseStrict>false</closureEmitUseStrict>
+                            <!-- ES5 turns the block scoped const/let of faces.js into global vars:
+                                 wrap the output in a function scope to keep them private -->
+                            <closureOutputWrapper>(function(){%output%}).call(this);</closureOutputWrapper>
+                            <closureAssumeFunctionWrapper>true</closureAssumeFunctionWrapper>
                         </configuration>
                     </execution>
                 </executions>
