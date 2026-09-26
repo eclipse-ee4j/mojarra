@@ -1277,7 +1277,6 @@ if (!((window.faces && faces.specversion && faces.specversion >= parseInt('#{app
             req.context.onevent = null;    // Event handler for request
             req.context.namingContainerId = null;       // If UIViewRoot is an instance of NamingContainer this represents its ID.
             req.context.namingContainerPrefix = null;   // If UIViewRoot is an instance of NamingContainer this represents its ID suffixed with separator character, else an empty string.
-            req.xmlReq = null;             // XMLHttpRequest Object
             req.async = true;              // Default - Asynchronous
             req.parameters = {};           // Parameters For GET or POST
             req.queryString = null;        // Encoded Data For GET or POST
@@ -1362,87 +1361,84 @@ if (!((window.faces && faces.specversion && faces.specversion >= parseInt('#{app
              * @ignore
              */
             req.sendRequest = function () {
-                if (isNotNull(req.xmlReq)) {
-                    // if there is already a request on the queue waiting to be processed..
-                    // just queue this request
-                    // TODO: add support for async ajax requests
-                    // https://github.com/eclipse-ee4j/mojarra/issues/4946
-                    if (!req.que.isEmpty()) {
-                        if (!req.fromQueue) {
-                            req.que.enqueue(req);
-                            return;
-                        }
-                    }
-                    // If the queue is empty, queue up this request and send
+                // if there is already a request on the queue waiting to be processed..
+                // just queue this request
+                // TODO: add support for async ajax requests
+                // https://github.com/eclipse-ee4j/mojarra/issues/4946
+                if (!req.que.isEmpty()) {
                     if (!req.fromQueue) {
                         req.que.enqueue(req);
+                        return;
                     }
-                    // Some logic to get the real request URL
-                    if (req.generateUniqueUrl && req.method === "GET") {
-                        req.parameters["AjaxRequestUniqueId"] = new Date().getTime() + EMPTY + req.requestIndex;
-                    }
-
-                    // is a multipart form data ?
-                    const isMultiPart = (req.method === "POST" && context.form.enctype === 'multipart/form-data');
-
-                    // If multipart prepare the FormData
-                    const formData = isMultiPart ? new FormData(context.form) : undefined;
-
-                    // Add parameters encoded or multipart
-                    const params = new URLSearchParams(req.queryString);
-                    for ( const i of Object.keys(req.parameters) ) {
-                        // if is multipart request -> add parameter to FormData
-                        if ( isMultiPart ) {
-                            formData.append(i,req.parameters[i]);
-                        }
-                        // else is a normal post request -> add to URLSearchParams for POST
-                        else {
-                            params.append(i, req.parameters[i]);
-                        }
-                    }
-                    req.queryString = params.toString();
-
-                    if (req.method === "GET") {
-                        if (req.queryString.length > 0) {
-                            req.url += ((req.url.indexOf("?") > -1) ? "&" : "?") + req.queryString;
-                        }
-                    }
-
-                    // Open Ajax request
-                    req.xmlReq.open(req.method, req.url, req.async);
-
-                    // note that we are including the charset=UTF-8 as part of the content type (even
-                    // if URLSearchParams encodes as UTF-8), because with some
-                    // browsers it will not be set in the request.  Some server implementations need to
-                    // determine the character encoding from the request header content type.
-                    if (req.method === "POST") {
-                        req.xmlReq.setRequestHeader('Faces-Request', 'partial/ajax');
-
-                        // file upload
-                        if ( isMultiPart ) formData.append('Faces-Request','partial/ajax');
-
-                        // GET or POST
-                        // req.xmlReq.setRequestHeader('Content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
-                        else req.xmlReq.setRequestHeader( 'Content-type' , context.form.enctype+';charset=UTF-8' );
-                    }
-
-                    // note that async == false is not a supported feature.  We may change it in ways
-                    // that break existing programs at any time, with no warning.
-                    if (!req.async) req.xmlReq.onreadystatechange = null; // no need for readystate change listening
-
-                    // Send begin event
-                    sendEvent(req.xmlReq, req.context, "begin");
-
-                    // IF multipart/form-data use FormData
-                    if (isMultiPart) req.xmlReq.send(formData);
-
-                    // ELSE use query string
-                    else req.xmlReq.send(req.queryString);
-
-                    // call OnComplete if not async
-                    if(!req.async) req.onComplete();
-
                 }
+                // If the queue is empty, queue up this request and send
+                if (!req.fromQueue) {
+                    req.que.enqueue(req);
+                }
+                // Some logic to get the real request URL
+                if (req.generateUniqueUrl && req.method === "GET") {
+                    req.parameters["AjaxRequestUniqueId"] = new Date().getTime() + EMPTY + req.requestIndex;
+                }
+
+                // is a multipart form data ?
+                const isMultiPart = (req.method === "POST" && context.form.enctype === 'multipart/form-data');
+
+                // If multipart prepare the FormData
+                const formData = isMultiPart ? new FormData(context.form) : undefined;
+
+                // Add parameters encoded or multipart
+                const params = new URLSearchParams(req.queryString);
+                for ( const i of Object.keys(req.parameters) ) {
+                    // if is multipart request -> add parameter to FormData
+                    if ( isMultiPart ) {
+                        formData.append(i,req.parameters[i]);
+                    }
+                    // else is a normal post request -> add to URLSearchParams for POST
+                    else {
+                        params.append(i, req.parameters[i]);
+                    }
+                }
+                req.queryString = params.toString();
+
+                if (req.method === "GET") {
+                    if (req.queryString.length > 0) {
+                        req.url += ((req.url.indexOf("?") > -1) ? "&" : "?") + req.queryString;
+                    }
+                }
+
+                // Open Ajax request
+                req.xmlReq.open(req.method, req.url, req.async);
+
+                // note that we are including the charset=UTF-8 as part of the content type (even
+                // if URLSearchParams encodes as UTF-8), because with some
+                // browsers it will not be set in the request.  Some server implementations need to
+                // determine the character encoding from the request header content type.
+                if (req.method === "POST") {
+                    req.xmlReq.setRequestHeader('Faces-Request', 'partial/ajax');
+
+                    // file upload
+                    if ( isMultiPart ) formData.append('Faces-Request','partial/ajax');
+
+                    // GET or POST
+                    // req.xmlReq.setRequestHeader('Content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
+                    else req.xmlReq.setRequestHeader( 'Content-type' , context.form.enctype+';charset=UTF-8' );
+                }
+
+                // note that async == false is not a supported feature.  We may change it in ways
+                // that break existing programs at any time, with no warning.
+                if (!req.async) req.xmlReq.onreadystatechange = null; // no need for readystate change listening
+
+                // Send begin event
+                sendEvent(req.xmlReq, req.context, "begin");
+
+                // IF multipart/form-data use FormData
+                if (isMultiPart) req.xmlReq.send(formData);
+
+                // ELSE use query string
+                else req.xmlReq.send(req.queryString);
+
+                // call OnComplete if not async
+                if(!req.async) req.onComplete();
             };
 
             return req;
