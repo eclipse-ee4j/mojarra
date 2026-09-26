@@ -66,9 +66,9 @@ export const ajax = (function() {
     let delayHandler: ReturnType<typeof setTimeout> | null = null;
 
     /**
-         * Utility function that determines if a file control exists for the form.
-         * @ignore
-         */
+     * Utility function that determines if a file control exists for the form.
+     * @ignore
+     */
     const hasInputFileControl = function(form: HTMLFormElement): boolean {
         return isNotNull(form.querySelector("input[type='file']"));
     };
@@ -77,26 +77,26 @@ export const ajax = (function() {
     // --- FACES input processing functions ---------------------------------------------------------------------------------------
 
     /**
-         * Get the form element which encloses the supplied element.
-         * @param element - element to act against in search
-         * @returns form element representing enclosing form, or first form if none found.
-         * @ignore
-         */
+     * Get the form element which encloses the supplied element.
+     * @param element - element to act against in search
+     * @returns form element representing enclosing form, or first form if none found.
+     * @ignore
+     */
     const getForm = function(element: Element): HTMLFormElement | null {
         const form = element.closest<HTMLFormElement>(FORM);
         return form ? form : document.forms[0] ?? null;
     };
 
     /**
-         * Get an array of all Faces form elements which need their view state to be updated.
-         * This covers at least the form that submitted the request and any form that is covered in the render target list.
-         *
-         * @param context {Object} An object containing the request context, including the following properties:
-         * the source element, per call onerror callback function, per call onevent callback function, the render
-         * instructions, the submitting form ID, the naming container ID and naming container prefix.
-         * @param hiddenStateFieldName {string} The hidden state field name, e.g. jakarta.faces.ViewState or jakarta.faces.ClientWindow
-         * @return {Array<HTMLFormElement>} Get an array of all Faces form elements which need their view state to be updated.
-         */
+     * Get an array of all Faces form elements which need their view state to be updated.
+     * This covers at least the form that submitted the request and any form that is covered in the render target list.
+     *
+     * @param context {Object} An object containing the request context, including the following properties:
+     * the source element, per call onerror callback function, per call onevent callback function, the render
+     * instructions, the submitting form ID, the naming container ID and naming container prefix.
+     * @param hiddenStateFieldName {string} The hidden state field name, e.g. jakarta.faces.ViewState or jakarta.faces.ClientWindow
+     * @return {Array<HTMLFormElement>} Get an array of all Faces form elements which need their view state to be updated.
+     */
     const getFormsToUpdate = function getFormsToUpdate(context: AjaxContext, hiddenStateFieldName: string): HTMLFormElement[] {
         const formsToUpdate = new Set<HTMLFormElement>();
 
@@ -161,27 +161,27 @@ export const ajax = (function() {
     };
 
     /**
-         * <p>Namespace given space separated parameters if necessary (only
-         * call this if there is a namingContainerPrefix!).  This
-         * function is here for backwards compatibility with manual
-         * faces.ajax.request() calls written before Spec790 changes.</p>
+     * <p>Namespace given space separated parameters if necessary (only
+     * call this if there is a namingContainerPrefix!).  This
+     * function is here for backwards compatibility with manual
+     * faces.ajax.request() calls written before Spec790 changes.</p>
 
-         * @param parameters Space separated string of parameters as
-         * usually specified in f:ajax execute and render attributes.
+     * @param parameters Space separated string of parameters as
+     * usually specified in f:ajax execute and render attributes.
 
-         * @param sourceClientId The client ID of the f:ajax
-         * source. This is to be used for prefixing relative target
-         * client IDs.
+     * @param sourceClientId The client ID of the f:ajax
+     * source. This is to be used for prefixing relative target
+     * client IDs.
 
-         * It's expected that this already starts with
-         * namingContainerPrefix.
+     * It's expected that this already starts with
+     * namingContainerPrefix.
 
-         * @param namingContainerPrefix The naming container prefix (the
-         * view root ID suffixed with separator character).
+     * @param namingContainerPrefix The naming container prefix (the
+     * view root ID suffixed with separator character).
 
-         * This is to be used for prefixing absolute target client IDs.
-         * @ignore
-         */
+     * This is to be used for prefixing absolute target client IDs.
+     * @ignore
+     */
     const namespaceParametersIfNecessary = function namespaceParametersIfNecessary(parameters: string, sourceClientId: string,
         namingContainerPrefix: string): string {
         if (sourceClientId.indexOf(namingContainerPrefix) !== 0) {
@@ -235,23 +235,23 @@ export const ajax = (function() {
     const INDEPENDENT_SCRIPT_ATTRIBUTE_REGEX = /\sdata-mojarra-independent(\s|=|$)/im;
 
     /**
-         * Check if a script is executable: its type is not specified or it is text/javascript.
-         * Scripts with other types (ld+json for example) are data and must be left in the html.
-         * @param attributes the attributes of a script tag
-         * @returns {boolean} true if the script is executable
-         * @ignore
-         */
+     * Check if a script is executable: its type is not specified or it is text/javascript.
+     * Scripts with other types (ld+json for example) are data and must be left in the html.
+     * @param attributes the attributes of a script tag
+     * @returns {boolean} true if the script is executable
+     * @ignore
+     */
     const isExecutableScript = function isExecutableScript(attributes: string): boolean {
         const type = attributes.match(TAG_ATTRIBUTE_TYPE_REGEX);
         return !type || type[1] === "text/javascript";
     };
 
     /**
-         * Get all executable scripts from supplied string, return them as an array for later processing.
-         * @param html a String containing a portion of html
-         * @returns {RegExpMatchArray[]} the script matches: [0] full tag, [1] attributes, [2] content
-         * @ignore
-         */
+     * Get all executable scripts from supplied string, return them as an array for later processing.
+     * @param html a String containing a portion of html
+     * @returns {RegExpMatchArray[]} the script matches: [0] full tag, [1] attributes, [2] content
+     * @ignore
+     */
     const getScripts = function getScripts(html: string): RegExpMatchArray[] {
         const scripts: RegExpMatchArray[] = [];
         for (const script of html.matchAll(SCRIPT_TAG_REGEX)) {
@@ -263,11 +263,11 @@ export const ajax = (function() {
     };
 
     /**
-         * Extract the scripts from the given markup, running those which declare that they must run before that
-         * markup goes live and returning the rest for {@link runScripts}.
-         * @param html a String containing a portion of html
-         * @ignore
-         */
+     * Extract the scripts from the given markup, running those which declare that they must run before that
+     * markup goes live and returning the rest for {@link runScripts}.
+     * @param html a String containing a portion of html
+     * @ignore
+     */
     const extractScripts = function extractScripts(html: string): RegExpMatchArray[] {
         const scripts = getScripts(html);
         runIndependentScripts(scripts);
@@ -275,14 +275,14 @@ export const ajax = (function() {
     };
 
     /**
-         * Run and remove the scripts which declare themselves independent of the scripts around them.
-         *
-         * {@link runScripts} suspends on every script with a src, resuming in a later task, by which time the markup
-         * is live and any load or error of its resource elements may already have been dispatched. A script which
-         * declares itself independent must observe those, so it runs before the markup goes live.
-         * @param scripts Array of script nodes, from which the independent ones are removed.
-         * @ignore
-         */
+     * Run and remove the scripts which declare themselves independent of the scripts around them.
+     *
+     * {@link runScripts} suspends on every script with a src, resuming in a later task, by which time the markup
+     * is live and any load or error of its resource elements may already have been dispatched. A script which
+     * declares itself independent must observe those, so it runs before the markup goes live.
+     * @param scripts Array of script nodes, from which the independent ones are removed.
+     * @ignore
+     */
     const runIndependentScripts = function runIndependentScripts(scripts: RegExpMatchArray[]): void {
         const head = getHead();
         const nonce = getNonce();
@@ -298,21 +298,21 @@ export const ajax = (function() {
     };
 
     /**
-         * Remove all the executable scripts from the passed string,
-         * preserving scripts whose type is set to something other than text/javascript.
-         * @param html a String containing a portion of html
-         * @returns {string} the html without the executable scripts
-         * @ignore
-         */
+     * Remove all the executable scripts from the passed string,
+     * preserving scripts whose type is set to something other than text/javascript.
+     * @param html a String containing a portion of html
+     * @returns {string} the html without the executable scripts
+     * @ignore
+     */
     const removeScripts = function removeScripts(html: string): string {
         return html.replace(SCRIPT_TAG_REGEX, (tag: string, attributes: string) => isExecutableScript(attributes) ? EMPTY : tag);
     };
 
     /**
-         * Run an array of script nodes,
-         * @param scripts Array of script nodes.
-         * @ignore
-         */
+     * Run an array of script nodes,
+     * @param scripts Array of script nodes.
+     * @ignore
+     */
     const runScripts = function runScripts(scripts: RegExpMatchArray[]): void {
         if (!scripts || scripts.length === 0) {
             return;
@@ -331,13 +331,13 @@ export const ajax = (function() {
     };
 
     /**
-         * Run script at given index.
-         * @param head Document's head.
-         * @param loadedScriptUrls URLs of scripts which are already loaded.
-         * @param scripts Array of script nodes.
-         * @param index Index of script to be loaded.
-         * @ignore
-         */
+     * Run script at given index.
+     * @param head Document's head.
+     * @param loadedScriptUrls URLs of scripts which are already loaded.
+     * @param scripts Array of script nodes.
+     * @param index Index of script to be loaded.
+     * @ignore
+     */
     const runScript = function runScript(head: HTMLElement, loadedScriptUrls: string[], scripts: RegExpMatchArray[], index: number): void {
         if (index >= scripts.length) {
             return;
@@ -389,10 +389,10 @@ export const ajax = (function() {
     };
 
     /**
-         * Get all stylesheets from supplied string and run them all.
-         * @param str
-         * @ignore
-         */
+     * Get all stylesheets from supplied string and run them all.
+     * @param str
+     * @ignore
+     */
     const runStylesheets = function runStylesheets(str: string): void {
         // Regex to find all links in a string
         const findlinks = /<link[^>]*\/>/igm;
@@ -456,12 +456,12 @@ export const ajax = (function() {
     };
 
     /**
-         * Replace DOM element with a new tag name and supplied innerHTML
-         * @param element element to replace
-         * @param tempTagName new tag name to replace with
-         * @param src string new content for element
-         * @ignore
-         */
+     * Replace DOM element with a new tag name and supplied innerHTML
+     * @param element element to replace
+     * @param tempTagName new tag name to replace with
+     * @param src string new content for element
+     * @ignore
+     */
     const elementReplaceStr = function elementReplaceStr(element: Element, tempTagName: string, src: string): void {
         // Replacing the head element is not supported.
         if (element && element.nodeName && element.nodeName.toLowerCase() === "head")
@@ -488,13 +488,13 @@ export const ajax = (function() {
     const PARSED_EMPTY = "Document is empty";
 
     /**
-         * <p>Returns a human readable description of the parsing error. Useful
-         * for debugging. Tip: append the returned error string in a &lt;pre&gt;
-         * element if you want to render it.</p>
-         *
-         * Webkit reports the error as the documentElement; Firefox/Chromium nest
-         * a <code>&lt;parsererror&gt;</code> element inside the document.
-         */
+     * <p>Returns a human readable description of the parsing error. Useful
+     * for debugging. Tip: append the returned error string in a &lt;pre&gt;
+     * element if you want to render it.</p>
+     *
+     * Webkit reports the error as the documentElement; Firefox/Chromium nest
+     * a <code>&lt;parsererror&gt;</code> element inside the document.
+     */
     const getParseErrorText = function(doc: Document | null): string {
         if (!doc || !doc.documentElement) {
             return PARSED_EMPTY;
@@ -523,10 +523,10 @@ export const ajax = (function() {
     ];
 
     /**
-         * Delete all events attached to a node
-         * @param node
-         * @ignore
-         */
+     * Delete all events attached to a node
+     * @param node
+     * @ignore
+     */
     const clearEvents = function clearEvents(node: Element | null): void {
         if (!node) {
             return;
@@ -547,29 +547,29 @@ export const ajax = (function() {
     };
 
     /**
-         * Deletes node
-         * @param node
-         * @ignore
-         */
+     * Deletes node
+     * @param node
+     * @ignore
+     */
     const deleteNode = function deleteNode(node: Node | null): void {
         if (node && node.parentNode) (node as ChildNode).remove();
     };
 
     /**
-         * Delete all nodes
-         * @param nodes array of node
-         * @ignore
-         */
+     * Delete all nodes
+     * @param nodes array of node
+     * @ignore
+     */
     const deleteNodes = function deleteNodes(nodes: ArrayLike<Node>): void {
         for (const node of Array.from(nodes))
             deleteNode(node);
     };
 
     /**
-         * Deletes all children of a node
-         * @param node
-         * @ignore
-         */
+     * Deletes all children of a node
+     * @param node
+     * @ignore
+     */
     const deleteChildren = function deleteChildren(node: Node | null): void {
         if (node)
             while (node.lastChild)
@@ -577,12 +577,12 @@ export const ajax = (function() {
     };
 
     /**
-         * <p> Copies the childNodes of nodeFrom to nodeTo</p>
-         *
-         * @param  nodeFrom the Node to copy the childNodes from
-         * @param  nodeTo the Node to copy the childNodes to
-         * @ignore
-         */
+     * <p> Copies the childNodes of nodeFrom to nodeTo</p>
+     *
+     * @param  nodeFrom the Node to copy the childNodes from
+     * @param  nodeTo the Node to copy the childNodes to
+     * @ignore
+     */
     const copyChildNodes = function copyChildNodes(nodeFrom: Node | null, nodeTo: Node | null): void {
 
         if ((!nodeFrom) || (!nodeTo)) {
@@ -614,18 +614,18 @@ export const ajax = (function() {
     };
 
     /**
-         * Replace one node with another.
-         * @param node node to replace
-         * @param newNode the new node that's replace the old one
-         * @ignore
-         */
+     * Replace one node with another.
+     * @param node node to replace
+     * @param newNode the new node that's replace the old one
+     * @ignore
+     */
     const replaceNode = function replaceNode(newNode: Node, node: ChildNode): void {
         node.replaceWith(newNode);
     };
 
     /**
-         * @ignore
-         */
+     * @ignore
+     */
     const propertyToAttribute = function propertyToAttribute(name: string): string {
         if (name === "className")    return "class";
         else if (name === "xmllang") return "xml:lang";
@@ -658,11 +658,11 @@ export const ajax = (function() {
     const TABLE_INNER_TAGS = ["td", "th", "tr", "tbody", "thead", "tfoot"];
 
     /**
-         * copy all attributes from one element to another - except id
-         * @param target element to copy attributes to
-         * @param source element to copy attributes from
-         * @ignore
-         */
+     * copy all attributes from one element to another - except id
+     * @param target element to copy attributes to
+     * @param source element to copy attributes from
+     * @ignore
+     */
     const cloneAttributes = function cloneAttributes(target: Element, source: Element): void {
 
         const t = target as HTMLElement & { [key: string]: unknown };
@@ -734,11 +734,11 @@ export const ajax = (function() {
     };
 
     /**
-         * Replace an element from one document into another
-         * @param newElement new element to put in document
-         * @param origElement original element to replace
-         * @ignore
-         */
+     * Replace an element from one document into another
+     * @param newElement new element to put in document
+     * @param origElement original element to replace
+     * @ignore
+     */
     const elementReplace = function elementReplace(newElement: HTMLElement, origElement: HTMLElement): void {
 
         // copy source attributes to target node
@@ -760,11 +760,11 @@ export const ajax = (function() {
     };
 
     /**
-         * Create a new document, then select the body element within it
-         * @param docStr Stringified version of document to create
-         * @return element the body element
-         * @ignore
-         */
+     * Create a new document, then select the body element within it
+     * @param docStr Stringified version of document to create
+     * @return element the body element
+     * @ignore
+     */
     const getBodyElement = function getBodyElement(docStr: string): Element {
 
         const doc = (new DOMParser()).parseFromString(docStr, "text/xml");
@@ -788,24 +788,24 @@ export const ajax = (function() {
     // --- Faces Ajax response DOM operation algorithms ----------------------------------------------------------------------------------------
 
     /**
-         * Find encoded url field for a given form.
-         * @param form
-         * @ignore
-         */
+     * Find encoded url field for a given form.
+     * @param form
+     * @ignore
+     */
     const getEncodedUrlElement = function getEncodedUrlElement(form: HTMLFormElement): Element | null {
         return getFormInputElementByName(form, ENCODED_URL_PARAM);
     };
 
     /**
-         * Update hidden state fields from the server into the DOM for any Faces forms which need to be updated.
-         * This covers at least the form that submitted the request and any form that is covered in the render target list.
-         *
-         * @param updateElement The update element of partial response holding the state value.
-         * @param context An object containing the request context, including the following properties:
-         * the source element, per call onerror callback function, per call onevent callback function, the render
-         * instructions, the submitting form ID, the naming container ID and naming container prefix.
-         * @param hiddenStateFieldName The hidden state field name, e.g. jakarta.faces.ViewState or jakarta.faces.ClientWindow
-         */
+     * Update hidden state fields from the server into the DOM for any Faces forms which need to be updated.
+     * This covers at least the form that submitted the request and any form that is covered in the render target list.
+     *
+     * @param updateElement The update element of partial response holding the state value.
+     * @param context An object containing the request context, including the following properties:
+     * the source element, per call onerror callback function, per call onevent callback function, the render
+     * instructions, the submitting form ID, the naming container ID and naming container prefix.
+     * @param hiddenStateFieldName The hidden state field name, e.g. jakarta.faces.ViewState or jakarta.faces.ClientWindow
+     */
     const updateHiddenStateFields = function updateHiddenStateFields(updateElement: Element, context: AjaxContext, hiddenStateFieldName: string): void {
         const firstChild = updateElement.firstChild as Text | null;
         const state = firstChild?.wholeText ?? "";
@@ -824,13 +824,13 @@ export const ajax = (function() {
     };
 
     /**
-         * Find hidden state field for a given form.
-         * @param form {HTMLFormElement} The form to find hidden state field in.
-         * @param hiddenStateFieldName {string} The hidden state field name, e.g. jakarta.faces.ViewState or jakarta.faces.ClientWindow
-         * @param [namingContainerPrefix] {string} The naming container prefix, if any (the view root ID suffixed with separator character).
-         * @return {HTMLInputElement} HTMLInputElement representing the hidden state field for a given form
-         * @ignore
-         */
+     * Find hidden state field for a given form.
+     * @param form {HTMLFormElement} The form to find hidden state field in.
+     * @param hiddenStateFieldName {string} The hidden state field name, e.g. jakarta.faces.ViewState or jakarta.faces.ClientWindow
+     * @param [namingContainerPrefix] {string} The naming container prefix, if any (the view root ID suffixed with separator character).
+     * @return {HTMLInputElement} HTMLInputElement representing the hidden state field for a given form
+     * @ignore
+     */
     const getHiddenStateField = function getHiddenStateField(form: HTMLFormElement, hiddenStateFieldName: string,
         namingContainerPrefix?: string): Element | null {
         const fullHiddenStateFieldName = namingContainerPrefix ? namingContainerPrefix + hiddenStateFieldName : hiddenStateFieldName;
@@ -855,13 +855,13 @@ export const ajax = (function() {
     };
 
     /**
-         * Do update.
-         * @param updateElement The update element of partial response.
-         * @param context An object containing the request context, including the following properties:
-         * the source element, per call onerror callback function, per call onevent callback function, the render
-         * instructions, the submitting form ID, the naming container ID and naming container prefix.
-         * @ignore
-         */
+     * Do update.
+     * @param updateElement The update element of partial response.
+     * @param context An object containing the request context, including the following properties:
+     * the source element, per call onerror callback function, per call onevent callback function, the render
+     * instructions, the submitting form ID, the naming container ID and naming container prefix.
+     * @ignore
+     */
     const doUpdate = function doUpdate(updateElement: Element, context: AjaxContext): void {
 
         let scripts: RegExpMatchArray[] = []; // temp holding value for array of script nodes
@@ -1010,20 +1010,20 @@ export const ajax = (function() {
     };
 
     /**
-         * Delete a node specified by the element.
-         * @param element
-         * @ignore
-         */
+     * Delete a node specified by the element.
+     * @param element
+     * @ignore
+     */
     const doDelete = function doDelete(element: Element | null): void {
         const id = element?.getAttribute("id");
         if (id) deleteNode(getElemById(id));
     };
 
     /**
-         * Insert a node specified by the element.
-         * @param element
-         * @ignore
-         */
+     * Insert a node specified by the element.
+     * @param element
+     * @ignore
+     */
     const doInsert = function doInsert(element: Element): void {
 
         const insertChild = element.firstChild as Element | null;
@@ -1072,10 +1072,10 @@ export const ajax = (function() {
     };
 
     /**
-         * Modify attributes of given element id.
-         * @param element
-         * @ignore
-         */
+     * Modify attributes of given element id.
+     * @param element
+     * @ignore
+     */
     const doAttributes = function doAttributes(element: Element): void {
 
         // Get id of element we'll act against
@@ -1117,11 +1117,11 @@ export const ajax = (function() {
     };
 
     /**
-         * Eval the CDATA of the element.
-         * Evaluate the parsed JavaScript code in a global context.
-         * @param element to eval
-         * @ignore
-         */
+     * Eval the CDATA of the element.
+     * Evaluate the parsed JavaScript code in a global context.
+     * @param element to eval
+     * @ignore
+     */
     const doEval = function doEval(element: Element | null): void {
         (() => { //
             const script = element ? element.textContent : undefined;
@@ -1131,9 +1131,9 @@ export const ajax = (function() {
     };
 
     /**
-         * Ajax Request Queue
-         * @ignore
-         */
+     * Ajax Request Queue
+     * @ignore
+     */
     interface AjaxQueue {
         getSize(): number;
         isEmpty(): boolean;
@@ -1178,9 +1178,9 @@ export const ajax = (function() {
 
 
     /**
-         * AjaxEngine handles Ajax implementation details.
-         * @ignore
-         */
+     * AjaxEngine handles Ajax implementation details.
+     * @ignore
+     */
     interface AjaxRequest {
         url: string | null;
         context: AjaxContext & { form?: HTMLFormElement };
@@ -1326,10 +1326,10 @@ export const ajax = (function() {
     type ErrorPayload = FacesSpec.AjaxError & { description?: string };
 
     /**
-         * Resolve `context.sourceid` (either a string id or an already-resolved Element)
-         * to its DOM element, per 14.4.1 of the 2.0 specification. Returns undefined when
-         * the sourceid is unset or refers to a missing element.
-         */
+     * Resolve `context.sourceid` (either a string id or an already-resolved Element)
+     * to its DOM element, per 14.4.1 of the 2.0 specification. Returns undefined when
+     * the sourceid is unset or refers to a missing element.
+     */
     const resolveSourceElement = (sourceid: AjaxContext["sourceid"]): Element | undefined => {
         if (typeof sourceid === "string") {
             return document.getElementById(sourceid) ?? undefined;
@@ -1348,10 +1348,10 @@ export const ajax = (function() {
     };
 
     /**
-         * Error handling callback.
-         * Assumes that the request has completed.
-         * @ignore
-         */
+     * Error handling callback.
+     * Assumes that the request has completed.
+     * @ignore
+     */
     const sendError = function sendError(
         request: XMLHttpRequest,
         context: AjaxContext,
@@ -1450,10 +1450,10 @@ export const ajax = (function() {
     };
 
     /**
-         * Event handling callback.
-         * Request is assumed to have completed, except in the case of event = 'begin'.
-         * @ignore
-         */
+     * Event handling callback.
+     * Request is assumed to have completed, except in the case of event = 'begin'.
+     * @ignore
+     */
     const sendEvent = function sendEvent(request: XMLHttpRequest, context: AjaxContext, status: FacesSpec.AjaxEventStatus): void {
 
         const source = resolveSourceElement(context.sourceid);
@@ -1490,26 +1490,26 @@ export const ajax = (function() {
     // Use module pattern to return the functions we actually expose
     return {
         /**
-             * Register a callback for error handling.
-             * <p><b>Usage:</b></p>
-             * <pre><code>
-             * faces.ajax.addOnError(handleError);
-             * ...
-             * var handleError = function handleError(data) {
-             * ...
-             * }
-             * </pre></code>
-             * <p><b>Implementation Requirements:</b></p>
-             * This function must accept a reference to an existing JavaScript function.
-             * The JavaScript function reference must be added to a list of callbacks, making it possible
-             * to register more than one callback by invoking <code>faces.ajax.addOnError</code>
-             * more than once.  This function must throw an error if the <code>callback</code>
-             * argument is not a function.
-             *
-             * @member faces.ajax
-             * @function faces.ajax.addOnError
-             * @param callback a reference to a function to call on an error
-             */
+         * Register a callback for error handling.
+         * <p><b>Usage:</b></p>
+         * <pre><code>
+         * faces.ajax.addOnError(handleError);
+         * ...
+         * var handleError = function handleError(data) {
+         * ...
+         * }
+         * </pre></code>
+         * <p><b>Implementation Requirements:</b></p>
+         * This function must accept a reference to an existing JavaScript function.
+         * The JavaScript function reference must be added to a list of callbacks, making it possible
+         * to register more than one callback by invoking <code>faces.ajax.addOnError</code>
+         * more than once.  This function must throw an error if the <code>callback</code>
+         * argument is not a function.
+         *
+         * @member faces.ajax
+         * @function faces.ajax.addOnError
+         * @param callback a reference to a function to call on an error
+         */
         addOnError: function addOnError(callback: FacesSpec.ajax.OnErrorCallback) {
             if (typeof callback === "function") {
                 errorListeners.push(callback);
@@ -1519,26 +1519,26 @@ export const ajax = (function() {
             }
         },
         /**
-             * Register a callback for event handling.
-             * <p><b>Usage:</b></p>
-             * <pre><code>
-             * faces.ajax.addOnEvent(statusUpdate);
-             * ...
-             * var statusUpdate = function statusUpdate(data) {
-             * ...
-             * }
-             * </pre></code>
-             * <p><b>Implementation Requirements:</b></p>
-             * This function must accept a reference to an existing JavaScript function.
-             * The JavaScript function reference must be added to a list of callbacks, making it possible
-             * to register more than one callback by invoking <code>faces.ajax.addOnEvent</code>
-             * more than once.  This function must throw an error if the <code>callback</code>
-             * argument is not a function.
-             *
-             * @member faces.ajax
-             * @function faces.ajax.addOnEvent
-             * @param callback a reference to a function to call on an event
-             */
+         * Register a callback for event handling.
+         * <p><b>Usage:</b></p>
+         * <pre><code>
+         * faces.ajax.addOnEvent(statusUpdate);
+         * ...
+         * var statusUpdate = function statusUpdate(data) {
+         * ...
+         * }
+         * </pre></code>
+         * <p><b>Implementation Requirements:</b></p>
+         * This function must accept a reference to an existing JavaScript function.
+         * The JavaScript function reference must be added to a list of callbacks, making it possible
+         * to register more than one callback by invoking <code>faces.ajax.addOnEvent</code>
+         * more than once.  This function must throw an error if the <code>callback</code>
+         * argument is not a function.
+         *
+         * @member faces.ajax
+         * @function faces.ajax.addOnEvent
+         * @param callback a reference to a function to call on an event
+         */
         addOnEvent: function addOnEvent(callback: FacesSpec.ajax.OnEventCallback) {
             if (typeof callback === "function") {
                 eventListeners.push(callback);
@@ -1549,303 +1549,303 @@ export const ajax = (function() {
         },
         /**
 
-             * <p><span class="changed_modified_2_2">Send</span> an
-             * asynchronous Ajax req uest to the server.
+         * <p><span class="changed_modified_2_2">Send</span> an
+         * asynchronous Ajax req uest to the server.
 
-             * <p><b>Usage:</b></p>
-             * <pre><code>
-             * Example showing all optional arguments:
-             *
-             * &lt;commandButton id="button1" value="submit"
-             *     onclick="faces.ajax.request(this,event,
-             *       {execute:'button1',render:'status',onevent: handleEvent,onerror: handleError});return false;"/&gt;
-             * &lt;/commandButton/&gt;
-             * </pre></code>
-             * <p><b>Implementation Requirements:</b></p>
-             * This function must:
-             * <ul>
-             * <li>Be used within the context of a <code>form</code><span class="changed_added_2_3">,
-             * else throw an error</span>.</li>
-             * <li>Capture the element that triggered this Ajax request
-             * (from the <code>source</code> argument, also known as the
-             * <code>source</code> element.</li>
-             * <li>If the <code>source</code> element is <code>null</code> or
-             * <code>undefined</code> throw an error.</li>
-             * <li>If the <code>source</code> argument is not a <code>string</code> or
-             * DOM element object, throw an error.</li>
-             * <li>If the <code>source</code> argument is a <code>string</code>, find the
-             * DOM element for that <code>string</code> identifier.
-             * <li>If the DOM element could not be determined, throw an error.</li>
-             * <li class="changed_added_2_3">If the <code>jakarta.faces.ViewState</code>
-             * element could not be found, throw an error.</li>
-             * <li class="changed_added_2_3">If the ID of the <code>jakarta.faces.ViewState</code>
-             * element has a <code>&lt;VIEW_ROOT_CONTAINER_CLIENT_ID&gt;&lt;SEP&gt;</code>
-             * prefix, where &lt;SEP&gt; is the currently configured
-             * <code>UINamingContainer.getSeparatorChar()</code> and
-             * &lt;VIEW_ROOT_CONTAINER_CLIENT_ID&gt; is the return from
-             * <code>UIViewRoot.getContainerClientId()</code> on the
-             * view from whence this state originated, then remember it as <i>namespace prefix</i>.
-             * This is needed during encoding of the set of post data arguments.</li>
-             * <li>If the <code>onerror</code> and <code>onevent</code> arguments are set,
-             * they must be functions, or throw an error.
-             * <li>Determine the <code>source</code> element's <code>form</code>
-             * element.</li>
-             * <li>Get the <code>form</code> view state by calling
-             * {@link faces.getViewState} passing the
-             * <code>form</code> element as the argument.</li>
-             * <li>Collect post data arguments for the Ajax request.
-             * <ul>
-             * <li>The following name/value pairs are required post data arguments:
-             * <table border="1">
-             * <tr>
-             * <th>name</th>
-             * <th>value</th>
-             * </tr>
-             * <tr>
-             * <td><code>jakarta.faces.ViewState</code></td>
-             * <td><code>Contents of jakarta.faces.ViewState hidden field.  This is included when
-             * {@link faces.getViewState} is used.</code></td>
-             * </tr>
-             * <tr>
-             * <td><code>jakarta.faces.partial.ajax</code></td>
-             * <td><code>true</code></td>
-             * </tr>
-             * <tr>
-             * <td><code>jakarta.faces.source</code></td>
-             * <td><code>The identifier of the element that triggered this request.</code></td>
-             * </tr>
-             * <tr class="changed_added_2_2">
-             * <td><code>jakarta.faces.ClientWindow</code></td>
+         * <p><b>Usage:</b></p>
+         * <pre><code>
+         * Example showing all optional arguments:
+         *
+         * &lt;commandButton id="button1" value="submit"
+         *     onclick="faces.ajax.request(this,event,
+         *       {execute:'button1',render:'status',onevent: handleEvent,onerror: handleError});return false;"/&gt;
+         * &lt;/commandButton/&gt;
+         * </pre></code>
+         * <p><b>Implementation Requirements:</b></p>
+         * This function must:
+         * <ul>
+         * <li>Be used within the context of a <code>form</code><span class="changed_added_2_3">,
+         * else throw an error</span>.</li>
+         * <li>Capture the element that triggered this Ajax request
+         * (from the <code>source</code> argument, also known as the
+         * <code>source</code> element.</li>
+         * <li>If the <code>source</code> element is <code>null</code> or
+         * <code>undefined</code> throw an error.</li>
+         * <li>If the <code>source</code> argument is not a <code>string</code> or
+         * DOM element object, throw an error.</li>
+         * <li>If the <code>source</code> argument is a <code>string</code>, find the
+         * DOM element for that <code>string</code> identifier.
+         * <li>If the DOM element could not be determined, throw an error.</li>
+         * <li class="changed_added_2_3">If the <code>jakarta.faces.ViewState</code>
+         * element could not be found, throw an error.</li>
+         * <li class="changed_added_2_3">If the ID of the <code>jakarta.faces.ViewState</code>
+         * element has a <code>&lt;VIEW_ROOT_CONTAINER_CLIENT_ID&gt;&lt;SEP&gt;</code>
+         * prefix, where &lt;SEP&gt; is the currently configured
+         * <code>UINamingContainer.getSeparatorChar()</code> and
+         * &lt;VIEW_ROOT_CONTAINER_CLIENT_ID&gt; is the return from
+         * <code>UIViewRoot.getContainerClientId()</code> on the
+         * view from whence this state originated, then remember it as <i>namespace prefix</i>.
+         * This is needed during encoding of the set of post data arguments.</li>
+         * <li>If the <code>onerror</code> and <code>onevent</code> arguments are set,
+         * they must be functions, or throw an error.
+         * <li>Determine the <code>source</code> element's <code>form</code>
+         * element.</li>
+         * <li>Get the <code>form</code> view state by calling
+         * {@link faces.getViewState} passing the
+         * <code>form</code> element as the argument.</li>
+         * <li>Collect post data arguments for the Ajax request.
+         * <ul>
+         * <li>The following name/value pairs are required post data arguments:
+         * <table border="1">
+         * <tr>
+         * <th>name</th>
+         * <th>value</th>
+         * </tr>
+         * <tr>
+         * <td><code>jakarta.faces.ViewState</code></td>
+         * <td><code>Contents of jakarta.faces.ViewState hidden field.  This is included when
+         * {@link faces.getViewState} is used.</code></td>
+         * </tr>
+         * <tr>
+         * <td><code>jakarta.faces.partial.ajax</code></td>
+         * <td><code>true</code></td>
+         * </tr>
+         * <tr>
+         * <td><code>jakarta.faces.source</code></td>
+         * <td><code>The identifier of the element that triggered this request.</code></td>
+         * </tr>
+         * <tr class="changed_added_2_2">
+         * <td><code>jakarta.faces.ClientWindow</code></td>
 
-             * <td><code>Call faces.getClientWindow(), passing the current
-             * form.  If the return is non-null, it must be set as the
-             * value of this name/value pair, otherwise, a name/value
-             * pair for client window must not be sent.</code></td>
+         * <td><code>Call faces.getClientWindow(), passing the current
+         * form.  If the return is non-null, it must be set as the
+         * value of this name/value pair, otherwise, a name/value
+         * pair for client window must not be sent.</code></td>
 
-             * </tr>
-             * </table>
-             * </li>
-             * </ul>
-             * </li>
-             * <li>Collect optional post data arguments for the Ajax request.
-             * <ul>
-             * <li>Determine additional arguments (if any) from the <code>options</code>
-             * argument. If <code>options.execute</code> exists:
-             * <ul>
-             * <li>If the keyword <code>@none</code> is present, do not create and send
-             * the post data argument <code>jakarta.faces.partial.execute</code>.</li>
-             * <li>If the keyword <code>@all</code> is present, create the post data argument with
-             * the name <code>jakarta.faces.partial.execute</code> and the value <code>@all</code>.</li>
-             * <li>Otherwise, there are specific identifiers that need to be sent.  Create the post
-             * data argument with the name <code>jakarta.faces.partial.execute</code> and the value as a
-             * space delimited <code>string</code> of client identifiers.</li>
-             * </ul>
-             * </li>
-             * <li>If <code>options.execute</code> does not exist, create the post data argument with the
-             * name <code>jakarta.faces.partial.execute</code> and the value as the identifier of the
-             * element that caused this request.</li>
-             * <li>If <code>options.render</code> exists:
-             * <ul>
-             * <li>If the keyword <code>@none</code> is present, do not create and send
-             * the post data argument <code>jakarta.faces.partial.render</code>.</li>
-             * <li>If the keyword <code>@all</code> is present, create the post data argument with
-             * the name <code>jakarta.faces.partial.render</code> and the value <code>@all</code>.</li>
-             * <li>Otherwise, there are specific identifiers that need to be sent.  Create the post
-             * data argument with the name <code>jakarta.faces.partial.render</code> and the value as a
-             * space delimited <code>string</code> of client identifiers.</li>
-             * </ul>
-             * <li>If <code>options.render</code> does not exist do not create and send the
-             * post data argument <code>jakarta.faces.partial.render</code>.</li>
+         * </tr>
+         * </table>
+         * </li>
+         * </ul>
+         * </li>
+         * <li>Collect optional post data arguments for the Ajax request.
+         * <ul>
+         * <li>Determine additional arguments (if any) from the <code>options</code>
+         * argument. If <code>options.execute</code> exists:
+         * <ul>
+         * <li>If the keyword <code>@none</code> is present, do not create and send
+         * the post data argument <code>jakarta.faces.partial.execute</code>.</li>
+         * <li>If the keyword <code>@all</code> is present, create the post data argument with
+         * the name <code>jakarta.faces.partial.execute</code> and the value <code>@all</code>.</li>
+         * <li>Otherwise, there are specific identifiers that need to be sent.  Create the post
+         * data argument with the name <code>jakarta.faces.partial.execute</code> and the value as a
+         * space delimited <code>string</code> of client identifiers.</li>
+         * </ul>
+         * </li>
+         * <li>If <code>options.execute</code> does not exist, create the post data argument with the
+         * name <code>jakarta.faces.partial.execute</code> and the value as the identifier of the
+         * element that caused this request.</li>
+         * <li>If <code>options.render</code> exists:
+         * <ul>
+         * <li>If the keyword <code>@none</code> is present, do not create and send
+         * the post data argument <code>jakarta.faces.partial.render</code>.</li>
+         * <li>If the keyword <code>@all</code> is present, create the post data argument with
+         * the name <code>jakarta.faces.partial.render</code> and the value <code>@all</code>.</li>
+         * <li>Otherwise, there are specific identifiers that need to be sent.  Create the post
+         * data argument with the name <code>jakarta.faces.partial.render</code> and the value as a
+         * space delimited <code>string</code> of client identifiers.</li>
+         * </ul>
+         * <li>If <code>options.render</code> does not exist do not create and send the
+         * post data argument <code>jakarta.faces.partial.render</code>.</li>
 
-             * <li class="changed_added_2_2">If
-             * <code>options.delay</code> exists let it be the value
-             * <em>delay</em>, for this discussion.  If
-             * <code>options.delay</code> does not exist, or is the
-             * literal string <code>'none'</code>, without the quotes,
-             * no delay is used.  If less than <em>delay</em>
-             * milliseconds elapses between calls to <em>request()</em>
-             * only the most recent one is sent and all other requests
-             * are discarded.</li>
-
-
-             * <li class="changed_added_2_2">If
-             * <code>options.resetValues</code> exists and its value is
-             * <code>true</code>, ensure a post data argument with the
-             * name <code>jakarta.faces.partial.resetValues</code> and the
-             * value <code>true</code> is sent in addition to the other
-             * post data arguments.  This will cause
-             * <code>UIViewRoot.resetValues()</code> to be called,
-             * passing the value of the "render" attribute.  Note: do
-             * not use any of the <code>@</code> keywords such as
-             * <code>@form</code> or <code>@this</code> with this option
-             * because <code>UIViewRoot.resetValues()</code> does not
-             * descend into the children of the listed components.</li>
+         * <li class="changed_added_2_2">If
+         * <code>options.delay</code> exists let it be the value
+         * <em>delay</em>, for this discussion.  If
+         * <code>options.delay</code> does not exist, or is the
+         * literal string <code>'none'</code>, without the quotes,
+         * no delay is used.  If less than <em>delay</em>
+         * milliseconds elapses between calls to <em>request()</em>
+         * only the most recent one is sent and all other requests
+         * are discarded.</li>
 
 
-             * <li>Determine additional arguments (if any) from the <code>event</code>
-             * argument.  The following name/value pairs may be used from the
-             * <code>event</code> object:
-             * <ul>
-             * <li><code>target</code> - the ID of the element that triggered the event.</li>
-             * <li><code>captured</code> - the ID of the element that captured the event.</li>
-             * <li><code>type</code> - the type of event (ex: onkeypress)</li>
-             * <li><code>alt</code> - <code>true</code> if ALT key was pressed.</li>
-             * <li><code>ctrl</code> - <code>true</code> if CTRL key was pressed.</li>
-             * <li><code>shift</code> - <code>true</code> if SHIFT key was pressed. </li>
-             * <li><code>meta</code> - <code>true</code> if META key was pressed. </li>
-             * <li><code>right</code> - <code>true</code> if right mouse button
-             * was pressed. </li>
-             * <li><code>left</code> - <code>true</code> if left mouse button
-             * was pressed. </li>
-             * <li><code>keycode</code> - the key code.
-             * </ul>
-             * </li>
-             * </ul>
-             * </li>
-             * <li>Encode the set of post data arguments. <span class="changed_added_2_3">
-             * If the <code>jakarta.faces.ViewState</code> element has a namespace prefix, then
-             * make sure that all post data arguments are prefixed with this namespace prefix.
-             * </span></li>
-             * <li>Join the encoded view state with the encoded set of post data arguments
-             * to form the <code>query string</code> that will be sent to the server.</li>
-             * <li>Create a request <code>context</code> object and set the properties:
-             * <ul><li><code>source</code> (the source DOM element for this request)</li>
-             * <li><code>onerror</code> (the error handler for this request)</li>
-             * <li><code>onevent</code> (the event handler for this request)</li></ul>
-             * The request context will be used during error/event handling.</li>
-             * <li>Send a <code>begin</code> event following the procedure as outlined
-             * in the Jakarta Faces Specification Document section 13.3.5.3 "Sending Events".</li>
-             * <li>Set the request header with the name: <code>Faces-Request</code> and the
-             * value: <code>partial/ajax</code>.</li>
-             * <li>Determine the <code>posting URL</code> as follows: If the hidden field
-             * <code>jakarta.faces.encodedURL</code> is present in the submitting form, use its
-             * value as the <code>posting URL</code>.  Otherwise, use the <code>action</code>
-             * property of the <code>form</code> element as the <code>URL</code>.</li>
-
-             * <li>
-
-             * <p><span class="changed_modified_2_2">Determine whether
-             * or not the submitting form is using
-             * <code>multipart/form-data</code> as its
-             * <code>enctype</code> attribute.  If not, send the request
-             * as an <code>asynchronous POST</code> using the
-             * <code>posting URL</code> that was determined in the
-             * previous step.</span> <span
-             * class="changed_added_2_2">Otherwise, send the request
-             * using a multi-part capable transport layer, such as a
-             * hidden inline frame.  Note that using a hidden inline
-             * frame does <strong>not</strong> use
-             * <code>XMLHttpRequest</code>, but the request must be sent
-             * with all the parameters that a Faces
-             * <code>XMLHttpRequest</code> would have been sent with.
-             * In this way, the server side processing of the request
-             * will be identical whether or the request is multipart or
-             * not.</span></p>
-
-             * <div class="changed_added_2_2">
-
-             * <p>The <code>begin</code>, <code>complete</code>, and
-             * <code>success</code> events must be emulated when using
-             * the multipart transport.  This allows any listeners to
-             * behave uniformly regardless of the multipart or
-             * <code>XMLHttpRequest</code> nature of the transport.</p>
-
-             * </div></li>
-             * </ul>
-             * Form serialization should occur just before the request is sent to minimize
-             * the amount of time between the creation of the serialized form data and the
-             * sending of the serialized form data (in the case of long requests in the queue).
-             * Before the request is sent it must be put into a queue to ensure requests
-             * are sent in the same order as when they were initiated.  The request callback function
-             * must examine the queue and determine the next request to be sent.  The behavior of the
-             * request callback function must be as follows:
-             * <ul>
-             * <li>If the request completed successfully invoke {@link faces.ajax.response}
-             * passing the <code>request</code> object.</li>
-             * <li>If the request did not complete successfully, notify the client.</li>
-             * <li>Regardless of the outcome of the request (success or error) every request in the
-             * queue must be handled.  Examine the status of each request in the queue starting from
-             * the request that has been in the queue the longest.  If the status of the request is
-             * <code>complete</code> (readyState 4), dequeue the request (remove it from the queue).
-             * If the request has not been sent (readyState 0), send the request.  Requests that are
-             * taken off the queue and sent should not be put back on the queue.</li>
-             * </ul>
-             *
-             * </p>
-             *
-             * @param source The DOM element that triggered this Ajax request, or an id string of the
-             * element to use as the triggering element.
-             * @param event The DOM event that triggered this Ajax request.  The
-             * <code>event</code> argument is optional.
-             * @param options The set of available options that can be sent as
-             * request parameters to control client and/or server side
-             * request processing. Acceptable name/value pair options are:
-             * <table border="1">
-             * <tr>
-             * <th>name</th>
-             * <th>value</th>
-             * </tr>
-             * <tr>
-             * <td><code>execute</code></td>
-             * <td><code>space seperated list of client identifiers</code></td>
-             * </tr>
-             * <tr>
-             * <td><code>render</code></td>
-             * <td><code>space seperated list of client identifiers</code></td>
-             * </tr>
-             * <tr>
-             * <td><code>onevent</code></td>
-             * <td><code>function to callback for event</code></td>
-             * </tr>
-             * <tr>
-             * <td><code>onerror</code></td>
-             * <td><code>function to callback for error</code></td>
-             * </tr>
-             * <tr>
-             * <td><code>params</code></td>
-             * <td><code>object containing parameters to include in the request</code></td>
-             * </tr>
-
-             * <tr class="changed_added_2_2">
-
-             * <td><code>delay</code></td>
-
-             * <td>If less than <em>delay</em> milliseconds elapses
-             * between calls to <em>request()</em> only the most recent
-             * one is sent and all other requests are discarded. If the
-             * value of <em>delay</em> is the literal string
-             * <code>'none'</code> without the quotes, or no delay is
-             * specified, no delay is used. </td>
-
-             * </tr>
-
-             * <tr class="changed_added_2_2">
-
-             * <td><code>resetValues</code></td>
-
-             * <td>If true, ensure a post data argument with the name
-             * jakarta.faces.partial.resetValues and the value true is
-             * sent in addition to the other post data arguments. This
-             * will cause UIViewRoot.resetValues() to be called, passing
-             * the value of the "render" attribute. Note: do not use any
-             * of the @ keywords such as @form or @this with this option
-             * because UIViewRoot.resetValues() does not descend into
-             * the children of the listed components.</td>
-
-             * </tr>
+         * <li class="changed_added_2_2">If
+         * <code>options.resetValues</code> exists and its value is
+         * <code>true</code>, ensure a post data argument with the
+         * name <code>jakarta.faces.partial.resetValues</code> and the
+         * value <code>true</code> is sent in addition to the other
+         * post data arguments.  This will cause
+         * <code>UIViewRoot.resetValues()</code> to be called,
+         * passing the value of the "render" attribute.  Note: do
+         * not use any of the <code>@</code> keywords such as
+         * <code>@form</code> or <code>@this</code> with this option
+         * because <code>UIViewRoot.resetValues()</code> does not
+         * descend into the children of the listed components.</li>
 
 
-             * </table>
-             * The <code>options</code> argument is optional.
-             * @member faces.ajax
-             * @function faces.ajax.request
+         * <li>Determine additional arguments (if any) from the <code>event</code>
+         * argument.  The following name/value pairs may be used from the
+         * <code>event</code> object:
+         * <ul>
+         * <li><code>target</code> - the ID of the element that triggered the event.</li>
+         * <li><code>captured</code> - the ID of the element that captured the event.</li>
+         * <li><code>type</code> - the type of event (ex: onkeypress)</li>
+         * <li><code>alt</code> - <code>true</code> if ALT key was pressed.</li>
+         * <li><code>ctrl</code> - <code>true</code> if CTRL key was pressed.</li>
+         * <li><code>shift</code> - <code>true</code> if SHIFT key was pressed. </li>
+         * <li><code>meta</code> - <code>true</code> if META key was pressed. </li>
+         * <li><code>right</code> - <code>true</code> if right mouse button
+         * was pressed. </li>
+         * <li><code>left</code> - <code>true</code> if left mouse button
+         * was pressed. </li>
+         * <li><code>keycode</code> - the key code.
+         * </ul>
+         * </li>
+         * </ul>
+         * </li>
+         * <li>Encode the set of post data arguments. <span class="changed_added_2_3">
+         * If the <code>jakarta.faces.ViewState</code> element has a namespace prefix, then
+         * make sure that all post data arguments are prefixed with this namespace prefix.
+         * </span></li>
+         * <li>Join the encoded view state with the encoded set of post data arguments
+         * to form the <code>query string</code> that will be sent to the server.</li>
+         * <li>Create a request <code>context</code> object and set the properties:
+         * <ul><li><code>source</code> (the source DOM element for this request)</li>
+         * <li><code>onerror</code> (the error handler for this request)</li>
+         * <li><code>onevent</code> (the event handler for this request)</li></ul>
+         * The request context will be used during error/event handling.</li>
+         * <li>Send a <code>begin</code> event following the procedure as outlined
+         * in the Jakarta Faces Specification Document section 13.3.5.3 "Sending Events".</li>
+         * <li>Set the request header with the name: <code>Faces-Request</code> and the
+         * value: <code>partial/ajax</code>.</li>
+         * <li>Determine the <code>posting URL</code> as follows: If the hidden field
+         * <code>jakarta.faces.encodedURL</code> is present in the submitting form, use its
+         * value as the <code>posting URL</code>.  Otherwise, use the <code>action</code>
+         * property of the <code>form</code> element as the <code>URL</code>.</li>
 
-             * @throws Error if first required argument
-             * <code>element</code> is not specified, or if one or more
-             * of the components in the <code>options.execute</code>
-             * list is a file upload component, but the form's enctype
-             * is not set to <code>multipart/form-data</code>
-             */
+         * <li>
+
+         * <p><span class="changed_modified_2_2">Determine whether
+         * or not the submitting form is using
+         * <code>multipart/form-data</code> as its
+         * <code>enctype</code> attribute.  If not, send the request
+         * as an <code>asynchronous POST</code> using the
+         * <code>posting URL</code> that was determined in the
+         * previous step.</span> <span
+         * class="changed_added_2_2">Otherwise, send the request
+         * using a multi-part capable transport layer, such as a
+         * hidden inline frame.  Note that using a hidden inline
+         * frame does <strong>not</strong> use
+         * <code>XMLHttpRequest</code>, but the request must be sent
+         * with all the parameters that a Faces
+         * <code>XMLHttpRequest</code> would have been sent with.
+         * In this way, the server side processing of the request
+         * will be identical whether or the request is multipart or
+         * not.</span></p>
+
+         * <div class="changed_added_2_2">
+
+         * <p>The <code>begin</code>, <code>complete</code>, and
+         * <code>success</code> events must be emulated when using
+         * the multipart transport.  This allows any listeners to
+         * behave uniformly regardless of the multipart or
+         * <code>XMLHttpRequest</code> nature of the transport.</p>
+
+         * </div></li>
+         * </ul>
+         * Form serialization should occur just before the request is sent to minimize
+         * the amount of time between the creation of the serialized form data and the
+         * sending of the serialized form data (in the case of long requests in the queue).
+         * Before the request is sent it must be put into a queue to ensure requests
+         * are sent in the same order as when they were initiated.  The request callback function
+         * must examine the queue and determine the next request to be sent.  The behavior of the
+         * request callback function must be as follows:
+         * <ul>
+         * <li>If the request completed successfully invoke {@link faces.ajax.response}
+         * passing the <code>request</code> object.</li>
+         * <li>If the request did not complete successfully, notify the client.</li>
+         * <li>Regardless of the outcome of the request (success or error) every request in the
+         * queue must be handled.  Examine the status of each request in the queue starting from
+         * the request that has been in the queue the longest.  If the status of the request is
+         * <code>complete</code> (readyState 4), dequeue the request (remove it from the queue).
+         * If the request has not been sent (readyState 0), send the request.  Requests that are
+         * taken off the queue and sent should not be put back on the queue.</li>
+         * </ul>
+         *
+         * </p>
+         *
+         * @param source The DOM element that triggered this Ajax request, or an id string of the
+         * element to use as the triggering element.
+         * @param event The DOM event that triggered this Ajax request.  The
+         * <code>event</code> argument is optional.
+         * @param options The set of available options that can be sent as
+         * request parameters to control client and/or server side
+         * request processing. Acceptable name/value pair options are:
+         * <table border="1">
+         * <tr>
+         * <th>name</th>
+         * <th>value</th>
+         * </tr>
+         * <tr>
+         * <td><code>execute</code></td>
+         * <td><code>space seperated list of client identifiers</code></td>
+         * </tr>
+         * <tr>
+         * <td><code>render</code></td>
+         * <td><code>space seperated list of client identifiers</code></td>
+         * </tr>
+         * <tr>
+         * <td><code>onevent</code></td>
+         * <td><code>function to callback for event</code></td>
+         * </tr>
+         * <tr>
+         * <td><code>onerror</code></td>
+         * <td><code>function to callback for error</code></td>
+         * </tr>
+         * <tr>
+         * <td><code>params</code></td>
+         * <td><code>object containing parameters to include in the request</code></td>
+         * </tr>
+
+         * <tr class="changed_added_2_2">
+
+         * <td><code>delay</code></td>
+
+         * <td>If less than <em>delay</em> milliseconds elapses
+         * between calls to <em>request()</em> only the most recent
+         * one is sent and all other requests are discarded. If the
+         * value of <em>delay</em> is the literal string
+         * <code>'none'</code> without the quotes, or no delay is
+         * specified, no delay is used. </td>
+
+         * </tr>
+
+         * <tr class="changed_added_2_2">
+
+         * <td><code>resetValues</code></td>
+
+         * <td>If true, ensure a post data argument with the name
+         * jakarta.faces.partial.resetValues and the value true is
+         * sent in addition to the other post data arguments. This
+         * will cause UIViewRoot.resetValues() to be called, passing
+         * the value of the "render" attribute. Note: do not use any
+         * of the @ keywords such as @form or @this with this option
+         * because UIViewRoot.resetValues() does not descend into
+         * the children of the listed components.</td>
+
+         * </tr>
+
+
+         * </table>
+         * The <code>options</code> argument is optional.
+         * @member faces.ajax
+         * @function faces.ajax.request
+
+         * @throws Error if first required argument
+         * <code>element</code> is not specified, or if one or more
+         * of the components in the <code>options.execute</code>
+         * list is a file upload component, but the form's enctype
+         * is not set to <code>multipart/form-data</code>
+         */
 
         request: function request(source: Element | string, event?: Event | null, options?: FacesSpec.ajax.RequestOptions) {
 
@@ -2096,224 +2096,224 @@ export const ajax = (function() {
 
         },
         /**
-             * <p><span class="changed_modified_2_2">Receive</span> an Ajax response
-             * from the server.
-             * <p><b>Usage:</b></p>
-             * <pre><code>
-             * faces.ajax.response(request, context);
-             * </pre></code>
-             * <p><b>Implementation Requirements:</b></p>
-             * This function must evaluate the markup returned in the
-             * <code>request.responseXML</code> object and perform the following action:
-             * <ul>
-             * <p>If there is no XML response returned, signal an <code>emptyResponse</code>
-             * error. If the XML response does not follow the format as outlined
-             * in Appendix A.3 "XML Schema Definition For Partial Response" of the Jakarta Faces Specification Document
-             * signal a <code>malformedError</code> error.  Refer to
-             * Jakarta Faces Specification Document section 13.3.6.3 "Signaling Errors".</p>
-             * <p>If the response was successfully processed, send a <code>success</code>
-             * event as outlined in Jakarta Faces Specification Document section 13.3.5.3 "Sending Events".</p>
-             * <p><i>Update Element Processing</i></p>
-             * The <code>update</code> element is used to update a single DOM element.  The
-             * "id" attribute of the <code>update</code> element refers to the DOM element that
-             * will be updated.  The contents of the <code>CDATA</code> section is the data that
-             * will be used when updating the contents of the DOM element as specified by the
-             * <code>&lt;update&gt;</code> element identifier.
-             * <li>If an <code>&lt;update&gt;</code> element is found in the response
-             * with the identifier <code>jakarta.faces.ViewRoot</code>:
-             * <pre><code>&lt;update id="jakarta.faces.ViewRoot"&gt;
-             *    &lt;![CDATA[...]]&gt;
-             * &lt;/update&gt;</code></pre>
-             * Update the entire DOM replacing the appropriate <code>head</code> and/or
-             * <code>body</code> sections with the content from the response.</li>
+         * <p><span class="changed_modified_2_2">Receive</span> an Ajax response
+         * from the server.
+         * <p><b>Usage:</b></p>
+         * <pre><code>
+         * faces.ajax.response(request, context);
+         * </pre></code>
+         * <p><b>Implementation Requirements:</b></p>
+         * This function must evaluate the markup returned in the
+         * <code>request.responseXML</code> object and perform the following action:
+         * <ul>
+         * <p>If there is no XML response returned, signal an <code>emptyResponse</code>
+         * error. If the XML response does not follow the format as outlined
+         * in Appendix A.3 "XML Schema Definition For Partial Response" of the Jakarta Faces Specification Document
+         * signal a <code>malformedError</code> error.  Refer to
+         * Jakarta Faces Specification Document section 13.3.6.3 "Signaling Errors".</p>
+         * <p>If the response was successfully processed, send a <code>success</code>
+         * event as outlined in Jakarta Faces Specification Document section 13.3.5.3 "Sending Events".</p>
+         * <p><i>Update Element Processing</i></p>
+         * The <code>update</code> element is used to update a single DOM element.  The
+         * "id" attribute of the <code>update</code> element refers to the DOM element that
+         * will be updated.  The contents of the <code>CDATA</code> section is the data that
+         * will be used when updating the contents of the DOM element as specified by the
+         * <code>&lt;update&gt;</code> element identifier.
+         * <li>If an <code>&lt;update&gt;</code> element is found in the response
+         * with the identifier <code>jakarta.faces.ViewRoot</code>:
+         * <pre><code>&lt;update id="jakarta.faces.ViewRoot"&gt;
+         *    &lt;![CDATA[...]]&gt;
+         * &lt;/update&gt;</code></pre>
+         * Update the entire DOM replacing the appropriate <code>head</code> and/or
+         * <code>body</code> sections with the content from the response.</li>
 
-             * <li class="changed_modified_2_2">If an
-             * <code>&lt;update&gt;</code> element is found in the
-             * response with an identifier containing
-             * <code>jakarta.faces.ViewState</code>:
+         * <li class="changed_modified_2_2">If an
+         * <code>&lt;update&gt;</code> element is found in the
+         * response with an identifier containing
+         * <code>jakarta.faces.ViewState</code>:
 
-             * <pre><code>&lt;update id="&lt;VIEW_ROOT_CONTAINER_CLIENT_ID&gt;&lt;SEP&gt;jakarta.faces.ViewState&lt;SEP&gt;&lt;UNIQUE_PER_VIEW_NUMBER&gt;"&gt;
-             *    &lt;![CDATA[...]]&gt;
-             * &lt;/update&gt;</code></pre>
+         * <pre><code>&lt;update id="&lt;VIEW_ROOT_CONTAINER_CLIENT_ID&gt;&lt;SEP&gt;jakarta.faces.ViewState&lt;SEP&gt;&lt;UNIQUE_PER_VIEW_NUMBER&gt;"&gt;
+         *    &lt;![CDATA[...]]&gt;
+         * &lt;/update&gt;</code></pre>
 
-             * locate and update the submitting form's
-             * <code>jakarta.faces.ViewState</code> value with the
-             * <code>CDATA</code> contents from the response.
-             * &lt;SEP&gt; is the currently configured
-             * <code>UINamingContainer.getSeparatorChar()</code>.
-             * &lt;VIEW_ROOT_CONTAINER_CLIENT_ID&gt; is the return from
-             * <code>UIViewRoot.getContainerClientId()</code> on the
-             * view from whence this state originated.
-             * &lt;UNIQUE_PER_VIEW_NUMBER&gt; is a number that must be
-             * unique within this view, but must not be included in the
-             * view state.  This requirement is simply to satisfy XML
-             * correctness in parity with what is done in the
-             * corresponding non-partial Faces view.  Locate and update
-             * the <code>jakarta.faces.ViewState</code> value for all
-             * Faces forms covered in the <code>render</code> target
-             * list whose ID starts with the same
-             * &lt;VIEW_ROOT_CONTAINER_CLIENT_ID&gt; value.</li>
+         * locate and update the submitting form's
+         * <code>jakarta.faces.ViewState</code> value with the
+         * <code>CDATA</code> contents from the response.
+         * &lt;SEP&gt; is the currently configured
+         * <code>UINamingContainer.getSeparatorChar()</code>.
+         * &lt;VIEW_ROOT_CONTAINER_CLIENT_ID&gt; is the return from
+         * <code>UIViewRoot.getContainerClientId()</code> on the
+         * view from whence this state originated.
+         * &lt;UNIQUE_PER_VIEW_NUMBER&gt; is a number that must be
+         * unique within this view, but must not be included in the
+         * view state.  This requirement is simply to satisfy XML
+         * correctness in parity with what is done in the
+         * corresponding non-partial Faces view.  Locate and update
+         * the <code>jakarta.faces.ViewState</code> value for all
+         * Faces forms covered in the <code>render</code> target
+         * list whose ID starts with the same
+         * &lt;VIEW_ROOT_CONTAINER_CLIENT_ID&gt; value.</li>
 
-             * <li class="changed_added_2_2">If an
-             * <code>update</code> element is found in the response with
-             * an identifier containing
-             * <code>jakarta.faces.ClientWindow</code>:
+         * <li class="changed_added_2_2">If an
+         * <code>update</code> element is found in the response with
+         * an identifier containing
+         * <code>jakarta.faces.ClientWindow</code>:
 
-             * <pre><code>&lt;update id="&lt;VIEW_ROOT_CONTAINER_CLIENT_ID&gt;&lt;SEP&gt;jakarta.faces.ClientWindow&lt;SEP&gt;&lt;UNIQUE_PER_VIEW_NUMBER&gt;"&gt;
-             *    &lt;![CDATA[...]]&gt;
-             * &lt;/update&gt;</code></pre>
+         * <pre><code>&lt;update id="&lt;VIEW_ROOT_CONTAINER_CLIENT_ID&gt;&lt;SEP&gt;jakarta.faces.ClientWindow&lt;SEP&gt;&lt;UNIQUE_PER_VIEW_NUMBER&gt;"&gt;
+         *    &lt;![CDATA[...]]&gt;
+         * &lt;/update&gt;</code></pre>
 
-             * locate and update the submitting form's
-             * <code>jakarta.faces.ClientWindow</code> value with the
-             * <code>CDATA</code> contents from the response.
-             * &lt;SEP&gt; is the currently configured
-             * <code>UINamingContainer.getSeparatorChar()</code>.
-             * &lt;VIEW_ROOT_CONTAINER_CLIENT_ID&gt; is the return from
-             * <code>UIViewRoot.getContainerClientId()</code> on the
-             * view from whence this state originated.
-             * &lt;UNIQUE_PER_VIEW_NUMBER&gt; is a number that must be
-             * unique within this view, but must not be included in the
-             * view state.  This requirement is simply to satisfy XML
-             * correctness in parity with what is done in the
-             * corresponding non-partial Faces view.  Locate and update
-             * the <code>jakarta.faces.ClientWindow</code> value for all
-             * Faces forms covered in the <code>render</code> target
-             * list whose ID starts with the same
-             * &lt;VIEW_ROOT_CONTAINER_CLIENT_ID&gt; value.</li>
+         * locate and update the submitting form's
+         * <code>jakarta.faces.ClientWindow</code> value with the
+         * <code>CDATA</code> contents from the response.
+         * &lt;SEP&gt; is the currently configured
+         * <code>UINamingContainer.getSeparatorChar()</code>.
+         * &lt;VIEW_ROOT_CONTAINER_CLIENT_ID&gt; is the return from
+         * <code>UIViewRoot.getContainerClientId()</code> on the
+         * view from whence this state originated.
+         * &lt;UNIQUE_PER_VIEW_NUMBER&gt; is a number that must be
+         * unique within this view, but must not be included in the
+         * view state.  This requirement is simply to satisfy XML
+         * correctness in parity with what is done in the
+         * corresponding non-partial Faces view.  Locate and update
+         * the <code>jakarta.faces.ClientWindow</code> value for all
+         * Faces forms covered in the <code>render</code> target
+         * list whose ID starts with the same
+         * &lt;VIEW_ROOT_CONTAINER_CLIENT_ID&gt; value.</li>
 
-             * <li class="changed_added_2_3">If an <code>update</code> element is found in the response with the
-             * identifier <code>jakarta.faces.Resource</code>:
-             * <pre><code>&lt;update id="jakarta.faces.Resource"&gt;
-             *    &lt;![CDATA[...]]&gt;
-             * &lt;/update&gt;</code></pre>
-             * append any element found in the <code>CDATA</code> contents which is absent in the document to the
-             * document's <code>head</code> section.
-             * </li>
+         * <li class="changed_added_2_3">If an <code>update</code> element is found in the response with the
+         * identifier <code>jakarta.faces.Resource</code>:
+         * <pre><code>&lt;update id="jakarta.faces.Resource"&gt;
+         *    &lt;![CDATA[...]]&gt;
+         * &lt;/update&gt;</code></pre>
+         * append any element found in the <code>CDATA</code> contents which is absent in the document to the
+         * document's <code>head</code> section.
+         * </li>
 
-             * <li>If an <code>update</code> element is found in the response with the identifier
-             * <code>jakarta.faces.ViewHead</code>:
-             * <pre><code>&lt;update id="jakarta.faces.ViewHead"&gt;
-             *    &lt;![CDATA[...]]&gt;
-             * &lt;/update&gt;</code></pre>
-             * update the document's <code>head</code> section with the <code>CDATA</code>
-             * contents from the response.</li>
-             * <li>If an <code>update</code> element is found in the response with the identifier
-             * <code>jakarta.faces.ViewBody</code>:
-             * <pre><code>&lt;update id="jakarta.faces.ViewBody"&gt;
-             *    &lt;![CDATA[...]]&gt;
-             * &lt;/update&gt;</code></pre>
-             * update the document's <code>body</code> section with the <code>CDATA</code>
-             * contents from the response.</li>
-             * <li>For any other <code>&lt;update&gt;</code> element:
-             * <pre><code>&lt;update id="update id"&gt;
-             *    &lt;![CDATA[...]]&gt;
-             * &lt;/update&gt;</code></pre>
-             * Find the DOM element with the identifier that matches the
-             * <code>&lt;update&gt;</code> element identifier, and replace its contents with
-             * the <code>&lt;update&gt;</code> element's <code>CDATA</code> contents.</li>
-             * </li>
-             * <p><i>Insert Element Processing</i></p>
+         * <li>If an <code>update</code> element is found in the response with the identifier
+         * <code>jakarta.faces.ViewHead</code>:
+         * <pre><code>&lt;update id="jakarta.faces.ViewHead"&gt;
+         *    &lt;![CDATA[...]]&gt;
+         * &lt;/update&gt;</code></pre>
+         * update the document's <code>head</code> section with the <code>CDATA</code>
+         * contents from the response.</li>
+         * <li>If an <code>update</code> element is found in the response with the identifier
+         * <code>jakarta.faces.ViewBody</code>:
+         * <pre><code>&lt;update id="jakarta.faces.ViewBody"&gt;
+         *    &lt;![CDATA[...]]&gt;
+         * &lt;/update&gt;</code></pre>
+         * update the document's <code>body</code> section with the <code>CDATA</code>
+         * contents from the response.</li>
+         * <li>For any other <code>&lt;update&gt;</code> element:
+         * <pre><code>&lt;update id="update id"&gt;
+         *    &lt;![CDATA[...]]&gt;
+         * &lt;/update&gt;</code></pre>
+         * Find the DOM element with the identifier that matches the
+         * <code>&lt;update&gt;</code> element identifier, and replace its contents with
+         * the <code>&lt;update&gt;</code> element's <code>CDATA</code> contents.</li>
+         * </li>
+         * <p><i>Insert Element Processing</i></p>
 
-             * <li>If an <code>&lt;insert&gt;</code> element is found in
-             * the response with a nested <code>&lt;before&gt;</code>
-             * element:
+         * <li>If an <code>&lt;insert&gt;</code> element is found in
+         * the response with a nested <code>&lt;before&gt;</code>
+         * element:
 
-             * <pre><code>&lt;insert&gt;
-             *     &lt;before id="before id"&gt;
-             *        &lt;![CDATA[...]]&gt;
-             *     &lt;/before&gt;
-             * &lt;/insert&gt;</code></pre>
-             *
-             * <ul>
-             * <li>Extract this <code>&lt;before&gt;</code> element's <code>CDATA</code> contents
-             * from the response.</li>
-             * <li>Find the DOM element whose identifier matches <code>before id</code> and insert
-             * the <code>&lt;before&gt;</code> element's <code>CDATA</code> content before
-             * the DOM element in the document.</li>
-             * </ul>
-             * </li>
-             *
-             * <li>If an <code>&lt;insert&gt;</code> element is found in
-             * the response with a nested <code>&lt;after&gt;</code>
-             * element:
-             *
-             * <pre><code>&lt;insert&gt;
-             *     &lt;after id="after id"&gt;
-             *        &lt;![CDATA[...]]&gt;
-             *     &lt;/after&gt;
-             * &lt;/insert&gt;</code></pre>
-             *
-             * <ul>
-             * <li>Extract this <code>&lt;after&gt;</code> element's <code>CDATA</code> contents
-             * from the response.</li>
-             * <li>Find the DOM element whose identifier matches <code>after id</code> and insert
-             * the <code>&lt;after&gt;</code> element's <code>CDATA</code> content after
-             * the DOM element in the document.</li>
-             * </ul>
-             * </li>
-             * <p><i>Delete Element Processing</i></p>
-             * <li>If a <code>&lt;delete&gt;</code> element is found in the response:
-             * <pre><code>&lt;delete id="delete id"/&gt;</code></pre>
-             * Find the DOM element whose identifier matches <code>delete id</code> and remove it
-             * from the DOM.</li>
-             * <p><i>Element Attribute Update Processing</i></p>
-             * <li>If an <code>&lt;attributes&gt;</code> element is found in the response:
-             * <pre><code>&lt;attributes id="id of element with attribute"&gt;
-             *    &lt;attribute name="attribute name" value="attribute value"&gt;
-             *    ...
-             * &lt/attributes&gt;</code></pre>
-             * <ul>
-             * <li>Find the DOM element that matches the <code>&lt;attributes&gt;</code> identifier.</li>
-             * <li>For each nested <code>&lt;attribute&gt;</code> element in <code>&lt;attribute&gt;</code>,
-             * update the DOM element attribute value (whose name matches <code>attribute name</code>),
-             * with <code>attribute value</code>.</li>
-             * </ul>
-             * </li>
-             * <p><i>JavaScript Processing</i></p>
-             * <li>If an <code>&lt;eval&gt;</code> element is found in the response:
-             * <pre><code>&lt;eval&gt;
-             *    &lt;![CDATA[...JavaScript...]]&gt;
-             * &lt;/eval&gt;</code></pre>
-             * <ul>
-             * <li>Extract this <code>&lt;eval&gt;</code> element's <code>CDATA</code> contents
-             * from the response and execute it as if it were JavaScript code.</li>
-             * </ul>
-             * </li>
-             * <p><i>Redirect Processing</i></p>
-             * <li>If a <code>&lt;redirect&gt;</code> element is found in the response:
-             * <pre><code>&lt;redirect url="redirect url"/&gt;</code></pre>
-             * Cause a redirect to the url <code>redirect url</code>.</li>
-             * <p><i>Error Processing</i></p>
-             * <li>If an <code>&lt;error&gt;</code> element is found in the response:
-             * <pre><code>&lt;error&gt;
-             *    &lt;error-name&gt;..fully qualified class name string...&lt;error-name&gt;
-             *    &lt;error-message&gt;&lt;![CDATA[...]]&gt;&lt;error-message&gt;
-             * &lt;/error&gt;</code></pre>
-             * Extract this <code>&lt;error&gt;</code> element's <code>error-name</code> contents
-             * and the <code>error-message</code> contents. Signal a <code>serverError</code> passing
-             * the <code>errorName</code> and <code>errorMessage</code>.  Refer to
-             * Jakarta Faces Specification Document section 13.3.6.3 "Signaling Errors".</li>
-             * <p><i>Extensions</i></p>
-             * <li>The <code>&lt;extensions&gt;</code> element provides a way for framework
-             * implementations to provide their own information.</li>
-             * <p><li>The implementation must check if &lt;script&gt; elements in the response can
-             * be automatically run, as some browsers support this feature and some do not.
-             * If they can not be run, then scripts should be extracted from the response and
-             * run separately.</li></p>
-             * </ul>
-             *
-             * </p>
-             *
-             * @param request The <code>XMLHttpRequest</code> instance that
-             * contains the status code and response message from the server.
-             *
-             * @param context An object containing the request context, including the following properties:
-             * the source element, per call onerror callback function, and per call onevent callback function.
-             *
-             * @throws  Error if request contains no data
-             *
-             * @function faces.ajax.response
-             */
+         * <pre><code>&lt;insert&gt;
+         *     &lt;before id="before id"&gt;
+         *        &lt;![CDATA[...]]&gt;
+         *     &lt;/before&gt;
+         * &lt;/insert&gt;</code></pre>
+         *
+         * <ul>
+         * <li>Extract this <code>&lt;before&gt;</code> element's <code>CDATA</code> contents
+         * from the response.</li>
+         * <li>Find the DOM element whose identifier matches <code>before id</code> and insert
+         * the <code>&lt;before&gt;</code> element's <code>CDATA</code> content before
+         * the DOM element in the document.</li>
+         * </ul>
+         * </li>
+         *
+         * <li>If an <code>&lt;insert&gt;</code> element is found in
+         * the response with a nested <code>&lt;after&gt;</code>
+         * element:
+         *
+         * <pre><code>&lt;insert&gt;
+         *     &lt;after id="after id"&gt;
+         *        &lt;![CDATA[...]]&gt;
+         *     &lt;/after&gt;
+         * &lt;/insert&gt;</code></pre>
+         *
+         * <ul>
+         * <li>Extract this <code>&lt;after&gt;</code> element's <code>CDATA</code> contents
+         * from the response.</li>
+         * <li>Find the DOM element whose identifier matches <code>after id</code> and insert
+         * the <code>&lt;after&gt;</code> element's <code>CDATA</code> content after
+         * the DOM element in the document.</li>
+         * </ul>
+         * </li>
+         * <p><i>Delete Element Processing</i></p>
+         * <li>If a <code>&lt;delete&gt;</code> element is found in the response:
+         * <pre><code>&lt;delete id="delete id"/&gt;</code></pre>
+         * Find the DOM element whose identifier matches <code>delete id</code> and remove it
+         * from the DOM.</li>
+         * <p><i>Element Attribute Update Processing</i></p>
+         * <li>If an <code>&lt;attributes&gt;</code> element is found in the response:
+         * <pre><code>&lt;attributes id="id of element with attribute"&gt;
+         *    &lt;attribute name="attribute name" value="attribute value"&gt;
+         *    ...
+         * &lt/attributes&gt;</code></pre>
+         * <ul>
+         * <li>Find the DOM element that matches the <code>&lt;attributes&gt;</code> identifier.</li>
+         * <li>For each nested <code>&lt;attribute&gt;</code> element in <code>&lt;attribute&gt;</code>,
+         * update the DOM element attribute value (whose name matches <code>attribute name</code>),
+         * with <code>attribute value</code>.</li>
+         * </ul>
+         * </li>
+         * <p><i>JavaScript Processing</i></p>
+         * <li>If an <code>&lt;eval&gt;</code> element is found in the response:
+         * <pre><code>&lt;eval&gt;
+         *    &lt;![CDATA[...JavaScript...]]&gt;
+         * &lt;/eval&gt;</code></pre>
+         * <ul>
+         * <li>Extract this <code>&lt;eval&gt;</code> element's <code>CDATA</code> contents
+         * from the response and execute it as if it were JavaScript code.</li>
+         * </ul>
+         * </li>
+         * <p><i>Redirect Processing</i></p>
+         * <li>If a <code>&lt;redirect&gt;</code> element is found in the response:
+         * <pre><code>&lt;redirect url="redirect url"/&gt;</code></pre>
+         * Cause a redirect to the url <code>redirect url</code>.</li>
+         * <p><i>Error Processing</i></p>
+         * <li>If an <code>&lt;error&gt;</code> element is found in the response:
+         * <pre><code>&lt;error&gt;
+         *    &lt;error-name&gt;..fully qualified class name string...&lt;error-name&gt;
+         *    &lt;error-message&gt;&lt;![CDATA[...]]&gt;&lt;error-message&gt;
+         * &lt;/error&gt;</code></pre>
+         * Extract this <code>&lt;error&gt;</code> element's <code>error-name</code> contents
+         * and the <code>error-message</code> contents. Signal a <code>serverError</code> passing
+         * the <code>errorName</code> and <code>errorMessage</code>.  Refer to
+         * Jakarta Faces Specification Document section 13.3.6.3 "Signaling Errors".</li>
+         * <p><i>Extensions</i></p>
+         * <li>The <code>&lt;extensions&gt;</code> element provides a way for framework
+         * implementations to provide their own information.</li>
+         * <p><li>The implementation must check if &lt;script&gt; elements in the response can
+         * be automatically run, as some browsers support this feature and some do not.
+         * If they can not be run, then scripts should be extracted from the response and
+         * run separately.</li></p>
+         * </ul>
+         *
+         * </p>
+         *
+         * @param request The <code>XMLHttpRequest</code> instance that
+         * contains the status code and response message from the server.
+         *
+         * @param context An object containing the request context, including the following properties:
+         * the source element, per call onerror callback function, and per call onevent callback function.
+         *
+         * @throws  Error if request contains no data
+         *
+         * @function faces.ajax.response
+         */
         response: function response(request: XMLHttpRequest, context: AjaxContext) {
 
             if (!request) {
