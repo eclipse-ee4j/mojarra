@@ -1179,6 +1179,118 @@ describe("faces.ajax.response", () => {
     });
 });
 
+// ---- response: scripts in update and insert ----
+
+describe("faces.ajax.response: scripts in update and insert", () => {
+    let form: HTMLFormElement;
+    let button: HTMLButtonElement;
+    const w = window as unknown as Record<string, unknown>;
+
+    beforeEach(() => {
+        installMockXHR();
+        ({ form, button } = createAjaxForm());
+        w.__scriptRuns = [];
+    });
+
+    afterEach(() => {
+        form?.remove();
+        uninstallMockXHR();
+        delete w.__scriptRuns;
+        document.getElementById("scriptTarget")?.remove();
+        document.getElementById("scriptContainer")?.remove();
+    });
+
+    function respond(changes: string): void {
+        ajax().request(button, null);
+        lastXHR().respond(200, "", `<?xml version="1.0" encoding="UTF-8"?><partial-response id=""><changes>${changes}</changes></partial-response>`);
+    }
+
+    function update(html: string): HTMLElement {
+        const target = document.createElement("div");
+        target.id = "scriptTarget";
+        document.body.appendChild(target);
+        respond(`<update id="scriptTarget"><![CDATA[<div id="scriptTarget">${html}</div>]]></update>`);
+        return document.getElementById("scriptTarget")!;
+    }
+
+    function scriptsIn(element: Element): string[] {
+        return Array.from(element.querySelectorAll("script")).map(script => script.outerHTML);
+    }
+
+    test("script without type is run and removed", () => {
+        const target = update('<script>window.__scriptRuns.push("a")</script>');
+
+        expect(w.__scriptRuns).toEqual(["a"]);
+        expect(scriptsIn(target)).toEqual([]);
+    });
+
+    test("script with type text/javascript is run and removed", () => {
+        const target = update('<script type="text/javascript">window.__scriptRuns.push("a")</script>');
+
+        expect(w.__scriptRuns).toEqual(["a"]);
+        expect(scriptsIn(target)).toEqual([]);
+    });
+
+    test("uppercase script tag is run and removed", () => {
+        const target = update('<SCRIPT>window.__scriptRuns.push("a")</SCRIPT>');
+
+        expect(w.__scriptRuns).toEqual(["a"]);
+        expect(scriptsIn(target)).toEqual([]);
+    });
+
+    test("script without type whose content contains type= is run and removed", () => {
+        const target = update('<script>var el = {}; el.type="text"; window.__scriptRuns.push("a")</script>');
+
+        expect(w.__scriptRuns).toEqual(["a"]);
+        expect(scriptsIn(target)).toEqual([]);
+    });
+
+    test("script with non-JavaScript type is neither run nor removed", () => {
+        const target = update(
+            '<script type="text/x-template">window.__scriptRuns.push("template")</script>' +
+            '<script type="application/ld+json">{"@type":"Thing"}</script>');
+
+        expect(w.__scriptRuns).toEqual([]);
+        expect(scriptsIn(target)).toEqual([
+            '<script type="text/x-template">window.__scriptRuns.push("template")</script>',
+            '<script type="application/ld+json">{"@type":"Thing"}</script>',
+        ]);
+    });
+
+    test("script with non-JavaScript type whose content contains type=\"text/javascript\" is neither run nor removed", () => {
+        const target = update('<script type="text/x-template"><x type="text/javascript">window.__scriptRuns.push("template")</x></script>');
+
+        expect(w.__scriptRuns).toEqual([]);
+        expect(scriptsIn(target).length).toBe(1);
+    });
+
+    test("mixed scripts: executable ones run in document order and are removed, others are kept", () => {
+        const target = update(
+            '<script>window.__scriptRuns.push(1)</script>' +
+            '<script type="application/ld+json">{}</script>' +
+            '<script>var el = {}; el.type="text"; window.__scriptRuns.push(2)</script>' +
+            '<script type="text/javascript">window.__scriptRuns.push(3)</script>');
+
+        expect(w.__scriptRuns).toEqual([1, 2, 3]);
+        expect(scriptsIn(target)).toEqual(['<script type="application/ld+json">{}</script>']);
+    });
+
+    test("insert: script without type whose content contains type= is run and removed", () => {
+        const container = document.createElement("div");
+        container.id = "scriptContainer";
+        const target = document.createElement("div");
+        target.id = "scriptTarget";
+        container.appendChild(target);
+        document.body.appendChild(container);
+
+        respond('<insert><before id="scriptTarget"><![CDATA[<div id="scriptInserted">' +
+            '<script>var el = {}; el.type="text"; window.__scriptRuns.push("a")</script></div>]]></before></insert>');
+
+        expect(w.__scriptRuns).toEqual(["a"]);
+        expect(scriptsIn(container)).toEqual([]);
+    });
+});
+
 // ---- HTTP error codes ----
 
 describe("faces.ajax.request: HTTP error codes", () => {
