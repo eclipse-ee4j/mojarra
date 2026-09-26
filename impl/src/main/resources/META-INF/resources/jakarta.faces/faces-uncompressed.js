@@ -318,51 +318,51 @@ if (!((window.faces && faces.specversion && faces.specversion >= parseInt('#{app
 
         // --- HTML as String processing functions ----------------------------------------------------------------------------
 
-        // Regex to find all scripts in a string
-        const SCRIPT_TAG_REGEX = /<script[^>]*>([\S\s]*?)<\/script>/igm;
-
-        // Regex to find one script, to isolate it's content [2] and attributes [1]
-        const SINGLE_SCRIPT_TAG_REGEX = /<script([^>]*)>([\S\s]*?)<\/script>/im;
+        // Regex to find all scripts, isolating their attributes [1] and content [2]
+        // g: used with matchAll and replace to process all the script tags
+        // i: case-insensitive (<SCRIPT>, <Script>, ...)
+        const SCRIPT_TAG_REGEX = /<script([^>]*)>([\S\s]*?)<\/script>/gi;
 
         // Regex to find type attribute
         const TAG_ATTRIBUTE_TYPE_REGEX = /type="([\S]*?)"/im;
 
         /**
-         * Get all scripts from supplied string, return them as an array for later processing.
+         * Check if a script is executable: its type is not specified or it is text/javascript.
+         * Scripts with other types (ld+json for example) are data and must be left in the html.
+         * @param attributes the attributes of a script tag
+         * @returns {boolean} true if the script is executable
+         * @ignore
+         */
+        const isExecutableScript = function isExecutableScript(attributes) {
+            const type = attributes.match(TAG_ATTRIBUTE_TYPE_REGEX);
+            return !type || type[1] === "text/javascript";
+        };
+
+        /**
+         * Get all executable scripts from supplied string, return them as an array for later processing.
          * @param html a String containing a portion of html
-         * @returns {array} of script text
+         * @returns {RegExpExecArray[]} the script matches: [0] full tag, [1] attributes, [2] content
          * @ignore
          */
         const getScripts = function getScripts(html) {
             const scripts = [];
-            const initialnodes = html.match(SCRIPT_TAG_REGEX);
-            while (!!initialnodes && initialnodes.length > 0) {
-                let scriptStr = [];
-                scriptStr = initialnodes.shift().match(SINGLE_SCRIPT_TAG_REGEX); // todo: multiple shift array ... rewrite this algo
-                // check the type - skip if specified but not text/javascript
-                const type = scriptStr[1].match(TAG_ATTRIBUTE_TYPE_REGEX);
-                if (!!type && type[1] !== "text/javascript") {
-                    continue;
+            for (const script of html.matchAll(SCRIPT_TAG_REGEX)) {
+                if (isExecutableScript(script[1])) {
+                    scripts.push(script);
                 }
-                scripts.push(scriptStr);
             }
             return scripts;
         };
 
         /**
-         * Remove all the portion of code matching the script pattern from the passed string,
+         * Remove all the executable scripts from the passed string,
          * preserving scripts whose type is set to something other than text/javascript.
          * @param html a String containing a portion of html
+         * @returns {string} the html without the executable scripts
          * @ignore
          */
         const removeScripts = function removeScripts(html) {
-            return html.replace(/<script[^>]*>([\S\s]*?)<\/script>/igm, (match) => {
-                const type = match.match(TAG_ATTRIBUTE_TYPE_REGEX);
-                if (!!type && type[1] !== "text/javascript") {
-                    return match; // keep non-text/javascript scripts
-                }
-                return EMPTY;
-            });
+            return html.replace(SCRIPT_TAG_REGEX, (tag, attributes) => isExecutableScript(attributes) ? EMPTY : tag);
         };
 
         /**
