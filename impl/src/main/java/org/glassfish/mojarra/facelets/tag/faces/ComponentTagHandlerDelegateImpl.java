@@ -152,7 +152,6 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
 
         boolean componentFound = false;
         boolean componentReused = false;
-        boolean parentModified = false;
         if (c != null) {
             componentFound = true;
             doExistingComponentActions(ctx, id, c);
@@ -225,8 +224,7 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
 
         // finish cleaning up orphaned children
         if (componentFound) {
-            parentModified = isParentChildrenModified(parent);
-            doOrphanedChildCleanup(ctx, parent, c, parentModified);
+            doOrphanedChildCleanup(ctx, parent, c);
         }
         else if (componentReused) {
             ComponentSupport.finalizeForDeletion(c);
@@ -237,7 +235,7 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
         // add to the tree afterwards
         // this allows children to determine if it's
         // been part of the tree or not yet
-        addComponentToView(ctx, parent, c, componentFound, parentModified, stateContext);
+        addComponentToView(ctx, parent, c, componentFound, stateContext);
         ComponentSupport.copyPassthroughAttributes(ctx, c, owner.getTag());
         adjustIndexOfDynamicChildren(stateContext, c);
         popComponentFromEL(ctx, c, ccStackManager, compcompPushed);
@@ -245,14 +243,6 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
 
     protected boolean isIterating(FaceletContext context) {
         return IterationIdManager.isIterating(context);
-    }
-
-    // Tests whether the specified parent component has had any dynamic
-    // child additions or removals. If so, we avoid re-ordering its children
-    // during tag re-execution, since we want to preserve the dynamically
-    // specified order.
-    private boolean isParentChildrenModified(UIComponent parent) {
-        return parent.getAttributes().get(ComponentSupport.MARK_CHILDREN_MODIFIED) != null;
     }
 
     private void adjustIndexOfDynamicChildren(StateContext stateContext, UIComponent parent) {
@@ -348,16 +338,6 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
 
     // ------------------------------------------------------- Protected Methods
 
-    private void addComponentToView(
-        FaceletContext ctx, UIComponent parent, UIComponent c, boolean componentFound, boolean parentModified,
-        StateContext stateContext
-    )
-    {
-        if (!componentFound || !parentModified) {
-            addComponentToView(ctx, parent, c, componentFound, stateContext);
-        }
-    }
-
     protected void addComponentToView(FaceletContext ctx, UIComponent parent, UIComponent c, boolean componentFound, StateContext stateContext) {
 
         FacesContext context = ctx.getFacesContext();
@@ -395,15 +375,6 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
             ccStackManager.pop(TreeCreation);
         }
 
-    }
-
-    private void doOrphanedChildCleanup(FaceletContext ctx, UIComponent parent, UIComponent c, boolean parentModified) {
-        if (parentModified) {
-            ComponentSupport.finalizeForDeletion(c);
-        }
-        else {
-            doOrphanedChildCleanup(ctx, parent, c);
-        }
     }
 
     protected void doOrphanedChildCleanup(FaceletContext ctx, UIComponent parent, UIComponent c) {

@@ -72,9 +72,6 @@ public final class ComponentSupport {
     // Marks a component pruned during refresh and pending removal.
     public final static String MARK_DELETED = "facelets.MARK_DELETED";
 
-    // Marks a parent whose children were dynamically added or removed.
-    public final static String MARK_CHILDREN_MODIFIED = "facelets.MARK_CHILDREN_MODIFIED";
-
     // Marks a component added dynamically to the view; value is its index within the parent's children.
     public final static String DYNAMIC_COMPONENT = "facelets.DYNAMIC_COMPONENT";
 

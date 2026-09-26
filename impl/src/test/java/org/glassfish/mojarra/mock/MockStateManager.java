@@ -19,37 +19,9 @@ package org.glassfish.mojarra.mock;
 import java.io.IOException;
 
 import jakarta.faces.application.StateManager;
-import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 
 public class MockStateManager extends StateManager {
-
-    protected Object getTreeStructureToSave(FacesContext context) {
-        return null;
-    }
-
-    protected Object getComponentStateToSave(FacesContext context) {
-        return null;
-    }
-
-    public UIViewRoot restoreView(
-        FacesContext context, String viewId,
-        String renderKitId
-    )
-    {
-        return null;
-    }
-
-    protected UIViewRoot restoreTreeStructure(
-        FacesContext context,
-        String viewId, String renderKitId
-    )
-    {
-        return null;
-    }
-
-    protected void restoreComponentState(FacesContext context, UIViewRoot root, String renderKitId) {
-    }
 
     @Override
     public String getViewState(FacesContext arg0) {

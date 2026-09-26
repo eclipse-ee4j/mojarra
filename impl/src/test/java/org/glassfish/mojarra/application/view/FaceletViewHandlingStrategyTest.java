@@ -65,7 +65,7 @@ class FaceletViewHandlingStrategyTest {
      * {@code clientId -> component} index, i.e. must not walk the view.
      *
      * <p>
-     * Once the {@code AddRemoveListener} is installed (every postback), {@code getDynamicActions()} returns a non-null <em>empty</em> list and
+     * Once the {@code DynamicAddRemoveListener} is installed (every postback), {@code getDynamicActions()} returns a non-null <em>empty</em> list and
      * {@code pruneDynamicActions} preserves that, so the guard in {@code reapplyDynamicActions} must be {@code !isEmpty(actions)} — a bare
      * {@code actions != null} walks the whole tree on every postback for nothing.
      */
