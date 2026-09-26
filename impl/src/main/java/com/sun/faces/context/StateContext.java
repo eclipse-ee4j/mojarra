@@ -521,6 +521,7 @@ public class StateContext {
             }
         }
 
+        @SuppressWarnings("removal")
         private Collection<String> getPreviouslyRemovedChildren(UIComponent parent) {
             Map<String, Object> attrs = parent.getAttributes();
             Collection<String> removedChildrenIds = (Collection<String>) attrs.get(ComponentSupport.REMOVED_CHILDREN);
