@@ -59,7 +59,7 @@ public class StateContext {
     // DYNAMIC_COMPONENT marker, so componentAddedDynamically can skip the per-component attribute
     // lookup. The state restore sets this false for such views; true (always check) otherwise.
     private boolean hasDynamicComponents = true;
-    private AddRemoveListener modListener;
+    private DynamicAddRemoveListener modListener;
     private WeakReference<UIViewRoot> viewRootRef = new WeakReference<>(null);
 
     private static final Logger LOGGER = FacesLogger.CONTEXT.getLogger();
@@ -119,7 +119,7 @@ public class StateContext {
             viewRootRef = new WeakReference<>(root);
 
             // On the first call in the restore phase the view root is null, so the first change from null is not
-            // a changing view root. Any later change is, and the new view needs its own AddRemoveListener.
+            // a changing view root. Any later change is, and the new view needs its own DynamicAddRemoveListener.
             if (refRoot != null) {
                 modListener = null;
             }
@@ -127,12 +127,12 @@ public class StateContext {
 
         if (modListener == null) {
             if (root != null) {
-                modListener = createAddRemoveListener(ctx, root);
+                modListener = new DynamicAddRemoveListener(ctx);
                 root.subscribeToViewEvent(PostAddToViewEvent.class, modListener);
                 root.subscribeToViewEvent(PreRemoveFromViewEvent.class, modListener);
             }
             else {
-                LOGGER.warning("Unable to attach AddRemoveListener to UIViewRoot because it is null");
+                LOGGER.warning("Unable to attach DynamicAddRemoveListener to UIViewRoot because it is null");
             }
         }
         setTrackViewModifications(true);
@@ -332,11 +332,10 @@ public class StateContext {
 
     // ---------------------------------------------------------- Nested Classes
 
-    private AddRemoveListener createAddRemoveListener(FacesContext context, UIViewRoot root) {
-        return new DynamicAddRemoveListener(context);
-    }
-
-    abstract private class AddRemoveListener implements SystemEventListener {
+    /**
+     * A system event listener which is used to listen for changes on the component tree after restore view and before rendering out the view.
+     */
+    public class DynamicAddRemoveListener implements SystemEventListener {
 
         /**
          * Stores the state context we work for,
@@ -344,27 +343,22 @@ public class StateContext {
         private StateContext stateCtx;
 
         /**
+         * Stores the list of adds/removes.
+         */
+        private List<ComponentStruct> dynamicActions;
+        /**
+         * Stores the hash map of dynamic components.
+         */
+        private transient HashMap<String, UIComponent> dynamicComponents;
+
+        /**
          * Constructor.
          *
          * @param context the Faces context.
          */
-        protected AddRemoveListener(FacesContext context) {
+        public DynamicAddRemoveListener(FacesContext context) {
             stateCtx = StateContext.getStateContext(context);
         }
-
-        /**
-         * Get the list of adds/removes.
-         *
-         * @return the list of adds/removes.
-         */
-        abstract public List<ComponentStruct> getDynamicActions();
-
-        /**
-         * Get the hash map of dynamic components.
-         *
-         * @return the hash map of dynamic components.
-         */
-        abstract public HashMap<String, UIComponent> getDynamicComponents();
 
         /**
          * Process the add/remove event.
@@ -403,52 +397,10 @@ public class StateContext {
         }
 
         /**
-         * Handle the remove.
-         *
-         * @param context the Faces context.
-         * @param component the UI component to add to the list as a REMOVE.
-         */
-        abstract protected void handleRemove(FacesContext context, UIComponent component);
-
-        /**
-         * Handle the add.
-         *
-         * @param context the Faces context.
-         * @param component the UI component to add to the list as an ADD.
-         */
-        abstract protected void handleAdd(FacesContext context, UIComponent component);
-
-    }
-
-    /**
-     * A system event listener which is used to listen for changes on the component tree after restore view and before rendering out the view.
-     */
-    public class DynamicAddRemoveListener extends AddRemoveListener {
-
-        /**
-         * Stores the list of adds/removes.
-         */
-        private List<ComponentStruct> dynamicActions;
-        /**
-         * Stores the hash map of dynamic components.
-         */
-        private transient HashMap<String, UIComponent> dynamicComponents;
-
-        /**
-         * Constructor.
-         *
-         * @param context the Faces context.
-         */
-        public DynamicAddRemoveListener(FacesContext context) {
-            super(context);
-        }
-
-        /**
          * Get the list of adds/removes.
          *
          * @return the list of adds/removes.
          */
-        @Override
         public List<ComponentStruct> getDynamicActions() {
             if (dynamicActions == null) {
                 dynamicActions = new ArrayList<>();
@@ -462,7 +414,6 @@ public class StateContext {
          *
          * @return the hash map of dynamic components.
          */
-        @Override
         public HashMap<String, UIComponent> getDynamicComponents() {
             if (dynamicComponents == null) {
                 dynamicComponents = new HashMap<>();
@@ -477,7 +428,6 @@ public class StateContext {
          * @param context the Faces context.
          * @param component the UI component to add to the list as a REMOVE.
          */
-        @Override
         protected void handleRemove(FacesContext context, UIComponent component) {
             if (component.isInView()) {
                 recordDynamicAction(
@@ -496,7 +446,6 @@ public class StateContext {
          * @param context the Faces context.
          * @param component the UI component to add to the list as an ADD.
          */
-        @Override
         protected void handleAdd(FacesContext context, UIComponent component) {
             if (component.getParent() != null && component.getParent().isInView()) {
                 // The stale clientId that a reparent could leave behind is already invalidated by
