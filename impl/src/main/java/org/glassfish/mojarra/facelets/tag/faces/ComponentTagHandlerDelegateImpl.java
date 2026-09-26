@@ -22,7 +22,6 @@ import static org.glassfish.mojarra.facelets.tag.faces.ComponentSupport.DYNAMIC_
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -158,9 +157,6 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
             componentFound = true;
             doExistingComponentActions(ctx, id, c);
         }
-        else if (suppressRemovedChild(parent, id)) {
-            return;
-        }
         else {
             // hook method
             c = owner.createComponent(ctx);
@@ -249,15 +245,6 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
 
     protected boolean isIterating(FaceletContext context) {
         return IterationIdManager.isIterating(context);
-    }
-
-    // Tests whether the component associated with the specified tagId was
-    // a child of the parent component that has been dynamically removed. If
-    // so, we want to suppress re-creation of this child
-    @SuppressWarnings("unchecked")
-    private boolean suppressRemovedChild(UIComponent parent, String childTagId) {
-        Collection<String> removedChildren = (Collection<String>) parent.getAttributes().get(ComponentSupport.REMOVED_CHILDREN);
-        return removedChildren != null && removedChildren.contains(childTagId);
     }
 
     // Tests whether the specified parent component has had any dynamic

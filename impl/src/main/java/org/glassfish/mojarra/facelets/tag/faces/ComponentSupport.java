@@ -75,9 +75,6 @@ public final class ComponentSupport {
     // Marks a parent whose children were dynamically added or removed.
     public final static String MARK_CHILDREN_MODIFIED = "facelets.MARK_CHILDREN_MODIFIED";
 
-    // Collection<String> of the tag ids of children removed from a parent.
-    public final static String REMOVED_CHILDREN = "facelets.REMOVED_CHILDREN";
-
     // Marks a component added dynamically to the view; value is its index within the parent's children.
     public final static String DYNAMIC_COMPONENT = "facelets.DYNAMIC_COMPONENT";
 
