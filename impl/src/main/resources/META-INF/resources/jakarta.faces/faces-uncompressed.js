@@ -686,49 +686,52 @@ if (!((faces && faces.specversion && faces.specversion >= parseInt('#{applicatio
             fn();
         };
 
-        /**
-         * Get all scripts from supplied string, return them as an array for later processing.
-         * @param str
-         * @returns {array} of script text
-         * @ignore
-         */
-        var getScripts = function getScripts(str) {
-            // Regex to find all scripts in a string
-            var findscripts = /<script[^>]*>([\S\s]*?)<\/script>/igm;
-            // Regex to find one script, to isolate it's content [2] and attributes [1]
-            var findscript = /<script([^>]*)>([\S\s]*?)<\/script>/im;
-            // Regex to find type attribute
-            var findtype = /type="([\S]*?)"/im;
-            var initialnodes = [];
-            var scripts = [];
-            initialnodes = str.match(findscripts);
-            while (!!initialnodes && initialnodes.length > 0) {
-                var scriptStr = [];
-                scriptStr = initialnodes.shift().match(findscript);
-                // check the type - skip if specified but not text/javascript
-                var type = scriptStr[1].match(findtype);
-                if (!!type && type[1] !== "text/javascript") {
-                    continue;
-                }
-                scripts.push(scriptStr);
-            }
-            return scripts;
-        };
-
-        // Regex to find all scripts in a string
-        var SCRIPT_TAG_REGEX = /<script[^>]*>([\S\s]*?)<\/script>/igm;
+        // Regex to find all scripts, isolating their attributes [1] and content [2]
+        var SCRIPT_TAG_REGEX = /<script([^>]*)>([\S\s]*?)<\/script>/gi;
 
         // Regex to find type attribute
         var TAG_ATTRIBUTE_TYPE_REGEX = /type="([\S]*?)"/im;
 
+        /**
+         * Check if a script is executable: its type is not specified or it is text/javascript.
+         * Scripts with other types (ld+json for example) are data and must be left in the html.
+         * @param attributes the attributes of a script tag
+         * @returns {boolean} true if the script is executable
+         * @ignore
+         */
+        var isExecutableScript = function isExecutableScript(attributes) {
+            var type = attributes.match(TAG_ATTRIBUTE_TYPE_REGEX);
+            return !type || type[1] === "text/javascript";
+        };
 
-        var removeScripts = function removeScripts(str) {
-            return str.replace(SCRIPT_TAG_REGEX, function(match, content) {
-                var type = match.match(TAG_ATTRIBUTE_TYPE_REGEX);
-                if (!!type && type[1] !== "text/javascript") {
-                    return match; // keep non-text/javascript scripts
+        /**
+         * Get all executable scripts from supplied string, return them as an array for later processing.
+         * @param str a String containing a portion of html
+         * @returns {array} the script matches: [0] full tag, [1] attributes, [2] content
+         * @ignore
+         */
+        var getScripts = function getScripts(str) {
+            var scripts = [];
+            var script;
+            SCRIPT_TAG_REGEX.lastIndex = 0;
+            while ((script = SCRIPT_TAG_REGEX.exec(str)) !== null) {
+                if (isExecutableScript(script[1])) {
+                    scripts.push(script);
                 }
-                return EMPTY;
+            }
+            return scripts;
+        };
+
+        /**
+         * Remove all the executable scripts from the passed string,
+         * preserving scripts whose type is set to something other than text/javascript.
+         * @param str a String containing a portion of html
+         * @returns {string} the html without the executable scripts
+         * @ignore
+         */
+        var removeScripts = function removeScripts(str) {
+            return str.replace(SCRIPT_TAG_REGEX, function(tag, attributes) {
+                return isExecutableScript(attributes) ? EMPTY : tag;
             });
         };
 
