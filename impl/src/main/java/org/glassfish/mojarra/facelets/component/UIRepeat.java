@@ -729,7 +729,7 @@ public class UIRepeat extends UINamingContainer {
     public void process(FacesContext faces, PhaseId phase) {
 
         // stop if not rendered
-        if (!isRendered()) {
+        if (!isRenderedAsCurrentComponent(faces)) {
             return;
         }
 
@@ -882,29 +882,31 @@ public class UIRepeat extends UINamingContainer {
 
     @Override
     public boolean visitTree(VisitContext context, VisitCallback callback) {
-        // First check to see whether we are visitable. If not
-        // short-circuit out of this subtree, though allow the
-        // visit to proceed through to other subtrees.
-        if (!isVisitable(context)) {
-            return false;
-        }
-
         FacesContext facesContext = context.getFacesContext();
-        boolean visitRows = requiresRowIteration(context);
-
-        int oldIndex = -1;
-        if (visitRows) {
-            oldIndex = index;
-            captureOrigValue(facesContext);
-            setIndex(facesContext, -1);
-        }
-
-        setDataModel(null);
 
         // Push ourselves to EL
         pushComponentToEL(facesContext, null);
 
+        boolean visitRows = false;
+        int oldIndex = -1;
+
         try {
+
+            // First check to see whether we are visitable. If not
+            // short-circuit out of this subtree, though allow the
+            // visit to proceed through to other subtrees.
+            if (!isVisitable(context)) {
+                return false;
+            }
+
+            if (requiresRowIteration(context)) {
+                oldIndex = index;
+                captureOrigValue(facesContext);
+                visitRows = true;
+                setIndex(facesContext, -1);
+            }
+
+            setDataModel(null);
 
             // Visit ourselves. Note that we delegate to the
             // VisitContext to actually perform the visit.
@@ -1025,7 +1027,7 @@ public class UIRepeat extends UINamingContainer {
 
     @Override
     public void processDecodes(FacesContext faces) {
-        if (!isRendered()) {
+        if (!isRenderedAsCurrentComponent(faces)) {
             return;
         }
         setDataModel(null);
@@ -1038,7 +1040,7 @@ public class UIRepeat extends UINamingContainer {
 
     @Override
     public void processUpdates(FacesContext faces) {
-        if (!isRendered()) {
+        if (!isRenderedAsCurrentComponent(faces)) {
             return;
         }
         resetDataModel(faces);
@@ -1047,7 +1049,7 @@ public class UIRepeat extends UINamingContainer {
 
     @Override
     public void processValidators(FacesContext faces) {
-        if (!isRendered()) {
+        if (!isRenderedAsCurrentComponent(faces)) {
             return;
         }
         resetDataModel(faces);
@@ -1055,6 +1057,17 @@ public class UIRepeat extends UINamingContainer {
         app.publishEvent(faces, PreValidateEvent.class, this);
         process(faces, PhaseId.PROCESS_VALIDATIONS);
         app.publishEvent(faces, PostValidateEvent.class, this);
+    }
+
+    private boolean isRenderedAsCurrentComponent(FacesContext faces) {
+        pushComponentToEL(faces, this);
+
+        try {
+            return isRendered();
+        }
+        finally {
+            popComponentFromEL(faces);
+        }
     }
 
     private final static SavedState NULL_STATE = new SavedState();
