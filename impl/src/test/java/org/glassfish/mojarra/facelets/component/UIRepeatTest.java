@@ -17,15 +17,22 @@
 
 package org.glassfish.mojarra.facelets.component;
 
+import static jakarta.faces.component.visit.VisitHint.SKIP_UNRENDERED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Method;
+import java.util.EnumSet;
+import java.util.HashMap;
 
 import jakarta.el.ValueExpression;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.application.FacesMessage.Severity;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.component.visit.VisitContext;
 import jakarta.faces.context.FacesContext;
 
 import org.junit.jupiter.api.Test;
@@ -70,6 +77,32 @@ public class UIRepeatTest {
         assertEquals(true, hasErrorMessages(ctx));
         maximumSeverity = FacesMessage.Severity.FATAL;
         assertEquals(true, hasErrorMessages(ctx));
+    }
+
+    /**
+     * The current component pushed before evaluating the <code>rendered</code> property during a tree visit must be popped again when that evaluation throws.
+     */
+    @Test
+    public void visitTreeRestoresCurrentComponentWhenRenderedThrows() {
+        ctx = Mockito.mock(FacesContext.class);
+        when(ctx.getAttributes()).thenReturn(new HashMap<>());
+        VisitContext visitContext = Mockito.mock(VisitContext.class);
+        when(visitContext.getFacesContext()).thenReturn(ctx);
+        when(visitContext.getHints()).thenReturn(EnumSet.of(SKIP_UNRENDERED));
+        UIPanel parent = new UIPanel();
+        UIRepeat repeat = new UIRepeat() {
+
+            @Override
+            public boolean isRendered() {
+                throw new IllegalStateException();
+            }
+
+        };
+        parent.getChildren().add(repeat);
+        parent.pushComponentToEL(ctx, null);
+
+        assertThrows(IllegalStateException.class, () -> repeat.visitTree(visitContext, (context, target) -> null));
+        assertSame(parent, UIComponent.getCurrentComponent(ctx));
     }
 
     private boolean hasErrorMessages(FacesContext context) throws Exception {
