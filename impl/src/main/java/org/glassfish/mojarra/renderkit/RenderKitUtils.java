@@ -1402,11 +1402,13 @@ public class RenderKitUtils {
 
     /**
      * <p>
-     * Renders the Javascript necessary to add and remove request parameters to the current form.
+     * Renders the Faces script resource at the current position in the response, unless it is installed as component resource or is already rendered. Use this
+     * when the script rendered at the current position only runs on a later user event. When it runs immediately, use
+     * {@link #renderFacesJsBeforeImmediateScript(FacesContext)} instead.
      * </p>
      *
      * @param context the <code>FacesContext</code> for the current request
-     * @throws java.io.IOException if an error occurs writing to the response
+     * @throws IOException if an error occurs writing to the response
      */
     public static void renderFacesJsIfNecessary(FacesContext context) throws IOException {
 
@@ -1414,14 +1416,36 @@ public class RenderKitUtils {
             return;
         }
 
-        ResourceHandler resourceHandler = context.getApplication().getResourceHandler();
-        if (resourceHandler.isResourceRendered(context, FACES_SCRIPT_RESOURCE_NAME, FACES_SCRIPT_LIBRARY_NAME)) {
+        renderFacesJsUnlessMarkedRendered(context);
+    }
+
+    /**
+     * <p>
+     * Renders the Faces script resource at the current position in the response, unless it is already rendered before this position. Use this when the script
+     * rendered at the current position runs immediately. Unlike {@link #renderFacesJsIfNecessary(FacesContext)}, an installed Faces script component resource
+     * which is rendered later, e.g. in the "body" target, does not count. During an Ajax request, an installed Faces script component resource does count,
+     * because the page has then already loaded it.
+     * </p>
+     *
+     * @param context the <code>FacesContext</code> for the current request
+     * @throws IOException if an error occurs writing to the response
+     */
+    public static void renderFacesJsBeforeImmediateScript(FacesContext context) throws IOException {
+
+        if (context.getPartialViewContext().isAjaxRequest() && isFacesJsInstalled(context)) {
             return;
         }
 
-        // Since we've now determined that it's not in the page, we need to manually render it.
-        createFacesJs().encodeAll(context);
-        resourceHandler.markResourceRendered(context, FACES_SCRIPT_RESOURCE_NAME, FACES_SCRIPT_LIBRARY_NAME);
+        renderFacesJsUnlessMarkedRendered(context);
+    }
+
+    private static void renderFacesJsUnlessMarkedRendered(FacesContext context) throws IOException {
+        ResourceHandler resourceHandler = context.getApplication().getResourceHandler();
+
+        if (!resourceHandler.isResourceRendered(context, FACES_SCRIPT_RESOURCE_NAME, FACES_SCRIPT_LIBRARY_NAME)) {
+            createFacesJs().encodeAll(context);
+            resourceHandler.markResourceRendered(context, FACES_SCRIPT_RESOURCE_NAME, FACES_SCRIPT_LIBRARY_NAME);
+        }
     }
 
     public static boolean isFacesJsInstalled(FacesContext context) {
@@ -2094,7 +2118,7 @@ public class RenderKitUtils {
             context.getPartialViewContext().getEvalScripts().add(script.toString());
         }
         else {
-            renderFacesJsIfNecessary(context);
+            renderFacesJsBeforeImmediateScript(context);
             renderScript(context, null, script.toString());
         }
     }
