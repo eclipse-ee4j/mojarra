@@ -22,6 +22,8 @@ import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
 import static com.sun.faces.util.Util.getCdiBeanManager;
 
 import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.el.ApplicationELResolvers;
+import com.sun.faces.el.DemuxCompositeELResolver;
 import com.sun.faces.el.FacesCompositeELResolver;
 import jakarta.el.CompositeELResolver;
 import jakarta.el.ELContext;
@@ -41,13 +43,13 @@ public class ExpressionLanguage {
     private final ApplicationAssociate associate;
 
     private final List<ELContextListener> elContextListeners;
-    private final CompositeELResolver elResolvers;
+    private final ApplicationELResolvers elResolvers;
     private volatile FacesCompositeELResolver compositeELResolver;
 
     public ExpressionLanguage(ApplicationAssociate applicationAssociate) {
         associate = applicationAssociate;
         elContextListeners = new CopyOnWriteArrayList<>();
-        elResolvers = new CompositeELResolver();
+        elResolvers = new ApplicationELResolvers();
     }
 
     /*
@@ -107,6 +109,10 @@ public class ExpressionLanguage {
 
         if (!resolver.equals(cdiBeanManager.getELResolver())) {
             elResolvers.add(resolver);
+            if (compositeELResolver instanceof DemuxCompositeELResolver) {
+                // The chain may have learned to skip the application resolvers while there were none.
+                ((DemuxCompositeELResolver) compositeELResolver).clearShortcuts();
+            }
         }
     }
 
