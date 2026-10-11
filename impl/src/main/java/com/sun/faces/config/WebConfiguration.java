@@ -944,6 +944,7 @@ public class WebConfiguration {
         DisallowDoctypeDecl("com.sun.faces.disallowDoctypeDecl", false),
         UseFaceletsID("com.sun.faces.useFaceletsID",false),
         DisableOptionalELResolver("com.sun.faces.disableOptionalELResolver", false),
+        DisableELResolverShortcuts("com.sun.faces.disableELResolverShortcuts", false),
         ;
 
         private final BooleanWebContextInitParameter alternate;

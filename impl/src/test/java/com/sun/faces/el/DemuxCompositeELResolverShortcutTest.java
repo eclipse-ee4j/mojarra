@@ -21,8 +21,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
@@ -198,5 +200,104 @@ class DemuxCompositeELResolverShortcutTest {
             assertNull(chain.getValue(context, new Bean(), "name"));
             assertFalse(context.isPropertyResolved());
         }
+    }
+
+    /** Like the resolvers of Weld and OpenWebBeans: marks a bean name resolved only when the bean is not null. */
+    static class CdiLike extends Flaky {
+        final Map<String, Object> beans;
+
+        CdiLike(Map<String, Object> beans) {
+            this.beans = beans;
+        }
+
+        @Override
+        public Object getValue(ELContext context, Object base, Object property) {
+            calls++;
+            if (base == null) {
+                Object bean = beans.get(property);
+                if (bean != null) {
+                    context.setPropertyResolved(true);
+                    return bean;
+                }
+            }
+            return null;
+        }
+    }
+
+    private static DemuxCompositeELResolver chainWith(CdiLike cdi, AnyRoot last) {
+        DemuxCompositeELResolver chain = new DemuxCompositeELResolver(FacesCompositeELResolver.ELResolverChainType.Faces);
+        chain.add(cdi);
+        chain.addRootELResolver(new StaticFieldELResolver());
+        chain.addPropertyELResolver(new MapELResolver());
+        chain.addRootELResolver(last);
+        return chain;
+    }
+
+    @Test
+    void beanWhichWasNullIsAskedAgain() {
+        Map<String, Object> beans = new HashMap<>();
+        CdiLike cdi = new CdiLike(beans);
+        DemuxCompositeELResolver chain = chainWith(cdi, new AnyRoot());
+        chain.setCdiNames(cdi, () -> Set.of("user"));
+
+        ELContext context = context();
+        assertEquals("root:user", chain.getValue(context, null, "user"));
+        assertEquals("root:user", chain.getValue(context, null, "user"));
+        beans.put("user", "alice");
+        assertEquals("alice", chain.getValue(context, null, "user"));
+    }
+
+    @Test
+    void cdiIsSkippedOnlyForNamesWhichAreNoBeanNorNamespace() {
+        CdiLike cdi = new CdiLike(Map.of());
+        DemuxCompositeELResolver chain = chainWith(cdi, new AnyRoot());
+        chain.setCdiNames(cdi, () -> Set.of("user", "com", "com.acme", "com.acme.bean"));
+
+        ELContext context = context();
+        for (int i = 0; i < 3; i++) {
+            assertEquals("root:row", chain.getValue(context, null, "row"));
+        }
+        assertEquals(1, cdi.calls); // only the first lookup of "row" walks the whole chain
+        for (int i = 0; i < 3; i++) {
+            assertEquals("root:com", chain.getValue(context, null, "com"));
+        }
+        assertEquals(4, cdi.calls);
+    }
+
+    @Test
+    void cdiIsAlwaysAskedWhenBeanNamesAreUnknown() {
+        CdiLike cdi = new CdiLike(Map.of());
+        DemuxCompositeELResolver chain = chainWith(cdi, new AnyRoot());
+        chain.setCdiNames(cdi, () -> {
+            throw new IllegalStateException("not deployed yet");
+        });
+
+        ELContext context = context();
+        for (int i = 0; i < 3; i++) {
+            assertEquals("root:row", chain.getValue(context, null, "row"));
+        }
+        assertEquals(3, cdi.calls);
+
+        CdiLike unnamed = new CdiLike(Map.of());
+        DemuxCompositeELResolver withoutBeanManager = chainWith(unnamed, new AnyRoot());
+        for (int i = 0; i < 3; i++) {
+            assertEquals("root:row", withoutBeanManager.getValue(context, null, "row"));
+        }
+        assertEquals(3, unnamed.calls);
+    }
+
+    @Test
+    void disabledShortcutsWalkTheWholeChain() {
+        CdiLike cdi = new CdiLike(Map.of());
+        DemuxCompositeELResolver chain = chainWith(cdi, new AnyRoot());
+        chain.setCdiNames(cdi, () -> Set.of());
+        chain.disableShortcuts();
+
+        ELContext context = context();
+        for (int i = 0; i < 3; i++) {
+            assertEquals("root:row", chain.getValue(context, null, "row"));
+            assertEquals("v", chain.getValue(context, Map.of("k", "v"), "k"));
+        }
+        assertEquals(6, cdi.calls);
     }
 }

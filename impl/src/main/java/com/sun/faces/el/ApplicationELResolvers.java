@@ -44,10 +44,6 @@ public class ApplicationELResolvers extends CompositeELResolver {
         }
     }
 
-    public boolean isEmpty() {
-        return resolvers.length == 0;
-    }
-
     /**
      * @return the resolvers added so far, in order (the returned array must not be modified)
      */

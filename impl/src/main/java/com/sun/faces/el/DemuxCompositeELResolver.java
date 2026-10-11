@@ -17,13 +17,18 @@
 
 package com.sun.faces.el;
 
+import static java.util.Map.entry;
+
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import com.sun.faces.context.flash.FlashELResolver;
 
@@ -38,6 +43,9 @@ import jakarta.el.OptionalELResolver;
 import jakarta.el.RecordELResolver;
 import jakarta.el.ResourceBundleELResolver;
 import jakarta.el.StaticFieldELResolver;
+import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.Flash;
@@ -72,12 +80,29 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
      * resolution: Map, List, Bean...) or from the root name alone (CDI bean names, "cc", resource bundle vars...), so
      * for a given base class or root name every evaluation walks the same leading resolvers that all decline. These
      * caches remember where the walk can start. A resolver is only ever skipped when it is one of the known resolvers
-     * below and provably cannot resolve that class or name; an unknown (application or faces-config) resolver is a
-     * barrier that is always consulted, so the observable result is the same as walking the whole chain.
+     * below and cannot resolve that class or name whatever the request; an unknown (application or faces-config)
+     * resolver is a barrier that is always consulted, so the observable result is the same as walking the whole chain.
      */
 
-    /** Set the system property <code>com.sun.faces.disableELResolverShortcuts=true</code> to always walk the whole chain. */
-    private static final boolean SHORTCUTS = !Boolean.getBoolean("com.sun.faces.disableELResolverShortcuts");
+    /**
+     * Known property resolvers which resolve only bases of one kind: the resolver class, and whether it may resolve an
+     * instance of a given class.
+     */
+    private static final Map<Class<?>, Predicate<Class<?>>> PROPERTY_BASES = Map.ofEntries(
+            entry(FlashELResolver.class, Flash.class::isAssignableFrom),
+            entry(CompositeComponentELResolver.class, baseClass -> false),
+            entry(EmptyStringToNullELResolver.class, baseClass -> false),
+            entry(CompositeComponentAttributesELResolver.class, UIComponent.class::isAssignableFrom),
+            entry(ResourceELResolver.class, ResourceHandler.class::isAssignableFrom),
+            entry(ResourceBundleELResolver.class, ResourceBundle.class::isAssignableFrom),
+            entry(MapELResolver.class, Map.class::isAssignableFrom),
+            entry(ListELResolver.class, List.class::isAssignableFrom),
+            entry(ArrayELResolver.class, Class::isArray),
+            entry(OptionalELResolver.class, Optional.class::isAssignableFrom),
+            entry(RecordELResolver.class, Class::isRecord));
+
+    /** Disabled by the context parameter <code>com.sun.faces.disableELResolverShortcuts</code>. */
+    private volatile boolean _shortcuts = true;
 
     /** Root names: index of the first root resolver that may resolve the name. */
     private final Map<String, Integer> _rootStart = new ConcurrentHashMap<>();
@@ -85,6 +110,14 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
 
     /** Base classes: index of the first property resolver that may resolve an instance of the class. */
     private volatile ClassValue<Integer> _propertyStart = newPropertyStarts();
+
+    /** Incremented whenever the chain changes, so that a start computed against an older chain is not stored. */
+    private volatile int _generation;
+
+    /** The resolver of the CDI bean manager, and the source of the bean names and namespaces it may resolve. */
+    private volatile ELResolver _cdiResolver;
+    private volatile Supplier<Set<String>> _cdiNameSource;
+    private volatile Set<String> _cdiNames;
 
     public DemuxCompositeELResolver(ELResolverChainType chainType) {
         if (chainType == null) {
@@ -100,7 +133,6 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
     }
 
     private void _addAllELResolver(ELResolver elResolver) {
-        clearShortcuts();
         if (elResolver == null) {
             throw new NullPointerException();
         }
@@ -198,6 +230,7 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
         _addRootELResolver(elResolver);
         _addAllELResolver(elResolver);
         _addConvertELResolver(elResolver);
+        clearShortcuts();
     }
 
     @Override
@@ -209,6 +242,7 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
         _addPropertyELResolver(elResolver);
         _addAllELResolver(elResolver);
         _addConvertELResolver(elResolver);
+        clearShortcuts();
     }
 
     @Override
@@ -221,6 +255,55 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
         _addPropertyELResolver(elResolver);
         _addAllELResolver(elResolver);
         _addConvertELResolver(elResolver);
+        clearShortcuts();
+    }
+
+    /**
+     * Makes {@link #getValue} and {@link #convertToType} always walk the whole chain.
+     */
+    public void disableShortcuts() {
+        _shortcuts = false;
+    }
+
+    /**
+     * Lets the root name shortcut skip <code>cdiResolver</code>, and any other resolver of Weld or OpenWebBeans, for a
+     * name which is neither the name of a bean of <code>beanManager</code> nor a namespace of such a name. Without it,
+     * these resolvers are consulted for every root name.
+     *
+     * @param cdiResolver the resolver of the bean manager, as added to this chain
+     * @param beanManager the bean manager
+     */
+    public void setBeanManager(ELResolver cdiResolver, BeanManager beanManager) {
+        setCdiNames(cdiResolver, () -> beanNamesAndNamespaces(beanManager));
+    }
+
+    /**
+     * @param names the bean names and namespaces, asked once at the first evaluation which needs them; it may throw
+     * while they are not known yet, and is then asked again later
+     */
+    void setCdiNames(ELResolver cdiResolver, Supplier<Set<String>> names) {
+        _cdiResolver = cdiResolver;
+        _cdiNameSource = names;
+        _cdiNames = null;
+        clearShortcuts();
+    }
+
+    /**
+     * The names of the beans of <code>beanManager</code>, and their namespaces: <code>a</code> and <code>a.b</code> for
+     * <code>a.b.c</code>. Bean names cannot change once the container has started.
+     */
+    private static Set<String> beanNamesAndNamespaces(BeanManager beanManager) {
+        Set<String> names = new HashSet<>();
+        for (Bean<?> bean : beanManager.getBeans(Object.class, Any.Literal.INSTANCE)) {
+            String name = bean.getName();
+            if (name != null) {
+                names.add(name);
+                for (int dot = name.indexOf('.'); dot > 0; dot = name.indexOf('.', dot + 1)) {
+                    names.add(name.substring(0, dot));
+                }
+            }
+        }
+        return names;
     }
 
     private Object _getValue(int resolverCount, ELResolver[] resolvers, ELContext context, Object base, Object property) throws ELException {
@@ -243,7 +326,7 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
         ELResolver[] resolvers;
 
         if (base == null) {
-            if (SHORTCUTS && property instanceof String) {
+            if (_shortcuts && property instanceof String) {
                 return _getRootValue(context, (String) property);
             }
             resolverCount = _rootELResolverCount;
@@ -252,7 +335,7 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
             resolverCount = _rootELResolverCount;
             resolvers = _rootELResolvers;
         } else {
-            if (SHORTCUTS && property != null) {
+            if (_shortcuts && property != null) {
                 return _getPropertyValue(context, base, property);
             }
             resolverCount = _propertyELResolverCount;
@@ -263,6 +346,7 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
     }
 
     private Object _getRootValue(ELContext context, String name) {
+        int generation = _generation;
         ELResolver[] resolvers = _rootELResolvers;
         int count = _rootELResolverCount;
         Integer known = _rootStart.get(name);
@@ -273,20 +357,20 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
 
             if (context.isPropertyResolved()) {
                 if (known == null) {
-                    rememberRootStart(name, resolvers, i);
+                    rememberRootStart(name, generation, resolvers, i);
                 }
                 return result;
             }
         }
 
         if (known == null) {
-            rememberRootStart(name, resolvers, count);
+            rememberRootStart(name, generation, resolvers, count);
         }
         return null;
     }
 
-    private void rememberRootStart(String name, ELResolver[] resolvers, int resolvedAt) {
-        if (resolvers != _rootELResolvers || _rootStart.size() >= MAX_ROOT_NAMES) {
+    private void rememberRootStart(String name, int generation, ELResolver[] resolvers, int resolvedAt) {
+        if (generation != _generation || _rootStart.size() >= MAX_ROOT_NAMES) {
             return;
         }
         int start = 0;
@@ -295,6 +379,10 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
         }
         // Stored even when 0, so the name is not examined again.
         _rootStart.put(name, start);
+        if (generation != _generation) {
+            // The chain changed meanwhile, and clearShortcuts() may have run before the put.
+            _rootStart.remove(name);
+        }
     }
 
     private Object _getPropertyValue(ELContext context, Object base, Object property) {
@@ -325,10 +413,11 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
     }
 
     /**
-     * Forgets every learned shortcut. Called whenever the chain changes, including when an application resolver is
+     * Forgets every learned shortcut. Called after every change of the chain, including when an application resolver is
      * added to a composite this chain contains.
      */
-    public void clearShortcuts() {
+    public synchronized void clearShortcuts() {
+        _generation++;
         _rootStart.clear();
         // A fresh ClassValue drops every per-class start computed so far.
         _propertyStart = newPropertyStarts();
@@ -348,75 +437,71 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
      * because it only resolves names fixed at deployment that do not include this one, or never resolves root names.
      * Only resolvers known to behave this way qualify.
      */
-    private static boolean neverResolvesRootName(ELResolver resolver, String name) {
+    private boolean neverResolvesRootName(ELResolver resolver, String name) {
         if (isCdiResolver(resolver)) {
-            // Bean names and their namespaces are fixed once the container has started, and the name was just declined.
-            return true;
+            Set<String> cdiNames = cdiNames();
+            return cdiNames != null && !cdiNames.contains(name);
         }
-        if (resolver instanceof FacesResourceBundleELResolver) {
-            // resource-bundle vars are fixed once the application is configured, and the name was just declined.
-            return resolver.getClass() == FacesResourceBundleELResolver.class;
+        if (resolver.getClass() == ApplicationELResolvers.class) {
+            return allChildren((ApplicationELResolvers) resolver, child -> neverResolvesRootName(child, name));
         }
         Class<?> type = resolver.getClass();
-        return type == FlashELResolver.class // root names are never resolved: flash is a property base only
-                || type == CompositeComponentELResolver.class && !CompositeComponentELResolver.COMPOSITE_COMPONENT_NAME.equals(name)
+        if (type == CompositeComponentELResolver.class) {
+            return !CompositeComponentELResolver.COMPOSITE_COMPONENT_NAME.equals(name);
+        }
+        return type == FlashELResolver.class // flash is resolved as a property base only
                 || type == StaticFieldELResolver.class // only resolves an ELClass base
                 || type == EmptyStringToNullELResolver.class
-                || isStreamResolver(type)
-                || isApplicationComposite(resolver, child -> neverResolvesRootName(child, name));
+                || isStreamResolver(type);
     }
 
     /**
      * Whether <code>resolver</code> can never resolve <code>getValue(context, base, property)</code> for any instance of
      * <code>baseClass</code> and any property. Only resolvers known to decide from the base type alone qualify.
      */
-    private static boolean neverResolvesProperty(ELResolver resolver, Class<?> baseClass) {
+    private boolean neverResolvesProperty(ELResolver resolver, Class<?> baseClass) {
         if (isCdiResolver(resolver)) {
             // CDI resolvers only resolve properties of their own namespace objects.
             return !isCdiClass(baseClass);
         }
-        Class<?> type = resolver.getClass();
-        if (type == FlashELResolver.class) {
-            return !Flash.class.isAssignableFrom(baseClass);
+        if (resolver.getClass() == ApplicationELResolvers.class) {
+            return allChildren((ApplicationELResolvers) resolver, child -> neverResolvesProperty(child, baseClass));
         }
-        if (type == CompositeComponentELResolver.class || type == EmptyStringToNullELResolver.class || isStreamResolver(type)
-                || isApplicationComposite(resolver, child -> neverResolvesProperty(child, baseClass))) {
+        if (isStreamResolver(resolver.getClass())) {
             return true;
         }
-        if (type == CompositeComponentAttributesELResolver.class) {
-            return !UIComponent.class.isAssignableFrom(baseClass);
-        }
-        if (type == ResourceELResolver.class) {
-            return !ResourceHandler.class.isAssignableFrom(baseClass);
-        }
-        if (type == ResourceBundleELResolver.class) {
-            return !ResourceBundle.class.isAssignableFrom(baseClass);
-        }
-        if (type == MapELResolver.class) {
-            return !Map.class.isAssignableFrom(baseClass);
-        }
-        if (type == ListELResolver.class) {
-            return !List.class.isAssignableFrom(baseClass);
-        }
-        if (type == ArrayELResolver.class) {
-            return !baseClass.isArray();
-        }
-        if (type == OptionalELResolver.class) {
-            return !Optional.class.isAssignableFrom(baseClass);
-        }
-        if (type == RecordELResolver.class) {
-            return !baseClass.isRecord();
-        }
-        return false;
+        Predicate<Class<?>> mayResolve = PROPERTY_BASES.get(resolver.getClass());
+        return mayResolve != null && !mayResolve.test(baseClass);
     }
 
-    private static boolean isCdiResolver(ELResolver resolver) {
-        return isCdiClass(resolver.getClass());
+    private boolean isCdiResolver(ELResolver resolver) {
+        return resolver == _cdiResolver || isCdiClass(resolver.getClass());
     }
 
     private static boolean isCdiClass(Class<?> type) {
         String name = type.getName();
         return name.startsWith("org.jboss.weld.") || name.startsWith("org.apache.webbeans.");
+    }
+
+    /**
+     * @return the bean names and namespaces, or <code>null</code> when they are not known
+     */
+    private Set<String> cdiNames() {
+        Set<String> names = _cdiNames;
+        if (names == null) {
+            Supplier<Set<String>> source = _cdiNameSource;
+            if (source == null) {
+                return null;
+            }
+            try {
+                names = source.get();
+            } catch (RuntimeException e) {
+                // The container is not ready yet: asked again for the next new name.
+                return null;
+            }
+            _cdiNames = names;
+        }
+        return names;
     }
 
     private static boolean isStreamResolver(Class<?> type) {
@@ -426,14 +511,10 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
     }
 
     /**
-     * Whether the resolver is the composite of the application resolvers and all of them satisfy the given rule (as
-     * when it is empty).
+     * Whether all resolvers of the composite of the application resolvers satisfy the given rule, as when it is empty.
      */
-    private static boolean isApplicationComposite(ELResolver resolver, Predicate<ELResolver> never) {
-        if (resolver.getClass() != ApplicationELResolvers.class) {
-            return false;
-        }
-        for (ELResolver child : ((ApplicationELResolvers) resolver).getResolvers()) {
+    private static boolean allChildren(ApplicationELResolvers resolvers, Predicate<ELResolver> never) {
+        for (ELResolver child : resolvers.getResolvers()) {
             if (!never.test(child)) {
                 return false;
             }
@@ -557,7 +638,7 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
      * @return <code>true</code> when no resolver of this chain would convert <code>obj</code>
      */
     boolean neverConverts(Object obj) {
-        if (!SHORTCUTS || _unknownConvertResolverCount != 0 || obj instanceof Optional) {
+        if (!_shortcuts || _unknownConvertResolverCount != 0 || obj instanceof Optional) {
             return false;
         }
 
