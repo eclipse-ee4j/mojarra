@@ -24,12 +24,14 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 
 import org.junit.jupiter.api.Test;
@@ -84,7 +86,7 @@ class FastNumberFormatTest {
             List<NumberFormat> bases = new ArrayList<>(List.of(NumberFormat.getNumberInstance(locale), NumberFormat.getCurrencyInstance(locale),
                     NumberFormat.getIntegerInstance(locale), NumberFormat.getPercentInstance(locale)));
             for (String pattern : PATTERNS) {
-                bases.add(new DecimalFormat(pattern, java.text.DecimalFormatSymbols.getInstance(locale)));
+                bases.add(new DecimalFormat(pattern, DecimalFormatSymbols.getInstance(locale)));
             }
             for (NumberFormat base : bases) {
                 if (!(base instanceof DecimalFormat)) {
@@ -109,7 +111,7 @@ class FastNumberFormatTest {
                 new BigDecimal("0.0004"), new BigDecimal("-0.0004"), new BigDecimal("0.0006"), new BigDecimal("0.00006"), new BigDecimal("999.995"),
                 new BigDecimal("999.9949"), new BigDecimal("9999.99999"), new BigDecimal("1E+3"), new BigDecimal("1E+25"), new BigDecimal("-1.2E-7"),
                 new BigDecimal("12345678901234567890.123456789"), new BigDecimal("0.1"), new BigDecimal("1.50"), new BigDecimal("1234.5678"),
-                12.5, 1.25f, new java.util.concurrent.atomic.AtomicLong(5)));
+                12.5, 1.25f, new AtomicLong(5)));
         Random random = new Random(42);
         for (int i = 0; i < 400; i++) {
             long unscaled = random.nextLong() >> random.nextInt(63);
@@ -163,5 +165,19 @@ class FastNumberFormatTest {
         assertNull(fast.format(Long.MIN_VALUE));
         assertNull(fast.format(BigInteger.TEN.pow(30)));
         assertEquals("1,234.568", fast.format(new BigDecimal("1234.5678")));
+    }
+
+    @Test
+    void leavesValuesWithMoreIntegerDigitsThanPrintedToDecimalFormat() {
+        DecimalFormat format = new DecimalFormat("#,##0.00");
+        format.setMaximumIntegerDigits(4);
+        FastNumberFormat fast = FastNumberFormat.of(format);
+        assertNotNull(fast);
+        long start = System.nanoTime();
+        assertNull(fast.format(new BigDecimal("1E+30000000")));
+        assertNull(fast.format(new BigDecimal("-1E+2147483647")));
+        assertNull(fast.format(new BigDecimal("12345.6")));
+        assertEquals(true, System.nanoTime() - start < 1_000_000_000L, "must not build the plain string");
+        assertEquals(format.format(new BigDecimal("1234.5")), fast.format(new BigDecimal("1234.5")));
     }
 }

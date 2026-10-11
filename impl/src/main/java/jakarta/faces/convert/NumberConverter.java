@@ -23,6 +23,7 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Currency;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -587,10 +588,10 @@ public class NumberConverter implements Converter, PartialStateHolder {
                 var origNegPrefix = dParser.getNegativePrefix();
                 var origNegSuffix = dParser.getNegativeSuffix();
 
-                // A function of the configured symbols and affixes, i.e. of this converter's configuration and locale,
-                // so it is computed once per configuration rather than with five regex matchers per parsed value.
+                // A function of the symbols and affixes of the parser, which only depend on the pattern, the type, the
+                // locale and the currency: cached per such configuration.
                 Map<String, Boolean> whitespaceCache = whitespaceCache(context);
-                String whitespaceKey = formatterKey(locale);
+                String whitespaceKey = cacheKeys(locale).parserSymbols;
                 Boolean cachedHasFixedWidthWhitespace = whitespaceCache.get(whitespaceKey);
                 boolean hasFixedWidthWhitespace;
                 if (cachedHasFixedWidthWhitespace != null) {
@@ -691,8 +692,8 @@ public class NumberConverter implements Converter, PartialStateHolder {
             // conversion-heavy views (e.g. a per-row f:convertNumber unrolled by c:forEach).
             NumberFormat formatter = getCachedFormatter(context);
 
-            // Integers and BigDecimals are printed without DecimalFormat's synchronized StringBuffer, exactly as it
-            // prints them (see FastNumberFormat).
+            // Integers and BigDecimals covered by FastNumberFormat are printed by it, exactly as the formatter prints
+            // them.
             FastNumberFormat fast = getFastFormatter(context, formatter);
             if (fast != null) {
                 String text = fast.format(value);
@@ -867,24 +868,30 @@ public class NumberConverter implements Converter, PartialStateHolder {
     private static final int FORMATTER_CACHE_LIMIT = 64;
 
     /**
-     * The {@link FastNumberFormat}s of the configurations seen, shared by the whole application: a fast formatter is
-     * immutable and a function of the configuration only, which the formatter key covers entirely. Bounded.
+     * The {@link FastNumberFormat} of each configuration seen, or {@link #NO_FAST_FORMATTER} for a configuration it does
+     * not cover. Shared by all applications: a fast formatter is immutable, holds JDK classes only, and is a function of
+     * the configuration only, which the formatter key covers entirely. When full, an arbitrary entry is evicted.
      */
     private static final Map<String, Object> FAST_FORMATTERS = new ConcurrentHashMap<>();
     private static final Object NO_FAST_FORMATTER = new Object();
-    private static final int FAST_FORMATTERS_LIMIT = 256;
+    private static final int FAST_FORMATTERS_LIMIT = 1024;
 
     private FastNumberFormat getFastFormatter(FacesContext context, NumberFormat formatter) {
-        String key = formatterKey(getLocale(context));
+        String key = cacheKeys(getLocale(context)).formatter;
         Object fast = FAST_FORMATTERS.get(key);
         if (fast == null) {
             fast = FastNumberFormat.of(formatter);
             if (fast == null) {
                 fast = NO_FAST_FORMATTER;
             }
-            if (FAST_FORMATTERS.size() < FAST_FORMATTERS_LIMIT) {
-                FAST_FORMATTERS.put(key, fast);
+            if (FAST_FORMATTERS.size() >= FAST_FORMATTERS_LIMIT) {
+                Iterator<String> keys = FAST_FORMATTERS.keySet().iterator();
+                if (keys.hasNext()) {
+                    keys.next();
+                    keys.remove();
+                }
             }
+            FAST_FORMATTERS.put(key, fast);
         }
         return fast == NO_FAST_FORMATTER ? null : (FastNumberFormat) fast;
     }
@@ -914,7 +921,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
     private NumberFormat getCachedFormatter(FacesContext context) throws Exception {
         Locale locale = getLocale(context);
         Map<String, NumberFormat> cache = formatterCache(context, FORMATTER_CACHE_KEY);
-        String key = formatterKey(locale);
+        String key = cacheKeys(locale).formatter;
         NumberFormat formatter = cache.get(key);
         if (formatter == null) {
             formatter = getNumberFormat(locale);
@@ -938,7 +945,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
      */
     private NumberFormat getCachedBaseParser(FacesContext context, Locale locale) {
         Map<String, NumberFormat> cache = formatterCache(context, PARSER_CACHE_KEY);
-        String key = parserKey(locale);
+        String key = cacheKeys(locale).parser;
         NumberFormat parser = cache.get(key);
         if (parser == null) {
             parser = getNumberFormat(locale);
@@ -985,42 +992,47 @@ public class NumberConverter implements Converter, PartialStateHolder {
         return cache;
     }
 
-    // The cache keys only change when a property or the resolved locale does, but the converter runs once per value
-    // (per row in an iterated table), so they are memoized per instance instead of being rebuilt on every call. Every
-    // property setter and restoreState clears them.
-    private transient String parserKey;
-    private transient Locale parserKeyLocale;
-    private transient String formatterKey;
-    private transient Locale formatterKeyLocale;
+    /**
+     * The cache keys of this converter's configuration for one locale. Immutable, and held in a single field, so that a
+     * converter instance shared between threads always reads the keys of one locale together.
+     */
+    private static final class CacheKeys {
+        final Locale locale;
+        /** Key over every property {@link #getNumberFormat} reads to build the base parser. */
+        final String parser;
+        /** Key over every property the symbols and affixes of the configured parser depend on. */
+        final String parserSymbols;
+        /** Key over every property {@link #getCachedFormatter} reads to build the formatter. */
+        final String formatter;
+
+        CacheKeys(Locale locale, String parser, String parserSymbols, String formatter) {
+            this.locale = locale;
+            this.parser = parser;
+            this.parserSymbols = parserSymbols;
+            this.formatter = formatter;
+        }
+    }
+
+    /** The keys of the current configuration and its last locale. Every property setter and restoreState clears it. */
+    private transient CacheKeys cacheKeys;
 
     private void clearCacheKeys() {
-        parserKey = null;
-        formatterKey = null;
+        cacheKeys = null;
     }
 
-    /** Key over every property {@link #getNumberFormat} reads to build the base parser. */
-    private String parserKey(Locale locale) {
-        if (parserKey == null || !Objects.equals(parserKeyLocale, locale)) {
-            parserKey = new StringBuilder(32).append(pattern).append('|').append(type).append('|').append(locale).toString();
-            parserKeyLocale = locale;
+    private CacheKeys cacheKeys(Locale locale) {
+        CacheKeys keys = cacheKeys;
+        if (keys == null || !Objects.equals(keys.locale, locale)) {
+            String parser = new StringBuilder(32).append(pattern).append('|').append(type).append('|').append(locale).toString();
+            String parserSymbols = new StringBuilder(parser.length() + 16).append(parser).append('|').append(currencyCode).append('|')
+                    .append(currencySymbol).toString();
+            String formatter = new StringBuilder(64).append(parserSymbols).append('|').append(groupingUsed).append('|')
+                    .append(minIntegerDigits).append('|').append(maxIntegerDigits).append('|').append(minFractionDigits)
+                    .append('|').append(maxFractionDigits).toString();
+            keys = new CacheKeys(locale, parser, parserSymbols, formatter);
+            cacheKeys = keys;
         }
-        return parserKey;
-    }
-
-    /** Key over every property {@link #getCachedFormatter} reads to build the formatter. */
-    private String formatterKey(Locale locale) {
-        if (formatterKey == null || !Objects.equals(formatterKeyLocale, locale)) {
-            formatterKey = buildFormatterKey(locale);
-            formatterKeyLocale = locale;
-        }
-        return formatterKey;
-    }
-
-    private String buildFormatterKey(Locale locale) {
-        return new StringBuilder(64).append(pattern).append('|').append(type).append('|').append(locale).append('|')
-                .append(currencyCode).append('|').append(currencySymbol).append('|').append(groupingUsed).append('|')
-                .append(minIntegerDigits).append('|').append(maxIntegerDigits).append('|').append(minFractionDigits)
-                .append('|').append(maxFractionDigits).toString();
+        return keys;
     }
 
     private NumberFormat getNumberFormat(Locale locale) {

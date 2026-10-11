@@ -24,9 +24,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.chrono.IsoChronology;
+import java.time.chrono.JapaneseDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.FormatStyle;
+import java.time.format.ResolverStyle;
+import java.time.temporal.TemporalAccessor;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -216,7 +219,7 @@ public class DateTimeConverterTest {
         Locale[] locales = { Locale.US, Locale.ITALY, Locale.GERMANY, Locale.FRANCE, Locale.JAPAN, Locale.forLanguageTag("ar-EG"),
                 Locale.forLanguageTag("hi-IN"), Locale.forLanguageTag("th-TH-u-ca-buddhist"), Locale.forLanguageTag("fa-IR") };
         Object[][] values = { { "localDate", LocalDate.of(2026, 10, 10) }, { "localDate", LocalDate.of(-5, 1, 2) },
-                { "localDate", java.time.chrono.JapaneseDate.of(2020, 5, 1) }, { "localDateTime", LocalDateTime.of(2026, 10, 10, 9, 5, 7) },
+                { "localDate", JapaneseDate.of(2020, 5, 1) }, { "localDateTime", LocalDateTime.of(2026, 10, 10, 9, 5, 7) },
                 { "localTime", LocalTime.of(23, 59, 1) } };
         UIPanel component = new UIPanel();
 
@@ -228,10 +231,10 @@ public class DateTimeConverterTest {
                         FormatStyle date = "localTime".equals(type) ? null : style(dateStyle);
                         FormatStyle time = "localDate".equals(type) ? null : style(timeStyle);
                         DateTimeFormatter reference = new DateTimeFormatterBuilder().appendLocalized(date, time).toFormatter(locale)
-                                .withChronology(IsoChronology.INSTANCE).withResolverStyle(java.time.format.ResolverStyle.STRICT);
+                                .withChronology(IsoChronology.INSTANCE).withResolverStyle(ResolverStyle.STRICT);
                         String expected;
                         try {
-                            expected = reference.format((java.time.temporal.TemporalAccessor) value[1]);
+                            expected = reference.format((TemporalAccessor) value[1]);
                         } catch (RuntimeException e) {
                             expected = "threw";
                         }

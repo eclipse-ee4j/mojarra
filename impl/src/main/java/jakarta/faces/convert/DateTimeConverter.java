@@ -590,7 +590,7 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
             cache = Collections.synchronizedMap(new FormatterCache());
             applicationMap.put(FORMATTER_CACHE_KEY, cache);
         }
-        String key = formatterKey(locale, forParsing);
+        String key = cacheKeys(locale).get(forParsing);
         FormatWrapper formatter = cache.get(key);
         if (formatter == null) {
             formatter = getDateFormat(locale, forParsing);
@@ -614,7 +614,7 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
             cache = new FormatterCache();
             attributes.put(FORMATTER_CACHE_KEY, cache);
         }
-        String key = formatterKey(locale, forParsing);
+        String key = cacheKeys(locale).get(forParsing);
         FormatWrapper formatter = cache.get(key);
         if (formatter == null) {
             formatter = getDateFormat(locale, forParsing);
@@ -626,35 +626,44 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
         return formatter;
     }
 
-    // Memoized per instance and per forParsing flag: the converter runs once per value (per row in an iterated table),
-    // while the key only changes with a property (every setter and restoreState clears it) or the resolved locale.
-    private transient String formattingKey;
-    private transient Locale formattingKeyLocale;
-    private transient String parsingKey;
-    private transient Locale parsingKeyLocale;
+    /**
+     * The cache keys of this converter's configuration for one locale. Immutable, and held in a single field, so that a
+     * converter instance shared between threads always reads the keys of one locale together.
+     */
+    private static final class CacheKeys {
+        final Locale locale;
+        final String formatting;
+        final String parsing;
+
+        CacheKeys(Locale locale, String formatting, String parsing) {
+            this.locale = locale;
+            this.formatting = formatting;
+            this.parsing = parsing;
+        }
+
+        String get(boolean forParsing) {
+            return forParsing ? parsing : formatting;
+        }
+    }
+
+    /** The keys of the current configuration and its last locale. Every property setter and restoreState clears it. */
+    private transient CacheKeys cacheKeys;
 
     private void clearCacheKeys() {
-        formattingKey = null;
-        parsingKey = null;
+        cacheKeys = null;
+    }
+
+    private CacheKeys cacheKeys(Locale locale) {
+        CacheKeys keys = cacheKeys;
+        if (keys == null || !Objects.equals(keys.locale, locale)) {
+            keys = new CacheKeys(locale, formatterKey(locale, false), formatterKey(locale, true));
+            cacheKeys = keys;
+        }
+        return keys;
     }
 
     /** Key over every property {@link #getCachedFormatter} reads to build the formatter. */
     private String formatterKey(Locale locale, boolean forParsing) {
-        if (forParsing) {
-            if (parsingKey == null || !Objects.equals(parsingKeyLocale, locale)) {
-                parsingKey = buildFormatterKey(locale, true);
-                parsingKeyLocale = locale;
-            }
-            return parsingKey;
-        }
-        if (formattingKey == null || !Objects.equals(formattingKeyLocale, locale)) {
-            formattingKey = buildFormatterKey(locale, false);
-            formattingKeyLocale = locale;
-        }
-        return formattingKey;
-    }
-
-    private String buildFormatterKey(Locale locale, boolean forParsing) {
         return new StringBuilder(48).append(pattern).append('|').append(type).append('|').append(dateStyle).append('|')
                 .append(timeStyle).append('|').append(locale).append('|')
                 .append(timeZone == null ? null : timeZone.getID()).append('|').append(forParsing).toString();
@@ -779,9 +788,8 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
             return new DateTimeFormatterBuilder().appendPattern(normalizedPattern);
         }
 
-        // The pattern appendLocalized(dateStyle, timeStyle) would look up on every format: the formatter has the ISO
-        // chronology and this locale, so the localized pattern is always this one. Appending it directly prints the
-        // same text without rebuilding a cache key and looking it up per value.
+        // The formatter has the ISO chronology and this locale, so this is the localized pattern
+        // appendLocalized(dateStyle, timeStyle) resolves when formatting.
         return new DateTimeFormatterBuilder()
                 .appendPattern(DateTimeFormatterBuilder.getLocalizedDateTimePattern(dateStyle, timeStyle, IsoChronology.INSTANCE, locale));
     }

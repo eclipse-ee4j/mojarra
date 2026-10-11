@@ -23,9 +23,8 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 /**
- * Formats integers and {@link BigDecimal}s exactly as a given {@link DecimalFormat} does, without its synchronized
- * {@link StringBuffer} appended one character at a time and its synchronized digit list: what {@link DecimalFormat}
- * does in fixed point notation, for the configurations and values covered here.
+ * Formats integers and {@link BigDecimal}s exactly as a given {@link DecimalFormat} does in fixed point notation, for
+ * the configurations and values covered here, with a single {@link StringBuilder} and no synchronization.
  *
  * <p>
  * Covered: a plain {@link DecimalFormat} (not a subclass) with ASCII digits, no exponent, no multiplier, rounding
@@ -150,6 +149,10 @@ final class FastNumberFormat {
 
         if (value instanceof BigDecimal) {
             BigDecimal number = (BigDecimal) value;
+            if ((long) number.precision() - number.scale() > maxIntegerDigits) {
+                // More integer digits than printed: also bounds the plain string built below.
+                return null;
+            }
             boolean negative = number.signum() < 0;
             String plain = number.abs().setScale(maxFractionDigits, roundingMode).toPlainString();
             int point = plain.indexOf('.');
