@@ -52,12 +52,12 @@ class WriteBehindStateWriterFlushTest {
     private static final int BUFFER_SIZE = 64;
 
     private FacesContext context;
+    private final AtomicInteger states = new AtomicInteger();
 
     @BeforeEach
     void setUp() throws IOException {
         context = mock(FacesContext.class);
         AtomicReference<Writer> stateWriter = new AtomicReference<>();
-        AtomicInteger states = new AtomicInteger();
 
         ResponseWriter responseWriter = mock(ResponseWriter.class);
         when(responseWriter.cloneWithWriter(any())).thenAnswer(invocation -> {
@@ -92,6 +92,7 @@ class WriteBehindStateWriterFlushTest {
     }
 
     private String render(Page page) throws IOException {
+        states.set(0);
         StringWriter response = new StringWriter();
         WriteBehindStateWriter writer = new WriteBehindStateWriter(response, context, BUFFER_SIZE);
         try {
