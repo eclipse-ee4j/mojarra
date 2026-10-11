@@ -355,10 +355,22 @@ final class WriteBehindStateWriter extends Writer {
         private void checkMarker(char[] cbuf, int off, int len) {
             for (int i = 0; i < len; i++) {
                 if (cbuf[off + i] == '~') {
-                    markerWritten(len == STATE_MARKER_LEN && i == 0 && MARKER.equals(new String(cbuf, off, len)));
+                    markerWritten(i == 0 && isMarker(cbuf, off, len));
                     return;
                 }
             }
+        }
+
+        private static boolean isMarker(char[] cbuf, int off, int len) {
+            if (len != STATE_MARKER_LEN) {
+                return false;
+            }
+            for (int i = 0; i < len; i++) {
+                if (cbuf[off + i] != MARKER.charAt(i)) {
+                    return false;
+                }
+            }
+            return true;
         }
 
         private void checkMarker(String str, int off, int len) {
