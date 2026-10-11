@@ -59,18 +59,18 @@ public final class HtmlUtils {
     // ---------------------------------------------------------------- escaping core
     //
     // Every character falls in one of three classes:
-    //   NEEDS_HANDLING  escaped, dropped or otherwise handled one by one (the "slow path"),
-    //   VERBATIM        written unchanged, and was already on the legacy fast path (ASCII printable),
-    //   PASSTHROUGH     written unchanged too (TAB, LF, CR, DEL, C1 controls, and non-ASCII characters whenever the
-    //                   writer does not escape them), but legacy code handled it on the slow path.
-    // Both unchanged classes extend the current run, so that e.g. an accented, CJK or multi-line text is bulk-written
-    // instead of costing a flush plus a single-char write per character. PASSTHROUGH is only distinguished to keep the
-    // "script:" guard of writeAttribute byte-for-byte compatible (see writeAttribute).
+    //   NEEDS_HANDLING  escaped, dropped or otherwise handled one by one,
+    //   VERBATIM        written unchanged: ASCII printable,
+    //   PASSTHROUGH     written unchanged too: TAB, LF, CR, DEL, C1 controls, and non-ASCII characters whenever the
+    //                   writer does not escape them.
+    // Both unchanged classes extend the current run, so an accented, CJK or multi-line text is written in bulk.
+    // PASSTHROUGH differs from VERBATIM only in the "script:" guard of writeAttribute: a "script:" match drops the
+    // VERBATIM run directly before it, but not the PASSTHROUGH characters before that run.
     //
     // A String is first scanned in place; when nothing needs handling (by far the most common case) it is written as
     // is, without copying it into the char buffer. Long inputs are scanned with String.indexOf (a SIMD intrinsic) plus a
-    // SWAR test for control characters. The scan is conservative: they may stop early on a character that turns out to be PASSTHROUGH, after
-    // which the exact loop takes over, so they can never change the output.
+    // SWAR test for control characters. The scan is conservative: it may stop early on a character that turns out to be
+    // PASSTHROUGH, after which the exact loop takes over, so it never changes the output.
 
     private static final byte NEEDS_HANDLING = 0;
     private static final byte VERBATIM = 1;
@@ -91,7 +91,7 @@ public final class HtmlUtils {
     }
 
     /** Minimum length from which a String is scanned with String.indexOf plus SWAR (measured break-even ~40). */
-    private static final int INTRINSIC_SCAN_MIN_LENGTH = 48;
+    static final int INTRINSIC_SCAN_MIN_LENGTH = 48;
 
     private static final long SWAR_ONES = 0x0101010101010101L;
     private static final long SWAR_HIGHS = 0x8080808080808080L;
@@ -292,8 +292,8 @@ public final class HtmlUtils {
      *   <li>An ampersand immediately followed by an open brace is NOT escaped (HTML 4 spec B.7.1 -
      *       Netscape-style JavaScript object literal in attribute value)</li>
      *   <li>When {@code !isScriptInAttributeValueEnabled} (default), encountering the literal string
-     *       {@code "script:"} in the value causes the method to return, dropping the not yet written remainder of the
-     *       value as a defence against JavaScript-URL injection.</li>
+     *       {@code "script:"} in the value causes the method to return, dropping the run of ASCII printable characters
+     *       directly before it and the rest of the value, as a defense against JavaScript-URL injection.</li>
      * </ul>
      */
     public static void writeAttribute(Writer out, boolean escapeUnicode, boolean escapeIsocode, char[] text, int start, int length,
@@ -304,14 +304,13 @@ public final class HtmlUtils {
     /**
      * The exact attribute loop. Characters in [start, from) are known not to need handling and form the initial run.
      *
-     * <p>On "script:" the legacy implementation returned without writing its pending run, and its runs ended at every
-     * character it handled on its slow path, PASSTHROUGH ones included. To drop exactly the same part of the value, the
-     * end of the last PASSTHROUGH character is tracked and the run is written up to there before returning.
+     * <p>On "script:", the run of VERBATIM characters directly before it and the rest of the value are dropped. Everything
+     * before that run, PASSTHROUGH characters included, is written. {@code verbatimRunStart} tracks where that run starts.
      */
     private static void writeAttribute(Writer out, boolean escapeUnicode, boolean escapeIsocode, char[] text, int start, int from, int end,
             boolean isScriptInAttributeValueEnabled, boolean forXml) throws IOException {
         int runStart = start;
-        int legacyRunStart = start;
+        int verbatimRunStart = start;
 
         for (int i = from; i < end; i++) {
             char ch = text[i];
@@ -321,15 +320,15 @@ public final class HtmlUtils {
                 if (ch == 's' && !isScriptInAttributeValueEnabled && i + 6 < end
                         && text[i + 1] == 'c' && text[i + 2] == 'r' && text[i + 3] == 'i'
                         && text[i + 4] == 'p' && text[i + 5] == 't' && text[i + 6] == ':') {
-                    if (legacyRunStart > runStart) {
-                        out.write(text, runStart, legacyRunStart - runStart);
+                    if (verbatimRunStart > runStart) {
+                        out.write(text, runStart, verbatimRunStart - runStart);
                     }
                     return;
                 }
                 continue;
             }
             if (cls == PASSTHROUGH) {
-                legacyRunStart = i + 1;
+                verbatimRunStart = i + 1;
                 continue;
             }
 
@@ -337,7 +336,7 @@ public final class HtmlUtils {
             if (i > runStart) {
                 out.write(text, runStart, i - runStart);
             }
-            runStart = legacyRunStart = i + 1;
+            runStart = verbatimRunStart = i + 1;
 
             if (ch < 0x20) {
                 if (isPrintableControlChar(ch, forXml)) {

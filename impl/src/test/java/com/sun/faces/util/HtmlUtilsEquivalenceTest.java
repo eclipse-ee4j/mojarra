@@ -25,10 +25,10 @@ import java.util.Random;
 import org.junit.jupiter.api.Test;
 
 /**
- * Differential test: the scanning/SIMD escaping of {@link HtmlUtils} must produce exactly the output of the previous
- * implementation ({@link LegacyHtmlUtils}) for every flag combination, on random inputs built from the characters every
- * branch cares about. Run it with {@code -DargLine="--add-modules jdk.incubator.vector"} to cover the Vector API scanner
- * as well; without it, the String.indexOf/SWAR and scalar scans are covered.
+ * Differential test: the escaping of {@link HtmlUtils} must produce exactly the output of the reference implementation
+ * ({@link LegacyHtmlUtils}) for every flag combination, on inputs built from the characters every branch cares about.
+ * Inputs from {@link HtmlUtils#INTRINSIC_SCAN_MIN_LENGTH} chars cover the String.indexOf and SWAR scan, shorter ones the scan per
+ * char.
  */
 class HtmlUtilsEquivalenceTest {
 
@@ -37,6 +37,11 @@ class HtmlUtilsEquivalenceTest {
             "あ", "😀", "\uD83D", "\uDE00", "�", "￾", "￿", "]]>", "Lorem ipsum dolor sit amet ",
             "consectetur adipiscing elit, sed do eiusmod tempor " };
 
+    /** Characters every branch cares about. U+0100 and U+0109 have a control char as low byte, which the SWAR scan flags. */
+    private static final String[] POSITION_PROBES = { "<", ">", "&", "&{", "\"", "\t", "\n", "\f", "\u0001", "\u001F", "\u007F", "\u0085",
+            "\u0109", "\u0100", "é", "あ", "\uD83D", "\uDE00", "😀", "\uFFFE", "script:", "javascript:x" };
+
+    private static final int SWAR_WORD = 8;
     private static final int ITERATIONS = 20_000;
 
     @Test
@@ -94,26 +99,44 @@ class HtmlUtilsEquivalenceTest {
     }
 
     @Test
-    void longCleanAndDirtyInputsMatchLegacy() throws IOException {
-        // Lengths around every scan threshold and vector width, with the interesting character at every position.
-        for (int length = 1; length <= 140; length++) {
-            for (String probe : new String[] { "<", "&", "\"", "\n", "\u0001", "é", "あ", "\uD83D", "￾" }) {
-                for (int pos = 0; pos < length; pos += Math.max(1, length / 13)) {
-                    String text = "a".repeat(pos) + probe + "b".repeat(Math.max(0, length - pos - 1));
-                    for (int flags = 0; flags < 8; flags++) {
-                        boolean escapeUnicode = (flags & 1) != 0;
-                        boolean escapeIso = (flags & 2) != 0;
-                        boolean forXml = (flags & 4) != 0;
-                        assertEquals(legacyText(text, escapeUnicode, escapeIso, forXml, 256), newText(text, escapeUnicode, escapeIso, forXml, 256),
-                                describe(text, flags));
-                        StringWriter expected = new StringWriter();
-                        LegacyHtmlUtils.writeAttribute(expected, escapeUnicode, escapeIso, text, new char[256], false, forXml);
-                        StringWriter actual = new StringWriter();
-                        HtmlUtils.writeAttribute(actual, escapeUnicode, escapeIso, text, new char[256], false, forXml);
-                        assertEquals(expected.toString(), actual.toString(), describe(text, flags));
+    void everyProbeAtEveryPositionMatchesLegacy() throws IOException {
+        for (int length = 1; length <= HtmlUtils.INTRINSIC_SCAN_MIN_LENGTH + SWAR_WORD * 4; length++) {
+            for (String probe : POSITION_PROBES) {
+                for (int pos = 0; pos < length; pos++) {
+                    assertMatchesLegacy("a".repeat(pos) + probe + "b".repeat(Math.max(0, length - pos - 1)));
+                }
+            }
+        }
+    }
+
+    @Test
+    void twoProbesAroundSwarWordBoundariesMatchLegacy() throws IOException {
+        for (String first : POSITION_PROBES) {
+            for (String second : POSITION_PROBES) {
+                for (int a = 0; a < SWAR_WORD * 2; a++) {
+                    for (int b = a + 1; b <= a + SWAR_WORD; b++) {
+                        assertMatchesLegacy("x".repeat(HtmlUtils.INTRINSIC_SCAN_MIN_LENGTH + a) + first + "y".repeat(b - a) + second + "z".repeat(SWAR_WORD));
                     }
                 }
             }
+        }
+    }
+
+    private static void assertMatchesLegacy(String text) throws IOException {
+        for (int flags = 0; flags < 16; flags++) {
+            boolean escapeUnicode = (flags & 1) != 0;
+            boolean escapeIso = (flags & 2) != 0;
+            boolean forXml = (flags & 4) != 0;
+            boolean scriptEnabled = (flags & 8) != 0;
+            if (!scriptEnabled) {
+                assertEquals(legacyText(text, escapeUnicode, escapeIso, forXml, 256), newText(text, escapeUnicode, escapeIso, forXml, 256),
+                        describe(text, flags));
+            }
+            StringWriter expected = new StringWriter();
+            LegacyHtmlUtils.writeAttribute(expected, escapeUnicode, escapeIso, text, new char[256], scriptEnabled, forXml);
+            StringWriter actual = new StringWriter();
+            HtmlUtils.writeAttribute(actual, escapeUnicode, escapeIso, text, new char[256], scriptEnabled, forXml);
+            assertEquals(expected.toString(), actual.toString(), describe(text, flags));
         }
     }
 
