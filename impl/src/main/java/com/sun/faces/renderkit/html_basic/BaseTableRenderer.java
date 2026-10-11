@@ -19,6 +19,7 @@ package com.sun.faces.renderkit.html_basic;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +30,7 @@ import com.sun.faces.util.Util;
 import jakarta.faces.component.UIColumn;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIData;
+import jakarta.faces.component.html.HtmlColumn;
 import jakarta.faces.component.html.HtmlDataTable;
 import jakarta.faces.component.html.HtmlPanelGrid;
 import jakarta.faces.context.FacesContext;
@@ -232,15 +234,55 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
      */
     protected TableRenderer.TableMetaInfo getMetaInfo(FacesContext context, UIComponent table) {
 
-        String key = createKey(table);
         Map<Object, Object> attributes = context.getAttributes();
-        TableRenderer.TableMetaInfo info = (TableRenderer.TableMetaInfo) attributes.get(key);
+        if (CUSTOM_KEY.get(getClass())) {
+            String key = createKey(table);
+            TableRenderer.TableMetaInfo info = (TableRenderer.TableMetaInfo) attributes.get(key);
+            if (info == null) {
+                info = new TableRenderer.TableMetaInfo(table);
+                attributes.put(key, info);
+            }
+            return info;
+        }
+
+        // Looked up once per row: an identity map keyed by the table itself avoids building, hashing and comparing a
+        // fresh String key (createKey) on every call.
+        Map<UIComponent, TableMetaInfo> byTable = metaInfoByTable(attributes, true);
+        TableMetaInfo info = byTable.get(table);
         if (info == null) {
             info = new TableRenderer.TableMetaInfo(table);
-            attributes.put(key, info);
+            byTable.put(table, info);
         }
         return info;
 
+    }
+
+    private static final String META_INFO_BY_TABLE_KEY = TableMetaInfo.KEY + ".byTable";
+
+    /** Whether a renderer class overrides {@link #createKey}, in which case its keys are honored as before. */
+    private static final ClassValue<Boolean> CUSTOM_KEY = new ClassValue<>() {
+        @Override
+        protected Boolean computeValue(Class<?> type) {
+            for (Class<?> c = type; c != null && c != BaseTableRenderer.class; c = c.getSuperclass()) {
+                try {
+                    c.getDeclaredMethod("createKey", UIComponent.class);
+                    return true;
+                } catch (NoSuchMethodException e) {
+                    // keep looking
+                }
+            }
+            return false;
+        }
+    };
+
+    @SuppressWarnings("unchecked")
+    private static Map<UIComponent, TableMetaInfo> metaInfoByTable(Map<Object, Object> attributes, boolean create) {
+        Map<UIComponent, TableMetaInfo> byTable = (Map<UIComponent, TableMetaInfo>) attributes.get(META_INFO_BY_TABLE_KEY);
+        if (byTable == null && create) {
+            byTable = new IdentityHashMap<>(4);
+            attributes.put(META_INFO_BY_TABLE_KEY, byTable);
+        }
+        return byTable;
     }
 
     /**
@@ -251,7 +293,15 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
      */
     protected void clearMetaInfo(FacesContext context, UIComponent table) {
 
-        context.getAttributes().remove(createKey(table));
+        Map<Object, Object> attributes = context.getAttributes();
+        if (CUSTOM_KEY.get(getClass())) {
+            attributes.remove(createKey(table));
+            return;
+        }
+        Map<UIComponent, TableMetaInfo> byTable = metaInfoByTable(attributes, false);
+        if (byTable != null) {
+            byTable.remove(table);
+        }
 
     }
 
@@ -333,6 +383,58 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
                 rowStyleCounter = 0;
             }
             return style;
+        }
+
+        // Per-column attributes read for every cell. A column attribute that is not a value expression cannot change
+        // from row to row (unless the table preserves full row state), so it is read once per render.
+        private static final byte UNKNOWN = 0;
+        private static final byte FALSE = 1;
+        private static final byte TRUE = 2;
+        private static final byte DYNAMIC = 3;
+        private static final Object UNSET = new Object();
+
+        private byte[] rowHeaders;
+        private Object[] styleClasses;
+
+        /**
+         * Whether the cells of the column at <code>index</code> are row headers for the current row.
+         */
+        public boolean isRowHeader(UIComponent table, int index, UIColumn column) {
+            if (rowHeaders == null) {
+                rowHeaders = new byte[columnCount];
+            }
+            byte state = rowHeaders[index];
+            if (state == UNKNOWN) {
+                state = isConstant(table, column, "rowHeader") ? readRowHeader(column) ? TRUE : FALSE : DYNAMIC;
+                rowHeaders[index] = state;
+            }
+            return state == DYNAMIC ? readRowHeader(column) : state == TRUE;
+        }
+
+        /**
+         * The <code>styleClass</code> of the column at <code>index</code> for the current row, if set.
+         */
+        public String getColumnStyleClass(UIComponent table, int index, UIColumn column) {
+            if (styleClasses == null) {
+                styleClasses = new Object[columnCount];
+            }
+            Object styleClass = styleClasses[index];
+            if (styleClass == null) {
+                if (!isConstant(table, column, "styleClass")) {
+                    return (String) RenderKitUtils.getAttributeIfSet(column, "styleClass");
+                }
+                styleClass = RenderKitUtils.getAttributeIfSet(column, "styleClass");
+                styleClasses[index] = styleClass == null ? UNSET : styleClass;
+            }
+            return styleClass == UNSET ? null : (String) styleClass;
+        }
+
+        private static boolean isConstant(UIComponent table, UIColumn column, String attribute) {
+            return column.getValueExpression(attribute) == null && !(table instanceof UIData && ((UIData) table).isRowStatePreserved());
+        }
+
+        private static boolean readRowHeader(UIColumn column) {
+            return column instanceof HtmlColumn htmlColumn ? htmlColumn.isRowHeader() : RenderKitUtils.attributeIsTrue(column, "rowHeader", false);
         }
 
         // ----------------------------------------------------- Private Methods
