@@ -28,6 +28,7 @@ import java.util.function.Predicate;
 import com.sun.faces.context.flash.FlashELResolver;
 
 import jakarta.el.ArrayELResolver;
+import jakarta.el.BeanELResolver;
 import jakarta.el.ELClass;
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
@@ -332,6 +333,35 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
         _rootStart.clear();
         // A fresh ClassValue drops every per-class start computed so far.
         _propertyStart = newPropertyStarts();
+        _beanReaders = newBeanReaders();
+    }
+
+    /*
+     * Bean property readers for PathValueExpression: when the first resolver that may resolve a property of a class is
+     * the BeanELResolver, the result is always the BeanELResolver's (it resolves every property of every base, or
+     * throws), so the expression can call the getter directly.
+     */
+    private volatile ClassValue<BeanPropertyReaders> _beanReaders = newBeanReaders();
+
+    private ClassValue<BeanPropertyReaders> newBeanReaders() {
+        return new ClassValue<>() {
+            @Override
+            protected BeanPropertyReaders computeValue(Class<?> baseClass) {
+                int start = computePropertyStart(baseClass);
+                ELResolver resolver = start < _propertyELResolverCount ? _propertyELResolvers[start] : null;
+                return new BeanPropertyReaders(baseClass, SHORTCUTS && resolver != null && resolver.getClass() == BeanELResolver.class ? resolver : null);
+            }
+        };
+    }
+
+    /**
+     * The current bean property readers per base class. A new instance is returned after {@link #clearShortcuts()}, so
+     * callers caching a reader can check that their cache is still current by identity.
+     *
+     * @return the bean property readers per base class
+     */
+    ClassValue<BeanPropertyReaders> beanReaders() {
+        return _beanReaders;
     }
 
     private ClassValue<Integer> newPropertyStarts() {

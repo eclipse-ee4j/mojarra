@@ -179,6 +179,19 @@
             <version>6.0.0-M1</version>
             <scope>test</scope>
         </dependency>
+        <!-- Tomcat's EL implementation, to check the EL fast paths against it too (after Expressly: the default stays Expressly) -->
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-jasper-el</artifactId>
+            <version>11.0.25</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.tomcat</groupId>
+                    <artifactId>tomcat-el-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
         
         <dependency>
             <groupId>org.mockito</groupId>

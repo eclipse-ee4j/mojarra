@@ -86,6 +86,7 @@ import com.sun.faces.component.search.SearchExpressionHandlerImpl;
 import com.sun.faces.config.ConfigManager;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.el.DemuxCompositeELResolver;
+import com.sun.faces.el.PathExpressionFactory;
 import com.sun.faces.facelets.compiler.Compiler;
 import com.sun.faces.facelets.compiler.SAXCompiler;
 import com.sun.faces.facelets.impl.DefaultFaceletFactory;
@@ -477,7 +478,7 @@ public class ApplicationAssociate {
     }
 
     public void setExpressionFactory(ExpressionFactory expressionFactory) {
-        this.expressionFactory = expressionFactory;
+        this.expressionFactory = PathExpressionFactory.wrap(expressionFactory);
     }
 
     public ExpressionFactory getExpressionFactory() {
