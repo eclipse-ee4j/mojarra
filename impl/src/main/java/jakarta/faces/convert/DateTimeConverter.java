@@ -42,6 +42,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
 
@@ -224,6 +225,7 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
     public void setDateStyle(String dateStyle) {
         clearInitialState();
         this.dateStyle = dateStyle;
+        clearCacheKeys();
     }
 
     /**
@@ -253,6 +255,7 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
     public void setLocale(Locale locale) {
         clearInitialState();
         this.locale = locale;
+        clearCacheKeys();
 
     }
 
@@ -279,6 +282,7 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
     public void setPattern(String pattern) {
         clearInitialState();
         this.pattern = pattern;
+        clearCacheKeys();
 
     }
 
@@ -305,6 +309,7 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
     public void setTimeStyle(String timeStyle) {
         clearInitialState();
         this.timeStyle = timeStyle;
+        clearCacheKeys();
     }
 
     /**
@@ -329,6 +334,7 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
     public void setTimeZone(TimeZone timeZone) {
         clearInitialState();
         this.timeZone = timeZone;
+        clearCacheKeys();
     }
 
     /**
@@ -358,6 +364,7 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
     public void setType(String type) {
         clearInitialState();
         this.type = type;
+        clearCacheKeys();
     }
 
     // ------------------------------------------------------- Converter Methods
@@ -619,8 +626,35 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
         return formatter;
     }
 
+    // Memoized per instance and per forParsing flag: the converter runs once per value (per row in an iterated table),
+    // while the key only changes with a property (every setter and restoreState clears it) or the resolved locale.
+    private transient String formattingKey;
+    private transient Locale formattingKeyLocale;
+    private transient String parsingKey;
+    private transient Locale parsingKeyLocale;
+
+    private void clearCacheKeys() {
+        formattingKey = null;
+        parsingKey = null;
+    }
+
     /** Key over every property {@link #getCachedFormatter} reads to build the formatter. */
     private String formatterKey(Locale locale, boolean forParsing) {
+        if (forParsing) {
+            if (parsingKey == null || !Objects.equals(parsingKeyLocale, locale)) {
+                parsingKey = buildFormatterKey(locale, true);
+                parsingKeyLocale = locale;
+            }
+            return parsingKey;
+        }
+        if (formattingKey == null || !Objects.equals(formattingKeyLocale, locale)) {
+            formattingKey = buildFormatterKey(locale, false);
+            formattingKeyLocale = locale;
+        }
+        return formattingKey;
+    }
+
+    private String buildFormatterKey(Locale locale, boolean forParsing) {
         return new StringBuilder(48).append(pattern).append('|').append(type).append('|').append(dateStyle).append('|')
                 .append(timeStyle).append('|').append(locale).append('|')
                 .append(timeZone == null ? null : timeZone.getID()).append('|').append(forParsing).toString();
@@ -745,7 +779,11 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
             return new DateTimeFormatterBuilder().appendPattern(normalizedPattern);
         }
 
-        return new DateTimeFormatterBuilder().appendLocalized(dateStyle, timeStyle);
+        // The pattern appendLocalized(dateStyle, timeStyle) would look up on every format: the formatter has the ISO
+        // chronology and this locale, so the localized pattern is always this one. Appending it directly prints the
+        // same text without rebuilding a cache key and looking it up per value.
+        return new DateTimeFormatterBuilder()
+                .appendPattern(DateTimeFormatterBuilder.getLocalizedDateTimePattern(dateStyle, timeStyle, IsoChronology.INSTANCE, locale));
     }
 
     private static String normalizeWhitespace(CharSequence text) {
@@ -827,6 +865,7 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
             timeStyle = (String) values[3];
             timeZone = (TimeZone) values[4];
             type = (String) values[5];
+            clearCacheKeys();
         }
 
     }

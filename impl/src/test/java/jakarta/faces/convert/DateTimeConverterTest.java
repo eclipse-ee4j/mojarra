@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.chrono.IsoChronology;
@@ -203,5 +204,57 @@ public class DateTimeConverterTest {
         if (!localizedPattern.contains("\u202f")) {
             throw new TestAbortedException("JDK 21+ required: localized pattern does not contain NNBSP");
         }
+    }
+
+    /**
+     * The localized java.time types are formatted with the localized pattern resolved once: the text must be exactly what
+     * appendLocalized prints, for every style and locale, and so must the failures (a zone style on a type without zone).
+     */
+    @Test
+    public void testLocalizedFormattingIsUnchanged() {
+        String[] styles = { "default", "short", "medium", "long", "full" };
+        Locale[] locales = { Locale.US, Locale.ITALY, Locale.GERMANY, Locale.FRANCE, Locale.JAPAN, Locale.forLanguageTag("ar-EG"),
+                Locale.forLanguageTag("hi-IN"), Locale.forLanguageTag("th-TH-u-ca-buddhist"), Locale.forLanguageTag("fa-IR") };
+        Object[][] values = { { "localDate", LocalDate.of(2026, 10, 10) }, { "localDate", LocalDate.of(-5, 1, 2) },
+                { "localDate", java.time.chrono.JapaneseDate.of(2020, 5, 1) }, { "localDateTime", LocalDateTime.of(2026, 10, 10, 9, 5, 7) },
+                { "localTime", LocalTime.of(23, 59, 1) } };
+        UIPanel component = new UIPanel();
+
+        for (Locale locale : locales) {
+            for (String dateStyle : styles) {
+                for (String timeStyle : styles) {
+                    for (Object[] value : values) {
+                        String type = (String) value[0];
+                        FormatStyle date = "localTime".equals(type) ? null : style(dateStyle);
+                        FormatStyle time = "localDate".equals(type) ? null : style(timeStyle);
+                        DateTimeFormatter reference = new DateTimeFormatterBuilder().appendLocalized(date, time).toFormatter(locale)
+                                .withChronology(IsoChronology.INSTANCE).withResolverStyle(java.time.format.ResolverStyle.STRICT);
+                        String expected;
+                        try {
+                            expected = reference.format((java.time.temporal.TemporalAccessor) value[1]);
+                        } catch (RuntimeException e) {
+                            expected = "threw";
+                        }
+
+                        DateTimeConverter converter = new DateTimeConverter();
+                        converter.setType(type);
+                        converter.setLocale(locale);
+                        converter.setDateStyle(dateStyle);
+                        converter.setTimeStyle(timeStyle);
+                        String actual;
+                        try {
+                            actual = converter.getAsString(facesContext, component, value[1]);
+                        } catch (ConverterException e) {
+                            actual = "threw";
+                        }
+                        assertEquals(expected, actual, type + " " + dateStyle + "/" + timeStyle + " " + locale + " " + value[1]);
+                    }
+                }
+            }
+        }
+    }
+
+    private static FormatStyle style(String name) {
+        return "default".equals(name) ? FormatStyle.MEDIUM : FormatStyle.valueOf(name.toUpperCase(Locale.ROOT));
     }
 }
