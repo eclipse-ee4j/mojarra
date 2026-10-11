@@ -41,9 +41,10 @@ class WriteBehindChunkedWriterTest {
             List<Integer> markers = new ArrayList<>();
             int pieces = random.nextInt(400);
             for (int i = 0; i < pieces; i++) {
-                switch (random.nextInt(5)) {
+                switch (random.nextInt(6)) {
                 case 0:
                     markers.add(expected.length());
+                    writer.expectMarker();
                     writer.write(MARKER);
                     expected.append(MARKER);
                     break;
@@ -61,10 +62,16 @@ class WriteBehindChunkedWriterTest {
                     // The marker handed over as a char[] slice is recognized too.
                     char[] chars = ("ab" + MARKER + "cd").toCharArray();
                     markers.add(expected.length());
+                    writer.expectMarker();
                     writer.write(chars, 2, MARKER.length());
                     expected.append(MARKER);
                     break;
                 }
+                case 4:
+                    // Not expected: page text, not a marker.
+                    writer.write(MARKER);
+                    expected.append(MARKER);
+                    break;
                 default: {
                     String text = "é<b>" + "y".repeat(random.nextInt(300));
                     writer.write(text, 1, text.length() - 1);
@@ -76,6 +83,7 @@ class WriteBehindChunkedWriterTest {
             assertEquals(expected.length(), writer.length());
             assertEquals(expected.toString(), writer.toStringBuilder().toString());
             assertEquals(markers.size(), writer.markerCount);
+            assertEquals(false, writer.markerMissed);
             for (int i = 0; i < markers.size(); i++) {
                 assertEquals(markers.get(i), writer.markers[i]);
             }
@@ -89,11 +97,45 @@ class WriteBehindChunkedWriterTest {
     }
 
     @Test
-    void splitMarkerIsNotRecorded() throws IOException {
+    void splitMarkerIsMissed() throws IOException {
         WriteBehindStateWriter.ChunkedWriter writer = new WriteBehindStateWriter.ChunkedWriter();
+        writer.expectMarker();
         writer.write(MARKER.substring(0, 5));
         writer.write(MARKER.substring(5));
         assertEquals(0, writer.markerCount);
+        assertEquals(true, writer.markerMissed);
         assertEquals(MARKER, writer.toStringBuilder().toString());
+    }
+
+    @Test
+    void writesWithoutTildeBeforeTheMarkerAreIgnored() throws IOException {
+        WriteBehindStateWriter.ChunkedWriter writer = new WriteBehindStateWriter.ChunkedWriter();
+        writer.write("<form>");
+        writer.expectMarker();
+        writer.write('>');
+        writer.write("\n");
+        writer.write(MARKER);
+        assertEquals(1, writer.markerCount);
+        assertEquals(8, writer.markers[0]);
+        assertEquals(false, writer.markerMissed);
+    }
+
+    @Test
+    void markerJoinedWithOtherContentIsMissed() throws IOException {
+        WriteBehindStateWriter.ChunkedWriter writer = new WriteBehindStateWriter.ChunkedWriter();
+        writer.expectMarker();
+        char[] chars = ("</div>" + MARKER).toCharArray();
+        writer.write(chars, 0, chars.length);
+        assertEquals(0, writer.markerCount);
+        assertEquals(true, writer.markerMissed);
+    }
+
+    @Test
+    void markerTextWhichIsNotExpectedIsNotRecorded() throws IOException {
+        WriteBehindStateWriter.ChunkedWriter writer = new WriteBehindStateWriter.ChunkedWriter();
+        writer.write(MARKER);
+        writer.write(MARKER.toCharArray(), 0, MARKER.length());
+        assertEquals(0, writer.markerCount);
+        assertEquals(false, writer.markerMissed);
     }
 }

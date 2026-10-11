@@ -21,6 +21,7 @@ import static java.lang.Boolean.TRUE;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Arrays;
 import java.util.Map;
 
 import com.sun.faces.RIConstants;
@@ -164,6 +165,7 @@ final class WriteBehindStateWriter extends Writer {
             stateWritten = true;
             out = fWriter = new ChunkedWriter();
         }
+        fWriter.expectMarker();
     }
 
     /**
@@ -189,9 +191,11 @@ final class WriteBehindStateWriter extends Writer {
         ResponseWriter origWriter = context.getResponseWriter();
         StringBuilder stateBuilder = getState(stateManager, origWriter);
 
-        if (fWriter.markerCount == markersRequested) {
-            // Every marker arrived whole, so its position is known: write the buffered chunks straight to the
-            // response around them, without searching the content or copying it again.
+        if (!fWriter.markerMissed && fWriter.markerCount == markersRequested) {
+            // Each write following writingState() was exactly the marker, so the positions of the markers are known:
+            // write the buffered chunks straight to the response around them, without searching the content. A
+            // marker text which is not written right after writingState(), such as one in the page's own text, is not
+            // a marker and is written as is.
             int pos = 0;
             for (int i = 0; i < fWriter.markerCount; i++) {
                 int markerPos = fWriter.markers[i];
@@ -205,12 +209,12 @@ final class WriteBehindStateWriter extends Writer {
             return;
         }
 
-        // A marker was split across writes (e.g. by a buffering ResponseWriter wrapper): search the content for it.
+        // A write following writingState() was not exactly the marker (e.g. a buffering ResponseWriter wrapper split
+        // it): search the content for every marker text.
         StringBuilder builder = fWriter.toStringBuilder();
 
         // Begin writing...
         int totalLen = builder.length();
-        int stateLen = stateBuilder.length();
         int pos = 0;
         int tildeIdx = getNextDelimiterIndex(builder, pos);
         while (pos < totalLen) {
@@ -230,28 +234,12 @@ final class WriteBehindStateWriter extends Writer {
                     // at the beginning of pos, if so, write our
                     // state out.
                     if (builder.indexOf(RIConstants.SAVESTATE_FIELD_MARKER, pos) == tildeIdx) {
-                        // buf is effectively zero'd out at this point
-                        int statePos = 0;
-                        while (statePos < stateLen) {
-                            if (stateLen - statePos > bufSize) {
-                                // enough state to fill the buffer
-                                stateBuilder.getChars(statePos, statePos + bufSize, buf, 0);
-                                orig.write(buf);
-                                statePos += bufSize;
-                            } else {
-                                int slen = stateLen - statePos;
-                                stateBuilder.getChars(statePos, stateLen, buf, 0);
-                                orig.write(buf, 0, slen);
-                                statePos += slen;
-                            }
-
-                        }
+                        writeStateContent(stateBuilder);
                         // Push us past the last '~' at the end of the marker
                         pos += len + STATE_MARKER_LEN;
                         tildeIdx = getNextDelimiterIndex(builder, pos);
 
                         stateBuilder = getState(stateManager, origWriter);
-                        stateLen = stateBuilder.length();
                     } else {
                         pos = tildeIdx;
                         tildeIdx = getNextDelimiterIndex(builder, tildeIdx + 1);
@@ -282,16 +270,9 @@ final class WriteBehindStateWriter extends Writer {
     }
 
     /**
-     * Get the state.
+     * Writes the state to the response, through the buffer.
      *
-     * <p>
-     * In Faces it is required by the specification that the view state hidden input in each h:form has a unique id. So we
-     * have to call this method multiple times as each h:form needs to generate the element id for itself.
-     * </p>
-     *
-     * @param stateManager the state manager.
-     * @param origWriter the original response writer.
-     * @return the state.
+     * @param stateBuilder the state, as {@link #getState} returned it.
      * @throws IOException when an I/O error occurs.
      */
     private void writeStateContent(StringBuilder stateBuilder) throws IOException {
@@ -306,9 +287,10 @@ final class WriteBehindStateWriter extends Writer {
     }
 
     /**
-     * Buffers the content written after the first state marker as a list of fixed chunks: unlike a growing
-     * StringBuilder it never copies what it already holds, and it is written to the response chunk by chunk. Records
-     * where each state marker written in one piece starts.
+     * Buffers the content written after the first state marker as a list of fixed chunks, which it never copies again,
+     * and writes them to the response chunk by chunk. After {@link #expectMarker()}, records where the next write
+     * containing a <code>~</code> starts when it is exactly the state marker, and otherwise that a marker was missed.
+     * Writes without a <code>~</code> before it, such as the end of a start tag, cannot hold a part of the marker.
      */
     static final class ChunkedWriter extends Writer {
 
@@ -324,6 +306,8 @@ final class WriteBehindStateWriter extends Writer {
 
         int[] markers = new int[2];
         int markerCount;
+        boolean markerMissed;
+        private boolean expectingMarker;
 
         ChunkedWriter() {
             current = new char[FIRST_CHUNK_SIZE];
@@ -337,22 +321,58 @@ final class WriteBehindStateWriter extends Writer {
         private void nextChunk() {
             completedLength += used;
             if (chunkCount == chunks.length) {
-                chunks = java.util.Arrays.copyOf(chunks, chunkCount * 2);
+                chunks = Arrays.copyOf(chunks, chunkCount * 2);
             }
             current = new char[CHUNK_SIZE];
             chunks[chunkCount++] = current;
             used = 0;
         }
 
-        private void recordMarker() {
+        /** The next write is expected to be the state marker. */
+        void expectMarker() {
+            if (expectingMarker) {
+                markerMissed = true;
+            }
+            expectingMarker = true;
+        }
+
+        /**
+         * Called before a write containing a <code>~</code> while a marker is expected: records the marker when the
+         * write is exactly the marker.
+         */
+        private void markerWritten(boolean isMarker) {
+            expectingMarker = false;
+            if (!isMarker) {
+                markerMissed = true;
+                return;
+            }
             if (markerCount == markers.length) {
-                markers = java.util.Arrays.copyOf(markers, markerCount * 2);
+                markers = Arrays.copyOf(markers, markerCount * 2);
             }
             markers[markerCount++] = length();
         }
 
+        private void checkMarker(char[] cbuf, int off, int len) {
+            for (int i = 0; i < len; i++) {
+                if (cbuf[off + i] == '~') {
+                    markerWritten(len == STATE_MARKER_LEN && i == 0 && MARKER.equals(new String(cbuf, off, len)));
+                    return;
+                }
+            }
+        }
+
+        private void checkMarker(String str, int off, int len) {
+            int tilde = str.indexOf('~', off);
+            if (tilde >= 0 && tilde < off + len) {
+                markerWritten(len == STATE_MARKER_LEN && tilde == off && (str == MARKER && off == 0 || str.startsWith(MARKER, off)));
+            }
+        }
+
         @Override
         public void write(int c) {
+            if (expectingMarker && c == '~') {
+                markerWritten(false);
+            }
             if (used == current.length) {
                 nextChunk();
             }
@@ -361,8 +381,8 @@ final class WriteBehindStateWriter extends Writer {
 
         @Override
         public void write(char[] cbuf, int off, int len) {
-            if (len == STATE_MARKER_LEN && cbuf[off] == '~' && MARKER.contentEquals(java.nio.CharBuffer.wrap(cbuf, off, len))) {
-                recordMarker();
+            if (expectingMarker) {
+                checkMarker(cbuf, off, len);
             }
             while (len > 0) {
                 if (used == current.length) {
@@ -383,8 +403,8 @@ final class WriteBehindStateWriter extends Writer {
 
         @Override
         public void write(String str, int off, int len) {
-            if (len == STATE_MARKER_LEN && (str == MARKER && off == 0 || str.startsWith(MARKER, off))) {
-                recordMarker();
+            if (expectingMarker) {
+                checkMarker(str, off, len);
             }
             while (len > 0) {
                 if (used == current.length) {
@@ -435,6 +455,19 @@ final class WriteBehindStateWriter extends Writer {
         }
     }
 
+    /**
+     * Get the state.
+     *
+     * <p>
+     * In Faces it is required by the specification that the view state hidden input in each h:form has a unique id. So we
+     * have to call this method multiple times as each h:form needs to generate the element id for itself.
+     * </p>
+     *
+     * @param stateManager the state manager.
+     * @param origWriter the original response writer.
+     * @return the state.
+     * @throws IOException when an I/O error occurs.
+     */
     private StringBuilder getState(StateManager stateManager, ResponseWriter origWriter) throws IOException {
         FastStringWriter stateWriter = new FastStringWriter(stateManager.isSavingStateInClient(context) ? bufSize : 128);
         context.setResponseWriter(origWriter.cloneWithWriter(stateWriter));
