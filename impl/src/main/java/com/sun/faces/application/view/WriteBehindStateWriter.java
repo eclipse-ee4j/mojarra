@@ -44,8 +44,9 @@ final class WriteBehindStateWriter extends Writer {
     private static final ThreadLocal<WriteBehindStateWriter> CUR_WRITER = new ThreadLocal<>();
     private Writer out;
     private final Writer orig;
-    private FastStringWriter fWriter;
+    private ChunkedWriter fWriter;
     private boolean stateWritten;
+    private int markersRequested;
     private final int bufSize;
     private final char[] buf;
     private final FacesContext context;
@@ -154,13 +155,14 @@ final class WriteBehindStateWriter extends Writer {
     }
 
     /**
-     * When called, the original writer is backed up and replaced with a new FastStringWriter. All content written after
+     * When called, the original writer is backed up and replaced with a new chunked buffer. All content written after
      * this method is called will then be buffered and written out later after the entire view has been rendered.
      */
     public void writingState() {
+        markersRequested++;
         if (!stateWritten) {
             stateWritten = true;
-            out = fWriter = new FastStringWriter(1024);
+            out = fWriter = new ChunkedWriter();
         }
     }
 
@@ -173,7 +175,7 @@ final class WriteBehindStateWriter extends Writer {
 
     /**
      * <p>
-     * Write directly from our FastStringWriter to the provided writer.
+     * Write directly from our buffer to the provided writer.
      * </p>
      *
      * @throws IOException if an error occurs
@@ -186,7 +188,25 @@ final class WriteBehindStateWriter extends Writer {
         StateManager stateManager = Util.getStateManager(context);
         ResponseWriter origWriter = context.getResponseWriter();
         StringBuilder stateBuilder = getState(stateManager, origWriter);
-        StringBuilder builder = fWriter.getBuffer();
+
+        if (fWriter.markerCount == markersRequested) {
+            // Every marker arrived whole, so its position is known: write the buffered chunks straight to the
+            // response around them, without searching the content or copying it again.
+            int pos = 0;
+            for (int i = 0; i < fWriter.markerCount; i++) {
+                int markerPos = fWriter.markers[i];
+                fWriter.writeTo(orig, pos, markerPos);
+                writeStateContent(stateBuilder);
+                pos = markerPos + STATE_MARKER_LEN;
+                stateBuilder = getState(stateManager, origWriter);
+            }
+            fWriter.writeTo(orig, pos, fWriter.length());
+            out = orig;
+            return;
+        }
+
+        // A marker was split across writes (e.g. by a buffering ResponseWriter wrapper): search the content for it.
+        StringBuilder builder = fWriter.toStringBuilder();
 
         // Begin writing...
         int totalLen = builder.length();
@@ -274,6 +294,147 @@ final class WriteBehindStateWriter extends Writer {
      * @return the state.
      * @throws IOException when an I/O error occurs.
      */
+    private void writeStateContent(StringBuilder stateBuilder) throws IOException {
+        int stateLen = stateBuilder.length();
+        int statePos = 0;
+        while (statePos < stateLen) {
+            int slen = Math.min(bufSize, stateLen - statePos);
+            stateBuilder.getChars(statePos, statePos + slen, buf, 0);
+            orig.write(buf, 0, slen);
+            statePos += slen;
+        }
+    }
+
+    /**
+     * Buffers the content written after the first state marker as a list of fixed chunks: unlike a growing
+     * StringBuilder it never copies what it already holds, and it is written to the response chunk by chunk. Records
+     * where each state marker written in one piece starts.
+     */
+    static final class ChunkedWriter extends Writer {
+
+        private static final int FIRST_CHUNK_SIZE = 1024;
+        private static final int CHUNK_SIZE = 8192;
+        private static final String MARKER = RIConstants.SAVESTATE_FIELD_MARKER;
+
+        private char[][] chunks = new char[8][];
+        private int chunkCount;
+        private char[] current;
+        private int used;
+        private int completedLength;
+
+        int[] markers = new int[2];
+        int markerCount;
+
+        ChunkedWriter() {
+            current = new char[FIRST_CHUNK_SIZE];
+            chunks[chunkCount++] = current;
+        }
+
+        int length() {
+            return completedLength + used;
+        }
+
+        private void nextChunk() {
+            completedLength += used;
+            if (chunkCount == chunks.length) {
+                chunks = java.util.Arrays.copyOf(chunks, chunkCount * 2);
+            }
+            current = new char[CHUNK_SIZE];
+            chunks[chunkCount++] = current;
+            used = 0;
+        }
+
+        private void recordMarker() {
+            if (markerCount == markers.length) {
+                markers = java.util.Arrays.copyOf(markers, markerCount * 2);
+            }
+            markers[markerCount++] = length();
+        }
+
+        @Override
+        public void write(int c) {
+            if (used == current.length) {
+                nextChunk();
+            }
+            current[used++] = (char) c;
+        }
+
+        @Override
+        public void write(char[] cbuf, int off, int len) {
+            if (len == STATE_MARKER_LEN && cbuf[off] == '~' && MARKER.contentEquals(java.nio.CharBuffer.wrap(cbuf, off, len))) {
+                recordMarker();
+            }
+            while (len > 0) {
+                if (used == current.length) {
+                    nextChunk();
+                }
+                int n = Math.min(len, current.length - used);
+                System.arraycopy(cbuf, off, current, used, n);
+                used += n;
+                off += n;
+                len -= n;
+            }
+        }
+
+        @Override
+        public void write(String str) {
+            write(str, 0, str.length());
+        }
+
+        @Override
+        public void write(String str, int off, int len) {
+            if (len == STATE_MARKER_LEN && (str == MARKER && off == 0 || str.startsWith(MARKER, off))) {
+                recordMarker();
+            }
+            while (len > 0) {
+                if (used == current.length) {
+                    nextChunk();
+                }
+                int n = Math.min(len, current.length - used);
+                str.getChars(off, off + n, current, used);
+                used += n;
+                off += n;
+                len -= n;
+            }
+        }
+
+        @Override
+        public void flush() {
+            // no-op
+        }
+
+        @Override
+        public void close() {
+            // no-op
+        }
+
+        /** Writes the buffered characters in [from, to) to <code>writer</code>, straight from the chunks. */
+        void writeTo(Writer writer, int from, int to) throws IOException {
+            int chunkStart = 0;
+            for (int i = 0; i < chunkCount && chunkStart < to; i++) {
+                char[] chunk = chunks[i];
+                int chunkLength = i == chunkCount - 1 ? used : chunk.length;
+                int chunkEnd = chunkStart + chunkLength;
+                if (chunkEnd > from) {
+                    int start = Math.max(from, chunkStart) - chunkStart;
+                    int end = Math.min(to, chunkEnd) - chunkStart;
+                    if (end > start) {
+                        writer.write(chunk, start, end - start);
+                    }
+                }
+                chunkStart = chunkEnd;
+            }
+        }
+
+        StringBuilder toStringBuilder() {
+            StringBuilder builder = new StringBuilder(length());
+            for (int i = 0; i < chunkCount; i++) {
+                builder.append(chunks[i], 0, i == chunkCount - 1 ? used : chunks[i].length);
+            }
+            return builder;
+        }
+    }
+
     private StringBuilder getState(StateManager stateManager, ResponseWriter origWriter) throws IOException {
         FastStringWriter stateWriter = new FastStringWriter(stateManager.isSavingStateInClient(context) ? bufSize : 128);
         context.setResponseWriter(origWriter.cloneWithWriter(stateWriter));

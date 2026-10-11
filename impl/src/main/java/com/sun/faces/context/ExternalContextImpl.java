@@ -1057,6 +1057,7 @@ public class ExternalContextImpl extends ExternalContext {
             } catch (IOException ignored) {
                 // Best-effort at teardown; a genuine write failure surfaces via the container.
             }
+            responseOutputWriter.recycle();
             responseOutputWriter = null;
         }
 
@@ -1225,8 +1226,12 @@ public class ExternalContextImpl extends ExternalContext {
 
         private static final int BUFFER_SIZE = 8192;
 
+        // One buffer per thread, taken by a writer for its lifetime: a nested request on the same thread (e.g. an
+        // include) finds none and allocates its own, so a buffer is never shared by two live writers.
+        private static final ThreadLocal<char[]> RECYCLED_BUFFER = new ThreadLocal<>();
+
         private final Writer wrapped;
-        private final char[] buffer = new char[BUFFER_SIZE];
+        private char[] buffer = takeBuffer();
         private int count;
 
         private ResponseOutputWriter(Writer wrapped) {
@@ -1235,6 +1240,9 @@ public class ExternalContextImpl extends ExternalContext {
 
         @Override
         public void write(char[] chars, int offset, int length) throws IOException {
+            if (buffer == null) {
+                buffer = new char[BUFFER_SIZE];
+            }
             if (length >= BUFFER_SIZE) {
                 drain();
                 wrapped.write(chars, offset, length);
@@ -1251,6 +1259,9 @@ public class ExternalContextImpl extends ExternalContext {
 
         @Override
         public void write(String string, int offset, int length) throws IOException {
+            if (buffer == null) {
+                buffer = new char[BUFFER_SIZE];
+            }
             if (length >= BUFFER_SIZE) {
                 drain();
                 wrapped.write(string, offset, length);
@@ -1289,6 +1300,27 @@ public class ExternalContextImpl extends ExternalContext {
                 wrapped.write(buffer, 0, count);
                 count = 0;
             }
+        }
+
+        /**
+         * Give the buffer back for the next request on this thread. Called at {@link ExternalContextImpl#release()},
+         * after {@link #drain()}; should this writer still be written to afterwards, it allocates a new buffer.
+         */
+        private void recycle() {
+            if (buffer != null) {
+                RECYCLED_BUFFER.set(buffer);
+                buffer = null;
+                count = 0;
+            }
+        }
+
+        private static char[] takeBuffer() {
+            char[] buffer = RECYCLED_BUFFER.get();
+            if (buffer == null) {
+                return new char[BUFFER_SIZE];
+            }
+            RECYCLED_BUFFER.set(null);
+            return buffer;
         }
 
     }
