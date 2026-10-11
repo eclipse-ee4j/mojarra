@@ -25,6 +25,8 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 /**
@@ -36,12 +38,15 @@ import java.util.function.Function;
  * is defined in the accessor's declaring class (via {@link MethodHandles#privateLookupIn}), so it resolves against that
  * class's own class loader -- which matters for application component classes that Mojarra's class loader cannot
  * see. When that is not permitted (e.g. a package not opened to Mojarra in a named module), a {@link MethodHandle} is
- * used, and when even that fails, {@link Method#invoke}. Each step is behaviour-equivalent: the accessor's own
+ * used, and when even that fails, {@link Method#invoke}. Each step is behavior-equivalent: the accessor's own
  * exceptions propagate unwrapped (callers wrap them, exactly as they unwrap {@link InvocationTargetException}).
  *
  * <p>
- * Creating a lambda costs a class definition, so callers should create accessors lazily, for the properties actually
- * used, and cache them per class.
+ * The generated class lives as long as the class loader of the getter's declaring class. So there is one function per
+ * getter, kept with its declaring class and shared by all callers: a getter declared in a class of a shared library,
+ * such as <code>UIOutput.getValue()</code> when Mojarra is provided by the server, gets one generated class for the
+ * lifetime of the server, not one per deployed application. Creating it costs a class definition, so callers should
+ * ask for the properties actually used only.
  *
  * <p>
  * Only getters are covered: they take no argument, so no argument adaptation can change which exception a bad call
@@ -52,14 +57,33 @@ public final class PropertyAccessors {
 
     private static final MethodType FUNCTION_SIGNATURE = methodType(Object.class, Object.class);
 
+    /** The functions of the getters of a class, by getter name. */
+    private static final ClassValue<Map<String, Function<Object, Object>>> READERS = new ClassValue<>() {
+        @Override
+        protected Map<String, Function<Object, Object>> computeValue(Class<?> declaringClass) {
+            return new ConcurrentHashMap<>();
+        }
+    };
+
     private PropertyAccessors() {
     }
 
     /**
      * Returns a function invoking the given getter on its argument.
+     *
+     * @param getter a getter: a method without parameters
      */
-    @SuppressWarnings("unchecked")
     public static Function<Object, Object> reader(Method getter) {
+        Map<String, Function<Object, Object>> readers = READERS.get(getter.getDeclaringClass());
+        Function<Object, Object> reader = readers.get(getter.getName());
+        if (reader == null) {
+            reader = readers.computeIfAbsent(getter.getName(), name -> createReader(getter));
+        }
+        return reader;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Function<Object, Object> createReader(Method getter) {
         try {
             MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(getter.getDeclaringClass(), MethodHandles.lookup());
             MethodHandle handle = lookup.unreflect(getter);

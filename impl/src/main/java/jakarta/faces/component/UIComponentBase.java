@@ -135,9 +135,7 @@ public abstract class UIComponentBase extends UIComponent {
 
     /**
      * This class's reflective metadata (property descriptors, access-suppressed accessor methods and generated getter
-     * invokers), shared by all instances through the {@link #COMPONENT_METADATA} cache. One reference instead of one
-     * per map keeps the component smaller, and lets {@link AttributesMap} reach the getter invokers without a second
-     * cache lookup.
+     * invokers), shared by all instances through the {@link #COMPONENT_METADATA} cache.
      */
     private ComponentMetadata componentMetadata;
 
@@ -1753,20 +1751,7 @@ public abstract class UIComponentBase extends UIComponent {
 
     private static final Object NOT_MARKER = new Object();
 
-    // Every marker key is longer than any standard component property name, so the common non-marker lookup (each
-    // getAttributes().get/put of a property during render and buildView) is rejected by a length check instead of six
-    // String.equals calls.
-    private static final int MIN_MARKER_KEY_LENGTH = Math.min(Math.min(MARK_CREATED.length(), KEY.length()),
-            Math.min(Math.min(REMOVED_CHILDREN.length(), DYNAMIC_COMPONENT.length()), Math.min(MARK_DELETED.length(), MARK_CHILDREN_MODIFIED.length())));
-
-    private static boolean isMarkerKeyCandidate(Object key) {
-        return key instanceof String && ((String) key).length() >= MIN_MARKER_KEY_LENGTH;
-    }
-
     private Object markerGet(Object key) {
-        if (!isMarkerKeyCandidate(key)) {
-            return NOT_MARKER;
-        }
         if (MARK_CREATED.equals(key)) {
             return markCreated;
         }
@@ -1791,9 +1776,6 @@ public abstract class UIComponentBase extends UIComponent {
     // Returns true if the key is a marker (so AttributesMap can skip the getPropertyDescriptor probe:
     // a framework marker is never a JavaBean property, so the lookup is guaranteed to miss).
     private boolean markerPut(Object key, Object value) {
-        if (!isMarkerKeyCandidate(key)) {
-            return false;
-        }
         if (MARK_CREATED.equals(key)) {
             markCreated = (String) value;
         } else if (KEY.equals(key)) {
@@ -1813,9 +1795,6 @@ public abstract class UIComponentBase extends UIComponent {
     }
 
     private boolean markerRemove(Object key) {
-        if (!isMarkerKeyCandidate(key)) {
-            return false;
-        }
         if (MARK_CREATED.equals(key)) {
             markCreated = null;
         } else if (KEY.equals(key)) {
@@ -3608,8 +3587,8 @@ public abstract class UIComponentBase extends UIComponent {
         private final Map<String, Method> readMethods;
         private final Map<String, Method> writeMethods;
 
-        // Generated getter invokers, created on first use per property (see PropertyAccessors): only the properties
-        // actually read through getAttributes() pay for a generated class.
+        // Generated getter invokers by property name, created on first use (see PropertyAccessors): only the
+        // properties actually read through getAttributes() get one.
         private final ConcurrentHashMap<String, Function<Object, Object>> readers = new ConcurrentHashMap<>();
 
         private ComponentMetadata(Map<String, PropertyDescriptor> propertyDescriptors, Map<String, Method> readMethods, Map<String, Method> writeMethods) {

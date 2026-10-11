@@ -228,6 +228,11 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
      * Returns a <code>TableMetaInfo</code> object containing details such as row and column classes, columns, and a
      * mechanism for scrolling through the row/column classes.
      *
+     * <p>
+     * The info is kept in the {@link FacesContext} attributes under {@link #createKey} only when this renderer class
+     * overrides that method. Otherwise it is kept in a map by table identity, and the attribute under
+     * <code>createKey(table)</code> is not set: use this method, not the attribute, to get the info.
+     *
      * @param context the <code>FacesContext</code> for the current request
      * @param table the table that's being rendered
      * @return the <code>TableMetaInfo</code> for provided table
@@ -245,8 +250,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
             return info;
         }
 
-        // Looked up once per row: an identity map keyed by the table itself avoids building, hashing and comparing a
-        // fresh String key (createKey) on every call.
+        // Looked up once per row, by table identity.
         Map<UIComponent, TableMetaInfo> byTable = metaInfoByTable(attributes, true);
         TableMetaInfo info = byTable.get(table);
         if (info == null) {
@@ -385,8 +389,9 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
             return style;
         }
 
-        // Per-column attributes read for every cell. A column attribute that is not a value expression cannot change
-        // from row to row (unless the table preserves full row state), so it is read once per render.
+        // The rowHeader and styleClass attributes of each column, read once per render of the table when they are no
+        // value expression and the table does not preserve row state: a value set on the column during the render of the
+        // rows, for example by a child component, then only applies from the next render on.
         private static final byte UNKNOWN = 0;
         private static final byte FALSE = 1;
         private static final byte TRUE = 2;
