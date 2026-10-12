@@ -19,6 +19,7 @@ package org.glassfish.mojarra.cdi;
 import java.lang.reflect.Method;
 import java.net.URL;
 
+import jakarta.enterprise.inject.spi.CDI;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.context.FacesContext;
 import jakarta.servlet.ServletContext;
@@ -28,6 +29,7 @@ import org.glassfish.mojarra.application.ApplicationImpl;
 import org.glassfish.mojarra.context.ExternalContextImpl;
 import org.glassfish.mojarra.context.FacesContextImpl;
 import org.glassfish.mojarra.lifecycle.LifecycleImpl;
+import org.glassfish.mojarra.mock.MockCDIProvider;
 import org.glassfish.mojarra.mock.MockHttpServletRequest;
 import org.glassfish.mojarra.mock.MockHttpServletResponse;
 import org.glassfish.mojarra.mock.MockServletContext;
@@ -69,6 +71,7 @@ final class TestApplicationScope {
             servletContext, new MockHttpServletRequest(), new MockHttpServletResponse()
         );
 
+        CDI.setCDIProvider(new MockCDIProvider());
         FactoryFinder.setFactory(FactoryFinder.RENDER_KIT_FACTORY, "org.glassfish.mojarra.mock.MockRenderKitFactory");
 
         new FacesContextImpl(externalContext, new LifecycleImpl());

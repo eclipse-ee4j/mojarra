@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
 
+import jakarta.enterprise.inject.spi.CDI;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
@@ -30,6 +31,7 @@ import jakarta.faces.context.PartialViewContext;
 import jakarta.faces.render.RenderKitFactory;
 
 import org.glassfish.mojarra.lifecycle.LifecycleImpl;
+import org.glassfish.mojarra.mock.MockCDIProvider;
 import org.glassfish.mojarra.mock.MockHttpServletRequest;
 import org.glassfish.mojarra.mock.MockHttpServletResponse;
 import org.glassfish.mojarra.mock.MockRenderKit;
@@ -52,6 +54,7 @@ class RenderExecuteClientIdBoundsTest {
 
     @BeforeEach
     void setUp() {
+        CDI.setCDIProvider(new MockCDIProvider());
         FactoryFinder.releaseFactories();
         FactoryFinder.setFactory(FactoryFinder.RENDER_KIT_FACTORY, "org.glassfish.mojarra.mock.MockRenderKitFactory");
         FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, "org.glassfish.mojarra.mock.MockApplicationFactory");
