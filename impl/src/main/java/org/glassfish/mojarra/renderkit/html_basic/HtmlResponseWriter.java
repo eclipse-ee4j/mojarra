@@ -162,6 +162,10 @@ public class HtmlResponseWriter extends ResponseWriter {
     // accomodate larger values.
     private char[] textBuffer = new char[128];
 
+    // Markup fragments ("<name", "</name>", " name=\"") are composed here so that each reaches the writer in one call,
+    // because every call passes through the state write-behind writer.
+    private char[] markupBuffer = new char[64];
+
     private char[] charHolder = new char[1];
 
     private Deque<String> elementNames;
@@ -503,9 +507,7 @@ public class HtmlResponseWriter extends ResponseWriter {
             closeStart = false;
         }
 
-        writer.write("</");
-        writer.write(popElementName(name));
-        writer.write('>');
+        writeEndTag(popElementName(name));
 
     }
 
@@ -597,8 +599,7 @@ public class HtmlResponseWriter extends ResponseWriter {
             writeBehaviorEventBootstrapIfNecessary(elementName, passThroughAttrs);
         }
 
-        writer.write('<');
-        writer.write(elementName);
+        writeStartTagOpen(elementName);
 
         closeStart = true;
 
@@ -716,17 +717,11 @@ public class HtmlResponseWriter extends ResponseWriter {
                 // name of the attribute itself or appear using
                 // minimization.
                 // http://www.w3.org/TR/html401/intro/sgmltut.html#h-3.3.4.2
-                writer.write(' ');
-                writer.write(name);
-                writer.write("=\"");
-                writer.write(name);
-                writer.write('"');
+                writeMinimizedBooleanAttribute(name);
             }
         }
         else {
-            writer.write(' ');
-            writer.write(name);
-            writer.write("=\"");
+            writeAttributeStart(name);
             // write the attribute value
             String val = value.toString();
             ensureTextBufferCapacity(val);
@@ -1006,14 +1001,11 @@ public class HtmlResponseWriter extends ResponseWriter {
             scriptOrStyleSrc = true;
         }
 
-        writer.write(' ');
-        writer.write(name);
-        writer.write("=\"");
+        writeAttributeStart(name);
 
         String stringValue = value.toString();
         ensureTextBufferCapacity(stringValue);
-        // Javascript URLs should not be URL-encoded
-        if (stringValue.startsWith("javascript:") || isPassthrough) {
+        if (HtmlUtils.isScriptURL(stringValue) || isPassthrough) {
             HtmlUtils.writeAttribute(writer, escapeUnicode, escapeIso, stringValue, textBuffer, isScriptInAttributeValueEnabled, isPartial);
         }
         else {
@@ -1025,6 +1017,53 @@ public class HtmlResponseWriter extends ResponseWriter {
     }
 
     // --------------------------------------------------------- Private Methods
+
+    private char[] markupBuffer(int length) {
+        if (markupBuffer.length < length) {
+            markupBuffer = new char[Math.max(length, markupBuffer.length * 2)];
+        }
+        return markupBuffer;
+    }
+
+    private void writeStartTagOpen(String name) throws IOException {
+        int length = name.length();
+        char[] buffer = markupBuffer(length + 1);
+        buffer[0] = '<';
+        name.getChars(0, length, buffer, 1);
+        writer.write(buffer, 0, length + 1);
+    }
+
+    private void writeEndTag(String name) throws IOException {
+        int length = name.length();
+        char[] buffer = markupBuffer(length + 3);
+        buffer[0] = '<';
+        buffer[1] = '/';
+        name.getChars(0, length, buffer, 2);
+        buffer[length + 2] = '>';
+        writer.write(buffer, 0, length + 3);
+    }
+
+    private void writeAttributeStart(String name) throws IOException {
+        int length = name.length();
+        char[] buffer = markupBuffer(length + 3);
+        buffer[0] = ' ';
+        name.getChars(0, length, buffer, 1);
+        buffer[length + 1] = '=';
+        buffer[length + 2] = '"';
+        writer.write(buffer, 0, length + 3);
+    }
+
+    private void writeMinimizedBooleanAttribute(String name) throws IOException {
+        int length = name.length();
+        char[] buffer = markupBuffer(2 * length + 4);
+        buffer[0] = ' ';
+        name.getChars(0, length, buffer, 1);
+        buffer[length + 1] = '=';
+        buffer[length + 2] = '"';
+        name.getChars(0, length, buffer, length + 3);
+        buffer[2 * length + 3] = '"';
+        writer.write(buffer, 0, 2 * length + 4);
+    }
 
     private void ensureTextBufferCapacity(String source) {
         int len = source.length();
