@@ -17,20 +17,16 @@
 package org.glassfish.mojarra.util;
 
 import java.nio.charset.Charset;
-import java.security.InvalidAlgorithmParameterException;
+import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.SortedMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -70,6 +66,10 @@ public final class ByteArrayGuardAESGCM {
     // GCM authentication tag size in bits.
     private static final int GCM_TAG_LENGTH = 128;
 
+    private static final SecureRandom RANDOM = new SecureRandom();
+
+    private final CryptoPool<Cipher> ciphers = new CryptoPool<>(() -> Cipher.getInstance(CIPHER_CODE));
+
     private SecretKey sk;
 
     private Charset utf8;
@@ -102,26 +102,21 @@ public final class ByteArrayGuardAESGCM {
         String securedata = null;
         byte[] bytes = value.getBytes(utf8);
         try {
-            SecureRandom rand = new SecureRandom();
             byte[] iv = new byte[GCM_IV_LENGTH];
-            rand.nextBytes(iv);
+            RANDOM.nextBytes(iv);
             GCMParameterSpec ivspec = new GCMParameterSpec(GCM_TAG_LENGTH, iv);
 
-            Cipher encryptCipher = Cipher.getInstance(CIPHER_CODE);
-
-            encryptCipher.init(Cipher.ENCRYPT_MODE, sk, ivspec);
-            // encrypt the plaintext
-            byte[] encdata = encryptCipher.doFinal(bytes);
+            byte[] encdata = ciphers.apply(cipher -> {
+                cipher.init(Cipher.ENCRYPT_MODE, sk, ivspec);
+                return cipher.doFinal(bytes);
+            });
 
             byte[] temp = concatBytes(iv, encdata);
 
             // Base64 encode the encrypted bytes
             securedata = Base64.getEncoder().encodeToString(temp);
         }
-        catch (
-            NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException
-            | BadPaddingException e
-        ) {
+        catch (GeneralSecurityException e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, "Unexpected exception initializing encryption." + "  No encryption will be performed.", e);
             }
@@ -134,32 +129,31 @@ public final class ByteArrayGuardAESGCM {
 
         byte[] bytes = Base64.getDecoder().decode(value);
 
+        // Shorter than nonce plus tag cannot be authenticated and makes the JCE provider throw an unchecked exception on some JDKs.
+        if (bytes.length < GCM_IV_LENGTH + GCM_TAG_LENGTH / 8) {
+            throw new InvalidKeyException("Invalid characters in decrypted value");
+        }
+
+        byte[] iv = new byte[GCM_IV_LENGTH];
+        System.arraycopy(bytes, 0, iv, 0, iv.length);
+        GCMParameterSpec ivspec = new GCMParameterSpec(GCM_TAG_LENGTH, iv);
+
+        byte[] encBytes = new byte[bytes.length - GCM_IV_LENGTH];
+        System.arraycopy(bytes, GCM_IV_LENGTH, encBytes, 0, encBytes.length);
+
         try {
-            byte[] iv = new byte[GCM_IV_LENGTH];
-
-            // Shorter than nonce plus tag cannot be authenticated and makes the JCE provider throw an unchecked exception on some JDKs.
-            if (bytes.length < GCM_IV_LENGTH + GCM_TAG_LENGTH / 8) {
-                throw new InvalidKeyException("Invalid characters in decrypted value");
-            }
-
-            System.arraycopy(bytes, 0, iv, 0, iv.length);
-            GCMParameterSpec ivspec = new GCMParameterSpec(GCM_TAG_LENGTH, iv);
-
-            Cipher decryptCipher = Cipher.getInstance(CIPHER_CODE);
-            decryptCipher.init(Cipher.DECRYPT_MODE, sk, ivspec);
-
-            byte[] encBytes = new byte[bytes.length - GCM_IV_LENGTH];
-            System.arraycopy(bytes, GCM_IV_LENGTH, encBytes, 0, encBytes.length);
-
-            byte[] plaindata = decryptCipher.doFinal(encBytes);
+            byte[] plaindata = ciphers.apply(cipher -> {
+                cipher.init(Cipher.DECRYPT_MODE, sk, ivspec);
+                return cipher.doFinal(encBytes);
+            });
 
             return new String(plaindata, utf8);
         }
-        catch (
-            NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException | IllegalBlockSizeException
-            | BadPaddingException nsae
-        ) {
-            throw new InvalidKeyException(nsae);
+        catch (InvalidKeyException e) {
+            throw e;
+        }
+        catch (GeneralSecurityException e) {
+            throw new InvalidKeyException(e);
         }
     }
 

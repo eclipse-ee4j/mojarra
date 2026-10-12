@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.security.InvalidKeyException;
 import java.util.Base64;
 
+import org.glassfish.mojarra.junit.ConcurrentCalls;
 import org.junit.jupiter.api.Test;
 
 public class ByteArrayGuardAESGCMTest {
@@ -83,6 +84,32 @@ public class ByteArrayGuardAESGCMTest {
         byte[] modifiedTag = issued.clone();
         modifiedTag[modifiedTag.length - 1] ^= 0x01;
         assertThrows(InvalidKeyException.class, () -> guard.decrypt(Base64.getEncoder().encodeToString(modifiedTag)));
+    }
+
+    /**
+     * A failed decryption must not leave the guard unable to decrypt valid tokens afterwards.
+     */
+    @Test
+    public void validTokenIsAcceptedAfterRejectedOne() throws Exception {
+        ByteArrayGuardAESGCM guard = new ByteArrayGuardAESGCM();
+        String issued = guard.encrypt("3Xfn_4Xfn");
+        byte[] modified = Base64.getDecoder().decode(issued);
+        modified[modified.length - 1] ^= 0x01;
+
+        for (int i = 0; i < 3; i++) {
+            assertThrows(InvalidKeyException.class, () -> guard.decrypt(Base64.getEncoder().encodeToString(modified)));
+            assertEquals("3Xfn_4Xfn", guard.decrypt(issued));
+        }
+    }
+
+    /**
+     * One guard serves all requests of the application, so concurrent calls must not interfere.
+     */
+    @Test
+    public void concurrentCallsRoundTrip() throws Exception {
+        ByteArrayGuardAESGCM guard = new ByteArrayGuardAESGCM();
+
+        ConcurrentCalls.run(id -> assertEquals(id, guard.decrypt(guard.encrypt(id))));
     }
 
 }
