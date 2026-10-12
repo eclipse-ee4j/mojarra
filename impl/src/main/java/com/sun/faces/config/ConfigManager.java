@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -123,12 +122,11 @@ public class ConfigManager {
     private static final String ANNOTATIONS_SCAN_TASK_KEY = ConfigManager.class.getName() + "_ANNOTATION_SCAN_TASK";
 
     /**
-     * <p>
-     * Contains each <code>ServletContext</code> that we've initialized. The <code>ServletContext</code> will be removed
-     * when the application is destroyed.
-     * </p>
+     * Whether the application of this instance has been initialized. There is one instance per application, see
+     * {@link #getInstance(ServletContext)}. The container may pass each listener a different <code>ServletContext</code>
+     * object for the same application.
      */
-    private List<ServletContext> initializedContexts = new CopyOnWriteArrayList<>();
+    private volatile boolean initialized;
 
     private final List<ConfigProcessor> configProcessors = unmodifiableList(
             asList(
@@ -223,7 +221,7 @@ public class ConfigManager {
     public void initialize(ServletContext servletContext, InitFacesContext facesContext) {
         if (!hasBeenInitialized(servletContext)) {
 
-            initializedContexts.add(servletContext);
+            initialized = true;
             initializeConfigProcessers(servletContext, facesContext);
             ExecutorService executor = null;
 
@@ -336,7 +334,7 @@ public class ConfigManager {
      * @return <code>true</code> if this application has already been initialized, otherwise returns <code>fase</code>
      */
     public boolean hasBeenInitialized(ServletContext servletContext) {
-        return initializedContexts.contains(servletContext);
+        return initialized;
     }
 
     // --------------------------------------------------------- Private Methods
@@ -478,7 +476,7 @@ public class ConfigManager {
      */
     public void destroy(ServletContext servletContext, FacesContext facesContext) {
         configProcessors.stream().forEach(e -> e.destroy(servletContext, facesContext));
-        initializedContexts.remove(servletContext);
+        initialized = false;
     }
 
 }
