@@ -180,4 +180,24 @@ class FastNumberFormatTest {
         assertEquals(true, System.nanoTime() - start < 1_000_000_000L, "must not build the plain string");
         assertEquals(format.format(new BigDecimal("1234.5")), fast.format(new BigDecimal("1234.5")));
     }
+
+    @Test
+    void leavesBigDecimalsWithAHugeExponentToDecimalFormat() {
+        // The default number format prints every integer digit: its maximum integer digits is Integer.MAX_VALUE.
+        DecimalFormat format = (DecimalFormat) NumberFormat.getNumberInstance(Locale.US);
+        FastNumberFormat fast = FastNumberFormat.of(format);
+        assertNotNull(fast);
+        assertNull(fast.format(new BigDecimal("1E+3000000")));
+        assertNull(fast.format(new BigDecimal("1E-3000000")));
+        assertNull(fast.format(new BigDecimal("-1.5E-3000000")));
+        assertNull(fast.format(new BigDecimal(BigInteger.ONE, -1100)));
+        assertNull(fast.format(new BigDecimal(BigInteger.ONE, 1101)));
+        assertNull(fast.format(new BigDecimal("0E+5000")));
+        assertNull(fast.format(new BigDecimal("0E-5000")));
+
+        for (BigDecimal covered : new BigDecimal[] { new BigDecimal(BigInteger.ONE, -1099), new BigDecimal(BigInteger.ONE, 1100), new BigDecimal(0.1),
+                new BigDecimal(Double.MIN_VALUE), new BigDecimal(Double.MAX_VALUE) }) {
+            assertEquals(format.format(covered), fast.format(covered));
+        }
+    }
 }

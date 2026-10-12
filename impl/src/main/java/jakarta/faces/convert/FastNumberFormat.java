@@ -30,13 +30,21 @@ import java.text.NumberFormat;
  * Covered: a plain {@link DecimalFormat} (not a subclass) with ASCII digits, no exponent, no multiplier, rounding
  * {@code HALF_EVEN}, {@code HALF_UP}, {@code HALF_DOWN} or {@code DOWN}, at most {@value #MAX_DIGITS} minimum integer
  * and fraction digits; values {@link Long}, {@link Integer}, {@link Short}, {@link Byte}, a {@link BigInteger} that fits
- * a long, and {@link BigDecimal}, with no more integer digits than the maximum. Anything else is left to the
+ * a long, and a {@link BigDecimal} with at most the maximum integer digits, and with at most
+ * {@value #MAX_BIG_DECIMAL_DIGITS} integer digits and a scale of at most that. Anything else is left to the
  * {@link DecimalFormat}. The separators and affixes are taken from what the {@link DecimalFormat} itself prints, and a
  * formatter that does not print exactly what the {@link DecimalFormat} prints for a set of probe values is not used.
  */
 final class FastNumberFormat {
 
     private static final int MAX_DIGITS = 50;
+
+    /**
+     * The maximum number of integer digits and the maximum scale of a covered {@link BigDecimal}. It bounds the plain
+     * string and the rounding of a value with a huge exponent, and covers the exact value of any <code>double</code>,
+     * whose scale is at most 1074.
+     */
+    private static final int MAX_BIG_DECIMAL_DIGITS = 1100;
 
     private static final Object[] PROBES = { 0L, 1L, -1L, 7, (short) -12, (byte) 99, 1234L, -1234567L, 123456789012345L, new BigDecimal("0"),
             new BigDecimal("-0"), new BigDecimal("0.5"), new BigDecimal("0.005"), new BigDecimal("-0.001"), new BigDecimal("0.0004"),
@@ -149,8 +157,8 @@ final class FastNumberFormat {
 
         if (value instanceof BigDecimal) {
             BigDecimal number = (BigDecimal) value;
-            if ((long) number.precision() - number.scale() > maxIntegerDigits) {
-                // More integer digits than printed: also bounds the plain string built below.
+            long integerDigits = (long) number.precision() - number.scale();
+            if (integerDigits > Math.min(maxIntegerDigits, MAX_BIG_DECIMAL_DIGITS) || number.scale() > MAX_BIG_DECIMAL_DIGITS) {
                 return null;
             }
             boolean negative = number.signum() < 0;
