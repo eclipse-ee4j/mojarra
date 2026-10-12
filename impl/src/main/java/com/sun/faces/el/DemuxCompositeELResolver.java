@@ -119,6 +119,12 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
     private volatile Supplier<Set<String>> _cdiNameSource;
     private volatile Set<String> _cdiNames;
 
+    /**
+     * Whether a name is the name of a bean, including a bean which the name source misses because it lacks the
+     * <code>@Any</code> qualifier or the <code>Object</code> type. The namespaces of such a bean are not found.
+     */
+    private volatile Predicate<String> _cdiBeanName;
+
     public DemuxCompositeELResolver(ELResolverChainType chainType) {
         if (chainType == null) {
             throw new NullPointerException();
@@ -274,15 +280,18 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
      * @param beanManager the bean manager
      */
     public void setBeanManager(ELResolver cdiResolver, BeanManager beanManager) {
-        setCdiNames(cdiResolver, () -> beanNamesAndNamespaces(beanManager));
+        setCdiNames(cdiResolver, () -> beanNamesAndNamespaces(beanManager), name -> !beanManager.getBeans(name).isEmpty());
     }
 
     /**
      * @param names the bean names and namespaces, asked once at the first evaluation which needs them; it may throw
      * while they are not known yet, and is then asked again later
+     * @param beanName whether a name which is not in <code>names</code> is still the name of a bean; it may throw while
+     * the beans are not known yet, and the name is then treated as a bean name
      */
-    void setCdiNames(ELResolver cdiResolver, Supplier<Set<String>> names) {
+    void setCdiNames(ELResolver cdiResolver, Supplier<Set<String>> names, Predicate<String> beanName) {
         _cdiResolver = cdiResolver;
+        _cdiBeanName = beanName;
         _cdiNameSource = names;
         _cdiNames = null;
         clearShortcuts();
@@ -440,7 +449,7 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
     private boolean neverResolvesRootName(ELResolver resolver, String name) {
         if (resolver == _cdiResolver || isCdiClass(resolver.getClass())) {
             Set<String> cdiNames = cdiNames();
-            return cdiNames != null && !cdiNames.contains(name);
+            return cdiNames != null && !cdiNames.contains(name) && !isCdiBeanName(name);
         }
         if (resolver.getClass() == ApplicationELResolvers.class) {
             return allChildren((ApplicationELResolvers) resolver, child -> neverResolvesRootName(child, name));
@@ -498,6 +507,15 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
             _cdiNames = names;
         }
         return names;
+    }
+
+    private boolean isCdiBeanName(String name) {
+        try {
+            return _cdiBeanName.test(name);
+        } catch (RuntimeException e) {
+            // The container is not ready yet: the name is not cached as skippable.
+            return true;
+        }
     }
 
     private static boolean isStreamResolver(Class<?> type) {
