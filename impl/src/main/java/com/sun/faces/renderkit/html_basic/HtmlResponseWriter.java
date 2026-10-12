@@ -995,8 +995,7 @@ public class HtmlResponseWriter extends ResponseWriter {
 
         String stringValue = value.toString();
         ensureTextBufferCapacity(stringValue);
-        // Javascript URLs should not be URL-encoded
-        if (stringValue.startsWith("javascript:") || isPassthrough) {
+        if (HtmlUtils.isScriptURL(stringValue) || isPassthrough) {
             HtmlUtils.writeAttribute(writer, escapeUnicode, escapeIso, stringValue, textBuffer, isScriptInAttributeValueEnabled, isPartial);
         } else {
             HtmlUtils.writeURL(writer, stringValue, textBuffer, encoding);
