@@ -206,6 +206,47 @@ class HtmlUtilsTest {
         assertEquals("price &#8364;", sw.toString());
     }
 
+    /**
+     * A character above U+FFFF is one surrogate pair in Java, and one numeric character reference in HTML and XML. A
+     * reference to a lone surrogate is no valid character.
+     */
+    @Test
+    void writeText_supplementaryCharacterIsOneNumericReference() throws IOException {
+        assertEquals("a&#128512;b", writeText("a😀b"));
+        assertEquals("a&#128512;b", writeTextString("a😀b"));
+        assertEquals("a&#128512;b", writeAttribute("a😀b"));
+    }
+
+    @Test
+    void writeText_surrogatePairSplitByTheEndOfTheSliceIsNoPair() throws IOException {
+        StringWriter html = new StringWriter();
+        HtmlUtils.writeText(html, true, true, "a😀".toCharArray(), 0, 2, false);
+        assertEquals("a&#55357;", html.toString());
+
+        StringWriter xml = new StringWriter();
+        HtmlUtils.writeText(xml, true, true, "a😀".toCharArray(), 0, 2, true);
+        assertEquals("a", xml.toString());
+    }
+
+    /**
+     * XML does not allow a lone surrogate, U+FFFE and U+FFFF, not even as a character reference, so forXml drops them
+     * whether or not escapeUnicode is set.
+     */
+    @Test
+    void writeText_forXmlDropsDisallowedCharactersAlsoWhenEscapingUnicode() throws IOException {
+        for (String disallowed : new String[] { "\uD83D", "\uDE00", "\uFFFE", "\uFFFF" }) {
+            for (boolean escapeUnicode : new boolean[] { false, true }) {
+                StringWriter text = new StringWriter();
+                HtmlUtils.writeText(text, escapeUnicode, true, ("a" + disallowed + "b").toCharArray(), true);
+                assertEquals("ab", text.toString(), "text escapeUnicode=" + escapeUnicode);
+
+                StringWriter attribute = new StringWriter();
+                HtmlUtils.writeAttribute(attribute, escapeUnicode, true, "a" + disallowed + "b", new char[16], true, true);
+                assertEquals("ab", attribute.toString(), "attribute escapeUnicode=" + escapeUnicode);
+            }
+        }
+    }
+
     @Test
     void writeText_unicodeChrPassesThroughWhenEscapeUnicodeFalse() throws IOException {
         StringWriter sw = new StringWriter();
@@ -278,10 +319,6 @@ class HtmlUtilsTest {
 
     @Test
     void writeAttribute_scriptInValueDroppedWhenDisabled() throws IOException {
-        // When isScriptInAttributeValueEnabled is false (default), encountering "script:" in an
-        // attribute value causes the writer to return WITHOUT flushing the internal buffer to the
-        // underlying Writer. For inputs that fit in the buffer (< 1024 chars), nothing is emitted
-        // -- the entire call's pending output is discarded.
         StringWriter sw = new StringWriter();
         HtmlUtils.writeAttribute(sw, true, true, "javascript:alert(1)", new char[1024], false, false);
         assertEquals("", sw.toString());
@@ -294,15 +331,43 @@ class HtmlUtilsTest {
         assertEquals("javascript:alert(1)", sw.toString());
     }
 
+    /**
+     * A browser ignores leading whitespace and control characters, ignores tabs and line breaks anywhere in the scheme,
+     * and matches the scheme case-insensitively, so each of these runs script.
+     */
     @Test
-    void writeAttribute_scriptStraddlingEscapedChar() throws IOException {
-        // Verify the script:-detection abort still fires when 's' is preceded by an escape char.
-        // The safe-run accumulator has been flushed at the '<', then runStart advances past it;
-        // the next 's' hits the fast-path lookahead, matches "cript:", and aborts. Output is
-        // exactly the chars emitted up to (but not including) the 's'.
-        StringWriter sw = new StringWriter();
-        HtmlUtils.writeAttribute(sw, true, true, "<script:alert(1)", new char[1024], false, false);
-        assertEquals("&lt;", sw.toString());
+    void writeAttribute_scriptSchemeDroppedWhateverItsCaseAndWhitespace() throws IOException {
+        for (String value : new String[] { "JAVASCRIPT:alert(1)", "JavaScript:alert(1)", " javascript:alert(1)", "\u0001javascript:alert(1)",
+                "java\tscr\nipt:alert(1)", "VBScript:msgbox(1)", "java\u0000script:alert(1)",
+                "java\u0001script:alert(1)", "javascr\u000Bipt:alert(1)" }) {
+            assertEquals("", writeAttributeWithScriptsDisabled(value), value);
+        }
+    }
+
+    /**
+     * forXml drops more characters than HTML, so a scheme split by one of those runs script too.
+     */
+    @Test
+    void writeAttribute_scriptSchemeSplitByCharacterWhichForXmlDropsIsDropped() throws IOException {
+        for (String value : new String[] { "\uFFFEjavascript:alert(1)", "java\uFFFFscript:alert(1)", "java\uD800script:alert(1)",
+                "java\u000Cscript:alert(1)" }) {
+            StringWriter sw = new StringWriter();
+            HtmlUtils.writeAttribute(sw, false, false, value, new char[1024], false, true);
+            assertEquals("", sw.toString(), value);
+        }
+    }
+
+    /**
+     * Only a script scheme at the start of the value runs script, so "script:" anywhere else is written.
+     */
+    @Test
+    void writeAttribute_scriptOutsideTheSchemeIsKept() throws IOException {
+        assertEquals("Transcript: page 1", writeAttributeWithScriptsDisabled("Transcript: page 1"));
+        assertEquals("noscript:x", writeAttributeWithScriptsDisabled("noscript:x"));
+        assertEquals("see javascript:alert(1)", writeAttributeWithScriptsDisabled("see javascript:alert(1)"));
+        assertEquals("java script:alert(1)", writeAttributeWithScriptsDisabled("java script:alert(1)"));
+        assertEquals("javascripts:alert(1)", writeAttributeWithScriptsDisabled("javascripts:alert(1)"));
+        assertEquals("&lt;script:alert(1)", writeAttributeWithScriptsDisabled("<script:alert(1)"));
     }
 
     @Test
@@ -600,12 +665,12 @@ class HtmlUtilsTest {
      */
     @Test
     void testWriteEmojisAsTextForXML() {
-        assertEquals("&#55348;&#56606;", writeTextForXML("𝄞"));
-        assertEquals("&#55357;&#56846;", writeTextForXML("😎"));
-        assertEquals("&#55356;&#57225;", writeTextForXML("🎉"));
-        assertEquals("&#55357;&#56960;", writeTextForXML("🚀"));
-        assertEquals("&#55357;&#56379;", writeTextForXML("🐻"));
-        assertEquals("&#55357;&#56379;&#8205;&#10052;&#65039;", writeTextForXML("🐻‍❄️"));
+        assertEquals("&#119070;", writeTextForXML("𝄞"));
+        assertEquals("&#128526;", writeTextForXML("😎"));
+        assertEquals("&#127881;", writeTextForXML("🎉"));
+        assertEquals("&#128640;", writeTextForXML("🚀"));
+        assertEquals("&#128059;", writeTextForXML("🐻"));
+        assertEquals("&#128059;&#8205;&#10052;&#65039;", writeTextForXML("🐻‍❄️"));
     }
 
     /**
@@ -613,12 +678,12 @@ class HtmlUtilsTest {
      */
     @Test
     void testWriteEmojisAsAttributeForXML() {
-        assertEquals("&#55348;&#56606;", writeAttributeForXML("𝄞"));
-        assertEquals("&#55357;&#56846;", writeAttributeForXML("😎"));
-        assertEquals("&#55356;&#57225;", writeAttributeForXML("🎉"));
-        assertEquals("&#55357;&#56960;", writeAttributeForXML("🚀"));
-        assertEquals("&#55357;&#56379;", writeAttributeForXML("🐻"));
-        assertEquals("&#55357;&#56379;&#8205;&#10052;&#65039;", writeAttributeForXML("🐻‍❄️"));
+        assertEquals("&#119070;", writeAttributeForXML("𝄞"));
+        assertEquals("&#128526;", writeAttributeForXML("😎"));
+        assertEquals("&#127881;", writeAttributeForXML("🎉"));
+        assertEquals("&#128640;", writeAttributeForXML("🚀"));
+        assertEquals("&#128059;", writeAttributeForXML("🐻"));
+        assertEquals("&#128059;&#8205;&#10052;&#65039;", writeAttributeForXML("🐻‍❄️"));
     }
 
     // -------- Helpers -------------------------------------------------------
@@ -640,6 +705,12 @@ class HtmlUtilsTest {
         // for general-purpose tests (separate tests cover that special case explicitly).
         StringWriter sw = new StringWriter();
         HtmlUtils.writeAttribute(sw, true, true, input, new char[1024], true, false);
+        return sw.toString();
+    }
+
+    private static String writeAttributeWithScriptsDisabled(String input) throws IOException {
+        StringWriter sw = new StringWriter();
+        HtmlUtils.writeAttribute(sw, false, false, input, new char[1024], false, false);
         return sw.toString();
     }
 

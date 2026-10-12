@@ -29,6 +29,8 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.sun.faces.config.WebConfiguration.DisableUnicodeEscaping;
+
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIOutput;
 import jakarta.faces.context.FacesContext;
@@ -194,6 +196,24 @@ public class HtmlResponseWriterTest {
         responseWriter.flush();
         assertEquals(expectedStart + "abc]]]><![CDATA[]>abc" + expectedEnd, stringWriter.toString());
         responseWriter.close();
+    }
+
+    /**
+     * With scripts in attribute values disabled, a URL with a script scheme is not written, whatever the case of the
+     * scheme and the whitespace around it.
+     */
+    @Test
+    public void testScriptURLIsNotWrittenWhenScriptsAreDisabled() throws Exception {
+        for (String url : new String[] { "javascript:alert(1)", "JAVASCRIPT:alert(1)", " javascript:alert(1)", "java\tscript:alert(1)" }) {
+            StringWriter sw = new StringWriter();
+            HtmlResponseWriter writer = new HtmlResponseWriter(sw, "text/html", "UTF-8", false, false, DisableUnicodeEscaping.Auto, false);
+            writer.startElement("a", new UIOutput());
+            writer.writeURIAttribute("href", url, null);
+            writer.endElement("a");
+            writer.flush();
+            writer.close();
+            assertEquals("<a href=\"\"></a>", sw.toString(), url);
+        }
     }
 
     /**

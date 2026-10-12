@@ -18,12 +18,15 @@ package com.sun.faces.util;
 
 import static java.lang.Character.isHighSurrogate;
 import static java.lang.Character.isLowSurrogate;
+import static java.lang.Character.isSurrogate;
+import static java.lang.Character.toCodePoint;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.BitSet;
@@ -59,7 +62,7 @@ public class HtmlUtils {
      * flushed. For plain ASCII content this collapses to a single underlying write.
      *
      * @param out the writer to emit to
-     * @param escapeUnicode if true, chars &gt; 0xFF are emitted as numeric character references
+     * @param escapeUnicode if true, characters above U+00FF are emitted as numeric character references
      * @param escapeIsocode if true, chars in [0xA0, 0xFF] are emitted as named ISO-8859-1 entities
      * @param text the input characters
      * @param start start offset into {@code text}
@@ -108,14 +111,8 @@ public class HtmlUtils {
                     out.write(ch);
                 }
             } else {
-                // ch > 0xff
-                if (escapeUnicode) {
-                    writeDecRefDirect(out, ch);
-                } else if (forXml && !(isAllowedXmlCharacter(ch) || isAllowedSurrogateCharacter(ch, i, text))) {
-                    // drop (already advanced runStart)
-                } else {
-                    out.write(ch);
-                }
+                i = writeAboveLatin1(out, escapeUnicode, text, i, end, forXml);
+                runStart = i + 1;
             }
         }
 
@@ -165,14 +162,16 @@ public class HtmlUtils {
      *   <li>The {@code "} double quote is escaped to {@code &quot;}</li>
      *   <li>An ampersand immediately followed by an open brace is NOT escaped (HTML 4 spec B.7.1 -
      *       Netscape-style JavaScript object literal in attribute value)</li>
-     *   <li>When {@code !isScriptInAttributeValueEnabled} (default), encountering the literal string
-     *       {@code "script:"} in the value causes the method to return WITHOUT writing the pending
-     *       safe run -- effectively dropping the entire attribute output as a defence against
-     *       JavaScript-URL injection.</li>
+     *   <li>When {@code !isScriptInAttributeValueEnabled}, a value which {@link #isScriptURL(CharSequence)} is not
+     *       written at all, as a defense against JavaScript-URL injection.</li>
      * </ul>
      */
     static public void writeAttribute(Writer out, boolean escapeUnicode, boolean escapeIsocode, char[] text, int start, int length,
             boolean isScriptInAttributeValueEnabled, boolean forXml) throws IOException {
+        if (!isScriptInAttributeValueEnabled && isScriptURL(CharBuffer.wrap(text, start, length))) {
+            return;
+        }
+
         int end = start + length;
         int runStart = start;
 
@@ -180,17 +179,7 @@ public class HtmlUtils {
             char ch = text[i];
 
             // Fast path: ASCII printable except <>&" (writeAttribute escapes '"' but not "'").
-            // 's' is also fast-path; the script:-injection check happens in the slow path on
-            // any hit, since the security check needs to fire BEFORE flushing the safe run.
             if (ch >= 0x20 && ch < 0x7f && ch != '<' && ch != '>' && ch != '&' && ch != '"') {
-                // Special case: 's' may begin the literal "script:". Check inline so we can
-                // abort BEFORE flushing the safe run (matching the legacy buffer-discard behavior
-                // when the script:-disabled path returns mid-method).
-                if (ch == 's' && !isScriptInAttributeValueEnabled && i + 6 < end
-                        && text[i + 1] == 'c' && text[i + 2] == 'r' && text[i + 3] == 'i'
-                        && text[i + 4] == 'p' && text[i + 5] == 't' && text[i + 6] == ':') {
-                    return;
-                }
                 continue;
             }
 
@@ -229,14 +218,8 @@ public class HtmlUtils {
                     out.write(ch);
                 }
             } else {
-                // ch > 0xff
-                if (escapeUnicode) {
-                    writeDecRefDirect(out, ch);
-                } else if (forXml && !(isAllowedXmlCharacter(ch) || isAllowedSurrogateCharacter(ch, i, text))) {
-                    // drop (runStart already advanced)
-                } else {
-                    out.write(ch);
-                }
+                i = writeAboveLatin1(out, escapeUnicode, text, i, end, forXml);
+                runStart = i + 1;
             }
         }
 
@@ -246,46 +229,113 @@ public class HtmlUtils {
     }
 
     /**
-     * Emits a numeric character reference {@code &#NNN;} for the given character directly via
+     * Writes the character above U+00FF at {@code text[i]}: dropped when {@code forXml} and XML does not allow it, else as
+     * a numeric character reference when {@code escapeUnicode}, else as is. A surrogate pair is one character.
+     *
+     * @return the index of the last char written or dropped, which is {@code i + 1} for an escaped surrogate pair
+     */
+    private static int writeAboveLatin1(Writer out, boolean escapeUnicode, char[] text, int i, int end, boolean forXml) throws IOException {
+        char ch = text[i];
+
+        if (forXml && !(isAllowedXmlCharacter(ch) || isAllowedSurrogateCharacter(ch, i, text))) {
+            return i;
+        }
+
+        if (!escapeUnicode) {
+            out.write(ch);
+            return i;
+        }
+
+        if (isHighSurrogate(ch) && i + 1 < end && isLowSurrogate(text[i + 1])) {
+            writeDecRefDirect(out, toCodePoint(ch, text[i + 1]));
+            return i + 1;
+        }
+
+        if (forXml && isSurrogate(ch)) {
+            return i;
+        }
+
+        writeDecRefDirect(out, ch);
+        return i;
+    }
+
+    /**
+     * Emits a numeric character reference {@code &#NNN;} for the given code point directly via
      * {@link Writer#write(int)} calls -- no intermediate buffer. Always uses the numeric form,
      * which is universally valid across HTML 4, HTML5, XHTML and XML (whereas named entities
      * like {@code &euro;} are invalid in XHTML/XML without a DTD declaration).
      */
-    private static void writeDecRefDirect(Writer out, char ch) throws IOException {
+    private static void writeDecRefDirect(Writer out, int codePoint) throws IOException {
         out.write(DEC_REF_START);
-        int v = ch;
-        if (v >= 10000) {
-            out.write('0' + v / 10000);
-            v %= 10000;
-            out.write('0' + v / 1000);
-            v %= 1000;
-            out.write('0' + v / 100);
-            v %= 100;
-            out.write('0' + v / 10);
-            v %= 10;
-            out.write('0' + v);
-        } else if (v >= 1000) {
-            out.write('0' + v / 1000);
-            v %= 1000;
-            out.write('0' + v / 100);
-            v %= 100;
-            out.write('0' + v / 10);
-            v %= 10;
-            out.write('0' + v);
-        } else if (v >= 100) {
-            out.write('0' + v / 100);
-            v %= 100;
-            out.write('0' + v / 10);
-            v %= 10;
-            out.write('0' + v);
-        } else if (v >= 10) {
-            out.write('0' + v / 10);
-            v %= 10;
-            out.write('0' + v);
-        } else {
-            out.write('0' + v);
-        }
+        writeDecimal(out, codePoint);
         out.write(';');
+    }
+
+    private static void writeDecimal(Writer out, int value) throws IOException {
+        if (value >= 10) {
+            writeDecimal(out, value / 10);
+        }
+        out.write('0' + value % 10);
+    }
+
+    /**
+     * Returns whether the given attribute value is a URL whose scheme runs script, the way a browser parses the scheme:
+     * leading whitespace and control characters are ignored, tabs and line breaks are ignored anywhere, and the scheme
+     * is case-insensitive. So {@code " JAVA\tSCRIPT:alert(1)"} is one, and {@code "Transcript: page 1"} is not. The
+     * characters which {@code writeAttribute} drops are ignored anywhere too, because the browser never sees them.
+     *
+     * @param value the attribute value
+     * @return whether the scheme of the value is one of {@code javascript} and {@code vbscript}
+     */
+    public static boolean isScriptURL(CharSequence value) {
+        int start = 0;
+
+        while (start < value.length() && (value.charAt(start) == ' ' || isIgnoredInScheme(value.charAt(start)))) {
+            start++;
+        }
+
+        for (String scheme : SCRIPT_SCHEMES) {
+            if (hasScheme(value, start, scheme)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static boolean hasScheme(CharSequence value, int start, String scheme) {
+        int matched = 0;
+
+        for (int i = start; i < value.length(); i++) {
+            char ch = value.charAt(i);
+
+            if (isIgnoredInScheme(ch)) {
+                continue;
+            }
+
+            if (matched == scheme.length()) {
+                return ch == ':';
+            }
+
+            if (toLowerAscii(ch) != scheme.charAt(matched++)) {
+                return false;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Whether a browser ignores the given char in a scheme, or {@code writeAttribute} may drop it. This covers the
+     * {@code forXml} drops in HTML mode too, and surrogate pairs, which only makes the guard drop a few more harmless
+     * values.
+     */
+    private static boolean isIgnoredInScheme(char ch) {
+        return ch < ' ' || !isAllowedXmlCharacter(ch);
+    }
+
+    private static char toLowerAscii(char ch) {
+        return ch >= 'A' && ch <= 'Z' ? (char) (ch + ('a' - 'A')) : ch;
     }
 
     private static boolean isPrintableControlChar(char ch, boolean forXml) {
@@ -583,6 +633,7 @@ public class HtmlUtils {
     static private final char[] GT_CHARS = "&gt;".toCharArray();
     static private final char[] LT_CHARS = "&lt;".toCharArray();
     static private final char[] DEC_REF_START = "&#".toCharArray();
+    static private final String[] SCRIPT_SCHEMES = { "javascript", "vbscript" };
     static private final int MAX_BYTES_PER_CHAR = 10;
     static private final BitSet DONT_ENCODE_SET = new BitSet(256);
 
