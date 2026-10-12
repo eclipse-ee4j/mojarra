@@ -147,6 +147,10 @@ public class HtmlResponseWriter extends ResponseWriter {
     // accomodate larger values.
     private char[] textBuffer = new char[128];
 
+    // Markup fragments ("<name", "</name>", " name=\"") are composed here so that each reaches the writer in one call,
+    // because every call passes through the state write-behind writer.
+    private char[] markupBuffer = new char[64];
+
     private char[] charHolder = new char[1];
 
     private Deque<String> elementNames;
@@ -995,10 +999,6 @@ public class HtmlResponseWriter extends ResponseWriter {
     }
 
     // --------------------------------------------------------- Private Methods
-
-    // Markup fragments ("<name", "</name>", " name=\"") are composed here and handed to the writer in one call
-    // instead of three: every write passes through the state write-behind writer before reaching the buffer.
-    private char[] markupBuffer = new char[64];
 
     private char[] markupBuffer(int length) {
         if (markupBuffer.length < length) {

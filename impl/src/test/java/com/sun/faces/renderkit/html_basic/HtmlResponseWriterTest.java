@@ -367,8 +367,7 @@ public class HtmlResponseWriterTest {
     }
 
     /**
-     * Start tags, attribute names and end tags are written in one call each; names longer than the markup buffer make
-     * it grow.
+     * The markup is the same for names shorter and longer than the markup buffer.
      */
     @Test
     public void testMarkupOfShortAndLongNames() throws Exception {
