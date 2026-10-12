@@ -23,8 +23,7 @@ import jakarta.el.ELResolver;
 
 /**
  * The resolvers registered with {@link jakarta.faces.application.Application#addELResolver} (Weld, for one, adds its
- * own). Exposes them, so the Faces chain can apply its shortcut rules to each of them instead of treating the whole
- * composite as an unknown resolver.
+ * own). Exposes them, so the Faces chain can apply its shortcut rules to each of them.
  */
 public class ApplicationELResolvers extends CompositeELResolver {
 

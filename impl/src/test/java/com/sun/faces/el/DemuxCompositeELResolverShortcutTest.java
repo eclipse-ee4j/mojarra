@@ -286,6 +286,43 @@ class DemuxCompositeELResolverShortcutTest {
         assertEquals(3, unnamed.calls);
     }
 
+    /** A namespace object of a CDI implementation which is neither Weld nor OpenWebBeans. */
+    static class Namespace {
+    }
+
+    /** Resolves the root name "ns" to a {@link Namespace}, and its property "bean", like a CDI resolver does. */
+    static class NamespaceCdi extends Flaky {
+        @Override
+        public Object getValue(ELContext context, Object base, Object property) {
+            calls++;
+            if (base == null && "ns".equals(property)) {
+                context.setPropertyResolved(true);
+                return new Namespace();
+            }
+            if (base instanceof Namespace && "bean".equals(property)) {
+                context.setPropertyResolved(true);
+                return "bean";
+            }
+            return null;
+        }
+    }
+
+    @Test
+    void cdiResolverOfUnknownImplementationIsAskedForPropertiesOfItsNamespaces() {
+        NamespaceCdi cdi = new NamespaceCdi();
+        DemuxCompositeELResolver chain = new DemuxCompositeELResolver(FacesCompositeELResolver.ELResolverChainType.Faces);
+        chain.add(cdi);
+        chain.addPropertyELResolver(new MapELResolver());
+        chain.setCdiNames(cdi, () -> Set.of("ns", "ns.bean"));
+
+        ELContext context = context();
+        for (int i = 0; i < 2; i++) {
+            Object namespace = chain.getValue(context, null, "ns");
+            assertEquals("bean", chain.getValue(context, namespace, "bean"));
+            assertTrue(context.isPropertyResolved());
+        }
+    }
+
     @Test
     void disabledShortcutsWalkTheWholeChain() {
         CdiLike cdi = new CdiLike(Map.of());

@@ -438,7 +438,7 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
      * Only resolvers known to behave this way qualify.
      */
     private boolean neverResolvesRootName(ELResolver resolver, String name) {
-        if (isCdiResolver(resolver)) {
+        if (resolver == _cdiResolver || isCdiClass(resolver.getClass())) {
             Set<String> cdiNames = cdiNames();
             return cdiNames != null && !cdiNames.contains(name);
         }
@@ -460,8 +460,8 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
      * <code>baseClass</code> and any property. Only resolvers known to decide from the base type alone qualify.
      */
     private boolean neverResolvesProperty(ELResolver resolver, Class<?> baseClass) {
-        if (isCdiResolver(resolver)) {
-            // CDI resolvers only resolve properties of their own namespace objects.
+        if (isCdiClass(resolver.getClass())) {
+            // Weld and OpenWebBeans resolvers only resolve properties of their own namespace objects.
             return !isCdiClass(baseClass);
         }
         if (resolver.getClass() == ApplicationELResolvers.class) {
@@ -472,10 +472,6 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
         }
         Predicate<Class<?>> mayResolve = PROPERTY_BASES.get(resolver.getClass());
         return mayResolve != null && !mayResolve.test(baseClass);
-    }
-
-    private boolean isCdiResolver(ELResolver resolver) {
-        return resolver == _cdiResolver || isCdiClass(resolver.getClass());
     }
 
     private static boolean isCdiClass(Class<?> type) {
