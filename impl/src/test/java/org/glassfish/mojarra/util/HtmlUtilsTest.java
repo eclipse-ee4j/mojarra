@@ -29,6 +29,9 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.ThrowingConsumer;
@@ -511,6 +514,212 @@ class HtmlUtilsTest {
             "https://server.com/sap?query=foo%3Fbar#fragment?p=v",
             writeURL("https://server.com/sap?query=foo?bar#fragment?p=v")
         );
+    }
+
+    // -------- Every character at every position ----------------------------
+
+    /**
+     * How {@code writeText} and {@code writeAttribute} write each character class, per flag. The output for a combination of flags follows from the single
+     * flags: {@code escapeIsocode} writes a named entity for U+00A0 to U+00FF, {@code escapeUnicode} a numeric reference from U+0100, and {@code forXml} drops
+     * what XML does not allow unless {@code escapeUnicode} already escaped it.
+     */
+    private record Escape(String probe, String plain, String isocode, String unicode, String xml) {
+
+        static Escape unchanged(String probe) {
+            return new Escape(probe, probe, probe, probe, probe);
+        }
+
+        static Escape always(String probe, String escaped) {
+            return new Escape(probe, escaped, escaped, escaped, escaped);
+        }
+
+        String expected(int flags) {
+            if (escapeIsocode(flags) && !isocode.equals(plain)) {
+                return isocode;
+            }
+            if (escapeUnicode(flags) && !unicode.equals(plain)) {
+                return unicode;
+            }
+            return forXml(flags) ? xml : plain;
+        }
+
+    }
+
+    private static final List<Escape> ESCAPES = List.of(
+        Escape.always("<", "&lt;"),
+        Escape.always(">", "&gt;"),
+        Escape.always("&", "&amp;"),
+        Escape.always("]]>", "]]&gt;"),
+        Escape.unchanged("'"),
+        Escape.unchanged("{"),
+        Escape.unchanged("\t"),
+        Escape.unchanged("\n"),
+        Escape.unchanged("\r"),
+        new Escape("\f", "\f", "\f", "\f", ""),
+        Escape.always("\u0001", ""),
+        Escape.always("\u001F", ""),
+        Escape.unchanged("\u007F"),
+        Escape.unchanged("\u0080"),
+        Escape.unchanged("\u0085"),
+        Escape.unchanged("\u009F"),
+        new Escape("\u00A0", "\u00A0", "&nbsp;", "\u00A0", "\u00A0"),
+        new Escape("é", "é", "&eacute;", "é", "é"),
+        new Escape("ÿ", "ÿ", "&yuml;", "ÿ", "ÿ"),
+        // The low byte of these two is a control character, which the SWAR scan flags.
+        new Escape("\u0100", "\u0100", "\u0100", "&#256;", "\u0100"),
+        new Escape("\u0109", "\u0109", "\u0109", "&#265;", "\u0109"),
+        new Escape("€", "€", "€", "&#8364;", "€"),
+        new Escape("あ", "あ", "あ", "&#12354;", "あ"),
+        new Escape("😀", "😀", "😀", "&#55357;&#56832;", "😀"),
+        new Escape("\uD83D", "\uD83D", "\uD83D", "&#55357;", ""),
+        new Escape("\uDE00", "\uDE00", "\uDE00", "&#56832;", ""),
+        new Escape("\uFFFD", "\uFFFD", "\uFFFD", "&#65533;", "\uFFFD"),
+        new Escape("\uFFFE", "\uFFFE", "\uFFFE", "&#65534;", ""),
+        new Escape("\uFFFF", "\uFFFF", "\uFFFF", "&#65535;", ""),
+        Escape.unchanged("script:"),
+        Escape.unchanged("javascript:x")
+    );
+
+    private static final List<Escape> TEXT_ESCAPES = concat(ESCAPES, Escape.unchanged("\""), Escape.always("&{", "&amp;{"));
+
+    private static final List<Escape> ATTRIBUTE_ESCAPES = concat(ESCAPES, Escape.always("\"", "&quot;"), Escape.unchanged("&{"));
+
+    private static final int SWAR_WORD = 8;
+    private static final int FLAG_COMBINATIONS = 8;
+
+    /**
+     * The short scan runs per char, the long scan from {@link HtmlUtils#INTRINSIC_SCAN_MIN_LENGTH} chars per word of {@link #SWAR_WORD} chars, so these lengths
+     * put every probe at every offset of both.
+     */
+    private static final int[] SWEEP_LENGTHS = IntStream.concat(
+        IntStream.rangeClosed(1, SWAR_WORD * 2),
+        IntStream.rangeClosed(HtmlUtils.INTRINSIC_SCAN_MIN_LENGTH - SWAR_WORD, HtmlUtils.INTRINSIC_SCAN_MIN_LENGTH + SWAR_WORD)
+    )
+        .toArray();
+
+    @Test
+    void writeText_everyCharacterAtEveryPosition() throws IOException {
+        for (Escape escape : TEXT_ESCAPES) {
+            for (int length : SWEEP_LENGTHS) {
+                for (int pos = 0; pos < length; pos++) {
+                    String before = "a".repeat(pos);
+                    String after = "b".repeat(Math.max(0, length - pos - 1));
+                    for (int flags = 0; flags < FLAG_COMBINATIONS; flags++) {
+                        assertText(before + escape.probe() + after, before + escape.expected(flags) + after, flags);
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
+    void writeAttribute_everyCharacterAtEveryPosition() throws IOException {
+        for (Escape escape : ATTRIBUTE_ESCAPES) {
+            for (int length : SWEEP_LENGTHS) {
+                for (int pos = 0; pos < length; pos++) {
+                    String before = "a".repeat(pos);
+                    String after = "b".repeat(Math.max(0, length - pos - 1));
+                    for (int flags = 0; flags < FLAG_COMBINATIONS; flags++) {
+                        assertAttribute(before + escape.probe() + after, before + escape.expected(flags) + after, flags);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Two characters in the same or adjacent SWAR words past {@link HtmlUtils#INTRINSIC_SCAN_MIN_LENGTH}, where the scan must not skip the second after finding
+     * the first.
+     */
+    @Test
+    void everyTwoCharactersAroundSwarWordBoundaries() throws IOException {
+        String before = "x".repeat(HtmlUtils.INTRINSIC_SCAN_MIN_LENGTH);
+        String after = "z".repeat(SWAR_WORD);
+        for (Escape first : ESCAPES) {
+            for (Escape second : ESCAPES) {
+                for (int a = 0; a < SWAR_WORD; a++) {
+                    for (int gap = 1; gap <= SWAR_WORD; gap++) {
+                        String lead = before + "w".repeat(a);
+                        String between = "y".repeat(gap);
+                        for (int flags : new int[] { 0, FLAG_COMBINATIONS - 1 }) {
+                            String expected = lead + first.expected(flags) + between + second.expected(flags) + after;
+                            String text = lead + first.probe() + between + second.probe() + after;
+                            assertText(text, expected, flags);
+                            assertAttribute(text, expected, flags);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * With scripts in attribute values disabled, "script:" drops the run of ASCII printable characters before it and the rest of the value, which for an ASCII
+     * value is all of it.
+     */
+    @Test
+    void writeAttribute_scriptAtEveryPositionDropsTheAsciiValue() throws IOException {
+        for (int length : SWEEP_LENGTHS) {
+            for (int pos = 0; pos < length; pos++) {
+                String text = "a".repeat(pos) + "javascript:x" + "b".repeat(Math.max(0, length - pos - 1));
+                StringWriter writer = new StringWriter();
+                HtmlUtils.writeAttribute(writer, false, false, text, new char[SWAR_WORD], false, false);
+                assertEquals("", writer.toString(), text);
+            }
+        }
+    }
+
+    private static void assertText(String text, String expected, int flags) throws IOException {
+        String context = describe(text, flags);
+
+        StringWriter fromString = new StringWriter();
+        HtmlUtils.writeText(fromString, escapeUnicode(flags), escapeIsocode(flags), text, new char[SWAR_WORD], forXml(flags));
+        assertEquals(expected, fromString.toString(), context);
+
+        StringWriter fromChars = new StringWriter();
+        HtmlUtils.writeText(fromChars, escapeUnicode(flags), escapeIsocode(flags), ("<>" + text + "<>").toCharArray(), 2, text.length(), forXml(flags));
+        assertEquals(expected, fromChars.toString(), "char[] " + context);
+    }
+
+    private static void assertAttribute(String text, String expected, int flags) throws IOException {
+        String context = describe(text, flags);
+
+        StringWriter fromString = new StringWriter();
+        HtmlUtils.writeAttribute(fromString, escapeUnicode(flags), escapeIsocode(flags), text, new char[SWAR_WORD], true, forXml(flags));
+        assertEquals(expected, fromString.toString(), context);
+
+        StringWriter fromChars = new StringWriter();
+        HtmlUtils.writeAttribute(
+            fromChars, escapeUnicode(flags), escapeIsocode(flags), ("<>" + text + "<>").toCharArray(), 2, text.length(), true,
+            forXml(flags)
+        );
+        assertEquals(expected, fromChars.toString(), "char[] " + context);
+    }
+
+    private static boolean escapeUnicode(int flags) {
+        return (flags & 1) != 0;
+    }
+
+    private static boolean escapeIsocode(int flags) {
+        return (flags & 2) != 0;
+    }
+
+    private static boolean forXml(int flags) {
+        return (flags & 4) != 0;
+    }
+
+    private static List<Escape> concat(List<Escape> escapes, Escape... more) {
+        List<Escape> all = new ArrayList<>(escapes);
+        all.addAll(List.of(more));
+        return List.copyOf(all);
+    }
+
+    private static String describe(String text, int flags) {
+        StringBuilder codes = new StringBuilder();
+        for (char c : text.toCharArray()) {
+            codes.append(c >= 0x20 && c < 0x7F ? String.valueOf(c) : String.format("\\u%04X", (int) c));
+        }
+        return "escapeUnicode=" + escapeUnicode(flags) + " escapeIsocode=" + escapeIsocode(flags) + " forXml=" + forXml(flags) + " text=" + codes;
     }
 
     // -------- XML mode variants --------------------------------------------
