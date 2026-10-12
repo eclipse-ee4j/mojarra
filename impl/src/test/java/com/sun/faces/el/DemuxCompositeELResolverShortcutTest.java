@@ -28,6 +28,9 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import com.sun.faces.cdi.FlowMapProducer;
+import com.sun.faces.cdi.FlowProducer;
+
 import jakarta.el.BeanELResolver;
 import jakarta.el.ELContext;
 import jakarta.el.ELResolver;
@@ -36,6 +39,12 @@ import jakarta.el.ListELResolver;
 import jakarta.el.MapELResolver;
 import jakarta.el.StaticFieldELResolver;
 import jakarta.el.VariableMapper;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.se.SeContainer;
+import jakarta.enterprise.inject.se.SeContainerInitializer;
+import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.Extension;
 
 /**
  * The getValue shortcuts of {@link DemuxCompositeELResolver} must give exactly the results of walking the whole chain:
@@ -238,7 +247,7 @@ class DemuxCompositeELResolverShortcutTest {
         Map<String, Object> beans = new HashMap<>();
         CdiLike cdi = new CdiLike(beans);
         DemuxCompositeELResolver chain = chainWith(cdi, new AnyRoot());
-        chain.setCdiNames(cdi, () -> Set.of("user"));
+        chain.setCdiNames(cdi, () -> Set.of("user"), name -> false);
 
         ELContext context = context();
         assertEquals("root:user", chain.getValue(context, null, "user"));
@@ -251,7 +260,7 @@ class DemuxCompositeELResolverShortcutTest {
     void cdiIsSkippedOnlyForNamesWhichAreNoBeanNorNamespace() {
         CdiLike cdi = new CdiLike(Map.of());
         DemuxCompositeELResolver chain = chainWith(cdi, new AnyRoot());
-        chain.setCdiNames(cdi, () -> Set.of("user", "com", "com.acme", "com.acme.bean"));
+        chain.setCdiNames(cdi, () -> Set.of("user", "com", "com.acme", "com.acme.bean"), name -> false);
 
         ELContext context = context();
         for (int i = 0; i < 3; i++) {
@@ -264,13 +273,78 @@ class DemuxCompositeELResolverShortcutTest {
         assertEquals(4, cdi.calls);
     }
 
+    /**
+     * A bean whose qualifiers lack <code>@Any</code>, such as a custom <code>Bean</code> declaring its own qualifier
+     * only, is missing from the bean names enumerated with <code>@Any</code>, but is still found by its name. The CDI
+     * resolver must still be asked for it after it was <code>null</code> once, as <code>flowScope</code> is outside a
+     * flow.
+     */
+    @Test
+    void cdiIsAskedForBeanWhichIsOnlyFoundByName() {
+        Map<String, Object> beans = new HashMap<>();
+        CdiLike cdi = new CdiLike(beans);
+        DemuxCompositeELResolver chain = chainWith(cdi, new AnyRoot());
+        chain.setCdiNames(cdi, () -> Set.of("user"), "flowScope"::equals);
+
+        ELContext context = context();
+        assertEquals("root:flowScope", chain.getValue(context, null, "flowScope"));
+        beans.put("flowScope", "flow");
+        assertEquals("flow", chain.getValue(context, null, "flowScope"));
+    }
+
+    /**
+     * Mojarra's producers of <code>flowScope</code> and <code>flow</code> lack the <code>@Any</code> qualifier and the
+     * <code>Object</code> type respectively, so the bean manager only finds them by name.
+     */
+    @Test
+    void cdiIsAskedForProducersWhichTheBeanManagerOnlyFindsByName() {
+        try (SeContainer container = SeContainerInitializer.newInstance().disableDiscovery()
+                .addBeanClasses(DemuxCompositeELResolverShortcutTest.class).addExtensions(new FlowProducers()).initialize()) {
+            Map<String, Object> beans = new HashMap<>();
+            CdiLike cdi = new CdiLike(beans);
+            DemuxCompositeELResolver chain = chainWith(cdi, new AnyRoot());
+            chain.setBeanManager(cdi, container.getBeanManager());
+
+            ELContext context = context();
+            for (String name : List.of("flowScope", "flow")) {
+                assertEquals("root:" + name, chain.getValue(context, null, name));
+                beans.put(name, "bean:" + name);
+                assertEquals("bean:" + name, chain.getValue(context, null, name));
+            }
+        }
+    }
+
+    static class FlowProducers implements Extension {
+
+        void addProducers(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager) {
+            afterBeanDiscovery.addBean(new FlowMapProducer(beanManager));
+            afterBeanDiscovery.addBean(new FlowProducer(beanManager));
+        }
+
+    }
+
+    @Test
+    void cdiIsAskedWhenBeanNameProbeFails() {
+        CdiLike cdi = new CdiLike(Map.of());
+        DemuxCompositeELResolver chain = chainWith(cdi, new AnyRoot());
+        chain.setCdiNames(cdi, () -> Set.of("user"), name -> {
+            throw new IllegalStateException("not deployed yet");
+        });
+
+        ELContext context = context();
+        for (int i = 0; i < 3; i++) {
+            assertEquals("root:row", chain.getValue(context, null, "row"));
+        }
+        assertEquals(3, cdi.calls);
+    }
+
     @Test
     void cdiIsAlwaysAskedWhenBeanNamesAreUnknown() {
         CdiLike cdi = new CdiLike(Map.of());
         DemuxCompositeELResolver chain = chainWith(cdi, new AnyRoot());
         chain.setCdiNames(cdi, () -> {
             throw new IllegalStateException("not deployed yet");
-        });
+        }, name -> false);
 
         ELContext context = context();
         for (int i = 0; i < 3; i++) {
@@ -313,7 +387,7 @@ class DemuxCompositeELResolverShortcutTest {
         DemuxCompositeELResolver chain = new DemuxCompositeELResolver(FacesCompositeELResolver.ELResolverChainType.Faces);
         chain.add(cdi);
         chain.addPropertyELResolver(new MapELResolver());
-        chain.setCdiNames(cdi, () -> Set.of("ns", "ns.bean"));
+        chain.setCdiNames(cdi, () -> Set.of("ns", "ns.bean"), name -> false);
 
         ELContext context = context();
         for (int i = 0; i < 2; i++) {
@@ -327,7 +401,7 @@ class DemuxCompositeELResolverShortcutTest {
     void disabledShortcutsWalkTheWholeChain() {
         CdiLike cdi = new CdiLike(Map.of());
         DemuxCompositeELResolver chain = chainWith(cdi, new AnyRoot());
-        chain.setCdiNames(cdi, () -> Set.of());
+        chain.setCdiNames(cdi, () -> Set.of(), name -> false);
         chain.disableShortcuts();
 
         ELContext context = context();
