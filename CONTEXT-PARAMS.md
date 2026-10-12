@@ -181,6 +181,8 @@ An `org.glassfish.mojarra.*` name which this page does not list is not recognize
 <tr><th>Type</th><th>Default</th><th>Since</th><th>Performance</th><th>Description</th></tr>
 </thead>
 <tbody>
+<tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.disableELResolverShortcuts</code></th></tr>
+<tr><td><code>boolean</code></td><td><code>false</code></td><td>4.1.19</td><td>request</td><td>Makes every EL evaluation walk the whole Faces EL resolver chain. By default, the chain starts the walk for a root name or a base class at the first resolver which may resolve it, skipping the known resolvers which cannot resolve it whatever the request (for example, the CDI resolver for a name which is no bean name, or the map resolver for a base which is no map), and evaluates <code>convertToType</code> directly when no resolver of the chain converts. Resolvers of the application and of <code>faces-config.xml</code> are always consulted. Set it to rule out these shortcuts when diagnosing EL resolution.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.disableOptionalELResolver</code></th></tr>
 <tr><td><code>boolean</code></td><td><code>false</code></td><td>4.1.4</td><td>request</td><td>Drops the <code>jakarta.el.OptionalELResolver</code> from the EL resolver chain, so that <code>#{bean.optional.value}</code> no longer unwraps an <code>Optional</code> by itself. Set it when an application resolves properties on the <code>Optional</code> instance itself, or wants the older behavior back. Leaving it enabled costs one more resolver in the chain for every property resolution which reaches it.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.displayConfiguration</code></th></tr>

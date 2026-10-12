@@ -34,6 +34,8 @@ import jakarta.enterprise.inject.spi.el.ELAwareBeanManager;
 import jakarta.faces.context.FacesContext;
 
 import org.glassfish.mojarra.application.ApplicationAssociate;
+import org.glassfish.mojarra.el.ApplicationELResolvers;
+import org.glassfish.mojarra.el.DemuxCompositeELResolver;
 import org.glassfish.mojarra.el.FacesCompositeELResolver;
 
 public class ExpressionLanguage {
@@ -43,13 +45,13 @@ public class ExpressionLanguage {
     private final ApplicationAssociate associate;
 
     private final List<ELContextListener> elContextListeners;
-    private final CompositeELResolver elResolvers;
+    private final ApplicationELResolvers elResolvers;
     private volatile FacesCompositeELResolver compositeELResolver;
 
     public ExpressionLanguage(ApplicationAssociate applicationAssociate) {
         associate = applicationAssociate;
         elContextListeners = new CopyOnWriteArrayList<>();
-        elResolvers = new CompositeELResolver();
+        elResolvers = new ApplicationELResolvers();
     }
 
     /*
@@ -109,6 +111,10 @@ public class ExpressionLanguage {
 
         if (!resolver.equals(cdiBeanManager.getELResolver())) {
             elResolvers.add(resolver);
+            if (compositeELResolver instanceof DemuxCompositeELResolver) {
+                // The chain may have learned to skip the application resolvers while there were none.
+                ((DemuxCompositeELResolver) compositeELResolver).clearShortcuts();
+            }
         }
     }
 
