@@ -367,6 +367,31 @@ public class HtmlResponseWriterTest {
     }
 
     /**
+     * Start tags, attribute names and end tags are written in one call each; names longer than the markup buffer make
+     * it grow.
+     */
+    @Test
+    public void testMarkupOfShortAndLongNames() throws Exception {
+        for (String suffix : new String[] { "", "-" + "x".repeat(100), "-" + "y".repeat(300) }) {
+            StringWriter sw = new StringWriter();
+            HtmlResponseWriter writer = new HtmlResponseWriter(sw, "text/html", "UTF-8");
+            writer.startElement("input", null);
+            writer.writeAttribute("name" + suffix, "a&b", null);
+            writer.writeAttribute("disabled", true, null);
+            writer.writeURIAttribute("src" + suffix, "/img.png", null);
+            writer.endElement("input");
+            writer.startElement("div" + suffix, null);
+            writer.writeText("text", null);
+            writer.endElement("div" + suffix);
+            writer.flush();
+
+            assertEquals("<input name" + suffix + "=\"a&amp;b\" disabled=\"disabled\" src" + suffix + "=\"/img.png\" />" + "<div"
+                    + suffix + ">text</div" + suffix + ">", sw.toString(), suffix);
+            writer.close();
+        }
+    }
+
+    /**
      * Test CDATA escaping with zero length content.
      */
     @Test
