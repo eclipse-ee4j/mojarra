@@ -61,31 +61,29 @@ public final class HtmlUtils {
 
     // ---------------------------------------------------------------- escaping core
     //
-    // Every character falls in one of three classes:
+    // Every character falls in one of two classes:
     //   NEEDS_HANDLING  escaped, dropped or otherwise handled one by one,
-    //   VERBATIM        written unchanged: ASCII printable,
-    //   PASSTHROUGH     written unchanged too: TAB, LF, CR, DEL, C1 controls, and non-ASCII characters whenever the
-    //                   writer does not escape them.
-    // Both unchanged classes extend the current run, so an accented, CJK or multi-line text is written in bulk.
+    //   UNCHANGED       written unchanged: ASCII printable, TAB, LF, CR, DEL, C1 controls, and non-ASCII characters
+    //                   whenever the writer does not escape them.
+    // UNCHANGED characters extend the current run, so an accented, CJK or multi-line text is written in bulk.
     //
     // A String is first scanned in place; when nothing needs handling (by far the most common case) it is written as
     // is, without copying it into the char buffer. Long inputs are scanned with String.indexOf (a SIMD intrinsic) plus a
     // SWAR test for control characters. The scan is conservative: it may stop early on a character that turns out to be
-    // PASSTHROUGH, after which the exact loop takes over, so it never changes the output.
+    // UNCHANGED, after which the exact loop takes over, so it never changes the output.
 
     private static final byte NEEDS_HANDLING = 0;
-    private static final byte VERBATIM = 1;
-    private static final byte PASSTHROUGH = 2;
+    private static final byte UNCHANGED = 1;
 
     private static final byte[] TEXT_CLASS = new byte[128];
     private static final byte[] ATTRIBUTE_CLASS = new byte[128];
 
     static {
         for (int c = 0x20; c < 0x7F; c++) {
-            TEXT_CLASS[c] = VERBATIM;
+            TEXT_CLASS[c] = UNCHANGED;
         }
         TEXT_CLASS['<'] = TEXT_CLASS['>'] = TEXT_CLASS['&'] = NEEDS_HANDLING;
-        TEXT_CLASS['\t'] = TEXT_CLASS['\n'] = TEXT_CLASS['\r'] = TEXT_CLASS[0x7F] = PASSTHROUGH;
+        TEXT_CLASS['\t'] = TEXT_CLASS['\n'] = TEXT_CLASS['\r'] = TEXT_CLASS[0x7F] = UNCHANGED;
         // FF (0x0C) is written in HTML but dropped in XML; it stays NEEDS_HANDLING so the slow path decides.
         System.arraycopy(TEXT_CLASS, 0, ATTRIBUTE_CLASS, 0, 128);
         ATTRIBUTE_CLASS['"'] = NEEDS_HANDLING;
@@ -105,10 +103,10 @@ public final class HtmlUtils {
             return asciiClasses[ch];
         }
         if (ch < 0xA0) {
-            return PASSTHROUGH;
+            return UNCHANGED;
         }
         if (ch <= 0xFF) {
-            return escapeIsocode ? NEEDS_HANDLING : PASSTHROUGH;
+            return escapeIsocode ? NEEDS_HANDLING : UNCHANGED;
         }
         if (escapeUnicode) {
             return NEEDS_HANDLING;
@@ -117,7 +115,7 @@ public final class HtmlUtils {
         if (forXml && ch >= 0xD800 && (ch <= 0xDFFF || ch >= 0xFFFE)) {
             return NEEDS_HANDLING;
         }
-        return PASSTHROUGH;
+        return UNCHANGED;
     }
 
     /**
@@ -229,7 +227,7 @@ public final class HtmlUtils {
             } else if (ch == '&') {
                 out.write(AMP_CHARS);
             } else if (ch <= 0xff) {
-                // only reached with escapeIsocode (otherwise PASSTHROUGH)
+                // only reached with escapeIsocode (otherwise UNCHANGED)
                 out.write(sISO8859_1_Entities[ch - 0xA0]);
             } else {
                 i = writeAboveLatin1(out, escapeUnicode, text, i, end, forXml);
@@ -343,7 +341,7 @@ public final class HtmlUtils {
             } else if (ch == '"') {
                 out.write(QUOT_CHARS);
             } else if (ch <= 0xff) {
-                // only reached with escapeIsocode (otherwise PASSTHROUGH)
+                // only reached with escapeIsocode (otherwise UNCHANGED)
                 out.write(sISO8859_1_Entities[ch - 0xA0]);
             } else {
                 i = writeAboveLatin1(out, escapeUnicode, text, i, end, forXml);
