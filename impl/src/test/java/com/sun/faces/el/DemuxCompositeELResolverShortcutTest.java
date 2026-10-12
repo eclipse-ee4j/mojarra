@@ -20,10 +20,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListResourceBundle;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -45,6 +54,8 @@ import jakarta.enterprise.inject.se.SeContainerInitializer;
 import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.Extension;
+import jakarta.faces.application.Application;
+import jakarta.faces.context.FacesContext;
 
 /**
  * The getValue shortcuts of {@link DemuxCompositeELResolver} must give exactly the results of walking the whole chain:
@@ -410,5 +421,58 @@ class DemuxCompositeELResolverShortcutTest {
             assertEquals("v", chain.getValue(context, Map.of("k", "v"), "k"));
         }
         assertEquals(6, cdi.calls);
+    }
+
+    private static final ResourceBundle MESSAGES = new ListResourceBundle() {
+        @Override
+        protected Object[][] getContents() {
+            return new Object[][] { { "hello", "Hello" } };
+        }
+    };
+
+    private static DemuxCompositeELResolver chainWithResourceBundles(Set<String> vars) {
+        DemuxCompositeELResolver chain = new DemuxCompositeELResolver(FacesCompositeELResolver.ELResolverChainType.Faces);
+        chain.addRootELResolver(new FacesResourceBundleELResolver());
+        chain.addRootELResolver(new AnyRoot());
+        if (vars != null) {
+            chain.setResourceBundleVars(vars);
+        }
+        return chain;
+    }
+
+    private static ELContext contextWith(Application application) {
+        FacesContext facesContext = mock(FacesContext.class);
+        when(facesContext.getApplication()).thenReturn(application);
+        ELContext context = context();
+        context.putContext(FacesContext.class, facesContext);
+        return context;
+    }
+
+    @Test
+    void resourceBundleResolverIsSkippedOnlyForNamesWhichAreNoVar() {
+        Application application = mock(Application.class);
+        when(application.getResourceBundle(any(), anyString())).thenAnswer(invocation -> "msgs".equals(invocation.getArgument(1)) ? MESSAGES : null);
+        DemuxCompositeELResolver chain = chainWithResourceBundles(Set.of("msgs"));
+
+        ELContext context = contextWith(application);
+        for (int i = 0; i < 3; i++) {
+            assertEquals("root:row", chain.getValue(context, null, "row"));
+            assertEquals(MESSAGES, chain.getValue(context, null, "msgs"));
+            assertTrue(context.isPropertyResolved());
+        }
+        verify(application, times(1)).getResourceBundle(any(), eq("row")); // only the first lookup walks the whole chain
+        verify(application, times(3)).getResourceBundle(any(), eq("msgs"));
+    }
+
+    @Test
+    void resourceBundleResolverIsAlwaysAskedWhenVarsAreUnknown() {
+        Application application = mock(Application.class);
+        DemuxCompositeELResolver chain = chainWithResourceBundles(null);
+
+        ELContext context = contextWith(application);
+        for (int i = 0; i < 3; i++) {
+            assertEquals("root:row", chain.getValue(context, null, "row"));
+        }
+        verify(application, times(3)).getResourceBundle(any(), eq("row"));
     }
 }

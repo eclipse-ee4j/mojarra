@@ -119,6 +119,9 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
     private volatile Supplier<Set<String>> _cdiNameSource;
     private volatile Set<String> _cdiNames;
 
+    /** The vars of the resource bundles of the application configuration, or <code>null</code> when not known. */
+    private volatile Set<String> _resourceBundleVars;
+
     /**
      * Whether a name is the name of a bean, including a bean which the name source misses because it lacks the
      * <code>@Any</code> qualifier or the <code>Object</code> type. The namespaces of such a bean are not found.
@@ -269,6 +272,18 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
      */
     public void disableShortcuts() {
         _shortcuts = false;
+    }
+
+    /**
+     * Lets the root name shortcut skip the {@link FacesResourceBundleELResolver} for a name which is not the
+     * <code>var</code> of a <code>resource-bundle</code> of the application configuration, the only names it resolves.
+     * Without it, this resolver is consulted for every root name.
+     *
+     * @param vars the <code>var</code>s of the resource bundles, which must not change while this chain is used
+     */
+    public void setResourceBundleVars(Set<String> vars) {
+        _resourceBundleVars = vars;
+        clearShortcuts();
     }
 
     /**
@@ -457,6 +472,10 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
         Class<?> type = resolver.getClass();
         if (type == CompositeComponentELResolver.class) {
             return !CompositeComponentELResolver.COMPOSITE_COMPONENT_NAME.equals(name);
+        }
+        if (type == FacesResourceBundleELResolver.class) {
+            Set<String> vars = _resourceBundleVars;
+            return vars != null && !vars.contains(name);
         }
         return type == FlashELResolver.class // flash is resolved as a property base only
                 || type == StaticFieldELResolver.class // only resolves an ELClass base
