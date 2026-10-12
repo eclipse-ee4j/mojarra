@@ -263,7 +263,13 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
 
     private static final String META_INFO_BY_TABLE_KEY = TableMetaInfo.KEY + ".byTable";
 
-    /** Whether a renderer class overrides {@link #createKey}, in which case its keys are honored as before. */
+    /** The expected number of tables rendered in one request. */
+    private static final int EXPECTED_TABLES_PER_REQUEST = 4;
+
+    /**
+     * Whether a renderer class overrides {@link #createKey}, in which case the info is kept in the
+     * {@link FacesContext} attributes under its keys.
+     */
     private static final ClassValue<Boolean> CUSTOM_KEY = new ClassValue<>() {
         @Override
         protected Boolean computeValue(Class<?> type) {
@@ -283,7 +289,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
     private static Map<UIComponent, TableMetaInfo> metaInfoByTable(Map<Object, Object> attributes, boolean create) {
         Map<UIComponent, TableMetaInfo> byTable = (Map<UIComponent, TableMetaInfo>) attributes.get(META_INFO_BY_TABLE_KEY);
         if (byTable == null && create) {
-            byTable = new IdentityHashMap<>(4);
+            byTable = new IdentityHashMap<>(EXPECTED_TABLES_PER_REQUEST);
             attributes.put(META_INFO_BY_TABLE_KEY, byTable);
         }
         return byTable;
@@ -389,9 +395,6 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
             return style;
         }
 
-        // The rowHeader and styleClass attributes of each column, read once per render of the table when they are no
-        // value expression and the table does not preserve row state: a value set on the column during the render of the
-        // rows, for example by a child component, then only applies from the next render on.
         private static final byte UNKNOWN = 0;
         private static final byte FALSE = 1;
         private static final byte TRUE = 2;
@@ -402,7 +405,13 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
         private Object[] styleClasses;
 
         /**
-         * Whether the cells of the column at <code>index</code> are row headers for the current row.
+         * Whether the cells of the column at <code>index</code> are row headers.
+         *
+         * <p>
+         * When the <code>rowHeader</code> attribute of the column is not a value expression and the table does not
+         * preserve row state, the attribute is read once per render of the table. A value set on the column during the
+         * render of the rows, for example by a child component, then applies from the next render on. Otherwise the
+         * attribute is read for every row.
          */
         public boolean isRowHeader(UIComponent table, int index, UIColumn column) {
             if (rowHeaders == null) {
@@ -417,7 +426,13 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
         }
 
         /**
-         * The <code>styleClass</code> of the column at <code>index</code> for the current row, if set.
+         * The <code>styleClass</code> of the column at <code>index</code>, if set.
+         *
+         * <p>
+         * When the <code>styleClass</code> attribute of the column is not a value expression and the table does not
+         * preserve row state, the attribute is read once per render of the table. A value set on the column during the
+         * render of the rows, for example by a child component, then applies from the next render on. Otherwise the
+         * attribute is read for every row.
          */
         public String getColumnStyleClass(UIComponent table, int index, UIColumn column) {
             if (styleClasses == null) {

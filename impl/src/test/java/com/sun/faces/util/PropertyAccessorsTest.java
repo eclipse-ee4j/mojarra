@@ -20,6 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.function.Function;
 
 import org.junit.jupiter.api.Test;
@@ -35,6 +37,24 @@ class PropertyAccessorsTest {
     }
 
     public static class OtherOutput extends UIOutput {
+    }
+
+    public static class Bean {
+        public String getText() {
+            return "text";
+        }
+
+        public String getFailure() {
+            throw new IllegalStateException("failure");
+        }
+
+        public String getText(int index) {
+            return "text" + index;
+        }
+
+        public static String getStatic() {
+            return "static";
+        }
     }
 
     @Test
@@ -54,5 +74,26 @@ class PropertyAccessorsTest {
         Function<Object, Object> reader = PropertyAccessors.reader(Output.class.getMethod("getText"));
         IllegalStateException e = assertThrows(IllegalStateException.class, () -> reader.apply(new Output()));
         assertEquals("text", e.getMessage());
+    }
+
+    @Test
+    void getterOfAClassInAnotherClassLoaderIsRead() throws Exception {
+        // As an application class while Mojarra is provided by the server in its own class loader.
+        URL testClasses = Bean.class.getProtectionDomain().getCodeSource().getLocation();
+        try (URLClassLoader application = new URLClassLoader(new URL[] { testClasses }, ClassLoader.getPlatformClassLoader())) {
+            Class<?> beanClass = application.loadClass(Bean.class.getName());
+            Object bean = beanClass.getConstructor().newInstance();
+
+            assertEquals("text", PropertyAccessors.reader(beanClass.getMethod("getText")).apply(bean));
+            Function<Object, Object> failure = PropertyAccessors.reader(beanClass.getMethod("getFailure"));
+            IllegalStateException e = assertThrows(IllegalStateException.class, () -> failure.apply(bean));
+            assertEquals("failure", e.getMessage());
+        }
+    }
+
+    @Test
+    void readerRejectsMethodsWhichAreNoGetter() throws Exception {
+        assertThrows(IllegalArgumentException.class, () -> PropertyAccessors.reader(Bean.class.getMethod("getText", int.class)));
+        assertThrows(IllegalArgumentException.class, () -> PropertyAccessors.reader(Bean.class.getMethod("getStatic")));
     }
 }

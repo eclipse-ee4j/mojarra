@@ -25,21 +25,24 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 /**
- * Turns JavaBean getter {@link Method}s into directly invocable functions, for hot paths that would otherwise go
- * through {@link Method#invoke} (such as {@code UIComponent.getAttributes().get/put} on property-backed attributes).
+ * Turns JavaBean getter {@link Method}s into directly invocable functions, for hot paths such as
+ * {@code UIComponent.getAttributes().get} on property-backed attributes.
  *
  * <p>
  * The preferred form is a {@link LambdaMetafactory} generated class, which the JIT can inline like a regular call. It
- * is defined in the accessor's declaring class (via {@link MethodHandles#privateLookupIn}), so it resolves against that
- * class's own class loader -- which matters for application component classes that Mojarra's class loader cannot
- * see. When that is not permitted (e.g. a package not opened to Mojarra in a named module), a {@link MethodHandle} is
- * used, and when even that fails, {@link Method#invoke}. Each step is behavior-equivalent: the accessor's own
- * exceptions propagate unwrapped (callers wrap them, exactly as they unwrap {@link InvocationTargetException}).
+ * is defined in the accessor's declaring class (via {@link MethodHandles#privateLookupIn}), which requires full
+ * privilege access, and that is only given for a class in the module of Mojarra. Each class loader has its own unnamed
+ * module, so a getter of a class of an application while Mojarra is provided by the server in its own class loader gets
+ * a {@link MethodHandle}. When even that is not permitted (e.g. a package not opened to Mojarra in a named module),
+ * {@link Method#invoke} is used. Each step is behavior-equivalent:
+ * the accessor's own exceptions propagate unwrapped (callers wrap them, exactly as they unwrap
+ * {@link InvocationTargetException}).
  *
  * <p>
  * The generated class lives as long as the class loader of the getter's declaring class. So there is one function per
@@ -71,9 +74,13 @@ public final class PropertyAccessors {
     /**
      * Returns a function invoking the given getter on its argument.
      *
-     * @param getter a getter: a method without parameters
+     * @param getter a getter: an instance method without parameters
+     * @throws IllegalArgumentException when <code>getter</code> is static or has parameters
      */
     public static Function<Object, Object> reader(Method getter) {
+        if (getter.getParameterCount() != 0 || Modifier.isStatic(getter.getModifiers())) {
+            throw new IllegalArgumentException(getter.toString());
+        }
         Map<String, Function<Object, Object>> readers = READERS.get(getter.getDeclaringClass());
         Function<Object, Object> reader = readers.get(getter.getName());
         if (reader == null) {
