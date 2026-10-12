@@ -16,20 +16,15 @@
 
 package com.sun.faces.renderkit;
 
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
+import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.Mac;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -37,6 +32,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import com.sun.faces.RIConstants;
+import com.sun.faces.util.CryptoPool;
 import com.sun.faces.util.FacesLogger;
 
 import jakarta.faces.FacesException;
@@ -70,6 +66,8 @@ public final class ByteArrayGuard {
     private static final String CIPHER_CODE = "AES/CBC/PKCS5Padding";
     private static final String MAC_CODE = "HmacSHA256";
     private static final String SK_SESSION_KEY = RIConstants.FACES_PREFIX + "SK";
+    private static final SecureRandom RANDOM = new SecureRandom();
+    private final CryptoPool<CipherAndMac> ciphersAndMacs = new CryptoPool<>(() -> new CipherAndMac(Cipher.getInstance(CIPHER_CODE), Mac.getInstance(MAC_CODE)));
     private SecretKey sk;
 
     // ------------------------------------------------------------ Constructors
@@ -97,32 +95,28 @@ public final class ByteArrayGuard {
      * @return the encrypted byte array.
      */
     public byte[] encrypt(FacesContext facesContext, byte[] bytes) {
-        byte[] securedata = null;
         try {
             // Generate IV
-            SecureRandom rand = new SecureRandom();
             byte[] iv = new byte[16];
-            rand.nextBytes(iv);
+            RANDOM.nextBytes(iv);
             IvParameterSpec ivspec = new IvParameterSpec(iv);
-            Cipher encryptCipher = Cipher.getInstance(CIPHER_CODE);
             SecretKey secKey = getSecretKey(facesContext);
-            encryptCipher.init(Cipher.ENCRYPT_MODE, secKey, ivspec);
-            Mac encryptMac = Mac.getInstance(MAC_CODE);
-            encryptMac.init(secKey);
-            encryptMac.update(iv);
-            // encrypt the plaintext
-            byte[] encdata = encryptCipher.doFinal(bytes);
-            byte[] macBytes = encryptMac.doFinal(encdata);
-            byte[] tmp = concatBytes(macBytes, iv);
-            securedata = concatBytes(tmp, encdata);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalStateException
-                | IllegalBlockSizeException | BadPaddingException e) {
+            return ciphersAndMacs.apply(crypto -> {
+                crypto.cipher.init(Cipher.ENCRYPT_MODE, secKey, ivspec);
+                crypto.mac.init(secKey);
+                crypto.mac.update(iv);
+                // encrypt the plaintext
+                byte[] encdata = crypto.cipher.doFinal(bytes);
+                byte[] macBytes = crypto.mac.doFinal(encdata);
+                byte[] tmp = concatBytes(macBytes, iv);
+                return concatBytes(tmp, encdata);
+            });
+        } catch (GeneralSecurityException | IllegalStateException e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, "Unexpected exception initializing encryption." + "  No encryption will be performed.", e);
             }
             return null;
         }
-        return securedata;
     }
 
     /**
@@ -148,26 +142,23 @@ public final class ByteArrayGuard {
 
             IvParameterSpec ivspec = new IvParameterSpec(iv);
             SecretKey secKey = getSecretKey(facesContext);
-            Cipher decryptCipher = Cipher.getInstance(CIPHER_CODE);
-            decryptCipher.init(Cipher.DECRYPT_MODE, secKey, ivspec);
+            return ciphersAndMacs.apply(crypto -> {
+                crypto.cipher.init(Cipher.DECRYPT_MODE, secKey, ivspec);
 
-            // verify MAC by regenerating it and comparing it with the received value
-            Mac decryptMac = Mac.getInstance(MAC_CODE);
-            decryptMac.init(secKey);
-            decryptMac.update(iv);
-            decryptMac.update(encdata);
-            byte[] macBytesCalculated = decryptMac.doFinal();
-            if (areArrayEqualsConstantTime(macBytes, macBytesCalculated)) {
-                // continue only if the MAC was valid
-                // System.out.println("Valid MAC found!");
-                byte[] plaindata = decryptCipher.doFinal(encdata);
-                return plaindata;
-            } else {
-                System.err.println("ERROR: MAC did not verify!");
-                return null;
-            }
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalStateException
-                | IllegalBlockSizeException | BadPaddingException e) {
+                // verify MAC by regenerating it and comparing it with the received value
+                crypto.mac.init(secKey);
+                crypto.mac.update(iv);
+                crypto.mac.update(encdata);
+                byte[] macBytesCalculated = crypto.mac.doFinal();
+                if (areArrayEqualsConstantTime(macBytes, macBytesCalculated)) {
+                    // continue only if the MAC was valid
+                    return crypto.cipher.doFinal(encdata);
+                } else {
+                    System.err.println("ERROR: MAC did not verify!");
+                    return null;
+                }
+            });
+        } catch (GeneralSecurityException | IllegalStateException e) {
             System.err.println("ERROR: Decrypting:" + e.getCause());
             return null; // Signal to Faces runtime
         }
@@ -252,5 +243,16 @@ public final class ByteArrayGuard {
             }
         }
         return result;
+    }
+
+    private static final class CipherAndMac {
+
+        private final Cipher cipher;
+        private final Mac mac;
+
+        private CipherAndMac(Cipher cipher, Mac mac) {
+            this.cipher = cipher;
+            this.mac = mac;
+        }
     }
 }
