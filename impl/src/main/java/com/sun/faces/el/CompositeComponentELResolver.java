@@ -33,7 +33,7 @@ import com.sun.faces.component.CompositeComponentStackManager;
  */
 public class CompositeComponentELResolver extends ELResolver {
 
-    private static final String COMPOSITE_COMPONENT_NAME = "cc";
+    static final String COMPOSITE_COMPONENT_NAME = "cc";
 
     @Override
     public Object getValue(ELContext context, Object base, Object property) throws ELException {

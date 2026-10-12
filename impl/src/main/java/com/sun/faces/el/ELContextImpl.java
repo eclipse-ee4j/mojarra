@@ -25,9 +25,11 @@ import java.util.Map;
 import com.sun.faces.config.InitFacesContext;
 
 import jakarta.el.ELContext;
+import jakarta.el.ELManager;
 import jakarta.el.ELResolver;
 import jakarta.el.ExpressionFactory;
 import jakarta.el.FunctionMapper;
+import jakarta.el.LambdaExpression;
 import jakarta.el.ValueExpression;
 import jakarta.el.VariableMapper;
 import jakarta.faces.component.UIViewRoot;
@@ -44,6 +46,19 @@ public class ELContextImpl extends ELContext {
     private FunctionMapper functionMapper = new NoopFunctionMapper();
     private VariableMapper variableMapper;
     private final ELResolver resolver;
+
+    /** {@link ELManager#getExpressionFactory()} and the context class loader it was looked up for. */
+    private ExpressionFactory elManagerExpressionFactory;
+    private ClassLoader elManagerClassLoader;
+
+    /**
+     * The last context objects looked up, by key identity: Weld asks for its creational context store on every
+     * evaluation, Mojarra for the FacesContext. Only {@link #putContext} changes the context objects, and it updates
+     * this cache.
+     */
+    private final Class<?>[] contextKeys = new Class<?>[4];
+    private final Object[] contextValues = new Object[4];
+    private int nextContextSlot;
 
     // ------------------------------------------------------------ Constructors
 
@@ -92,6 +107,64 @@ public class ELContextImpl extends ELContext {
     @Override
     public ELResolver getELResolver() {
         return resolver;
+    }
+
+    /**
+     * Same as {@link ELContext#convertToType}, which first asks the resolver chain and then coerces with
+     * {@link ELManager#getExpressionFactory()}. When the Faces chain certainly declines (see
+     * {@link DemuxCompositeELResolver#neverConverts}), it goes straight to the coercion, and the factory, which the EL
+     * API looks up per context class loader in a synchronized cache on every call, is looked up once per class loader.
+     * Value expressions call this at the end of every evaluation.
+     */
+    @Override
+    public <T> T convertToType(Object obj, Class<T> type) {
+        if (obj instanceof LambdaExpression || !(resolver instanceof DemuxCompositeELResolver) || !((DemuxCompositeELResolver) resolver).neverConverts(obj)) {
+            return super.convertToType(obj, type);
+        }
+
+        // What Expressly's and Tomcat's coercions return first, once no resolver converts: the most common case, an
+        // expression created with Object as expected type.
+        if (type == Object.class || obj != null && type.isInstance(obj)) {
+            @SuppressWarnings("unchecked")
+            T result = (T) obj;
+            return result;
+        }
+
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        if (elManagerExpressionFactory == null || classLoader != elManagerClassLoader) {
+            elManagerExpressionFactory = ELManager.getExpressionFactory();
+            elManagerClassLoader = classLoader;
+        }
+
+        return elManagerExpressionFactory.coerceToType(obj, type);
+    }
+
+    @Override
+    public Object getContext(Class<?> key) {
+        if (key != null) {
+            for (int i = 0; i < contextKeys.length; i++) {
+                if (contextKeys[i] == key) {
+                    return contextValues[i];
+                }
+            }
+        }
+
+        Object value = super.getContext(key);
+        int slot = nextContextSlot;
+        contextKeys[slot] = key;
+        contextValues[slot] = value;
+        nextContextSlot = (slot + 1) % contextKeys.length;
+        return value;
+    }
+
+    @Override
+    public void putContext(Class<?> key, Object contextObject) {
+        super.putContext(key, contextObject);
+        for (int i = 0; i < contextKeys.length; i++) {
+            if (contextKeys[i] == key) {
+                contextValues[i] = contextObject;
+            }
+        }
     }
 
     // ---------------------------------------------------------- Public Methods

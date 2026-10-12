@@ -16,6 +16,7 @@
  */
 package com.sun.faces.el;
 
+import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.DisableELResolverShortcuts;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.DisableOptionalELResolver;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.InterpretEmptyStringSubmittedValuesAsNull;
 import static com.sun.faces.util.MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID;
@@ -31,6 +32,7 @@ import jakarta.el.ELContext;
 import jakarta.el.ELResolver;
 import jakarta.el.ExpressionFactory;
 import jakarta.el.ValueExpression;
+import jakarta.enterprise.inject.spi.el.ELAwareBeanManager;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 
@@ -145,6 +147,10 @@ public class ELUtils {
         composite.addPropertyELResolver(elRegistry.BEAN_RESOLVER);
 
         composite.addRootELResolver(elRegistry.SCOPED_RESOLVER);
+
+        if (composite instanceof DemuxCompositeELResolver && WebConfiguration.getInstance().isOptionEnabled(DisableELResolverShortcuts)) {
+            ((DemuxCompositeELResolver) composite).disableShortcuts();
+        }
     }
 
     public static Object evaluateValueExpression(ValueExpression expression, ELContext elContext) {
@@ -194,7 +200,12 @@ public class ELUtils {
     }
 
     private static void addCDIELResolver(FacesCompositeELResolver composite) {
-        composite.add(getCdiBeanManager(FacesContext.getCurrentInstance()).getELResolver());
+        ELAwareBeanManager beanManager = getCdiBeanManager(FacesContext.getCurrentInstance());
+        ELResolver cdiResolver = beanManager.getELResolver();
+        composite.add(cdiResolver);
+        if (composite instanceof DemuxCompositeELResolver) {
+            ((DemuxCompositeELResolver) composite).setBeanManager(cdiResolver, beanManager);
+        }
     }
 
     private static void checkNotNull(FacesCompositeELResolver composite, ApplicationAssociate associate) {
