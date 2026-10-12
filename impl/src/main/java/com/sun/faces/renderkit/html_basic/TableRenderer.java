@@ -319,11 +319,12 @@ public class TableRenderer extends BaseTableRenderer {
         // Iterate over the child UIColumn components for each row
         TableMetaInfo info = getMetaInfo(context, table);
         info.newRow();
-        for (UIColumn column : info.columns) {
+        List<UIColumn> columns = info.columns;
+        for (int columnIndex = 0, columnCount = columns.size(); columnIndex < columnCount; columnIndex++) {
+            UIColumn column = columns.get(columnIndex);
 
             // Render the beginning of this cell
-            boolean isRowHeader = column instanceof HtmlColumn htmlColumn ? htmlColumn.isRowHeader()
-                    : RenderKitUtils.attributeIsTrue(column, "rowHeader", false);
+            boolean isRowHeader = info.isRowHeader(table, columnIndex, column);
             if (isRowHeader) {
                 writer.startElement("th", column);
                 writer.writeAttribute("scope", "row", null);
@@ -332,7 +333,7 @@ public class TableRenderer extends BaseTableRenderer {
             }
 
             final String tableColumnStyleClass = info.getCurrentColumnClass();
-            final String columnStyleClass = (String) RenderKitUtils.getAttributeIfSet(column, "styleClass");
+            final String columnStyleClass = info.getColumnStyleClass(table, columnIndex, column);
 
             if (tableColumnStyleClass != null) {
                 if (columnStyleClass != null) {

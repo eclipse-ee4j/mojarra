@@ -140,6 +140,15 @@ public class RenderKitUtils {
      */
     private static final String OPTIMIZED_PACKAGE = "jakarta.faces.component.";
 
+    /** Whether a component class is in {@link #OPTIMIZED_PACKAGE}: asked for every attribute read while rendering. */
+    private static final ClassValue<Boolean> IN_OPTIMIZED_PACKAGE = new ClassValue<>() {
+        @Override
+        protected Boolean computeValue(Class<?> type) {
+            String name = type.getName();
+            return name != null && name.startsWith(OPTIMIZED_PACKAGE);
+        }
+    };
+
     /**
      * IMPLEMENTATION NOTE: This must be kept in sync with UIComponentBase.ATTRIBUTES_THAT_ARE_SET and the copies in
      * HtmlComponentUtils and PassthroughElement. Spelled out as a literal so that all of them are the same interned
@@ -436,7 +445,7 @@ public class RenderKitUtils {
      * getter when it was never set -- the common case on large views.
      */
     public static Object getAttributeIfSet(UIComponent component, List<String> setAttributes, String name) {
-        if (component.getClass().getName().startsWith(OPTIMIZED_PACKAGE)) {
+        if (IN_OPTIMIZED_PACKAGE.get(component.getClass())) {
             return setAttributes != null && setAttributes.contains(name) ? component.getAttributes().get(name) : null;
         }
         return component.getAttributes().get(name);
@@ -669,8 +678,7 @@ public class RenderKitUtils {
         assert component != null;
         assert behaviors != null;
 
-        String name = component.getClass().getName();
-        if (name != null && name.startsWith(OPTIMIZED_PACKAGE)) {
+        if (IN_OPTIMIZED_PACKAGE.get(component.getClass())) {
 
             // If we've got behaviors attached to multiple events
             // it is difficult to optimize, so fall back to the
