@@ -148,8 +148,12 @@ public class ELUtils {
 
         composite.addRootELResolver(elRegistry.SCOPED_RESOLVER);
 
-        if (composite instanceof DemuxCompositeELResolver && WebConfiguration.getInstance().isOptionEnabled(DisableELResolverShortcuts)) {
-            ((DemuxCompositeELResolver) composite).disableShortcuts();
+        if (composite instanceof DemuxCompositeELResolver demux) {
+            demux.setResourceBundleVars(associate.getResourceBundleVars());
+
+            if (WebConfiguration.getInstance().isOptionEnabled(DisableELResolverShortcuts)) {
+                demux.disableShortcuts();
+            }
         }
     }
 

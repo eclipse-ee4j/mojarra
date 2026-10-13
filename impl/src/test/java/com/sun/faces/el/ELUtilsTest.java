@@ -1,7 +1,14 @@
 package com.sun.faces.el;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.net.URL;
+import java.util.ListResourceBundle;
+import java.util.Set;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,7 +17,9 @@ import org.junit.jupiter.api.Test;
 import com.sun.el.ExpressionFactoryImpl;
 import com.sun.faces.RIConstants;
 import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.application.ApplicationFactoryImpl;
 import com.sun.faces.application.ApplicationImpl;
+import com.sun.faces.application.ApplicationResourceBundle;
 import com.sun.faces.context.ExternalContextImpl;
 import com.sun.faces.context.FacesContextImpl;
 import com.sun.faces.lifecycle.LifecycleImpl;
@@ -19,8 +28,11 @@ import com.sun.faces.mock.MockHttpServletRequest;
 import com.sun.faces.mock.MockHttpServletResponse;
 import com.sun.faces.mock.MockServletContext;
 
+import jakarta.el.ELContext;
 import jakarta.el.ELResolver;
+import jakarta.enterprise.inject.spi.Bean;
 import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.ApplicationFactory;
 import jakarta.faces.context.FacesContext;
 
 public class ELUtilsTest {
@@ -80,6 +92,62 @@ public class ELUtilsTest {
         DemuxCompositeELResolver elResolver = new DemuxCompositeELResolver(FacesCompositeELResolver.ELResolverChainType.Faces);
 
         ELUtils.buildFacesResolver(elResolver, applicationAssociate); // should not throw NPE
+    }
+
+    public static class Messages extends ListResourceBundle {
+        @Override
+        protected Object[][] getContents() {
+            return new Object[][] { { "hello", "Hello" } };
+        }
+    }
+
+    private static ApplicationResourceBundle messages() {
+        return new ApplicationResourceBundle(Messages.class.getName(), null, null);
+    }
+
+    @Test
+    public void buildFacesResolverPassesTheResourceBundleVarsToTheChain() {
+        applicationAssociate.setExpressionFactory(new ExpressionFactoryImpl());
+        applicationAssociate.addResourceBundle("msgs", messages());
+        Set<?>[] vars = new Set<?>[1];
+        DemuxCompositeELResolver elResolver = new DemuxCompositeELResolver(FacesCompositeELResolver.ELResolverChainType.Faces) {
+            @Override
+            public void setResourceBundleVars(Set<String> resourceBundleVars) {
+                vars[0] = resourceBundleVars;
+                super.setResourceBundleVars(resourceBundleVars);
+            }
+        };
+
+        ELUtils.buildFacesResolver(elResolver, applicationAssociate);
+
+        assertEquals(Set.of("msgs"), vars[0]);
+    }
+
+    @Test
+    public void resourceBundleAddedAfterItsVarWasLookedUpIsResolved() {
+        applicationAssociate.setExpressionFactory(new ExpressionFactoryImpl());
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        facesContext.getAttributes().put(RIConstants.CDI_BEAN_MANAGER, new MockBeanManager() {
+            @Override
+            public Set<Bean<?>> getBeans(Type beanType, Annotation... qualifiers) {
+                return Set.of();
+            }
+
+            @Override
+            public Set<Bean<?>> getBeans(String name) {
+                return Set.of();
+            }
+        });
+        FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, ApplicationFactoryImpl.class.getName());
+        ((ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY)).setApplication(applicationAssociate.getApplication());
+        ELResolver elResolver = facesContext.getApplication().getELResolver();
+        ELContext elContext = facesContext.getELContext();
+        elResolver.getValue(elContext, null, "msgs");
+
+        applicationAssociate.addResourceBundle("msgs", messages());
+        elContext.setPropertyResolved(false);
+
+        assertInstanceOf(Messages.class, elResolver.getValue(elContext, null, "msgs"));
     }
 
 }
