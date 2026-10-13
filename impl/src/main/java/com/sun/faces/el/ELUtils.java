@@ -126,9 +126,6 @@ public class ELUtils {
         composite.addPropertyELResolver(elRegistry.BUNDLE_RESOLVER);
 
         composite.addRootELResolver(elRegistry.FACES_BUNDLE_RESOLVER);
-        if (composite instanceof DemuxCompositeELResolver) {
-            ((DemuxCompositeELResolver) composite).setResourceBundleVars(associate.getResourceBundles().keySet());
-        }
 
         // Not sure when/why this would ever be null, but Thomas Hoffman believes it can be null.
         ELResolver streamELResolver = associate.getExpressionFactory().getStreamELResolver();
@@ -151,8 +148,12 @@ public class ELUtils {
 
         composite.addRootELResolver(elRegistry.SCOPED_RESOLVER);
 
-        if (composite instanceof DemuxCompositeELResolver && WebConfiguration.getInstance().isOptionEnabled(DisableELResolverShortcuts)) {
-            ((DemuxCompositeELResolver) composite).disableShortcuts();
+        if (composite instanceof DemuxCompositeELResolver demux) {
+            demux.setResourceBundleVars(associate.getResourceBundleVars());
+
+            if (WebConfiguration.getInstance().isOptionEnabled(DisableELResolverShortcuts)) {
+                demux.disableShortcuts();
+            }
         }
     }
 

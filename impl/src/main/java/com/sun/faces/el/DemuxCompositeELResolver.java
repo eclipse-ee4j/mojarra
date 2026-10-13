@@ -277,12 +277,13 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
     /**
      * Lets the root name shortcut skip the {@link FacesResourceBundleELResolver} for a name which is not the
      * <code>var</code> of a <code>resource-bundle</code> of the application configuration, the only names it resolves.
-     * Without it, this resolver is consulted for every root name.
+     * Without it, this resolver is consulted for every root name. Must be called again whenever a resource bundle is
+     * added.
      *
-     * @param vars the <code>var</code>s of the resource bundles, which must not change while this chain is used
+     * @param vars the <code>var</code>s of the resource bundles
      */
     public void setResourceBundleVars(Set<String> vars) {
-        _resourceBundleVars = vars;
+        _resourceBundleVars = Set.copyOf(vars);
         clearShortcuts();
     }
 
