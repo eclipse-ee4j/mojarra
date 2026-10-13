@@ -598,10 +598,17 @@ public class ApplicationAssociate {
 
     public void addResourceBundle(String var, ApplicationResourceBundle bundle) {
         resourceBundles.put(var, bundle);
+
+        if (applicationImpl.getCompositeELResolver() instanceof DemuxCompositeELResolver demux) {
+            demux.setResourceBundleVars(getResourceBundleVars());
+        }
     }
 
-    public Map<String, ApplicationResourceBundle> getResourceBundles() {
-        return resourceBundles;
+    /**
+     * @return an immutable copy of the vars of the resource bundles added so far
+     */
+    public Set<String> getResourceBundleVars() {
+        return Set.copyOf(resourceBundles.keySet());
     }
 
     // This is called by ViewHandlerImpl.renderView().

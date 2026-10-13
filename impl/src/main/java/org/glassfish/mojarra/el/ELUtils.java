@@ -145,8 +145,12 @@ public class ELUtils {
 
         composite.addRootELResolver(elRegistry.SCOPED_RESOLVER);
 
-        if (composite instanceof DemuxCompositeELResolver && MojarraContextParam.DISABLE_EL_RESOLVER_SHORTCUTS.isEnabled(FacesContext.getCurrentInstance())) {
-            ((DemuxCompositeELResolver) composite).disableShortcuts();
+        if (composite instanceof DemuxCompositeELResolver demux) {
+            demux.setResourceBundleVars(associate.getResourceBundleVars());
+
+            if (MojarraContextParam.DISABLE_EL_RESOLVER_SHORTCUTS.isEnabled(FacesContext.getCurrentInstance())) {
+                demux.disableShortcuts();
+            }
         }
     }
 
