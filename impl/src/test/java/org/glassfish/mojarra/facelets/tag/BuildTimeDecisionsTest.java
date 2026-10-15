@@ -112,7 +112,6 @@ class BuildTimeDecisionsTest {
             "ui.IncludeHandler",
             "ui.InsertHandler",
             "ui.ParamHandler",
-            "ui.SchemaCompliantRemoveHandler",
             "UserTagHandler"
         )
     );

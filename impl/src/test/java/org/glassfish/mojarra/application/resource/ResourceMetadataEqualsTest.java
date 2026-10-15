@@ -65,8 +65,7 @@ public class ResourceMetadataEqualsTest {
 
     /**
      * A subclass carries state that the base class knows nothing about, so it must never compare equal to a base instance holding the same base state, in
-     * either direction. Both hierarchies are therefore safe to mix within one <code>Collection&lt;? extends ResourceInfo&gt;</code> or
-     * <code>Collection&lt;? extends LibraryInfo&gt;</code>.
+     * either direction. The hierarchy is therefore safe to mix within one <code>Collection&lt;? extends ResourceInfo&gt;</code>.
      */
     @Test
     public void subclassIsNeverEqualToBaseClassWithSameBaseState() throws MalformedURLException {
@@ -79,12 +78,6 @@ public class ResourceMetadataEqualsTest {
 
         assertNotEquals(resourceInfo, faceletResourceInfo);
         assertNotEquals(faceletResourceInfo, resourceInfo);
-
-        LibraryInfo libraryInfo = new LibraryInfo("library", version, "nl", null, RESOURCE_HELPER);
-        LibraryInfo faceletLibraryInfo = new FaceletLibraryInfo("library", version, "nl", null, RESOURCE_HELPER, url);
-
-        assertNotEquals(libraryInfo, faceletLibraryInfo);
-        assertNotEquals(faceletLibraryInfo, libraryInfo);
     }
 
     @Test

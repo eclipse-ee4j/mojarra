@@ -149,22 +149,6 @@
         </dependency>
 
         <dependency>
-            <groupId>jakarta.ejb</groupId>
-            <artifactId>jakarta.ejb-api</artifactId>
-            <version>4.0.1</version>
-            <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>jakarta.persistence</groupId>
-            <artifactId>jakarta.persistence-api</artifactId>
-            <version>4.0.0-M1</version>
-            <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
             <groupId>jakarta.xml.ws</groupId>
             <artifactId>jakarta.xml.ws-api</artifactId>
             <version>4.0.3</version>
@@ -428,8 +412,6 @@
                             jakarta.json.*;resolution:=optional,
                             jakarta.validation.*;resolution:=optional,
                             jakarta.enterprise.event;resolution:=optional,
-                            jakarta.ejb.*;resolution:=optional,
-                            jakarta.persistence.*;resolution:=optional,
                             javax.xml.*,
                             org.w3c.dom.*,
                             org.xml.sax.*,
