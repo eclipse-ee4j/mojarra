@@ -28,7 +28,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -260,10 +259,11 @@ public class StateContext {
      * <p>
      * Actions are recorded append-only per event (see {@code recordDynamicAction}); redundant add/remove pairs for
      * the same client id are collapsed here in a single O(n) pass rather than per event (a per-event prune is
-     * O(n&sup2;)). Per
-     * client id the net effect is one of: an ADD (added and still present), nothing (added then removed again), a
+     * O(n&sup2;)).
+     * Per client id the net effect is one of: an ADD (added and still present), nothing (added then removed again), a
      * REMOVE (a pre-existing component removed), or a REMOVE followed by an ADD (pre-existing removed then re-added).
-     * First-occurrence order is preserved so a parent is always replayed before its children.
+     * Each surviving action keeps its recorded position, so a component re-added under a new parent is replayed after
+     * that parent, and a REMOVE is replayed before every ADD recorded after it.
      * </p>
      *
      * @param rawActions the dynamic actions in the order they were recorded, or {@code null}.
@@ -276,7 +276,7 @@ public class StateContext {
         // Collapsing an ADD that a later REMOVE cancels (and coalescing a REMOVE with a re-ADD) for the same
         // client id can only happen when the list holds both an ADD and a REMOVE. A homogeneous list -- all
         // ADDs or all REMOVEs, i.e. the common bulk add or bulk clear in an action -- has nothing to collapse:
-        // each action is already a distinct net add/remove. Skip the per-id LinkedHashMap for it.
+        // each action is already a distinct net add/remove. Skip the per-id map for it.
         boolean hasAdd = false, hasRemove = false;
         for (ComponentStruct action : rawActions) {
             if (ADD.equals(action.getAction())) {
@@ -292,7 +292,7 @@ public class StateContext {
             return rawActions;
         }
         // value[0] = effective REMOVE for the client id (or null); value[1] = effective ADD (or null)
-        Map<String, ComponentStruct[]> netByClientId = new LinkedHashMap<>();
+        Map<String, ComponentStruct[]> netByClientId = new HashMap<>();
         for (ComponentStruct action : rawActions) {
             ComponentStruct[] net = netByClientId.computeIfAbsent(action.getClientId(), key -> new ComponentStruct[2]);
             if (ADD.equals(action.getAction())) {
@@ -303,13 +303,11 @@ public class StateContext {
                 net[0] = action;        // first REMOVE of a pre-existing component
             }
         }
-        List<ComponentStruct> pruned = new ArrayList<>(netByClientId.size());
-        for (ComponentStruct[] net : netByClientId.values()) {
-            if (net[0] != null) {
-                pruned.add(net[0]);
-            }
-            if (net[1] != null) {
-                pruned.add(net[1]);
+        List<ComponentStruct> pruned = new ArrayList<>(rawActions.size());
+        for (ComponentStruct action : rawActions) {
+            ComponentStruct[] net = netByClientId.get(action.getClientId());
+            if (action == net[0] || action == net[1]) {
+                pruned.add(action);
             }
         }
         return pruned;

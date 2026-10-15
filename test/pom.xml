@@ -70,6 +70,7 @@
         <module>issue6010</module>
         <module>issue6019</module>
         <module>issue6027</module>
+        <module>issue6060</module>
     </modules>
 
     <properties>
