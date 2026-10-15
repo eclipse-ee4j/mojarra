@@ -81,10 +81,10 @@ public class ResourceMetadataEqualsTest {
         assertNotEquals(faceletResourceInfo, resourceInfo);
 
         LibraryInfo libraryInfo = new LibraryInfo("library", version, "nl", null, RESOURCE_HELPER);
-        LibraryInfo faceletLibraryInfo = new FaceletLibraryInfo("library", version, "nl", null, RESOURCE_HELPER, url);
+        LibraryInfo subclassLibraryInfo = new SubclassLibraryInfo("library", version, "nl", null, RESOURCE_HELPER);
 
-        assertNotEquals(libraryInfo, faceletLibraryInfo);
-        assertNotEquals(faceletLibraryInfo, libraryInfo);
+        assertNotEquals(libraryInfo, subclassLibraryInfo);
+        assertNotEquals(subclassLibraryInfo, libraryInfo);
     }
 
     @Test
@@ -125,6 +125,17 @@ public class ResourceMetadataEqualsTest {
         assertNotEquals("1_0", version);
         assertNotEquals(null, new LibraryInfo("library", version, "nl", null, RESOURCE_HELPER));
         assertNotEquals(null, new ResourceInfo(null, "theme.css", version, RESOURCE_HELPER));
+    }
+
+    /**
+     * A {@link LibraryInfo} subclass, as the impl has none.
+     */
+    private static final class SubclassLibraryInfo extends LibraryInfo {
+
+        SubclassLibraryInfo(String name, VersionInfo version, String localePrefix, String contract, ResourceHelper helper) {
+            super(name, version, localePrefix, contract, helper);
+        }
+
     }
 
 }
