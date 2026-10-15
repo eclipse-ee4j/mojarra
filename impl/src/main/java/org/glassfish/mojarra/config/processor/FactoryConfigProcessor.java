@@ -22,9 +22,7 @@ import static java.util.Arrays.asList;
 import static java.util.logging.Level.FINE;
 
 import java.text.MessageFormat;
-import java.util.Deque;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -281,8 +279,6 @@ public class FactoryConfigProcessor extends AbstractConfigProcessor {
 
         if (validateFactories) {
 
-            Deque<Exception> exceptions = new ConcurrentLinkedDeque<>();
-
             ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
 
             try {
@@ -294,8 +290,7 @@ public class FactoryConfigProcessor extends AbstractConfigProcessor {
                         FactoryFinder.getFactory(e);
                     }
                     catch (Exception exception) {
-                        exception.printStackTrace();
-                        exceptions.add(new ConfigurationException(format("Factory ''{0}'' was not configured properly.", e), exception));
+                        throw new ConfigurationException(format("Factory ''{0}'' was not configured properly.", e), exception);
                     }
                     finally {
                         Thread.currentThread().setContextClassLoader(null);

@@ -67,6 +67,8 @@ public final class ByteArrayGuard {
     private static final String CIPHER_CODE = "AES/CBC/PKCS5Padding";
     private static final String MAC_CODE = "HmacSHA256";
     private static final String SK_SESSION_KEY = RIConstants.RI_PREFIX + "SK";
+    private static final String MAC_DID_NOT_VERIFY = "MAC did not verify! The state was encrypted with another key, e.g. by another server or before a"
+        + " restart, or it was tampered with. Set a fixed AES key in the faces/ClientSideSecretKey env-entry.";
     private static final SecureRandom RANDOM = new SecureRandom();
     private final CryptoPool<CipherAndMac> ciphersAndMacs = new CryptoPool<>(
         () -> new CipherAndMac(Cipher.getInstance(CIPHER_CODE), Mac.getInstance(MAC_CODE))
@@ -84,7 +86,6 @@ public final class ByteArrayGuard {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, "Unexpected exception initializing encryption." + "  No encryption will be performed.", e);
             }
-            System.err.println("ERROR: Initializing Ciphers");
         }
     }
 
@@ -158,13 +159,13 @@ public final class ByteArrayGuard {
                     return crypto.cipher.doFinal(encdata);
                 }
                 else {
-                    System.err.println("ERROR: MAC did not verify!");
+                    LOGGER.warning(MAC_DID_NOT_VERIFY);
                     return null;
                 }
             });
         }
         catch (GeneralSecurityException | IllegalStateException e) {
-            System.err.println("ERROR: Decrypting:" + e.getCause());
+            LOGGER.log(Level.WARNING, "Decrypting state failed.", e);
             return null; // Signal to Faces runtime
         }
     }

@@ -502,7 +502,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
             FactoryFinder.releaseFactories();
         }
         catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(SEVERE, e, () -> format("Tearing down Faces configuration for context {0} failed", servletContext.getContextPath()));
         }
         finally {
             FacesContext initContext = new InitFacesContext(servletContext);
@@ -555,7 +555,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
             }
         }
         catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(SEVERE, e, () -> format("Reloading Faces configuration for context {0} failed", servletContext.getContextPath()));
         }
         finally {
             initContext.release();

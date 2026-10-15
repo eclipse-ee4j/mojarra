@@ -85,7 +85,6 @@ public final class ByteArrayGuardAESGCM {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, "Unexpected exception initializing encryption." + "  No encryption will be performed.", e);
             }
-            System.err.println("ERROR: Initializing Ciphers");
         }
     }
 
