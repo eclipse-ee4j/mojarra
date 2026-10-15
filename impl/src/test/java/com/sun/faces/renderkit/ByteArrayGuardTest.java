@@ -24,17 +24,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
-import java.util.logging.Logger;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.sun.faces.junit.ConcurrentCalls;
+import com.sun.faces.junit.LogRecords;
 import com.sun.faces.util.FacesLogger;
 
 import jakarta.faces.context.ExternalContext;
@@ -86,7 +84,7 @@ class ByteArrayGuardTest {
         byte[] issued = new ByteArrayGuard().encrypt(context, "view state".getBytes(UTF_8));
         ByteArrayGuard otherServer = new ByteArrayGuard();
 
-        List<LogRecord> warnings = captureWarnings(() -> assertNull(otherServer.decrypt(context, issued)));
+        List<LogRecord> warnings = LogRecords.capture(FacesLogger.RENDERKIT.getLogger(), Level.WARNING, () -> assertNull(otherServer.decrypt(context, issued)));
 
         assertEquals(1, warnings.size(), "one warning per rejected state");
         String message = warnings.get(0).getMessage();
@@ -105,34 +103,6 @@ class ByteArrayGuardTest {
             byte[] state = id.getBytes(UTF_8);
             assertArrayEquals(state, guard.decrypt(context, guard.encrypt(context, state)));
         });
-    }
-
-    private static List<LogRecord> captureWarnings(Runnable runnable) {
-        Logger logger = FacesLogger.RENDERKIT.getLogger();
-        List<LogRecord> warnings = new ArrayList<>();
-        Handler handler = new Handler() {
-            @Override
-            public void publish(LogRecord logRecord) {
-                if (logRecord.getLevel().intValue() >= Level.WARNING.intValue()) {
-                    warnings.add(logRecord);
-                }
-            }
-
-            @Override
-            public void flush() {
-            }
-
-            @Override
-            public void close() {
-            }
-        };
-        logger.addHandler(handler);
-        try {
-            runnable.run();
-        } finally {
-            logger.removeHandler(handler);
-        }
-        return warnings;
     }
 
 }
