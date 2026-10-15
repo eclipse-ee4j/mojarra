@@ -29,6 +29,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.unmodifiableList;
 import static java.util.logging.Level.FINE;
+import static java.util.logging.Level.SEVERE;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -258,14 +259,7 @@ public class ConfigManager {
                 // from each document.
 
                 DocumentInfo[] facesDocuments2 = facesDocuments;
-                configProcessors.subList(0, 3).stream().forEach(e -> {
-                    try {
-                        e.process(servletContext, facesContext, facesDocuments2);
-                    } catch (Exception e2) {
-                        // TODO Auto-generated catch block
-                        e2.printStackTrace();
-                    }
-                });
+                configProcessors.subList(0, 3).stream().forEach(e -> process(e, servletContext, facesContext, facesDocuments2));
 
                 long parentThreadId = Thread.currentThread().getId();
                 ClassLoader parentContextClassLoader = Thread.currentThread().getContextClassLoader();
@@ -290,10 +284,7 @@ public class ConfigManager {
                     }
 
                     try {
-                        e.process(servletContext, initFacesContext, facesDocuments2);
-                    } catch (Exception e1) {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
+                        process(e, servletContext, initFacesContext, facesDocuments2);
                     } finally {
                         if (currentThreadId != parentThreadId) {
                             Thread.currentThread().setContextClassLoader(null);
@@ -338,6 +329,17 @@ public class ConfigManager {
     }
 
     // --------------------------------------------------------- Private Methods
+
+    /**
+     * Lets the given processor process the given documents, and logs a failure as SEVERE.
+     */
+    static void process(ConfigProcessor configProcessor, ServletContext servletContext, FacesContext facesContext, DocumentInfo[] documentInfos) {
+        try {
+            configProcessor.process(servletContext, facesContext, documentInfos);
+        } catch (Exception e) {
+            LOGGER.log(SEVERE, e, () -> configProcessor.getClass().getName() + " failed to process the Faces configuration");
+        }
+    }
 
     /**
      * Execute the Task responsible for finding annotation classes
