@@ -79,15 +79,26 @@ class StateContextTest {
     }
 
     @Test
-    void distinctClientIdsKeepFirstOccurrenceOrder() {
+    void distinctClientIdsKeepRecordedOrder() {
         // parent 'p' added before child 'c'; cancelled 'x' drops out without disturbing the order of the rest
         assertNet(actions(add("p"), add("x"), add("c"), remove("x")), "ADD:p", "ADD:c");
     }
 
     @Test
-    void perClientIdEntriesAreAdjacentInFirstOccurrenceOrder() {
-        // 'a' (re-added) keeps its original slot ahead of 'b', and emits REMOVE before ADD
-        assertNet(actions(remove("a"), add("b"), add("a")), "REMOVE:a", "ADD:a", "ADD:b");
+    void survivingActionsKeepTheirRecordedPosition() {
+        assertNet(actions(remove("a"), add("b"), add("a")), "REMOVE:a", "ADD:b", "ADD:a");
+    }
+
+    @Test
+    void childReAddedUnderNewParentIsReplayedAfterThatParent() {
+        assertNet(actions(add("panel1"), add("field"), remove("panel1"), remove("field"), add("panel2"), add("field")),
+                "ADD:panel2", "ADD:field");
+    }
+
+    @Test
+    void childOfReplacedPreExistingParentIsReplayedAfterTheNewParent() {
+        assertNet(actions(remove("panel0"), remove("field"), add("panel1"), add("field")),
+                "REMOVE:panel0", "REMOVE:field", "ADD:panel1", "ADD:field");
     }
 
     // ------------------------------------------------------------------ helpers
