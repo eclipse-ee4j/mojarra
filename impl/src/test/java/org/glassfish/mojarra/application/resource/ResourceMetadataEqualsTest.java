@@ -65,7 +65,8 @@ public class ResourceMetadataEqualsTest {
 
     /**
      * A subclass carries state that the base class knows nothing about, so it must never compare equal to a base instance holding the same base state, in
-     * either direction. The hierarchy is therefore safe to mix within one <code>Collection&lt;? extends ResourceInfo&gt;</code>.
+     * either direction. Both hierarchies are therefore safe to mix within one <code>Collection&lt;? extends ResourceInfo&gt;</code> or
+     * <code>Collection&lt;? extends LibraryInfo&gt;</code>.
      */
     @Test
     public void subclassIsNeverEqualToBaseClassWithSameBaseState() throws MalformedURLException {
@@ -78,6 +79,12 @@ public class ResourceMetadataEqualsTest {
 
         assertNotEquals(resourceInfo, faceletResourceInfo);
         assertNotEquals(faceletResourceInfo, resourceInfo);
+
+        LibraryInfo libraryInfo = new LibraryInfo("library", version, "nl", null, RESOURCE_HELPER);
+        LibraryInfo subclassLibraryInfo = new SubclassLibraryInfo("library", version, "nl", null, RESOURCE_HELPER);
+
+        assertNotEquals(libraryInfo, subclassLibraryInfo);
+        assertNotEquals(subclassLibraryInfo, libraryInfo);
     }
 
     @Test
@@ -118,6 +125,17 @@ public class ResourceMetadataEqualsTest {
         assertNotEquals("1_0", version);
         assertNotEquals(null, new LibraryInfo("library", version, "nl", null, RESOURCE_HELPER));
         assertNotEquals(null, new ResourceInfo(null, "theme.css", version, RESOURCE_HELPER));
+    }
+
+    /**
+     * A {@link LibraryInfo} subclass, as the impl has none.
+     */
+    private static final class SubclassLibraryInfo extends LibraryInfo {
+
+        SubclassLibraryInfo(String name, VersionInfo version, String localePrefix, String contract, ResourceHelper helper) {
+            super(name, version, localePrefix, contract, helper);
+        }
+
     }
 
 }
