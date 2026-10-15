@@ -180,8 +180,8 @@ public class UIViewRootTest {
             Method method = FacesContext.class.getDeclaredMethod("setCurrentInstance", FacesContext.class);
             method.setAccessible(true);
             method.invoke(null, facesContext);
-        } catch (Exception exception) {
-            exception.printStackTrace(System.err);
+        } catch (ReflectiveOperationException exception) {
+            throw new IllegalStateException(exception);
         }
     }
 }

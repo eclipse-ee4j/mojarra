@@ -54,6 +54,7 @@ public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
     public void testAttributesTransparencyNonDeterministic() throws Exception {
         final int numThreads = 30;
         final Boolean outcomes[] = new Boolean[numThreads];
+        final Throwable failures[] = new Throwable[numThreads];
         Runnable runnables[] = new Runnable[numThreads];
         int i = 0;
 
@@ -92,33 +93,26 @@ public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
                         boolean result = doTestAttributesTransparency(vh, newComp);
                         outcomes[threadNum] = Boolean.valueOf(result);
                     } catch (Throwable e) {
-                        e.printStackTrace();
+                        failures[threadNum] = e;
                         outcomes[threadNum] = Boolean.FALSE;
                     }
                 }
             };
         }
 //        clearDescriptors();
-        Thread thread = null;
+        Thread threads[] = new Thread[numThreads];
         for (i = 0; i < runnables.length; i++) {
-            thread = new Thread(runnables[i], "" + i);
-            thread.start();
+            threads[i] = new Thread(runnables[i], "" + i);
+            threads[i].start();
         }
 
-        // Keep polling the outcomes array until there are no nulls.
-        boolean foundNull = false;
-        while (!foundNull) {
-            for (i = 0; i < outcomes.length; i++) {
-                if (null != outcomes[i]) {
-                    foundNull = true;
-                }
-            }
-            Thread.sleep(500);
+        for (Thread thread : threads) {
+            thread.join();
         }
 
         for (i = 0; i < outcomes.length; i++) {
-            if (!outcomes[i].booleanValue()) {
-                fail("Thread " + i + " failed");
+            if (!Boolean.TRUE.equals(outcomes[i])) {
+                fail("Thread " + i + " failed", failures[i]);
             }
         }
     }

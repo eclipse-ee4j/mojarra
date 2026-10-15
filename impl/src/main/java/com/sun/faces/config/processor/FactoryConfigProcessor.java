@@ -19,11 +19,10 @@ package com.sun.faces.config.processor;
 import static java.text.MessageFormat.format;
 import static java.util.Arrays.asList;
 import static java.util.logging.Level.FINE;
+import static java.util.logging.Level.SEVERE;
 
 import java.text.MessageFormat;
-import java.util.Deque;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,7 +33,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.sun.faces.application.InjectionApplicationFactory;
-import com.sun.faces.config.ConfigurationException;
 import com.sun.faces.config.InitFacesContext;
 import com.sun.faces.config.manager.documents.DocumentInfo;
 import com.sun.faces.context.InjectionFacesContextFactory;
@@ -272,8 +270,6 @@ public class FactoryConfigProcessor extends AbstractConfigProcessor {
 
         if (validateFactories) {
 
-            Deque<Exception> exceptions = new ConcurrentLinkedDeque<>();
-
             ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
 
             try {
@@ -285,8 +281,7 @@ public class FactoryConfigProcessor extends AbstractConfigProcessor {
                     try {
                         FactoryFinder.getFactory(e);
                     } catch (Exception exception) {
-                        exception.printStackTrace();
-                        exceptions.add(new ConfigurationException(format("Factory ''{0}'' was not configured properly.", e), exception));
+                        LOGGER.log(SEVERE, exception, () -> format("Factory ''{0}'' was not configured properly.", e));
                     } finally {
                         Thread.currentThread().setContextClassLoader(null);
                     }

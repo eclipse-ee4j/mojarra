@@ -20,11 +20,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.Iterator;
 import java.util.List;
@@ -33,7 +30,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.RIConstants;
 import com.sun.faces.io.FastStringWriter;
 import com.sun.faces.renderkit.RenderKitUtils;
 
@@ -52,8 +48,6 @@ public class DebugUtil {
 
     private static final Logger LOGGER = Logger.getLogger(DebugUtil.class.getPackage().getName());
 
-    private static boolean keepWaiting = true;
-
     private static int curDepth = 0;
 
     public DebugUtil() {
@@ -64,29 +58,6 @@ public class DebugUtil {
     protected void init() {
     }
 
-
-    public static void setKeepWaiting(boolean keepWaiting) {
-        DebugUtil.keepWaiting = keepWaiting;
-    }
-
-    /**
-     * Usage:
-     * <P>
-     * 
-     * Place a call to this method in the earliest possible entry point of your servlet app. It will cause the app to enter
-     * into an infinite loop, sleeping until the static var keepWaiting is set to false. The idea is that you attach your
-     * debugger to the servlet, then, set a breakpoint in this method. When it is hit, you use the debugger to set the
-     * keepWaiting class var to false.
-     */
-    public static void waitForDebugger() {
-        while (keepWaiting) {
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                System.out.println("DebugUtil.waitForDebugger(): Exception: " + e.getMessage());
-            }
-        }
-    }
 
     private static void indentPrintln(Writer out, String str) {
         // handle indentation
@@ -146,24 +117,6 @@ public class DebugUtil {
         Writer writer = new FastStringWriter(1024);
         printTree(root, writer);
         return writer.toString();
-    }
-
-    /**
-     * Output of printTree() to a PrintStream. Usage: DebugUtil.printTree(root, System.out);
-     *
-     * @param root the root component
-     * @param out the PrintStream to write to
-     */
-    public static void printTree(UIComponent root, PrintStream out) {
-        PrintWriter writer;
-        try {
-            writer = new PrintWriter(new PrintStream(out, true, RIConstants.CHAR_ENCODING));
-            printTree(root, writer);
-            writer.flush();
-
-        } catch (UnsupportedEncodingException ex) {
-            System.out.println(ex.getMessage());
-        }
     }
 
     public static void printTree(UIComponent root, Logger logger, Level level) {
