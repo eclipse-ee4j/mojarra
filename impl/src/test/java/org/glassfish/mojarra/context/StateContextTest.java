@@ -88,14 +88,18 @@ class StateContextTest {
 
     @Test
     void childReAddedUnderNewParentIsReplayedAfterThatParent() {
-        assertNet(actions(add("panel1"), add("field"), remove("panel1"), remove("field"), add("panel2"), add("field")),
-                "ADD:panel2", "ADD:field");
+        assertNet(
+            actions(add("panel1"), add("field"), remove("panel1"), remove("field"), add("panel2"), add("field")),
+            "ADD:panel2", "ADD:field"
+        );
     }
 
     @Test
     void childOfReplacedPreExistingParentIsReplayedAfterTheNewParent() {
-        assertNet(actions(remove("panel0"), remove("field"), add("panel1"), add("field")),
-                "REMOVE:panel0", "REMOVE:field", "ADD:panel1", "ADD:field");
+        assertNet(
+            actions(remove("panel0"), remove("field"), add("panel1"), add("field")),
+            "REMOVE:panel0", "REMOVE:field", "ADD:panel1", "ADD:field"
+        );
     }
 
     // ------------------------------------------------------------------ helpers
