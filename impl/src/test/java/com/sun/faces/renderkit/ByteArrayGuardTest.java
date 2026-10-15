@@ -18,14 +18,24 @@ package com.sun.faces.renderkit;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.sun.faces.junit.ConcurrentCalls;
+import com.sun.faces.util.FacesLogger;
 
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
@@ -67,6 +77,24 @@ class ByteArrayGuardTest {
     }
 
     /**
+     * A state encrypted with another key, e.g. by another server or before a restart, fails the MAC check. This is otherwise only visible as a
+     * ViewExpiredException, so the guard must log a warning which is visible by default, names the "MAC did not verify" symptom, and points to the
+     * faces/ClientSideSecretKey env-entry.
+     */
+    @Test
+    void stateEncryptedWithOtherKeyLogsWarningPointingToSecretKey() {
+        byte[] issued = new ByteArrayGuard().encrypt(context, "view state".getBytes(UTF_8));
+        ByteArrayGuard otherServer = new ByteArrayGuard();
+
+        List<LogRecord> warnings = captureWarnings(() -> assertNull(otherServer.decrypt(context, issued)));
+
+        assertEquals(1, warnings.size(), "one warning per rejected state");
+        String message = warnings.get(0).getMessage();
+        assertTrue(message.startsWith("MAC did not verify!"), message);
+        assertTrue(message.contains("faces/ClientSideSecretKey"), message);
+    }
+
+    /**
      * One guard serves all requests of the application, so concurrent calls must not interfere.
      */
     @Test
@@ -77,6 +105,34 @@ class ByteArrayGuardTest {
             byte[] state = id.getBytes(UTF_8);
             assertArrayEquals(state, guard.decrypt(context, guard.encrypt(context, state)));
         });
+    }
+
+    private static List<LogRecord> captureWarnings(Runnable runnable) {
+        Logger logger = FacesLogger.RENDERKIT.getLogger();
+        List<LogRecord> warnings = new ArrayList<>();
+        Handler handler = new Handler() {
+            @Override
+            public void publish(LogRecord logRecord) {
+                if (logRecord.getLevel().intValue() >= Level.WARNING.intValue()) {
+                    warnings.add(logRecord);
+                }
+            }
+
+            @Override
+            public void flush() {
+            }
+
+            @Override
+            public void close() {
+            }
+        };
+        logger.addHandler(handler);
+        try {
+            runnable.run();
+        } finally {
+            logger.removeHandler(handler);
+        }
+        return warnings;
     }
 
 }
