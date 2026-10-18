@@ -109,8 +109,10 @@ public final class ViewHandler extends TagHandlerImpl {
             }
             if (encoding != null) {
                 String v = encoding.getValue(ctx);
-                ctx.getFacesContext().getAttributes().put(RIConstants.FACELETS_ENCODING_KEY, v);
-                root.getAttributes().put(RIConstants.FACELETS_ENCODING_KEY, v);
+                if (!Util.isEmpty(v)) {
+                    ctx.getFacesContext().getAttributes().put(RIConstants.FACELETS_ENCODING_KEY, v);
+                    root.getAttributes().put(RIConstants.FACELETS_ENCODING_KEY, v);
+                }
                 if (isDynamic(encoding)) {
                     ctx.getFacesContext().getAttributes().put(RIConstants.FACELETS_ENCODING_DYNAMIC_KEY, Boolean.TRUE);
                 }
