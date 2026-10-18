@@ -476,34 +476,6 @@ public class ClientSideStateHelper extends StateHelper {
 
     }
 
-    /**
-     * Is stateless.
-     *
-     * @param facesContext the Faces context.
-     * @param viewId the view id.
-     * @return true if stateless, false otherwise.
-     * @throws IllegalStateException when the request was not a postback.
-     */
-    @Override
-    public boolean isStateless(FacesContext facesContext, String viewId) throws IllegalStateException {
-        if (facesContext.isPostback()) {
-            Object stateObject;
-
-            try {
-                stateObject = getState(facesContext, viewId);
-            } catch (IOException ioe) {
-                throw new IllegalStateException("Cannot determine whether or not the request is stateless", ioe);
-            }
-            if (stateObject instanceof String && "stateless".equals(stateObject)) {
-                return true;
-            }
-
-            return false;
-        }
-
-        throw new IllegalStateException("Cannot determine whether or not the request is stateless");
-    }
-
     // ----------------------------------------------------------- Inner Classes
 
     /**
