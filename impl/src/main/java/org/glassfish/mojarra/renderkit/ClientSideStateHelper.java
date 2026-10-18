@@ -41,7 +41,6 @@ import jakarta.faces.FacesException;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
-import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.util.DebugObjectOutputStream;
 import org.glassfish.mojarra.util.DebugUtil;
@@ -206,23 +205,19 @@ public class ClientSideStateHelper extends StateHelper {
         ObjectInputStream ois = null;
         InputStream bis = null;
         try {
-            if (guard != null) {
-                byte[] bytes = stateString.getBytes(RIConstants.CHAR_ENCODING);
-                byte[] decodedBytes = Base64.getDecoder().decode(bytes);
+            byte[] bytes = Base64.getDecoder().decode(stateString);
 
-                bytes = guard.decrypt(ctx, decodedBytes);
+            if (guard != null) {
+                bytes = guard.decrypt(ctx, bytes);
                 if (bytes == null) {
                     return null;
                 }
-                bis = new ByteArrayInputStream(bytes);
             }
 
-            if (null != bis && compressViewState) {
+            bis = new ByteArrayInputStream(bytes);
+
+            if (compressViewState) {
                 bis = new GZIPInputStream(bis);
-            }
-
-            if (null == bis) {
-                throw new FacesException("Unable to encode stateString");
             }
 
             ois = serialProvider.createObjectInputStream(bis);
@@ -456,32 +451,6 @@ public class ClientSideStateHelper extends StateHelper {
 
         debugSerializedState = MojarraContextParam.ENABLE_CLIENT_STATE_DEBUGGING.isEnabled(context);
         enableViewStateIdRendering = MojarraContextParam.ENABLE_VIEW_STATE_ID_RENDERING.isEnabled(context);
-    }
-
-    /**
-     * Is stateless.
-     *
-     * @param facesContext the Faces context.
-     * @param viewId the view id.
-     * @return true if stateless, false otherwise.
-     * @throws IllegalStateException when the request was not a postback.
-     */
-    @Override
-    public boolean isStateless(FacesContext facesContext, String viewId) throws IllegalStateException {
-        if (facesContext.isPostback()) {
-            Object stateObject;
-
-            try {
-                stateObject = getState(facesContext, viewId);
-            }
-            catch (IOException ioe) {
-                throw new IllegalStateException("Cannot determine whether or not the request is stateless", ioe);
-            }
-
-            return STATELESS.equals(stateObject);
-        }
-
-        throw new IllegalStateException("Cannot determine whether or not the request is stateless");
     }
 
     // ----------------------------------------------------------- Inner Classes

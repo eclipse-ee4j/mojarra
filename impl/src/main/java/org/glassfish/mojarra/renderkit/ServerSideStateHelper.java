@@ -380,22 +380,4 @@ public class ServerSideStateHelper extends StateHelper {
         return Long.valueOf(random.nextLong()).toString();
     }
 
-    /**
-     * Is stateless.
-     *
-     * @param facesContext the Faces context.
-     * @param viewId the view id.
-     * @return true if stateless, false otherwise.
-     * @throws IllegalStateException when the request was not a postback.
-     */
-    @Override
-    public boolean isStateless(FacesContext facesContext, String viewId) throws IllegalStateException {
-        if (!facesContext.isPostback()) {
-            throw new IllegalStateException("Cannot determine whether or not the request is stateless");
-        }
-
-        String compoundId = getStateParamValue(facesContext);
-        return compoundId != null && "stateless".equals(compoundId);
-    }
-
 }
