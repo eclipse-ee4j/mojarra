@@ -993,8 +993,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         extContext.setResponseContentType(contentTypeWriter.toString().trim());
         extContext.setResponseCharacterEncoding(encoding);
 
-        // Save encoding in UIViewRoot for faster consult when Util#getResponseEncoding() is invoked again elsewhere.
-        context.getViewRoot().getAttributes().put(FACELETS_ENCODING_KEY, encoding);
+        Util.setResponseEncoding(context, encoding);
 
         // Now, clone with the real writer
         ResponseWriter writer = initWriter.cloneWithWriter(extContext.getResponseOutputWriter());

@@ -149,7 +149,13 @@ public abstract class StateHelper {
     /**
      * @see jakarta.faces.render.ResponseStateManager#isStateless(jakarta.faces.context.FacesContext, String)
      */
-    public abstract boolean isStateless(FacesContext ctx, String viewId) throws IllegalStateException;
+    public boolean isStateless(FacesContext ctx, String viewId) throws IllegalStateException {
+        if (!ctx.isPostback()) {
+            throw new IllegalStateException("Cannot determine whether or not the request is stateless");
+        }
+
+        return "stateless".equals(getStateParamValue(ctx));
+    }
 
     // ------------------------------------------------------- Protected Methods
 

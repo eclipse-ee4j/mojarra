@@ -21,6 +21,7 @@ package com.sun.faces.util;
 
 import static com.sun.faces.RIConstants.CDI_BEAN_MANAGER;
 import static com.sun.faces.RIConstants.EMPTY_STRING;
+import static com.sun.faces.RIConstants.FACELETS_ENCODING_DYNAMIC_KEY;
 import static com.sun.faces.RIConstants.FACELETS_ENCODING_KEY;
 import static com.sun.faces.RIConstants.FACES_SERVLET_MAPPINGS;
 import static com.sun.faces.RIConstants.FACES_SERVLET_REGISTRATION;
@@ -1712,6 +1713,27 @@ public class Util {
     }
 
     /**
+     * Remembers the encoding which was set on the response, so that {@link #getResponseEncoding(FacesContext)} returns
+     * it for the remainder of the request. It is normally kept in the transient state of the view root, and therefore
+     * not saved in the view state, because the next request derives the same encoding again while building the view.
+     * The exception is an encoding from an expression in {@code <f:view encoding>}, which the next request may evaluate
+     * differently. Then it is kept in the attributes of the view root, so that a postback still knows the encoding the
+     * submitted page was rendered with.
+     *
+     * @param context the {@link FacesContext} for the current request
+     * @param encoding the encoding which was set on the response
+     */
+    public static void setResponseEncoding(FacesContext context, String encoding) {
+        UIViewRoot viewRoot = context.getViewRoot();
+
+        if (Boolean.TRUE.equals(context.getAttributes().get(FACELETS_ENCODING_DYNAMIC_KEY))) {
+            viewRoot.getAttributes().put(FACELETS_ENCODING_KEY, encoding);
+        } else {
+            viewRoot.getTransientStateHelper().putTransient(FACELETS_ENCODING_KEY, encoding);
+        }
+    }
+
+    /**
      * @param context the {@link FacesContext} for the current request
      * @return the encoding to be used for the response
      */
@@ -1727,8 +1749,14 @@ public class Util {
     public static String getResponseEncoding(FacesContext context, String defaultEncoding) {
 
         // 1. First get it from viewroot, if any.
-        if (context.getViewRoot() != null) {
-            String encoding = (String) context.getViewRoot().getAttributes().get(FACELETS_ENCODING_KEY);
+        UIViewRoot viewRoot = context.getViewRoot();
+
+        if (viewRoot != null) {
+            String encoding = (String) viewRoot.getTransientStateHelper().getTransient(FACELETS_ENCODING_KEY);
+
+            if (encoding == null) {
+                encoding = (String) viewRoot.getAttributes().get(FACELETS_ENCODING_KEY);
+            }
 
             if (encoding != null) {
                 // If found, then immediately return it, this represents either the encoding explicitly set via <f:view encoding> or the one actually set on response.

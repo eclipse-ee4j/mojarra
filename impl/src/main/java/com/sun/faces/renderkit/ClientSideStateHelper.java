@@ -42,10 +42,10 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 import jakarta.faces.FacesException;
+import jakarta.faces.application.ProjectStage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
-import com.sun.faces.RIConstants;
 import com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter;
 import com.sun.faces.util.DebugObjectOutputStream;
 import com.sun.faces.util.DebugUtil;
@@ -214,23 +214,19 @@ public class ClientSideStateHelper extends StateHelper {
         ObjectInputStream ois = null;
         InputStream bis = null;
         try {
-            if (guard != null) {
-                byte[] bytes = stateString.getBytes(RIConstants.CHAR_ENCODING);
-                byte[] decodedBytes = Base64.getDecoder().decode(bytes);
+            byte[] bytes = Base64.getDecoder().decode(stateString);
 
-                bytes = guard.decrypt(ctx, decodedBytes);
+            if (guard != null) {
+                bytes = guard.decrypt(ctx, bytes);
                 if (bytes == null) {
                     return null;
                 }
-                bis = new ByteArrayInputStream(bytes);
             }
 
-            if (null != bis && compressViewState) {
+            bis = new ByteArrayInputStream(bytes);
+
+            if (compressViewState) {
                 bis = new GZIPInputStream(bis);
-            }
-
-            if (null == bis) {
-                throw new FacesException("Unable to encode stateString");
             }
 
             ois = serialProvider.createObjectInputStream(bis);
@@ -417,7 +413,7 @@ public class ClientSideStateHelper extends StateHelper {
      */
     protected void init() {
 
-        if (webConfig.canProcessJndiEntries() && !webConfig.isOptionEnabled(BooleanWebContextInitParameter.DisableClientStateEncryption)) {
+        if (webConfig.canProcessJndiEntries() && !isClientStateEncryptionDisabled()) {
             guard = new ByteArrayGuard();
         } else {
             if (LOGGER.isLoggable(Level.FINE)) {
@@ -472,29 +468,21 @@ public class ClientSideStateHelper extends StateHelper {
 
     }
 
-    /**
-     * Is stateless.
-     *
-     * @param facesContext the Faces context.
-     * @param viewId the view id.
-     * @return true if stateless, false otherwise.
-     * @throws IllegalStateException when the request was not a postback.
-     */
-    @Override
-    public boolean isStateless(FacesContext facesContext, String viewId) throws IllegalStateException {
-        if (facesContext.isPostback()) {
-            Object stateObject;
-
-            try {
-                stateObject = getState(facesContext, viewId);
-            } catch (IOException ioe) {
-                throw new IllegalStateException("Cannot determine whether or not the request is stateless", ioe);
-            }
-
-            return STATELESS.equals(stateObject);
+    private boolean isClientStateEncryptionDisabled() {
+        if (!webConfig.isOptionEnabled(BooleanWebContextInitParameter.DisableClientStateEncryption)) {
+            return false;
         }
 
-        throw new IllegalStateException("Cannot determine whether or not the request is stateless");
+        FacesContext ctx = FacesContext.getCurrentInstance();
+        ProjectStage projectStage = ctx.getApplication().getProjectStage();
+
+        if (projectStage == ProjectStage.Development) {
+            return true;
+        }
+
+        LOGGER.log(WARNING, "faces.config.webconfig.param.development_only", new Object[] { ctx.getExternalContext().getApplicationContextPath(),
+                BooleanWebContextInitParameter.DisableClientStateEncryption.getQualifiedName(), projectStage });
+        return false;
     }
 
     // ----------------------------------------------------------- Inner Classes
