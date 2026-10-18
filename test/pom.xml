@@ -71,6 +71,7 @@
         <module>issue6019</module>
         <module>issue6027</module>
         <module>issue6060</module>
+        <module>issue6067</module>
         <module>issue6069</module>
         <module>issue6070</module>
     </modules>
