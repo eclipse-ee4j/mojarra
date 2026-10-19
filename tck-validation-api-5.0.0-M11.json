@@ -1,13 +1,13 @@
 {
   "line":       "5.0",
   "apiVersion": "5.0.0-M11",
-  "facesSha":   "be75e0516c89e49dc84a546590763329b1042afb",
-  "mojarraSha": "3bca1fd878dc7e966acef4f7e933195d215e8d2c",
-  "mojarraTree": "7b2f9f37aa67078cf0a769a71ab8808405096a46",
+  "facesSha":   "7cf99deffa8233483f81bc7bfd9e941f336fb75f",
+  "mojarraSha": "bb4664f46369f39d5f6bd682a03905a2a90ae344",
+  "mojarraTree": "8c72d14013938df20fbc10971c32ab29e694fb6e",
   "dryRun":     true,
   "tckVersion": "5.0.0-SNAPSHOT",
   "gfVersion":  "9.0.0-M3",
-  "passed":     6408,
-  "buildUrl":   "https://ci.eclipse.org/mojarra/job/mojarra-release/279/",
-  "timestamp":  "2026-10-16T18:25:36Z"
+  "passed":     6414,
+  "buildUrl":   "https://ci.eclipse.org/mojarra/job/mojarra-release/282/",
+  "timestamp":  "2026-10-19T02:46:23Z"
 }
