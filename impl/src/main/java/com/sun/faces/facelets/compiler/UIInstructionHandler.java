@@ -26,7 +26,6 @@ import com.sun.faces.facelets.util.FastWriter;
 
 import jakarta.el.ELException;
 import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UniqueIdVendor;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.facelets.FaceletContext;
 
@@ -105,16 +104,7 @@ final class UIInstructionHandler extends AbstractUIHandler {
 
                 c = new UIInstructions(txt, applied);
                 // mark it owned by a facelet instance
-                String uid;
-                String mid = ComponentSupport.getAliasedId(ctx, id);
-                UIComponent ancestorNamingContainer = parent.getNamingContainer();
-                if (null != ancestorNamingContainer && ancestorNamingContainer instanceof UniqueIdVendor) {
-                    uid = ((UniqueIdVendor) ancestorNamingContainer).createUniqueId(ctx.getFacesContext(), mid);
-                } else {
-                    uid = ComponentSupport.getViewRoot(ctx, parent).createUniqueId(ctx.getFacesContext(), mid);
-                }
-
-                c.setId(uid);
+                c.setId(ComponentSupport.createUniqueId(ctx, parent, ComponentSupport.getAliasedId(ctx, id)));
                 c.getAttributes().put(ComponentSupport.MARK_CREATED, id);
             }
             // finish cleaning up orphaned children

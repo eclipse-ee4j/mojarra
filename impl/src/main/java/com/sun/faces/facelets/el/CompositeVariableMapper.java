@@ -53,6 +53,20 @@ public final class CompositeVariableMapper extends VariableMapper {
     }
 
     /**
+     * @return the variable mapper consulted first
+     */
+    VariableMapper getPrimary() {
+        return var0;
+    }
+
+    /**
+     * @return the variable mapper consulted for a name the primary one does not hold
+     */
+    VariableMapper getFallback() {
+        return var1;
+    }
+
+    /**
      * @see jakarta.el.VariableMapper#setVariable(java.lang.String, jakarta.el.ValueExpression)
      */
     @Override

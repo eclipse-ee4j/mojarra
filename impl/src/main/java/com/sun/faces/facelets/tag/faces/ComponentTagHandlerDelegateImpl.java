@@ -50,8 +50,6 @@ import jakarta.faces.component.NamingContainer;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UISelectMany;
 import jakarta.faces.component.UISelectOne;
-import jakarta.faces.component.UIViewRoot;
-import jakarta.faces.component.UniqueIdVendor;
 import jakarta.faces.component.ValueHolder;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
 import jakarta.faces.context.FacesContext;
@@ -445,18 +443,7 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
         if (this.id != null && !(this.id.isLiteral() && IterationIdManager.registerLiteralId(ctx, this.id.getValue()))) {
             c.setId(resolveId(ctx, id));
         } else {
-            String mid = ComponentSupport.getAliasedId(ctx, id);
-            UIComponent ancestorNamingContainer = parent.getNamingContainer();
-            if (ancestorNamingContainer instanceof UniqueIdVendor) {
-                c.setId(((UniqueIdVendor) ancestorNamingContainer).createUniqueId(ctx.getFacesContext(), mid));
-            } else {
-                // No UniqueIdVendor ancestor: fall back to the view root. getViewRoot walks the parent chain,
-                // so resolve it only on this branch instead of unconditionally for every component.
-                UIViewRoot root = ComponentSupport.getViewRoot(ctx, parent);
-                if (root != null) {
-                    c.setId(root.createUniqueId(ctx.getFacesContext(), mid));
-                }
-            }
+            c.setId(ComponentSupport.createUniqueId(ctx, parent, ComponentSupport.getAliasedId(ctx, id)));
         }
 
         if (rendererType != null) {

@@ -945,6 +945,7 @@ public class WebConfiguration {
         UseFaceletsID("com.sun.faces.useFaceletsID",false),
         DisableOptionalELResolver("com.sun.faces.disableOptionalELResolver", false),
         DisableELResolverShortcuts("com.sun.faces.disableELResolverShortcuts", false),
+        EnableStrictTagFileBodyClosure("com.sun.faces.enableStrictTagFileBodyClosure", false),
         ;
 
         private final BooleanWebContextInitParameter alternate;
