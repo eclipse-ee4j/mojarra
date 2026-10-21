@@ -17,6 +17,7 @@
 package org.glassfish.mojarra.facelets.el;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -85,7 +86,31 @@ public final class UserTagParameterVariableMapper extends VariableMapper {
             mapper = ((VariableMapperWrapper) mapper).getTarget();
         }
 
+        if (mapper instanceof CompositeVariableMapper) {
+            return parameterNamesInScope((CompositeVariableMapper) mapper);
+        }
+
         return mapper instanceof UserTagParameterVariableMapper ? ((UserTagParameterVariableMapper) mapper).parameters.keySet() : Set.of();
+    }
+
+    /**
+     * Returns the parameter names in scope through either mapper of the given composite, because a name either one holds resolves through it.
+     */
+    private static Set<String> parameterNamesInScope(CompositeVariableMapper mapper) {
+        Set<String> primary = parameterNamesInScope(mapper.getPrimary());
+        Set<String> fallback = parameterNamesInScope(mapper.getFallback());
+
+        if (primary.isEmpty()) {
+            return fallback;
+        }
+
+        if (fallback.isEmpty()) {
+            return primary;
+        }
+
+        Set<String> names = new HashSet<>(primary);
+        names.addAll(fallback);
+        return names;
     }
 
     @Override

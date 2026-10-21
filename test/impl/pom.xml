@@ -40,6 +40,9 @@
         <module>issue5746</module>
         <module>issue5958</module>
         <module>issue5970</module>
+        <module>issue6076</module>
+        <module>issue6078</module>
+        <module>enableStrictTagFileBodyClosure</module>
     </modules>
 
     <dependencies>

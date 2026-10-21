@@ -118,6 +118,8 @@ public enum MojarraContextParam implements ContextParam {
 
     ENABLE_SCRIPTS_IN_ATTRIBUTE_VALUES("enableScriptsInAttributeValues", true),
 
+    ENABLE_STRICT_TAG_FILE_BODY_CLOSURE("enableStrictTagFileBodyClosure", false),
+
     ENABLE_TRANSITION_TIME_NO_OP_FLASH("enableTransitionTimeNoOpFlash", false),
 
     ENABLE_VIEW_STATE_ID_RENDERING("enableViewStateIdRendering", true),

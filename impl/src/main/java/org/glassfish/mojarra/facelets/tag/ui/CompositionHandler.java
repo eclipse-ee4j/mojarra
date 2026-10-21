@@ -115,9 +115,8 @@ public final class CompositionHandler extends TagHandlerImpl implements Template
             facesContext.getAttributes().put("org.glassfish.mojarra.uiCompositionCount", compositionCount);
 
             VariableMapper orig = ctx.getVariableMapper();
+            ctx.setVariableMapper(new VariableMapperWrapper(orig));
             if (params != null) {
-                VariableMapper vm = new VariableMapperWrapper(orig);
-                ctx.setVariableMapper(vm);
                 for (int i = 0; i < params.length; i++) {
                     params[i].apply(ctx, parent);
                 }

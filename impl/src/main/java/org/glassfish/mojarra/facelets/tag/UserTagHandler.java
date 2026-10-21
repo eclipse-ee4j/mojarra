@@ -35,8 +35,10 @@ import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagException;
 
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.facelets.FaceletContextImplBase;
 import org.glassfish.mojarra.facelets.TemplateClient;
+import org.glassfish.mojarra.facelets.el.CompositeVariableMapper;
 import org.glassfish.mojarra.facelets.el.UserTagParameterVariableMapper;
 import org.glassfish.mojarra.facelets.el.VariableMapperWrapper;
 import org.glassfish.mojarra.facelets.tag.ui.DefineHandler;
@@ -55,6 +57,13 @@ final class UserTagHandler extends TagHandlerImpl {
     protected final Map<String, DefineHandler> handlers;
 
     private final String invocation;
+
+    /**
+     * Whether the body of an invocation resolves its names only against the scope the page which wrote it is in.
+     *
+     * @see MojarraContextParam#ENABLE_STRICT_TAG_FILE_BODY_CLOSURE
+     */
+    private final boolean strictBodyClosure;
 
     /**
      * @param config
@@ -79,6 +88,7 @@ final class UserTagHandler extends TagHandlerImpl {
 
         requiredAttributes.forEach(this::getRequiredAttribute);
         invocation = isDevelopment() ? tag.getQName() + " at " + tag.getLocation() : null;
+        strictBodyClosure = MojarraContextParam.ENABLE_STRICT_TAG_FILE_BODY_CLOSURE.isEnabled(FacesContext.getCurrentInstance());
     }
 
     /**
@@ -165,11 +175,13 @@ final class UserTagHandler extends TagHandlerImpl {
     /**
      * The body of a single invocation, applied wherever the tag file inserts it.
      * <p>
-     * The body is markup of the page which wrote it, so it resolves its names against the scope that page is in rather than against the parameter namespace of
-     * the tag file inserting it, which holds the parameters of this invocation and hides those of any enclosing one. The scope is wrapped, so that a
-     * {@code ui:param} the body carries reaches the body alone, as it does on a {@code ui:include} or a {@code ui:decorate}.
+     * The body is markup of the page which wrote it, so it resolves its names against the scope that page is in first. Only a name that scope does not hold
+     * falls back to the scope in effect where the tag file inserts the body, which holds the parameters of this invocation and whatever the tag file set before
+     * the insertion. With {@link MojarraContextParam#ENABLE_STRICT_TAG_FILE_BODY_CLOSURE} the body resolves against the scope the page is in alone. The scope
+     * is wrapped, so that a {@code ui:param} the body carries reaches the body alone, as it does on a {@code ui:include} or a {@code ui:decorate}.
      *
      * @see UserTagParameterVariableMapper
+     * @see CompositeVariableMapper
      */
     private final class InvocationBody implements TemplateClient {
 
@@ -184,7 +196,7 @@ final class UserTagHandler extends TagHandlerImpl {
             FaceletContextImplBase ctx = (FaceletContextImplBase) ctxObj;
             VariableMapper orig = ctx.getVariableMapper();
 
-            ctx.setVariableMapper(new VariableMapperWrapper(invocationScope));
+            ctx.setVariableMapper(new VariableMapperWrapper(strictBodyClosure ? invocationScope : new CompositeVariableMapper(invocationScope, orig)));
 
             try {
                 return applyBody(ctx, parent, name);

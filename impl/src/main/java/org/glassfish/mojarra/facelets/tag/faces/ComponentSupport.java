@@ -36,6 +36,7 @@ import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIPanel;
 import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.UniqueIdVendor;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.view.facelets.ComponentConfig;
@@ -87,6 +88,8 @@ public final class ComponentSupport {
     public static final String MARK_CREATED_REMOVED = StateContext.class.getName() + "_MARK_CREATED_REMOVED";
 
     private final static String IMPLICIT_PANEL = "org.glassfish.mojarra.facelets.IMPLICIT_PANEL";
+
+    private static final String IMPLICIT_PANEL_ID_SEPARATOR = "__f_";
 
     // Request-scoped IdentityHashMap<UIComponent, Object[]{index, generation}> memoizing each refreshed parent's
     // MARK_CREATED -> component index for findChildByTagIdIndexed. Lives for the build; keyed by parent identity.
@@ -647,6 +650,7 @@ public final class ComponentSupport {
                 if (existing.getAttributes().get(ComponentSupport.IMPLICIT_PANEL) == null) {
                     // move existing component under a panel group
                     UIComponent panelGroup = ctx.getFacesContext().getApplication().createComponent(UIPanel.COMPONENT_TYPE);
+                    setImplicitPanelId(ctx, parent, facetName, panelGroup);
                     parent.getFacets().put(facetName, panelGroup);
                     Map<String, Object> attrs = panelGroup.getAttributes();
                     attrs.put(ComponentSupport.IMPLICIT_PANEL, true);
@@ -665,6 +669,62 @@ public final class ComponentSupport {
                 parent.getFacets().put(facetName, child);
             }
         }
+    }
+
+    /**
+     * Gives the panel which holds the components of a facet with more than one of them an id derived from the id of its parent and the name of the facet. The
+     * id is the same on every build of the view. It is seeded, so the counter of the {@link UniqueIdVendor} never hands it out to a component without an id of
+     * its own. Two facets of one parent must have names which still differ after {@link #toIdPart(String)}.
+     */
+    private static void setImplicitPanelId(FaceletContext ctx, UIComponent parent, String facetName, UIComponent panel) {
+        String parentId = parent.getId();
+
+        if (parentId != null) {
+            String seed = parentId + IMPLICIT_PANEL_ID_SEPARATOR + toIdPart(facetName);
+            panel.setId(createUniqueId(ctx, parent, seed));
+        }
+    }
+
+    /**
+     * Returns the given name with every character an id may not hold replaced by an underscore, or the name itself when it holds none.
+     */
+    static String toIdPart(String name) {
+        char[] chars = null;
+
+        for (int i = 0; i < name.length(); i++) {
+            char c = name.charAt(i);
+
+            if (!(c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c >= '0' && c <= '9' || c == '-' || c == '_')) {
+                if (chars == null) {
+                    chars = name.toCharArray();
+                }
+
+                chars[i] = '_';
+            }
+        }
+
+        return chars == null ? name : new String(chars);
+    }
+
+    /**
+     * Creates an id from the given seed which is unique within the closest {@link UniqueIdVendor} the given parent is in, or within the view root when there is
+     * none.
+     *
+     * @param ctx the Facelet context
+     * @param parent the component the component which receives the id is added to
+     * @param seed the seed of the id
+     * @return the id, or {@code null} when there is no {@link UniqueIdVendor} and no view root
+     */
+    public static String createUniqueId(FaceletContext ctx, UIComponent parent, String seed) {
+        UIComponent ancestorNamingContainer = parent.getNamingContainer();
+
+        if (ancestorNamingContainer instanceof UniqueIdVendor) {
+            return ((UniqueIdVendor) ancestorNamingContainer).createUniqueId(ctx.getFacesContext(), seed);
+        }
+
+        // getViewRoot walks the parent chain: call it only as the fallback.
+        UIViewRoot root = getViewRoot(ctx, parent);
+        return root != null ? root.createUniqueId(ctx.getFacesContext(), seed) : null;
     }
 
     public static String getFacetName(UIComponent parent) {
