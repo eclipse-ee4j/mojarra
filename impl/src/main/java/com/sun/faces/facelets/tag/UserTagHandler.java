@@ -16,6 +16,8 @@
 
 package com.sun.faces.facelets.tag;
 
+import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableStrictTagFileBodyClosure;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
@@ -24,8 +26,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter;
 import com.sun.faces.facelets.FaceletContextImplBase;
 import com.sun.faces.facelets.TemplateClient;
+import com.sun.faces.facelets.el.CompositeVariableMapper;
 import com.sun.faces.facelets.el.UserTagParameterVariableMapper;
 import com.sun.faces.facelets.el.VariableMapperWrapper;
 import com.sun.faces.facelets.tag.ui.DefineHandler;
@@ -58,6 +63,13 @@ final class UserTagHandler extends TagHandlerImpl {
     private final String invocation;
 
     /**
+     * Whether the body of an invocation resolves its names only against the scope the page which wrote it is in.
+     *
+     * @see BooleanWebContextInitParameter#EnableStrictTagFileBodyClosure
+     */
+    private final boolean strictBodyClosure;
+
+    /**
      * @param config
      */
     public UserTagHandler(TagConfig config, URL location, Set<String> requiredAttributes) {
@@ -84,6 +96,8 @@ final class UserTagHandler extends TagHandlerImpl {
         else {
             invocation = null;
         }
+
+        strictBodyClosure = WebConfiguration.getInstance().isOptionEnabled(EnableStrictTagFileBodyClosure);
     }
 
     /**
@@ -170,12 +184,15 @@ final class UserTagHandler extends TagHandlerImpl {
     /**
      * The body of a single invocation, applied wherever the tag file inserts it.
      * <p>
-     * The body is markup of the page which wrote it, so it resolves its names against the scope that page is in rather
-     * than against the parameter namespace of the tag file inserting it, which holds the parameters of this invocation
-     * and hides those of any enclosing one. The scope is wrapped, so that a {@code ui:param} the body carries reaches
-     * the body alone, as it does on a {@code ui:include} or a {@code ui:decorate}.
+     * The body is markup of the page which wrote it, so it resolves its names against the scope that page is in first.
+     * Only a name that scope does not hold falls back to the scope in effect where the tag file inserts the body, which
+     * holds the parameters of this invocation and whatever the tag file set before the insertion. With
+     * {@link BooleanWebContextInitParameter#EnableStrictTagFileBodyClosure} the body resolves against the scope the
+     * page is in alone. The scope is wrapped, so that a {@code ui:param} the body carries reaches the body alone, as it
+     * does on a {@code ui:include} or a {@code ui:decorate}.
      *
      * @see UserTagParameterVariableMapper
+     * @see CompositeVariableMapper
      */
     private final class InvocationBody implements TemplateClient {
 
@@ -190,7 +207,7 @@ final class UserTagHandler extends TagHandlerImpl {
             FaceletContextImplBase ctx = (FaceletContextImplBase) ctxObj;
             VariableMapper orig = ctx.getVariableMapper();
 
-            ctx.setVariableMapper(new VariableMapperWrapper(invocationScope));
+            ctx.setVariableMapper(new VariableMapperWrapper(strictBodyClosure ? invocationScope : new CompositeVariableMapper(invocationScope, orig)));
 
             try {
                 return applyBody(ctx, parent, name);

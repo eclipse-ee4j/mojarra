@@ -36,6 +36,7 @@
         <module>example_jar_with_metadata_complete_false</module>
         <module>example_jar_with_metadata_complete_true</module>
         <module>csp</module>
+        <module>enableStrictTagFileBodyClosure</module>
         <module>restoreBuildTimeDecisions</module>
         <module>spec1904</module>
         <module>uiIncludeRceJar</module>
@@ -74,6 +75,7 @@
         <module>issue6067</module>
         <module>issue6069</module>
         <module>issue6070</module>
+        <module>issue6076</module>
     </modules>
 
     <properties>

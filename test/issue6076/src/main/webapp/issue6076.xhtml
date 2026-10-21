@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:c="jakarta.tags.core"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:t="issue6076">
+    <h:head>
+        <title>issue6076</title>
+    </h:head>
+    <h:body>
+        <c:set var="host" value="H"/>
+        <h:panelGroup id="insertionScope"><t:tag parameter="P">#{host}:#{local}:#{parameter}<h:outputText value="/#{local}"/></t:tag></h:panelGroup>
+        <h:panelGroup id="namedInsertion"><t:named><ui:define name="named">#{local}</ui:define></t:named></h:panelGroup>
+        <h:panelGroup id="parameterInBody"><t:tag parameter="P"><ui:param name="own" value="O"/>#{own}:#{local}</t:tag>(#{own})</h:panelGroup>
+        <h:panelGroup id="invocationInBody"><t:outer outerParameter="O"/></h:panelGroup>
+        <c:set var="local" value="W"/>
+        <h:panelGroup id="writtenScope"><t:tag parameter="P">#{host}:#{local}<h:outputText value="/#{local}"/></t:tag></h:panelGroup>
+    </h:body>
+</html>

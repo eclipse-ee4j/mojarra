@@ -944,6 +944,7 @@ public class WebConfiguration {
         EnableWebsocketEndpoint(PushContext.ENABLE_WEBSOCKET_ENDPOINT_PARAM_NAME, false),
         DisallowDoctypeDecl("com.sun.faces.disallowDoctypeDecl", false),
         UseFaceletsID("com.sun.faces.useFaceletsID",false),
+        EnableStrictTagFileBodyClosure("com.sun.faces.enableStrictTagFileBodyClosure", false),
         ;
 
         private BooleanWebContextInitParameter alternate;
