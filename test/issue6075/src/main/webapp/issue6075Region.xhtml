@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<!--
+
+    Copyright (c) Contributors to Eclipse Foundation.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<html xmlns:c="jakarta.tags.core"
+      xmlns:f="jakarta.faces.core"
+      xmlns:h="jakarta.faces.html"
+>
+    <h:head>
+        <title>Mojarra issue 6075 - implicit facet panel id in a larger region</title>
+    </h:head>
+    <h:body>
+        <h:form id="form">
+            <c:if test="#{issue6075.shown}">
+                <h:outputText value="region1" />
+                <h:outputText value="region2" />
+                <h:outputText value="region3" />
+                <h:panelGrid id="grid">
+                    <f:facet name="footer">
+                        <h:outputText value="footer1" />
+                        <h:outputText value="footer2">
+                            <f:event type="postAddToView" listener="#{issue6075.resolveParentClientId}" />
+                        </h:outputText>
+                    </f:facet>
+                </h:panelGrid>
+            </c:if>
+            <h:panelGroup id="container" layout="block" />
+            <h:commandButton id="add" value="Add" action="#{issue6075.add}" />
+            <h:commandButton id="show" value="Show" action="#{issue6075.show}" />
+            <h:commandButton id="submit" value="Submit" />
+        </h:form>
+    </h:body>
+</html>

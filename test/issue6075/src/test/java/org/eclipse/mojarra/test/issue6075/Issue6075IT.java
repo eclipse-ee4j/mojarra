@@ -46,7 +46,22 @@ class Issue6075IT extends BaseIT {
      */
     @Test
     void testImplicitFacetPanelDoesNotTakeIdOfAddedComponent() {
-        open("issue6075.xhtml");
+        assertAddedComponentAndFacetSurvivePostback("issue6075.xhtml");
+    }
+
+    /**
+     * As {@link #testImplicitFacetPanelDoesNotTakeIdOfAddedComponent()}, with three more components in the region which
+     * holds the facet. The id of the panel of the facet must not depend on how many other components that region holds.
+     *
+     * @see https://github.com/eclipse-ee4j/mojarra/issues/6075
+     */
+    @Test
+    void testImplicitFacetPanelInLargerRegionDoesNotTakeIdOfAddedComponent() {
+        assertAddedComponentAndFacetSurvivePostback("issue6075Region.xhtml");
+    }
+
+    private void assertAddedComponentAndFacetSurvivePostback(String page) {
+        open(page);
         guardHttp(add::click);
         guardHttp(show::click);
         guardHttp(submit::click);
