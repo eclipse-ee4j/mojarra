@@ -76,6 +76,7 @@
         <module>issue6069</module>
         <module>issue6070</module>
         <module>issue6076</module>
+        <module>issue6078</module>
     </modules>
 
     <properties>
