@@ -92,9 +92,8 @@ public final class DecorateHandler extends TagHandlerImpl implements TemplateCli
     public void apply(FaceletContext ctxObj, UIComponent parent) throws IOException {
         FaceletContextImplBase ctx = (FaceletContextImplBase) ctxObj;
         VariableMapper orig = ctx.getVariableMapper();
+        ctx.setVariableMapper(new VariableMapperWrapper(orig));
         if (params != null) {
-            VariableMapper vm = new VariableMapperWrapper(orig);
-            ctx.setVariableMapper(vm);
             for (int i = 0; i < params.length; i++) {
                 params[i].apply(ctx, parent);
             }
