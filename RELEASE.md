@@ -25,7 +25,7 @@ Look at `impl/pom.xml`'s `jakarta.faces-api` dependency:
 - **It is a `-SNAPSHOT`** → a new API version is being cut (not on Maven Central yet); the API version is taken from the dep, not the impl version, so it need not equal the impl's. The normal case for a fresh `5.0.0`, `5.0.0-M3`, etc. This is the **three-run dance** across both jobs; see [Releasing a new 5.0 API + impl](#releasing-a-new-50-api--impl).
 - **It is a concrete GA** (e.g. impl `5.0.1` still depends on API `5.0.0`) → an **impl-only patch**; the API already exists on Central. A **single** mojarra-release run, no API job; see [Releasing a 5.0 impl-only patch](#releasing-a-50-impl-only-patch).
 
-Milestone vs GA is orthogonal to this — it is just a `MILESTONE_VERSION` suffix (`M1`, `RC1`, …) applied to whichever path.
+Milestone vs GA is orthogonal to this — it is just a `MILESTONE_TYPE` (`M` or `RC`) applied to whichever path. Each job numbers its own milestones: one above the highest `<base>-<type>N` tag on its repo (the TCK job: `<base>-TCK-<type>N`). So the impl and API numbers need not match. `M` is refused once an `RC` of the same base exists.
 
 ## Pipeline stages
 
@@ -67,15 +67,15 @@ Use this when `impl/pom.xml`'s `jakarta.faces-api` dep is a `-SNAPSHOT` (the API
 **0. Pin the API source.** Only necessary because the API dep is a `-SNAPSHOT`: point mojarra's `faces/` submodule at the `jakartaee/faces` commit you will release the API from, and commit + push it to mojarra, so the `facesSha` in the TCK record matches what the API job will release. (Skip this step entirely for an impl-only patch — its API dep is concrete.)
 
 **1. mojarra-release, DRY_RUN — produce the gate record.**
-   - `RELEASE_LINE=5.0`, leave `DRY_RUN` checked, optionally set `MILESTONE_VERSION` for a milestone.
+   - `RELEASE_LINE=5.0`, leave `DRY_RUN` checked, optionally set `MILESTONE_TYPE` for a milestone. The API milestone it validates is the one the API job will cut next.
    - Builds the API from the submodule (`-Papi`), runs the full TCK, and on green pushes the impl and API records (`tck-validation-impl-<impl>.json` + `tck-validation-api-<api>.json`) to `tck-status`. Nothing reaches Maven Central.
 
 **2. faces-api-release — publish the API.**
-   - On [faces-api-release](https://ci.eclipse.org/faces/job/faces-api-release/): `RELEASE_LINE=5.0`, uncheck `DRY_RUN`, optionally the same `MILESTONE_VERSION` as step 1.
+   - On [faces-api-release](https://ci.eclipse.org/faces/job/faces-api-release/): `RELEASE_LINE=5.0`, uncheck `DRY_RUN`, optionally the same `MILESTONE_TYPE` as step 1.
    - Its TCK gate reads Mojarra's record; on a match it publishes `jakarta.faces-api <version>` to Maven Central and tags `jakartaee/faces`.
 
 **3. mojarra-release, real — publish the impl.**
-   - `RELEASE_LINE=5.0`, uncheck `DRY_RUN`, optionally the same `MILESTONE_VERSION` as step 1.
+   - `RELEASE_LINE=5.0`, uncheck `DRY_RUN`, optionally the same `MILESTONE_TYPE` as step 1. On a milestone it consumes the latest API milestone of that type.
    - The API is now on Central, so Prepare's api-check passes and the impl pins it. To avoid re-running the TCK that step 1 already ran on identical bits, check `SKIP_TCK` — Prepare will verify a matching green `tck-status` record and skip the TCK stage. Leave `SKIP_TCK` unchecked to re-run it.
 
 ### Releasing a 5.0 impl-only patch
@@ -84,7 +84,7 @@ When `impl/pom.xml` pins a concrete GA `jakarta.faces-api` already on Central (e
 
 ## Skipping the TCK on a real release (SKIP_TCK)
 
-`SKIP_TCK` skips the TCK stage. On a **DRY_RUN** it just skips. On a **real release** it is honoured only when the `tck-status` branch already carries a green record for this release version whose `line`, `mojarraTree` (impl source) **and** `facesSha` (the exact `faces/` commit built, empty on 4.x) match this build — i.e. a prior DRY_RUN already ran the full TCK against identical bits. No matching record aborts the release in Prepare, before anything is built or published. Works on every line, so a 4.x release can dry-run the full ~3h TCK once and then reuse it. Because records come only from full TCK runs, a `SMOKE_TEST` or `SKIP_OLD_TCK` dry-run can't enable a real `SKIP_TCK` release. This is what makes step 3 above cheap without letting an unvalidated build reach Central.
+`SKIP_TCK` skips the TCK stage. On a **DRY_RUN** it just skips. On a **real release** it is honoured only when the `tck-status` branch already carries a green record for this release version whose `line`, `mojarraTree` (impl source), `facesSha` (the exact `faces/` commit built, empty on 4.x) **and** `apiVersion` match this build — i.e. a prior DRY_RUN already ran the full TCK against identical bits. No matching record aborts the release in Prepare, before anything is built or published. Works on every line, so a 4.x release can dry-run the full ~3h TCK once and then reuse it. Because records come only from full TCK runs, a `SMOKE_TEST` or `SKIP_OLD_TCK` dry-run can't enable a real `SKIP_TCK` release. This is what makes step 3 above cheap without letting an unvalidated build reach Central.
 
 ## Parameters
 
@@ -93,7 +93,7 @@ Set only `RELEASE_LINE`; everything else auto-infers. Override when fine-tuning.
 ### mojarra-release
 
 - `RELEASE_LINE` — `4.0`, `4.1`, `5.0`.
-- `MILESTONE_VERSION` — blank = GA; `M1`/`RC1`/… derives `<pom-base>-<suffix>`, tags exactly that, and skips PR-merge, milestones, GitHub release, and snapshot bump.
+- `MILESTONE_TYPE` — blank = GA; `M`/`RC` derives `<pom-base>-<type><next free number>`, tags exactly that, and skips PR-merge, milestones, GitHub release, and snapshot bump.
 - `JDK` / `TCK_JDK` — build / TCK JDK. Default per-branch.
 - `TCK_VERSION` — a released value downloads the zip; a `-SNAPSHOT` builds the TCK from the `faces/tck` submodule. Default per-branch.
 - `GF_VERSION` / `GF_BUNDLE_URL` — GlassFish coordinate / explicit zip URL.
@@ -108,7 +108,7 @@ Set only `RELEASE_LINE`; everything else auto-infers. Override when fine-tuning.
 ### faces-api-release
 
 - `RELEASE_LINE` — `5.0`.
-- `MILESTONE_VERSION` — same as mojarra-release: blank = GA; `M1`/`RC1`/… derives `<pom-base>-<suffix>`, tags exactly that, and leaves the source branch on its `-SNAPSHOT`.
+- `MILESTONE_TYPE` — same as mojarra-release: blank = GA; `M`/`RC` derives `<pom-base>-<type><next free number>`, tags exactly that, and leaves the source branch on its `-SNAPSHOT`.
 - `JDK` — default per-branch.
 - `DRY_RUN` *(default on)* — skip Central deploy and GitHub push.
 - `SKIP_DEPLOY` — requires `DRY_RUN` off. Skip only the deploy.
@@ -137,7 +137,7 @@ Maintained in `BRANCH_CONFIG` at the top of each `Jenkinsfile`; adding a release
 
 ## Troubleshooting
 
-- **Release branch / tag already exists on origin.** The conflict check fails fast (it runs even on DRY_RUN). Bump `pom.xml` / `api/pom.xml`, or use a fresh `MILESTONE_VERSION`. Central is immutable; never reuse a published version.
+- **Release branch / tag already exists on origin.** The conflict check fails fast (it runs even on DRY_RUN). Bump `pom.xml` / `api/pom.xml`. A milestone run picks a free number by itself, so it hits this only when someone pushed the same tag mid-run. Central is immutable; never reuse a published version.
 - **`jakarta.faces-api <v> is not on Maven Central`** (mojarra Prepare, real release). The API isn't released yet. Run the [three-run dance](#releasing-a-new-50-api--impl): a mojarra DRY_RUN to seed the gate, then faces-api-release, then the real mojarra run.
 - **`[tck-gate] ERROR: … does not match this commit`** (faces Prepare). No matching green Mojarra record for this API version + `faces` commit. Ensure mojarra's `faces/` submodule was pinned to this commit and a mojarra DRY_RUN with the TCK ran green against it. `SKIP_TCK_GATE` is the emergency override.
 - **`[tck-reuse] ERROR: no matching … record`** (mojarra Prepare, `SKIP_TCK` real release). No green `tck-status` record for this release version matches this impl tree + faces commit. Common cause: a commit landed on `jakartaee/faces` `5.0` after the DRY_RUN, so the tracked submodule tip (`facesSha`) moved past the validated one (see [Freeze the faces tip](#releasing-a-new-50-api--impl)). Fix: run a fresh full DRY_RUN (not `SMOKE_TEST`/`SKIP_OLD_TCK`) against the new tip, or — if the API is already on Central — just unset `SKIP_TCK` to re-run the TCK inline in this same release.

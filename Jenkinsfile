@@ -80,6 +80,10 @@ def BRANCH_CONFIG = [
     '5.0': [ implBranch: '5.0',  apiBranch: '5.0', apiVersion: null,    jdk: '17', tckJdk: '21', tckVersion: '5.0.0-SNAPSHOT', gfVersion: '9.0.0-M3', seleniumEnabled: true , threadCount: 2 ],
 ]
 
+// Anonymous HTTPS remotes, read for their milestone/RC tags in Prepare (before any SSH agent).
+def MOJARRA_REPO_URL = 'https://github.com/eclipse-ee4j/mojarra.git'
+def FACES_REPO_URL   = 'https://github.com/jakartaee/faces.git'
+
 // Reusable shell snippet: GPG keyring import + trust. Idempotent. Required wherever the build
 // signs artifacts (javadoc/sources in Build & install, everything in Deploy to Maven Central).
 // Inside ''' Groovy strings, ${...} stays literal so bash sees ${KEYRING}.
@@ -226,7 +230,7 @@ spec:
 
     parameters {
         choice(name: 'RELEASE_LINE', choices: ['4.0', '4.1', '5.0'], description: 'Mojarra release line to cut.')
-        string(name: 'MILESTONE_VERSION' , defaultValue: '', description: 'Leave blank for a GA release; otherwise the suffix for a milestone/RC release. Must match ^(M|RC)[0-9]+$ (e.g. M1, M2, RC1). When set, the release is tagged with the suffix appended (e.g. 5.0.0-M2 instead of 5.0.0-RELEASE), and the source branch is left untouched: PR-merge, milestone management, GitHub release creation, and snapshot bump are all skipped.')
+        choice(name: 'MILESTONE_TYPE', choices: ['', 'M', 'RC'], description: 'Leave blank for a GA release; otherwise M for a milestone or RC for a release candidate. The number is picked automatically: one above the highest existing <base>-<type>N tag on origin (e.g. M11 when 5.0.0-M10 exists). M is refused once an RC of the same base exists. When set, the release is tagged with that suffix appended (e.g. 5.0.0-M11 instead of 5.0.0-RELEASE), and the source branch is left untouched: PR-merge, milestone management, GitHub release creation, and snapshot bump are all skipped.')
         choice(name: 'JDK', choices: JDK_VERSION_CHOICES, description: 'Leave blank to auto-infer from RELEASE_LINE (11 for 4.0, 17 for 4.1 and 5.0). This is the JDK used to run the build & install.')
         choice(name: 'TCK_JDK', choices: JDK_VERSION_CHOICES, description: 'Leave blank to auto-infer from RELEASE_LINE (11 for 4.0, 21 for 4.1 and 5.0). This is the JDK used to run the TCK (the GlassFish container may need a newer JDK than the spec).')
         string(name: 'TCK_VERSION', defaultValue: '', description: 'Leave blank to auto-infer from RELEASE_LINE. A released value (e.g. 4.0.3) downloads the published TCK zip from download.eclipse.org; a -SNAPSHOT value (e.g. 5.0.0-SNAPSHOT) builds the TCK from the faces/tck submodule directory instead.')
@@ -235,7 +239,7 @@ spec:
         choice(name: 'THREAD_COUNT', choices: ['', '1', '2', '3', '4', '5', '6', '7', '8'], description: '5.0+ only. Leave blank to auto-infer from RELEASE_LINE (1 for 4.x, 2 for 5.0). Maven `-T` value and gf.pool.size for the TCK reactor. Values >1 only work on TCKs that ship gf-pool (5.0+); selecting one on 4.x errors out.')
         booleanParam(name: 'DRY_RUN', defaultValue: true, description: 'Skip Maven Central deploy and GitHub push.')
         booleanParam(name: 'SMOKE_TEST', defaultValue: false, description: 'Requires DRY_RUN and unset SKIP_TCK. Filter the TCK to a tiny representative subset for fast iteration on the pipeline itself (one failsafe IT + one sigtest IT + one old-tck-selenium IT, plus one old-tck JavaTest path when SKIP_OLD_TCK is unchecked).')
-        booleanParam(name: 'SKIP_TCK', defaultValue: false, description: 'Skip the Faces TCK stage. On a DRY_RUN it is simply skipped. On a real release it is allowed only when the tck-status branch already carries a green record for this RELEASE_VERSION whose line, mojarraTree (impl source) and facesSha (the faces commit built) match this build — i.e. a prior DRY_RUN already ran the FULL TCK against identical bits; otherwise the release aborts. Records come only from full TCK runs, so a SMOKE_TEST or SKIP_OLD_TCK dry-run cannot enable a real SKIP_TCK release.')
+        booleanParam(name: 'SKIP_TCK', defaultValue: false, description: 'Skip the Faces TCK stage. On a DRY_RUN it is simply skipped. On a real release it is allowed only when the tck-status branch already carries a green record for this RELEASE_VERSION whose line, mojarraTree (impl source), facesSha (the faces commit built) and apiVersion match this build — i.e. a prior DRY_RUN already ran the FULL TCK against identical bits; otherwise the release aborts. Records come only from full TCK runs, so a SMOKE_TEST or SKIP_OLD_TCK dry-run cannot enable a real SKIP_TCK release.')
         booleanParam(name: 'SKIP_OLD_TCK', defaultValue: false, description: 'Requires DRY_RUN and unset SKIP_TCK. 4.x only (rejected on 5.0+ where these modules no longer exist). Skip the old-tck JavaTest modules (excluded from the reactor entirely via -pl); cuts over 2 hours off the TCK run. Because it drops conformance coverage it writes no validation record and is confined to dry-runs, so it can never publish. The old-tck-selenium failsafe-driven modules are unaffected by this flag.')
         booleanParam(name: 'SKIP_DEPLOY', defaultValue: false, description: 'Requires DRY_RUN unchecked. Skip the Maven Central deploy stage only (still pushes branch/tag and creates the GitHub release). Use for resuming a previous run after Maven Central already published, or for pipeline-debug runs that exercise Publish to GitHub without re-deploying.')
         booleanParam(name: 'SKIP_CRED_CHECK', defaultValue: false, description: 'Skip the Prepare-stage credential checks (Sonatype Central, GitHub SSH push, GitHub bot token). Use for pipeline-debug runs where the publish credentials are unavailable or known-stale and should not abort the run; on a real release leave this unchecked so a bad credential fails fast.')
@@ -331,15 +335,11 @@ spec:
                     env.SNAPSHOT_VERSION = snapshot
                     def baseVersion = snapshot.replace('-SNAPSHOT', '')
 
-                    // Milestone/RC release path: derive RELEASE_VERSION as <pom-base>-<MILESTONE_VERSION>,
+                    // Milestone/RC release path: derive RELEASE_VERSION as <pom-base>-<next free suffix>,
                     // skip the GA-format check and the next-snapshot bump, and tag without -RELEASE suffix.
-                    def milestoneSuffix = params.MILESTONE_VERSION?.trim()
-                    if (milestoneSuffix) {
-                        if (!(milestoneSuffix ==~ /^(M|RC)\d+$/)) {
-                            error "MILESTONE_VERSION '${milestoneSuffix}' must match ^(M|RC)[0-9]+\$ (e.g. M1, M2, RC1, RC2)."
-                        }
+                    if (params.MILESTONE_TYPE) {
                         env.IS_MILESTONE    = 'true'
-                        env.RELEASE_VERSION = "${baseVersion}-${milestoneSuffix}"
+                        env.RELEASE_VERSION = "${baseVersion}-" + nextMilestoneSuffix(MOJARRA_REPO_URL, "${baseVersion}-", params.MILESTONE_TYPE)
                         env.RELEASE_TAG     = env.RELEASE_VERSION
                         env.RELEASE_BRANCH  = env.RELEASE_VERSION
                     } else {
@@ -390,16 +390,23 @@ spec:
                         def isSnapshotDep = apiDepVersion.endsWith('-SNAPSHOT')
                         // Resolve the api version from the DEP, never from the impl's version (they can
                         // differ). A concrete dep is taken as-is. A -SNAPSHOT dep encodes its target GA
-                        // version in the number (5.0.1-SNAPSHOT -> 5.0.1); on a milestone run, apply this
-                        // run's milestone suffix to the api's OWN base — matching what the faces job cuts
-                        // (its api-pom base + MILESTONE_VERSION) — so an impl milestone building an
-                        // unreleased api at a different base still attests the right api version.
+                        // version in the number (5.0.1-SNAPSHOT -> 5.0.1). On a milestone run the faces job
+                        // numbers its api milestones independently, so the api number can differ from the
+                        // impl's. A DRY_RUN attests the api milestone the faces job will cut next. A real
+                        // run consumes the latest one it cut.
                         def concreteApi
                         if (!isSnapshotDep) {
                             concreteApi = apiDepVersion
                         } else {
                             def apiBase = apiDepVersion.replace('-SNAPSHOT', '')
-                            concreteApi = (env.IS_MILESTONE == 'true') ? "${apiBase}-${params.MILESTONE_VERSION.trim()}" : apiBase
+                            def apiTagPrefix = "${apiBase}-"
+                            if (env.IS_MILESTONE != 'true') {
+                                concreteApi = apiBase
+                            } else if (params.DRY_RUN) {
+                                concreteApi = apiTagPrefix + nextMilestoneSuffix(FACES_REPO_URL, apiTagPrefix, params.MILESTONE_TYPE)
+                            } else {
+                                concreteApi = apiTagPrefix + params.MILESTONE_TYPE + highestTagNumber(FACES_REPO_URL, apiTagPrefix + params.MILESTONE_TYPE)
+                            }
                         }
                         // curl -fsI HEADs the Central pom; exit 0 iff the api is already published.
                         def apiOnCentral = (sh(returnStatus: true, script: """#!/bin/bash
@@ -461,10 +468,11 @@ spec:
                     env.FACES_SHA = env.API_BRANCH ? sh(returnStdout: true, script: 'git -C faces rev-parse HEAD').trim() : ''
                 }
                 // SKIP_TCK on a real release is honoured only when the tck-status branch already holds a
-                // green record for this RELEASE_VERSION matching THIS build (line + mojarraTree + facesSha)
-                // — i.e. a prior DRY_RUN already ran the full TCK against identical impl source and faces
-                // commit, reused instead of re-running the TCK. No matching record aborts here, before any
-                // build or publish. Works on every line (facesSha is empty on 4.x). Needs curl + awk.
+                // green record for this RELEASE_VERSION matching THIS build (line + mojarraTree + facesSha
+                // + apiVersion) — i.e. a prior DRY_RUN already ran the full TCK against identical impl
+                // source, faces commit and api version, reused instead of re-running the TCK. No matching
+                // record aborts here, before any build or publish. Works on every line (facesSha is empty
+                // on 4.x). Needs curl + awk.
                 // Skipped under SKIP_DEPLOY: that mode publishes nothing (resume-only, tag/GitHub
                 // release for an already-published version), so the gate — which exists solely to
                 // block an unvalidated *publish* — has nothing to guard.
@@ -481,14 +489,15 @@ spec:
                             field() { awk -F'"' -v k="$1" '$2==k {print $4; exit}' rec.json; }
                             # No result/status check needed: a record only exists when a full TCK
                             # passed (see the success-guard in the TCK stage), so matching identity
-                            # (line + impl tree + faces commit) is sufficient to reuse it.
+                            # (line + impl tree + faces commit + api version) is sufficient to reuse it.
                             if [ "$(field line)" = "${RELEASE_LINE}" ] \\
                                 && [ "$(field mojarraTree)" = "${MOJARRA_TREE}" ] \\
-                                && [ "$(field facesSha)" = "${FACES_SHA}" ]; then
+                                && [ "$(field facesSha)" = "${FACES_SHA}" ] \\
+                                && [ "$(field apiVersion)" = "${VALIDATED_API_VERSION}" ]; then
                                 echo "[tck-reuse] reusing green TCK $(field buildUrl) for ${RELEASE_VERSION} (tree ${MOJARRA_TREE}, faces ${FACES_SHA:-none})"
                             else
                                 cat rec.json >&2
-                                echo "[tck-reuse] ERROR: no matching green tck-status record for ${RELEASE_VERSION} at this impl tree (${MOJARRA_TREE}) + faces commit (${FACES_SHA:-none}); run a DRY_RUN with the full TCK first, or unset SKIP_TCK." >&2
+                                echo "[tck-reuse] ERROR: no matching green tck-status record for ${RELEASE_VERSION} at this impl tree (${MOJARRA_TREE}) + faces commit (${FACES_SHA:-none}) + api ${VALIDATED_API_VERSION}; run a DRY_RUN with the full TCK first, or unset SKIP_TCK." >&2
                                 exit 1
                             fi
                         '''
@@ -977,6 +986,25 @@ def bumpLastComponent(String version) {
     def parts = version.tokenize('.')
     parts[-1] = (parts[-1].toInteger() + 1).toString()
     return parts.join('.')
+}
+
+// Highest N among the tags on repoUrl named exactly <tagPrefix>N, or 0 when there is none.
+def highestTagNumber(String repoUrl, String tagPrefix) {
+    return sh(returnStdout: true, script: """#!/bin/bash -e
+        set -o pipefail
+        git ls-remote --tags --refs '${repoUrl}' | awk -v p='refs/tags/${tagPrefix}' '
+            index(\$2, p) == 1 { n = substr(\$2, length(p) + 1); if (n ~ /^[0-9]+\$/ && n + 0 > max) max = n + 0 }
+            END { print max + 0 }'
+    """).trim().toInteger()
+}
+
+// Next free suffix of the given type (M or RC) for tagPrefix on repoUrl, e.g. M11 when
+// <tagPrefix>M10 is the highest existing tag. Refuses M once an RC exists for the same prefix.
+def nextMilestoneSuffix(String repoUrl, String tagPrefix, String type) {
+    if (type == 'M' && highestTagNumber(repoUrl, "${tagPrefix}RC") > 0) {
+        error "${tagPrefix}RC* already exists on ${repoUrl}; a milestone cannot follow a release candidate. Use MILESTONE_TYPE=RC."
+    }
+    return type + (highestTagNumber(repoUrl, tagPrefix + type) + 1)
 }
 
 // Validate that `version` is a dotted-numeric GA version with at least three components (rejects
