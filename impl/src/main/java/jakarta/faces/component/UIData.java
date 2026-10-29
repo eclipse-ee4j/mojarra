@@ -977,7 +977,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         // for a non-nested table. clientId will be something like
         // outerData:3:data:3:input for a nested table.
         // We need to find the first occurring client ID segment which is parseable as a number.
-        if (clientId.startsWith(myId)) {
+        if (clientId.startsWith(myId) && clientId.length() > myId.length() && clientId.charAt(myId.length()) == sepChar) {
             try {
                 try {
                     newRow = extractFirstNumericSegment(clientId.substring(myId.length()), sepChar);
