@@ -304,6 +304,7 @@ public class CdiExtension implements Extension {
         afterBeanDiscovery.addBean(new SessionProducer(beanManager));
         afterBeanDiscovery.addBean(new SessionMapProducer(beanManager));
         afterBeanDiscovery.addBean(new ViewMapProducer(beanManager));
+        afterBeanDiscovery.addBean(new ViewScopeMapProducer(beanManager));
         afterBeanDiscovery.addBean(new ViewProducer(beanManager));
         afterBeanDiscovery.addBean(new DataModelClassesMapProducer(beanManager));
 
