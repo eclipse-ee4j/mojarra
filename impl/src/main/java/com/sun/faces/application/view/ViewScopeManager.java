@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -35,7 +36,6 @@ import java.util.logging.Logger;
 
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.util.LRUMap;
 
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.application.ProjectStage;
@@ -303,7 +303,7 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
                 }
 
                 if (sessionMap.get(ACTIVE_VIEW_MAPS) == null) {
-                    sessionMap.put(ACTIVE_VIEW_MAPS, Collections.synchronizedMap(new LRUMap<String, Object>(size)));
+                    sessionMap.put(ACTIVE_VIEW_MAPS, Collections.synchronizedMap(new LinkedHashMap<String, Object>(size + 1, 1.0f, true)));
                 }
 
                 @SuppressWarnings("unchecked")
@@ -314,7 +314,7 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
                         viewMapId = UUID.randomUUID().toString();
                     }
 
-                    if (viewMaps.size() == size) {
+                    while (!viewMaps.isEmpty() && viewMaps.size() >= size) {
                         evictEldestViewMap(facesContext, viewMaps);
                     }
 
