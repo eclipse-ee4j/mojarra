@@ -16,6 +16,7 @@
 
 package org.glassfish.mojarra.cdi;
 
+import static jakarta.faces.model.FacesDataModel.DATA_MODEL_CLASSES_MAP_NAME;
 import static java.util.stream.Collectors.toSet;
 
 import java.lang.annotation.Annotation;
@@ -192,9 +193,9 @@ public class CdiLookupPerfHarness {
     @Test
     void resolveBeanByName_dataModelClassesMap() {
         compare(
-            "resolveBeanByName -- " + DataModelClassesMapProducer.DATA_MODEL_CLASSES_MAP_BEAN_NAME,
-            () -> rawResolveBeanByName(beanManager, DataModelClassesMapProducer.DATA_MODEL_CLASSES_MAP_BEAN_NAME),
-            () -> CdiUtils.resolveBeanByName(beanManager, DataModelClassesMapProducer.DATA_MODEL_CLASSES_MAP_BEAN_NAME)
+            "resolveBeanByName -- " + DATA_MODEL_CLASSES_MAP_NAME,
+            () -> rawResolveBeanByName(beanManager, DATA_MODEL_CLASSES_MAP_NAME),
+            () -> CdiUtils.resolveBeanByName(beanManager, DATA_MODEL_CLASSES_MAP_NAME)
         );
     }
 
@@ -372,7 +373,7 @@ public class CdiLookupPerfHarness {
     public static class TestBehavior extends BehaviorBase {
     }
 
-    @Named(DataModelClassesMapProducer.DATA_MODEL_CLASSES_MAP_BEAN_NAME)
+    @Named(DATA_MODEL_CLASSES_MAP_NAME)
     @ApplicationScoped
     public static class TestDataModelClassesMap {
 
