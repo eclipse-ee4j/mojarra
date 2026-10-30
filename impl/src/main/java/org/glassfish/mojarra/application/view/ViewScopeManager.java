@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -48,7 +49,6 @@ import jakarta.servlet.http.HttpSessionListener;
 
 import org.glassfish.mojarra.application.ApplicationAssociate;
 import org.glassfish.mojarra.config.MojarraContextParam;
-import org.glassfish.mojarra.util.LRUMap;
 
 /**
  * The manager that deals with non-CDI and CDI ViewScoped beans.
@@ -63,10 +63,6 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
      * Stores the constants to keep track of the active view maps.
      */
     public static final String ACTIVE_VIEW_MAPS = "org.glassfish.mojarra.application.view.activeViewMaps";
-    /**
-     * Stores the constant for the maximum active view map size.
-     */
-    public static final String ACTIVE_VIEW_MAPS_SIZE = "org.glassfish.mojarra.application.view.activeViewMapsSize";
     /**
      * Stores the view map id.
      */
@@ -294,13 +290,10 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
         }
 
         Map<String, Object> sessionMap = facesContext.getExternalContext().getSessionMap();
-        Integer size = (Integer) sessionMap.get(ACTIVE_VIEW_MAPS_SIZE);
-        if (size == null) {
-            size = numberOfActiveViewMapsInWebXml;
-        }
+        int size = numberOfActiveViewMapsInWebXml;
 
         if (sessionMap.get(ACTIVE_VIEW_MAPS) == null) {
-            sessionMap.put(ACTIVE_VIEW_MAPS, Collections.synchronizedMap(new LRUMap<String, Object>(size)));
+            sessionMap.put(ACTIVE_VIEW_MAPS, Collections.synchronizedMap(new LinkedHashMap<String, Object>(size + 1, 1.0f, true)));
         }
 
         @SuppressWarnings("unchecked")
@@ -311,7 +304,7 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
                 viewMapId = UUID.randomUUID().toString();
             }
 
-            if (viewMaps.size() == size) {
+            while (!viewMaps.isEmpty() && viewMaps.size() >= size) {
                 evictEldestViewMap(facesContext, viewMaps);
             }
 
@@ -395,7 +388,6 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
 
             activeViewMaps.clear();
             session.removeAttribute(ACTIVE_VIEW_MAPS);
-            session.removeAttribute(ACTIVE_VIEW_MAPS_SIZE);
         }
 
         session.removeAttribute(VIEW_MAP_USAGES);
