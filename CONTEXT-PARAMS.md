@@ -300,7 +300,7 @@ The *Performance* column tells where the cost of changing the parameter lands: `
 <tr><th colspan="5" align="left"><br/><code>com.sun.faces.forceAlwaysWriteFlashCookie</code></th></tr>
 <tr><td><code>boolean</code></td><td><code>false</code></td><td>2.1.20</td><td>-</td><td>Writes the flash cookie on every response, instead of only when the flash actually holds data.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>com.sun.faces.numberOfActiveViewMaps</code></th></tr>
-<tr><td><code>int</code></td><td><code>25</code></td><td>2.3.18</td><td>memory</td><td>Maximum amount of view scope maps kept in the session. The least recently used one is destroyed when the maximum is exceeded. Each map holds the view scoped beans of one view, so this directly sizes the session.</td></tr>
+<tr><td><code>int</code></td><td><code>25</code></td><td>2.3.18</td><td>memory</td><td>Maximum amount of view scope maps kept in the session. The least recently used one is destroyed when the maximum is exceeded. Each map holds the view scoped beans of one view, so this directly sizes the session. The <code>com.sun.faces.application.view.activeViewMapsSize</code> session attribute overrides it per session; this override is removed in 5.0.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>com.sun.faces.numberOfConcerrentFlashUsers</code></th></tr>
 <tr><td><code>int</code></td><td><code>5000</code></td><td>2.0.0</td><td>memory</td><td>Deprecated, misspelled name of <code>com.sun.faces.numberOfConcurrentFlashUsers</code>.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>com.sun.faces.numberOfConcurrentFlashUsers</code></th></tr>
