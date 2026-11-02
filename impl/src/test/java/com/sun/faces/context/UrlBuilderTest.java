@@ -21,6 +21,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -35,6 +36,10 @@ import org.junit.jupiter.api.Test;
 
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.lifecycle.ClientWindow;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Tests for {@link UrlBuilder}.
@@ -45,10 +50,17 @@ import jakarta.faces.context.FacesContext;
  */
 class UrlBuilderTest {
 
+    private static final String CLIENT_WINDOW_ID = "a b&c=d'";
+    private static final String ENCODED_CLIENT_WINDOW_ID = "a+b%26c%3Dd%27";
+
+    private FacesContext facesContext;
+    private ExternalContext externalContext;
+
     @BeforeEach
     void setCurrentFacesContext() {
-        FacesContext facesContext = mock(FacesContext.class);
-        when(facesContext.getExternalContext()).thenReturn(mock(ExternalContext.class));
+        facesContext = mock(FacesContext.class);
+        externalContext = mock(ExternalContext.class);
+        when(facesContext.getExternalContext()).thenReturn(externalContext);
         CurrentFacesContext.set(facesContext);
     }
 
@@ -337,7 +349,73 @@ class UrlBuilderTest {
         assertEquals("https://example.com/page?foo=bar", builder.createUrl());
     }
 
+    // -------- client window -------------------------------------------------
+
+    @Test
+    void appendClientWindow_idIsEncoded() {
+        clientWindow(CLIENT_WINDOW_ID, true);
+        assertEquals("/page.xhtml?jfwid=" + ENCODED_CLIENT_WINDOW_ID, appendClientWindow("/page.xhtml", false));
+        assertEquals("/page.xhtml?a=b&jfwid=" + ENCODED_CLIENT_WINDOW_ID, appendClientWindow("/page.xhtml?a=b", true));
+    }
+
+    @Test
+    void appendClientWindow_separatorOfDefaultIdIsEncoded() {
+        clientWindow("8d2b6e1a-0d8e-4f2c-9a5f-3c1d2e4f5a6b:0", true);
+        assertEquals("/page.xhtml?jfwid=8d2b6e1a-0d8e-4f2c-9a5f-3c1d2e4f5a6b%3A0", appendClientWindow("/page.xhtml", false));
+    }
+
+    @Test
+    void appendClientWindow_additionalParametersAreEncodedAndSeparated() {
+        Map<String, String> additionalParams = new LinkedHashMap<>();
+        additionalParams.put("a'", "1&2");
+        additionalParams.put("b", "<3>");
+        when(clientWindow("id", true).getQueryURLParameters(facesContext)).thenReturn(additionalParams);
+        assertEquals("/page.xhtml?jfwid=id&a%27=1%262&b=%3C3%3E", appendClientWindow("/page.xhtml", false));
+    }
+
+    @Test
+    void appendClientWindow_urlWhichAlreadyHasIdIsSkipped() {
+        clientWindow(CLIENT_WINDOW_ID, true);
+        assertEquals("/page.xhtml?jfwid=id", appendClientWindow("/page.xhtml?jfwid=id", true));
+    }
+
+    @Test
+    void appendClientWindow_disabledRenderModeIsSkipped() {
+        clientWindow(CLIENT_WINDOW_ID, false);
+        assertEquals("/page.xhtml", appendClientWindow("/page.xhtml", false));
+    }
+
+    @Test
+    void createUrl_clientWindowIdIsEncoded() {
+        clientWindow(CLIENT_WINDOW_ID, true);
+        assertEquals("/page.xhtml?a=b&jfwid=" + ENCODED_CLIENT_WINDOW_ID, buildUrl("/page.xhtml?a=b"));
+    }
+
+    @Test
+    void encodeActionURL_clientWindowIdIsEncoded() {
+        clientWindow(CLIENT_WINDOW_ID, true);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        when(response.encodeURL(anyString())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(response.getCharacterEncoding()).thenReturn(UTF_8.name());
+        ExternalContextImpl externalContextImpl = new ExternalContextImpl(mock(ServletContext.class), mock(HttpServletRequest.class), response);
+        assertEquals("/page.xhtml?jfwid=" + ENCODED_CLIENT_WINDOW_ID, externalContextImpl.encodeActionURL("/page.xhtml"));
+    }
+
     // -------- helpers -------------------------------------------------------
+
+    private ClientWindow clientWindow(String id, boolean renderModeEnabled) {
+        ClientWindow clientWindow = mock(ClientWindow.class);
+        when(clientWindow.getId()).thenReturn(id);
+        when(clientWindow.isClientWindowRenderModeEnabled(facesContext)).thenReturn(renderModeEnabled);
+        when(externalContext.getClientWindow()).thenReturn(clientWindow);
+        return clientWindow;
+    }
+
+    private String appendClientWindow(String url, boolean hasQueryString) {
+        StringBuilder builder = new StringBuilder(url);
+        UrlBuilder.appendClientWindow(facesContext, builder, hasQueryString, UTF_8);
+        return builder.toString();
+    }
 
     private static String buildUrl(String url) {
         return new UrlBuilder(url, UTF_8.name()).createUrl();
