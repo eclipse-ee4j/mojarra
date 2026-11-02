@@ -456,6 +456,40 @@ export const ajax = (function() {
     };
 
     /**
+     * Append the stylesheet links and inline style elements found in the given markup to the end of the head, in their order in the markup.
+     * A link is skipped when the document already has its URL. An inline style element has no URL to identify it, so it is always appended.
+     * @param str markup which may contain stylesheet links and style elements
+     * @ignore
+     */
+    const runResourceStylesheets = function runResourceStylesheets(str: string): void {
+        const findscripts = /<script[^>]*>[\s\S]*?<\/script>/igm;
+        const findstylesheets = /<link[^>]*\/>|<style[^>]*>[\s\S]*?<\/style>/igm;
+        const head = getHead();
+        const nonce = getNonce();
+        const parserElement = document.createElement("div");
+
+        for (const stylesheet of str.replace(findscripts, "").match(findstylesheets) || []) {
+            if (/^<link/i.test(stylesheet)) {
+                runStylesheets(stylesheet);
+                continue;
+            }
+
+            parserElement.innerHTML = stylesheet;
+            const styleNode = parserElement.firstChild as HTMLStyleElement | null;
+
+            if (styleNode) {
+                if (nonce) {
+                    styleNode.nonce = nonce;
+                }
+
+                head.appendChild(styleNode);
+            }
+        }
+
+        deleteNode(parserElement);
+    };
+
+    /**
      * Replace DOM element with a new tag name and supplied innerHTML
      * @param element element to replace
      * @param tempTagName new tag name to replace with
@@ -893,7 +927,7 @@ export const ajax = (function() {
             throw new Error("jakarta.faces.ViewHead not supported - browsers cannot reliably replace the head's contents");
         }
         else if (id === "jakarta.faces.Resource") {
-            runStylesheets(src);
+            runResourceStylesheets(src);
             scripts = extractScripts(src);
             runScripts(scripts);
         }

@@ -120,6 +120,11 @@ public class RequestStateManager {
      */
     public static final String RENDERED_RESOURCE_DEPENDENCIES = ResourceHandler.RESOURCE_IDENTIFIER;
 
+    /**
+     * Used to store the view root and the component resources which it had when the Restore View phase of a partial postback restored or obtained it.
+     */
+    public static final String RESTORED_COMPONENT_RESOURCES = "org.glassfish.mojarra.RESTORED_COMPONENT_RESOURCES";
+
     // TODO: refactor this thing to common map.
     private static final String[] ATTRIBUTES_TO_CLEAR_ON_CHANGE_OF_VIEW = { SCRIPT_STATE, PROCESSED_RESOURCE_DEPENDENCIES, PROCESSED_RADIO_BUTTON_GROUPS };
 
