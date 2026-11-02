@@ -20,6 +20,8 @@ import static com.sun.faces.RIConstants.CHAR_ENCODING;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -207,32 +209,7 @@ class UrlBuilder {
             hasQueryString = true;
         }
 
-        FacesContext context = FacesContext.getCurrentInstance();
-        ClientWindow cw = context.getExternalContext().getClientWindow();
-        boolean appendClientWindow = false;
-        if (null != cw) {
-            appendClientWindow = cw.isClientWindowRenderModeEnabled(context);
-        }
-        if (appendClientWindow && -1 == url.indexOf(ResponseStateManager.CLIENT_WINDOW_URL_PARAM)) {
-            if (null != cw) {
-                String clientWindow = cw.getId();
-                if (!hasQueryString) {
-                    url.append(QUERY_STRING_SEPARATOR);
-                } else {
-                    url.append(PARAMETER_PAIR_SEPARATOR);
-                }
-                url.append(ResponseStateManager.CLIENT_WINDOW_URL_PARAM).append(PARAMETER_NAME_VALUE_SEPARATOR).append(clientWindow);
-
-                Map<String, String> additionalParams = cw.getQueryURLParameters(context);
-                if (null != additionalParams) {
-                    for (Map.Entry<String, String> cur : additionalParams.entrySet()) {
-                        url.append(PARAMETER_PAIR_SEPARATOR);
-                        url.append(cur.getKey()).append(UrlBuilder.PARAMETER_NAME_VALUE_SEPARATOR).append(cur.getValue());
-                    }
-                }
-            }
-        }
-
+        appendClientWindow(FacesContext.getCurrentInstance(), url, hasQueryString, encoding);
     }
 
     protected void appendFragment() {
@@ -301,7 +278,41 @@ class UrlBuilder {
         }
     }
 
+    // ---------------------------------------------------------- Package Methods
+
+    /**
+     * Appends the client window id and the additional query parameters of the client window to the given URL, if client
+     * window rendering is enabled and the URL does not contain the client window id yet.
+     *
+     * @param context The involved faces context.
+     * @param url The URL to append to.
+     * @param hasQueryString Whether the URL already has a query string.
+     * @param encoding The character encoding to URL-encode with, or {@code null} for UTF-8.
+     */
+    static void appendClientWindow(FacesContext context, StringBuilder url, boolean hasQueryString, String encoding) {
+        ClientWindow cw = context.getExternalContext().getClientWindow();
+        if (cw == null || !cw.isClientWindowRenderModeEnabled(context) || url.indexOf(ResponseStateManager.CLIENT_WINDOW_URL_PARAM) != -1) {
+            return;
+        }
+
+        Charset charset = encoding != null ? Charset.forName(encoding) : StandardCharsets.UTF_8;
+        url.append(hasQueryString ? PARAMETER_PAIR_SEPARATOR : QUERY_STRING_SEPARATOR);
+        appendParameter(url, ResponseStateManager.CLIENT_WINDOW_URL_PARAM, cw.getId(), charset);
+
+        Map<String, String> additionalParams = cw.getQueryURLParameters(context);
+        if (additionalParams != null) {
+            for (Map.Entry<String, String> param : additionalParams.entrySet()) {
+                url.append(PARAMETER_PAIR_SEPARATOR);
+                appendParameter(url, param.getKey(), param.getValue(), charset);
+            }
+        }
+    }
+
     // --------------------------------------------------------- Private Methods
+
+    private static void appendParameter(StringBuilder url, String name, String value, Charset charset) {
+        url.append(URLEncoder.encode(name, charset)).append(PARAMETER_NAME_VALUE_SEPARATOR).append(URLEncoder.encode(String.valueOf(value), charset));
+    }
 
     private void cleanFragment() {
         if (fragment != null) {
