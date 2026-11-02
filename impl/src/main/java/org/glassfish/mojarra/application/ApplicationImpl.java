@@ -18,6 +18,7 @@
 package org.glassfish.mojarra.application;
 
 import static java.util.logging.Level.FINE;
+import static org.glassfish.mojarra.util.Util.notNull;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -50,6 +51,7 @@ import jakarta.faces.event.ActionListener;
 import jakarta.faces.event.SystemEvent;
 import jakarta.faces.event.SystemEventListener;
 import jakarta.faces.flow.FlowHandler;
+import jakarta.faces.model.DataModel;
 import jakarta.faces.validator.Validator;
 
 import org.glassfish.mojarra.application.applicationimpl.Events;
@@ -58,6 +60,7 @@ import org.glassfish.mojarra.application.applicationimpl.InstanceFactory;
 import org.glassfish.mojarra.application.applicationimpl.SearchExpression;
 import org.glassfish.mojarra.application.applicationimpl.Singletons;
 import org.glassfish.mojarra.application.applicationimpl.Stage;
+import org.glassfish.mojarra.cdi.CdiUtils;
 import org.glassfish.mojarra.el.FacesCompositeELResolver;
 import org.glassfish.mojarra.util.FacesLogger;
 
@@ -413,6 +416,24 @@ public class ApplicationImpl extends Application {
     @Override
     public Iterator<String> getBehaviorIds() {
         return instanceFactory.getBehaviorIds();
+    }
+
+    /**
+     * @see jakarta.faces.application.Application#createDataModel(FacesContext, Object)
+     */
+    @Override
+    @SuppressWarnings("unchecked") // The caller chooses the row data type.
+    public <T> DataModel<T> createDataModel(FacesContext context, Object value) {
+        notNull("context", context);
+        notNull("value", value);
+
+        DataModel<T> dataModel = (DataModel<T>) CdiUtils.createDataModel(value.getClass());
+
+        if (dataModel != null) {
+            dataModel.setWrappedData(value);
+        }
+
+        return dataModel;
     }
 
     @Override
