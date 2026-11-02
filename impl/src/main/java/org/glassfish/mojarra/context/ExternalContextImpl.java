@@ -30,6 +30,7 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -50,7 +51,6 @@ import jakarta.faces.context.FlashFactory;
 import jakarta.faces.context.PartialResponseWriter;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.lifecycle.ClientWindow;
-import jakarta.faces.render.ResponseStateManager;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -544,34 +544,13 @@ public class ExternalContextImpl extends ExternalContext {
     @Override
     public String encodeActionURL(String url) {
         Util.notNull("url", url);
-        FacesContext context = FacesContext.getCurrentInstance();
-        ClientWindow cw = context.getExternalContext().getClientWindow();
-        boolean appendClientWindow = false;
-        if (null != cw) {
-            appendClientWindow = cw.isClientWindowRenderModeEnabled(context);
-        }
-        if (appendClientWindow && !url.contains(ResponseStateManager.CLIENT_WINDOW_URL_PARAM)) {
-            if (null != cw) {
-                String clientWindowId = cw.getId();
-                StringBuilder builder = new StringBuilder(url);
-                if (url.indexOf(UrlBuilder.QUERY_STRING_SEPARATOR) < 0) {
-                    builder.append(UrlBuilder.QUERY_STRING_SEPARATOR);
-                }
-                else {
-                    builder.append(UrlBuilder.PARAMETER_PAIR_SEPARATOR);
-                }
-                builder.append(ResponseStateManager.CLIENT_WINDOW_URL_PARAM).append(UrlBuilder.PARAMETER_NAME_VALUE_SEPARATOR).append(clientWindowId);
-
-                Map<String, String> additionalParams = cw.getQueryURLParameters(context);
-                if (null != additionalParams) {
-                    for (Map.Entry<String, String> cur : additionalParams.entrySet()) {
-                        builder.append(UrlBuilder.PARAMETER_NAME_VALUE_SEPARATOR);
-                        builder.append(cur.getKey()).append(UrlBuilder.PARAMETER_NAME_VALUE_SEPARATOR).append(cur.getValue());
-                    }
-                }
-                url = builder.toString();
-            }
-        }
+        StringBuilder builder = new StringBuilder(url);
+        String encoding = getResponseCharacterEncoding();
+        UrlBuilder.appendClientWindow(
+            FacesContext.getCurrentInstance(), builder, url.indexOf(UrlBuilder.QUERY_STRING_SEPARATOR) != -1,
+            encoding != null ? Charset.forName(encoding) : null
+        );
+        url = builder.toString();
         // If we have a query string, append it
         return ((HttpServletResponse) response).encodeURL(url);
     }
