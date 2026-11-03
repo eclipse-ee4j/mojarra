@@ -1,0 +1,13 @@
+{
+  "line":       "5.0",
+  "apiVersion": "5.0.0-M12",
+  "facesSha":   "a28e144d133ab8e8b2ef304978d90419a2cd3dd9",
+  "mojarraSha": "ed8689908b7a0485a961064f32f5d3b5d5d55d80",
+  "mojarraTree": "608491e1bc750eb49070ba7f9d493ef81a5da062",
+  "dryRun":     true,
+  "tckVersion": "5.0.0-SNAPSHOT",
+  "gfVersion":  "9.0.0-M3",
+  "passed":     6416,
+  "buildUrl":   "https://ci.eclipse.org/mojarra/job/mojarra-release/296/",
+  "timestamp":  "2026-11-03T16:38:49Z"
+}
