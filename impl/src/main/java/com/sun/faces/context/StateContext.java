@@ -225,11 +225,68 @@ public class StateContext {
     }
 
     /**
+     * Mark {@code child} as dynamically added at the given index of its parent, and mark its parent as having a
+     * dynamically added child. Neither marker is saved with the state, so each restore of a dynamic add sets them
+     * again from its {@link ComponentStruct}.
+     *
+     * @param child the dynamically added child, already attached to its parent.
+     * @param index the index of the child within its parent's children, or {@link ComponentStruct#APPEND} for a facet.
+     */
+    public static void markDynamicallyAdded(UIComponent child, int index) {
+        child.getAttributes().put(DYNAMIC_COMPONENT, index);
+        markHasDynamicChild(child.getParent());
+    }
+
+    /**
+     * Add the given action's child to the given parent at the index {@link #indexToRestore} returns, or append it when
+     * that index is beyond the children, and mark it as dynamically added at the index it ended up at.
+     *
+     * @param parent the parent to add the child to.
+     * @param child the dynamically added child.
+     * @param struct the component struct of the ADD action.
+     */
+    public static void addDynamicChild(UIComponent parent, UIComponent child, ComponentStruct struct) {
+        int childIndex = indexToRestore(struct, child);
+        child.setId(struct.getId());
+        int storedIndex;
+        if (childIndex >= parent.getChildCount() || childIndex == ComponentStruct.APPEND) {
+            parent.getChildren().add(child);
+            storedIndex = parent.getChildCount() - 1;
+        } else {
+            parent.getChildren().add(childIndex, child);
+            storedIndex = childIndex;
+        }
+        child.getClientId();
+        markDynamicallyAdded(child, storedIndex);
+    }
+
+    /**
+     * Returns the index the given action's child must be restored or reapplied at. The action carries it, as the
+     * component does not necessarily survive to hold it: a facelet-created child which was dynamically moved to another
+     * parent is deleted and recreated by the facelet refresh, losing its marker. The marker on the component is only
+     * consulted when the action carries no index: state saved by an older version, or a child to append.
+     *
+     * @param struct the component struct.
+     * @param child the child being restored or reapplied.
+     * @return the index within the parent's children, or {@link ComponentStruct#APPEND} to append.
+     */
+    public static int indexToRestore(ComponentStruct struct, UIComponent child) {
+        if (struct.getIndex() != ComponentStruct.APPEND) {
+            return struct.getIndex();
+        }
+        Object index = child.getAttributes().get(DYNAMIC_COMPONENT);
+        if (index instanceof Integer) {
+            return (Integer) index;
+        }
+        return ComponentStruct.APPEND;
+    }
+
+    /**
      * Mark {@code parent} as having a dynamically added child. Read back by {@link #hasOneOrMoreDynamicChild} to gate
      * the dynamic-child reorder during Facelets re-apply, which tests only for the key's presence -- so this is a
      * set-once marker, not a count.
      */
-    private void markHasDynamicChild(UIComponent parent) {
+    private static void markHasDynamicChild(UIComponent parent) {
         Map<String, Object> attrs = parent.getAttributes();
         if (!attrs.containsKey(DYNAMIC_CHILD_COUNT)) {
             attrs.put(DYNAMIC_CHILD_COUNT, 1);
@@ -655,9 +712,8 @@ public class StateContext {
                 // UIComponentBase.setParent, which runs before this event, so no setId is needed here.
                 String facetName = findFacetNameForComponent(component);
                 int index = indexInParent(component);
-                markHasDynamicChild(component.getParent());
                 component.clearInitialState();
-                component.getAttributes().put(DYNAMIC_COMPONENT, index);
+                markDynamicallyAdded(component, index);
 
                 ComponentStruct struct = new ComponentStruct(ADD, facetName,
                         stripIterationIndex(context, component.getParent().getClientId(context)),

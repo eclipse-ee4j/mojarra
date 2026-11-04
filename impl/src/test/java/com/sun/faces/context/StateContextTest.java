@@ -15,7 +15,10 @@
  */
 package com.sun.faces.context;
 
+import static com.sun.faces.RIConstants.DYNAMIC_CHILD_COUNT;
+import static com.sun.faces.RIConstants.DYNAMIC_COMPONENT;
 import static com.sun.faces.util.ComponentStruct.ADD;
+import static com.sun.faces.util.ComponentStruct.APPEND;
 import static com.sun.faces.util.ComponentStruct.REMOVE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -30,12 +33,19 @@ import org.junit.jupiter.api.Test;
 
 import com.sun.faces.util.ComponentStruct;
 
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UIPanel;
+
 /**
  * Tests {@link StateContext#pruneDynamicActions(List)}: dynamic add/remove actions are recorded append-only per
- * event and collapsed once here, so the per-client-id net effect and the first-occurrence ordering must match what
- * the former per-event prune produced.
+ * event and collapsed once here, so the per-client-id net effect and the first-occurrence ordering are those of the
+ * actions applied one by one. Also tests how a restored dynamic add marks its child and parent, and which index it
+ * restores the child at, as neither marker is saved with the state.
  */
 class StateContextTest {
+
+    private static final int BEYOND_CHILDREN = 5;
 
     @Test
     void nullAndEmptyArePassedThrough() {
@@ -101,6 +111,69 @@ class StateContextTest {
                 "REMOVE:panel0", "REMOVE:field", "ADD:panel1", "ADD:field");
     }
 
+    @Test
+    void aDynamicallyAddedChildIsMarkedWithItsIndexAndItsParentAsHavingADynamicChild() {
+        UIComponent child = childOf(new UIPanel());
+
+        StateContext.markDynamicallyAdded(child, 3);
+
+        assertEquals(3, child.getAttributes().get(DYNAMIC_COMPONENT));
+        assertTrue(child.getParent().getAttributes().containsKey(DYNAMIC_CHILD_COUNT));
+    }
+
+    @Test
+    void theIndexOfTheActionIsRestoredOverTheMarkerOfTheChild() {
+        ComponentStruct struct = add("child");
+        struct.setIndex(1);
+        UIComponent child = new UIOutput();
+        child.getAttributes().put(DYNAMIC_COMPONENT, 2);
+
+        assertEquals(1, StateContext.indexToRestore(struct, child));
+    }
+
+    /**
+     * State saved before the action carried the index restores the child at the index of its marker.
+     */
+    @Test
+    void anActionWithoutIndexRestoresTheIndexOfTheMarkerOfTheChild() {
+        UIComponent child = new UIOutput();
+        child.getAttributes().put(DYNAMIC_COMPONENT, 2);
+
+        assertEquals(2, StateContext.indexToRestore(add("child"), child));
+    }
+
+    @Test
+    void anActionWithoutIndexForAChildWithoutMarkerAppendsTheChild() {
+        assertEquals(APPEND, StateContext.indexToRestore(add("child"), new UIOutput()));
+    }
+
+    @Test
+    void aDynamicChildIsAddedAtTheIndexOfItsActionAndMarkedWithIt() {
+        UIComponent parent = parentOf(new UIOutput(), new UIOutput());
+        UIComponent child = dynamicChild();
+        ComponentStruct struct = add("child");
+        struct.setIndex(1);
+
+        StateContext.addDynamicChild(parent, child, struct);
+
+        assertSame(child, parent.getChildren().get(1));
+        assertEquals(1, child.getAttributes().get(DYNAMIC_COMPONENT));
+        assertTrue(parent.getAttributes().containsKey(DYNAMIC_CHILD_COUNT));
+    }
+
+    @Test
+    void aDynamicChildWhoseIndexIsBeyondTheChildrenIsAppendedAndMarkedWithItsPosition() {
+        UIComponent parent = parentOf(new UIOutput());
+        UIComponent child = dynamicChild();
+        ComponentStruct struct = add("child");
+        struct.setIndex(BEYOND_CHILDREN);
+
+        StateContext.addDynamicChild(parent, child, struct);
+
+        assertSame(child, parent.getChildren().get(1));
+        assertEquals(1, child.getAttributes().get(DYNAMIC_COMPONENT));
+    }
+
     // ------------------------------------------------------------------ helpers
 
     @Test
@@ -137,6 +210,32 @@ class StateContextTest {
 
     private static ComponentStruct add(String clientId) {
         return new ComponentStruct(ADD, null, "parent", clientId, clientId);
+    }
+
+    /**
+     * A child which is asked for its client id without a context, as the add resolves it.
+     */
+    private static UIComponent dynamicChild() {
+        return new UIOutput() {
+            @Override
+            public String getClientId() {
+                return getId();
+            }
+        };
+    }
+
+    private static UIComponent parentOf(UIComponent... children) {
+        UIComponent parent = new UIPanel();
+        for (UIComponent child : children) {
+            parent.getChildren().add(child);
+        }
+        return parent;
+    }
+
+    private static UIComponent childOf(UIComponent parent) {
+        UIComponent child = new UIOutput();
+        child.setParent(parent);
+        return child;
     }
 
     private static ComponentStruct remove(String clientId) {

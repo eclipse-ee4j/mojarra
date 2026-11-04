@@ -18,6 +18,8 @@ package com.sun.faces.application.view;
 
 import static com.sun.faces.RIConstants.DYNAMIC_ACTIONS;
 import static com.sun.faces.RIConstants.DYNAMIC_COMPONENT;
+import static com.sun.faces.context.StateContext.addDynamicChild;
+import static com.sun.faces.context.StateContext.markDynamicallyAdded;
 import static com.sun.faces.util.ComponentStruct.ADD;
 import static com.sun.faces.util.ComponentStruct.REMOVE;
 import static com.sun.faces.util.Util.isAnyNull;
@@ -416,20 +418,10 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
             if (child != null) {
                 if (struct.getFacetName() != null) {
                     parent.getFacets().put(struct.getFacetName(), child);
+                    markDynamicallyAdded(child, ComponentStruct.APPEND);
                 } else {
-                    int childIndex = -1;
-                    if (child.getAttributes().containsKey(DYNAMIC_COMPONENT)) {
-                        childIndex = (Integer) child.getAttributes().get(DYNAMIC_COMPONENT);
-                    }
-                    child.setId(struct.getId());
-                    if (childIndex >= parent.getChildCount() || childIndex == -1) {
-                        parent.getChildren().add(child);
-                    } else {
-                        parent.getChildren().add(childIndex, child);
-                    }
-                    child.getClientId();
+                    addDynamicChild(parent, child, struct);
                 }
-                child.getAttributes().put(DYNAMIC_COMPONENT, child.getParent().getChildren().indexOf(child));
                 stateContext.getDynamicComponents().put(struct.getClientId(), child);
             }
         }
@@ -586,7 +578,6 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
             Object stateObj;
             if (!component.isTransient()) {
                 if (stateContext.componentAddedDynamically(component)) {
-                    component.getAttributes().put(DYNAMIC_COMPONENT, new Integer(getProperChildIndex(component)));
                     stateObj = new StateHolderSaver(finalContext, component);
                 } else {
                     stateObj = component.saveState(finalContext);
@@ -627,6 +618,7 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
                     LOGGER.log(WARNING, "Unable to save dynamic action with clientId ''{0}'' because the UIComponent cannot be found", action.getClientId());
                 }
                 if (component != null) {
+                    refreshAddIndex(action, component);
                     savedActions.add(action.saveState(context));
                 }
             }
@@ -832,13 +824,27 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
     }
 
     /**
+     * Set the index of an ADD action to the position its child holds among the non-transient children of its parent
+     * when the view is saved, as only those are in the saved tree which the action is replayed on. An action of a
+     * facet, or of a child which is no longer in the view, keeps its index.
+     *
+     * @param action the dynamic action.
+     * @param component the component of the action.
+     */
+    static void refreshAddIndex(ComponentStruct action, UIComponent component) {
+        if (ADD.equals(action.getAction()) && action.getFacetName() == null && component.getParent() != null) {
+            action.setIndex(getProperChildIndex(component));
+        }
+    }
+
+    /**
      * Helper method that determines what the index of the given child component will be taking transient siblings into
      * account.
      *
      * @param component the UI component.
      * @return the calculated index.
      */
-    private int getProperChildIndex(UIComponent component) {
+    private static int getProperChildIndex(UIComponent component) {
         int result = -1;
 
         if (component.getParent().getChildren().indexOf(component) != -1) {
