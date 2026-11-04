@@ -26,6 +26,7 @@ import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.Stat
 import static com.sun.faces.context.StateContext.addDynamicChild;
 import static com.sun.faces.context.StateContext.getStateContext;
 import static com.sun.faces.context.StateContext.markDynamicallyAdded;
+import static com.sun.faces.context.StateContext.markIfAlreadyInPlace;
 import static com.sun.faces.facelets.tag.ui.UIDebug.debugRequest;
 import static com.sun.faces.renderkit.RenderKitUtils.getResponseStateManager;
 import static com.sun.faces.util.ComponentStruct.ADD;
@@ -1858,15 +1859,9 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                     parent.getFacets().put(struct.getFacetName(), child);
                     markDynamicallyAdded(child, ComponentStruct.APPEND);
                     child.getClientId();
-                } else if (child.getParent() != parent) {
+                } else if (!markIfAlreadyInPlace(parent, child, struct)) {
                     addDynamicChild(parent, child, struct);
                 }
-                // else: the child survived the facelet refresh already attached under this parent
-                // (markForDeletion deletes only facelet-created MARK_CREATED siblings, never the
-                // programmatically-added ones) and the refresh preserves their relative order, so it is
-                // already in place. Re-inserting it would erase+re-add via getChildren().add — an O(n)
-                // indexOf per action, i.e. O(n^2) over a large dynamic subtree — only to reproduce the
-                // position it already holds. Leave it; the bookkeeping below still runs.
                 stateContext.getDynamicComponents().put(struct.getClientId(), child);
                 if (child.getChildCount() == 0 && child.getFacetCount() == 0) {
                     componentIndex.put(struct.getClientId(), child);

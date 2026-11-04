@@ -23,8 +23,8 @@ import static com.sun.faces.RIConstants.RENDERED_TAGS;
 import static com.sun.faces.RIConstants.VIEW_REBUILT_AT_RENDER;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.RestoreBuildTimeDecisions;
 import static com.sun.faces.context.StateContext.addDynamicChild;
-import static com.sun.faces.context.StateContext.indexToRestore;
 import static com.sun.faces.context.StateContext.markDynamicallyAdded;
+import static com.sun.faces.context.StateContext.markIfAlreadyInPlace;
 import static com.sun.faces.util.ComponentStruct.ADD;
 import static com.sun.faces.util.ComponentStruct.REMOVE;
 import static com.sun.faces.util.Util.isEmpty;
@@ -232,14 +232,8 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
         if (parent != null) {
             UIComponent child = componentIndex.get(struct.getClientId());
 
-            /*
-             * The buildView reapply that runs earlier in restoreView preserves programmatically-added
-             * children across the facelet refresh in their original order, so the child often already sits
-             * correctly under its parent. In that case skip the remove + re-add: getChildren().remove and
-             * getChildren().add each scan for the child (O(n) indexOf), i.e. O(n^2) over a large dynamic
-             * subtree, only to reproduce the position it already holds.
-             */
-            boolean alreadyInPlace = child != null && struct.getFacetName() == null && child.getParent() == parent;
+            boolean alreadyInPlace = child != null && struct.getFacetName() == null
+                && markIfAlreadyInPlace(parent, child, struct);
 
             /*
              * If Facelets engine restored the child before us we are going to use it, but we need to remove it before we can add it
@@ -276,15 +270,13 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
              * Now if we have the child we are going to add it back in.
              */
             if (child != null) {
-                if (alreadyInPlace) {
-                    // Child survived the facelet refresh under this parent; leave it where it is. The
-                    // bookkeeping below still runs.
-                    markDynamicallyAdded(child, indexToRestore(struct, child));
-                } else if (struct.getFacetName() != null) {
-                    parent.getFacets().put(struct.getFacetName(), child);
-                    markDynamicallyAdded(child, ComponentStruct.APPEND);
-                } else {
-                    addDynamicChild(parent, child, struct);
+                if (!alreadyInPlace) {
+                    if (struct.getFacetName() != null) {
+                        parent.getFacets().put(struct.getFacetName(), child);
+                        markDynamicallyAdded(child, ComponentStruct.APPEND);
+                    } else {
+                        addDynamicChild(parent, child, struct);
+                    }
                 }
                 stateContext.getDynamicComponents().put(struct.getClientId(), child);
                 if (child.getChildCount() == 0 && child.getFacetCount() == 0) {

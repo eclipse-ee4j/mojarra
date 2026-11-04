@@ -261,6 +261,31 @@ public class StateContext {
     }
 
     /**
+     * Mark the given action's child as dynamically added when it already sits where {@link #addDynamicChild} would put
+     * it, so that the O(n) remove and re-add can be skipped. That is at the index {@link #indexToRestore} returns, or
+     * last when that index is beyond the other children.
+     *
+     * @param parent the parent of the action.
+     * @param child the child of the action.
+     * @param struct the component struct of the ADD action.
+     * @return true when the child is already in place and has been marked.
+     */
+    public static boolean markIfAlreadyInPlace(UIComponent parent, UIComponent child, ComponentStruct struct) {
+        if (child.getParent() != parent || parent.getChildCount() == 0) {
+            return false;
+        }
+        List<UIComponent> children = parent.getChildren();
+        int last = children.size() - 1;
+        int index = indexToRestore(struct, child);
+        int position = index == ComponentStruct.APPEND || index >= last ? last : index;
+        if (children.get(position) != child) {
+            return false;
+        }
+        markDynamicallyAdded(child, position);
+        return true;
+    }
+
+    /**
      * Returns the index the given action's child must be restored or reapplied at. The action carries it, as the
      * component does not necessarily survive to hold it: a facelet-created child which was dynamically moved to another
      * parent is deleted and recreated by the facelet refresh, losing its marker. The marker on the component is only

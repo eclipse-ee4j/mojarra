@@ -21,6 +21,7 @@ import static com.sun.faces.util.ComponentStruct.ADD;
 import static com.sun.faces.util.ComponentStruct.APPEND;
 import static com.sun.faces.util.ComponentStruct.REMOVE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -174,6 +175,65 @@ class StateContextTest {
         assertEquals(1, child.getAttributes().get(DYNAMIC_COMPONENT));
     }
 
+    @Test
+    void aDynamicChildAtTheIndexOfItsActionIsInPlaceAndMarkedWithIt() {
+        UIComponent child = new UIOutput();
+        UIComponent parent = parentOf(new UIOutput(), child, new UIOutput());
+
+        assertTrue(StateContext.markIfAlreadyInPlace(parent, child, addAt(1)));
+        assertEquals(1, child.getAttributes().get(DYNAMIC_COMPONENT));
+        assertTrue(parent.getAttributes().containsKey(DYNAMIC_CHILD_COUNT));
+    }
+
+    /**
+     * A child inserted at index 0 after an earlier dynamic child was inserted there sits behind that child after the
+     * facelet refresh, so it must be moved.
+     */
+    @Test
+    void aDynamicChildUnderItsParentButAtAnotherIndexIsNotInPlace() {
+        UIComponent earlier = new UIOutput();
+        UIComponent child = new UIOutput();
+        UIComponent parent = parentOf(earlier, child, new UIOutput());
+
+        assertFalse(StateContext.markIfAlreadyInPlace(parent, child, addAt(0)));
+        assertFalse(child.getAttributes().containsKey(DYNAMIC_COMPONENT));
+    }
+
+    @Test
+    void aDynamicChildToAppendIsInPlaceOnlyWhenLast() {
+        UIComponent child = new UIOutput();
+        UIComponent first = new UIOutput();
+
+        assertTrue(StateContext.markIfAlreadyInPlace(parentOf(new UIOutput(), child), child, addAt(APPEND)));
+        assertFalse(StateContext.markIfAlreadyInPlace(parentOf(first, new UIOutput()), first, addAt(APPEND)));
+    }
+
+    @Test
+    void aFacetOfTheParentIsNotInPlace() {
+        UIComponent facet = new UIOutput();
+        UIComponent parent = parentOf(new UIOutput());
+        parent.getFacets().put("header", facet);
+
+        assertFalse(StateContext.markIfAlreadyInPlace(parent, facet, addAt(0)));
+        assertFalse(facet.getAttributes().containsKey(DYNAMIC_COMPONENT));
+    }
+
+    @Test
+    void aDynamicChildWhoseIndexIsBeyondTheChildrenIsInPlaceOnlyWhenLast() {
+        UIComponent child = new UIOutput();
+
+        assertTrue(StateContext.markIfAlreadyInPlace(parentOf(new UIOutput(), child), child, addAt(BEYOND_CHILDREN)));
+        assertEquals(1, child.getAttributes().get(DYNAMIC_COMPONENT));
+    }
+
+    @Test
+    void aDynamicChildUnderAnotherParentIsNotInPlace() {
+        UIComponent child = new UIOutput();
+        parentOf(child);
+
+        assertFalse(StateContext.markIfAlreadyInPlace(parentOf(new UIOutput()), child, addAt(0)));
+    }
+
     // ------------------------------------------------------------------ helpers
 
     @Test
@@ -236,6 +296,12 @@ class StateContextTest {
         UIComponent child = new UIOutput();
         child.setParent(parent);
         return child;
+    }
+
+    private static ComponentStruct addAt(int index) {
+        ComponentStruct struct = add("child");
+        struct.setIndex(index);
+        return struct;
     }
 
     private static ComponentStruct remove(String clientId) {
