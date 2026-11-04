@@ -162,6 +162,16 @@ public class MultiViewHandler extends ViewHandler {
     }
 
     /**
+     * @see ViewHandler#createViewMap(FacesContext)
+     */
+    @Override
+    public Map<String, Object> createViewMap(FacesContext context) {
+        notNull("context", context);
+
+        return new ViewScopeMap();
+    }
+
+    /**
      * <p>
      * Call {@link ViewDeclarationLanguage#renderView(jakarta.faces.context.FacesContext, jakarta.faces.component.UIViewRoot)} if the view can be rendered.
      * </p>
