@@ -17,7 +17,6 @@
 
 package org.glassfish.mojarra.facelets.component;
 
-import static org.glassfish.mojarra.cdi.CdiUtils.createDataModel;
 import static org.glassfish.mojarra.facelets.tag.faces.ComponentSupport.restoreFullDescendantComponentDeltaStates;
 import static org.glassfish.mojarra.facelets.tag.faces.ComponentSupport.restoreFullDescendantComponentStates;
 import static org.glassfish.mojarra.facelets.tag.faces.ComponentSupport.restoreTransientDescendantComponentStates;
@@ -365,15 +364,9 @@ public class UIRepeat extends UINamingContainer {
                 model = new IterableDataModel<>(((Map<?, ?>) val).entrySet());
             }
             else {
-                DataModel<?> dataModel = createDataModel(val.getClass());
-                if (dataModel != null) {
-                    dataModel.setWrappedData(val);
-                    model = dataModel;
-                }
-                else {
-                    model = new ScalarDataModel<>(val);
-                }
-
+                FacesContext context = getFacesContext();
+                DataModel<?> dataModel = context.getApplication().createDataModel(context, val);
+                model = dataModel != null ? dataModel : new ScalarDataModel<>(val);
             }
         }
         return model;
