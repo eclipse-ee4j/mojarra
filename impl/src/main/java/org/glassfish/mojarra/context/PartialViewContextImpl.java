@@ -522,19 +522,33 @@ public class PartialViewContextImpl extends PartialViewContext {
         }
     }
 
+    /**
+     * Returns whether the given component resource must be rendered into the <code>jakarta.faces.Resource</code> update of the partial response.
+     *
+     * @see PartialViewContext#processPartial(PhaseId)
+     */
+    static boolean isComponentResourceToRender(FacesContext context, ResourceHandler resourceHandler, UIComponent resource) {
+        if (!RestoredComponentResources.isAddedDuringRequest(context, resource)) {
+            return false;
+        }
+
+        String name = (String) resource.getAttributes().get("name");
+
+        if (name == null) {
+            return true;
+        }
+
+        String library = (String) resource.getAttributes().get("library");
+        return resource.getRendererType() != null && resource.getChildCount() == 0 && !resourceHandler.isResourceRendered(context, name, library);
+    }
+
     private void renderComponentResources(FacesContext context, UIViewRoot viewRoot) throws IOException {
         ResourceHandler resourceHandler = context.getApplication().getResourceHandler();
         PartialResponseWriter writer = context.getPartialViewContext().getPartialResponseWriter();
         boolean updateStarted = false;
 
         for (UIComponent resource : viewRoot.getComponentResources(context)) {
-            String name = (String) resource.getAttributes().get("name");
-            String library = (String) resource.getAttributes().get("library");
-
-            if (
-                resource.getChildCount() == 0 && resourceHandler.getRendererTypeForResourceName(name) != null
-                    && !resourceHandler.isResourceRendered(context, name, library)
-            ) {
+            if (isComponentResourceToRender(context, resourceHandler, resource)) {
                 if (!updateStarted) {
                     writer.startUpdate("jakarta.faces.Resource");
                     updateStarted = true;

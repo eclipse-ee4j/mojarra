@@ -68,6 +68,7 @@ import jakarta.faces.view.ViewDeclarationLanguage;
 import jakarta.faces.view.ViewMetadata;
 
 import org.glassfish.mojarra.application.view.ViewScopeManager;
+import org.glassfish.mojarra.context.RestoredComponentResources;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.MessageUtils;
 import org.glassfish.mojarra.util.Util;
@@ -127,7 +128,10 @@ public class RestoreViewPhase extends Phase {
             // Do per-component actions
             deliverPostRestoreStateEvent(facesContext);
 
-            if (!facesContext.isPostback()) {
+            if (facesContext.isPostback()) {
+                RestoredComponentResources.remember(facesContext);
+            }
+            else {
                 facesContext.renderResponse();
             }
 
@@ -231,6 +235,10 @@ public class RestoreViewPhase extends Phase {
                 }
 
                 deliverPostRestoreStateEvent(facesContext);
+
+                if (facesContext.isPostback()) {
+                    RestoredComponentResources.remember(facesContext);
+                }
             }
             else {
                 throw thrownException;

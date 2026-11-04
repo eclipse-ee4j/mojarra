@@ -1331,6 +1331,83 @@ describe("faces.ajax.response", () => {
         expect(document.head.querySelector('script[src="/added.js"]')).not.toBeNull();
     });
 
+    test("update with id='jakarta.faces.Resource' appends an inline <style> to head", () => {
+        const beforeStyles = document.head.querySelectorAll("style").length;
+
+        ajax().request(button, null);
+        const xml = successResponse(
+            '<update id="jakarta.faces.Resource"><![CDATA[' +
+            '<style media="screen">#added { color: red; }</style>' +
+            ']]></update>'
+        );
+        lastXHR().respond(200, "", xml);
+
+        const styles = document.head.querySelectorAll("style");
+        expect(styles.length).toBe(beforeStyles + 1);
+        expect(styles[styles.length - 1].textContent).toBe("#added { color: red; }");
+        expect(styles[styles.length - 1].media).toBe("screen");
+        styles[styles.length - 1].remove();
+    });
+
+    test("update with id='jakarta.faces.Resource' appends an inline <style> without attributes to head", () => {
+        ajax().request(button, null);
+        const xml = successResponse('<update id="jakarta.faces.Resource"><![CDATA[<style>#bare { color: red; }</style>]]></update>');
+        lastXHR().respond(200, "", xml);
+
+        const styles = document.head.querySelectorAll("style");
+        expect(styles[styles.length - 1].textContent).toBe("#bare { color: red; }");
+        styles[styles.length - 1].remove();
+    });
+
+    test("update with id='jakarta.faces.Resource' appends <style> and <link> to head in their order in the markup", () => {
+        ajax().request(button, null);
+        const xml = successResponse(
+            '<update id="jakarta.faces.Resource"><![CDATA[' +
+            '<style>#ordered { color: red; }</style>' +
+            '<link rel="stylesheet" type="text/css" href="/ordered.css"/>' +
+            ']]></update>'
+        );
+        lastXHR().respond(200, "", xml);
+
+        const children = Array.from(document.head.children);
+        const style = children.findIndex(child => child.tagName === "STYLE" && child.textContent === "#ordered { color: red; }");
+        const link = children.findIndex(child => child.tagName === "LINK" && child.getAttribute("href") === "/ordered.css");
+        expect(style).toBeGreaterThanOrEqual(0);
+        expect(link).toBeGreaterThan(style);
+        children[link].remove();
+        children[style].remove();
+    });
+
+    test("update with id='jakarta.faces.Resource' does not take a <style> out of an inline <script>", () => {
+        const beforeStyles = document.head.querySelectorAll("style").length;
+
+        ajax().request(button, null);
+        const xml = successResponse(
+            '<update id="jakarta.faces.Resource"><![CDATA[' +
+            "<script>window.__styleInScript = '<style>#inScript { color: red; }</style>';</script>" +
+            ']]></update>'
+        );
+        lastXHR().respond(200, "", xml);
+
+        expect(document.head.querySelectorAll("style").length).toBe(beforeStyles);
+        delete (window as unknown as Record<string, unknown>).__styleInScript;
+    });
+
+    test("update with id='jakarta.faces.Resource' appends a <link> whose href occurs twice only once", () => {
+        ajax().request(button, null);
+        const xml = successResponse(
+            '<update id="jakarta.faces.Resource"><![CDATA[' +
+            '<link rel="stylesheet" type="text/css" href="/twice.css"/>' +
+            '<link rel="stylesheet" type="text/css" href="/twice.css"/>' +
+            ']]></update>'
+        );
+        lastXHR().respond(200, "", xml);
+
+        const links = document.head.querySelectorAll('link[href="/twice.css"]');
+        expect(links.length).toBe(1);
+        links[0].remove();
+    });
+
     test("update with id='jakarta.faces.ViewBody' replaces document body content", () => {
         ajax().request(button, null);
         const replacement = "<body><div id='replaced'>new body</div></body>";
@@ -2114,6 +2191,18 @@ describe("faces.ajax.response: nonce propagation", () => {
 
         expect((window as unknown as Record<string, unknown>).__nonceTest).toBe("nonce");
         delete (window as unknown as Record<string, unknown>).__nonceTest;
+    });
+
+    test("inline style elements in update with id='jakarta.faces.Resource' receive nonce", () => {
+        ajax().request(button, null);
+        const xml = successResponse('<update id="jakarta.faces.Resource"><![CDATA[<style>#nonceStyled { color: red; }</style>]]></update>');
+        lastXHR().respond(200, "", xml);
+
+        const styles = document.head.querySelectorAll("style");
+        const style = styles[styles.length - 1];
+        expect(style.textContent).toBe("#nonceStyled { color: red; }");
+        expect(style.nonce).toBe("test-nonce-123");
+        style.remove();
     });
 
     test("inline scripts in update elements receive nonce", () => {
