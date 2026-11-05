@@ -641,7 +641,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
      * @param stateContext the state context.
      * @param stateMap the state.
      */
-    private void saveDynamicActions(FacesContext context, StateContext stateContext, Map<String, Object> stateMap) {
+    static void saveDynamicActions(FacesContext context, StateContext stateContext, Map<String, Object> stateMap) {
         if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.finest("FaceletPartialStateManagementStrategy.saveDynamicActions");
         }
@@ -649,7 +649,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
         List<ComponentStruct> actions = stateContext.getDynamicActions();
         Map<String, UIComponent> componentMap = stateContext.getDynamicComponents();
 
-        if (actions != null) {
+        if (!isEmpty(actions)) {
             // Actions are recorded raw (append-only) per event; collapse redundant add/remove pairs once here.
             List<ComponentStruct> prunedActions = StateContext.pruneDynamicActions(actions);
             List<Object> savedActions = new ArrayList<>(prunedActions.size());
@@ -668,7 +668,9 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
                     savedActions.add(action.saveState(context));
                 }
             }
-            stateMap.put(DYNAMIC_ACTIONS, savedActions);
+            if (!savedActions.isEmpty()) {
+                stateMap.put(DYNAMIC_ACTIONS, savedActions);
+            }
         }
     }
 
