@@ -16,11 +16,12 @@
 
 package jakarta.faces.component;
 
+import static com.sun.faces.RIConstants.DYNAMIC_CHILD_COUNT;
+import static com.sun.faces.RIConstants.DYNAMIC_COMPONENT;
 import static com.sun.faces.facelets.tag.faces.ComponentSupport.MARK_CHILDREN_MODIFIED;
 import static com.sun.faces.facelets.tag.faces.ComponentSupport.MARK_CREATED;
 import static com.sun.faces.facelets.tag.faces.ComponentSupport.MARK_DELETED;
 import static com.sun.faces.facelets.tag.faces.ComponentSupport.REMOVED_CHILDREN;
-import static com.sun.faces.RIConstants.DYNAMIC_COMPONENT;
 import static com.sun.faces.facelets.tag.faces.core.FacetHandler.KEY;
 import static com.sun.faces.util.Util.isAllNull;
 import static com.sun.faces.util.Util.isAnyNull;
@@ -169,12 +170,13 @@ public abstract class UIComponentBase extends UIComponent {
 
     // Facelets framework markers, read per component on every Facelets refresh (findChildByTagId, deletion
     // marking, facet-name and child-modified checks). Cached on fields so AttributesMap.get/containsKey skip
-    // the per-read state-map lookup; writes still flow through the attributes map (AttributesMap.put/remove),
-    // so saved/restored state is unchanged. See markerGet/markerContains/markerPut/markerRemove.
+    // the per-read state-map lookup; writes flow through the attributes map (AttributesMap.put/remove), which
+    // decides per marker whether it is also kept in the state map. See markerGet/markerPut/markerRemove.
     private String markCreated;            // ComponentSupport.MARK_CREATED (tag id)
     private String facetName;              // FacetHandler.KEY
     private Object removedChildren;        // ComponentSupport.REMOVED_CHILDREN (Collection)
     private Object dynamicComponent;       // RIConstants.DYNAMIC_COMPONENT (Integer index)
+    private Object dynamicChildCount;      // RIConstants.DYNAMIC_CHILD_COUNT (set-once marker)
     private boolean markDeleted;           // ComponentSupport.MARK_DELETED
     private boolean markChildrenModified;  // ComponentSupport.MARK_CHILDREN_MODIFIED
     private boolean added;                 // setParent re-entrancy guard
@@ -1758,8 +1760,9 @@ public abstract class UIComponentBase extends UIComponent {
     // always negative on a stable tree) are field reads, not HashMap lookups. Partial-state restore (the
     // default) is self-correcting: fresh component instances start absent and buildView re-puts the present
     // markers. Full-state restore deserializes without buildView, so it repopulates the fields from the
-    // restored attributes map (see restoreMarkersFromState). markerGet returns NOT_MARKER for non-marker
-    // keys, telling AttributesMap to fall through to its normal property/attribute resolution.
+    // restored attributes map (see restoreMarkersFromState). The two dynamic markers are re-put by the replay
+    // of the saved dynamic actions under either state saving method instead. markerGet returns NOT_MARKER for
+    // non-marker keys, telling AttributesMap to fall through to its normal property/attribute resolution.
 
     private static final Object NOT_MARKER = new Object();
 
@@ -1775,6 +1778,9 @@ public abstract class UIComponentBase extends UIComponent {
         }
         if (DYNAMIC_COMPONENT.equals(key)) {
             return dynamicComponent;
+        }
+        if (DYNAMIC_CHILD_COUNT.equals(key)) {
+            return dynamicChildCount;
         }
         if (MARK_DELETED.equals(key)) {
             return markDeleted ? Boolean.TRUE : null;
@@ -1796,6 +1802,8 @@ public abstract class UIComponentBase extends UIComponent {
             removedChildren = value;
         } else if (DYNAMIC_COMPONENT.equals(key)) {
             dynamicComponent = value;
+        } else if (DYNAMIC_CHILD_COUNT.equals(key)) {
+            dynamicChildCount = value;
         } else if (MARK_DELETED.equals(key)) {
             markDeleted = Boolean.TRUE.equals(value);
         } else if (MARK_CHILDREN_MODIFIED.equals(key)) {
@@ -1815,6 +1823,8 @@ public abstract class UIComponentBase extends UIComponent {
             removedChildren = null;
         } else if (DYNAMIC_COMPONENT.equals(key)) {
             dynamicComponent = null;
+        } else if (DYNAMIC_CHILD_COUNT.equals(key)) {
+            dynamicChildCount = null;
         } else if (MARK_DELETED.equals(key)) {
             markDeleted = false;
         } else if (MARK_CHILDREN_MODIFIED.equals(key)) {
@@ -1825,8 +1835,17 @@ public abstract class UIComponentBase extends UIComponent {
         return true;
     }
 
+    private static boolean isFieldOnlyMarker(String key) {
+        return MARK_DELETED.equals(key)
+            || MARK_CREATED.equals(key)
+            || KEY.equals(key)
+            || DYNAMIC_COMPONENT.equals(key)
+            || DYNAMIC_CHILD_COUNT.equals(key);
+    }
+
     // Full-state restore deserializes the tree without re-running buildView, so the marker fields are synced
-    // from the restored attributes map here. Partial-state restore re-puts them via buildView instead.
+    // from the restored attributes map here. Partial-state restore re-puts them via buildView instead. The two
+    // dynamic markers are only in the restored attributes map of state saved by an older version.
     @SuppressWarnings("unchecked")
     private void restoreMarkersFromState() {
         Map<String, Object> attrs = (Map<String, Object>) getStateHelper().get(PropertyKeys.attributes);
@@ -1836,10 +1855,18 @@ public abstract class UIComponentBase extends UIComponent {
         markCreated = (String) attrs.get(MARK_CREATED);
         facetName = (String) attrs.get(KEY);
         removedChildren = attrs.get(REMOVED_CHILDREN);
-        dynamicComponent = attrs.get(DYNAMIC_COMPONENT);
+        dynamicComponent = removeRestoredMarker(DYNAMIC_COMPONENT);
+        dynamicChildCount = removeRestoredMarker(DYNAMIC_CHILD_COUNT);
         markDeleted = Boolean.TRUE.equals(attrs.get(MARK_DELETED));
         markChildrenModified = Boolean.TRUE.equals(attrs.get(MARK_CHILDREN_MODIFIED));
         setCompositeComponentFlag(attrs.containsKey(COMPONENT_RESOURCE_KEY));
+    }
+
+    // A field-only marker is in a restored state map only when an older version saved it; drop it so it is not
+    // saved again.
+    private Object removeRestoredMarker(String key) {
+        getStateHelper().remove(PropertyKeysPrivate.attributesThatAreSet, key);
+        return getStateHelper().remove(PropertyKeys.attributes, key);
     }
 
     private void doPostAddProcessing(FacesContext context, UIComponent added) {
@@ -2413,13 +2440,15 @@ public abstract class UIComponentBase extends UIComponent {
             }
 
             // markerPut keeps the field cache in sync for framework markers; a marker not exempted below is also
-            // mirrored into the attributes map so full-state restore can read it back. The exempted three are
+            // mirrored into the attributes map so full-state restore can read it back. The exempted ones are
             // field-only, which is what keeps them out of the StateHelper on every Facelets build: MARK_DELETED and
-            // the facet name are build-time flags that are always cleared again before state is saved, and
+            // the facet name are build-time flags that are always cleared again before state is saved,
             // MARK_CREATED is re-attached to the attributes map at full-state save (saveState), partial state
-            // rebuilding it via buildView. Exempting a further marker requires it to meet that same condition.
+            // rebuilding it via buildView, and the two dynamic markers are set again from the saved dynamic actions
+            // on restore, by either state management strategy. Exempting a further marker requires it to meet that
+            // same condition.
             boolean marker = component.markerPut(keyValue, value);
-            if (marker && (MARK_DELETED.equals(keyValue) || MARK_CREATED.equals(keyValue) || KEY.equals(keyValue))) {
+            if (marker && isFieldOnlyMarker(keyValue)) {
                 return null;
             }
 
@@ -2498,6 +2527,8 @@ public abstract class UIComponentBase extends UIComponent {
                 throw new NullPointerException();
             }
             boolean marker = component.markerRemove(key);
+            // MARK_CREATED and the dynamic markers can be in a restored state map: full state, or state saved by
+            // an older version.
             if (marker && (MARK_DELETED.equals(key) || KEY.equals(key))) {
                 return null;
             }
