@@ -314,10 +314,16 @@ public final class ForEachHandler extends TagHandlerImpl {
                     // marks the parent's refresh set on it) and skip re-applying the body.
                     @SuppressWarnings("unchecked")
                     List<UIComponent> retained = (List<UIComponent>) state[2];
-                    for (UIComponent child : retained) {
-                        child.getAttributes().remove(ComponentSupport.MARK_DELETED);
+                    // Un-marking retains the children only while they are still children of this parent. Once they
+                    // have been relocated elsewhere, as cc:insertChildren does with the children of a composite
+                    // component, the refresh of their new parent removes them, and only re-applying the body brings
+                    // them back.
+                    if (retained.stream().allMatch(child -> child.getParent() == parent)) {
+                        for (UIComponent child : retained) {
+                            child.getAttributes().remove(ComponentSupport.MARK_DELETED);
+                        }
+                        return;
                     }
-                    return;
                 }
             }
         } else {
