@@ -297,7 +297,7 @@ public class StateContext {
     /**
      * Returns the index the given action's child must be restored or reapplied at. The action carries it, as the component does not necessarily survive to hold
      * it: a facelet-created child which was dynamically moved to another parent is deleted and recreated by the facelet refresh, losing its marker. The marker
-     * on the component is only consulted when the action carries no index: state saved by an older version, or a child to append.
+     * on the component is only consulted when the action carries no index, as for a child to append.
      *
      * @param struct the component struct.
      * @param child the child being restored or reapplied.

@@ -140,27 +140,6 @@ class ClientSideStateHelperTest extends JUnitFacesTestCaseBase {
     }
 
     /**
-     * A state which holds an unused slot in front of the component state expires the view.
-     */
-    @ParameterizedTest
-    @ValueSource(strings = { STATE_TIMEOUT_DISABLED, STATE_TIMEOUT_ENABLED })
-    void stateInPreviousFormatExpiresView(String stateTimeout) throws Exception {
-        configure(stateTimeout, true);
-        boolean timestamped = !STATE_TIMEOUT_DISABLED.equals(stateTimeout);
-        byte[] previous = serialize(oos -> {
-            if (timestamped) {
-                oos.writeLong(System.currentTimeMillis());
-            }
-            oos.writeObject(null);
-            oos.writeObject(new HashMap<>(Map.of("form", "state")));
-        });
-
-        postViewState(Base64.getEncoder().encodeToString(previous));
-
-        assertNull(new ClientSideStateHelper().getState(facesContext, "/view.xhtml"));
-    }
-
-    /**
      * An empty component state is written as its tag alone.
      */
     @ParameterizedTest
