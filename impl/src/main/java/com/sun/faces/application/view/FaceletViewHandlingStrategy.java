@@ -27,6 +27,7 @@ import static com.sun.faces.context.StateContext.addDynamicChild;
 import static com.sun.faces.context.StateContext.getStateContext;
 import static com.sun.faces.context.StateContext.markDynamicallyAdded;
 import static com.sun.faces.context.StateContext.markIfAlreadyInPlace;
+import static com.sun.faces.context.StateContext.placeDynamicChildren;
 import static com.sun.faces.facelets.tag.ui.UIDebug.debugRequest;
 import static com.sun.faces.renderkit.RenderKitUtils.getResponseStateManager;
 import static com.sun.faces.util.ComponentStruct.ADD;
@@ -346,6 +347,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             try {
                 stateCtx.setTrackViewModifications(false);
                 BuildTimeDecisions.reset(ctx);
+                stateCtx.syncIndexesOfDynamicChildren();
                 facelet.apply(ctx, view);
                 reapplyDynamicActions(ctx);
                 if (stateCtx.isPartialStateSaving(ctx, view.getViewId())) {
@@ -1832,6 +1834,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                     reapplyDynamicAdd(context, action, componentIndex);
                 }
             }
+            placeDynamicChildren(actions, componentIndex);
         }
     }
 
