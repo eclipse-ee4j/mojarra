@@ -20,6 +20,9 @@ import static com.sun.faces.util.Util.extractFirstNumericSegment;
 import static com.sun.faces.util.Util.isNestedInIterator;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.ObjectStreamField;
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -1698,10 +1701,10 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         resetClientIds(this);
 
         Object superState = super.saveState(context);
-        Object rowDeltaState = UIComponentBase.saveAttachedState(context, _rowDeltaStates);
         if (initialStateMarked() && superState == null && _rowDeltaStates.isEmpty() && childState == null) {
             return null;
         }
+        Object rowDeltaState = _rowDeltaStates.isEmpty() ? null : UIComponentBase.saveAttachedState(context, _rowDeltaStates);
         return new Object[] { superState, rowDeltaState, childState };
     }
 
@@ -2325,10 +2328,20 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
 
 }
 
-@SuppressWarnings({ "SerializableHasSerializationMethods", "NonSerializableFieldInSerializableClass" })
+/**
+ * The per-row state of a stateful descendant of {@link UIData}. It serializes only the fields which are not at their
+ * default.
+ */
 class SavedState implements Serializable {
 
-    private static final long serialVersionUID = 2920252657338389849L;
+    private static final long serialVersionUID = 2L;
+    private static final ObjectStreamField[] serialPersistentFields = {};
+    private static final int SUBMITTED_VALUE = 1;
+    private static final int VALUE = 2;
+    private static final int LOCAL_VALUE_SET = 4;
+    private static final int INVALID = 8;
+    private static final int SUBMITTED = 16;
+
     private Object submittedValue;
     private boolean submitted;
 
@@ -2380,6 +2393,29 @@ class SavedState implements Serializable {
 
     public boolean hasDeltaState() {
         return submittedValue != null || value != null || localValueSet || !valid || submitted;
+    }
+
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        int fields = (submittedValue != null ? SUBMITTED_VALUE : 0) | (value != null ? VALUE : 0) | (localValueSet ? LOCAL_VALUE_SET : 0)
+                | (valid ? 0 : INVALID) | (submitted ? SUBMITTED : 0);
+        out.writeByte(fields);
+        if (submittedValue != null) {
+            out.writeObject(submittedValue);
+        }
+        if (value != null) {
+            out.writeObject(value);
+        }
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        int fields = in.readByte();
+        submittedValue = (fields & SUBMITTED_VALUE) != 0 ? in.readObject() : null;
+        value = (fields & VALUE) != 0 ? in.readObject() : null;
+        localValueSet = (fields & LOCAL_VALUE_SET) != 0;
+        valid = (fields & INVALID) == 0;
+        submitted = (fields & SUBMITTED) != 0;
     }
 
     @Override

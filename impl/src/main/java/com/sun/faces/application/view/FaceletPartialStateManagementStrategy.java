@@ -394,8 +394,6 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
                 stateContext.setHasDynamicComponents(true);
                 stateContext.setTrackViewModifications(true);
             }
-        } else {
-            viewRoot = null;
         }
         context.setProcessingEvents(processingEvents);
         return viewRoot;
@@ -710,6 +708,6 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
         SavedBuildTimeDecisions.save(context, stateMap);
         saveDynamicActions(context, stateContext, stateMap);
         StateContext.release(context);
-        return new Object[] { null, stateMap };
+        return new Object[] { null, stateMap.isEmpty() ? null : stateMap };
     }
 }

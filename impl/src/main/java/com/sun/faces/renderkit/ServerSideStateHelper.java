@@ -32,6 +32,7 @@ import static java.util.logging.Level.WARNING;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.security.SecureRandom;
@@ -158,7 +159,7 @@ public class ServerSideStateHelper extends StateHelper {
                     }
 
                     Object structure = stateToWrite[0];
-                    Object savedState = handleSaveState(stateToWrite[1]);
+                    Object savedState = stateToWrite[1] == null ? null : handleSaveState(stateToWrite[1]);
 
                     String idInLogicalMap = (String) RequestStateManager.get(ctx, RequestStateManager.LOGICAL_VIEW_MAP);
                     if (idInLogicalMap == null) {
@@ -273,19 +274,25 @@ public class ServerSideStateHelper extends StateHelper {
                 if (actualMap != null) {
                     RequestStateManager.set(ctx, RequestStateManager.LOGICAL_VIEW_MAP, idInLogicalMap);
 
-                    Object[] restoredState = new Object[2];
                     Object[] state = (Object[]) actualMap.get(idInActualMap);
                     if (state != null) {
-                        restoredState[0] = state[0];
-                        restoredState[1] = state[1];
+                        Object[] restoredState = { state[0], state[1] };
+
+                        if (state.length == 2 && state[1] != null) {
+                            try {
+                                restoredState[1] = handleRestoreState(state[1]);
+                            } catch (FacesException e) {
+                                if (e.getCause() instanceof InvalidClassException) {
+                                    // A state serialized by a version with another serialized form expires the view.
+                                    return null;
+                                }
+                                throw e;
+                            }
+                        }
 
                         RequestStateManager.set(ctx, RequestStateManager.ACTUAL_VIEW_MAP, idInActualMap);
-                        if (state.length == 2 && state[1] != null) {
-                            restoredState[1] = handleRestoreState(state[1]);
-                        }
+                        return restoredState;
                     }
-
-                    return restoredState;
                 }
             }
         }

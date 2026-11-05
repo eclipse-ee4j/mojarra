@@ -20,6 +20,9 @@ import static com.sun.faces.cdi.CdiUtils.createDataModel;
 import static com.sun.faces.util.Util.isNestedInIterator;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.ObjectStreamField;
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.util.Collection;
@@ -444,32 +447,40 @@ public class UIRepeat extends UINamingContainer {
         if (count == 0) {
             return;
         }
+        // Only slots with delta state hold a SavedState, and only a row with such a slot is kept, so the saved state
+        // holds no rows which restore the same as NULL_STATE.
         String rowStateKey = getRowStateKey(ctx);
-        SavedState[] rowState = getChildState().get(rowStateKey);
-        if (rowState == null || rowState.length != count) {
-            rowState = new SavedState[count];
-            getChildState().put(rowStateKey, rowState);
-        }
+        SavedState[] rowState = null;
         for (int i = 0; i < count; i++) {
             UIComponent c = iterationStatefulList.get(i);
             if (!c.isTransient()) {
-                SavedState ss = rowState[i];
-                if (ss == null) {
-                    ss = new SavedState();
-                    rowState[i] = ss;
-                }
+                SavedState ss = new SavedState();
                 if (c instanceof UIForm) {
                     ss.populate((UIForm) c);
                 } else {
                     ss.populate((EditableValueHolder) c);
                 }
+                if (ss.hasDeltaState()) {
+                    if (rowState == null) {
+                        rowState = new SavedState[count];
+                    }
+                    rowState[i] = ss;
+                }
             }
+        }
+        if (rowState != null) {
+            getChildState().put(rowStateKey, rowState);
+        } else {
+            removeChildState(ctx);
         }
     }
 
     private void removeChildState(FacesContext ctx) {
         if (childState != null) {
             childState.remove(getRowStateKey(ctx));
+            if (childState.isEmpty()) {
+                childState = null;
+            }
         }
     }
 
@@ -886,50 +897,24 @@ public class UIRepeat extends UINamingContainer {
 
     private final static SavedState NULL_STATE = new SavedState();
 
-    // from RI
+    /**
+     * The per-row state of a stateful descendant. It serializes only the fields which are not at their default.
+     */
     private final static class SavedState implements Serializable {
 
+        private static final long serialVersionUID = 2L;
+        private static final ObjectStreamField[] serialPersistentFields = {};
+        private static final int SUBMITTED_VALUE = 1;
+        private static final int VALUE = 2;
+        private static final int LOCAL_VALUE_SET = 4;
+        private static final int INVALID = 8;
+        private static final int SUBMITTED = 16;
+
         private Object submittedValue;
-
-        private static final long serialVersionUID = 2920252657338389849L;
-
-        Object getSubmittedValue() {
-            return submittedValue;
-        }
-
-        void setSubmittedValue(Object submittedValue) {
-            this.submittedValue = submittedValue;
-        }
-
         private boolean valid = true;
-
-        boolean isValid() {
-            return valid;
-        }
-
-        void setValid(boolean valid) {
-            this.valid = valid;
-        }
-
         private Object value;
-
-        Object getValue() {
-            return value;
-        }
-
-        public void setValue(Object value) {
-            this.value = value;
-        }
-
         private boolean localValueSet;
-
-        boolean isLocalValueSet() {
-            return localValueSet;
-        }
-
-        public void setLocalValueSet(boolean localValueSet) {
-            this.localValueSet = localValueSet;
-        }
+        private boolean submitted;
 
         @Override
         public String toString() {
@@ -942,8 +927,6 @@ public class UIRepeat extends UINamingContainer {
             submittedValue = evh.getSubmittedValue();
             localValueSet = evh.isLocalValueSet();
         }
-
-        private boolean submitted;
 
         public void populate(UIForm form) {
             submitted = form.isSubmitted();
@@ -958,6 +941,33 @@ public class UIRepeat extends UINamingContainer {
             evh.setValid(valid);
             evh.setSubmittedValue(submittedValue);
             evh.setLocalValueSet(localValueSet);
+        }
+
+        boolean hasDeltaState() {
+            return submittedValue != null || value != null || localValueSet || !valid || submitted;
+        }
+
+        private void writeObject(ObjectOutputStream out) throws IOException {
+            out.defaultWriteObject();
+            int fields = (submittedValue != null ? SUBMITTED_VALUE : 0) | (value != null ? VALUE : 0) | (localValueSet ? LOCAL_VALUE_SET : 0)
+                    | (valid ? 0 : INVALID) | (submitted ? SUBMITTED : 0);
+            out.writeByte(fields);
+            if (submittedValue != null) {
+                out.writeObject(submittedValue);
+            }
+            if (value != null) {
+                out.writeObject(value);
+            }
+        }
+
+        private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+            in.defaultReadObject();
+            int fields = in.readByte();
+            submittedValue = (fields & SUBMITTED_VALUE) != 0 ? in.readObject() : null;
+            value = (fields & VALUE) != 0 ? in.readObject() : null;
+            localValueSet = (fields & LOCAL_VALUE_SET) != 0;
+            valid = (fields & INVALID) == 0;
+            submitted = (fields & SUBMITTED) != 0;
         }
 
     }
