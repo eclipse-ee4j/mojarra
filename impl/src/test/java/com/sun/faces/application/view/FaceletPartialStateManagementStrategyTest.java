@@ -31,14 +31,18 @@ import static com.sun.faces.application.view.FaceletPartialStateManagementStrate
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.RestoreBuildTimeDecisions;
 import static com.sun.faces.facelets.tag.faces.ComponentSupport.MARK_CREATED;
 import static com.sun.faces.util.ComponentStruct.ADD;
+import static com.sun.faces.RIConstants.VIEW_REBUILT_AT_RENDER;
+import static java.util.Collections.emptyEnumeration;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
 import java.text.MessageFormat;
@@ -49,6 +53,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 
 import com.sun.faces.context.StateContext;
 import com.sun.faces.util.ComponentStruct;
@@ -57,7 +62,13 @@ import jakarta.faces.component.NamingContainer;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIOutput;
 import jakarta.faces.component.UIPanel;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.visit.VisitContext;
+import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.render.RenderKit;
+import jakarta.faces.render.ResponseStateManager;
+import jakarta.servlet.ServletContext;
 
 /**
  * A postback rebuilds its view from the markup rather than from the response it was submitted from, so a build time
@@ -67,6 +78,9 @@ import jakarta.faces.context.FacesContext;
  * report. This holds what the comparison reports, and which entries the saved state map holds.
  */
 class FaceletPartialStateManagementStrategyTest {
+
+    private static final String VIEW_ID = "/view.xhtml";
+    private static final String RENDER_KIT_ID = "HTML_BASIC";
 
     private static final Pattern LONE_APOSTROPHE = Pattern.compile("(?<!\')\'(?!\')");
 
@@ -429,5 +443,64 @@ class FaceletPartialStateManagementStrategyTest {
         for (Object argument : arguments) {
             assertTrue(message.contains(String.valueOf(argument)), message);
         }
+    }
+
+    /**
+     * A view without component state saves no component state map.
+     */
+    @Test
+    void aViewWithoutComponentStateSavesANullComponentStateMap() {
+        ServletContext servletContext = mock(ServletContext.class);
+        when(servletContext.getInitParameterNames()).thenReturn(emptyEnumeration());
+        ExternalContext externalContext = mock(ExternalContext.class);
+        when(externalContext.getContext()).thenReturn(servletContext);
+        FacesContext context = mock(FacesContext.class);
+        when(context.getExternalContext()).thenReturn(externalContext);
+        when(context.getViewRoot()).thenReturn(mock(UIViewRoot.class));
+        Map<Object, Object> attributes = new HashMap<>();
+        attributes.put(VIEW_REBUILT_AT_RENDER, false);
+        when(context.getAttributes()).thenReturn(attributes);
+
+        try (MockedStatic<StateContext> stateContext = mockStatic(StateContext.class); MockedStatic<VisitContext> visitContext = mockStatic(VisitContext.class)) {
+            stateContext.when(() -> StateContext.getStateContext(context)).thenReturn(mock(StateContext.class));
+
+            assertArrayEquals(new Object[] { null, null }, (Object[]) new FaceletPartialStateManagementStrategy(context).saveView(context));
+        }
+    }
+
+    /**
+     * A view without component state is still a stateful view, so it is restored as the view built for the postback.
+     */
+    @Test
+    void aNullComponentStateRestoresTheBuiltView() {
+        UIViewRoot viewRoot = new UIViewRoot();
+        FacesContext context = restoringContext(viewRoot, new Object[] { null, null });
+
+        try (MockedStatic<StateContext> stateContext = mockStatic(StateContext.class)) {
+            stateContext.when(() -> StateContext.getStateContext(context)).thenReturn(mock(StateContext.class));
+
+            assertSame(viewRoot, new FaceletPartialStateManagementStrategy(context).restoreView(context, VIEW_ID, RENDER_KIT_ID));
+        }
+    }
+
+    /**
+     * Without state the view has expired, so no view is restored.
+     */
+    @Test
+    void noStateRestoresNoView() {
+        FacesContext context = restoringContext(new UIViewRoot(), null);
+
+        assertNull(new FaceletPartialStateManagementStrategy(context).restoreView(context, VIEW_ID, RENDER_KIT_ID));
+    }
+
+    private static FacesContext restoringContext(UIViewRoot viewRoot, Object[] state) {
+        FacesContext context = mock(FacesContext.class);
+        RenderKit renderKit = mock(RenderKit.class);
+        ResponseStateManager responseStateManager = mock(ResponseStateManager.class);
+        when(context.getViewRoot()).thenReturn(viewRoot);
+        when(context.getRenderKit()).thenReturn(renderKit);
+        when(renderKit.getResponseStateManager()).thenReturn(responseStateManager);
+        when(responseStateManager.getState(context, VIEW_ID)).thenReturn(state);
+        return context;
     }
 }

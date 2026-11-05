@@ -305,7 +305,6 @@ public class StateContext {
      */
     public static void addDynamicChild(UIComponent parent, UIComponent child, ComponentStruct struct) {
         int childIndex = indexToRestore(struct, child);
-        child.setId(struct.getId());
         if (childIndex >= parent.getChildCount() || childIndex == ComponentStruct.APPEND) {
             parent.getChildren().add(child);
         } else {

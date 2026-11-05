@@ -368,11 +368,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
                         String cid = target.getClientId(context1.getFacesContext());
                         Object stateObj = state.get(cid);
                         if (stateObj != null && !stateContext.componentAddedDynamically(target)) {
-                            boolean restoreStateNow = true;
-                            if (stateObj instanceof StateHolderSaver) {
-                                restoreStateNow = !((StateHolderSaver) stateObj).componentAddedDynamically();
-                            }
-                            if (restoreStateNow) {
+                            if (!(stateObj instanceof StateHolderSaver)) {
                                 try {
                                     target.restoreState(context1.getFacesContext(), stateObj);
                                 } catch (Exception e) {
@@ -394,8 +390,6 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
                 stateContext.setHasDynamicComponents(true);
                 stateContext.setTrackViewModifications(true);
             }
-        } else {
-            viewRoot = null;
         }
         context.setProcessingEvents(processingEvents);
         return viewRoot;
@@ -710,6 +704,6 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
         SavedBuildTimeDecisions.save(context, stateMap);
         saveDynamicActions(context, stateContext, stateMap);
         StateContext.release(context);
-        return new Object[] { null, stateMap };
+        return new Object[] { null, stateMap.isEmpty() ? null : stateMap };
     }
 }
