@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -29,7 +30,7 @@ import java.util.Set;
  * <p>
  * This is solely for the removed children ids of {@link com.sun.faces.context.StateContext.StatelessAddRemoveListener}.
  * It supports only what that use case needs: {@code add}, {@code remove}, {@code contains} and {@code isEmpty}
- * with non-null elements. The other {@link Set} methods do not fully honor the {@link Set} contract.
+ * with non-null elements, where {@code remove} also gets {@code null} for a child which no tag created. The other {@link Set} methods do not fully honor the {@link Set} contract.
  * <p>
  * Instances end up in the full view state, so the class name is part of the serialized state.
  *
@@ -102,13 +103,7 @@ public class MostlySingletonSet<E> implements Set<E>, Serializable {
         if (null != inner) {
             if (1 == inner.size()) {
                 // If we need to transition from one to zero
-                E e = inner.iterator().next();
-                // If our element is not null, and the argument is not null
-                if (null != e && null != o) {
-                    didRemove = e.equals(o);
-                } else {
-                    didRemove = null == o;
-                }
+                didRemove = Objects.equals(inner.iterator().next(), o);
                 if (didRemove) {
                     inner = null;
                 }

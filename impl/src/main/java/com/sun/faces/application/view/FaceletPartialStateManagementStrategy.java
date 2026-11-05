@@ -22,6 +22,10 @@ import static com.sun.faces.RIConstants.DYNAMIC_COMPONENT;
 import static com.sun.faces.RIConstants.RENDERED_TAGS;
 import static com.sun.faces.RIConstants.VIEW_REBUILT_AT_RENDER;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.RestoreBuildTimeDecisions;
+import static com.sun.faces.context.StateContext.addDynamicChild;
+import static com.sun.faces.context.StateContext.markDynamicallyAdded;
+import static com.sun.faces.context.StateContext.markIfAlreadyInPlace;
+import static com.sun.faces.context.StateContext.placeDynamicChildren;
 import static com.sun.faces.util.ComponentStruct.ADD;
 import static com.sun.faces.util.ComponentStruct.REMOVE;
 import static com.sun.faces.util.Util.isEmpty;
@@ -208,27 +212,8 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
                 // The saved list is already pruned (see saveDynamicActions), so just rebuild the live list in order.
                 actions.add(action);
             }
+            placeDynamicChildren(actions, componentIndex);
         }
-    }
-
-    /**
-     * Returns the index the given action's child must be restored at. The action carries it, as the component
-     * does not necessarily survive to hold it: a facelet-created child which was dynamically moved to another
-     * parent is deleted and recreated by the facelet refresh, losing its marker. The marker on the component
-     * is only consulted for state saved before the action carried the index.
-     *
-     * @param struct the component struct.
-     * @param child the child being restored.
-     * @return the index within the parent's children, or {@link ComponentStruct#APPEND} to append.
-     */
-    private static int indexOf(ComponentStruct struct, UIComponent child) {
-        if (struct.getIndex() != ComponentStruct.APPEND) {
-            return struct.getIndex();
-        }
-        if (child.getAttributes().get(DYNAMIC_COMPONENT) instanceof Integer index) {
-            return index;
-        }
-        return ComponentStruct.APPEND;
     }
 
     /**
@@ -248,14 +233,8 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
         if (parent != null) {
             UIComponent child = componentIndex.get(struct.getClientId());
 
-            /*
-             * The buildView reapply that runs earlier in restoreView preserves programmatically-added
-             * children across the facelet refresh in their original order, so the child often already sits
-             * correctly under its parent. In that case skip the remove + re-add: getChildren().remove and
-             * getChildren().add each scan for the child (O(n) indexOf), i.e. O(n^2) over a large dynamic
-             * subtree, only to reproduce the position it already holds.
-             */
-            boolean alreadyInPlace = child != null && struct.getFacetName() == null && child.getParent() == parent;
+            boolean alreadyInPlace = child != null && struct.getFacetName() == null
+                && markIfAlreadyInPlace(parent, child, struct);
 
             /*
              * If Facelets engine restored the child before us we are going to use it, but we need to remove it before we can add it
@@ -292,26 +271,13 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
              * Now if we have the child we are going to add it back in.
              */
             if (child != null) {
-                if (alreadyInPlace) {
-                    // Child survived the facelet refresh under this parent; leave it where it is. The
-                    // bookkeeping below still runs.
-                } else if (struct.getFacetName() != null) {
-                    parent.getFacets().put(struct.getFacetName(), child);
-                    child.getAttributes().put(DYNAMIC_COMPONENT, child.getParent().getChildren().indexOf(child));
-                } else {
-                    int childIndex = indexOf(struct, child);
-                    child.setId(struct.getId());
-                    int storedIndex;
-                    if (childIndex >= parent.getChildCount() || childIndex == -1) {
-                        parent.getChildren().add(child);
-                        storedIndex = parent.getChildCount() - 1;
+                if (!alreadyInPlace) {
+                    if (struct.getFacetName() != null) {
+                        parent.getFacets().put(struct.getFacetName(), child);
+                        markDynamicallyAdded(child, ComponentStruct.APPEND);
                     } else {
-                        parent.getChildren().add(childIndex, child);
-                        storedIndex = childIndex;
+                        addDynamicChild(parent, child, struct);
                     }
-                    child.getClientId();
-                    // Position the child was added at; avoids an O(n) getChildren().indexOf(child) per dynamic add.
-                    child.getAttributes().put(DYNAMIC_COMPONENT, storedIndex);
                 }
                 stateContext.getDynamicComponents().put(struct.getClientId(), child);
                 if (child.getChildCount() == 0 && child.getFacetCount() == 0) {

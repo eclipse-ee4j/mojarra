@@ -32,7 +32,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.BiFunction;
 
-import com.sun.faces.RIConstants;
 import com.sun.faces.context.StateContext;
 import com.sun.faces.facelets.FaceletContextImplBase;
 import com.sun.faces.facelets.impl.IdMapper;
@@ -626,13 +625,8 @@ public final class ComponentSupport {
 
         String facetName = getFacetName(parent);
         if (facetName == null) {
-            if (child.getAttributes().containsKey(RIConstants.DYNAMIC_COMPONENT)) {
-                int childIndex = (Integer) child.getAttributes().get(RIConstants.DYNAMIC_COMPONENT);
-                if (childIndex >= parent.getChildCount() || childIndex == -1) {
-                    parent.getChildren().add(child);
-                } else {
-                    parent.getChildren().add(childIndex, child);
-                }
+            if (StateContext.isDynamicChild(child) && StateContext.indexOfDynamicChild(child) < parent.getChildCount()) {
+                parent.getChildren().add(StateContext.indexOfDynamicChild(child), child);
             } else {
                 parent.getChildren().add(child);
             }

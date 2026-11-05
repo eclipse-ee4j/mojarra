@@ -25,8 +25,10 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -211,25 +213,161 @@ public class StateContext {
         this.hasDynamicComponents = hasDynamicComponents;
     }
 
-    public int getIndexOfDynamicallyAddedChildInParent(UIComponent c) {
-        int result = -1;
-        Map<String, Object> attrs = c.getAttributes();
-        if (attrs.containsKey(DYNAMIC_COMPONENT)) {
-            result = (Integer) attrs.get(DYNAMIC_COMPONENT);
+    /**
+     * Put the dynamically added children at the index they hold, in every parent the given ADD actions add a child to.
+     * The index of a dynamic child does not count the children which the REMOVE actions remove. So this must run after
+     * all given actions are replayed.
+     *
+     * @param actions the replayed actions.
+     * @param componentIndex the components of the view by client id.
+     */
+    public static void placeDynamicChildren(List<ComponentStruct> actions, Map<String, UIComponent> componentIndex) {
+        Set<UIComponent> parents = null;
+        for (ComponentStruct action : actions) {
+            if (ADD.equals(action.getAction()) && action.getFacetName() == null) {
+                UIComponent parent = componentIndex.get(action.getParentClientId());
+                if (parent != null) {
+                    if (parents == null) {
+                        parents = Collections.newSetFromMap(new IdentityHashMap<>());
+                    }
+                    parents.add(parent);
+                }
+            }
         }
-        return result;
-    }
-
-    public boolean hasOneOrMoreDynamicChild(UIComponent parent) {
-        return parent.getAttributes().containsKey(DYNAMIC_CHILD_COUNT);
+        if (parents != null) {
+            for (UIComponent parent : parents) {
+                placeDynamicChildren(parent);
+            }
+        }
     }
 
     /**
-     * Mark {@code parent} as having a dynamically added child. Read back by {@link #hasOneOrMoreDynamicChild} to gate
-     * the dynamic-child reorder during Facelets re-apply, which tests only for the key's presence -- so this is a
-     * set-once marker, not a count.
+     * Put each dynamically added child of the given parent at the index it holds, between the other children in their
+     * current order. The children are put back in the order of their index, so that each one lands at its own index
+     * whatever order an earlier step left them in.
+     *
+     * @param parent the parent whose dynamically added children to place.
      */
-    private void markHasDynamicChild(UIComponent parent) {
+    public static void placeDynamicChildren(UIComponent parent) {
+        if (!hasDynamicChild(parent)) {
+            return;
+        }
+
+        List<UIComponent> children = parent.getChildren();
+        // In the steady state every dynamic child is in place, and the O(dynamic * children) re-add below is skipped.
+        if (allDynamicChildrenInPlace(children)) {
+            return;
+        }
+
+        List<UIComponent> dynamicChildren = new ArrayList<>(children.size());
+        for (UIComponent child : children) {
+            if (isDynamicChild(child)) {
+                dynamicChildren.add(child);
+            }
+        }
+        for (UIComponent child : dynamicChildren) {
+            children.remove(child);
+        }
+        dynamicChildren.sort(Comparator.comparingInt(StateContext::indexOfDynamicChild));
+
+        for (UIComponent child : dynamicChildren) {
+            int index = indexOfDynamicChild(child);
+            if (index < children.size()) {
+                children.add(index, child);
+            } else {
+                children.add(child);
+            }
+        }
+    }
+
+    /**
+     * Mark {@code child} as dynamically added at the given index of its parent, and mark its parent as having a
+     * dynamically added child. Neither marker is saved with the state, so each restore of a dynamic add sets them
+     * again from its {@link ComponentStruct}.
+     *
+     * @param child the dynamically added child, already attached to its parent.
+     * @param index the index of the child within its parent's children, or {@link ComponentStruct#APPEND} for a facet.
+     */
+    public static void markDynamicallyAdded(UIComponent child, int index) {
+        child.getAttributes().put(DYNAMIC_COMPONENT, index);
+        markHasDynamicChild(child.getParent());
+    }
+
+    /**
+     * Add the given action's child to the given parent at the index {@link #indexToRestore} returns, or append it when
+     * that index is beyond the children, and mark it as dynamically added at that index. A child can be appended because
+     * its siblings before it are not there yet. It then still holds its own index, and
+     * {@link #placeDynamicChildren(UIComponent)} puts it there.
+     *
+     * @param parent the parent to add the child to.
+     * @param child the dynamically added child.
+     * @param struct the component struct of the ADD action.
+     */
+    public static void addDynamicChild(UIComponent parent, UIComponent child, ComponentStruct struct) {
+        int childIndex = indexToRestore(struct, child);
+        child.setId(struct.getId());
+        if (childIndex >= parent.getChildCount() || childIndex == ComponentStruct.APPEND) {
+            parent.getChildren().add(child);
+        } else {
+            parent.getChildren().add(childIndex, child);
+        }
+        child.getClientId();
+        markDynamicallyAdded(child, childIndex == ComponentStruct.APPEND ? parent.getChildCount() - 1 : childIndex);
+    }
+
+    /**
+     * Mark the given action's child as dynamically added when it already sits where it belongs, so that the O(n) remove
+     * and re-add can be skipped. That is at the index the child holds as a dynamically added child, as the Facelets
+     * refresh has put it back there, or else at the index {@link #indexToRestore} returns. Or last when that index is
+     * beyond the other children.
+     *
+     * @param parent the parent of the action.
+     * @param child the child of the action.
+     * @param struct the component struct of the ADD action.
+     * @return true when the child is already in place and has been marked.
+     */
+    public static boolean markIfAlreadyInPlace(UIComponent parent, UIComponent child, ComponentStruct struct) {
+        if (child.getParent() != parent || parent.getChildCount() == 0) {
+            return false;
+        }
+        List<UIComponent> children = parent.getChildren();
+        int last = children.size() - 1;
+        int index = isDynamicChild(child) ? indexOfDynamicChild(child) : indexToRestore(struct, child);
+        int position = index == ComponentStruct.APPEND || index >= last ? last : index;
+        if (children.get(position) != child) {
+            return false;
+        }
+        markDynamicallyAdded(child, position);
+        return true;
+    }
+
+    /**
+     * Returns the index the given action's child must be restored or reapplied at. The action carries it, as the
+     * component does not necessarily survive to hold it: a facelet-created child which was dynamically moved to another
+     * parent is deleted and recreated by the facelet refresh, losing its marker. The marker on the component is only
+     * consulted when the action carries no index: state saved by an older version, or a child to append.
+     *
+     * @param struct the component struct.
+     * @param child the child being restored or reapplied.
+     * @return the index within the parent's children, or {@link ComponentStruct#APPEND} to append.
+     */
+    public static int indexToRestore(ComponentStruct struct, UIComponent child) {
+        if (struct.getIndex() != ComponentStruct.APPEND) {
+            return struct.getIndex();
+        }
+        Object index = child.getAttributes().get(DYNAMIC_COMPONENT);
+        if (index instanceof Integer) {
+            return (Integer) index;
+        }
+        return ComponentStruct.APPEND;
+    }
+
+    /**
+     * Mark {@code parent} as having a dynamically added child. {@link #placeDynamicChildren(UIComponent)} only places
+     * the dynamic children of a parent so marked, and tests only for the key's presence, so this is a set-once marker,
+     * not a count.
+     */
+    private static void markHasDynamicChild(UIComponent parent) {
         Map<String, Object> attrs = parent.getAttributes();
         if (!attrs.containsKey(DYNAMIC_CHILD_COUNT)) {
             attrs.put(DYNAMIC_CHILD_COUNT, 1);
@@ -251,6 +389,80 @@ public class StateContext {
      */
     public HashMap<String, UIComponent> getDynamicComponents() {
         return modListener != null ? modListener.getDynamicComponents() : null;
+    }
+
+    /**
+     * Set the index each dynamically added child holds to the index it has now among the children of its parent. The
+     * Facelets refresh at render puts a dynamically added child back at the index it holds, so this must run while the
+     * tree is still in the order the request left it.
+     */
+    public void syncIndexesOfDynamicChildren() {
+        List<ComponentStruct> actions = getDynamicActions();
+        if (actions != null && !actions.isEmpty()) {
+            syncIndexesOfDynamicChildren(getDynamicComponents().values());
+        }
+    }
+
+    /**
+     * Set the index of each given dynamically added child, and of its dynamically added siblings, to the index it has now
+     * among the children of its parent. A facet or a component which is not in the view anymore is skipped.
+     *
+     * @param components the dynamically added components.
+     */
+    static void syncIndexesOfDynamicChildren(Collection<UIComponent> components) {
+        Set<UIComponent> parents = Collections.newSetFromMap(new IdentityHashMap<>());
+        for (UIComponent component : components) {
+            UIComponent parent = component.getParent();
+            if (parent != null && isDynamicChild(component)) {
+                parents.add(parent);
+            }
+        }
+
+        for (UIComponent parent : parents) {
+            List<UIComponent> children = parent.getChildren();
+            for (int i = 0, size = children.size(); i < size; i++) {
+                Map<String, Object> attributes = children.get(i).getAttributes();
+                Object index = attributes.get(DYNAMIC_COMPONENT);
+                if (isDynamicIndex(index) && (Integer) index != i) {
+                    attributes.put(DYNAMIC_COMPONENT, i);
+                }
+            }
+        }
+    }
+
+    private static boolean hasDynamicChild(UIComponent parent) {
+        return parent.getAttributes().containsKey(DYNAMIC_CHILD_COUNT);
+    }
+
+    private static boolean allDynamicChildrenInPlace(List<UIComponent> children) {
+        for (int index = 0, size = children.size(); index < size; index++) {
+            UIComponent child = children.get(index);
+            if (isDynamicChild(child) && indexOfDynamicChild(child) != index) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @param component the component to check.
+     * @return whether the given component was dynamically added as a child, as opposed to a facet, so that it holds the
+     * index {@link #indexOfDynamicChild(UIComponent)} returns.
+     */
+    public static boolean isDynamicChild(UIComponent component) {
+        return isDynamicIndex(component.getAttributes().get(DYNAMIC_COMPONENT));
+    }
+
+    /**
+     * @param component a component for which {@link #isDynamicChild(UIComponent)} holds.
+     * @return the index the given dynamically added child holds among the children of its parent.
+     */
+    public static int indexOfDynamicChild(UIComponent component) {
+        return (Integer) component.getAttributes().get(DYNAMIC_COMPONENT);
+    }
+
+    private static boolean isDynamicIndex(Object index) {
+        return index instanceof Integer && (Integer) index != ComponentStruct.APPEND;
     }
 
     /**
@@ -655,9 +867,8 @@ public class StateContext {
                 // UIComponentBase.setParent, which runs before this event, so no setId is needed here.
                 String facetName = findFacetNameForComponent(component);
                 int index = indexInParent(component);
-                markHasDynamicChild(component.getParent());
                 component.clearInitialState();
-                component.getAttributes().put(DYNAMIC_COMPONENT, index);
+                markDynamicallyAdded(component, index);
 
                 ComponentStruct struct = new ComponentStruct(ADD, facetName,
                         stripIterationIndex(context, component.getParent().getClientId(context)),

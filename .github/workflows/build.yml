@@ -1,13 +1,12 @@
 name: build
-on: 
+on:
   push:
-    branches:
-      - '*'
-    tags-ignore:
-      - 'v*'
+    branches: [ '4.0', 'main', '5.0' ]
   pull_request:
-    branches:
-      - '*'  
+  workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
   build:
     runs-on: ${{ matrix.os }}
