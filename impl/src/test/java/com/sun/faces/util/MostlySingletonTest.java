@@ -16,6 +16,7 @@
 
 package com.sun.faces.util;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashSet;
@@ -29,6 +30,19 @@ public class MostlySingletonTest {
     public MostlySingletonTest() {
     }
     
+    /**
+     * The removed children ids of a parent are asked to remove {@code null} whenever a child which no tag created is
+     * added to that parent, which must leave the id of a removed child which a tag did create in place.
+     */
+    @Test
+    public void testRemoveNullFromNonNullSingleton() {
+        MostlySingletonSet<String> set = new MostlySingletonSet<>();
+        set.add("j_idt1");
+
+        assertFalse(set.remove(null));
+        assertTrue(set.contains("j_idt1"));
+    }
+
     @Test
     public void testAdd() {
         MostlySingletonSet<Integer> set = new MostlySingletonSet<Integer>();
