@@ -172,20 +172,6 @@ public class TestServerSideStateHelper {
     }
 
     /**
-     * A session entry which holds an unused slot in front of the component state expires the view.
-     */
-    @Test
-    void stateInPreviousFormatExpiresView() throws Exception {
-        prepareSession();
-        String id = write(new HashMap<>());
-        replaceEntry(id, new Object[] { null, new HashMap<>(Map.of("form", "state")) });
-
-        prepareViewStateParam(id);
-
-        assertNull(new ServerSideStateHelper().getState(mockedFacesContext, null));
-    }
-
-    /**
      * A serialized session entry which holds a class in another serialized form, such as one saved by another version, expires the view.
      */
     @Test

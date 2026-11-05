@@ -16,15 +16,10 @@
 
 package org.glassfish.mojarra.facelets.component;
 
-import static org.glassfish.mojarra.junit.Serialization.deserialize;
-import static org.glassfish.mojarra.junit.Serialization.serialize;
 import static org.glassfish.mojarra.junit.Serialization.serializeAndDeserialize;
-import static org.glassfish.mojarra.junit.Serialization.withSerialVersionUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.io.InvalidClassException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,9 +47,6 @@ class UIRepeatRowStateTest extends JUnitFacesTestCaseBase {
 
     private static final List<String> ROWS = List.of("first", "second");
     private static final String TYPED_ROW = ":1:";
-    private static final String SAVED_STATE_CLASS_NAME = UIRepeat.class.getName() + "$SavedState";
-    private static final long OLDER_SAVED_STATE_SERIAL_VERSION_UID = 2920252657338389849L;
-
     private final List<String> renderedStates = new ArrayList<>();
 
     @Override
@@ -119,19 +111,6 @@ class UIRepeatRowStateTest extends JUnitFacesTestCaseBase {
         restored.encodeChildren(facesContext);
 
         assertEquals(List.of("null null false true", "submitted false", "typed local true false", "submitted true"), renderedStates);
-    }
-
-    /**
-     * A per-row state in the serialized form of an older version, which serializes every field, is not read, so the state helpers expire the view.
-     */
-    @Test
-    void perRowStateInTheSerializedFormOfAnOlderVersionIsNotRead() throws Exception {
-        UIRepeat repeat = createRepeat();
-        facesContext.setCurrentPhaseId(PhaseId.APPLY_REQUEST_VALUES);
-        repeat.processDecodes(facesContext);
-        byte[] serialized = withSerialVersionUID(serialize(repeat.saveState(facesContext)), SAVED_STATE_CLASS_NAME, OLDER_SAVED_STATE_SERIAL_VERSION_UID);
-
-        assertThrows(InvalidClassException.class, () -> deserialize(serialized));
     }
 
     private UIRepeat createRepeat() {

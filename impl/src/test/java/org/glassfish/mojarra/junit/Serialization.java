@@ -50,7 +50,7 @@ public final class Serialization {
      * @return the serialized bytes of the given object
      * @throws IOException if serializing fails
      */
-    public static byte[] serialize(Object object) throws IOException {
+    private static byte[] serialize(Object object) throws IOException {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         try (ObjectOutputStream out = new ObjectOutputStream(bytes)) {
             out.writeObject(object);
@@ -64,7 +64,7 @@ public final class Serialization {
      * @throws IOException if deserializing fails
      * @throws ClassNotFoundException if a serialized class cannot be loaded
      */
-    public static Object deserialize(byte[] serialized) throws IOException, ClassNotFoundException {
+    private static Object deserialize(byte[] serialized) throws IOException, ClassNotFoundException {
         try (ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(serialized))) {
             return in.readObject();
         }

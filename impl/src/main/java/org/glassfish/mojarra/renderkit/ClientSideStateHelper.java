@@ -241,11 +241,6 @@ public class ClientSideStateHelper extends StateHelper {
                     stateTime = ois.readLong();
                 }
                 catch (IOException ioe) {
-                    // we've caught an exception trying to read the time
-                    // marker. This most likely means a view that has been
-                    // around before upgrading to the release that included
-                    // this feature. So, no marker, return null now to
-                    // cause a ViewExpiredException
                     if (LOGGER.isLoggable(Level.FINE)) {
                         LOGGER.fine(
                             "Client state timeout is enabled, but unable to find the " + "time marker in the serialized state.  Assuming state "
