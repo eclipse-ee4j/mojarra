@@ -17,12 +17,9 @@
 
 package org.glassfish.mojarra.application.view;
 
-import static org.glassfish.mojarra.facelets.tag.faces.ComponentSupport.DYNAMIC_COMPONENT;
-
 import java.io.Serializable;
 
 import jakarta.faces.component.StateHolder;
-import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 
 /**
@@ -32,43 +29,10 @@ import jakarta.faces.context.FacesContext;
  */
 class StateHolderSaver implements Serializable {
 
-    private static final long serialVersionUID = 4866548262845392093L;
+    private static final long serialVersionUID = 2L;
 
     private String className = null;
     private Serializable savedState = null;
-
-    private enum StateHolderTupleIndices {
-        StateHolderSaverInstance,
-        ComponentAddedDynamically,
-        LastMember
-    }
-
-    public boolean componentAddedDynamically() {
-        boolean result = false;
-
-        // if the Object to save implemented Serializable but not
-        // StateHolder
-        if (null == className && null != savedState) {
-            return result;
-        }
-
-        // if the Object to save did not implement Serializable or
-        // StateHolder
-        if (className == null) {
-            return result;
-        }
-
-        // else the object to save did implement StateHolder
-
-        if (null != savedState) {
-            // don't need to check transient, since that was done on
-            // the saving side.
-            Serializable[] tuple = (Serializable[]) savedState;
-            result = (Boolean) tuple[StateHolderTupleIndices.ComponentAddedDynamically.ordinal()];
-        }
-
-        return result;
-    }
 
     public StateHolderSaver(FacesContext context, Object toSave) {
         if (toSave == null) {
@@ -81,15 +45,7 @@ class StateHolderSaver implements Serializable {
         if (toSave instanceof StateHolder) {
             // do not save an attached object that is marked transient.
             if (!((StateHolder) toSave).isTransient()) {
-                Serializable[] tuple = new Serializable[StateHolderTupleIndices.LastMember.ordinal()];
-
-                tuple[StateHolderTupleIndices.StateHolderSaverInstance.ordinal()] = (Serializable) ((StateHolder) toSave).saveState(context);
-                if (toSave instanceof UIComponent) {
-                    tuple[StateHolderTupleIndices.ComponentAddedDynamically.ordinal()] = ((UIComponent) toSave).getAttributes().containsKey(DYNAMIC_COMPONENT)
-                        ? Boolean.TRUE
-                        : Boolean.FALSE;
-                }
-                savedState = tuple;
+                savedState = (Serializable) ((StateHolder) toSave).saveState(context);
             }
             else {
                 className = null;
@@ -143,8 +99,7 @@ class StateHolderSaver implements Serializable {
         if (null != result && null != savedState && result instanceof StateHolder) {
             // don't need to check transient, since that was done on
             // the saving side.
-            Serializable[] tuple = (Serializable[]) savedState;
-            ((StateHolder) result).restoreState(context, tuple[StateHolderTupleIndices.StateHolderSaverInstance.ordinal()]);
+            ((StateHolder) result).restoreState(context, savedState);
         }
         return result;
     }

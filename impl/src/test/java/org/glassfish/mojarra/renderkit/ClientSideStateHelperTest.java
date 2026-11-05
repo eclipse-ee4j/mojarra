@@ -49,13 +49,16 @@ import org.junit.jupiter.params.provider.ValueSource;
  * Client side state is written and read back whether or not {@link MojarraContextParam#ENABLE_CLIENT_STATE_DEBUGGING} drops the {@link ByteArrayGuard}. That
  * the parameter is honored only in Development stage is covered by {@code DevelopmentOnlyContextParamTest}.
  * <p>
- * The state is the component state map of the view. A state in another format expires the view.
+ * The state is an optional time marker, then a tag, and then the component state map of the view unless that is empty. A state in another format expires the
+ * view.
  */
 class ClientSideStateHelperTest extends JUnitFacesTestCaseBase {
 
     private static final String PLAIN_STATE_MARKER = "plain-state-marker";
     private static final String STATE_TIMEOUT_DISABLED = "-1";
     private static final String STATE_TIMEOUT_ENABLED = "60";
+    private static final byte EMPTY_STATE = 1;
+    private static final byte COMPONENT_STATE = 2;
 
     @BeforeEach
     @Override
@@ -158,6 +161,84 @@ class ClientSideStateHelperTest extends JUnitFacesTestCaseBase {
     }
 
     /**
+     * An empty component state is written as its tag alone.
+     */
+    @ParameterizedTest
+    @ValueSource(strings = { STATE_TIMEOUT_DISABLED, STATE_TIMEOUT_ENABLED })
+    void emptyComponentStateIsWrittenAsTagAlone(String stateTimeout) throws Exception {
+        configure(stateTimeout, true);
+        StringBuilder out = new StringBuilder();
+        new ClientSideStateHelper().writeState(facesContext, new HashMap<>(), out);
+        byte[] written = Base64.getDecoder().decode(out.toString());
+
+        try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(written))) {
+            if (!STATE_TIMEOUT_DISABLED.equals(stateTimeout)) {
+                ois.readLong();
+            }
+            assertEquals(EMPTY_STATE, ois.readByte());
+            assertEquals(-1, ois.read());
+        }
+    }
+
+    /**
+     * A state without the tag in front of the component state expires the view.
+     */
+    @ParameterizedTest
+    @ValueSource(strings = { STATE_TIMEOUT_DISABLED, STATE_TIMEOUT_ENABLED })
+    void untaggedStateExpiresView(String stateTimeout) throws Exception {
+        configure(stateTimeout, true);
+        boolean timestamped = !STATE_TIMEOUT_DISABLED.equals(stateTimeout);
+        byte[] untagged = serialize(oos -> {
+            if (timestamped) {
+                oos.writeLong(System.currentTimeMillis());
+            }
+            oos.writeObject(new HashMap<>(Map.of("form", "state")));
+        });
+
+        postViewState(Base64.getEncoder().encodeToString(untagged));
+
+        assertNull(new ClientSideStateHelper().getState(facesContext, "/view.xhtml"));
+    }
+
+    /**
+     * A state written with the state timeout and read without it expires the view, because the first byte of its time marker is no tag.
+     */
+    @ParameterizedTest
+    @ValueSource(bytes = { EMPTY_STATE, COMPONENT_STATE })
+    void timestampedStateReadWithoutTimeoutExpiresView(byte tag) throws Exception {
+        configure(STATE_TIMEOUT_DISABLED, true);
+        byte[] timestamped = serialize(oos -> {
+            oos.writeLong(System.currentTimeMillis());
+            writeTagged(oos, tag);
+        });
+
+        postViewState(Base64.getEncoder().encodeToString(timestamped));
+
+        assertNull(new ClientSideStateHelper().getState(facesContext, "/view.xhtml"));
+    }
+
+    /**
+     * A state written without the state timeout and read with it expires the view, because it has no time marker.
+     */
+    @ParameterizedTest
+    @ValueSource(bytes = { EMPTY_STATE, COMPONENT_STATE })
+    void untimestampedStateReadWithTimeoutExpiresView(byte tag) throws Exception {
+        configure(STATE_TIMEOUT_ENABLED, true);
+        byte[] untimestamped = serialize(oos -> writeTagged(oos, tag));
+
+        postViewState(Base64.getEncoder().encodeToString(untimestamped));
+
+        assertNull(new ClientSideStateHelper().getState(facesContext, "/view.xhtml"));
+    }
+
+    private static void writeTagged(ObjectOutputStream oos, byte tag) throws IOException {
+        oos.writeByte(tag);
+        if (tag == COMPONENT_STATE) {
+            oos.writeObject(new HashMap<>(Map.of("form", "state")));
+        }
+    }
+
+    /**
      * Configures the state timeout, and a plain state, which is neither encrypted nor compressed, so a test can compare and craft its bytes.
      */
     private void configure(String stateTimeout, boolean plain) {
@@ -226,6 +307,9 @@ class ClientSideStateHelperTest extends JUnitFacesTestCaseBase {
     private static Map<?, ?> deserializeState(byte[] bytes, boolean compressed) throws Exception {
         ByteArrayInputStream in = new ByteArrayInputStream(bytes);
         try (ObjectInputStream ois = new ObjectInputStream(compressed ? new GZIPInputStream(in) : in)) {
+            if (ois.readByte() != COMPONENT_STATE) {
+                return Map.of();
+            }
             return (Map<?, ?>) ois.readObject();
         }
     }

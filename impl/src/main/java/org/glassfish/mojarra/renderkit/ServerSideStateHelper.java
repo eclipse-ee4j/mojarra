@@ -26,6 +26,7 @@ import static org.glassfish.mojarra.util.Util.notNull;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.security.SecureRandom;
@@ -164,7 +165,7 @@ public class ServerSideStateHelper extends StateHelper {
                         sessionMap.put(STATEFUL_PAGE_MAP, pageMap);
                     }
 
-                    Object savedState = handleSaveState(state);
+                    Object savedState = ((Map<?, ?>) state).isEmpty() ? null : handleSaveState(state);
 
                     String idInPageMap = (String) RequestStateManager.get(ctx, RequestStateManager.STATEFUL_PAGE_MAP);
                     if (idInPageMap == null) {
@@ -272,12 +273,15 @@ public class ServerSideStateHelper extends StateHelper {
                 if (stateMap != null) {
                     RequestStateManager.set(ctx, RequestStateManager.STATEFUL_PAGE_MAP, idInPageMap);
 
-                    // An evicted view has no entry, and an Object[] entry holds an unused slot in front of the component state,
-                    // which cannot be restored.
+                    // An evicted view has no entry, an empty component state has a null entry, and an Object[] entry holds an
+                    // unused slot in front of the component state, which cannot be restored.
                     Object savedState = stateMap.get(idInStateMap);
-                    if (savedState != null && !(savedState instanceof Object[])) {
-                        RequestStateManager.set(ctx, RequestStateManager.VIEW_STATE_MAP, idInStateMap);
-                        return handleRestoreState(savedState);
+                    if ((savedState != null || stateMap.containsKey(idInStateMap)) && !(savedState instanceof Object[])) {
+                        Object restoredState = savedState == null ? Collections.emptyMap() : restoreSavedState(savedState);
+                        if (restoredState != null) {
+                            RequestStateManager.set(ctx, RequestStateManager.VIEW_STATE_MAP, idInStateMap);
+                        }
+                        return restoredState;
                     }
                 }
             }
@@ -285,6 +289,22 @@ public class ServerSideStateHelper extends StateHelper {
 
         return null;
 
+    }
+
+    /**
+     * @param savedState the non-null state as it was stored in the session
+     * @return the restored state, or <code>null</code> when it was serialized in another serialized form, which expires the view
+     */
+    private Object restoreSavedState(Object savedState) {
+        try {
+            return handleRestoreState(savedState);
+        }
+        catch (FacesException e) {
+            if (e.getCause() instanceof InvalidClassException) {
+                return null;
+            }
+            throw e;
+        }
     }
 
     // ------------------------------------------------------- Protected Methods

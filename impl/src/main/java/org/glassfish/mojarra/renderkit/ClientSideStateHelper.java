@@ -22,6 +22,7 @@ import static org.glassfish.mojarra.renderkit.RenderKitUtils.PredefinedPostbackP
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InvalidClassException;
@@ -31,6 +32,7 @@ import java.io.OptionalDataException;
 import java.io.OutputStream;
 import java.io.Writer;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -57,6 +59,16 @@ public class ClientSideStateHelper extends StateHelper {
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
 
     public static final String STATELESS = "stateless";
+
+    /**
+     * Tags an empty component state, which is not written. A tag is never 0, because that is the first byte of a time marker.
+     */
+    private static final byte EMPTY_STATE = 1;
+
+    /**
+     * Tags a component state which is written after the tag.
+     */
+    private static final byte COMPONENT_STATE = 2;
 
     /**
      * <p>
@@ -243,8 +255,8 @@ public class ClientSideStateHelper extends StateHelper {
                     return null;
                 }
             }
-            Object state = ois.readObject();
-            if (!(state instanceof Map)) {
+            Object state = readComponentState(ois);
+            if (state == null) {
                 return null;
             }
             if (stateTime != 0 && hasStateExpired(stateTime)) {
@@ -327,19 +339,25 @@ public class ClientSideStateHelper extends StateHelper {
 
             Map<?, ?> componentState = (Map<?, ?>) state;
 
-            if (debugSerializedState) {
-                ByteArrayOutputStream discard = new ByteArrayOutputStream();
-                DebugObjectOutputStream out = new DebugObjectOutputStream(discard);
-                try {
-                    out.writeObject(componentState);
-                }
-                catch (Exception e) {
-                    DebugUtil.printState(componentState, LOGGER);
-                    throw new FacesException("Serialization error. Path to offending instance: " + out.getStack(), e);
-                }
+            if (componentState.isEmpty()) {
+                oos.writeByte(EMPTY_STATE);
             }
+            else {
+                if (debugSerializedState) {
+                    ByteArrayOutputStream discard = new ByteArrayOutputStream();
+                    DebugObjectOutputStream out = new DebugObjectOutputStream(discard);
+                    try {
+                        out.writeObject(componentState);
+                    }
+                    catch (Exception e) {
+                        DebugUtil.printState(componentState, LOGGER);
+                        throw new FacesException("Serialization error. Path to offending instance: " + out.getStack(), e);
+                    }
+                }
 
-            oos.writeObject(componentState);
+                oos.writeByte(COMPONENT_STATE);
+                oos.writeObject(componentState);
+            }
 
             oos.flush();
             oos.close();
@@ -439,6 +457,31 @@ public class ClientSideStateHelper extends StateHelper {
 
         debugSerializedState = MojarraContextParam.ENABLE_CLIENT_STATE_DEBUGGING.isEnabled(context);
         enableViewStateIdRendering = MojarraContextParam.ENABLE_VIEW_STATE_ID_RENDERING.isEnabled(context);
+    }
+
+    /**
+     * @param ois the stream positioned at the tag of the component state
+     * @return the component state, or <code>null</code> when the stream holds no tagged component state, which expires the view
+     */
+    private static Object readComponentState(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+        byte tag;
+        try {
+            tag = ois.readByte();
+        }
+        catch (EOFException e) {
+            return null;
+        }
+
+        if (tag == EMPTY_STATE) {
+            return Collections.emptyMap();
+        }
+
+        if (tag == COMPONENT_STATE) {
+            Object state = ois.readObject();
+            return state instanceof Map ? state : null;
+        }
+
+        return null;
     }
 
     // ----------------------------------------------------------- Inner Classes

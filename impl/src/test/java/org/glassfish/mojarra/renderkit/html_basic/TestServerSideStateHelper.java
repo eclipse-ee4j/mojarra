@@ -17,15 +17,18 @@ package org.glassfish.mojarra.renderkit.html_basic;
 
 import static jakarta.faces.render.ResponseStateManager.VIEW_STATE_PARAM;
 import static java.util.Collections.emptyEnumeration;
+import static org.glassfish.mojarra.junit.Serialization.withSerialVersionUID;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,6 +39,7 @@ import jakarta.faces.context.PartialViewContext;
 import jakarta.servlet.ServletContext;
 
 import org.glassfish.mojarra.config.FacesContextParam;
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.renderkit.ServerSideStateHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -134,16 +138,23 @@ public class TestServerSideStateHelper {
     }
 
     /**
-     * An empty component state keeps the session entry of its view, so it is read back as an empty state, and not as a missing state which would expire the
-     * view, whether or not the server state is serialized.
+     * An empty component state keeps the session entry of its view as <code>null</code>, so it is read back as an empty state, and not as a missing state which
+     * would expire the view, whether or not the server state is serialized.
      */
     @ParameterizedTest
     @ValueSource(booleans = { false, true })
     void emptyComponentStateRoundTrips(boolean serializeServerState) throws Exception {
         prepareSession();
         prepareSerializeServerState(serializeServerState);
+        String id = write(new HashMap<>());
+        Map<String, Object> viewStates = viewStates(id);
 
-        assertEquals(Map.of(), roundTrip(new HashMap<>()));
+        assertTrue(viewStates.containsKey(viewStateId(id)));
+        assertNull(viewStates.get(viewStateId(id)));
+
+        prepareViewStateParam(id);
+
+        assertEquals(Map.of(), new ServerSideStateHelper().getState(mockedFacesContext, null));
     }
 
     /**
@@ -168,6 +179,24 @@ public class TestServerSideStateHelper {
         prepareSession();
         String id = write(new HashMap<>());
         replaceEntry(id, new Object[] { null, new HashMap<>(Map.of("form", "state")) });
+
+        prepareViewStateParam(id);
+
+        assertNull(new ServerSideStateHelper().getState(mockedFacesContext, null));
+    }
+
+    /**
+     * A serialized session entry which holds a class in another serialized form, such as one saved by another version, expires the view.
+     */
+    @Test
+    void stateInAnotherSerializedFormExpiresView() throws Exception {
+        prepareSession();
+        prepareSerializeServerState(true);
+        ServletContext servletContext = (ServletContext) mockedExternalContext.getContext();
+        when(servletContext.getInitParameter(MojarraContextParam.COMPRESS_VIEW_STATE.getName())).thenReturn("false");
+        String id = write(new HashMap<>(Map.of("form", new Versioned())));
+        byte[] entry = (byte[]) viewStates(id).get(viewStateId(id));
+        replaceEntry(id, withSerialVersionUID(entry, Versioned.class.getName(), Versioned.serialVersionUID + 1));
 
         prepareViewStateParam(id);
 
@@ -203,18 +232,32 @@ public class TestServerSideStateHelper {
      * Replaces the session entry of the view with the given id, which is the page id and the view state id separated by a colon. A <code>null</code> entry
      * removes it.
      */
-    @SuppressWarnings("unchecked")
     private void replaceEntry(String id, Object entry) {
-        int separator = id.indexOf(':');
-        Map<String, Map<String, Object>> pages = (Map<String, Map<String, Object>>) sessionMap.get(ServerSideStateHelper.STATEFUL_PAGE_MAP);
-        Map<String, Object> viewStates = pages.get(id.substring(0, separator));
-        String viewStateId = id.substring(separator + 1);
         if (entry == null) {
-            viewStates.remove(viewStateId);
+            viewStates(id).remove(viewStateId(id));
         }
         else {
-            viewStates.put(viewStateId, entry);
+            viewStates(id).put(viewStateId(id), entry);
         }
+    }
+
+    /**
+     * Returns the session entries of the page of the view with the given id.
+     */
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> viewStates(String id) {
+        Map<String, Map<String, Object>> pages = (Map<String, Map<String, Object>>) sessionMap.get(ServerSideStateHelper.STATEFUL_PAGE_MAP);
+        return pages.get(id.substring(0, id.indexOf(':')));
+    }
+
+    private static String viewStateId(String id) {
+        return id.substring(id.indexOf(':') + 1);
+    }
+
+    private static final class Versioned implements Serializable {
+
+        private static final long serialVersionUID = 1L;
+
     }
 
 }
