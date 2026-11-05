@@ -631,14 +631,8 @@ public final class ComponentSupport {
 
         String facetName = getFacetName(parent);
         if (facetName == null) {
-            if (child.getAttributes().containsKey(DYNAMIC_COMPONENT)) {
-                int childIndex = (Integer) child.getAttributes().get(DYNAMIC_COMPONENT);
-                if (childIndex >= parent.getChildCount() || childIndex == -1) {
-                    parent.getChildren().add(child);
-                }
-                else {
-                    parent.getChildren().add(childIndex, child);
-                }
+            if (StateContext.isDynamicChild(child) && StateContext.indexOfDynamicChild(child) < parent.getChildCount()) {
+                parent.getChildren().add(StateContext.indexOfDynamicChild(child), child);
             }
             else {
                 parent.getChildren().add(child);

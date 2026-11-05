@@ -39,6 +39,10 @@ import static org.glassfish.mojarra.RIConstants.EMPTY_STRING;
 import static org.glassfish.mojarra.RIConstants.FACELETS_ENCODING_KEY;
 import static org.glassfish.mojarra.RIConstants.FLOW_DEFINITION_ID_SUFFIX;
 import static org.glassfish.mojarra.RIConstants.VIEW_REBUILT_AT_RENDER;
+import static org.glassfish.mojarra.context.StateContext.addDynamicChild;
+import static org.glassfish.mojarra.context.StateContext.markDynamicallyAdded;
+import static org.glassfish.mojarra.context.StateContext.markIfAlreadyInPlace;
+import static org.glassfish.mojarra.context.StateContext.placeDynamicChildren;
 import static org.glassfish.mojarra.facelets.tag.faces.ComponentSupport.DYNAMIC_COMPONENT;
 import static org.glassfish.mojarra.facelets.tag.ui.UIDebug.debugRequest;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.getResponseStateManager;
@@ -338,6 +342,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             try {
                 stateCtx.setTrackViewModifications(false);
                 BuildTimeDecisions.reset(ctx);
+                stateCtx.syncIndexesOfDynamicChildren();
                 facelet.apply(ctx, view);
                 reapplyDynamicActions(ctx);
                 // reapplyDynamicActions ran above, so the dynamic-action list now reflects this view;
@@ -1824,26 +1829,8 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                     reapplyDynamicAdd(context, action, componentIndex);
                 }
             }
+            placeDynamicChildren(actions, componentIndex);
         }
-    }
-
-    /**
-     * Returns the index the given action's child must be reapplied at. The action carries it, as the component does not necessarily survive to hold it: a
-     * facelet-created child which was dynamically moved to another parent is deleted and recreated by this very refresh, losing its marker. The marker on the
-     * component is only consulted for state saved before the action carried the index.
-     *
-     * @param struct the component struct.
-     * @param child the child being reapplied.
-     * @return the index within the parent's children, or {@link ComponentStruct#APPEND} to append.
-     */
-    private static int indexOf(ComponentStruct struct, UIComponent child) {
-        if (struct.getIndex() != ComponentStruct.APPEND) {
-            return struct.getIndex();
-        }
-        if (child.getAttributes().get(DYNAMIC_COMPONENT) instanceof Integer index) {
-            return index;
-        }
-        return ComponentStruct.APPEND;
     }
 
     /**
@@ -1868,30 +1855,12 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                 if (struct.getFacetName() != null) {
                     parent.getFacets().remove(struct.getFacetName());
                     parent.getFacets().put(struct.getFacetName(), child);
+                    markDynamicallyAdded(child, ComponentStruct.APPEND);
                     child.getClientId();
                 }
-                else if (child.getParent() != parent) {
-                    int childIndex = indexOf(struct, child);
-                    child.setId(struct.getId());
-                    int storedIndex;
-                    if (childIndex >= parent.getChildCount() || childIndex == -1) {
-                        parent.getChildren().add(child);
-                        storedIndex = parent.getChildCount() - 1;
-                    }
-                    else {
-                        parent.getChildren().add(childIndex, child);
-                        storedIndex = childIndex;
-                    }
-                    child.getClientId();
-                    // Position the child was added at; avoids an O(n) getChildren().indexOf(child) per dynamic add.
-                    child.getAttributes().put(DYNAMIC_COMPONENT, storedIndex);
+                else if (!markIfAlreadyInPlace(parent, child, struct)) {
+                    addDynamicChild(parent, child, struct);
                 }
-                // else: the child survived the facelet refresh already attached under this parent
-                // (markForDeletion deletes only facelet-created MARK_CREATED siblings, never the
-                // programmatically-added ones) and the refresh preserves their relative order, so it is
-                // already in place. Re-inserting it would erase+re-add via getChildren().add — an O(n)
-                // indexOf per action, i.e. O(n^2) over a large dynamic subtree — only to reproduce the
-                // position it already holds. Leave it; the bookkeeping below still runs.
                 stateContext.getDynamicComponents().put(struct.getClientId(), child);
                 if (child.getChildCount() == 0 && child.getFacetCount() == 0) {
                     componentIndex.put(struct.getClientId(), child);

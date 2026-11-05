@@ -21,9 +21,6 @@ import static org.glassfish.mojarra.component.CompositeComponentStackManager.Sta
 import static org.glassfish.mojarra.facelets.tag.faces.ComponentSupport.DYNAMIC_COMPONENT;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -235,67 +232,12 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
         // been part of the tree or not yet
         addComponentToView(ctx, parent, c, componentFound, stateContext);
         ComponentSupport.copyPassthroughAttributes(ctx, c, owner.getTag());
-        adjustIndexOfDynamicChildren(stateContext, c);
+        StateContext.placeDynamicChildren(c);
         popComponentFromEL(ctx, c, ccStackManager, compcompPushed);
     }
 
     protected boolean isIterating(FaceletContext context) {
         return IterationIdManager.isIterating(context);
-    }
-
-    private void adjustIndexOfDynamicChildren(StateContext stateContext, UIComponent parent) {
-        if (!stateContext.hasOneOrMoreDynamicChild(parent)) {
-            return;
-        }
-
-        List<UIComponent> children = parent.getChildren();
-        List<UIComponent> dynamicChildren = Collections.emptyList();
-        boolean allInPlace = true;
-
-        int index = 0;
-        for (UIComponent cur : children) {
-            if (stateContext.componentAddedDynamically(cur)) {
-                if (dynamicChildren.isEmpty()) {
-                    dynamicChildren = new ArrayList<>(children.size());
-                }
-                dynamicChildren.add(cur);
-                int stored = stateContext.getIndexOfDynamicallyAddedChildInParent(cur);
-                if (stored != -1 && stored != index) {
-                    allInPlace = false;
-                }
-            }
-            index++;
-        }
-
-        // reapplyDynamicActions already puts every dynamic child at its stored index, so in the steady state the
-        // remove-all/re-add-all below just reproduces the current list -- at O(dynamic * children) cost, i.e. O(n^2)
-        // for an all-dynamic parent (a large dynamically populated container). Skip it when nothing is out of place.
-        if (allInPlace) {
-            return;
-        }
-
-        // First remove all the dynamic children, this puts the non-dynamic children at
-        // their original position
-        for (UIComponent cur : dynamicChildren) {
-            int i = stateContext.getIndexOfDynamicallyAddedChildInParent(cur);
-            if (-1 != i) {
-                children.remove(cur);
-            }
-        }
-
-        // Now that the non-dynamic children are in the correct position add the dynamic children
-        // back in.
-        for (UIComponent cur : dynamicChildren) {
-            int i = stateContext.getIndexOfDynamicallyAddedChildInParent(cur);
-            if (-1 != i) {
-                if (i < children.size()) {
-                    children.add(i, cur);
-                }
-                else {
-                    children.add(cur);
-                }
-            }
-        }
     }
 
     @Override

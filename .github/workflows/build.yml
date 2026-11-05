@@ -1,11 +1,14 @@
 name: build
 on:
   push:
-    branches: [ '*' ]
+    branches: [ '4.0', 'main', '5.0' ]
     paths: [ 'impl/**', 'test/**', 'pom.xml', '.gitmodules', '.github/workflows/build.yml' ]
   pull_request:
-    branches: [ '*' ]
     paths: [ 'impl/**', 'test/**', 'pom.xml', '.gitmodules', '.github/workflows/build.yml' ]
+  workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
   build:
     runs-on: ${{ matrix.os }}
