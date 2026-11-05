@@ -25,6 +25,7 @@ import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParamet
 import static com.sun.faces.context.StateContext.addDynamicChild;
 import static com.sun.faces.context.StateContext.markDynamicallyAdded;
 import static com.sun.faces.context.StateContext.markIfAlreadyInPlace;
+import static com.sun.faces.context.StateContext.placeDynamicChildren;
 import static com.sun.faces.util.ComponentStruct.ADD;
 import static com.sun.faces.util.ComponentStruct.REMOVE;
 import static com.sun.faces.util.Util.isEmpty;
@@ -212,6 +213,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
                 // The saved list is already pruned (see saveDynamicActions), so just rebuild the live list in order.
                 actions.add(action);
             }
+            placeDynamicChildren(actions, componentIndex);
         }
     }
 
