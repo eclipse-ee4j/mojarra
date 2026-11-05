@@ -113,6 +113,17 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
     }
 
     /**
+     * Put the object in the main-map only, also when the initial state is marked, so that it is never saved as part of
+     * the delta. Only for state that {@link #restoreState(FacesContext, Object)} derives from other delta entries.
+     *
+     * @param key the key
+     * @param value the value
+     */
+    void putWithoutDelta(Serializable key, Object value) {
+        defaultMap().put(key, value);
+    }
+
+    /**
      * We need to remove from both maps, if we do remove an existing key.
      *
      * @param key
@@ -377,8 +388,7 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
     private void handleAttribute(String name, Object value) {
         List<String> setAttributes = (List<String>) component.getAttributes().get(UIComponentBase.ATTRIBUTES_THAT_ARE_SET);
         if (setAttributes == null) {
-            String className = component.getClass().getName();
-            if (className.startsWith(UIComponentBase.STANDARD_COMPONENT_PACKAGE)) {
+            if (UIComponentBase.isStandardComponent(component)) {
                 setAttributes = new ArrayList<>(6);
                 component.getAttributes().put(UIComponentBase.ATTRIBUTES_THAT_ARE_SET, setAttributes);
             }
