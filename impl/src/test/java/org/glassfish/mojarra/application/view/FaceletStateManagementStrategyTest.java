@@ -27,15 +27,19 @@ import static org.glassfish.mojarra.application.view.FaceletStateManagementStrat
 import static org.glassfish.mojarra.application.view.FaceletStateManagementStrategy.clientIdsRebuiltFromAnotherTag;
 import static org.glassfish.mojarra.application.view.FaceletStateManagementStrategy.holdsStableClientId;
 import static org.glassfish.mojarra.application.view.FaceletStateManagementStrategy.isViewRootOnlyState;
+import static org.glassfish.mojarra.application.view.FaceletStateManagementStrategy.saveDynamicActions;
 import static org.glassfish.mojarra.application.view.FaceletStateManagementStrategy.tagOf;
 import static org.glassfish.mojarra.application.view.FaceletStateManagementStrategy.truncated;
 import static org.glassfish.mojarra.config.MojarraContextParam.RESTORE_BUILD_TIME_DECISIONS;
 import static org.glassfish.mojarra.facelets.tag.faces.ComponentSupport.MARK_CREATED;
+import static org.glassfish.mojarra.util.ComponentStruct.ADD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -50,13 +54,15 @@ import jakarta.faces.component.UIOutput;
 import jakarta.faces.component.UIPanel;
 import jakarta.faces.context.FacesContext;
 
+import org.glassfish.mojarra.context.StateContext;
+import org.glassfish.mojarra.util.ComponentStruct;
 import org.junit.jupiter.api.Test;
 
 /**
  * A postback rebuilds its view from the markup rather than from the response it was submitted from, so a build time conditional evaluating to another value
  * than it did leaves the state of a rendered component with nothing to be restored into, or with the wrong component. Under {@code ProjectStage.Development}
  * the tag each client id was built from is saved with the state, and comparing it against the rebuilt view is what turns that into a diagnosable report. This
- * holds what the comparison reports.
+ * holds what the comparison reports, and which entries the saved state map holds.
  */
 class FaceletStateManagementStrategyTest {
 
@@ -264,6 +270,36 @@ class FaceletStateManagementStrategyTest {
         assertFalse(isViewRootOnlyState("root", state("root", "form:input", DYNAMIC_ACTIONS, RENDERED_TAGS, BUILD_TIME_DECISIONS)));
     }
 
+    /**
+     * The saved state of a view which was not modified after its build holds no dynamic actions entry, as the restore treats a missing entry and an empty one
+     * the same.
+     */
+    @Test
+    void aViewWithoutDynamicActionsSavesNoDynamicActionsEntry() {
+        Map<String, Object> stateMap = new HashMap<>();
+        saveDynamicActions(mock(FacesContext.class), stateContext(new ArrayList<>(), new HashMap<>()), stateMap);
+        assertFalse(stateMap.containsKey(DYNAMIC_ACTIONS), stateMap.toString());
+    }
+
+    /**
+     * A dynamic action whose component is gone from the dynamic components is not saved, and leaves no empty entry.
+     */
+    @Test
+    void aViewWhoseDynamicActionsAllLostTheirComponentSavesNoDynamicActionsEntry() {
+        Map<String, Object> stateMap = new HashMap<>();
+        saveDynamicActions(mock(FacesContext.class), stateContext(dynamicAdd("form:added"), new HashMap<>()), stateMap);
+        assertFalse(stateMap.containsKey(DYNAMIC_ACTIONS), stateMap.toString());
+    }
+
+    @Test
+    void aViewWithADynamicActionSavesItInTheDynamicActionsEntry() {
+        HashMap<String, UIComponent> dynamicComponents = new HashMap<>();
+        dynamicComponents.put("form:added", new UIOutput());
+        Map<String, Object> stateMap = new HashMap<>();
+        saveDynamicActions(mock(FacesContext.class), stateContext(dynamicAdd("form:added"), dynamicComponents), stateMap);
+        assertEquals(1, ((List<?>) stateMap.get(DYNAMIC_ACTIONS)).size(), stateMap.toString());
+    }
+
     @Test
     void aReportNamesAtMostTenClientIdsAndLeavesAShorterListWhole() {
         List<String> ten = clientIds(10);
@@ -327,6 +363,19 @@ class FaceletStateManagementStrategyTest {
         assertTrue(NOT_REBUILT_REPORT.contains(parameterName), NOT_REBUILT_REPORT);
         assertTrue(NOT_REBUILT_WITH_SUBMITTED_REPORT.contains(parameterName), NOT_REBUILT_WITH_SUBMITTED_REPORT);
         assertTrue(REBUILT_FROM_ANOTHER_TAG_REPORT.contains(parameterName), REBUILT_FROM_ANOTHER_TAG_REPORT);
+    }
+
+    private static StateContext stateContext(List<ComponentStruct> dynamicActions, HashMap<String, UIComponent> dynamicComponents) {
+        StateContext stateContext = mock(StateContext.class);
+        when(stateContext.getDynamicActions()).thenReturn(dynamicActions);
+        when(stateContext.getDynamicComponents()).thenReturn(dynamicComponents);
+        return stateContext;
+    }
+
+    private static List<ComponentStruct> dynamicAdd(String clientId) {
+        List<ComponentStruct> dynamicActions = new ArrayList<>();
+        dynamicActions.add(new ComponentStruct(ADD, null, "form", clientId, "added"));
+        return dynamicActions;
     }
 
     private static UIComponent container(String clientId, String containerClientId) {
