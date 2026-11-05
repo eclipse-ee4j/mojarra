@@ -314,10 +314,12 @@ public final class ForEachHandler extends TagHandlerImpl {
                     // marks the parent's refresh set on it) and skip re-applying the body.
                     @SuppressWarnings("unchecked")
                     List<UIComponent> retained = (List<UIComponent>) state[2];
-                    for (UIComponent child : retained) {
-                        child.getAttributes().remove(ComponentSupport.MARK_DELETED);
+                    if (areChildrenOf(retained, parent)) {
+                        for (UIComponent child : retained) {
+                            child.getAttributes().remove(ComponentSupport.MARK_DELETED);
+                        }
+                        return;
                     }
-                    return;
                 }
             }
         } else {
@@ -643,6 +645,20 @@ public final class ForEachHandler extends TagHandlerImpl {
     private static boolean sameItems(List<Object> recordedItems, Object currentItems) {
         return currentItems != null && (currentItems instanceof List || currentItems.getClass().isArray())
                 && sameElements(recordedItems, currentItems);
+    }
+
+    /**
+     * Whether all retained children are still children of the given parent. Un-marking retains only those: a child
+     * relocated elsewhere, as by {@code cc:insertChildren}, is removed by the refresh of its new parent, and only
+     * re-applying the body brings it back.
+     */
+    private static boolean areChildrenOf(List<UIComponent> retained, UIComponent parent) {
+        for (UIComponent child : retained) {
+            if (child.getParent() != parent) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
