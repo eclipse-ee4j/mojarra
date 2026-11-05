@@ -17,6 +17,7 @@
 package jakarta.faces.component;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -35,7 +36,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.sun.faces.facelets.component.UIRepeat;
+
 import jakarta.faces.FacesException;
+import jakarta.faces.component.html.HtmlOutputText;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.ComponentSystemEvent;
@@ -437,14 +441,14 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         c.getAttributes().put("attr1", "value1");
         c.markInitialState();
         c.getAttributes().put("attr2", "value2");
-        assertEquals(Arrays.asList("attr1", "attr2"), c.getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet"));
+        assertEquals(Arrays.asList("attr1", "attr2"), c.getAttributes().get(UIComponentBase.ATTRIBUTES_THAT_ARE_SET));
 
         Object state = c.saveState(facesContext);
         c = new ComponentTestImpl();
         c.pushComponentToEL(facesContext, c);
         c.restoreState(facesContext, state);
         c.popComponentFromEL(facesContext);
-        assertEquals(Arrays.asList("attr2"), c.getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet"));
+        assertEquals(Arrays.asList("attr2"), c.getAttributes().get(UIComponentBase.ATTRIBUTES_THAT_ARE_SET));
     }
 
     /**
@@ -465,7 +469,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         c.getAttributes().put("styleClass", "foo bar");
         c.markInitialState();
         c.setValueExpression("label", application.getExpressionFactory().createValueExpression(facesContext.getELContext(), "#{foo}", String.class));
-        assertEquals(Arrays.asList("styleClass", "label"), c.getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet"));
+        assertEquals(Arrays.asList("styleClass", "label"), c.getAttributes().get(UIComponentBase.ATTRIBUTES_THAT_ARE_SET));
 
         Object state = c.saveState(facesContext); // delta carries only [label]
 
@@ -477,7 +481,103 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         c.restoreState(facesContext, state);
         c.popComponentFromEL(facesContext);
 
-        assertEquals(Arrays.asList("styleClass", "label"), c.getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet"));
+        assertEquals(Arrays.asList("styleClass", "label"), c.getAttributes().get(UIComponentBase.ATTRIBUTES_THAT_ARE_SET));
+    }
+
+    /**
+     * The delta of an attribute set after the build carries the attribute only: the restore records it in the
+     * attributesThatAreSet list again.
+     */
+    @Test
+    public void testAttributeSetAfterBuildSavesNoAttributesThatAreSet() throws Exception {
+        HtmlOutputText c = new HtmlOutputText();
+        c.setValue("Hello");
+        c.markInitialState();
+        c.setStyleClass("changed");
+
+        Object[] delta = (Object[]) c.getStateHelper().saveState(facesContext);
+        assertFalse(Arrays.asList(delta).contains(UIComponent.PropertyKeysPrivate.attributesThatAreSet), Arrays.deepToString(delta));
+
+        HtmlOutputText restored = new HtmlOutputText();
+        restored.setValue("Hello");
+        restored.markInitialState();
+        restored.getStateHelper().restoreState(facesContext, delta);
+        assertEquals("changed", restored.getStyleClass());
+        assertEquals(Arrays.asList("styleClass"), restored.getAttributes().get(UIComponentBase.ATTRIBUTES_THAT_ARE_SET));
+    }
+
+    /**
+     * An attribute bound after the build, following another one set after the build, is recorded once in the
+     * attributesThatAreSet list, before and after a restore. A name recorded twice renders its HTML attribute twice.
+     */
+    @Test
+    public void testAttributeBoundAfterAttributeSetAfterBuildIsRecordedOnce() throws Exception {
+        request.setAttribute("foo", "bar");
+
+        HtmlOutputText c = new HtmlOutputText();
+        c.setValue("Hello");
+        c.markInitialState();
+        c.setStyleClass("changed");
+        c.setValueExpression("title", application.getExpressionFactory().createValueExpression(facesContext.getELContext(), "#{foo}", String.class));
+        assertEquals(Arrays.asList("styleClass", "title"), c.getAttributes().get(UIComponentBase.ATTRIBUTES_THAT_ARE_SET));
+
+        Object state = c.saveState(facesContext);
+
+        HtmlOutputText restored = new HtmlOutputText();
+        restored.setValue("Hello");
+        restored.markInitialState();
+        restored.pushComponentToEL(facesContext, restored);
+        restored.restoreState(facesContext, state);
+        restored.popComponentFromEL(facesContext);
+        assertEquals(Arrays.asList("styleClass", "title"), restored.getAttributes().get(UIComponentBase.ATTRIBUTES_THAT_ARE_SET));
+    }
+
+    /**
+     * An attribute set and an attribute bound after the build, and both cleared again, are recorded neither in the
+     * attributesThatAreSet list nor in it after a restore.
+     */
+    @Test
+    public void testAttributesClearedAfterBuildAreNotRecorded() throws Exception {
+        request.setAttribute("foo", "bar");
+
+        HtmlOutputText c = new HtmlOutputText();
+        c.setValue("Hello");
+        c.markInitialState();
+        c.setStyleClass("changed");
+        c.setValueExpression("title", application.getExpressionFactory().createValueExpression(facesContext.getELContext(), "#{foo}", String.class));
+        c.setStyleClass(null);
+        c.setValueExpression("title", null);
+        assertEquals(Collections.emptyList(), recordedAttributes(c));
+
+        Object state = c.saveState(facesContext);
+
+        HtmlOutputText restored = new HtmlOutputText();
+        restored.setValue("Hello");
+        restored.markInitialState();
+        restored.pushComponentToEL(facesContext, restored);
+        restored.restoreState(facesContext, state);
+        restored.popComponentFromEL(facesContext);
+        assertEquals(Collections.emptyList(), recordedAttributes(restored));
+    }
+
+    /**
+     * Only a standard component records each restored property in the attributesThatAreSet list again, so the list
+     * created after the build of any other component is part of its delta.
+     */
+    @Test
+    public void testAttributesThatAreSetOfNonStandardComponentIsSaved() throws Exception {
+        UIRepeat c = new UIRepeat();
+        c.markInitialState();
+        c.getAttributes().put(UIComponentBase.ATTRIBUTES_THAT_ARE_SET, new ArrayList<>(Arrays.asList("title")));
+
+        Object[] delta = (Object[]) c.getStateHelper().saveState(facesContext);
+        assertNotNull(delta);
+        assertTrue(Arrays.asList(delta).contains(UIComponent.PropertyKeysPrivate.attributesThatAreSet), Arrays.deepToString(delta));
+    }
+
+    private static List<?> recordedAttributes(UIComponent component) {
+        List<?> attributesThatAreSet = (List<?>) component.getAttributes().get(UIComponentBase.ATTRIBUTES_THAT_ARE_SET);
+        return attributesThatAreSet == null ? Collections.emptyList() : attributesThatAreSet;
     }
 
     @Test

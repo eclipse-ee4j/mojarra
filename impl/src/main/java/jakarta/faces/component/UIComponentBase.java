@@ -130,6 +130,14 @@ public abstract class UIComponentBase extends UIComponent {
     static final String STANDARD_COMPONENT_PACKAGE = "jakarta.faces.component.";
 
     /**
+     * Whether the given component is a standard component, the only kind which records its set attributes in the
+     * {@link #ATTRIBUTES_THAT_ARE_SET} list.
+     */
+    static boolean isStandardComponent(UIComponent component) {
+        return component.getClass().getName().startsWith(STANDARD_COMPONENT_PACKAGE);
+    }
+
+    /**
      * This class's <code>PropertyDescriptor</code>s (keyed by property name), held per class in the
      * {@link #COMPONENT_METADATA} cache.
      */
@@ -2454,7 +2462,7 @@ public abstract class UIComponentBase extends UIComponent {
 
             if (ATTRIBUTES_THAT_ARE_SET.equals(keyValue)) {
                 if (value instanceof List) {
-                    component.getStateHelper().put(UIComponent.PropertyKeysPrivate.attributesThatAreSet, value);
+                    putAttributesThatAreSet(value);
                 }
                 return null;
             }
@@ -2657,6 +2665,21 @@ public abstract class UIComponentBase extends UIComponent {
                 component.setCompositeComponentFlag(true);
             }
             return component.getStateHelper().put(PropertyKeys.attributes, key, value);
+        }
+
+        /**
+         * For a standard component the list is not part of the delta. {@link ComponentStateHelper#restoreState} records
+         * each restored property in it again, and {@link StateHelper#add} puts every other name in the delta. The list
+         * must therefore never be the same instance as a list in the delta. Other components cannot rebuild the list, so
+         * it stays in their delta.
+         */
+        private void putAttributesThatAreSet(Object value) {
+            StateHelper stateHelper = component.getStateHelper();
+            if (stateHelper instanceof ComponentStateHelper && isStandardComponent(component)) {
+                ((ComponentStateHelper) stateHelper).putWithoutDelta(PropertyKeysPrivate.attributesThatAreSet, value);
+            } else {
+                stateHelper.put(PropertyKeysPrivate.attributesThatAreSet, value);
+            }
         }
 
         private Object invokeReadMethod(Method readMethod) {
