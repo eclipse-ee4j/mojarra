@@ -314,11 +314,7 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
             Object stateObj = state.get(clientId);
 
             if (stateObj != null && !stateContext.componentAddedDynamically(component)) {
-                boolean restoreStateNow = true;
-                if (stateObj instanceof StateHolderSaver) {
-                    restoreStateNow = !((StateHolderSaver) stateObj).componentAddedDynamically();
-                }
-                if (restoreStateNow) {
+                if (!(stateObj instanceof StateHolderSaver)) {
                     try {
                         component.restoreState(context, stateObj);
                     } catch (Exception e) {

@@ -18,15 +18,19 @@ package jakarta.faces.component;
 
 import static java.util.Comparator.comparing;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.html.HtmlOutputText;
 import jakarta.faces.component.html.HtmlPanelGroup;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.IntegerConverter;
 
 import com.example.faces.NonStandardComponent;
 import org.junit.jupiter.api.Test;
@@ -38,6 +42,36 @@ import org.junit.jupiter.api.Test;
  * sides.
  */
 class ComponentStateHelperTest {
+
+    /**
+     * A component which was built and marked, and then unmarked during a request, as setting a converter does, saves full
+     * state. Restoring that full state into the component rebuilt and marked on the next request unmarks it again, so it
+     * keeps saving full state, which holds the value expressions set in code.
+     */
+    @Test
+    void componentUnmarkedDuringARequestKeepsSavingFullState() {
+        FacesContext context = mock(FacesContext.class);
+        ValueExpression style = mock(ValueExpression.class);
+
+        UIOutput built = builtOutput();
+        built.setConverter(new IntegerConverter());
+        built.setValueExpression("style", style);
+
+        UIOutput rebuilt = builtOutput();
+        rebuilt.restoreState(context, built.saveState(context));
+        UIOutput rebuiltAgain = builtOutput();
+        rebuiltAgain.restoreState(context, rebuilt.saveState(context));
+
+        assertFalse(rebuiltAgain.initialStateMarked());
+        assertSame(style, rebuiltAgain.getValueExpression("style"));
+    }
+
+    private static UIOutput builtOutput() {
+        UIOutput output = new UIOutput();
+        output.setId("output");
+        output.markInitialState();
+        return output;
+    }
 
     @Test
     void restoringAComponentFromOutsideTheStandardPackageDoesNotStartTrackingItsAttributes() {

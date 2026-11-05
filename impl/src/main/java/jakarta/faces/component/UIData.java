@@ -25,6 +25,9 @@ import static com.sun.faces.util.Util.extractFirstNumericSegment;
 import static com.sun.faces.util.Util.isNestedInIterator;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.ObjectStreamField;
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -240,14 +243,11 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      */
     private Boolean isNested = null;
 
-    // Per-row transient state of the stateful descendants, keyed by this table's own row-scoped clientId. The value
-    // array is positionally aligned to iterationStatefulList, so save/restore index by position instead of recomputing
-    // a clientId and hashing it per descendant per row. The key must be the clientId rather than the bare row index:
-    // a nested table is one component instance reused across the enclosing table's rows, so a row index alone
-    // identifies the same key under every enclosing row and the rows would overwrite each other's state. This
-    // table's own clientId already carries the enclosing rows' indices, and is computed once per row change rather
-    // than once per descendant per row. Mirrors UIRepeat#childState; saved/restored explicitly in saveState below.
-    private Map<String, SavedState[]> childState;
+    // Per-row transient state of the stateful descendants, keyed by this table's own clientId and then by row index.
+    // A nested table is one component instance reused across the enclosing rows; its clientId carries the enclosing
+    // row indices, so each enclosing row has its own entry, which preDecode() and preEncode() discard independently.
+    // The value array is positionally aligned to iterationStatefulList. Saved/restored explicitly in saveState below.
+    private Map<String, Map<Integer, SavedState[]>> childState;
 
     private Map<String, Object> _rowDeltaStates = new HashMap<>();
     private Map<String, Object> _rowTransientStates = new HashMap<>();
@@ -1504,7 +1504,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         } else {
             _rowDeltaStates = (Map<String, Object>) restoredRowStates;
         }
-        childState = (Map<String, SavedState[]>) values[2];
+        childState = (Map<String, Map<Integer, SavedState[]>>) values[2];
     }
 
     private void resetClientIds(UIComponent component) {
@@ -1521,10 +1521,10 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         resetClientIds(this);
 
         Object superState = super.saveState(context);
-        Object rowDeltaState = UIComponentBase.saveAttachedState(context, _rowDeltaStates);
         if (initialStateMarked() && superState == null && _rowDeltaStates.isEmpty() && childState == null) {
             return null;
         }
+        Object rowDeltaState = _rowDeltaStates.isEmpty() ? null : UIComponentBase.saveAttachedState(context, _rowDeltaStates);
         return new Object[] { superState, rowDeltaState, childState };
     }
 
@@ -1675,9 +1675,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     // (ie. processDecodes()) or during a tree visit (ie. visitTree()).
     private void preDecode(FacesContext context) {
         setDataModel(null); // Re-evaluate even with server-side state saving
-        if (!keepSaved(context)) {
-            childState = null;
-        }
+        discardChildStateUnlessErrors(context);
     }
 
     // Perform pre-validation initialization work. Note that this
@@ -1703,9 +1701,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     // (ie. encodeBegin()) or during a tree visit (ie. visitTree()).
     private void preEncode(FacesContext context) {
         setDataModel(null); // re-evaluate even with server-side state saving
-        if (!keepSaved(context)) {
-            childState = null;
-        }
+        discardChildStateUnlessErrors(context);
     }
 
     /**
@@ -1951,24 +1947,33 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
 
     /**
      * <p>
-     * Return <code>true</code> if we need to keep the saved per-child state information. This will be the case if any of
-     * the following are true:
+     * Discard the saved per-row state of the stateful descendants, unless there are messages queued with severity ERROR
+     * or FATAL. Only the state under the current clientId is discarded: when nested, this runs once per enclosing row, and
+     * the state of the other enclosing rows must survive until their own turn.
      * </p>
-     *
-     * <ul>
-     *
-     * <li>there are messages queued with severity ERROR or FATAL.</li>
-     *
-     * <li>this <code>UIData</code> instance is nested inside of another <code>UIData</code> instance</li>
-     *
-     * </ul>
      *
      * @param context {@link FacesContext} for the current request
      */
-    private boolean keepSaved(FacesContext context) {
+    private void discardChildStateUnlessErrors(FacesContext context) {
+        if (childState != null && !contextHasErrorMessages(context)) {
+            discardChildState(getChildStateKey(context));
+        }
+    }
 
-        return contextHasErrorMessages(context) || isNestedWithinIterator(context);
+    /**
+     * The key of this table's per-row child state: its own clientId without row index, which carries the row indices of
+     * any enclosing iterating components. It is the inherited, cached clientId, which an enclosing iterating component
+     * resets on each row change.
+     */
+    private String getChildStateKey(FacesContext context) {
+        return super.getClientId(context);
+    }
 
+    private void discardChildState(String clientId) {
+        childState.remove(clientId);
+        if (childState.isEmpty()) {
+            childState = null;
+        }
     }
 
     private Boolean isNestedWithinIterator(FacesContext context) {
@@ -1981,7 +1986,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     private boolean contextHasErrorMessages(FacesContext context) {
 
         FacesMessage.Severity sev = context.getMaximumSeverity();
-        return sev != null && FacesMessage.SEVERITY_ERROR.compareTo(sev) >= 0;
+        return sev != null && FacesMessage.SEVERITY_ERROR.compareTo(sev) <= 0;
 
     }
 
@@ -2004,9 +2009,10 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         if (count == 0) {
             return;
         }
-        // Positional restore: index this row's saved-state array rather than rebuilding/hashing a clientId per
-        // child. A null array (row never saved) or short array (tree shape changed) falls back to a reset per slot.
-        SavedState[] rowState = childState == null ? null : childState.get(getRowStateKey(context));
+        // Positional restore. A null array (row never saved) or short array (tree shape changed) falls back to a reset
+        // per slot.
+        Map<Integer, SavedState[]> rowStates = childState == null ? null : childState.get(getChildStateKey(context));
+        SavedState[] rowState = rowStates == null ? null : rowStates.get(getRowIndex());
         for (int i = 0; i < count; i++) {
             SavedState state = rowState != null && i < rowState.length ? rowState[i] : null;
             restoreComponentState(iterationStatefulList.get(i), state);
@@ -2053,7 +2059,6 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         }
         // Capture per position; only slots with delta state hold a SavedState. Persist the row array only when some
         // slot carries delta, else drop the row entry — keeping the saved state minimal.
-        String row = getRowStateKey(context);
         SavedState[] rowState = new SavedState[count];
         boolean anyDelta = false;
         for (int i = 0; i < count; i++) {
@@ -2063,31 +2068,26 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                 anyDelta = true;
             }
         }
+        if (!anyDelta && childState == null) {
+            return;
+        }
+        String clientId = getChildStateKey(context);
+        Map<Integer, SavedState[]> rowStates = childState == null ? null : childState.get(clientId);
         if (anyDelta) {
-            getChildState().put(row, rowState);
-        } else if (childState != null) {
-            childState.remove(row);
+            if (rowStates == null) {
+                if (childState == null) {
+                    childState = new HashMap<>();
+                }
+                rowStates = new HashMap<>();
+                childState.put(clientId, rowStates);
+            }
+            rowStates.put(getRowIndex(), rowState);
+        } else if (rowStates != null) {
+            rowStates.remove(getRowIndex());
+            if (rowStates.isEmpty()) {
+                discardChildState(clientId);
+            }
         }
-    }
-
-    private Map<String, SavedState[]> getChildState() {
-        if (childState == null) {
-            childState = new HashMap<>();
-        }
-        return childState;
-    }
-
-    /**
-     * The key this table's per-row child state is stored under: its own clientId, which carries the row indices of
-     * any enclosing iterating components, plus its current row index. Nesting therefore yields distinct keys where
-     * the bare row index would collide.
-     */
-    private String getRowStateKey(FacesContext context) {
-        // Deliberately super.getClientId(): this table's own getClientId() appends the row index and,
-        // when nested, rebuilds the whole id on every call. The inherited one is cached in the
-        // clientId field and invalidated by the iterationResetList walk whenever an enclosing row
-        // changes, so it yields the enclosing rows' indices without rebuilding them per row.
-        return super.getClientId(context) + NamingContainer.SEPARATOR_CHAR + getRowIndex();
     }
 
     private SavedState captureComponentState(UIComponent component) {
@@ -2148,10 +2148,20 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
 
 }
 
-@SuppressWarnings({ "SerializableHasSerializationMethods", "NonSerializableFieldInSerializableClass" })
+/**
+ * The per-row state of a stateful descendant of {@link UIData}. It serializes only the fields which are not at their
+ * default.
+ */
 class SavedState implements Serializable {
 
-    private static final long serialVersionUID = 2920252657338389849L;
+    private static final long serialVersionUID = 2L;
+    private static final ObjectStreamField[] serialPersistentFields = {};
+    private static final int SUBMITTED_VALUE = 1;
+    private static final int VALUE = 2;
+    private static final int LOCAL_VALUE_SET = 4;
+    private static final int INVALID = 8;
+    private static final int SUBMITTED = 16;
+
     private Object submittedValue;
     private boolean submitted;
 
@@ -2203,6 +2213,29 @@ class SavedState implements Serializable {
 
     public boolean hasDeltaState() {
         return submittedValue != null || value != null || localValueSet || !valid || submitted;
+    }
+
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        int fields = (submittedValue != null ? SUBMITTED_VALUE : 0) | (value != null ? VALUE : 0) | (localValueSet ? LOCAL_VALUE_SET : 0)
+                | (valid ? 0 : INVALID) | (submitted ? SUBMITTED : 0);
+        out.writeByte(fields);
+        if (submittedValue != null) {
+            out.writeObject(submittedValue);
+        }
+        if (value != null) {
+            out.writeObject(value);
+        }
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        int fields = in.readByte();
+        submittedValue = (fields & SUBMITTED_VALUE) != 0 ? in.readObject() : null;
+        value = (fields & VALUE) != 0 ? in.readObject() : null;
+        localValueSet = (fields & LOCAL_VALUE_SET) != 0;
+        valid = (fields & INVALID) == 0;
+        submitted = (fields & SUBMITTED) != 0;
     }
 
     @Override

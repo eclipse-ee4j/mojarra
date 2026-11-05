@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<!--
+
+    Copyright (c) Contributors to Eclipse Foundation.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<html xmlns:f="jakarta.faces.core"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets"
+>
+    <h:head>
+        <title>Mojarra issue 6110</title>
+    </h:head>
+    <h:body>
+        <h:form id="form">
+            <h:dataTable id="table" value="#{issue6110.model.table}" var="i">
+                <h:column><h:inputText id="in" value="#{i.name}" /></h:column>
+            </h:dataTable>
+
+            <h:dataTable id="nestedTable" value="#{issue6110.model.nestedTable}" var="o">
+                <h:column>
+                    <h:dataTable id="inner" value="#{o.items}" var="n">
+                        <h:column><h:inputText id="in" value="#{n.name}" /></h:column>
+                    </h:dataTable>
+                </h:column>
+            </h:dataTable>
+
+            <h:dataTable id="tablePreserved" value="#{issue6110.model.tablePreserved}" var="i" rowStatePreserved="true">
+                <h:column><h:inputText id="in" value="#{i.name}" /></h:column>
+            </h:dataTable>
+
+            <h:dataTable id="nestedTablePreserved" value="#{issue6110.model.nestedTablePreserved}" var="o" rowStatePreserved="true">
+                <h:column>
+                    <h:dataTable id="inner" value="#{o.items}" var="n" rowStatePreserved="true">
+                        <h:column><h:inputText id="in" value="#{n.name}" /></h:column>
+                    </h:dataTable>
+                </h:column>
+            </h:dataTable>
+
+            <h:dataTable id="nestedTableOuterPreserved" value="#{issue6110.model.nestedTableOuterPreserved}" var="o" rowStatePreserved="true">
+                <h:column>
+                    <h:dataTable id="inner" value="#{o.items}" var="n">
+                        <h:column><h:inputText id="in" value="#{n.name}" /></h:column>
+                    </h:dataTable>
+                </h:column>
+            </h:dataTable>
+
+            <h:dataTable id="nestedTableInnerPreserved" value="#{issue6110.model.nestedTableInnerPreserved}" var="o">
+                <h:column>
+                    <h:dataTable id="inner" value="#{o.items}" var="n" rowStatePreserved="true">
+                        <h:column><h:inputText id="in" value="#{n.name}" /></h:column>
+                    </h:dataTable>
+                </h:column>
+            </h:dataTable>
+
+            <ui:repeat id="repeat" value="#{issue6110.model.repeat}" var="i">
+                <h:inputText id="in" value="#{i.name}" />
+            </ui:repeat>
+
+            <ui:repeat id="nestedRepeat" value="#{issue6110.model.nestedRepeat}" var="o">
+                <ui:repeat id="inner" value="#{o.items}" var="n">
+                    <h:inputText id="in" value="#{n.name}" />
+                </ui:repeat>
+            </ui:repeat>
+
+            <ui:repeat id="repeatPreserved" value="#{issue6110.model.repeatPreserved}" var="i" rowStatePreserved="true">
+                <h:inputText id="in" value="#{i.name}" />
+            </ui:repeat>
+
+            <ui:repeat id="nestedRepeatPreserved" value="#{issue6110.model.nestedRepeatPreserved}" var="o" rowStatePreserved="true">
+                <ui:repeat id="inner" value="#{o.items}" var="n" rowStatePreserved="true">
+                    <h:inputText id="in" value="#{n.name}" />
+                </ui:repeat>
+            </ui:repeat>
+
+            <ui:repeat id="nestedRepeatOuterPreserved" value="#{issue6110.model.nestedRepeatOuterPreserved}" var="o" rowStatePreserved="true">
+                <ui:repeat id="inner" value="#{o.items}" var="n">
+                    <h:inputText id="in" value="#{n.name}" />
+                </ui:repeat>
+            </ui:repeat>
+
+            <ui:repeat id="nestedRepeatInnerPreserved" value="#{issue6110.model.nestedRepeatInnerPreserved}" var="o">
+                <ui:repeat id="inner" value="#{o.items}" var="n" rowStatePreserved="true">
+                    <h:inputText id="in" value="#{n.name}" />
+                </ui:repeat>
+            </ui:repeat>
+
+            <h:inputText id="required" value="#{issue6110.required}" required="true" />
+            <h:commandButton id="submit" value="Submit" />
+            <h:commandButton id="refresh" value="Refresh">
+                <f:ajax execute="@this" render="@form" />
+            </h:commandButton>
+            <h:commandButton id="refreshWithInfo" value="Refresh with info" action="#{issue6110.addInfo}">
+                <f:ajax execute="@this" render="@form" />
+            </h:commandButton>
+            <h:commandButton id="refreshWithErrors" value="Refresh with errors">
+                <f:ajax execute="required" render="@form" />
+            </h:commandButton>
+            <h:commandButton id="refreshWithFatal" value="Refresh with fatal" action="#{issue6110.addFatal}">
+                <f:ajax execute="@this" render="@form" />
+            </h:commandButton>
+            <h:messages id="messages" />
+        </h:form>
+    </h:body>
+</html>
