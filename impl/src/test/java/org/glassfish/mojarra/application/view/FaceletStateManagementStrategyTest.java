@@ -15,6 +15,7 @@
  */
 package org.glassfish.mojarra.application.view;
 
+import static java.util.Collections.emptyEnumeration;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.glassfish.mojarra.RIConstants.BUILD_TIME_DECISIONS;
@@ -52,7 +53,12 @@ import jakarta.faces.component.NamingContainer;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIOutput;
 import jakarta.faces.component.UIPanel;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.render.RenderKit;
+import jakarta.faces.render.ResponseStateManager;
+import jakarta.servlet.ServletContext;
 
 import org.glassfish.mojarra.context.StateContext;
 import org.glassfish.mojarra.util.ComponentStruct;
@@ -66,6 +72,8 @@ import org.junit.jupiter.api.Test;
  */
 class FaceletStateManagementStrategyTest {
 
+    private static final String VIEW_ID = "/view.xhtml";
+    private static final String RENDER_KIT_ID = "HTML_BASIC";
     private static final Pattern LONE_APOSTROPHE = Pattern.compile("(?<!\')\'(?!\')");
 
     private static Map<String, String> tags(String... clientIdsAndTags) {
@@ -426,6 +434,44 @@ class FaceletStateManagementStrategyTest {
         for (Object argument : arguments) {
             assertTrue(message.contains(String.valueOf(argument)), message);
         }
+    }
+
+    /**
+     * An empty component state is still the state of a stateful view: the view built for the postback is restored as is.
+     */
+    @Test
+    void anEmptyStateRestoresTheBuiltView() {
+        UIViewRoot viewRoot = new UIViewRoot();
+        FacesContext context = restoringContext(viewRoot, Map.of());
+
+        assertSame(viewRoot, new FaceletStateManagementStrategy(context).restoreView(context, VIEW_ID, RENDER_KIT_ID));
+    }
+
+    /**
+     * Without state the view has expired, so no view is restored.
+     */
+    @Test
+    void noStateRestoresNoView() {
+        FacesContext context = restoringContext(new UIViewRoot(), null);
+
+        assertNull(new FaceletStateManagementStrategy(context).restoreView(context, VIEW_ID, RENDER_KIT_ID));
+    }
+
+    private static FacesContext restoringContext(UIViewRoot viewRoot, Map<String, Object> state) {
+        FacesContext context = mock(FacesContext.class);
+        RenderKit renderKit = mock(RenderKit.class);
+        ResponseStateManager responseStateManager = mock(ResponseStateManager.class);
+        ServletContext servletContext = mock(ServletContext.class);
+        when(servletContext.getInitParameterNames()).thenReturn(emptyEnumeration());
+        ExternalContext externalContext = mock(ExternalContext.class);
+        when(externalContext.getContext()).thenReturn(servletContext);
+        when(context.getExternalContext()).thenReturn(externalContext);
+        when(context.getAttributes()).thenReturn(new HashMap<>());
+        when(context.getViewRoot()).thenReturn(viewRoot);
+        when(context.getRenderKit()).thenReturn(renderKit);
+        when(renderKit.getResponseStateManager()).thenReturn(responseStateManager);
+        when(responseStateManager.getState(context, VIEW_ID)).thenReturn(state);
+        return context;
     }
 
 }

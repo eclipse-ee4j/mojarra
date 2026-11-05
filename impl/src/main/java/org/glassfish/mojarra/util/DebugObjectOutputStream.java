@@ -32,9 +32,9 @@ import java.util.List;
                 DebugObjectOutputStream out =
                         new DebugObjectOutputStream(oos);
                 try {
-                    out.writeObject(stateToWrite[1]);
+                    out.writeObject(componentState);
                 } catch (Exception e) {
-                    DebugUtil.printState((Map)stateToWrite[1], LOGGER);
+                    DebugUtil.printState(componentState, LOGGER);
                     throw new FacesException(
                             "Serialization error. Path to offending instance: "
                             + out.getStack(), e);

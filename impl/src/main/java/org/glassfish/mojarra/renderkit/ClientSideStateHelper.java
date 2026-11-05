@@ -194,7 +194,8 @@ public class ClientSideStateHelper extends StateHelper {
      * Rebuilds the view state from the Base64 included String included with the request.
      *
      * @param stateString the Base64 encoded view state
-     * @return the view state reconstructed from <code>stateString</code>
+     * @return the component state map reconstructed from <code>stateString</code>, or <code>null</code> when the state has expired or is not in the format
+     * written by {@link #doWriteState(FacesContext, Object, Writer)}
      */
     protected Object doGetState(FacesContext ctx, String stateString) {
 
@@ -242,15 +243,17 @@ public class ClientSideStateHelper extends StateHelper {
                     return null;
                 }
             }
-            Object structure = ois.readObject();
             Object state = ois.readObject();
+            if (!(state instanceof Map)) {
+                return null;
+            }
             if (stateTime != 0 && hasStateExpired(stateTime)) {
                 // return null if state has expired. This should cause
                 // a ViewExpiredException to be thrown
                 return null;
             }
 
-            return new Object[] { structure, state };
+            return state;
 
         }
         catch (OptionalDataException | ClassNotFoundException ode) {
@@ -287,7 +290,8 @@ public class ClientSideStateHelper extends StateHelper {
     }
 
     /**
-     * Serializes and Base64 encodes the provided <code>state</code> to the provided <code>writer</code>/
+     * Serializes and Base64 encodes the provided <code>state</code> to the provided <code>writer</code>. The serialized form is the timestamp when the state
+     * timeout is enabled, followed by the component state map.
      *
      * @param facesContext the Faces context.
      * @param state view state
@@ -321,37 +325,21 @@ public class ClientSideStateHelper extends StateHelper {
 
             }
 
-            Object[] stateToWrite = (Object[]) state;
+            Map<?, ?> componentState = (Map<?, ?>) state;
 
             if (debugSerializedState) {
                 ByteArrayOutputStream discard = new ByteArrayOutputStream();
                 DebugObjectOutputStream out = new DebugObjectOutputStream(discard);
                 try {
-                    out.writeObject(stateToWrite[0]);
+                    out.writeObject(componentState);
                 }
                 catch (Exception e) {
+                    DebugUtil.printState(componentState, LOGGER);
                     throw new FacesException("Serialization error. Path to offending instance: " + out.getStack(), e);
                 }
-
             }
 
-            oos.writeObject(stateToWrite[0]);
-
-            if (debugSerializedState) {
-                ByteArrayOutputStream discard = new ByteArrayOutputStream();
-
-                DebugObjectOutputStream out = new DebugObjectOutputStream(discard);
-                try {
-                    out.writeObject(stateToWrite[1]);
-                }
-                catch (Exception e) {
-                    DebugUtil.printState((Map<?, ?>) stateToWrite[1], LOGGER);
-                    throw new FacesException("Serialization error. Path to offending instance: " + out.getStack(), e);
-                }
-
-            }
-
-            oos.writeObject(stateToWrite[1]);
+            oos.writeObject(componentState);
 
             oos.flush();
             oos.close();

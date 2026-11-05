@@ -17,14 +17,18 @@
 package org.glassfish.mojarra.renderkit;
 
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.PredefinedPostbackParameter.VIEW_STATE_PARAM;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
@@ -44,10 +48,14 @@ import org.junit.jupiter.params.provider.ValueSource;
 /**
  * Client side state is written and read back whether or not {@link MojarraContextParam#ENABLE_CLIENT_STATE_DEBUGGING} drops the {@link ByteArrayGuard}. That
  * the parameter is honored only in Development stage is covered by {@code DevelopmentOnlyContextParamTest}.
+ * <p>
+ * The state is the component state map of the view. A state in another format expires the view.
  */
-class ClientSideStateHelperEncryptionTest extends JUnitFacesTestCaseBase {
+class ClientSideStateHelperTest extends JUnitFacesTestCaseBase {
 
     private static final String PLAIN_STATE_MARKER = "plain-state-marker";
+    private static final String STATE_TIMEOUT_DISABLED = "-1";
+    private static final String STATE_TIMEOUT_ENABLED = "60";
 
     @BeforeEach
     @Override
@@ -99,11 +107,87 @@ class ClientSideStateHelperEncryptionTest extends JUnitFacesTestCaseBase {
         facesContext.setViewRoot(root);
         StringBuilder out = new StringBuilder();
 
-        helper.writeState(facesContext, new Object[] { "structure", "state" }, out);
+        helper.writeState(facesContext, Map.of("form", "state"), out);
         postViewState(out.toString());
 
         assertEquals("stateless", out.toString());
         assertEquals("stateless", helper.getState(facesContext, "/view.xhtml"));
+    }
+
+    /**
+     * A component state is read back as written, with or without the state timeout.
+     */
+    @ParameterizedTest
+    @ValueSource(strings = { STATE_TIMEOUT_DISABLED, STATE_TIMEOUT_ENABLED })
+    void componentStateRoundTrips(String stateTimeout) throws Exception {
+        configure(stateTimeout, false);
+
+        assertEquals(Map.of("form", "state"), roundTrip(Map.of("form", "state")));
+    }
+
+    /**
+     * An empty component state is read back as an empty state, and not as a missing state which would expire the view.
+     */
+    @ParameterizedTest
+    @ValueSource(strings = { STATE_TIMEOUT_DISABLED, STATE_TIMEOUT_ENABLED })
+    void emptyComponentStateRoundTrips(String stateTimeout) throws Exception {
+        configure(stateTimeout, false);
+
+        assertEquals(Map.of(), roundTrip(new HashMap<>()));
+    }
+
+    /**
+     * A state which holds an unused slot in front of the component state expires the view.
+     */
+    @ParameterizedTest
+    @ValueSource(strings = { STATE_TIMEOUT_DISABLED, STATE_TIMEOUT_ENABLED })
+    void stateInPreviousFormatExpiresView(String stateTimeout) throws Exception {
+        configure(stateTimeout, true);
+        boolean timestamped = !STATE_TIMEOUT_DISABLED.equals(stateTimeout);
+        byte[] previous = serialize(oos -> {
+            if (timestamped) {
+                oos.writeLong(System.currentTimeMillis());
+            }
+            oos.writeObject(null);
+            oos.writeObject(new HashMap<>(Map.of("form", "state")));
+        });
+
+        postViewState(Base64.getEncoder().encodeToString(previous));
+
+        assertNull(new ClientSideStateHelper().getState(facesContext, "/view.xhtml"));
+    }
+
+    /**
+     * Configures the state timeout, and a plain state, which is neither encrypted nor compressed, so a test can compare and craft its bytes.
+     */
+    private void configure(String stateTimeout, boolean plain) {
+        servletContext.addInitParameter(ProjectStage.PROJECT_STAGE_PARAM_NAME, plain ? "Development" : "Production");
+        servletContext.addInitParameter(MojarraContextParam.ENABLE_CLIENT_STATE_DEBUGGING.getName(), String.valueOf(plain));
+        servletContext.addInitParameter(MojarraContextParam.COMPRESS_VIEW_STATE.getName(), String.valueOf(!plain));
+        servletContext.addInitParameter(MojarraContextParam.CLIENT_STATE_TIMEOUT.getName(), stateTimeout);
+        facesContext.setViewRoot(new UIViewRoot());
+    }
+
+    private Object roundTrip(Map<String, Object> state) throws IOException {
+        StringBuilder out = new StringBuilder();
+        new ClientSideStateHelper().writeState(facesContext, state, out);
+        postViewState(out.toString());
+        return new ClientSideStateHelper().getState(facesContext, "/view.xhtml");
+    }
+
+    private static byte[] serialize(SerializationStep step) throws IOException {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        try (ObjectOutputStream oos = new ObjectOutputStream(bytes)) {
+            step.writeTo(oos);
+        }
+        return bytes.toByteArray();
+    }
+
+    @FunctionalInterface
+    private interface SerializationStep {
+
+        void writeTo(ObjectOutputStream oos) throws IOException;
+
     }
 
     private String write(String stage, String clientStateDebugging, boolean compress) throws Exception {
@@ -114,16 +198,16 @@ class ClientSideStateHelperEncryptionTest extends JUnitFacesTestCaseBase {
         }
         facesContext.setViewRoot(new UIViewRoot());
         StringBuilder out = new StringBuilder();
-        new ClientSideStateHelper().writeState(facesContext, new Object[] { PLAIN_STATE_MARKER, "state" }, out);
+        new ClientSideStateHelper().writeState(facesContext, Map.of(PLAIN_STATE_MARKER, "state"), out);
         return out.toString();
     }
 
     private void assertRoundTrip(String written) throws Exception {
         postViewState(written);
-        Object[] state = (Object[]) new ClientSideStateHelper().getState(FacesContext.getCurrentInstance(), "/view.xhtml");
+        Object state = new ClientSideStateHelper().getState(FacesContext.getCurrentInstance(), "/view.xhtml");
 
         assertNotNull(state, "state is read back");
-        assertArrayEquals(new Object[] { PLAIN_STATE_MARKER, "state" }, state);
+        assertEquals(Map.of(PLAIN_STATE_MARKER, "state"), state);
     }
 
     private void postViewState(String value) {
@@ -132,17 +216,17 @@ class ClientSideStateHelperEncryptionTest extends JUnitFacesTestCaseBase {
 
     private static boolean isPlainSerializedState(byte[] bytes, boolean compressed) {
         try {
-            return PLAIN_STATE_MARKER.equals(deserializeStructure(bytes, compressed));
+            return deserializeState(bytes, compressed).containsKey(PLAIN_STATE_MARKER);
         }
         catch (Exception e) {
             return false;
         }
     }
 
-    private static Object deserializeStructure(byte[] bytes, boolean compressed) throws Exception {
+    private static Map<?, ?> deserializeState(byte[] bytes, boolean compressed) throws Exception {
         ByteArrayInputStream in = new ByteArrayInputStream(bytes);
         try (ObjectInputStream ois = new ObjectInputStream(compressed ? new GZIPInputStream(in) : in)) {
-            return ois.readObject();
+            return (Map<?, ?>) ois.readObject();
         }
     }
 

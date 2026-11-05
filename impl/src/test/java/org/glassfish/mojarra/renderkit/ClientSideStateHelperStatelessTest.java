@@ -40,7 +40,7 @@ import org.junit.jupiter.api.Test;
 class ClientSideStateHelperStatelessTest extends JUnitFacesTestCaseBase {
 
     private static final String ENCODED_STATE = "encoded";
-    private static final Object[] DECODED_STATE = { "structure", "state" };
+    private static final Map<String, Object> DECODED_STATE = Map.of("form", "state");
     private static final String VIEW_ID = "/test.xhtml";
 
     private CountingHelper helper;

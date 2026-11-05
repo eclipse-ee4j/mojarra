@@ -153,7 +153,6 @@ public class ServerSideStateHelper extends StateHelper {
         if (!viewRoot.isTransient()) {
             if (!ctx.getAttributes().containsKey("org.glassfish.mojarra.ViewStateValue")) {
                 notNull("state", state);
-                Object[] stateToWrite = (Object[]) state;
                 ExternalContext externalContext = ctx.getExternalContext();
                 Object sessionObj = externalContext.getSession(true);
                 Map<String, Object> sessionMap = externalContext.getSessionMap();
@@ -165,8 +164,7 @@ public class ServerSideStateHelper extends StateHelper {
                         sessionMap.put(STATEFUL_PAGE_MAP, pageMap);
                     }
 
-                    Object structure = stateToWrite[0];
-                    Object savedState = handleSaveState(stateToWrite[1]);
+                    Object savedState = handleSaveState(state);
 
                     String idInPageMap = (String) RequestStateManager.get(ctx, RequestStateManager.STATEFUL_PAGE_MAP);
                     if (idInPageMap == null) {
@@ -181,7 +179,7 @@ public class ServerSideStateHelper extends StateHelper {
                     if (null == idInStateMap) {
                         idInStateMap = generateUniqueStateIds ? createRandomId() : createIncrementalRequestId(ctx);
                     }
-                    Map<String, Object[]> stateMap = TypedCollections.dynamicallyCastMap(pageMap.get(idInPageMap), String.class, Object[].class);
+                    Map<String, Object> stateMap = TypedCollections.dynamicallyCastMap(pageMap.get(idInPageMap), String.class, Object.class);
                     if (stateMap == null) {
                         stateMap = Collections.synchronizedMap(new LRUMap<>(numberOfViewStatesPerPage));
                         pageMap.put(idInPageMap, stateMap);
@@ -189,15 +187,7 @@ public class ServerSideStateHelper extends StateHelper {
 
                     id = idInPageMap + ':' + idInStateMap;
 
-                    Object[] stateArray = stateMap.get(idInStateMap);
-                    // reuse the array if possible
-                    if (stateArray != null) {
-                        stateArray[0] = structure;
-                        stateArray[1] = savedState;
-                    }
-                    else {
-                        stateMap.put(idInStateMap, new Object[] { structure, savedState });
-                    }
+                    stateMap.put(idInStateMap, savedState);
 
                     // always call put/setAttribute as we may be in a clustered environment.
                     sessionMap.put(STATEFUL_PAGE_MAP, pageMap);
@@ -276,25 +266,19 @@ public class ServerSideStateHelper extends StateHelper {
 
         synchronized (getMutex(sessionObj)) {
             @SuppressWarnings("unchecked")
-            Map<String, Map<String, Object[]>> pageMap = (Map<String, Map<String, Object[]>>) externalCtx.getSessionMap().get(STATEFUL_PAGE_MAP);
+            Map<String, Map<String, Object>> pageMap = (Map<String, Map<String, Object>>) externalCtx.getSessionMap().get(STATEFUL_PAGE_MAP);
             if (pageMap != null) {
-                Map<String, Object[]> stateMap = pageMap.get(idInPageMap);
+                Map<String, Object> stateMap = pageMap.get(idInPageMap);
                 if (stateMap != null) {
                     RequestStateManager.set(ctx, RequestStateManager.STATEFUL_PAGE_MAP, idInPageMap);
 
-                    Object[] restoredState = new Object[2];
-                    Object[] state = stateMap.get(idInStateMap);
-                    if (state != null) {
-                        restoredState[0] = state[0];
-                        restoredState[1] = state[1];
-
+                    // An evicted view has no entry, and an Object[] entry holds an unused slot in front of the component state,
+                    // which cannot be restored.
+                    Object savedState = stateMap.get(idInStateMap);
+                    if (savedState != null && !(savedState instanceof Object[])) {
                         RequestStateManager.set(ctx, RequestStateManager.VIEW_STATE_MAP, idInStateMap);
-                        if (state.length == 2 && state[1] != null) {
-                            restoredState[1] = handleRestoreState(state[1]);
-                        }
+                        return handleRestoreState(savedState);
                     }
-
-                    return restoredState;
                 }
             }
         }

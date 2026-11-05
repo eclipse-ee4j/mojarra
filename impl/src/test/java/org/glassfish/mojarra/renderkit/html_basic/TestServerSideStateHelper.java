@@ -18,21 +18,30 @@ package org.glassfish.mojarra.renderkit.html_basic;
 import static jakarta.faces.render.ResponseStateManager.VIEW_STATE_PARAM;
 import static java.util.Collections.emptyEnumeration;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.PartialViewContext;
 import jakarta.servlet.ServletContext;
 
+import org.glassfish.mojarra.config.FacesContextParam;
 import org.glassfish.mojarra.renderkit.ServerSideStateHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockedStatic;
 
 public class TestServerSideStateHelper {
@@ -40,6 +49,7 @@ public class TestServerSideStateHelper {
     private FacesContext mockedFacesContext;
     private ExternalContext mockedExternalContext;
     private MockedStatic<FacesContext> mockedStaticFacesContext;
+    private final Map<String, Object> sessionMap = new HashMap<>();
 
     @BeforeEach
     public void setup() {
@@ -109,6 +119,102 @@ public class TestServerSideStateHelper {
     void testViewStateParam8() {
         prepareViewStateParam("stateless");
         assertDoesNotThrow(() -> new ServerSideStateHelper().getState(mockedFacesContext, null));
+    }
+
+    /**
+     * A component state is read back as written, whether or not the server state is serialized.
+     */
+    @ParameterizedTest
+    @ValueSource(booleans = { false, true })
+    void componentStateRoundTrips(boolean serializeServerState) throws Exception {
+        prepareSession();
+        prepareSerializeServerState(serializeServerState);
+
+        assertEquals(Map.of("form", "state"), roundTrip(new HashMap<>(Map.of("form", "state"))));
+    }
+
+    /**
+     * An empty component state keeps the session entry of its view, so it is read back as an empty state, and not as a missing state which would expire the
+     * view, whether or not the server state is serialized.
+     */
+    @ParameterizedTest
+    @ValueSource(booleans = { false, true })
+    void emptyComponentStateRoundTrips(boolean serializeServerState) throws Exception {
+        prepareSession();
+        prepareSerializeServerState(serializeServerState);
+
+        assertEquals(Map.of(), roundTrip(new HashMap<>()));
+    }
+
+    /**
+     * A view whose session entry was evicted has expired.
+     */
+    @Test
+    void evictedViewHasNoState() throws Exception {
+        prepareSession();
+        String id = write(new HashMap<>());
+        replaceEntry(id, null);
+
+        prepareViewStateParam(id);
+
+        assertNull(new ServerSideStateHelper().getState(mockedFacesContext, null));
+    }
+
+    /**
+     * A session entry which holds an unused slot in front of the component state expires the view.
+     */
+    @Test
+    void stateInPreviousFormatExpiresView() throws Exception {
+        prepareSession();
+        String id = write(new HashMap<>());
+        replaceEntry(id, new Object[] { null, new HashMap<>(Map.of("form", "state")) });
+
+        prepareViewStateParam(id);
+
+        assertNull(new ServerSideStateHelper().getState(mockedFacesContext, null));
+    }
+
+    private void prepareSession() {
+        Object session = new Object();
+        when(mockedExternalContext.getSession(anyBoolean())).thenReturn(session);
+        when(mockedExternalContext.getSessionMap()).thenReturn(sessionMap);
+        when(mockedFacesContext.getAttributes()).thenReturn(new HashMap<>());
+        when(mockedFacesContext.getPartialViewContext()).thenReturn(mock(PartialViewContext.class));
+    }
+
+    private Object roundTrip(Map<String, Object> state) throws IOException {
+        prepareViewStateParam(write(state));
+        return new ServerSideStateHelper().getState(mockedFacesContext, null);
+    }
+
+    private String write(Map<String, Object> state) throws IOException {
+        StringBuilder id = new StringBuilder();
+        new ServerSideStateHelper().writeState(mockedFacesContext, state, id);
+        when(mockedFacesContext.getAttributes()).thenReturn(new HashMap<>());
+        return id.toString();
+    }
+
+    private void prepareSerializeServerState(boolean serializeServerState) {
+        ServletContext servletContext = (ServletContext) mockedExternalContext.getContext();
+        when(servletContext.getInitParameter(FacesContextParam.SERIALIZE_SERVER_STATE.getName())).thenReturn(String.valueOf(serializeServerState));
+    }
+
+    /**
+     * Replaces the session entry of the view with the given id, which is the page id and the view state id separated by a colon. A <code>null</code> entry
+     * removes it.
+     */
+    @SuppressWarnings("unchecked")
+    private void replaceEntry(String id, Object entry) {
+        int separator = id.indexOf(':');
+        Map<String, Map<String, Object>> pages = (Map<String, Map<String, Object>>) sessionMap.get(ServerSideStateHelper.STATEFUL_PAGE_MAP);
+        Map<String, Object> viewStates = pages.get(id.substring(0, separator));
+        String viewStateId = id.substring(separator + 1);
+        if (entry == null) {
+            viewStates.remove(viewStateId);
+        }
+        else {
+            viewStates.put(viewStateId, entry);
+        }
     }
 
 }
