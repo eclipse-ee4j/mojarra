@@ -339,70 +339,64 @@ public class FaceletStateManagementStrategy extends StateManagementStrategy {
         boolean processingEvents = context.isProcessingEvents();
         UIViewRoot viewRoot = context.getViewRoot();
 
-        Object[] rawState = (Object[]) rsm.getState(context, viewId);
-        if (rawState == null) {
+        @SuppressWarnings("unchecked")
+        final Map<String, Object> state = (Map<String, Object>) rsm.getState(context, viewId);
+        if (state == null) {
             return null;
         }
 
-        @SuppressWarnings("unchecked")
-        final Map<String, Object> state = (Map<String, Object>) rawState[1];
         final StateContext stateContext = StateContext.getStateContext(context);
 
-        if (state != null) {
-            try {
-                stateContext.setTrackViewModifications(false);
-                // No saved dynamic actions => no component carries DYNAMIC_COMPONENT, so the per-component
-                // marker lookup in componentAddedDynamically can be skipped across the whole restore traversal.
-                @SuppressWarnings("unchecked")
-                List<Object> savedActions = (List<Object>) state.get(DYNAMIC_ACTIONS);
-                boolean hasDynamicActions = !isEmpty(savedActions);
-                stateContext.setHasDynamicComponents(hasDynamicActions);
+        try {
+            stateContext.setTrackViewModifications(false);
+            // No saved dynamic actions => no component carries DYNAMIC_COMPONENT, so the per-component
+            // marker lookup in componentAddedDynamically can be skipped across the whole restore traversal.
+            @SuppressWarnings("unchecked")
+            List<Object> savedActions = (List<Object>) state.get(DYNAMIC_ACTIONS);
+            boolean hasDynamicActions = !isEmpty(savedActions);
+            stateContext.setHasDynamicComponents(hasDynamicActions);
 
-                if (!hasDynamicActions && isViewRootOnlyState(viewRoot.getClientId(context), state)) {
-                    // No dynamic actions and no per-component delta (or only the view root's): restore the
-                    // view root in isolation and skip the full O(N) restore traversal. Any component whose
-                    // state actually changed carries a non-null delta in the map, which forces the walk via
-                    // the else-branch, so this short-circuit is behavior-neutral for static / low-delta views.
-                    restoreViewRootOnly(context, viewRoot, state);
-                }
-                else {
-                    VisitContext visitContext = VisitContext.createVisitContext(context, null, SKIP_ITERATION_AND_EXECUTE_LIFECYCLE_HINTS);
-                    viewRoot.visitTree(visitContext, (context1, target) -> {
-                        VisitResult result = VisitResult.ACCEPT;
-                        String cid = target.getClientId(context1.getFacesContext());
-                        Object stateObj = state.get(cid);
-                        if (stateObj != null && !stateContext.componentAddedDynamically(target)) {
-                            boolean restoreStateNow = true;
-                            if (stateObj instanceof StateHolderSaver) {
-                                restoreStateNow = !((StateHolderSaver) stateObj).componentAddedDynamically();
+            if (!hasDynamicActions && isViewRootOnlyState(viewRoot.getClientId(context), state)) {
+                // No dynamic actions and no per-component delta (or only the view root's): restore the
+                // view root in isolation and skip the full O(N) restore traversal. Any component whose
+                // state actually changed carries a non-null delta in the map, which forces the walk via
+                // the else-branch, so this short-circuit is behavior-neutral for static / low-delta views.
+                restoreViewRootOnly(context, viewRoot, state);
+            }
+            else {
+                VisitContext visitContext = VisitContext.createVisitContext(context, null, SKIP_ITERATION_AND_EXECUTE_LIFECYCLE_HINTS);
+                viewRoot.visitTree(visitContext, (context1, target) -> {
+                    VisitResult result = VisitResult.ACCEPT;
+                    String cid = target.getClientId(context1.getFacesContext());
+                    Object stateObj = state.get(cid);
+                    if (stateObj != null && !stateContext.componentAddedDynamically(target)) {
+                        boolean restoreStateNow = true;
+                        if (stateObj instanceof StateHolderSaver) {
+                            restoreStateNow = !((StateHolderSaver) stateObj).componentAddedDynamically();
+                        }
+                        if (restoreStateNow) {
+                            try {
+                                target.restoreState(context1.getFacesContext(), stateObj);
                             }
-                            if (restoreStateNow) {
-                                try {
-                                    target.restoreState(context1.getFacesContext(), stateObj);
-                                }
-                                catch (Exception e) {
-                                    String msg = MessageUtils.getExceptionMessageString(MessageUtils.PARTIAL_STATE_ERROR_RESTORING_ID, cid, e.toString());
-                                    throw new FacesException(msg, e);
-                                }
+                            catch (Exception e) {
+                                String msg = MessageUtils.getExceptionMessageString(MessageUtils.PARTIAL_STATE_ERROR_RESTORING_ID, cid, e.toString());
+                                throw new FacesException(msg, e);
                             }
                         }
+                    }
 
-                        return result;
-                    });
-                    restoreDynamicActions(context, stateContext, state);
-                }
-
-                if (context.isProjectStage(ProjectStage.Development)) {
-                    logRebuildMismatches(context, viewRoot, state);
-                }
+                    return result;
+                });
+                restoreDynamicActions(context, stateContext, state);
             }
-            finally {
-                stateContext.setHasDynamicComponents(true);
-                stateContext.setTrackViewModifications(true);
+
+            if (context.isProjectStage(ProjectStage.Development)) {
+                logRebuildMismatches(context, viewRoot, state);
             }
         }
-        else {
-            viewRoot = null;
+        finally {
+            stateContext.setHasDynamicComponents(true);
+            stateContext.setTrackViewModifications(true);
         }
         context.setProcessingEvents(processingEvents);
         return viewRoot;
@@ -719,7 +713,7 @@ public class FaceletStateManagementStrategy extends StateManagementStrategy {
         SavedBuildTimeDecisions.save(context, stateMap);
         saveDynamicActions(context, stateContext, stateMap);
         StateContext.release(context);
-        return new Object[] { null, stateMap };
+        return stateMap;
     }
 
 }

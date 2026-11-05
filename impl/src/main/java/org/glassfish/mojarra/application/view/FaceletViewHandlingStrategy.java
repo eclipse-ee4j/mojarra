@@ -247,10 +247,9 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             ViewDeclarationLanguage vdl = vdlFactory.getViewDeclarationLanguage(viewId);
             UIViewRoot viewRoot = vdl.getViewMetadata(context, viewId).createMetadataView(context);
             context.setViewRoot(viewRoot);
-            Object[] rawState = (Object[]) RenderKitUtils
+            @SuppressWarnings("unchecked")
+            Map<String, Object> state = (Map<String, Object>) RenderKitUtils
                 .getResponseStateManager(context, context.getApplication().getViewHandler().calculateRenderKitId(context)).getState(context, viewId);
-
-            Map<String, Object> state = stateOf(rawState);
 
             if (state != null) {
                 String clientId = viewRoot.getClientId(context);
@@ -282,17 +281,6 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         startTrackViewModifications(context, root);
 
         return root;
-    }
-
-    /**
-     * The per component state of the view being restored, as saved by {@code StateManagementStrategy.saveView}.
-     *
-     * @param rawState the state obtained from the {@code ResponseStateManager}, may be {@code null}
-     * @return the per component state, or {@code null} when there is none
-     */
-    @SuppressWarnings("unchecked")
-    private static Map<String, Object> stateOf(Object[] rawState) {
-        return rawState == null ? null : (Map<String, Object>) rawState[1];
     }
 
     @Override
