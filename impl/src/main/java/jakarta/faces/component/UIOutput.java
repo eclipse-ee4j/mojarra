@@ -245,11 +245,13 @@ public class UIOutput extends UIComponentBase implements ValueHolder {
             // overwrite any existing converter with the saved
             // converter
             converter = (Converter<?>) restoreAttachedState(context, converterState);
-        } else {
+        } else if (converterState != null) {
             // apply any saved state to the existing converter
-            if (converterState != null && converter instanceof StateHolder) {
+            if (converter instanceof StateHolder) {
                 ((StateHolder) converter).restoreState(context, converterState);
             }
+        } else if (restoredFullState) {
+            converter = null;
         }
     }
 }

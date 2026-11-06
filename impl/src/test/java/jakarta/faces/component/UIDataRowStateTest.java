@@ -23,8 +23,11 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.ToIntFunction;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,8 +38,21 @@ import com.sun.faces.mock.MockRenderKitFactory;
 
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.StateManager;
+import jakarta.faces.component.behavior.AjaxBehavior;
+import jakarta.faces.component.html.HtmlInputText;
+import jakarta.faces.convert.IntegerConverter;
+import jakarta.faces.convert.NumberConverter;
+import jakarta.faces.event.ComponentSystemEvent;
+import jakarta.faces.event.ComponentSystemEventListener;
+import jakarta.faces.event.PostValidateEvent;
+import jakarta.faces.event.PreValidateEvent;
+import jakarta.faces.event.SystemEvent;
+import jakarta.faces.event.SystemEventListener;
+import jakarta.faces.event.ValueChangeEvent;
+import jakarta.faces.event.ValueChangeListener;
 import jakarta.faces.render.RenderKitFactory;
 import jakarta.faces.render.Renderer;
+import jakarta.faces.validator.LengthValidator;
 
 /**
  * The per-row state of the inputs of a {@link UIData} without {@code rowStatePreserved} survives serializing the state
@@ -142,6 +158,146 @@ class UIDataRowStateTest extends JUnitFacesTestCaseBase {
 
         table.setRowIndex(0);
         assertNull(input(table).getAttributes().get("foo"));
+    }
+
+    @Test
+    void preservedRowWithoutOwnStateDoesNotShowTheValidatorOfThePreviousRow() {
+        assertNotInNextRow(input -> input.addValidator(new LengthValidator(3)), input -> input.getValidators().length);
+    }
+
+    @Test
+    void preservedRowWithoutOwnStateDoesNotShowTheValueChangeListenerOfThePreviousRow() {
+        assertNotInNextRow(input -> input.addValueChangeListener(new Listener()), input -> input.getValueChangeListeners().length);
+    }
+
+    @Test
+    void preservedRowWithoutOwnStateDoesNotShowTheSystemEventListenerOfThePreviousRow() {
+        assertNotInNextRow(input -> input.subscribeToEvent(PostValidateEvent.class, new Listener()), input -> listenerCount(input, PostValidateEvent.class));
+    }
+
+    @Test
+    void preservedRowWithoutOwnStateDoesNotShowTheConverterOfThePreviousRow() {
+        assertNotInNextRow(input -> input.setConverter(new IntegerConverter()), input -> input.getConverter() == null ? 0 : 1);
+    }
+
+    @Test
+    void preservedRowWithoutOwnStateDoesNotShowTheClientBehaviorOfThePreviousRow() {
+        assertNotInNextRow(input -> input.addClientBehavior("change", new AjaxBehavior()), input -> input.getClientBehaviors().size());
+    }
+
+    @Test
+    void preservedRowWithoutOwnStateDoesNotShowTheValueExpressionOfThePreviousRow() {
+        assertNotInNextRow(input -> input.setValueExpression("title", application.getExpressionFactory().createValueExpression(facesContext.getELContext(), "#{requestScope.title}", String.class)),
+                input -> input.getValueExpression("title") == null ? 0 : 1);
+    }
+
+    @Test
+    void preservedRowWithoutOwnStateDoesNotShowASystemEventListenerOfAnotherEventOfThePreviousRow() {
+        HtmlInputText input = new HtmlInputText();
+        input.subscribeToEvent(PostValidateEvent.class, new Listener());
+        UIData table = createRowStatePreservedTable(input);
+        table.setRowIndex(0);
+        input.subscribeToEvent(PreValidateEvent.class, new Listener());
+
+        table.setRowIndex(1);
+
+        assertEquals(0, listenerCount(input, PreValidateEvent.class));
+        assertEquals(1, listenerCount(input, PostValidateEvent.class));
+    }
+
+    /**
+     * Entering a row restores a new converter instance, so the test changes the converter which the input has in the row,
+     * not the one it was given before the initial state was marked.
+     */
+    @Test
+    void preservedRowWithOnlyAConverterDeltaKeepsTheValidatorsOfTheInitialState() {
+        HtmlInputText input = new HtmlInputText();
+        input.addValidator(new LengthValidator(3));
+        input.setConverter(new NumberConverter());
+        UIData table = createRowStatePreservedTable(input);
+        table.setRowIndex(0);
+        ((NumberConverter) input.getConverter()).setPattern("#");
+        table.setRowIndex(1);
+
+        table.setRowIndex(0);
+
+        assertEquals(1, input.getValidators().length);
+    }
+
+    @Test
+    void preservedRowKeepsTheRemovalOfAValidator() throws Exception {
+        assertRemovalStaysInItsRow(input -> input.addValidator(new LengthValidator(3)), input -> input.removeValidator(input.getValidators()[0]),
+                input -> input.getValidators().length);
+    }
+
+    @Test
+    void preservedRowKeepsTheRemovalOfAValueChangeListener() throws Exception {
+        assertRemovalStaysInItsRow(input -> input.addValueChangeListener(new Listener()),
+                input -> input.removeValueChangeListener(input.getValueChangeListeners()[0]), input -> input.getValueChangeListeners().length);
+    }
+
+    /**
+     * A validator or a listener which was removed in a row of a table with {@code rowStatePreserved} stays removed in that
+     * row, on every visit of the row and across saving and restoring the table, and stays in the other rows.
+     */
+    private void assertRemovalStaysInItsRow(Consumer<HtmlInputText> attach, Consumer<HtmlInputText> remove, ToIntFunction<HtmlInputText> count)
+            throws Exception {
+        HtmlInputText input = new HtmlInputText();
+        attach.accept(input);
+        UIData table = createRowStatePreservedTable(input);
+        table.setRowIndex(0);
+        remove.accept(input);
+        table.setRowIndex(1);
+        assertEquals(1, count.applyAsInt(input));
+        table.setRowIndex(0);
+        assertEquals(0, count.applyAsInt(input));
+        table.setRowIndex(1);
+        table.setRowIndex(0);
+        assertEquals(0, count.applyAsInt(input));
+        table.setRowIndex(-1);
+        Object state = serializeAndDeserialize(table.saveState(facesContext));
+
+        HtmlInputText restoredInput = new HtmlInputText();
+        attach.accept(restoredInput);
+        UIData restored = createRowStatePreservedTable(restoredInput);
+        restored.restoreState(facesContext, state);
+        restored.setRowIndex(0);
+
+        assertEquals(0, count.applyAsInt(restoredInput));
+    }
+
+    private static int listenerCount(UIComponent component, Class<? extends SystemEvent> eventClass) {
+        List<SystemEventListener> listeners = component.getListenersForEventClass(eventClass);
+        return listeners == null ? 0 : listeners.size();
+    }
+
+    /**
+     * An object which was attached to a child in a row of a table with {@code rowStatePreserved} belongs to that row. A row
+     * without saved state of its own gets the initial state of its children, without that object.
+     */
+    private void assertNotInNextRow(Consumer<HtmlInputText> attach, ToIntFunction<HtmlInputText> count) {
+        HtmlInputText input = new HtmlInputText();
+        UIData table = createRowStatePreservedTable(input);
+        table.setRowIndex(0);
+        attach.accept(input);
+        assertEquals(1, count.applyAsInt(input));
+
+        table.setRowIndex(1);
+
+        assertEquals(0, count.applyAsInt(input));
+    }
+
+    public static class Listener implements ValueChangeListener, ComponentSystemEventListener, Serializable {
+
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void processValueChange(ValueChangeEvent event) {
+        }
+
+        @Override
+        public void processEvent(ComponentSystemEvent event) {
+        }
     }
 
     /**
@@ -267,7 +423,11 @@ class UIDataRowStateTest extends JUnitFacesTestCaseBase {
     }
 
     private UIData createRowStatePreservedTable() {
-        UIData table = createTable();
+        return createRowStatePreservedTable(new UIInput());
+    }
+
+    private UIData createRowStatePreservedTable(UIInput input) {
+        UIData table = createTable(input);
         table.setRowStatePreserved(true);
         markInitialState(facesContext.getViewRoot());
         return table;
@@ -296,6 +456,10 @@ class UIDataRowStateTest extends JUnitFacesTestCaseBase {
     }
 
     private UIData createTable() {
+        return createTable(new UIInput());
+    }
+
+    private UIData createTable(UIInput input) {
         UIViewRoot view = new UIViewRoot();
         view.setRenderKitId(RenderKitFactory.HTML_BASIC_RENDER_KIT);
         facesContext.setViewRoot(view);
@@ -309,7 +473,6 @@ class UIDataRowStateTest extends JUnitFacesTestCaseBase {
         UIColumn column = new UIColumn();
         column.setId("column");
         table.getChildren().add(column);
-        UIInput input = new UIInput();
         input.setId("input");
         column.getChildren().add(input);
         return table;
