@@ -72,25 +72,16 @@ public class UIRepeat extends UINamingContainer {
 
     private final static DataModel EMPTY_MODEL = new ListDataModel<>(Collections.emptyList());
 
-    // our data
-    private Object value;
+    /**
+     * Properties that are tracked by state saving.
+     */
+    enum PropertyKeys {
+        value, var, varStatus, begin, end, step, size, originalBegin, originalEnd
+    }
 
     private transient DataModel model;
 
-    // variables
-    private String var;
-
-    private String varStatus;
-
     private int index = -1;
-
-    private Integer originalBegin;
-    private Integer originalEnd;
-
-    private Integer begin;
-    private Integer end;
-    private Integer step;
-    private Integer size;
 
     public UIRepeat() {
         setRendererType("facelets.ui.Repeat");
@@ -102,45 +93,27 @@ public class UIRepeat extends UINamingContainer {
     }
 
     public void setEnd(Integer end) {
-        this.end = end;
+        getStateHelper().put(PropertyKeys.end, end);
     }
 
     public Integer getEnd() {
-
-        if (end != null) {
-            return end;
-        }
-        ValueExpression ve = getValueExpression("end");
-        if (ve != null) {
-            return (Integer) ve.getValue(getFacesContext().getELContext());
-        }
-        return null;
-
+        return (Integer) getStateHelper().eval(PropertyKeys.end);
     }
 
     public void setSize(Integer size) {
-        this.size = size;
+        getStateHelper().put(PropertyKeys.size, size);
     }
 
     public Integer getSize() {
-
-        if (size != null) {
-            return size;
-        }
-        ValueExpression ve = getValueExpression("size");
-        if (ve != null) {
-            return (Integer) ve.getValue(getFacesContext().getELContext());
-        }
-        return null;
-
+        return (Integer) getStateHelper().eval(PropertyKeys.size);
     }
 
     public void setOffset(Integer offset) {
-        begin = offset;
+        setBegin(offset);
     }
 
     public Integer getOffset() {
-
+        Integer begin = (Integer) getStateHelper().get(PropertyKeys.begin);
         if (begin != null) {
             return begin;
         }
@@ -153,37 +126,19 @@ public class UIRepeat extends UINamingContainer {
     }
 
     public void setBegin(Integer begin) {
-        this.begin = begin;
+        getStateHelper().put(PropertyKeys.begin, begin);
     }
 
     public Integer getBegin() {
-
-        if (begin != null) {
-            return begin;
-        }
-        ValueExpression ve = getValueExpression("begin");
-        if (ve != null) {
-            return (Integer) ve.getValue(getFacesContext().getELContext());
-        }
-        return null;
-
+        return (Integer) getStateHelper().eval(PropertyKeys.begin);
     }
 
     public void setStep(Integer step) {
-        this.step = step;
+        getStateHelper().put(PropertyKeys.step, step);
     }
 
     public Integer getStep() {
-
-        if (step != null) {
-            return step;
-        }
-        ValueExpression ve = getValueExpression("step");
-        if (ve != null) {
-            return (Integer) ve.getValue(getFacesContext().getELContext());
-        }
-        return null;
-
+        return (Integer) getStateHelper().eval(PropertyKeys.step);
     }
 
     /**
@@ -202,19 +157,19 @@ public class UIRepeat extends UINamingContainer {
     }
 
     public String getVar() {
-        return var;
+        return (String) getStateHelper().get(PropertyKeys.var);
     }
 
     public void setVar(String var) {
-        this.var = var;
+        getStateHelper().put(PropertyKeys.var, var);
     }
 
     public String getVarStatus() {
-        return varStatus;
+        return (String) getStateHelper().get(PropertyKeys.varStatus);
     }
 
     public void setVarStatus(String varStatus) {
-        this.varStatus = varStatus;
+        getStateHelper().put(PropertyKeys.varStatus, varStatus);
     }
 
     private void resetDataModel(FacesContext context) {
@@ -228,19 +183,27 @@ public class UIRepeat extends UINamingContainer {
         this.model = model;
     }
 
+    /**
+     * The bound which the first data model of this repeat was built with. The data model of a repeat without value
+     * changes the begin and end properties to its own range.
+     */
+    private Integer getOriginalBound(PropertyKeys originalKey, PropertyKeys key) {
+        Integer bound = (Integer) getStateHelper().get(originalKey);
+        if (bound == null) {
+            bound = (Integer) getStateHelper().eval(key);
+            if (bound != null) {
+                getStateHelper().put(originalKey, bound);
+            }
+        }
+        return bound;
+    }
+
     private DataModel getDataModel() {
         if (model == null) {
             Object val = getValue();
             if (val == null) {
-                if (originalBegin == null) {
-                    originalBegin = getBegin();
-                }
-                if (originalEnd == null) {
-                    originalEnd = getEnd();
-                }
-
-                Integer begin = originalBegin;
-                Integer end = originalEnd;
+                Integer begin = getOriginalBound(PropertyKeys.originalBegin, PropertyKeys.begin);
+                Integer end = getOriginalBound(PropertyKeys.originalEnd, PropertyKeys.end);
 
                 if (end == null) {
                     if (begin == null) {
@@ -292,17 +255,11 @@ public class UIRepeat extends UINamingContainer {
     }
 
     public Object getValue() {
-        if (value == null) {
-            ValueExpression ve = getValueExpression("value");
-            if (ve != null) {
-                return ve.getValue(getFacesContext().getELContext());
-            }
-        }
-        return value;
+        return getStateHelper().eval(PropertyKeys.value);
     }
 
     public void setValue(Object value) {
-        this.value = value;
+        getStateHelper().put(PropertyKeys.value, value);
     }
 
     private transient StringBuilder buffer;
@@ -328,6 +285,8 @@ public class UIRepeat extends UINamingContainer {
     private transient Object origValueOfVarStatus;
 
     private void captureOrigValue(FacesContext ctx) {
+        String var = getVar();
+        String varStatus = getVarStatus();
         if (var != null || varStatus != null) {
             Map<String, Object> attrs = ctx.getExternalContext().getRequestMap();
             if (var != null) {
@@ -340,6 +299,8 @@ public class UIRepeat extends UINamingContainer {
     }
 
     private void restoreOrigValue(FacesContext ctx) {
+        String var = getVar();
+        String varStatus = getVarStatus();
         if (var != null || varStatus != null) {
             Map<String, Object> attrs = ctx.getExternalContext().getRequestMap();
             if (var != null) {
@@ -362,11 +323,11 @@ public class UIRepeat extends UINamingContainer {
     // Per-row transient state of the stateful descendants, keyed by this repeat's own row-scoped clientId. The value
     // array is positionally aligned to iterationStatefulList (the EditableValueHolder descendants in deterministic
     // tree order), so save and restore index by position instead of recomputing a clientId and hashing it per child
-    // per row. The array length is guarded on restore so a tree-shape change between requests degrades to NULL_STATE
-    // rather than misaligning. The key must be the clientId rather than the bare index: a nested repeat is one
-    // component instance reused across the enclosing iteration's rows, so an index alone identifies the same key
-    // under every enclosing row and the rows would overwrite each other's state. This repeat's own clientId already
-    // carries the enclosing rows' indices, and is computed once per index change rather than once per child per row.
+    // per row. The array length is guarded on restore so a tree-shape change between requests degrades to a reset per
+    // slot. The key must be the clientId rather than the bare index: a nested repeat is one component instance reused
+    // across the enclosing iteration's rows, so an index alone identifies the same key under every enclosing row and
+    // the rows would overwrite each other's state. This repeat's own clientId already carries the enclosing rows'
+    // indices, and is computed once per index change rather than once per child per row.
     private Map<String, SavedState[]> childState;
 
     /**
@@ -448,17 +409,17 @@ public class UIRepeat extends UINamingContainer {
             return;
         }
         // Only slots with delta state hold a SavedState, and only a row with such a slot is kept, so the saved state
-        // holds no rows which restore the same as NULL_STATE.
+        // holds no rows which restore the same as a reset.
         String rowStateKey = getRowStateKey(ctx);
         SavedState[] rowState = null;
         for (int i = 0; i < count; i++) {
             UIComponent c = iterationStatefulList.get(i);
             if (!c.isTransient()) {
                 SavedState ss = new SavedState();
-                if (c instanceof UIForm) {
-                    ss.populate((UIForm) c);
-                } else {
+                if (c instanceof EditableValueHolder) {
                     ss.populate((EditableValueHolder) c);
+                } else {
+                    ss.populate((UIForm) c);
                 }
                 if (ss.hasDeltaState()) {
                     if (rowState == null) {
@@ -497,16 +458,28 @@ public class UIRepeat extends UINamingContainer {
             return;
         }
         // Positional restore: index into this row's saved-state array rather than rebuilding/hashing a clientId per
-        // child. A null array (row never saved) or short array (tree shape changed) falls back to NULL_STATE per slot.
+        // child. A null array (row never saved) or short array (tree shape changed) falls back to a reset per slot.
         SavedState[] rowState = childState == null ? null : childState.get(getRowStateKey(ctx));
         for (int i = 0; i < count; i++) {
-            UIComponent c = iterationStatefulList.get(i);
-            SavedState ss = rowState != null && i < rowState.length ? rowState[i] : null;
-            if (c instanceof UIForm) {
-                (ss != null ? ss : NULL_STATE).apply((UIForm) c);
+            SavedState state = rowState != null && i < rowState.length ? rowState[i] : null;
+            restoreComponentState(iterationStatefulList.get(i), state);
+        }
+    }
+
+    /**
+     * Restore the per-row transient state of a single stateful descendant. A {@code null} state resets the component to
+     * its un-submitted defaults.
+     */
+    private void restoreComponentState(UIComponent component, SavedState state) {
+        if (component instanceof EditableValueHolder) {
+            EditableValueHolder input = (EditableValueHolder) component;
+            if (state == null) {
+                input.resetValue();
             } else {
-                (ss != null ? ss : NULL_STATE).apply((EditableValueHolder) c);
+                state.apply(input);
             }
+        } else if (component instanceof UIForm) {
+            ((UIForm) component).setSubmitted(state != null && state.isSubmitted());
         }
     }
 
@@ -549,6 +522,7 @@ public class UIRepeat extends UINamingContainer {
         this.index = index;
         localModel.setRowIndex(index);
 
+        String var = getVar();
         if (this.index != -1 && var != null && localModel.isRowAvailable()) {
             Map<String, Object> attrs = ctx.getExternalContext().getRequestMap();
             attrs.put(var, localModel.getRowData());
@@ -569,6 +543,7 @@ public class UIRepeat extends UINamingContainer {
     }
 
     private void updateIterationStatus(FacesContext ctx, IterationStatus status) {
+        String varStatus = getVarStatus();
         if (varStatus != null) {
             Map<String, Object> attrs = ctx.getExternalContext().getRequestMap();
             attrs.put(varStatus, status);
@@ -895,8 +870,6 @@ public class UIRepeat extends UINamingContainer {
         app.publishEvent(faces, PostValidateEvent.class, this);
     }
 
-    private final static SavedState NULL_STATE = new SavedState();
-
     /**
      * The per-row state of a stateful descendant. It serializes only the fields which are not at their default.
      */
@@ -932,8 +905,8 @@ public class UIRepeat extends UINamingContainer {
             submitted = form.isSubmitted();
         }
 
-        public void apply(UIForm form) {
-            form.setSubmitted(submitted);
+        boolean isSubmitted() {
+            return submitted;
         }
 
         public void apply(EditableValueHolder evh) {
@@ -1082,6 +1055,7 @@ public class UIRepeat extends UINamingContainer {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void restoreState(FacesContext faces, Object object) {
         if (faces == null) {
             throw new NullPointerException();
@@ -1089,18 +1063,9 @@ public class UIRepeat extends UINamingContainer {
         if (object == null) {
             return;
         }
-        Object[] state = (Object[]) object;
-        super.restoreState(faces, state[0]);
-        // noinspection unchecked
-        childState = (Map<String, SavedState[]>) state[1];
-        begin = (Integer) state[2];
-        end = (Integer) state[3];
-        step = (Integer) state[4];
-        var = (String) state[5];
-        varStatus = (String) state[6];
-        value = state[7];
-        originalBegin = (Integer) state[8];
-        originalEnd = (Integer) state[9];
+        Object[] values = (Object[]) object;
+        super.restoreState(faces, values[0]);
+        childState = (Map<String, SavedState[]>) values[1];
     }
 
     @Override
@@ -1110,18 +1075,11 @@ public class UIRepeat extends UINamingContainer {
         if (faces == null) {
             throw new NullPointerException();
         }
-        Object[] state = new Object[10];
-        state[0] = super.saveState(faces);
-        state[1] = childState;
-        state[2] = begin;
-        state[3] = end;
-        state[4] = step;
-        state[5] = var;
-        state[6] = varStatus;
-        state[7] = value;
-        state[8] = originalBegin;
-        state[9] = originalEnd;
-        return state;
+        Object superState = super.saveState(faces);
+        if (initialStateMarked() && superState == null && childState == null) {
+            return null;
+        }
+        return new Object[] { superState, childState };
     }
 
     @Override
