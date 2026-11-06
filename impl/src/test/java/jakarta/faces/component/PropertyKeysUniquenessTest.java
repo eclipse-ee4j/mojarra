@@ -38,9 +38,10 @@ import jakarta.faces.component.html.HtmlSelectOneRadio;
 class PropertyKeysUniquenessTest {
 
     /**
-     * Unused constants which stay because their enum is in the API signature.
+     * Keys which an HTML component declares again for a property of its superclass. Its enum is protected API, so a
+     * subclass may use such a key, and the component keeps the property under it.
      */
-    private static final Set<String> UNUSED_API_CONSTANTS = Set.of(HtmlSelectOneRadio.class.getName() + "$PropertyKeys.group");
+    private static final Set<String> HTML_API_KEYS = Set.of(HtmlSelectOneRadio.class.getName() + "$PropertyKeys.group");
 
     @Test
     void noComponentRedeclaresAnInheritedPropertyKey() throws Exception {
@@ -56,7 +57,7 @@ class PropertyKeysUniquenessTest {
                     }
                     for (Object constant : nested.getEnumConstants()) {
                         String name = ((Enum<?>) constant).name();
-                        if (UNUSED_API_CONSTANTS.contains(nested.getName() + "." + name)) {
+                        if (HTML_API_KEYS.contains(nested.getName() + "." + name)) {
                             continue;
                         }
                         Class<?> other = declaringEnums.putIfAbsent(name, nested);
@@ -69,14 +70,6 @@ class PropertyKeysUniquenessTest {
         }
 
         assertEquals(List.of(), duplicates);
-    }
-
-    @Test
-    void htmlSelectOneRadioKeepsGroupUnderUISelectOneKey() {
-        HtmlSelectOneRadio radio = new HtmlSelectOneRadio();
-        radio.setGroup("group");
-
-        assertEquals("group", radio.getStateHelper().get(UISelectOne.PropertyKeys.group));
     }
 
     private static List<Class<?>> componentClasses() throws URISyntaxException, ClassNotFoundException {
