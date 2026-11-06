@@ -1676,13 +1676,13 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
 
         Object values[] = (Object[]) state;
         super.restoreState(context, values[0]);
-        Object restoredRowStates = UIComponentBase.restoreAttachedState(context, values[1]);
+        Map<String, Object> restoredRowStates = (Map<String, Object>) values[1];
         if (restoredRowStates == null) {
             if (!_rowDeltaStates.isEmpty()) {
                 _rowDeltaStates.clear();
             }
         } else {
-            _rowDeltaStates = (Map<String, Object>) restoredRowStates;
+            _rowDeltaStates = new HashMap<>(restoredRowStates);
         }
         childState = (Map<String, Map<Integer, SavedState[]>>) values[2];
     }
@@ -1704,7 +1704,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         if (initialStateMarked() && superState == null && _rowDeltaStates.isEmpty() && childState == null) {
             return null;
         }
-        Object rowDeltaState = _rowDeltaStates.isEmpty() ? null : UIComponentBase.saveAttachedState(context, _rowDeltaStates);
+        Object rowDeltaState = _rowDeltaStates.isEmpty() ? null : new HashMap<>(_rowDeltaStates);
         return new Object[] { superState, rowDeltaState, childState };
     }
 

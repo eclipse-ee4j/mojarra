@@ -628,6 +628,10 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
                         action.setIndex((Integer) index);
                     }
                     savedActions.add(action.saveState(context));
+                    Object componentState = stateMap.remove(action.getClientId());
+                    if (componentState != null) {
+                        stateMap.put(action.getClientId(), componentState);
+                    }
                 }
             }
             if (!savedActions.isEmpty()) {

@@ -308,6 +308,27 @@ class FaceletPartialStateManagementStrategyTest {
         assertFalse(stateMap.containsKey(DYNAMIC_ACTIONS), stateMap.toString());
     }
 
+    /**
+     * The state of a dynamically added component is kept under the same client ID instance as its dynamic action holds,
+     * so that serializing the state writes that client ID once.
+     */
+    @Test
+    void stateOfADynamicallyAddedComponentIsKeyedByTheClientIdOfItsDynamicAction() {
+        HashMap<String, UIComponent> dynamicComponents = new HashMap<>();
+        dynamicComponents.put("form:added", new UIOutput());
+        String clientIdOfAction = new String("form:added");
+        List<ComponentStruct> dynamicActions = new ArrayList<>();
+        dynamicActions.add(new ComponentStruct(ADD, null, "form", clientIdOfAction, "added"));
+        Map<String, Object> stateMap = new HashMap<>();
+        stateMap.put(new String("form:added"), "state");
+
+        saveDynamicActions(mock(FacesContext.class), stateContext(dynamicActions, dynamicComponents), stateMap);
+
+        String key = stateMap.keySet().stream().filter("form:added"::equals).findFirst().orElse(null);
+        assertSame(clientIdOfAction, key);
+        assertEquals("state", stateMap.get(key));
+    }
+
     @Test
     void aViewWithADynamicActionSavesItInTheDynamicActionsEntry() {
         HashMap<String, UIComponent> dynamicComponents = new HashMap<>();
