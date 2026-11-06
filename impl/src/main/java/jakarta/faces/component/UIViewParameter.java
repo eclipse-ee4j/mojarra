@@ -74,7 +74,7 @@ public class UIViewParameter extends UIInput {
     public static final String COMPONENT_FAMILY = "jakarta.faces.ViewParameter";
 
     enum PropertyKeys {
-        name, submittedValue
+        name
     }
 
     // ------------------------------------------------------ Instance Variables
@@ -171,7 +171,7 @@ public class UIViewParameter extends UIInput {
      */
     @Override
     public Object getSubmittedValue() {
-        return getStateHelper().get(PropertyKeys.submittedValue);
+        return getStateHelper().get(UIInput.PropertyKeys.submittedValue);
     }
 
     /**
@@ -181,7 +181,7 @@ public class UIViewParameter extends UIInput {
      */
     @Override
     public void setSubmittedValue(Object submittedValue) {
-        getStateHelper().put(PropertyKeys.submittedValue, submittedValue);
+        getStateHelper().put(UIInput.PropertyKeys.submittedValue, submittedValue);
     }
 
     // ----------------------------------------------------- UIComponent Methods

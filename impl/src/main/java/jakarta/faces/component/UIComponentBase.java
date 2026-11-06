@@ -246,6 +246,13 @@ public abstract class UIComponentBase extends UIComponent {
     private transient boolean rendererTypeSet;
 
     /**
+     * Whether the state which the last call of {@link #restoreState(FacesContext, Object)} restored was a full state. A
+     * subclass in this package reads it right after <code>super.restoreState()</code>, to clear a part of its own which a
+     * full state holds as <code>null</code>.
+     */
+    transient boolean restoredFullState;
+
+    /**
      * Encode-scoped cache of {@link #isRendered()}. Within a single component encode the renderer's
      * {@code shouldEncode}, {@code encodeChildren} and {@code encodeEnd} all re-consult {@code isRendered()},
      * each otherwise re-reading {@code rendered} from the StateHelper. {@link #encodeBegin} computes it once and
@@ -1406,6 +1413,8 @@ public abstract class UIComponentBase extends UIComponent {
             throw new NullPointerException();
         }
 
+        restoredFullState = state != null && ((Object[]) state).length == 7;
+
         if (state == null) {
             return;
         }
@@ -1417,40 +1426,50 @@ public abstract class UIComponentBase extends UIComponent {
                 listeners = new AttachedObjectListHolder<>();
             }
             listeners.restoreState(context, values[0]);
+        } else if (restoredFullState) {
+            listeners = null;
         }
 
         if (values[1] != null) {
             Map<Class<? extends SystemEvent>, List<SystemEventListener>> restoredListeners = restoreSystemEventListeners(context, values[1]);
-            if (listenersByEventClass != null) {
+            if (listenersByEventClass != null && !restoredFullState) {
                 listenersByEventClass.putAll(restoredListeners);
             } else {
                 listenersByEventClass = restoredListeners;
             }
-            if (values.length != 7) {
+            if (!restoredFullState) {
                 // Partial-state delta: a listener changed after markInitialState; keep it dirty so the change stays
                 // in the delta across subsequent postbacks (mirrors bindingsModified / rendererTypeSet below).
                 systemEventListenersModified = true;
             }
+        } else if (restoredFullState) {
+            listenersByEventClass = null;
         }
 
         if (values[2] != null) {
             behaviors = restoreBehaviorsState(context, values[2]);
+        } else if (restoredFullState) {
+            behaviors = null;
         }
 
         if (values[3] != null) {
             bindings = restoreBindingsState(context, values[3]);
-            if (values.length != 7) {
+            if (!restoredFullState) {
                 // Partial-state delta: a value expression changed after markInitialState; keep it dirty so
                 // the change stays in the delta across subsequent postbacks (mirrors rendererTypeSet below).
                 bindingsModified = true;
             }
+        } else if (restoredFullState) {
+            bindings = null;
         }
 
         if (values[4] != null) {
             getStateHelper().restoreState(context, values[4]);
+        } else if (restoredFullState && stateHelper != null) {
+            stateHelper.restoreState(context, ComponentStateHelper.EMPTY_FULL_STATE);
         }
 
-        if (values.length == 7) {
+        if (restoredFullState) {
             // Full state is authoritative and runs no buildView reconstruction: restore rendererType
             // exactly (including an explicit null, which must overwrite a constructor-set default) and
             // the id, then sync the field-backed markers from the restored attributes map.
@@ -1522,29 +1541,56 @@ public abstract class UIComponentBase extends UIComponent {
             return null;
         }
 
-        Object result;
-        Class<?> mapOrCollectionClass = attachedObject.getClass();
-        boolean newWillSucceed = true;
-        // first, test for newability of the class.
-        try {
-            int modifiers = mapOrCollectionClass.getModifiers();
-            newWillSucceed = Modifier.isPublic(modifiers);
-            if (newWillSucceed) {
-                newWillSucceed = null != mapOrCollectionClass.getConstructor();
-            }
-        } catch (Exception e) {
-            newWillSucceed = false;
+        return saveAttachedState(context, attachedObject, attachedObject.getClass(), false);
+    }
+
+    /**
+     * Whether {@link #restoreAttachedState} can create an instance of the given class: it is public, not abstract, and
+     * has a public no-argument constructor.
+     *
+     * @param type the class.
+     * @return whether the class can be instantiated on restore.
+     */
+    static boolean isNewable(Class<?> type) {
+        int modifiers = type.getModifiers();
+        if (!Modifier.isPublic(modifiers) || Modifier.isAbstract(modifiers)) {
+            return false;
         }
+        try {
+            type.getConstructor();
+            return true;
+        } catch (NoSuchMethodException | SecurityException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Save the given attached object as {@link #saveAttachedState(FacesContext, Object)} does, but record the given
+     * class as the class of a <code>Map</code> or <code>Collection</code>, so that {@link #restoreAttachedState}
+     * restores it as an instance of that class. When that class cannot be instantiated, the object is saved whole, as
+     * {@link #saveAttachedState(FacesContext, Object)} saves an object of such a class.
+     *
+     * @param context the {@link FacesContext} for this request.
+     * @param attachedObject the object to save, not <code>null</code>.
+     * @param mapOrCollectionClass the class to record for a <code>Map</code> or <code>Collection</code>.
+     * @param keepNullItems whether a <code>null</code> item of a <code>Collection</code> is saved, so that it restores
+     * at its position, or left out.
+     * @return The state object to be saved.
+     */
+    static Object saveAttachedState(FacesContext context, Object attachedObject, Class<?> mapOrCollectionClass, boolean keepNullItems) {
+        Object result;
+        boolean newWillSucceed = isNewable(mapOrCollectionClass);
 
         if (newWillSucceed && attachedObject instanceof Collection) {
             Collection attachedCollection = (Collection) attachedObject;
             List<StateHolderSaver> resultList = new ArrayList<>(attachedCollection.size() + 1);
             resultList.add(new StateHolderSaver(context, mapOrCollectionClass));
             for (Object item : attachedCollection) {
-                if (item != null) {
-                    if (item instanceof StateHolder && ((StateHolder) item).isTransient()) {
-                        continue;
+                if (item == null) {
+                    if (keepNullItems) {
+                        resultList.add(new StateHolderSaver(context, null));
                     }
+                } else if (!(item instanceof StateHolder && ((StateHolder) item).isTransient())) {
                     resultList.add(new StateHolderSaver(context, item));
                 }
             }
