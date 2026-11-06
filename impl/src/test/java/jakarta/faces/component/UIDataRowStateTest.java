@@ -84,6 +84,34 @@ class UIDataRowStateTest extends JUnitFacesTestCaseBase {
         assertFalse(input(restored).isValid());
     }
 
+    /**
+     * A state which is kept without serializing it, as server side state saving does by default, must not change when a
+     * table restored from it changes or discards the state of a row.
+     */
+    @Test
+    void restoredTableDoesNotChangeTheSavedPerRowState() {
+        UIData table = createTable();
+        table.setRowIndex(0);
+        input(table).setSubmittedValue("first");
+        table.setRowIndex(-1);
+        Object state = table.saveState(facesContext);
+
+        UIData restored = createTable();
+        restored.restoreState(facesContext, state);
+        restored.setRowIndex(0);
+        input(restored).setSubmittedValue(null);
+        restored.setRowIndex(1);
+        input(restored).setSubmittedValue("changed");
+        restored.setRowIndex(-1);
+        UIData restoredAgain = createTable();
+        restoredAgain.restoreState(facesContext, state);
+
+        restoredAgain.setRowIndex(0);
+        assertEquals("first", input(restoredAgain).getSubmittedValue());
+        restoredAgain.setRowIndex(1);
+        assertNull(input(restoredAgain).getSubmittedValue());
+    }
+
     @Test
     void preservedRowStatesRoundTrip() throws Exception {
         UIData table = createRowStatePreservedTableWithTypedFirstRow();
@@ -96,6 +124,24 @@ class UIDataRowStateTest extends JUnitFacesTestCaseBase {
         assertEquals("typed", input(restored).getLocalValue());
         restored.setRowIndex(1);
         assertNull(input(restored).getLocalValue());
+    }
+
+    /**
+     * A row whose children are back at their initial state restores that initial state, not the state which the row had
+     * before.
+     */
+    @Test
+    void preservedRowRevertedToItsInitialStateRestoresTheInitialState() {
+        UIData table = createRowStatePreservedTable();
+        table.setRowIndex(0);
+        input(table).getAttributes().put("foo", "bar");
+        table.setRowIndex(-1);
+        table.setRowIndex(0);
+        input(table).getAttributes().remove("foo");
+        table.setRowIndex(-1);
+
+        table.setRowIndex(0);
+        assertNull(input(table).getAttributes().get("foo"));
     }
 
     /**
@@ -167,8 +213,9 @@ class UIDataRowStateTest extends JUnitFacesTestCaseBase {
 
     /**
      * A table nested in a table with {@code rowStatePreserved} is one instance whose per-row state is saved once per
-     * enclosing row by the enclosing table. Discarding its per-row state on rendering without errors must reach every
-     * enclosing row, so the enclosing table must not keep a copy of it.
+     * enclosing row by the enclosing table. Discarding its per-row state on rendering without errors must reach the
+     * enclosing row: an enclosing row whose descendants have no state left restores the initial state of its
+     * descendants.
      */
     @Test
     void nestedTableInRowStatePreservedTableDiscardsPerRowStateWithoutErrors() throws Exception {

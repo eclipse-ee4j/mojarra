@@ -232,6 +232,31 @@ class UIRepeatRowStateTest extends JUnitFacesTestCaseBase {
     }
 
     /**
+     * A state which is kept without serializing it, as server side state saving does by default, must not change when a
+     * repeat restored from it saves the state of its rows again, as it does in a request with error messages.
+     */
+    @Test
+    void restoredRepeatDoesNotChangeTheSavedPerRowState() throws Exception {
+        facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "error", null));
+        facesContext.setCurrentPhaseId(PhaseId.APPLY_REQUEST_VALUES);
+        UIRepeat repeat = createRepeat();
+        repeat.processDecodes(facesContext);
+        Object state = repeat.saveState(facesContext);
+
+        submittingEveryRow = true;
+        UIRepeat restored = createRepeat();
+        restored.restoreState(facesContext, state);
+        restored.processDecodes(facesContext);
+        submittingEveryRow = false;
+        UIRepeat restoredAgain = createRepeat();
+        restoredAgain.restoreState(facesContext, state);
+        facesContext.setCurrentPhaseId(PhaseId.RENDER_RESPONSE);
+        restoredAgain.encodeChildren(facesContext);
+
+        assertEquals(List.of("null null false true", "submitted false", "typed local true false", "submitted true"), renderedStates);
+    }
+
+    /**
      * A per-row state in the serialized form of an older version, which serializes every field, is not read, so the state
      * helpers expire the view.
      */

@@ -1065,7 +1065,8 @@ public class UIRepeat extends UINamingContainer {
         }
         Object[] values = (Object[]) object;
         super.restoreState(faces, values[0]);
-        childState = (Map<String, SavedState[]>) values[1];
+        Map<String, SavedState[]> restoredChildState = (Map<String, SavedState[]>) values[1];
+        childState = restoredChildState == null ? null : new HashMap<>(restoredChildState);
     }
 
     @Override
