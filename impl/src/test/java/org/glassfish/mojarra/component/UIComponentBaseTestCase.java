@@ -86,6 +86,24 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
 
     // ------------------------------------------------- Individual Test Methods
     // Test lifecycle management methods
+    /**
+     * A full state describes the whole component, also when the component had no state helper when it was saved: restoring it leaves nothing of the current
+     * state helper, such as a local value set after the full state was saved.
+     */
+    @Test
+    public void testFullStateWithoutStateHelperClearsTheCurrentStateHelper() throws Exception {
+        UIInput input = new UIInput();
+        input.setId("input");
+        Object fullState = input.saveState(facesContext);
+        input.markInitialState();
+        input.setValue("typed");
+
+        input.clearInitialState();
+        input.restoreState(facesContext, fullState);
+
+        assertNull(input.getLocalValue());
+    }
+
     @Test
     public void testLifecycleManagement() {
 

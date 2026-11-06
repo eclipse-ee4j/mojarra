@@ -598,6 +598,21 @@ public class FaceletStateManagementStrategy extends StateManagementStrategy {
     }
 
     /**
+     * Key the saved state of the component of the given dynamic action by the same client ID instance as the action holds. Both end up in the same serialized
+     * view state. Java serialization writes each distinct <code>String</code> instance in full, and writes the same instance again only as a back reference.
+     * The entry is removed before it is put again, because {@link Map#put(Object, Object)} keeps the existing key instance.
+     *
+     * @param action the saved dynamic action.
+     * @param stateMap the saved states of the components by client ID.
+     */
+    private static void reuseClientIdOf(ComponentStruct action, Map<String, Object> stateMap) {
+        Object componentState = stateMap.remove(action.getClientId());
+        if (componentState != null) {
+            stateMap.put(action.getClientId(), componentState);
+        }
+    }
+
+    /**
      * Save the dynamic actions.
      *
      * @param context the Faces context.
@@ -631,6 +646,7 @@ public class FaceletStateManagementStrategy extends StateManagementStrategy {
                         action.setIndex(index);
                     }
                     savedActions.add(action.saveState(context));
+                    reuseClientIdOf(action, stateMap);
                 }
             }
             if (!savedActions.isEmpty()) {
