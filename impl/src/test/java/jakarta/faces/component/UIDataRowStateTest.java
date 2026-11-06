@@ -19,10 +19,12 @@ package jakarta.faces.component;
 import static com.sun.faces.junit.Serialization.serializeAndDeserialize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,7 +40,8 @@ import jakarta.faces.render.Renderer;
 
 /**
  * The per-row state of the inputs of a {@link UIData} without {@code rowStatePreserved} survives serializing the state
- * of the table, and is discarded when the table is rendered without errors.
+ * of the table, and is discarded when the table is rendered without errors. With {@code rowStatePreserved}, the delta
+ * states of the rows survive serializing the state of the table, and each restore gets its own copy of them.
  */
 class UIDataRowStateTest extends JUnitFacesTestCaseBase {
 
@@ -81,6 +84,72 @@ class UIDataRowStateTest extends JUnitFacesTestCaseBase {
         assertFalse(input(restored).isValid());
     }
 
+    @Test
+    void preservedRowStatesRoundTrip() throws Exception {
+        UIData table = createRowStatePreservedTableWithTypedFirstRow();
+
+        Object state = serializeAndDeserialize(table.saveState(facesContext));
+        UIData restored = createRowStatePreservedTable();
+        restored.restoreState(facesContext, state);
+
+        restored.setRowIndex(0);
+        assertEquals("typed", input(restored).getLocalValue());
+    }
+
+    /**
+     * The delta states of the rows are saved as a map of the saved states of the components of each row, which are
+     * serializable as they are.
+     */
+    @Test
+    void preservedRowStatesAreSavedAsMap() {
+        UIData table = createRowStatePreservedTableWithTypedFirstRow();
+
+        assertInstanceOf(Map.class, ((Object[]) table.saveState(facesContext))[1]);
+    }
+
+    /**
+     * A state which is kept without serializing it, as server side state saving does by default, must not change when a
+     * table restored from it changes the state of a row.
+     */
+    @Test
+    void restoredTableDoesNotChangeTheSavedPreservedRowStates() {
+        UIData table = createRowStatePreservedTableWithTypedFirstRow();
+        Object state = table.saveState(facesContext);
+
+        UIData restored = createRowStatePreservedTable();
+        restored.restoreState(facesContext, state);
+        restored.setRowIndex(1);
+        input(restored).setValue("changed");
+        restored.setRowIndex(-1);
+        UIData restoredAgain = createRowStatePreservedTable();
+        restoredAgain.restoreState(facesContext, state);
+
+        restoredAgain.setRowIndex(1);
+        assertNull(input(restoredAgain).getLocalValue());
+    }
+
+    /**
+     * A table with {@code rowStatePreserved} nested in another one is one instance whose state is saved and restored once
+     * per enclosing row, so the saved state of one enclosing row must not change when another enclosing row is restored.
+     */
+    @Test
+    void nestedRowStatePreservedTableKeepsPreservedRowStatesPerEnclosingRow() {
+        UIData outer = createNestedTable(true);
+        UIData inner = inner(outer);
+
+        outer.setRowIndex(0);
+        inner.setRowIndex(0);
+        input(inner).setValue("typed");
+        inner.setRowIndex(-1);
+        outer.setRowIndex(1);
+        outer.setRowIndex(-1);
+
+        outer.setRowIndex(0);
+        Object[] innerState = assertInstanceOf(Object[].class, inner.saveState(facesContext));
+        Map<?, ?> rowDeltaStates = assertInstanceOf(Map.class, innerState[1]);
+        assertFalse(rowDeltaStates.isEmpty());
+    }
+
     /**
      * A table nested in a table with {@code rowStatePreserved} is one instance whose per-row state is saved once per
      * enclosing row by the enclosing table. Discarding its per-row state on rendering without errors must reach every
@@ -88,19 +157,9 @@ class UIDataRowStateTest extends JUnitFacesTestCaseBase {
      */
     @Test
     void nestedTableInRowStatePreservedTableDiscardsPerRowStateWithoutErrors() throws Exception {
-        UIData outer = createTable();
-        outer.setRowStatePreserved(true);
-        UIData inner = new UIData();
-        inner.setId("inner");
-        inner.setValue(ROWS);
-        UIColumn column = new UIColumn();
-        column.setId("innerColumn");
-        inner.getChildren().add(column);
-        UIInput input = new UIInput();
-        input.setId("innerInput");
-        column.getChildren().add(input);
-        outer.getChildren().get(0).getChildren().add(inner);
-        markInitialState(facesContext.getViewRoot());
+        UIData outer = createNestedTable(false);
+        UIData inner = inner(outer);
+        UIInput input = input(inner);
 
         outer.setRowIndex(0);
         inner.setRowIndex(0);
@@ -131,12 +190,48 @@ class UIDataRowStateTest extends JUnitFacesTestCaseBase {
     }
 
     private static void markInitialStateOfTree(UIComponent component) {
+        component.markInitialState();
         for (UIComponent child : component.getChildren()) {
             markInitialStateOfTree(child);
         }
-        component.markInitialState();
     }
 
+    private UIData createRowStatePreservedTableWithTypedFirstRow() {
+        UIData table = createRowStatePreservedTable();
+        table.setRowIndex(0);
+        input(table).setValue("typed");
+        table.setRowIndex(-1);
+        return table;
+    }
+
+    private UIData createRowStatePreservedTable() {
+        UIData table = createTable();
+        table.setRowStatePreserved(true);
+        markInitialState(facesContext.getViewRoot());
+        return table;
+    }
+
+    private UIData createNestedTable(boolean innerRowStatePreserved) {
+        UIData outer = createTable();
+        outer.setRowStatePreserved(true);
+        UIData inner = new UIData();
+        inner.setId("inner");
+        inner.setValue(ROWS);
+        inner.setRowStatePreserved(innerRowStatePreserved);
+        UIColumn column = new UIColumn();
+        column.setId("innerColumn");
+        inner.getChildren().add(column);
+        UIInput input = new UIInput();
+        input.setId("innerInput");
+        column.getChildren().add(input);
+        outer.getChildren().get(0).getChildren().add(inner);
+        markInitialState(facesContext.getViewRoot());
+        return outer;
+    }
+
+    private static UIData inner(UIData outer) {
+        return (UIData) outer.getChildren().get(0).getChildren().get(1);
+    }
 
     private UIData createTable() {
         UIViewRoot view = new UIViewRoot();
