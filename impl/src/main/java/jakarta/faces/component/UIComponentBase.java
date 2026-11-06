@@ -258,6 +258,13 @@ public abstract class UIComponentBase extends UIComponent {
     private transient boolean rendererTypeSet;
 
     /**
+     * Whether the state which the last call of {@link #restoreState(FacesContext, Object)} restored was a full state. A
+     * subclass in this package reads it right after <code>super.restoreState()</code>, to clear a part of its own which a
+     * full state holds as <code>null</code>.
+     */
+    transient boolean restoredFullState;
+
+    /**
      * Encode-scoped cache of {@link #isRendered()}. Within a single component encode the renderer's
      * {@code shouldEncode}, {@code encodeChildren} and {@code encodeEnd} all re-consult {@code isRendered()},
      * each otherwise re-reading {@code rendered} from the StateHelper. {@link #encodeBegin} computes it once and
@@ -1418,54 +1425,63 @@ public abstract class UIComponentBase extends UIComponent {
             throw new NullPointerException();
         }
 
+        restoredFullState = state != null && ((Object[]) state).length == 7;
+
         if (state == null) {
             return;
         }
 
         Object[] values = (Object[]) state;
-        boolean fullState = values.length == 7;
 
         if (values[0] != null) {
             if (listeners == null) {
                 listeners = new AttachedObjectListHolder<>();
             }
             listeners.restoreState(context, values[0]);
+        } else if (restoredFullState) {
+            listeners = null;
         }
 
         if (values[1] != null) {
             Map<Class<? extends SystemEvent>, List<SystemEventListener>> restoredListeners = restoreSystemEventListeners(context, values[1]);
-            if (listenersByEventClass != null) {
+            if (listenersByEventClass != null && !restoredFullState) {
                 listenersByEventClass.putAll(restoredListeners);
             } else {
                 listenersByEventClass = restoredListeners;
             }
-            if (!fullState) {
+            if (!restoredFullState) {
                 // Partial-state delta: a listener changed after markInitialState; keep it dirty so the change stays
                 // in the delta across subsequent postbacks (mirrors bindingsModified / rendererTypeSet below).
                 systemEventListenersModified = true;
             }
+        } else if (restoredFullState) {
+            listenersByEventClass = null;
         }
 
         if (values[2] != null) {
             behaviors = restoreBehaviorsState(context, values[2]);
+        } else if (restoredFullState) {
+            behaviors = null;
         }
 
         if (values[3] != null) {
             bindings = restoreBindingsState(context, values[3]);
-            if (!fullState) {
+            if (!restoredFullState) {
                 // Partial-state delta: a value expression changed after markInitialState; keep it dirty so
                 // the change stays in the delta across subsequent postbacks (mirrors rendererTypeSet below).
                 bindingsModified = true;
             }
+        } else if (restoredFullState) {
+            bindings = null;
         }
 
         if (values[4] != null) {
             getStateHelper().restoreState(context, values[4]);
-        } else if (fullState && stateHelper != null) {
+        } else if (restoredFullState && stateHelper != null) {
             stateHelper.restoreState(context, ComponentStateHelper.EMPTY_FULL_STATE);
         }
 
-        if (fullState) {
+        if (restoredFullState) {
             // Full state is authoritative and runs no buildView reconstruction: restore rendererType
             // exactly (including an explicit null, which must overwrite a constructor-set default) and
             // the id, then sync the field-backed markers from the restored attributes map.
