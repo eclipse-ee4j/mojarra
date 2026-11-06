@@ -589,7 +589,7 @@ public class DefaultFaceletFactory {
      * @throws ELException
      */
     private DefaultFacelet createFacelet(URL url) throws IOException {
-        return createFacelet(url, null);
+        return createFacelet(url, null, false);
     }
 
     /**
@@ -597,8 +597,8 @@ public class DefaultFaceletFactory {
      * temporary file, so its alias is a key the application scoped {@link #idMappers} cache would never see again: it
      * gets its own mapper instead.
      */
-    private DefaultFacelet createFabricatedFacelet(URL url) throws IOException {
-        return createFacelet(url, createFabricatedIdMapper());
+    DefaultFacelet createFabricatedFacelet(URL url) throws IOException {
+        return createFacelet(url, createFabricatedIdMapper(), true);
     }
 
     /**
@@ -609,14 +609,14 @@ public class DefaultFaceletFactory {
         return idMappers == null ? null : IdMapper.numbered(fabricatedFaceletCount.incrementAndGet());
     }
 
-    private DefaultFacelet createFacelet(URL url, IdMapper ownIdMapper) throws IOException {
+    private DefaultFacelet createFacelet(URL url, IdMapper ownIdMapper, boolean fabricated) throws IOException {
         if (log.isLoggable(Level.FINE)) {
             log.fine("Creating Facelet for: " + url);
         }
         String alias = getAlias(url);
         try {
             FaceletHandler h = compiler.compile(url, alias);
-            return new DefaultFacelet(this, compiler.createExpressionFactory(), url, alias, h, ownIdMapper);
+            return new DefaultFacelet(this, compiler.createExpressionFactory(), url, alias, h, ownIdMapper, fabricated);
         } catch (FileNotFoundException fnfe) {
             throw new FileNotFoundException("Facelet " + alias + " not found at: " + url.toExternalForm());
         }

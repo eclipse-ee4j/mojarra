@@ -576,6 +576,193 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         assertTrue(Arrays.asList(delta).contains(UIComponent.PropertyKeysPrivate.attributesThatAreSet), Arrays.deepToString(delta));
     }
 
+    /**
+     * The full state of a standard component, as saved for a component whose initial state is not marked, carries no
+     * attributesThatAreSet list when the restore rebuilds it exactly from the restored properties.
+     */
+    @Test
+    public void testFullStateSavesNoAttributesThatAreSetWhichRestoreRebuilds() throws Exception {
+        facesContext.getViewRoot().markInitialState();
+        HtmlOutputText restored = restoreFullState(outputTextWithValueAndStyleClass());
+        assertEquals(Arrays.asList("styleClass", "value"), recordedAttributes(restored));
+
+        Object[] fullState = (Object[]) restored.getStateHelper().saveState(facesContext);
+        assertFalse(Arrays.asList(fullState).contains(UIComponent.PropertyKeysPrivate.attributesThatAreSet), Arrays.deepToString(fullState));
+        assertEquals(Arrays.asList("styleClass", "value"), recordedAttributes(restoreFullState(restored)));
+    }
+
+    /**
+     * A standard component restored from a full state without attributesThatAreSet list records its attributes in
+     * natural order, as the saved component did, so that it renders them in the same order.
+     */
+    @Test
+    public void testFullStateRestoresAttributesThatAreSetInNaturalOrder() throws Exception {
+        facesContext.getViewRoot().markInitialState();
+        HtmlOutputText c = new HtmlOutputText();
+        c.setDir("ltr");
+        c.setLang("nl");
+        c.setStyle("color: red");
+        c.setStyleClass("foo");
+        c.setTitle("bar");
+        List<?> recorded = Arrays.asList("dir", "lang", "style", "styleClass", "title");
+        assertEquals(recorded, recordedAttributes(c));
+
+        Object[] fullState = (Object[]) c.getStateHelper().saveState(facesContext);
+        assertFalse(Arrays.asList(fullState).contains(UIComponent.PropertyKeysPrivate.attributesThatAreSet), Arrays.deepToString(fullState));
+        assertEquals(recorded, recordedAttributes(restoreFullState(c)));
+    }
+
+    /**
+     * The full state of a standard component carries the attributesThatAreSet list when it records an attribute which
+     * the restore does not record from the restored properties, so that the restored component renders the same
+     * attributes in the same order.
+     */
+    @Test
+    public void testFullStateSavesAttributesThatAreSetWithBoundAttribute() throws Exception {
+        request.setAttribute("foo", "bar");
+
+        facesContext.getViewRoot().markInitialState();
+        HtmlOutputText c = new HtmlOutputText();
+        c.setValue("Hello");
+        c.setStyleClass("foo");
+        c.setValueExpression("dir", application.getExpressionFactory().createValueExpression(facesContext.getELContext(), "#{foo}", String.class));
+        assertEquals(Arrays.asList("styleClass", "dir"), recordedAttributes(c));
+
+        Object[] fullState = (Object[]) c.getStateHelper().saveState(facesContext);
+        assertTrue(Arrays.asList(fullState).contains(UIComponent.PropertyKeysPrivate.attributesThatAreSet), Arrays.deepToString(fullState));
+        HtmlOutputText restored = restoreFullState(c);
+        assertEquals(Arrays.asList("styleClass", "dir", "value"), recordedAttributes(restored));
+        assertEquals(Arrays.asList("styleClass", "dir", "value"), recordedAttributes(restoreFullState(restored)));
+    }
+
+    /**
+     * The full state of a standard component carries the attributesThatAreSet list when it holds the names which the
+     * restore records, but not in natural order, so that the restored component renders them in the same order. An
+     * attribute bound to a value expression before its setter was called keeps the position of the binding.
+     */
+    @Test
+    public void testFullStateSavesAttributesThatAreSetOutOfNaturalOrder() throws Exception {
+        request.setAttribute("foo", "bar");
+        facesContext.getViewRoot().markInitialState();
+        HtmlOutputText c = new HtmlOutputText();
+        c.setStyleClass("foo");
+        c.setValueExpression("dir", application.getExpressionFactory().createValueExpression(facesContext.getELContext(), "#{foo}", String.class));
+        c.setDir("rtl");
+        assertEquals(Arrays.asList("styleClass", "dir"), recordedAttributes(c));
+
+        Object[] fullState = (Object[]) c.getStateHelper().saveState(facesContext);
+        assertTrue(Arrays.asList(fullState).contains(UIComponent.PropertyKeysPrivate.attributesThatAreSet), Arrays.deepToString(fullState));
+        assertEquals(Arrays.asList("styleClass", "dir"), recordedAttributes(restoreFullState(c)));
+    }
+
+    /**
+     * The full state of a standard component carries the attributesThatAreSet list when a recorded attribute holds a
+     * transient state holder, which the restore restores as null and therefore does not record.
+     */
+    @Test
+    public void testFullStateSavesAttributesThatAreSetWithTransientStateHolder() throws Exception {
+        facesContext.getViewRoot().markInitialState();
+        HtmlOutputText c = new HtmlOutputText();
+        c.setTitle("foo");
+        UIOutput transientHolder = new UIOutput();
+        transientHolder.setTransient(true);
+        c.getStateHelper().put("title", transientHolder);
+
+        Object[] fullState = (Object[]) c.getStateHelper().saveState(facesContext);
+        assertTrue(Arrays.asList(fullState).contains(UIComponent.PropertyKeysPrivate.attributesThatAreSet), Arrays.deepToString(fullState));
+    }
+
+    /**
+     * Under full state saving, which leaves the initial state of the view root unmarked, the full state of a standard
+     * component carries the attributesThatAreSet list as is, without checking whether the restore rebuilds it.
+     */
+    @Test
+    public void testFullStateSavingSavesAttributesThatAreSet() throws Exception {
+        HtmlOutputText c = restoreFullState(outputTextWithValueAndStyleClass());
+
+        Object[] fullState = (Object[]) c.getStateHelper().saveState(facesContext);
+        assertTrue(Arrays.asList(fullState).contains(UIComponent.PropertyKeysPrivate.attributesThatAreSet), Arrays.deepToString(fullState));
+    }
+
+    /**
+     * A standard component restored from a full state onto the same component as rebuilt from the view, which recorded
+     * its attributes during the build already, records them in the saved order.
+     */
+    @Test
+    public void testFullStateRestoredOntoBuiltComponentKeepsAttributesThatAreSetOrder() throws Exception {
+        request.setAttribute("foo", "bar");
+        facesContext.getViewRoot().markInitialState();
+        HtmlOutputText c = builtOutputTextWithBoundTitle();
+        c.clearInitialState();
+        c.setDir("ltr");
+        assertEquals(Arrays.asList("dir", "styleClass", "title"), recordedAttributes(c));
+
+        Object state = c.saveState(facesContext);
+        HtmlOutputText rebuilt = builtOutputTextWithBoundTitle();
+        rebuilt.pushComponentToEL(facesContext, rebuilt);
+        rebuilt.restoreState(facesContext, state);
+        rebuilt.popComponentFromEL(facesContext);
+        assertEquals(Arrays.asList("dir", "styleClass", "title"), recordedAttributes(rebuilt));
+    }
+
+    /**
+     * A standard component restored from a full state without attributesThatAreSet list onto the same component as
+     * rebuilt from the view, whose build recorded its attributes out of natural order, records them in natural order,
+     * as the saved component did.
+     */
+    @Test
+    public void testFullStateWithoutAttributesThatAreSetRestoredOntoBuiltComponentRecordsNaturalOrder() throws Exception {
+        request.setAttribute("foo", "bar");
+        facesContext.getViewRoot().markInitialState();
+        HtmlOutputText c = builtOutputTextWithBoundDir();
+        c.clearInitialState();
+        c.setValueExpression("dir", null);
+        c.setDir("rtl");
+        assertEquals(Arrays.asList("dir", "lang"), recordedAttributes(c));
+
+        Object[] fullState = (Object[]) c.getStateHelper().saveState(facesContext);
+        assertFalse(Arrays.asList(fullState).contains(UIComponent.PropertyKeysPrivate.attributesThatAreSet), Arrays.deepToString(fullState));
+
+        Object state = c.saveState(facesContext);
+        HtmlOutputText rebuilt = builtOutputTextWithBoundDir();
+        rebuilt.pushComponentToEL(facesContext, rebuilt);
+        rebuilt.restoreState(facesContext, state);
+        rebuilt.popComponentFromEL(facesContext);
+        assertEquals(Arrays.asList("dir", "lang"), recordedAttributes(rebuilt));
+    }
+
+    private HtmlOutputText builtOutputTextWithBoundDir() {
+        HtmlOutputText component = new HtmlOutputText();
+        component.setLang("nl");
+        component.setValueExpression("dir", application.getExpressionFactory().createValueExpression(facesContext.getELContext(), "#{foo}", String.class));
+        component.markInitialState();
+        return component;
+    }
+
+    private HtmlOutputText builtOutputTextWithBoundTitle() {
+        HtmlOutputText component = new HtmlOutputText();
+        component.setStyleClass("foo");
+        component.setValueExpression("title", application.getExpressionFactory().createValueExpression(facesContext.getELContext(), "#{foo}", String.class));
+        component.markInitialState();
+        return component;
+    }
+
+    private static HtmlOutputText outputTextWithValueAndStyleClass() {
+        HtmlOutputText component = new HtmlOutputText();
+        component.setValue("Hello");
+        component.setStyleClass("foo");
+        return component;
+    }
+
+    private HtmlOutputText restoreFullState(HtmlOutputText component) {
+        Object state = component.saveState(facesContext);
+        HtmlOutputText restored = new HtmlOutputText();
+        restored.pushComponentToEL(facesContext, restored);
+        restored.restoreState(facesContext, state);
+        restored.popComponentFromEL(facesContext);
+        return restored;
+    }
+
     private static List<?> recordedAttributes(UIComponent component) {
         List<?> attributesThatAreSet = (List<?>) component.getAttributes().get(UIComponentBase.ATTRIBUTES_THAT_ARE_SET);
         return attributesThatAreSet == null ? Collections.emptyList() : attributesThatAreSet;

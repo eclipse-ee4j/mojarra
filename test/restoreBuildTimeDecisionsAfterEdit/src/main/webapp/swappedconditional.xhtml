@@ -1,0 +1,40 @@
+<!--
+
+    Copyright (c) Contributors to Eclipse Foundation.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:c="jakarta.tags.core">
+    <h:head><title>swapped conditional</title></h:head>
+    <h:body>
+        <h:form id="form">
+            <!-- block -->
+            <h:outputText id="first" value="first" />
+            <c:if test="#{swappedBlocksBean.a}">
+                <h:inputText id="inputA" value="#{swappedBlocksBean.valueA}" />
+            </c:if>
+            <!-- block -->
+            <h:outputText id="second" value="second" />
+            <c:if test="#{swappedBlocksBean.b}">
+                <h:inputText id="inputB" value="#{swappedBlocksBean.valueB}" />
+            </c:if>
+            <!-- block -->
+            <h:commandButton id="submit" value="submit" />
+            <h:outputText id="value" value="#{swappedBlocksBean.valueA}" />
+        </h:form>
+    </h:body>
+</html>

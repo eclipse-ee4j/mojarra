@@ -43,6 +43,8 @@ import org.junit.jupiter.api.Test;
  */
 class ComponentStateHelperTest {
 
+    private static final String ATTRIBUTE = "data-x";
+
     /**
      * A component which was built and marked, and then unmarked during a request, as setting a converter does, saves full
      * state. Restoring that full state into the component rebuilt and marked on the next request unmarks it again, so it
@@ -64,6 +66,35 @@ class ComponentStateHelperTest {
 
         assertFalse(rebuiltAgain.initialStateMarked());
         assertSame(style, rebuiltAgain.getValueExpression("style"));
+    }
+
+    /**
+     * A full state describes the whole component. Restoring it onto the component as built again from the view leaves
+     * nothing of that build which the full state does not hold, such as an attribute removed after the initial state was
+     * cleared.
+     */
+    @Test
+    void fullStateRestoredOntoRebuiltComponentReplacesWhatTheBuildSet() {
+        FacesContext context = mock(FacesContext.class);
+
+        HtmlOutputText built = builtOutputTextWithAttribute();
+        built.clearInitialState();
+        built.getAttributes().remove(ATTRIBUTE);
+        Object state = built.saveState(context);
+
+        HtmlOutputText rebuilt = builtOutputTextWithAttribute();
+        rebuilt.restoreState(context, state);
+
+        assertNull(rebuilt.getAttributes().get(ATTRIBUTE));
+        assertEquals("Hello", rebuilt.getValue());
+    }
+
+    private static HtmlOutputText builtOutputTextWithAttribute() {
+        HtmlOutputText output = new HtmlOutputText();
+        output.setValue("Hello");
+        output.getAttributes().put(ATTRIBUTE, "y");
+        output.markInitialState();
+        return output;
     }
 
     private static UIOutput builtOutput() {

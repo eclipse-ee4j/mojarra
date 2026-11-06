@@ -334,50 +334,75 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
             return;
         }
 
-        if (!component.initialStateMarked() && defaultMap != null && !defaultMap.isEmpty()) {
+        Object[] savedState = (Object[]) state;
+        Object initialState = savedState[savedState.length - 1];
+        boolean fullState = Boolean.FALSE.equals(initialState);
+
+        if ((fullState || !component.initialStateMarked()) && defaultMap != null && !defaultMap.isEmpty()) {
             defaultMap.clear();
             if (deltaMap != null && !deltaMap.isEmpty()) {
                 deltaMap.clear();
             }
         }
 
-        Object[] savedState = (Object[]) state;
-        if (savedState[savedState.length - 1] != null) {
-            component.initialState = (Boolean) savedState[savedState.length - 1];
+        if (initialState != null) {
+            component.initialState = (Boolean) initialState;
         }
 
         int length = (savedState.length - 1) / 2;
+        int attributesThatAreSetIndex = fullState ? indexOfAttributesThatAreSet(savedState, length) : -1;
+        if (attributesThatAreSetIndex >= 0) {
+            restoreEntry(context, (Serializable) savedState[attributesThatAreSetIndex * 2], savedState[attributesThatAreSetIndex * 2 + 1]);
+        }
         for (int i = 0; i < length; i++) {
-            Object value = savedState[i * 2 + 1];
-            Serializable serializable = (Serializable) savedState[i * 2];
-            if (value != null) {
-                if (value instanceof Collection) {
-                    value = restoreAttachedState(context, value);
-                } else if (value instanceof StateHolderSaver) {
-                    value = ((StateHolderSaver) value).restore(context);
-                } else {
-                    value = value instanceof Serializable ? value : restoreAttachedState(context, value);
-                }
+            if (i != attributesThatAreSetIndex) {
+                restoreEntry(context, (Serializable) savedState[i * 2], savedState[i * 2 + 1]);
             }
+        }
+    }
 
-            if (value instanceof Map) {
-                for (Map.Entry<String, Object> entry : ((Map<String, Object>) value).entrySet()) {
-                    put(serializable, entry.getKey(), entry.getValue());
-                }
-            } else if (value instanceof List) {
-                List<Object> current = (List<Object>) get(serializable);
-                for (Object item : (List<?>) value) {
-                    if (current == null || !current.contains(item)) {
-                        add(serializable, item);
-                        if (current == null) {
-                            current = (List<Object>) get(serializable);
-                        }
+    /**
+     * The index of the attributesThatAreSet entry in the given full state, or -1 when it has none. The restore restores
+     * that entry before all others, so that each name keeps its saved position in the list, whatever the iteration order
+     * of the map which was saved.
+     */
+    private static int indexOfAttributesThatAreSet(Object[] savedState, int length) {
+        for (int i = 0; i < length; i++) {
+            if (savedState[i * 2] == UIComponent.PropertyKeysPrivate.attributesThatAreSet) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private void restoreEntry(FacesContext context, Serializable serializable, Object value) {
+        if (value != null) {
+            if (value instanceof Collection) {
+                value = restoreAttachedState(context, value);
+            } else if (value instanceof StateHolderSaver) {
+                value = ((StateHolderSaver) value).restore(context);
+            } else {
+                value = value instanceof Serializable ? value : restoreAttachedState(context, value);
+            }
+        }
+
+        if (value instanceof Map) {
+            for (Map.Entry<String, Object> entry : ((Map<String, Object>) value).entrySet()) {
+                put(serializable, entry.getKey(), entry.getValue());
+            }
+        } else if (value instanceof List) {
+            List<Object> current = (List<Object>) get(serializable);
+            for (Object item : (List<?>) value) {
+                if (current == null || !current.contains(item)) {
+                    add(serializable, item);
+                    if (current == null) {
+                        current = (List<Object>) get(serializable);
                     }
                 }
-            } else {
-                put(serializable, value);
-                handleAttribute(serializable.toString(), value);
             }
+        } else {
+            put(serializable, value);
+            handleAttribute(serializable.toString(), value);
         }
     }
 
@@ -454,7 +479,13 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
 
     private Object saveMap(FacesContext context, Map<Serializable, Object> map) {
 
-        if (map == null || map.isEmpty()) {
+        int size = map == null ? 0 : map.size();
+        boolean skipAttributesThatAreSet = size > 0 && isAttributesThatAreSetRebuiltOnRestore(context, map);
+        if (skipAttributesThatAreSet) {
+            size--;
+        }
+
+        if (size == 0) {
             if (!component.initialStateMarked()) {
                 // only need to propagate the component's delta status when
                 // delta tracking has been disabled. We're assuming that
@@ -466,11 +497,14 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
             return null;
         }
 
-        Object[] savedState = new Object[map.size() * 2 + 1];
+        Object[] savedState = new Object[size * 2 + 1];
 
         int i = 0;
 
         for (Map.Entry<Serializable, Object> entry : map.entrySet()) {
+            if (skipAttributesThatAreSet && entry.getKey() == UIComponent.PropertyKeysPrivate.attributesThatAreSet) {
+                continue;
+            }
             Object value = entry.getValue();
             savedState[i * 2] = entry.getKey();
             if (value instanceof Collection || value instanceof StateHolder || value instanceof Map || !(value instanceof Serializable)) {
@@ -486,6 +520,59 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
 
         return savedState;
 
+    }
+
+    /**
+     * Whether {@link #restoreState} rebuilds the attributesThatAreSet list of the given full state exactly, names and
+     * order alike, so that the full state need not carry it. The restore records the name of each entry which it puts
+     * through {@link #handleAttribute}, in natural order. A list holding any other name, or the same names in another
+     * order, must be saved. {@link StateHelper#add}, for example for a non-literal value expression, appends a name out
+     * of natural order.
+     * <p>
+     * Under partial state saving, which is recognized by the initial state of the view root being marked, only a
+     * component whose initial state is not marked, such as one added after the view was built, is saved with its full
+     * state. Full state saving saves every component with its full state on every request, and is not worth this check.
+     */
+    private boolean isAttributesThatAreSetRebuiltOnRestore(FacesContext context, Map<Serializable, Object> map) {
+        if (component.initialStateMarked() || !isPartialStateSaving(context) || !UIComponentBase.isStandardComponent(component)) {
+            return false;
+        }
+
+        Object attributesThatAreSet = map.get(UIComponent.PropertyKeysPrivate.attributesThatAreSet);
+        if (!(attributesThatAreSet instanceof List) || !isInNaturalOrder((List<String>) attributesThatAreSet)) {
+            return false;
+        }
+
+        List<String> recorded = (List<String>) attributesThatAreSet;
+        int recordable = 0;
+        for (Map.Entry<Serializable, Object> entry : map.entrySet()) {
+            Object value = entry.getValue();
+            if (value instanceof StateHolder && ((StateHolder) value).isTransient()) {
+                return false;
+            }
+            if (value != null && !(value instanceof Map) && !(value instanceof List)) {
+                if (!recorded.contains(entry.getKey().toString())) {
+                    return false;
+                }
+                recordable++;
+            }
+        }
+
+        return recordable == recorded.size();
+    }
+
+    private static boolean isPartialStateSaving(FacesContext context) {
+        UIViewRoot viewRoot = context.getViewRoot();
+        return viewRoot != null && viewRoot.initialStateMarked();
+    }
+
+    private static boolean isInNaturalOrder(List<String> names) {
+        for (int i = 1; i < names.size(); i++) {
+            if (names.get(i - 1).compareTo(names.get(i)) >= 0) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private Object removeFromList(Serializable key, Object value) {
