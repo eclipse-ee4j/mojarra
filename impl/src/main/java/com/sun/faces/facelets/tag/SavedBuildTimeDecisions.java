@@ -42,7 +42,12 @@ import jakarta.faces.context.FacesContext;
  * of one view as long as no facelet the build applies before it is edited: that id follows everything the build applied
  * before. So the fingerprint of the source of every facelet the builds apply is saved beside the decisions, and the
  * build which restores the view stops replaying at the first facelet it applies with another fingerprint, after which
- * every tag decides again. Which facelets the builds apply does not matter, only their sources do. Only the sources of
+ * every tag decides again. The fingerprints are kept per facelet rather than combined into one per view, because the
+ * build which restores the view only learns which facelets it applies while applying them. One value could therefore
+ * only be checked after that build, when its {@code PostAddToView} listeners and component events have already fired,
+ * and may already have changed the state of a backing bean, so that throwing that build away and building again is not
+ * an option.
+ * Which facelets the builds apply does not matter, only their sources do. Only the sources of
  * the facelets are fingerprinted, so a change of a tag library or of the code of a tag handler between the render and
  * the postback is not noticed. A decision holds a value of a type the JDK declares, so that a runtime which does not
  * know this state entry can still deserialize the state that carries it. What a handler cannot express in one - the
