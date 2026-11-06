@@ -16,9 +16,11 @@
 
 package jakarta.faces.component;
 
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import jakarta.faces.application.FacesMessage;
-import jakarta.faces.component.visit.VisitContext;
-import jakarta.faces.component.visit.VisitResult;
 import jakarta.faces.context.FacesContext;
 
 /**
@@ -63,6 +65,8 @@ public class UISelectOne extends UIInput {
      * the available options is specified.
      */
     public static final String INVALID_MESSAGE_ID = "jakarta.faces.component.UISelectOne.INVALID";
+
+    private static final String SUBMITTED_OR_VALIDATED_GROUPS = UISelectOne.class.getName() + ".SUBMITTED_OR_VALIDATED_GROUPS";
 
     enum PropertyKeys {
 
@@ -129,6 +133,19 @@ public class UISelectOne extends UIInput {
 
     }
 
+    // ----------------------------------------------------- UIComponent Methods
+
+    @Override
+    public void decode(FacesContext context) {
+        super.decode(context);
+
+        String group = getGroup();
+
+        if (group != null && !isEmpty(getSubmittedValue())) {
+            markGroupAsSubmittedOrValidated(context, group);
+        }
+    }
+
     // ------------------------------------------------------ Validation Methods
 
     /**
@@ -143,32 +160,51 @@ public class UISelectOne extends UIInput {
     @Override
     public void processValidators(FacesContext context) {
 
-        final String group = getGroup();
+        String group = getGroup();
 
-        if (group != null && isEmpty(getSubmittedValue())) {
-            final String clientId = getClientId(context);
-            final UIComponent groupContainer = getGroupContainer(context, this);
-            final boolean[] alreadySubmittedOrValidatedAsGroup = new boolean[1];
-
-            groupContainer.visitTree(VisitContext.createVisitContext(context), (visitContext, target) -> {
-                if (target instanceof UISelectOne) {
-                    UISelectOne radio = (UISelectOne) target;
-
-                    if (isOtherMemberOfSameGroup(context, group, clientId, radio) && isAlreadySubmittedOrValidated(radio)) {
-                        alreadySubmittedOrValidatedAsGroup[0] = true;
-                        return VisitResult.COMPLETE;
-                    }
-                }
-
-                return VisitResult.ACCEPT;
-            });
-
-            if (alreadySubmittedOrValidatedAsGroup[0]) {
-                return;
-            }
+        if (group != null && isEmpty(getSubmittedValue()) && isGroupSubmittedOrValidated(context, group)) {
+            return;
         }
 
         super.processValidators(context);
+
+        if (group != null && isRendered() && isAlreadySubmittedOrValidated(this)) {
+            markGroupAsSubmittedOrValidated(context, group);
+        }
+    }
+
+    /**
+     * The groups of this request which have a member with a submitted value, or a rendered member which was validated.
+     * Keyed by the client ID of their <code>UIForm</code> parent, or of the view root when there is none, and the group
+     * name. A member with an empty submitted value finds only the record of another member, as the "other component" of
+     * {@link #processValidators(FacesContext)} requires: its own decode record implies a non-empty submitted value, and
+     * its own validation record is made after the check. Only an immediate member can find its own record, which is
+     * harmless, because it is not validated there.
+     */
+    @SuppressWarnings("unchecked")
+    private static Set<String> getSubmittedOrValidatedGroups(FacesContext context, boolean create) {
+        Map<Object, Object> attributes = context.getAttributes();
+        Set<String> groups = (Set<String>) attributes.get(SUBMITTED_OR_VALIDATED_GROUPS);
+
+        if (groups == null && create) {
+            groups = new HashSet<>();
+            attributes.put(SUBMITTED_OR_VALIDATED_GROUPS, groups);
+        }
+
+        return groups;
+    }
+
+    private boolean isGroupSubmittedOrValidated(FacesContext context, String group) {
+        Set<String> groups = getSubmittedOrValidatedGroups(context, false);
+        return groups != null && groups.contains(getGroupKey(context, group));
+    }
+
+    private void markGroupAsSubmittedOrValidated(FacesContext context, String group) {
+        getSubmittedOrValidatedGroups(context, true).add(getGroupKey(context, group));
+    }
+
+    private String getGroupKey(FacesContext context, String group) {
+        return getGroupContainer(context, this).getClientId(context) + UINamingContainer.getSeparatorChar(context) + group;
     }
 
     private static UIComponent getGroupContainer(FacesContext context, UISelectOne radio) {
@@ -179,10 +215,6 @@ public class UISelectOne extends UIInput {
         }
 
         return namingContainer != null ? namingContainer : context.getViewRoot();
-    }
-
-    private static boolean isOtherMemberOfSameGroup(FacesContext context, String group, String clientId, UISelectOne radio) {
-        return group.equals(radio.getGroup()) && !clientId.equals(radio.getClientId(context));
     }
 
     private static boolean isAlreadySubmittedOrValidated(EditableValueHolder input) {
