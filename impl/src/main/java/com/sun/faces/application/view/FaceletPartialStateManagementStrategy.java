@@ -203,14 +203,16 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
             for (Object savedAction : savedActions) {
                 ComponentStruct action = new ComponentStruct();
                 action.restoreState(context, savedAction);
+                boolean kept = true;
                 if (ADD.equals(action.getAction())) {
                     restoreDynamicAdd(context, stateMap, action, componentIndex);
-                }
-                if (REMOVE.equals(action.getAction())) {
-                    restoreDynamicRemove(context, action, componentIndex);
+                } else if (REMOVE.equals(action.getAction())) {
+                    kept = restoreDynamicRemove(context, action, componentIndex);
                 }
                 // The saved list is already pruned (see saveDynamicActions), so just rebuild the live list in order.
-                actions.add(action);
+                if (kept) {
+                    actions.add(action);
+                }
             }
             placeDynamicChildren(actions, componentIndex);
         }
@@ -296,8 +298,10 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
      *
      * @param context the Faces context.
      * @param struct the component struct.
+     * @param componentIndex the components of the view by client ID.
+     * @return whether the view held the component, which is then removed.
      */
-    private void restoreDynamicRemove(FacesContext context, ComponentStruct struct, Map<String, UIComponent> componentIndex) {
+    private boolean restoreDynamicRemove(FacesContext context, ComponentStruct struct, Map<String, UIComponent> componentIndex) {
         if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.finest("FaceletPartialStateManagementStrategy.restoreDynamicRemove");
         }
@@ -313,7 +317,9 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
             	parent.getChildren().remove(child);
             }
             componentIndex.remove(struct.getClientId());
+            return true;
         }
+        return false;
     }
 
     /**

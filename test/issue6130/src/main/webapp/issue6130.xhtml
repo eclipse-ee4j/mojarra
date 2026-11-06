@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<!--
+
+    Copyright (c) Contributors to Eclipse Foundation.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<html xmlns:h="jakarta.faces.html" xmlns:c="jakarta.tags.core">
+    <h:head>
+        <title>Mojarra issue 6130 - removed components which the view builds again later</title>
+    </h:head>
+    <h:body>
+        <h:form id="form">
+            <h:panelGroup id="target" layout="block">
+                <h:outputText id="s" value="S" />
+                <c:if test="#{issue6130.show}">
+                    <h:outputText id="c" value="C" />
+                </c:if>
+            </h:panelGroup>
+            <h:panelGroup id="other" layout="block">
+                <h:outputText id="o" value="O" />
+            </h:panelGroup>
+            <h:commandButton id="removeS" value="Remove S" action="#{issue6130.remove('s')}" />
+            <h:commandButton id="removeC" value="Remove C" action="#{issue6130.remove('c')}" />
+            <h:commandButton id="removeAndHideC" value="Remove and hide C" action="#{issue6130.removeAndHide('c')}" />
+            <h:commandButton id="moveC" value="Move C" action="#{issue6130.moveToOther('c')}" />
+            <h:commandButton id="hideC" value="Hide C" action="#{issue6130.setShow(false)}" />
+            <h:commandButton id="showC" value="Show C" action="#{issue6130.setShow(true)}" />
+            <h:commandButton id="submit" value="Submit" />
+        </h:form>
+    </h:body>
+</html>
