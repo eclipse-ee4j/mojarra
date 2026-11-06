@@ -94,6 +94,21 @@ class UIDataRowStateTest extends JUnitFacesTestCaseBase {
 
         restored.setRowIndex(0);
         assertEquals("typed", input(restored).getLocalValue());
+        restored.setRowIndex(1);
+        assertNull(input(restored).getLocalValue());
+    }
+
+    /**
+     * A row without saved state of its own gets the initial state of its children, not the state of the row before.
+     */
+    @Test
+    void preservedRowWithoutOwnStateDoesNotShowTheStateOfThePreviousRow() {
+        UIData table = createRowStatePreservedTable();
+        table.setRowIndex(0);
+        input(table).setValue("typed");
+        table.setRowIndex(1);
+
+        assertNull(input(table).getLocalValue());
     }
 
     /**

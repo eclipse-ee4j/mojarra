@@ -41,6 +41,12 @@ import jakarta.faces.context.FacesContext;
 @SuppressWarnings({ "unchecked" })
 class ComponentStateHelper implements StateHelper, TransientStateHelper {
 
+    /**
+     * The full state of a state helper without entries, as saved for a component whose initial state is not marked. It
+     * is never changed, so all saved states share it.
+     */
+    static final Object[] EMPTY_FULL_STATE = { Boolean.FALSE };
+
     private UIComponent component;
     private boolean isTransient;
     /**
@@ -546,7 +552,7 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
                 // delta tracking has been disabled. We're assuming that
                 // the VDL will reset the status when the view is reconstructed,
                 // so no need to save the state if the saved state is the default.
-                return new Object[] { component.initialStateMarked() };
+                return EMPTY_FULL_STATE;
             }
 
             return null;
