@@ -248,8 +248,7 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
      */
     @Override
     public java.lang.String getGroup() {
-        return (java.lang.String) getStateHelper().eval(PropertyKeys.group);
-
+        return super.getGroup();
     }
 
     /**
@@ -261,7 +260,7 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
      */
     @Override
     public void setGroup(java.lang.String group) {
-        getStateHelper().put(PropertyKeys.group, group);
+        super.setGroup(group);
     }
 
     /**
