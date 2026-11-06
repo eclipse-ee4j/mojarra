@@ -39,16 +39,21 @@ import jakarta.faces.context.FacesContext;
  *
  * <p>
  * A decision is keyed by the id its tag generates for the build, which is unique per tag and stable across the builds
- * of one view, and holds a value of a type the JDK declares, so that a runtime which does not know this state entry
- * can still deserialize the state that carries it. What a handler cannot express in one - the keys of an iteration
- * over a map, which name the entries its rows were rendered for - is carried in a JDK typed array of the application's
- * own values, which must be {@link java.io.Serializable} like everything else the state holds. What is replayed and
- * what is saved are two maps: the builds of this request record into the second, so that a decision an earlier
- * response took and this one does not is gone from the state rather than replayed by the next restore. They record
- * into it together rather than one build at a time, since the re-apply which precedes rendering is skipped for a view
- * whose decisions still hold and would otherwise leave nothing to save, which is also why a postback which navigates
- * saves what the view it restored decided beside what the view it renders did: telling the two apart costs the build
- * it was restored by.
+ * of one view as long as no facelet the build applies before it is edited: that id follows everything the build applied
+ * before. So the fingerprint of the source of every facelet the builds apply is saved beside the decisions, and the
+ * build which restores the view stops replaying at the first facelet it applies with another fingerprint, after which
+ * every tag decides again. Which facelets the builds apply does not matter, only their sources do. Only the sources of
+ * the facelets are fingerprinted, so a change of a tag library or of the code of a tag handler between the render and
+ * the postback is not noticed. A decision holds a value of a type the JDK declares, so that a runtime which does not
+ * know this state entry can still deserialize the state that carries it. What a handler cannot express in one - the
+ * keys of an iteration over a map, which name the entries its rows were rendered for - is carried in a JDK typed array
+ * of the application's own values, which must be {@link java.io.Serializable} like everything else the state holds.
+ * What is replayed and what is saved are two maps: the builds of this request record into the second, so that a
+ * decision an earlier response took and this one does not is gone from the state rather than replayed by the next
+ * restore. They record into it together rather than one build at a time, since the re-apply which precedes rendering is
+ * skipped for a view whose decisions still hold and would otherwise leave nothing to save, which is also why a postback
+ * which navigates saves what the view it restored decided beside what the view it renders did: telling the two apart
+ * costs the build it was restored by.
  *
  * <p>
  * Nothing of this happens unless {@code com.sun.faces.restoreBuildTimeDecisions} is enabled.
@@ -60,6 +65,12 @@ public final class SavedBuildTimeDecisions {
     private static final String KEY = RIConstants.FACES_PREFIX + "savedBuildTimeDecisions";
 
     /**
+     * Turns the hash of the path of a facelet into the key of its fingerprint. The id of a tag is hexadecimal, so no
+     * decision key ends in it.
+     */
+    private static final String SOURCE_FINGERPRINT_KEY_SUFFIX = "_id";
+
+    /**
      * What is held under {@link #KEY} for a request which saves no decisions at all, so that the parameter is read
      * once per request rather than once per condition.
      */
@@ -67,6 +78,7 @@ public final class SavedBuildTimeDecisions {
 
     private final Map<String, Object> restored = new HashMap<>();
     private final Map<String, Object> recorded = new HashMap<>();
+    private final Map<String, Object> recordedFingerprints = new HashMap<>();
     private boolean replaying;
     private boolean suspended;
 
@@ -159,13 +171,54 @@ public final class SavedBuildTimeDecisions {
         SavedBuildTimeDecisions instance = of(context);
 
         if (instance != null && !instance.recorded.isEmpty()) {
-            state.put(RIConstants.BUILD_TIME_DECISIONS, new HashMap<>(instance.recorded));
+            Map<String, Object> decisions = new HashMap<>(instance.recorded);
+            decisions.putAll(instance.recordedFingerprints);
+            state.put(RIConstants.BUILD_TIME_DECISIONS, decisions);
         }
     }
 
     /**
+     * The key under which the fingerprint of the facelet with the given path is saved beside the decisions.
+     *
+     * @param path the path of the facelet
+     * @return the key under which the fingerprint of the facelet with the given path is saved
+     */
+    public static String sourceFingerprintKey(String path) {
+        return path.hashCode() + SOURCE_FINGERPRINT_KEY_SUFFIX;
+    }
+
+    /**
+     * Records the fingerprint of a facelet this build applies, to be saved with the decisions. The build which restores
+     * the view stops replaying at a facelet which had another fingerprint, or which was not applied at all, when the
+     * view was rendered: every id a tag generates from there on can name the decision of another tag. A facelet which
+     * the builds of one request apply with two fingerprints, or two facelets whose paths have the same hash, are saved
+     * with a fingerprint which matches none.
+     *
+     * @param context the {@link FacesContext} for the current request
+     * @param sourceFingerprintKey the key of the fingerprint of the facelet, as returned by
+     * {@link #sourceFingerprintKey(String)}
+     * @param sourceFingerprint the fingerprint of the facelet, not {@code null}
+     */
+    public static void applyFacelet(FacesContext context, String sourceFingerprintKey, Integer sourceFingerprint) {
+        SavedBuildTimeDecisions instance = active(context);
+
+        if (instance != null) {
+            instance.recordedFingerprints.merge(sourceFingerprintKey, sourceFingerprint,
+                    SavedBuildTimeDecisions::sameOrNone);
+            if (instance.replaying && !sourceFingerprint.equals(instance.restored.get(sourceFingerprintKey))) {
+                instance.replaying = false;
+            }
+        }
+    }
+
+    private static Object sameOrNone(Object recorded, Object fingerprint) {
+        return recorded.equals(fingerprint) ? recorded : Boolean.FALSE;
+    }
+
+    /**
      * The value the build which rendered the view decided on for the given key, or {@code null} when this build is not
-     * the one which restores the view, when that build decided nothing under this key, or when the feature is off.
+     * the one which restores the view, when that build decided nothing under this key, when this build applied a
+     * facelet which was edited since, or when the feature is off.
      *
      * @param context the {@link FacesContext} for the current request
      * @param key the key of the decision, as generated by {@link TagHandlerImpl#buildTimeDecisionKey}

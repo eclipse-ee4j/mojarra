@@ -33,12 +33,22 @@ public class EncodingHandler implements FaceletHandler {
     private final String encoding;
     private final CompilationMessageHolder messageHolder;
     private final boolean unreproducibleBuild;
+    private final int sourceFingerprint;
 
-    public EncodingHandler(FaceletHandler next, String encoding, CompilationMessageHolder messageHolder, boolean unreproducibleBuild) {
+    public EncodingHandler(FaceletHandler next, String encoding, CompilationMessageHolder messageHolder, boolean unreproducibleBuild,
+            int sourceFingerprint) {
         this.next = next;
         this.encoding = encoding;
         this.messageHolder = messageHolder;
         this.unreproducibleBuild = unreproducibleBuild;
+        this.sourceFingerprint = sourceFingerprint;
+    }
+
+    /**
+     * @return the fingerprint of the source this facelet was compiled from: a checksum which differs once it is edited
+     */
+    public int getSourceFingerprint() {
+        return sourceFingerprint;
     }
 
     @Override

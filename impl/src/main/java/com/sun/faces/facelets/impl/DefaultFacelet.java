@@ -46,6 +46,8 @@ import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.FaceletException;
 import jakarta.faces.view.facelets.FaceletHandler;
 
+import com.sun.faces.facelets.compiler.EncodingHandler;
+import com.sun.faces.facelets.tag.SavedBuildTimeDecisions;
 import com.sun.faces.facelets.tag.faces.ComponentSupport;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
@@ -89,12 +91,26 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
     /** Whether {@link #mapper} belongs to this Facelet alone, rather than to every Facelet sharing its alias. */
     private final boolean ownIdMapper;
 
+    /**
+     * The key under which {@link #sourceFingerprint} is saved beside the build time decisions, or {@code null} for a
+     * Facelet which takes no part in replaying them. A Facelet fabricated for
+     * {@link jakarta.faces.view.ViewDeclarationLanguage#createComponent} takes none: no later build applies its alias
+     * again, and it applies under a context of its own, so it cannot move the ids the tags of another build generate.
+     */
+    private final String sourceFingerprintKey;
+
+    /**
+     * The fingerprint of the source this Facelet was compiled from: a checksum which differs once it is edited, or 0
+     * for a Facelet whose root carries none.
+     */
+    private final Integer sourceFingerprint;
+
     private Doctype savedDoctype;
 
     private String savedXMLDecl;
 
     public DefaultFacelet(DefaultFaceletFactory factory, ExpressionFactory el, URL src, String alias, FaceletHandler root) {
-        this(factory, el, src, alias, root, null);
+        this(factory, el, src, alias, root, null, false);
     }
 
     /**
@@ -102,14 +118,19 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
      * application scoped mapper for this alias, and through any mapper an ongoing build already installed. Pass one
      * only for a Facelet that is not cached, whose alias would otherwise be a key the application scoped cache never
      * sees again.
+     * @param fabricated whether this Facelet is fabricated for
+     * {@link jakarta.faces.view.ViewDeclarationLanguage#createComponent}
      */
-    public DefaultFacelet(DefaultFaceletFactory factory, ExpressionFactory el, URL src, String alias, FaceletHandler root, IdMapper ownIdMapper) {
+    public DefaultFacelet(DefaultFaceletFactory factory, ExpressionFactory el, URL src, String alias, FaceletHandler root, IdMapper ownIdMapper,
+            boolean fabricated) {
 
         this.factory = factory;
         elFactory = el;
         this.src = src;
         this.root = root;
         this.alias = alias;
+        sourceFingerprint = root instanceof EncodingHandler ? ((EncodingHandler) root).getSourceFingerprint() : 0;
+        sourceFingerprintKey = fabricated ? null : SavedBuildTimeDecisions.sourceFingerprintKey(alias);
 
         if (ownIdMapper != null) {
             mapper = ownIdMapper;
@@ -158,6 +179,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
         }
 
         DefaultFaceletContext ctx = new DefaultFaceletContext(facesContext, this);
+        applySourceFingerprint(facesContext);
         refresh(parent);
         ComponentSupport.markForDeletion(parent);
         root.apply(ctx, parent);
@@ -240,6 +262,20 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
      */
     public String getAlias() {
         return alias;
+    }
+
+    /**
+     * @return the key under which the fingerprint of the source of this Facelet is saved beside the build time
+     * decisions, or {@code null} for a Facelet which takes no part in replaying them
+     */
+    String getSourceFingerprintKey() {
+        return sourceFingerprintKey;
+    }
+
+    private void applySourceFingerprint(FacesContext facesContext) {
+        if (sourceFingerprintKey != null) {
+            SavedBuildTimeDecisions.applyFacelet(facesContext, sourceFingerprintKey, sourceFingerprint);
+        }
     }
 
     /**
@@ -338,6 +374,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
      * @throws ELException
      */
     private void include(DefaultFaceletContext ctx, UIComponent parent) throws IOException {
+        applySourceFingerprint(ctx.getFacesContext());
         refresh(parent);
         root.apply(new DefaultFaceletContext(ctx, this), parent);
         markApplied(parent);

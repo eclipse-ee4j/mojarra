@@ -16,6 +16,7 @@
 
 package com.sun.faces.facelets.impl;
 
+import static java.util.Collections.emptyEnumeration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -33,8 +34,10 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import jakarta.el.ELContext;
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.facelets.FaceletHandler;
+import jakarta.servlet.ServletContext;
 
 import org.junit.jupiter.api.Test;
 
@@ -55,6 +58,11 @@ class DefaultFaceletIdMapperTest {
     DefaultFaceletIdMapperTest() {
         when(faces.getAttributes()).thenReturn(new HashMap<>());
         when(faces.getELContext()).thenReturn(mock(ELContext.class));
+        ServletContext servletContext = mock(ServletContext.class);
+        when(servletContext.getInitParameterNames()).thenReturn(emptyEnumeration());
+        ExternalContext externalContext = mock(ExternalContext.class);
+        when(externalContext.getContext()).thenReturn(servletContext);
+        when(faces.getExternalContext()).thenReturn(externalContext);
         factory.idMappers = new Cache<>(alias -> {
             mappersCreated.incrementAndGet();
             return new IdMapper();
@@ -155,7 +163,7 @@ class DefaultFaceletIdMapperTest {
             }
         };
 
-        return new DefaultFacelet(factory, null, new URL("file:" + alias), alias, root, ownIdMapper);
+        return new DefaultFacelet(factory, null, new URL("file:" + alias), alias, root, ownIdMapper, false);
     }
 
     private static UIComponent parent() {

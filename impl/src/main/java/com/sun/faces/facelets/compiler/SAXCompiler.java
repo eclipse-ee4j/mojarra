@@ -18,13 +18,14 @@ package com.sun.faces.facelets.compiler;
 
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.DisallowDoctypeDecl;
 
-import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.CRC32;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -387,7 +388,11 @@ public final class SAXCompiler extends Compiler {
     protected FaceletHandler doCompile(CompilationManager mngr, CompilationHandler handler, URL src, String alias) throws IOException {
 
         String encoding = getEncoding();
-        try (InputStream is = new BufferedInputStream(src.openStream(), 1024);) {
+        byte[] source;
+        try (InputStream is = src.openStream()) {
+            source = is.readAllBytes();
+        }
+        try (InputStream is = new ByteArrayInputStream(source)) {
 
             writeXmlDecl(is, encoding, mngr);
             SAXParser parser = createSAXParser(handler);
@@ -399,11 +404,22 @@ public final class SAXCompiler extends Compiler {
         } catch (FaceletException e) {
             throw e;
         }
-        FaceletHandler result = new EncodingHandler(mngr.createFaceletHandler(), encoding, mngr.getCompilationMessageHolder(), mngr.isUnreproducibleBuild());
+        FaceletHandler result = new EncodingHandler(mngr.createFaceletHandler(), encoding, mngr.getCompilationMessageHolder(), mngr.isUnreproducibleBuild(),
+                fingerprint(source));
         mngr.setCompilationMessageHolder(null);
 
         return result;
 
+    }
+
+    /**
+     * A checksum of the given source, which differs once the facelet is edited. It is computed over the very bytes the
+     * facelet is compiled from, so that it describes the tags which are compiled from them.
+     */
+    private static int fingerprint(byte[] source) {
+        CRC32 checksum = new CRC32();
+        checksum.update(source);
+        return (int) checksum.getValue();
     }
 
     private String getEncoding() {
