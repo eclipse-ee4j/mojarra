@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<!--
+
+    Copyright (c) Contributors to Eclipse Foundation.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<html xmlns:h="jakarta.faces.html" xmlns:f="jakarta.faces.core" xmlns:ui="jakarta.faces.facelets">
+    <h:head>
+        <title>Mojarra issue 6131 - radio button groups in nested iterating components</title>
+    </h:head>
+    <h:body>
+        <h:form id="repeat">
+            <ui:repeat id="o" var="group" value="#{issue6131.groups}">
+                <ui:repeat id="i" var="number" value="#{issue6131.numbers}">
+                    <h:selectOneRadio id="radio" value="#{issue6131.values[group]}" group="#{group}">
+                        <f:selectItem itemValue="#{number}" itemLabel="#{group}: #{number}" />
+                    </h:selectOneRadio>
+                </ui:repeat>
+            </ui:repeat>
+            <h:commandButton id="submit" value="Submit" />
+            <h:outputText id="output" value="#{issue6131.values}" />
+        </h:form>
+
+        <h:form id="table">
+            <h:dataTable id="o" var="group" value="#{issue6131.groups}">
+                <h:column>
+                    <h:dataTable id="i" var="number" value="#{issue6131.numbers}">
+                        <h:column>
+                            <h:selectOneRadio id="radio" value="#{issue6131.values[group]}" group="#{group}">
+                                <f:selectItem itemValue="#{number}" itemLabel="#{group}: #{number}" />
+                            </h:selectOneRadio>
+                        </h:column>
+                    </h:dataTable>
+                </h:column>
+            </h:dataTable>
+            <h:commandButton id="submit" value="Submit" />
+            <h:outputText id="output" value="#{issue6131.values}" />
+        </h:form>
+
+        <h:form id="single">
+            <ui:repeat id="r" var="number" value="#{issue6131.numbers}">
+                <h:selectOneRadio id="radio" value="#{issue6131.single}" group="single">
+                    <f:selectItem itemValue="#{number}" itemLabel="#{number}" />
+                </h:selectOneRadio>
+            </ui:repeat>
+            <h:commandButton id="submit" value="Submit" />
+            <h:outputText id="output" value="#{issue6131.single}" />
+        </h:form>
+
+        <h:form id="required">
+            <ui:repeat id="r" var="number" value="#{issue6131.numbers}">
+                <h:selectOneRadio id="radio" value="#{issue6131.single}" group="required" required="true">
+                    <f:selectItem itemValue="#{number}" itemLabel="#{number}" />
+                </h:selectOneRadio>
+            </ui:repeat>
+            <h:commandButton id="submit" value="Submit" />
+            <h:outputText id="output" value="#{issue6131.single}" />
+            <h:messages id="messages" />
+        </h:form>
+
+        <h:form id="hidden">
+            <h:selectOneRadio id="radio0" value="#{issue6131.single}" group="hidden" required="true" rendered="#{param.hide ne 'true'}">
+                <f:selectItem itemValue="0" />
+            </h:selectOneRadio>
+            <h:selectOneRadio id="radio1" value="#{issue6131.single}" group="hidden" required="true">
+                <f:selectItem itemValue="1" />
+            </h:selectOneRadio>
+            <h:selectOneRadio id="radio2" value="#{issue6131.single}" group="hidden" required="true">
+                <f:selectItem itemValue="2" />
+            </h:selectOneRadio>
+            <h:commandButton id="submit" value="Submit" />
+            <h:commandButton id="submitHiding" value="Submit and hide first member">
+                <f:param name="hide" value="true" />
+            </h:commandButton>
+            <h:messages id="messages" />
+        </h:form>
+    </h:body>
+</html>
