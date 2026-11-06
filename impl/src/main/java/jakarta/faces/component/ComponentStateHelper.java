@@ -381,21 +381,21 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
      * {@link #put(Serializable, String, Object)}, and the attributesThatAreSet list, are saved in a form which
      * {@link #restoreEntry} merges into the container of the build. Any other map or collection is saved as a
      * {@link WholeValue}, so that it restores whole, with its order and duplicates, and replaces the value of the
-     * build. Null items and transient state holder items are left out, as {@link UIComponentBase#saveAttachedState}
-     * does.
+     * build. Null items keep their position. Transient state holder items are left out, as
+     * {@link UIComponentBase#saveAttachedState(FacesContext, Object)} does.
      */
     private static Object saveValue(FacesContext context, Serializable key, Object value) {
         if (value instanceof AddedItems) {
-            return saveAttachedState(context, value, ArrayList.class);
+            return saveAttachedState(context, value, ArrayList.class, false);
         }
         if (value instanceof PutEntries) {
-            return saveAttachedState(context, value, HashMap.class);
+            return saveAttachedState(context, value, HashMap.class, false);
         }
         if (key == UIComponent.PropertyKeysPrivate.attributesThatAreSet) {
             return saveAttachedState(context, value);
         }
         if (value instanceof Collection || value instanceof Map) {
-            return new WholeValue(saveAttachedState(context, value, restorableType(value)));
+            return new WholeValue(saveAttachedState(context, value, restorableType(value), true));
         }
         if (value instanceof StateHolder || !(value instanceof Serializable)) {
             return saveAttachedState(context, value);

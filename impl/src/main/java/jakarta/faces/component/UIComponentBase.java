@@ -1534,7 +1534,7 @@ public abstract class UIComponentBase extends UIComponent {
             return null;
         }
 
-        return saveAttachedState(context, attachedObject, attachedObject.getClass());
+        return saveAttachedState(context, attachedObject, attachedObject.getClass(), false);
     }
 
     /**
@@ -1566,9 +1566,11 @@ public abstract class UIComponentBase extends UIComponent {
      * @param context the {@link FacesContext} for this request.
      * @param attachedObject the object to save, not <code>null</code>.
      * @param mapOrCollectionClass the class to record for a <code>Map</code> or <code>Collection</code>.
+     * @param keepNullItems whether a <code>null</code> item of a <code>Collection</code> is saved, so that it restores
+     * at its position, or left out.
      * @return The state object to be saved.
      */
-    static Object saveAttachedState(FacesContext context, Object attachedObject, Class<?> mapOrCollectionClass) {
+    static Object saveAttachedState(FacesContext context, Object attachedObject, Class<?> mapOrCollectionClass, boolean keepNullItems) {
         Object result;
         boolean newWillSucceed = isNewable(mapOrCollectionClass);
 
@@ -1577,10 +1579,11 @@ public abstract class UIComponentBase extends UIComponent {
             List<StateHolderSaver> resultList = new ArrayList<>(attachedCollection.size() + 1);
             resultList.add(new StateHolderSaver(context, mapOrCollectionClass));
             for (Object item : attachedCollection) {
-                if (item != null) {
-                    if (item instanceof StateHolder && ((StateHolder) item).isTransient()) {
-                        continue;
+                if (item == null) {
+                    if (keepNullItems) {
+                        resultList.add(new StateHolderSaver(context, null));
                     }
+                } else if (!(item instanceof StateHolder && ((StateHolder) item).isTransient())) {
                     resultList.add(new StateHolderSaver(context, item));
                 }
             }

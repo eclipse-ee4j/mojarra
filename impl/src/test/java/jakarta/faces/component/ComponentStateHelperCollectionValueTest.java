@@ -24,6 +24,7 @@ import static org.mockito.Mockito.when;
 
 import java.time.DayOfWeek;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumMap;
@@ -66,6 +67,30 @@ class ComponentStateHelperCollectionValueTest {
         restored.restoreState(context, serializeAndDeserialize(table.saveState(context)));
 
         assertEquals(LIST_WITH_DUPLICATES, restored.getValue());
+    }
+
+    @Test
+    void wholeListKeepsNullItemsAtTheirPositionInFullState() throws Exception {
+        List<String> value = Arrays.asList("a", null, "b");
+        UIData table = new UIData();
+        table.setValue(value);
+
+        UIData restored = new UIData();
+        restored.restoreState(context, serializeAndDeserialize(table.saveState(context)));
+
+        assertEquals(value, restored.getValue());
+    }
+
+    @Test
+    void wholeListKeepsNullItemsAtTheirPositionInDeltaState() throws Exception {
+        List<String> value = Arrays.asList("a", null, "b");
+        UIData table = tableBuiltWithValue(new ArrayList<>(List.of("x")));
+        table.setValue(value);
+
+        UIData restored = tableBuiltWithValue(new ArrayList<>(List.of("x")));
+        restored.restoreState(context, serializeAndDeserialize(table.saveState(context)));
+
+        assertEquals(value, restored.getValue());
     }
 
     @Test
