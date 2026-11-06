@@ -334,27 +334,23 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
             return;
         }
 
-        if (!component.initialStateMarked() && defaultMap != null && !defaultMap.isEmpty()) {
+        Object[] savedState = (Object[]) state;
+        Object initialState = savedState[savedState.length - 1];
+        boolean fullState = Boolean.FALSE.equals(initialState);
+
+        if ((fullState || !component.initialStateMarked()) && defaultMap != null && !defaultMap.isEmpty()) {
             defaultMap.clear();
             if (deltaMap != null && !deltaMap.isEmpty()) {
                 deltaMap.clear();
             }
         }
 
-        Object[] savedState = (Object[]) state;
-        Object initialState = savedState[savedState.length - 1];
         if (initialState != null) {
             component.initialState = (Boolean) initialState;
         }
 
         int length = (savedState.length - 1) / 2;
-        int attributesThatAreSetIndex = -1;
-        if (Boolean.FALSE.equals(initialState)) {
-            if (defaultMap != null) {
-                defaultMap.remove(UIComponent.PropertyKeysPrivate.attributesThatAreSet);
-            }
-            attributesThatAreSetIndex = indexOfAttributesThatAreSet(savedState, length);
-        }
+        int attributesThatAreSetIndex = fullState ? indexOfAttributesThatAreSet(savedState, length) : -1;
         if (attributesThatAreSetIndex >= 0) {
             restoreEntry(context, (Serializable) savedState[attributesThatAreSetIndex * 2], savedState[attributesThatAreSetIndex * 2 + 1]);
         }
