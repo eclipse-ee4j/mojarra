@@ -25,6 +25,8 @@ import java.net.URL;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.CRC32;
+import java.util.zip.CheckedInputStream;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -387,7 +389,8 @@ public final class SAXCompiler extends Compiler {
     protected FaceletHandler doCompile(CompilationManager mngr, CompilationHandler handler, URL src, String alias) throws IOException {
 
         String encoding = getEncoding();
-        try (InputStream is = new BufferedInputStream(src.openStream(), 1024);) {
+        CRC32 sourceFingerprint = new CRC32();
+        try (InputStream is = new BufferedInputStream(new CheckedInputStream(src.openStream(), sourceFingerprint), 1024);) {
 
             writeXmlDecl(is, encoding, mngr);
             SAXParser parser = createSAXParser(handler);
@@ -399,7 +402,8 @@ public final class SAXCompiler extends Compiler {
         } catch (FaceletException e) {
             throw e;
         }
-        FaceletHandler result = new EncodingHandler(mngr.createFaceletHandler(), encoding, mngr.getCompilationMessageHolder(), mngr.isUnreproducibleBuild());
+        FaceletHandler result = new EncodingHandler(mngr.createFaceletHandler(), encoding, mngr.getCompilationMessageHolder(), mngr.isUnreproducibleBuild(),
+                (int) sourceFingerprint.getValue());
         mngr.setCompilationMessageHolder(null);
 
         return result;

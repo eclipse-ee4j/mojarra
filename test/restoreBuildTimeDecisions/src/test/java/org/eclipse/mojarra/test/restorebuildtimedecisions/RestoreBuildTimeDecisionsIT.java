@@ -335,4 +335,18 @@ class RestoreBuildTimeDecisionsIT extends BaseIT {
         guardHttp(submit::click);
         assertEquals("test", value.getText());
     }
+
+    /**
+     * A value submitted for an input the response held in a <code>c:if</code> of an include reaches the model, also
+     * when the include follows a facelet which is applied only while the response is rendered, and not while the
+     * postback which rendered it was restored.
+     */
+    @Test
+    void testConditionalAfterConditionalInclude() {
+        open("conditionalinclude.xhtml");
+        guardHttp(show::click);
+        input.sendKeys("test");
+        guardHttp(submit::click);
+        assertEquals("test", value.getText());
+    }
 }

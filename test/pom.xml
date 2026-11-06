@@ -38,6 +38,7 @@
         <module>csp</module>
         <module>enableStrictTagFileBodyClosure</module>
         <module>restoreBuildTimeDecisions</module>
+        <module>restoreBuildTimeDecisionsAfterEdit</module>
         <module>spec1904</module>
         <module>uiIncludeRceJar</module>
         <module>uiIncludeRce</module>

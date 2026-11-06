@@ -43,7 +43,6 @@ import jakarta.el.VariableMapper;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PhaseId;
-import jakarta.faces.view.Location;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagAttributeException;
@@ -155,9 +154,7 @@ public final class ForEachHandler extends TagHandlerImpl {
     private static final int END = 1;
     private static final int STEP = 2;
     private static final int COUNT = 3;
-    private static final int TAG_LINE = 4;
-    private static final int TAG_COLUMN = 5;
-    private static final int RANGE_LENGTH = 6;
+    private static final int RANGE_LENGTH = 4;
 
     // Indices into the decision of an iteration which is reproduced by key: the range beside the keys it iterated.
     private static final int RANGE = 0;
@@ -213,15 +210,6 @@ public final class ForEachHandler extends TagHandlerImpl {
         if (renderedRange != null && renderedKeys != null && renderedKeys.length != renderedRange[COUNT]) {
             // A key per row is what the rows are reproduced from, so a decision holding another number of them than
             // the rows it counts is not one this tag saved, whatever else it says.
-            renderedRange = null;
-            renderedKeys = null;
-        }
-
-        if (renderedRange != null && !isTagOf(renderedRange)) {
-            // The keys of the decisions of a facelet edited since the response was rendered name other decisions than
-            // they did, and what one tag then reads of another is a range and a row count with nothing to do with the
-            // items it iterates - an iteration over items bounds its range by them, so it saves the largest range
-            // there is where no end was given. Reproducing an iteration of another tag is reproducing nothing.
             renderedRange = null;
             renderedKeys = null;
         }
@@ -476,8 +464,7 @@ public final class ForEachHandler extends TagHandlerImpl {
         }
 
         if (decisionKey != null && unsavableKey == null) {
-            Location location = tag.getLocation();
-            saveBuildTimeDecision(ctx, decisionKey, decision(new int[] { s, e, m, count, location.getLine(), location.getColumn() }, keys));
+            saveBuildTimeDecision(ctx, decisionKey, decision(new int[] { s, e, m, count }, keys));
         }
 
         if (childrenBeforeBuild != null && count == iterationCount(src, s, e, m)) {
@@ -510,15 +497,6 @@ public final class ForEachHandler extends TagHandlerImpl {
     }
 
     /**
-     * Whether the given range was saved by this tag rather than by another one of the same facelet, which is what it
-     * is placed at that tells apart: an edit which moves a tag is an edit which moves what its decision describes.
-     */
-    private boolean isTagOf(int[] range) {
-        Location location = tag.getLocation();
-        return range[TAG_LINE] == location.getLine() && range[TAG_COLUMN] == location.getColumn();
-    }
-
-    /**
      * What this build iterated, to be saved with the state: the range it iterated over, how many iterations it
      * produced and, over a map, the key each of those iterations was produced for.
      */
@@ -544,8 +522,8 @@ public final class ForEachHandler extends TagHandlerImpl {
     }
 
     /**
-     * The given part of a decision, or {@code null} where what stands under the key is not one this handler saved: the
-     * keys of the decisions of a facelet edited since the response was rendered name other decisions than they did.
+     * The given part of a decision, or {@code null} where what stands under the key is not shaped as this handler saves
+     * it, such as a decision saved by another version of this handler.
      */
     private static Object part(Object[] decision, int index) {
         return decision.length == PARTS ? decision[index] : null;
