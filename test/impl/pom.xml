@@ -43,6 +43,7 @@
         <module>issue6076</module>
         <module>issue6078</module>
         <module>enableStrictTagFileBodyClosure</module>
+        <module>restoreBuildTimeDecisionsAfterEdit</module>
     </modules>
 
     <dependencies>

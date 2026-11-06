@@ -106,8 +106,8 @@ public abstract class TagHandlerImpl extends TagHandler {
 
     /**
      * The key under which this handler's decision is saved and replayed, or {@code null} when decisions are not saved at all. The id the tag generates for this
-     * build is unique per tag and stable across the builds of one view, which is what lets the build restoring a view find back what the build which rendered
-     * it decided here.
+     * build is unique per tag and stable across the builds of one view as long as no facelet the build applies before this tag is edited, which is what lets
+     * the build restoring a view find back what the build which rendered it decided here.
      *
      * @param ctx the {@link FaceletContext} for the current build
      * @return the key under which this handler's decision is saved and replayed
@@ -117,8 +117,8 @@ public abstract class TagHandlerImpl extends TagHandler {
     }
 
     /**
-     * The value the build which rendered the view decided on here, or {@code null} when this build is not the one restoring that view or when there is nothing
-     * to replay.
+     * The value the build which rendered the view decided on here, or {@code null} when this build is not the one restoring that view, when there is nothing to
+     * replay, or when this build applied a facelet which was edited since.
      *
      * @param ctx the {@link FaceletContext} for the current build
      * @param key the key of the decision, as returned by {@link #buildTimeDecisionKey(FaceletContext)}
@@ -130,8 +130,8 @@ public abstract class TagHandlerImpl extends TagHandler {
 
     /**
      * The value the build which rendered the view decided on here, of the given type, or {@code null} when this build is not the one restoring that view, when
-     * there is nothing to replay, or when what is there is of another type. The keys of the decisions of a facelet edited since the response was rendered name
-     * other decisions than they did, so a handler must read back what it saved rather than whatever stands under its key.
+     * there is nothing to replay, or when what is there is of another type. A handler reads back only what it saved, which a state saved by another version of
+     * this handler need not be.
      *
      * @param <T> the type of the decision.
      * @param ctx the {@link FaceletContext} for the current build.
