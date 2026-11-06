@@ -22,7 +22,9 @@ import static jakarta.faces.component.UIComponentBase.saveAttachedState;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -175,14 +177,14 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
             Map<Serializable, Object> dm = deltaMap();
             Map<String, Object> dMap = (Map<String, Object>) dm.get(key);
             if (dMap == null) {
-                dMap = new HashMap<>(5);
+                dMap = new PutEntries(5);
                 dm.put(key, dMap);
             }
         }
 
         Map<String, Object> map = (Map<String, Object>) get(key);
         if (map == null) {
-            map = new HashMap<>(8);
+            map = new PutEntries(8);
             defaultMap().put(key, map);
         }
     }
@@ -265,12 +267,11 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
 
     private void initList(Serializable key) {
         if (component.initialStateMarked()) {
-            deltaMap().computeIfAbsent(key, e -> new ArrayList<>(4));
+            deltaMap().computeIfAbsent(key, e -> new AddedItems(4));
         }
 
         if (get(key) == null) {
-            List<Object> items = new ArrayList<>(4);
-            defaultMap().put(key, items);
+            defaultMap().put(key, new AddedItems(4));
         }
     }
 
@@ -375,7 +376,61 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
         return -1;
     }
 
+    /**
+     * The saved form of the given value. A container of {@link #add(Serializable, Object)} or
+     * {@link #put(Serializable, String, Object)}, and the attributesThatAreSet list, are saved in a form which
+     * {@link #restoreEntry} merges into the container of the build. Any other map or collection is saved as a
+     * {@link WholeValue}, so that it restores whole, with its order and duplicates, and replaces the value of the
+     * build. Null items and transient state holder items are left out, as {@link UIComponentBase#saveAttachedState}
+     * does.
+     */
+    private static Object saveValue(FacesContext context, Serializable key, Object value) {
+        if (value instanceof AddedItems) {
+            return saveAttachedState(context, value, ArrayList.class);
+        }
+        if (value instanceof PutEntries) {
+            return saveAttachedState(context, value, HashMap.class);
+        }
+        if (key == UIComponent.PropertyKeysPrivate.attributesThatAreSet) {
+            return saveAttachedState(context, value);
+        }
+        if (value instanceof Collection || value instanceof Map) {
+            return new WholeValue(saveAttachedState(context, value, restorableType(value)));
+        }
+        if (value instanceof StateHolder || !(value instanceof Serializable)) {
+            return saveAttachedState(context, value);
+        }
+        return value;
+    }
+
+    /**
+     * The class to restore the given map or collection as. A list or map restores as the nearest class in its hierarchy
+     * which can be instantiated. Without one, a list restores as an {@link ArrayList} and any map other than an enum
+     * map as a {@link LinkedHashMap}, so that each restore gives a new instance of it. An enum map, and any other
+     * value, is saved as {@link UIComponentBase#saveAttachedState(FacesContext, Object)} saves it.
+     */
+    private static Class<?> restorableType(Object value) {
+        if (!(value instanceof List) && !(value instanceof Map)) {
+            return value.getClass();
+        }
+        Class<?> base = value instanceof Map ? Map.class : List.class;
+        for (Class<?> type = value.getClass(); base.isAssignableFrom(type); type = type.getSuperclass()) {
+            if (UIComponentBase.isNewable(type)) {
+                return type;
+            }
+        }
+        if (value instanceof List) {
+            return ArrayList.class;
+        }
+        return value instanceof EnumMap ? value.getClass() : LinkedHashMap.class;
+    }
+
     private void restoreEntry(FacesContext context, Serializable serializable, Object value) {
+        if (value instanceof WholeValue) {
+            put(serializable, restoreAttachedState(context, ((WholeValue) value).state));
+            return;
+        }
+
         if (value != null) {
             if (value instanceof Collection) {
                 value = restoreAttachedState(context, value);
@@ -505,12 +560,8 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
             if (skipAttributesThatAreSet && entry.getKey() == UIComponent.PropertyKeysPrivate.attributesThatAreSet) {
                 continue;
             }
-            Object value = entry.getValue();
             savedState[i * 2] = entry.getKey();
-            if (value instanceof Collection || value instanceof StateHolder || value instanceof Map || !(value instanceof Serializable)) {
-                value = saveAttachedState(context, value);
-            }
-            savedState[i * 2 + 1] = value;
+            savedState[i * 2 + 1] = saveValue(context, entry.getKey(), entry.getValue());
             i++;
         }
 
@@ -550,7 +601,7 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
             if (value instanceof StateHolder && ((StateHolder) value).isTransient()) {
                 return false;
             }
-            if (value != null && !(value instanceof Map) && !(value instanceof List)) {
+            if (value != null && !(value instanceof Map) && !(value instanceof Collection)) {
                 if (!recorded.contains(entry.getKey().toString())) {
                     return false;
                 }
@@ -682,5 +733,45 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
     @Override
     public Object saveTransientState(FacesContext context) {
         return transientState;
+    }
+
+    /**
+     * A list built by {@link #add(Serializable, Object)}. Its delta holds only the items added after the initial state
+     * was marked, so the restore merges it into the list of the build.
+     */
+    private static final class AddedItems extends ArrayList<Object> {
+
+        private static final long serialVersionUID = 1L;
+
+        AddedItems(int initialCapacity) {
+            super(initialCapacity);
+        }
+    }
+
+    /**
+     * A map built by {@link #put(Serializable, String, Object)}. Its delta holds only the entries put after the initial
+     * state was marked, so the restore merges it into the map of the build.
+     */
+    private static final class PutEntries extends HashMap<String, Object> {
+
+        private static final long serialVersionUID = 1L;
+
+        PutEntries(int initialCapacity) {
+            super(initialCapacity);
+        }
+    }
+
+    /**
+     * The saved form of a map or collection which was put whole. It restores whole and replaces the value of the build.
+     */
+    private static final class WholeValue implements Serializable {
+
+        private static final long serialVersionUID = 1L;
+
+        private final Object state;
+
+        WholeValue(Object state) {
+            this.state = state;
+        }
     }
 }

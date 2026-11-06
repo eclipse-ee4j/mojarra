@@ -1534,19 +1534,43 @@ public abstract class UIComponentBase extends UIComponent {
             return null;
         }
 
-        Object result;
-        Class<?> mapOrCollectionClass = attachedObject.getClass();
-        boolean newWillSucceed = true;
-        // first, test for newability of the class.
-        try {
-            int modifiers = mapOrCollectionClass.getModifiers();
-            newWillSucceed = Modifier.isPublic(modifiers);
-            if (newWillSucceed) {
-                newWillSucceed = null != mapOrCollectionClass.getConstructor();
-            }
-        } catch (Exception e) {
-            newWillSucceed = false;
+        return saveAttachedState(context, attachedObject, attachedObject.getClass());
+    }
+
+    /**
+     * Whether {@link #restoreAttachedState} can create an instance of the given class: it is public, not abstract, and
+     * has a public no-argument constructor.
+     *
+     * @param type the class.
+     * @return whether the class can be instantiated on restore.
+     */
+    static boolean isNewable(Class<?> type) {
+        int modifiers = type.getModifiers();
+        if (!Modifier.isPublic(modifiers) || Modifier.isAbstract(modifiers)) {
+            return false;
         }
+        try {
+            type.getConstructor();
+            return true;
+        } catch (NoSuchMethodException | SecurityException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Save the given attached object as {@link #saveAttachedState(FacesContext, Object)} does, but record the given
+     * class as the class of a <code>Map</code> or <code>Collection</code>, so that {@link #restoreAttachedState}
+     * restores it as an instance of that class. When that class cannot be instantiated, the object is saved whole, as
+     * {@link #saveAttachedState(FacesContext, Object)} saves an object of such a class.
+     *
+     * @param context the {@link FacesContext} for this request.
+     * @param attachedObject the object to save, not <code>null</code>.
+     * @param mapOrCollectionClass the class to record for a <code>Map</code> or <code>Collection</code>.
+     * @return The state object to be saved.
+     */
+    static Object saveAttachedState(FacesContext context, Object attachedObject, Class<?> mapOrCollectionClass) {
+        Object result;
+        boolean newWillSucceed = isNewable(mapOrCollectionClass);
 
         if (newWillSucceed && attachedObject instanceof Collection) {
             Collection attachedCollection = (Collection) attachedObject;
