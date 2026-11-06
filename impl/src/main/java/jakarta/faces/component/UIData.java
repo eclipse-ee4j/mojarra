@@ -571,13 +571,15 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
 
         if (_initialDescendantFullComponentState != null) {
             // Just save the row
+            String rowKey = getContainerClientId(facesContext);
             Map<String, Object> sm = saveFullDescendantComponentStates(facesContext, null, getChildren().iterator(), false);
             if (sm != null && !sm.isEmpty()) {
-                _rowDeltaStates.put(getContainerClientId(facesContext), sm);
+                _rowDeltaStates.put(rowKey, sm);
+            } else {
+                _rowDeltaStates.remove(rowKey);
             }
             if (getRowIndex() != -1) {
-                _rowTransientStates.put(getContainerClientId(facesContext),
-                        saveTransientDescendantComponentStates(facesContext, null, getChildren().iterator(), false));
+                _rowTransientStates.put(rowKey, saveTransientDescendantComponentStates(facesContext, null, getChildren().iterator(), false));
             }
         }
 
@@ -1684,7 +1686,23 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         } else {
             _rowDeltaStates = new HashMap<>(restoredRowStates);
         }
-        childState = (Map<String, Map<Integer, SavedState[]>>) values[2];
+        childState = copyOf((Map<String, Map<Integer, SavedState[]>>) values[2]);
+    }
+
+    /**
+     * A copy of the given per-row child state, down to the map of each table, which {@link #saveDescendantState} and
+     * {@link #discardChildState} change in place. Server side state saving keeps the saved state without serializing it,
+     * so the restored maps must not be the saved ones. The saved row state arrays are only replaced, never changed.
+     */
+    private static Map<String, Map<Integer, SavedState[]>> copyOf(Map<String, Map<Integer, SavedState[]>> childState) {
+        if (childState == null) {
+            return null;
+        }
+        Map<String, Map<Integer, SavedState[]>> copy = new HashMap<>();
+        for (Map.Entry<String, Map<Integer, SavedState[]>> entry : childState.entrySet()) {
+            copy.put(entry.getKey(), new HashMap<>(entry.getValue()));
+        }
+        return copy;
     }
 
     private void resetClientIds(UIComponent component) {

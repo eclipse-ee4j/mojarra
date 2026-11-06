@@ -591,6 +591,24 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
     }
 
     /**
+     * A full state describes the whole component, also when the component had no state helper when it was saved:
+     * restoring it leaves nothing of the current state helper, such as a local value set after the full state was saved.
+     */
+    @Test
+    public void testFullStateWithoutStateHelperClearsTheCurrentStateHelper() throws Exception {
+        UIInput input = new UIInput();
+        input.setId("input");
+        Object fullState = input.saveState(facesContext);
+        input.markInitialState();
+        input.setValue("typed");
+
+        input.clearInitialState();
+        input.restoreState(facesContext, fullState);
+
+        assertNull(input.getLocalValue());
+    }
+
+    /**
      * A standard component restored from a full state without attributesThatAreSet list records its attributes in
      * natural order, as the saved component did, so that it renders them in the same order.
      */

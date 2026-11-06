@@ -1423,6 +1423,7 @@ public abstract class UIComponentBase extends UIComponent {
         }
 
         Object[] values = (Object[]) state;
+        boolean fullState = values.length == 7;
 
         if (values[0] != null) {
             if (listeners == null) {
@@ -1438,7 +1439,7 @@ public abstract class UIComponentBase extends UIComponent {
             } else {
                 listenersByEventClass = restoredListeners;
             }
-            if (values.length != 7) {
+            if (!fullState) {
                 // Partial-state delta: a listener changed after markInitialState; keep it dirty so the change stays
                 // in the delta across subsequent postbacks (mirrors bindingsModified / rendererTypeSet below).
                 systemEventListenersModified = true;
@@ -1451,7 +1452,7 @@ public abstract class UIComponentBase extends UIComponent {
 
         if (values[3] != null) {
             bindings = restoreBindingsState(context, values[3]);
-            if (values.length != 7) {
+            if (!fullState) {
                 // Partial-state delta: a value expression changed after markInitialState; keep it dirty so
                 // the change stays in the delta across subsequent postbacks (mirrors rendererTypeSet below).
                 bindingsModified = true;
@@ -1460,9 +1461,11 @@ public abstract class UIComponentBase extends UIComponent {
 
         if (values[4] != null) {
             getStateHelper().restoreState(context, values[4]);
+        } else if (fullState && stateHelper != null) {
+            stateHelper.restoreState(context, ComponentStateHelper.EMPTY_FULL_STATE);
         }
 
-        if (values.length == 7) {
+        if (fullState) {
             // Full state is authoritative and runs no buildView reconstruction: restore rendererType
             // exactly (including an explicit null, which must overwrite a constructor-set default) and
             // the id, then sync the field-backed markers from the restored attributes map.
