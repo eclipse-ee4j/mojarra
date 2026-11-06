@@ -69,6 +69,7 @@
    <properties>
         <mojarra.logstrings.version>${project.version}</mojarra.logstrings.version>
         <lint.thisEscape />
+        <mockito.version>5.23.0</mockito.version>
     </properties>
 
    <!-- ###  D E P E N D E N C I E S  ### -->
@@ -175,7 +176,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>5.23.0</version>
+            <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -274,12 +275,14 @@
                 </configuration>
             </plugin>
 
+            <!-- Load Mockito's inline mock maker as agent, see https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3 -->
+            <!-- -Xshare:off because the agent appends to the bootstrap class path, which CDS cannot share. -->
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.5.5</version>
                 <configuration>
                     <trimStackTrace>false</trimStackTrace>
-                    <argLine>--add-opens java.base/java.lang=ALL-UNNAMED</argLine>
+                    <argLine>--add-opens java.base/java.lang=ALL-UNNAMED -javaagent:${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar -Xshare:off</argLine>
                     <systemPropertyVariables>
                         <java.util.logging.config.file>${project.build.testOutputDirectory}/logging.properties</java.util.logging.config.file>
                         <contextparams.md>${project.basedir}/../CONTEXT-PARAMS.md</contextparams.md>
