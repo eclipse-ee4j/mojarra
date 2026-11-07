@@ -84,9 +84,10 @@ public class RIConstants {
     public static final String DYNAMIC_ACTIONS = RI_PREFIX + "DynamicActions";
 
     /**
-     * Marker used when saving, under {@link jakarta.faces.application.ProjectStage#Development} only, the tag each client id was built from, so that the build
-     * which restores the view can be told where it produced another component than the one that was rendered. It holds every component rather than only those
-     * carrying a delta: a component the restore fails to produce is the one to report, and it need never have held state of its own.
+     * Marker used when saving, under {@link jakarta.faces.application.ProjectStage#Development} only, the key of the component behind each client id: the tag
+     * it was built from, or the key of a component a build added without a tag. The build which restores the view can so be told where it produced another
+     * component than the one that was rendered. It holds every component rather than only those carrying a delta: a component the restore fails to produce is
+     * the one to report, and it need never have held state of its own.
      */
     public static final String RENDERED_TAGS = RI_PREFIX + "RenderedTags";
 

@@ -94,7 +94,6 @@ import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.Doctype;
 import jakarta.faces.component.NamingContainer;
 import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UIData;
 import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.component.search.UntargetableComponent;
@@ -115,7 +114,6 @@ import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.application.ApplicationAssociate;
 import org.glassfish.mojarra.config.FacesContextParam;
 import org.glassfish.mojarra.config.manager.FacesSchema;
-import org.glassfish.mojarra.facelets.component.UIRepeat;
 import org.glassfish.mojarra.io.FastStringWriter;
 
 /**
@@ -137,11 +135,6 @@ public class Util {
      * Flag that, when true, enables special behavior in Mojarra to enable unit testing.
      */
     private static boolean unitTestModeEnabled = false;
-
-    /**
-     * RegEx patterns
-     */
-    private static final String CLIENT_ID_NESTED_IN_ITERATOR_PATTERN = "CLIENT_ID_NESTED_IN_ITERATOR_PATTERN";
 
     private static final String FACES_SERVLET_CLASS = FacesServlet.class.getName();
 
@@ -1765,33 +1758,6 @@ public class Util {
         else {
             return (Stream<T>) Stream.of(object);
         }
-    }
-
-    public static boolean isNestedInIterator(FacesContext context, UIComponent component) {
-        UIComponent parent = component.getParent();
-
-        if (parent == null) {
-            return false;
-        }
-
-        for (UIComponent p = parent; p != null; p = p.getParent()) {
-            if (p instanceof UIData || p instanceof UIRepeat) {
-                return true;
-            }
-        }
-
-        // https://github.com/eclipse-ee4j/mojarra/issues/4957
-        // We should in long term probably introduce a common interface like UIIterable.
-        // But this is solid for now as all known implementing components already follow this pattern.
-        // We could theoretically even remove the above instanceof checks.
-        // Application scoped rather than a constant: the separator character it is built around is configurable.
-        Pattern clientIdNestedInIteratorPattern = (Pattern) context.getExternalContext().getApplicationMap()
-            .computeIfAbsent(CLIENT_ID_NESTED_IN_ITERATOR_PATTERN, k -> {
-                String separatorChar = Pattern.quote(String.valueOf(UINamingContainer.getSeparatorChar(context)));
-                return Pattern.compile(".+" + separatorChar + "[0-9]+" + separatorChar + ".+");
-            });
-
-        return clientIdNestedInIteratorPattern.matcher(parent.getClientId(context)).matches();
     }
 
     public static String ensureLeadingSlash(String s) {

@@ -19,9 +19,11 @@ package org.glassfish.mojarra.renderkit;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.PredefinedPostbackParameter.VIEW_STATE_PARAM;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -42,6 +44,7 @@ import org.glassfish.mojarra.mock.MockApplication;
 import org.glassfish.mojarra.mock.MockExternalContext;
 import org.glassfish.mojarra.mock.MockFacesContext;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -248,6 +251,22 @@ class ClientSideStateHelperTest extends JUnitFacesTestCaseBase {
 
         void writeTo(ObjectOutputStream oos) throws IOException;
 
+    }
+
+    /**
+     * A compressed state is read through a {@link BufferedInputStream}, because {@link ObjectInputStream} reads its headers a byte at a time and
+     * {@link GZIPInputStream} inflates on every read.
+     */
+    @Test
+    void compressedStateIsReadThroughABuffer() throws Exception {
+        String written = write("Development", null, true);
+        ClientSideStateHelper helper = new ClientSideStateHelper();
+        RecordingSerializationProvider provider = new RecordingSerializationProvider(helper.serialProvider);
+        helper.serialProvider = provider;
+
+        assertNotNull(helper.doGetState(facesContext, written), "state is read back");
+        assertEquals(1, provider.getSources().size(), "object input streams created");
+        assertInstanceOf(BufferedInputStream.class, provider.getSources().get(0));
     }
 
     private String write(String stage, String clientStateDebugging, boolean compress) throws Exception {

@@ -24,18 +24,22 @@ import static org.glassfish.mojarra.RIConstants.RENDERED_TAGS;
 import static org.glassfish.mojarra.application.view.FaceletStateManagementStrategy.NOT_REBUILT_REPORT;
 import static org.glassfish.mojarra.application.view.FaceletStateManagementStrategy.NOT_REBUILT_WITH_SUBMITTED_REPORT;
 import static org.glassfish.mojarra.application.view.FaceletStateManagementStrategy.REBUILT_FROM_ANOTHER_TAG_REPORT;
+import static org.glassfish.mojarra.application.view.FaceletStateManagementStrategy.UNTAGGED_KEY_SEPARATOR;
 import static org.glassfish.mojarra.application.view.FaceletStateManagementStrategy.clientIdsNotRebuilt;
 import static org.glassfish.mojarra.application.view.FaceletStateManagementStrategy.clientIdsRebuiltFromAnotherTag;
 import static org.glassfish.mojarra.application.view.FaceletStateManagementStrategy.holdsStableClientId;
 import static org.glassfish.mojarra.application.view.FaceletStateManagementStrategy.isViewRootOnlyState;
+import static org.glassfish.mojarra.application.view.FaceletStateManagementStrategy.keyOf;
 import static org.glassfish.mojarra.application.view.FaceletStateManagementStrategy.saveDynamicActions;
 import static org.glassfish.mojarra.application.view.FaceletStateManagementStrategy.tagOf;
 import static org.glassfish.mojarra.application.view.FaceletStateManagementStrategy.truncated;
+import static org.glassfish.mojarra.application.view.FaceletStateManagementStrategy.untaggedKeyOf;
 import static org.glassfish.mojarra.config.MojarraContextParam.RESTORE_BUILD_TIME_DECISIONS;
 import static org.glassfish.mojarra.facelets.tag.faces.ComponentSupport.MARK_CREATED;
 import static org.glassfish.mojarra.util.ComponentStruct.ADD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -51,6 +55,8 @@ import java.util.regex.Pattern;
 
 import jakarta.faces.component.NamingContainer;
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.component.UIOutput;
 import jakarta.faces.component.UIPanel;
 import jakarta.faces.component.UIViewRoot;
@@ -167,14 +173,153 @@ class FaceletStateManagementStrategyTest {
     }
 
     /**
-     * A component no facelet built - the view root, a component resource, anything added programmatically - is not compared across the two builds at all. No
-     * build time condition governs whether it is there, and one left without an id of its own is numbered from a counter which the build leaves where the
-     * previous request's state then moves it, so it holds another client id on every request and comparing it by client id would report it as vanished on every
-     * postback.
+     * A component no facelet built - the view root, a component resource, anything added programmatically - holds no tag.
      */
     @Test
-    void aComponentBuiltByNoTagIsNotCompared() {
+    void aComponentBuiltByNoTagHoldsNoTag() {
         assertNull(tagOf(new UIOutput()));
+    }
+
+    /**
+     * A component which a build added without a tag, such as from a <code>PostAddToViewEvent</code> listener, is compared by the tag of the nearest component a
+     * tag built, followed by its own class, when it has an id of its own.
+     */
+    @Test
+    void anUntaggedComponentWithAnIdOfItsOwnIsKeyedByTheTagAboveIt() {
+        UIComponent component = untaggedChildOf(tagged("1b"), "in0");
+
+        assertEquals("1b" + UNTAGGED_KEY_SEPARATOR + UIInput.class.getName(), untaggedKeyOf(component));
+    }
+
+    /**
+     * Two untagged components of another class under the same tag have another key, so the one which replaced the other in the rebuilt view is reported.
+     */
+    @Test
+    void untaggedComponentsOfAnotherClassUnderTheSameTagHaveAnotherKey() {
+        UIComponent parent = tagged("1b");
+        UIComponent input = untaggedChildOf(parent, "in0");
+        UIComponent output = new UIOutput();
+        output.setId("out0");
+        parent.getChildren().add(output);
+
+        assertNotEquals(untaggedKeyOf(input), untaggedKeyOf(output));
+    }
+
+    /**
+     * An untagged component left without an id of its own gets its id from a counter whose value differs between two requests, so its client id differs too,
+     * and comparing it by client id would report it as vanished on every postback.
+     */
+    @Test
+    void anUntaggedComponentWithAGeneratedIdIsNotCompared() {
+        UIComponent component = untaggedChildOf(tagged("1b"), UIViewRoot.UNIQUE_ID_PREFIX + "5");
+
+        assertNull(untaggedKeyOf(component));
+    }
+
+    /**
+     * An untagged component under no component a tag built, such as a component resource of the view root, is not compared.
+     */
+    @Test
+    void anUntaggedComponentUnderNoTaggedComponentIsNotCompared() {
+        UIComponent component = untaggedChildOf(new UIOutput(), "in0");
+
+        assertNull(untaggedKeyOf(component));
+    }
+
+    /**
+     * An untagged component without any id is numbered like one with a generated id, so it is not compared.
+     */
+    @Test
+    void anUntaggedComponentWithoutAnIdIsNotCompared() {
+        UIComponent component = untaggedChildOf(tagged("1b"), null);
+
+        assertNull(untaggedKeyOf(component));
+    }
+
+    /**
+     * An untagged naming container without an id of its own hands its children a client id which is numbered anew on every request, so an untagged component
+     * under it is not compared.
+     */
+    @Test
+    void anUntaggedComponentUnderAnIdlessUntaggedNamingContainerIsNotCompared() {
+        UIComponent container = new UINamingContainer();
+        tagged("1b").getChildren().add(container);
+        UIComponent component = untaggedChildOf(container, "in0");
+
+        assertNull(untaggedKeyOf(component));
+    }
+
+    /**
+     * An untagged component which is not a naming container does not enter the client id of its children, so an untagged component under it is keyed by the tag
+     * above both.
+     */
+    @Test
+    void anUntaggedComponentUnderAnUntaggedPlainPanelIsKeyedByTheTagAboveIt() {
+        UIComponent panel = new UIPanel();
+        tagged("1b").getChildren().add(panel);
+        UIComponent component = untaggedChildOf(panel, "in0");
+
+        assertEquals("1b" + UNTAGGED_KEY_SEPARATOR + UIInput.class.getName(), untaggedKeyOf(component));
+    }
+
+    /**
+     * The nearest tag-built ancestor decides the key, also when it is a naming container with a generated id: a tag seeds that id, so it is the same on every
+     * build.
+     */
+    @Test
+    void anUntaggedComponentUnderATaggedNamingContainerWithAGeneratedIdIsKeyedByItsTag() {
+        UIComponent form = new UINamingContainer();
+        form.setId(UIViewRoot.UNIQUE_ID_PREFIX + "t5");
+        form.getAttributes().put(MARK_CREATED, "1b");
+        UIComponent component = untaggedChildOf(form, "in0");
+
+        assertEquals("1b" + UNTAGGED_KEY_SEPARATOR + UIInput.class.getName(), untaggedKeyOf(component));
+    }
+
+    /**
+     * An untagged naming container with an id of its own hands its children a stable client id, so an untagged component under it is keyed by the tag above
+     * both.
+     */
+    @Test
+    void anUntaggedComponentUnderAnUntaggedNamingContainerWithAnIdOfItsOwnIsKeyedByTheTagAboveIt() {
+        UIComponent container = new UINamingContainer();
+        container.setId("container");
+        tagged("1b").getChildren().add(container);
+        UIComponent component = untaggedChildOf(container, "in0");
+
+        assertEquals("1b" + UNTAGGED_KEY_SEPARATOR + UIInput.class.getName(), untaggedKeyOf(component));
+    }
+
+    /**
+     * An untagged component added after the build is not compared, as the dynamic actions saved with the view restore it.
+     */
+    @Test
+    void aDynamicallyAddedUntaggedComponentIsNotCompared() {
+        UIComponent component = untaggedChildOf(tagged("1b"), "in0");
+
+        assertNull(keyOf(component, true));
+        assertEquals(untaggedKeyOf(component), keyOf(component, false));
+    }
+
+    /**
+     * A tagged component which was moved after the build is still compared by its tag.
+     */
+    @Test
+    void aDynamicallyMovedTaggedComponentIsComparedByItsTag() {
+        assertEquals("1b", keyOf(tagged("1b"), true));
+    }
+
+    private static UIComponent tagged(String tag) {
+        UIComponent component = new UIOutput();
+        component.getAttributes().put(MARK_CREATED, tag);
+        return component;
+    }
+
+    private static UIComponent untaggedChildOf(UIComponent parent, String id) {
+        UIComponent child = new UIInput();
+        child.setId(id);
+        parent.getChildren().add(child);
+        return child;
     }
 
     /**
@@ -355,8 +500,8 @@ class FaceletStateManagementStrategyTest {
         assertReportHolds(NOT_REBUILT_REPORT, "so their state is restored", 2, clientIds(2));
         assertReportHolds(NOT_REBUILT_WITH_SUBMITTED_REPORT, "1 carries a submitted value", 1, clientIds(1), 1, clientIds(1));
         assertReportHolds(NOT_REBUILT_WITH_SUBMITTED_REPORT, "2 carry a submitted value", 2, clientIds(2), 2, clientIds(2));
-        assertReportHolds(REBUILT_FROM_ANOTHER_TAG_REPORT, "holds 1 client id built", 1, clientIds(1));
-        assertReportHolds(REBUILT_FROM_ANOTHER_TAG_REPORT, "holds 2 client ids built", 2, clientIds(2));
+        assertReportHolds(REBUILT_FROM_ANOTHER_TAG_REPORT, "holds 1 client id on another component", 1, clientIds(1));
+        assertReportHolds(REBUILT_FROM_ANOTHER_TAG_REPORT, "holds 2 client ids on another component", 2, clientIds(2));
     }
 
     /**
