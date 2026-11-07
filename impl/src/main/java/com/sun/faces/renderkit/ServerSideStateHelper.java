@@ -29,9 +29,11 @@ import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINEST;
 import static java.util.logging.Level.WARNING;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -41,7 +43,6 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIViewRoot;
@@ -341,7 +342,7 @@ public class ServerSideStateHelper extends StateHelper {
         ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
         ObjectOutputStream oas = null;
         try {
-            oas = serialProvider.createObjectOutputStream(compressViewState ? new GZIPOutputStream(baos, 1024) : baos);
+            oas = serialProvider.createObjectOutputStream(compressViewState ? createCompressingOutputStream(baos, 1024) : baos);
             oas.writeObject(state);
             oas.flush();
         } catch (Exception e) {
@@ -370,11 +371,20 @@ public class ServerSideStateHelper extends StateHelper {
         }
 
         try (ByteArrayInputStream bais = new ByteArrayInputStream((byte[]) state);
-            ObjectInputStream ois = serialProvider.createObjectInputStream(compressViewState ? new GZIPInputStream(bais, 1024) : bais);) {
+            ObjectInputStream ois = serialProvider.createObjectInputStream(inflated(bais));) {
             return ois.readObject();
         } catch (Exception e) {
             throw new FacesException(e);
         }
+    }
+
+    /**
+     * @param bais the serialized state as it was stored in the session
+     * @return the given stream, inflated through a buffer when the state is compressed
+     * @throws IOException if the compressed stream cannot be read
+     */
+    private InputStream inflated(ByteArrayInputStream bais) throws IOException {
+        return compressViewState ? new BufferedInputStream(new GZIPInputStream(bais, 1024)) : bais;
     }
 
     /**

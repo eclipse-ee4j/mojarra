@@ -24,8 +24,11 @@ import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.util.logging.Logger;
+import java.util.zip.Deflater;
+import java.util.zip.GZIPOutputStream;
 
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
@@ -48,6 +51,12 @@ import com.sun.faces.util.Util;
 public abstract class StateHelper {
 
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
+
+    /**
+     * The compression level of a compressed view state. It compresses a serialized view state about as fast as
+     * {@link Deflater#BEST_SPEED}, to only a few percent larger than the default level, which takes noticeably longer.
+     */
+    static final int VIEW_STATE_COMPRESSION_LEVEL = 3;
 
     /**
      * <p>
@@ -158,6 +167,20 @@ public abstract class StateHelper {
     }
 
     // ------------------------------------------------------- Protected Methods
+
+    /**
+     * @param destination the stream to write the compressed view state to
+     * @param bufferSize the size of the output buffer
+     * @return a stream which compresses at {@link #VIEW_STATE_COMPRESSION_LEVEL}
+     * @throws IOException if the stream cannot write its header
+     */
+    protected static GZIPOutputStream createCompressingOutputStream(OutputStream destination, int bufferSize) throws IOException {
+        return new GZIPOutputStream(destination, bufferSize) {
+            {
+                def.setLevel(VIEW_STATE_COMPRESSION_LEVEL);
+            }
+        };
+    }
 
     /**
      * <p>

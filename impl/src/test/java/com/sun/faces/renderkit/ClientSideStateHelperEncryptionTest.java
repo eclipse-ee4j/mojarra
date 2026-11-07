@@ -20,9 +20,11 @@ import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
 import java.util.Arrays;
@@ -170,6 +172,22 @@ class ClientSideStateHelperEncryptionTest extends JUnitFacesTestCaseBase {
 
         assertEquals("stateless", out.toString());
         assertEquals("stateless", helper.getState(facesContext, "/view.xhtml"));
+    }
+
+    /**
+     * A compressed state is read through a {@link BufferedInputStream}, because {@link ObjectInputStream} reads its headers a byte at a time and
+     * {@link GZIPInputStream} inflates on every read.
+     */
+    @Test
+    void compressedStateIsReadThroughABuffer() throws Exception {
+        String written = write("Development", "true", true);
+        ClientSideStateHelper helper = new ClientSideStateHelper();
+        RecordingSerializationProvider provider = new RecordingSerializationProvider(helper.serialProvider);
+        helper.serialProvider = provider;
+
+        assertNotNull(helper.doGetState(facesContext, written), "state is read back");
+        assertEquals(1, provider.getSources().size(), "object input streams created");
+        assertInstanceOf(BufferedInputStream.class, provider.getSources().get(0));
     }
 
     private String write(String stage, String disableEncryption, boolean compress) throws Exception {

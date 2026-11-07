@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<!--
+
+    Copyright (c) Contributors to Eclipse Foundation.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<html xmlns:h="jakarta.faces.html" xmlns:f="jakarta.faces.core" xmlns:ui="jakarta.faces.facelets">
+    <h:head>
+        <title>Mojarra issue 6138 - tree visit and invokeOnComponent from inside a nested row</title>
+    </h:head>
+    <h:body>
+        <h:form id="visit_rr">
+            <ui:repeat id="o" var="row" value="#{issue6138.nested}">
+                <ui:repeat id="i" var="cell" value="#{row}">
+                    <h:inputText id="input" value="#{cell.value}"><f:validator validatorId="formVisitValidator" /></h:inputText>
+                </ui:repeat>
+            </ui:repeat>
+            <h:commandButton id="submit" value="Submit" />
+            <h:outputText id="output" value="#{issue6138.nested}" />
+            <h:outputText id="validated" value="#{issue6138.validated}" />
+        </h:form>
+        <h:form id="visit_rt">
+            <ui:repeat id="o" var="row" value="#{issue6138.nested}">
+                <h:dataTable id="i" var="cell" value="#{row}"><h:column>
+                    <h:inputText id="input" value="#{cell.value}"><f:validator validatorId="formVisitValidator" /></h:inputText>
+                </h:column></h:dataTable>
+            </ui:repeat>
+            <h:commandButton id="submit" value="Submit" />
+            <h:outputText id="output" value="#{issue6138.nested}" />
+            <h:outputText id="validated" value="#{issue6138.validated}" />
+        </h:form>
+        <h:form id="visit_tr">
+            <h:dataTable id="o" var="row" value="#{issue6138.nested}"><h:column>
+                <ui:repeat id="i" var="cell" value="#{row}">
+                    <h:inputText id="input" value="#{cell.value}"><f:validator validatorId="formVisitValidator" /></h:inputText>
+                </ui:repeat>
+            </h:column></h:dataTable>
+            <h:commandButton id="submit" value="Submit" />
+            <h:outputText id="output" value="#{issue6138.nested}" />
+            <h:outputText id="validated" value="#{issue6138.validated}" />
+        </h:form>
+        <h:form id="visit_tt">
+            <h:dataTable id="o" var="row" value="#{issue6138.nested}"><h:column>
+                <h:dataTable id="i" var="cell" value="#{row}"><h:column>
+                    <h:inputText id="input" value="#{cell.value}"><f:validator validatorId="formVisitValidator" /></h:inputText>
+                </h:column></h:dataTable>
+            </h:column></h:dataTable>
+            <h:commandButton id="submit" value="Submit" />
+            <h:outputText id="output" value="#{issue6138.nested}" />
+            <h:outputText id="validated" value="#{issue6138.validated}" />
+        </h:form>
+        <h:form id="invoke_rr">
+            <ui:repeat id="o" var="row" value="#{issue6138.wide}">
+                <ui:repeat id="i" var="cell" value="#{row}">
+                    <h:inputText id="input" value="#{cell.value}"><f:validator validatorId="invokeOnComponentValidator" /></h:inputText>
+                </ui:repeat>
+            </ui:repeat>
+            <h:commandButton id="submit" value="Submit" />
+            <h:outputText id="output" value="#{issue6138.wide}" />
+            <h:outputText id="validated" value="#{issue6138.validated}" />
+        </h:form>
+        <h:form id="invoke_rt">
+            <ui:repeat id="o" var="row" value="#{issue6138.nested}">
+                <h:dataTable id="i" var="cell" value="#{row}"><h:column>
+                    <h:inputText id="input" value="#{cell.value}"><f:validator validatorId="invokeOnComponentValidator" /></h:inputText>
+                </h:column></h:dataTable>
+            </ui:repeat>
+            <h:commandButton id="submit" value="Submit" />
+            <h:outputText id="output" value="#{issue6138.nested}" />
+            <h:outputText id="validated" value="#{issue6138.validated}" />
+        </h:form>
+        <h:form id="invoke_tr">
+            <h:dataTable id="o" var="row" value="#{issue6138.wide}"><h:column>
+                <ui:repeat id="i" var="cell" value="#{row}">
+                    <h:inputText id="input" value="#{cell.value}"><f:validator validatorId="invokeOnComponentValidator" /></h:inputText>
+                </ui:repeat>
+            </h:column></h:dataTable>
+            <h:commandButton id="submit" value="Submit" />
+            <h:outputText id="output" value="#{issue6138.wide}" />
+            <h:outputText id="validated" value="#{issue6138.validated}" />
+        </h:form>
+        <h:form id="invoke_tt">
+            <h:dataTable id="o" var="row" value="#{issue6138.nested}"><h:column>
+                <h:dataTable id="i" var="cell" value="#{row}"><h:column>
+                    <h:inputText id="input" value="#{cell.value}"><f:validator validatorId="invokeOnComponentValidator" /></h:inputText>
+                </h:column></h:dataTable>
+            </h:column></h:dataTable>
+            <h:commandButton id="submit" value="Submit" />
+            <h:outputText id="output" value="#{issue6138.nested}" />
+            <h:outputText id="validated" value="#{issue6138.validated}" />
+        </h:form>
+        <h:form id="visit_tt_rsp">
+            <h:dataTable id="o" var="row" value="#{issue6138.nested}" rowStatePreserved="true"><h:column>
+                <h:dataTable id="i" var="cell" value="#{row}" rowStatePreserved="true"><h:column>
+                    <h:inputText id="input" value="#{cell.value}"><f:validator validatorId="formVisitValidator" /></h:inputText>
+                </h:column></h:dataTable>
+            </h:column></h:dataTable>
+            <h:commandButton id="submit" value="Submit" />
+            <h:outputText id="output" value="#{issue6138.nested}" />
+            <h:outputText id="validated" value="#{issue6138.validated}" />
+        </h:form>
+        <h:form id="invoke_tt_rsp">
+            <h:dataTable id="o" var="row" value="#{issue6138.nested}" rowStatePreserved="true"><h:column>
+                <h:dataTable id="i" var="cell" value="#{row}" rowStatePreserved="true"><h:column>
+                    <h:inputText id="input" value="#{cell.value}"><f:validator validatorId="invokeOnComponentValidator" /></h:inputText>
+                </h:column></h:dataTable>
+            </h:column></h:dataTable>
+            <h:commandButton id="submit" value="Submit" />
+            <h:outputText id="output" value="#{issue6138.nested}" />
+            <h:outputText id="validated" value="#{issue6138.validated}" />
+        </h:form>
+        <h:form id="visit_rrr">
+            <ui:repeat id="o" var="plane" value="#{issue6138.nestedTwice}">
+                <ui:repeat id="i" var="row" value="#{plane}">
+                    <ui:repeat id="j" var="cell" value="#{row}">
+                        <h:inputText id="input" value="#{cell.value}"><f:validator validatorId="formVisitValidator" /></h:inputText>
+                    </ui:repeat>
+                </ui:repeat>
+            </ui:repeat>
+            <h:commandButton id="submit" value="Submit" />
+            <h:outputText id="output" value="#{issue6138.nestedTwice}" />
+            <h:outputText id="validated" value="#{issue6138.validated}" />
+        </h:form>
+        <h:form id="invoke_rrr">
+            <ui:repeat id="o" var="plane" value="#{issue6138.wideTwice}">
+                <ui:repeat id="i" var="row" value="#{plane}">
+                    <ui:repeat id="j" var="cell" value="#{row}">
+                        <h:inputText id="input" value="#{cell.value}"><f:validator validatorId="invokeOnComponentValidator" /></h:inputText>
+                    </ui:repeat>
+                </ui:repeat>
+            </ui:repeat>
+            <h:commandButton id="submit" value="Submit" />
+            <h:outputText id="output" value="#{issue6138.wideTwice}" />
+            <h:outputText id="validated" value="#{issue6138.validated}" />
+        </h:form>
+        <h:form id="visit_rt_panel">
+            <ui:repeat id="o" var="row" value="#{issue6138.nested}">
+                <h:panelGroup id="panel">
+                    <h:dataTable id="i" var="cell" value="#{row}"><h:column>
+                        <h:inputText id="input" value="#{cell.value}"><f:validator validatorId="formVisitValidator" /></h:inputText>
+                    </h:column></h:dataTable>
+                </h:panelGroup>
+            </ui:repeat>
+            <h:commandButton id="submit" value="Submit" />
+            <h:outputText id="output" value="#{issue6138.nested}" />
+            <h:outputText id="validated" value="#{issue6138.validated}" />
+        </h:form>
+    </h:body>
+</html>

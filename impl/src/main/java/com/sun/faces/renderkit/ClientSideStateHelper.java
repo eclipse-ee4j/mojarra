@@ -23,6 +23,7 @@ import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.Clie
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.VIEW_STATE_PARAM;
 import static java.util.logging.Level.WARNING;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -39,7 +40,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.application.ProjectStage;
@@ -226,7 +226,7 @@ public class ClientSideStateHelper extends StateHelper {
             bis = new ByteArrayInputStream(bytes);
 
             if (compressViewState) {
-                bis = new GZIPInputStream(bis);
+                bis = new BufferedInputStream(new GZIPInputStream(bis));
             }
 
             ois = serialProvider.createObjectInputStream(bis);
@@ -306,7 +306,7 @@ public class ClientSideStateHelper extends StateHelper {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final OutputStream base;
         if (compressViewState) {
-            base = new GZIPOutputStream(baos, csBuffSize);
+            base = createCompressingOutputStream(baos, csBuffSize);
         } else {
             base = baos;
         }
