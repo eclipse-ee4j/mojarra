@@ -16,8 +16,6 @@
 
 package com.sun.faces.application.view;
 
-import java.util.Arrays;
-
 /**
  * Interface for working with multiple {@link com.sun.faces.application.view.ViewHandlingStrategy} implementations.
  */
@@ -51,10 +49,13 @@ public class ViewHandlingStrategyManager {
      * @return a {@link com.sun.faces.application.view.ViewHandlingStrategy} for the specifed <code>viewId</code>
      */
     public ViewHandlingStrategy getStrategy(String viewId) {
-        return Arrays.stream(strategies)
-                     .filter(strategy -> strategy.handlesViewId(viewId))
-                     .findFirst()
-                     .orElseThrow(()-> new ViewHandlingStrategyNotFoundException(viewId));
+        for (ViewHandlingStrategy strategy : strategies) {
+            if (strategy.handlesViewId(viewId)) {
+                return strategy;
+            }
+        }
+
+        throw new ViewHandlingStrategyNotFoundException(viewId);
     }
 
     /**

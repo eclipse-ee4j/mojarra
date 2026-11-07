@@ -47,6 +47,7 @@ final class DefaultFaceletCache extends FaceletCache<DefaultFacelet> {
 
         final boolean checkExpiry = refreshPeriodInSeconds > 0;
         final long refreshPeriodInMillis = refreshPeriodInSeconds >= 0 ? refreshPeriodInSeconds * 1000 : -1;
+        neverExpires = refreshPeriodInSeconds < 0;
 
         ConcurrentCache.Factory<URL, Record> faceletFactory = key -> {
             // Make sure that the expensive timestamp retrieval is not done
@@ -114,6 +115,13 @@ final class DefaultFaceletCache extends FaceletCache<DefaultFacelet> {
         return _metadataFaceletCache.containsKey(url);
     }
 
+    /**
+     * @return true when a cached facelet never expires, so that it is compiled once and then served from the cache.
+     */
+    boolean neverExpires() {
+        return neverExpires;
+    }
+
     private void _unwrapIOException(ExecutionException e) throws IOException {
         Throwable t = e.getCause();
         if (t instanceof IOException) {
@@ -128,6 +136,7 @@ final class DefaultFaceletCache extends FaceletCache<DefaultFacelet> {
         throw new FacesException(t);
     }
 
+    private final boolean neverExpires;
     private final ConcurrentCache<URL, Record> _faceletCache;
     private final ConcurrentCache<URL, Record> _metadataFaceletCache;
 
