@@ -39,7 +39,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 
 import com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter;
 import com.sun.faces.util.DebugObjectOutputStream;
@@ -311,7 +310,7 @@ public class ClientSideStateHelper extends StateHelper {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         OutputStream base = null;
         if (compressViewState) {
-            base = new GZIPOutputStream(baos, csBuffSize);
+            base = createCompressingOutputStream(baos, csBuffSize);
         } else {
             base = baos;
         }

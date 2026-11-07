@@ -43,7 +43,6 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
@@ -345,7 +344,7 @@ public class ServerSideStateHelper extends StateHelper {
         ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
         ObjectOutputStream oas = null;
         try {
-            oas = serialProvider.createObjectOutputStream(compressViewState ? new GZIPOutputStream(baos, 1024) : baos);
+            oas = serialProvider.createObjectOutputStream(compressViewState ? createCompressingOutputStream(baos, 1024) : baos);
             oas.writeObject(state);
             oas.flush();
         } catch (Exception e) {
