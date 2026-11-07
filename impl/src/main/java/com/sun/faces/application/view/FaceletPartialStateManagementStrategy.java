@@ -59,10 +59,12 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIData;
 import jakarta.faces.component.UIForm;
 import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.UniqueIdVendor;
 import jakarta.faces.component.visit.VisitContext;
 import jakarta.faces.component.visit.VisitHint;
 import jakarta.faces.component.visit.VisitResult;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PostAddToViewEvent;
 import jakarta.faces.render.ResponseStateManager;
 import jakarta.faces.view.StateManagementStrategy;
 
@@ -100,7 +102,13 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
             + " evaluate to the same value while the postback is restored as it did while the response was rendered, and the items a c:forEach"
             + " iterated must still hold the rows it produced. Hold what they depend on in a @ViewScoped bean, or recompute it from the relevant"
             + " request parameters in the @PostConstruct of the request scoped one, or set the " + RestoreBuildTimeDecisions.getQualifiedName()
-            + " context parameter to true.";
+            + " context parameter to true. A PostAddToViewEvent listener which adds components must add the same ones on every build of the view,"
+            + " so it must not depend on a value which changes between two postbacks, such as a value which an action sets.";
+
+    /**
+     * Separates the tag from the class in the key of a component which a build added without a tag.
+     */
+    static final String UNTAGGED_KEY_SEPARATOR = "/";
 
     /**
      * Reported for the components the rendered view held which the rebuilt one does not, shared by the report which
@@ -122,12 +130,13 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
             + " which is therefore decoded by nothing: {3}." + REMEDY;
 
     /**
-     * Reported for the client ids another tag occupies in the rebuilt view than the one that rendered them.
+     * Reported for the client ids another component occupies in the rebuilt view than the one that rendered them.
      */
     static final String REBUILT_FROM_ANOTHER_TAG_REPORT = "The view rebuilt for this postback holds {0} {0,choice,1#client id|1<client ids}"
-            + " built from another tag than the one the response was rendered from, so the state saved by one tag is restored into the"
-            + " component of another: {1}. The"
-            + " facelet may also have been edited since the response was rendered, which moves every tag." + REMEDY;
+            + " on another component than the one the response was rendered from, so the state saved by one component is restored into"
+            + " another: {1}. A component counts as another when it was built from another tag, or when a build added it without a tag and"
+            + " its class or the tag above it differs. The facelet may also have been edited since the response was rendered, which moves"
+            + " every tag." + REMEDY;
 
     /**
      * Constructor.
@@ -430,12 +439,9 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
      * them is ever built.
      *
      * <p>
-     * Only a component a facelet built carries one, and only such a component is worth comparing across the two
-     * builds: a build time condition governs which tags are applied, so it can add or drop only what a tag built. A
-     * component the facelet did not build - the view root, a component resource, anything added programmatically -
-     * holds no tag, and one of those left without an id of its own does not even hold a stable client id:
-     * {@link UIViewRoot#createUniqueId(FacesContext, String)} numbers it from a counter which the view root's state
-     * restores past the number the rebuild reached, so it is numbered anew on every request.
+     * Only a component a facelet built carries one. A build time condition governs which tags are applied, so it can
+     * add or drop only what a tag built. A component which a build added without a tag, such as from a
+     * {@link PostAddToViewEvent} listener, is compared by {@link #keyOf(UIComponent, boolean)}.
      * </p>
      *
      * @param component the component.
@@ -443,6 +449,67 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
      */
     static String tagOf(UIComponent component) {
         return (String) component.getAttributes().get(ComponentSupport.MARK_CREATED);
+    }
+
+    /**
+     * The key of a component which a build added without a tag, such as from a {@link PostAddToViewEvent}
+     * listener: the tag of the nearest component a tag built, followed by the class of the given component.
+     *
+     * <p>
+     * Such a component is compared across the two builds only when it holds a stable client id: it has an id of its
+     * own, and so has every naming container between it and the component a tag built. One left without an id of its
+     * own is numbered from a counter which the state of the view restores past the number the rebuild reached, so it
+     * is numbered anew on every request. A component with no ancestor which a tag built, such as the view root or a
+     * component resource, is not compared either.
+     * </p>
+     *
+     * @param component the component, which no tag built.
+     * @return the key to compare the given component by, or {@code null} when it is not compared.
+     */
+    static String untaggedKeyOf(UIComponent component) {
+        if (!hasIdOfItsOwn(component)) {
+            return null;
+        }
+
+        for (UIComponent parent = component.getParent(); parent != null; parent = parent.getParent()) {
+            String parentTag = tagOf(parent);
+            if (parentTag != null) {
+                return parentTag + UNTAGGED_KEY_SEPARATOR + component.getClass().getName();
+            }
+            if (parent instanceof NamingContainer && !hasIdOfItsOwn(parent)) {
+                return null;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param component the component.
+     * @return true when the given component has an id of its own, rather than none or one prefixed with
+     *         {@link UIViewRoot#UNIQUE_ID_PREFIX}, as {@link UniqueIdVendor#createUniqueId(FacesContext, String)} generates.
+     */
+    private static boolean hasIdOfItsOwn(UIComponent component) {
+        String id = component.getId();
+        return id != null && !id.startsWith(UIViewRoot.UNIQUE_ID_PREFIX);
+    }
+
+    /**
+     * The key a component is compared by across the two builds: the tag it was built from, or the key of
+     * {@link #untaggedKeyOf(UIComponent)} for a component which a build added without a tag. An untagged component
+     * added after the build is not compared, as the dynamic actions saved with the view restore it.
+     *
+     * @param component the component.
+     * @param addedDynamically whether the given component was added after the build.
+     * @return the key to compare the given component by, or {@code null} when it is not compared.
+     */
+    static String keyOf(UIComponent component, boolean addedDynamically) {
+        String tag = tagOf(component);
+        if (tag != null || addedDynamically) {
+            return tag;
+        }
+
+        return untaggedKeyOf(component);
     }
 
     /**
@@ -487,8 +554,8 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
      * The client ids the rendered view held which the rebuilt one does not, so that the state saved for them is
      * restored into nothing and a value submitted for them is decoded by nothing.
      *
-     * @param renderedTags the tag per client id of the view that rendered the response.
-     * @param rebuiltTags the tag per client id of the view rebuilt for this postback.
+     * @param renderedTags the key per client id of the view that rendered the response, as {@link #keyOf(UIComponent, boolean)} gives it.
+     * @param rebuiltTags the key per client id of the view rebuilt for this postback.
      * @return the client ids that were not rebuilt.
      */
     static List<String> clientIdsNotRebuilt(Map<String, String> renderedTags, Map<String, String> rebuiltTags) {
@@ -502,13 +569,14 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
     }
 
     /**
-     * The client ids another tag occupies in the rebuilt view than the one that rendered them, so that the state
-     * saved by one tag is restored into the component of another. Two tags sharing a client id is legitimate as long
-     * as only one of them is ever built, which a build time conditional deciding differently breaks.
+     * The client ids another component occupies in the rebuilt view than the one that rendered them, so that the state
+     * saved by one component is restored into another. Two components sharing a client id is legitimate as long as only
+     * one of them is ever built, which a build time conditional or a {@link PostAddToViewEvent} listener deciding
+     * differently breaks.
      *
-     * @param renderedTags the tag per client id of the view that rendered the response.
-     * @param rebuiltTags the tag per client id of the view rebuilt for this postback.
-     * @return the client ids that were rebuilt from another tag.
+     * @param renderedTags the key per client id of the view that rendered the response, as {@link #keyOf(UIComponent, boolean)} gives it.
+     * @param rebuiltTags the key per client id of the view rebuilt for this postback.
+     * @return the client ids that were rebuilt as another component.
      */
     static List<String> clientIdsRebuiltFromAnotherTag(Map<String, String> renderedTags, Map<String, String> rebuiltTags) {
         List<String> clientIds = new ArrayList<>();
@@ -523,9 +591,9 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
 
     /**
      * Report where the view rebuilt for this postback holds another component than the one the response was rendered
-     * from, which is what a build time conditional evaluating to another value than it did produces. The state of such
-     * a component is restored into nothing or into the wrong component, and a value submitted for it is decoded by
-     * neither, none of which fails loudly on its own.
+     * from, which a build time conditional evaluating to another value, or a {@link PostAddToViewEvent} listener adding
+     * other components, produces. The state of such a component is restored into nothing or into the wrong
+     * component, and a value submitted for it is decoded by neither, none of which fails loudly on its own.
      *
      * @param context the Faces context.
      * @param viewRoot the view root.
@@ -539,14 +607,15 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
         }
 
         Map<String, String> rebuiltTags = new HashMap<>(renderedTags.size());
+        StateContext stateContext = StateContext.getStateContext(context);
         VisitContext visitContext = VisitContext.createVisitContext(context, null, SKIP_ITERATION_HINT);
         viewRoot.visitTree(visitContext, (context1, target) -> {
             if (target.isTransient()) {
                 return VisitResult.REJECT;
             }
-            String tag = tagOf(target);
-            if (tag != null && holdsStableClientId(context1.getFacesContext(), target)) {
-                rebuiltTags.put(target.getClientId(context1.getFacesContext()), tag);
+            String key = keyOf(target, stateContext.componentAddedDynamically(target));
+            if (key != null && holdsStableClientId(context1.getFacesContext(), target)) {
+                rebuiltTags.put(target.getClientId(context1.getFacesContext()), key);
             }
             return ACCEPT;
         });
@@ -698,17 +767,18 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
             VisitResult result = VisitResult.ACCEPT;
             Object stateObj;
             if (!target.isTransient()) {
-                if (stateContext.componentAddedDynamically(target)) {
+                boolean addedDynamically = stateContext.componentAddedDynamically(target);
+                if (addedDynamically) {
                     target.getAttributes().put(DYNAMIC_COMPONENT, target.getParent().getChildren().indexOf(target));
                     stateObj = new StateHolderSaver(finalContext, target);
                 } else {
                     stateObj = target.saveState(context1.getFacesContext());
                 }
-                String tag = renderedTags != null ? tagOf(target) : null;
-                if (tag != null || stateObj != null) {
+                String key = renderedTags != null ? keyOf(target, addedDynamically) : null;
+                if (key != null || stateObj != null) {
                     String clientId = target.getClientId(context1.getFacesContext());
-                    if (tag != null && holdsStableClientId(context1.getFacesContext(), target)) {
-                        renderedTags.put(clientId, tag);
+                    if (key != null && holdsStableClientId(context1.getFacesContext(), target)) {
+                        renderedTags.put(clientId, key);
                     }
                     if (stateObj != null) {
                         stateMap.put(clientId, stateObj);

@@ -27,9 +27,10 @@ import org.openqa.selenium.support.FindBy;
  * A postback rebuilds its view from the markup rather than from the response it was submitted from, so a build time
  * condition evaluating to another value than it did leaves the state of a rendered component with nothing to be
  * restored into. Under {@code ProjectStage.Development} that is reported, which is only worth reading when the
- * components it names are the ones a build time condition governs: the components a facelet built. A component no
- * facelet built is none of the report's business, and one of those left without an id of its own does not even hold
- * a stable client id, so comparing it would report every view holding one on every postback.
+ * components it names are the ones a build decides on: the components a facelet built, and the components a build added
+ * without a tag, such as from a <code>PostAddToViewEvent</code> listener. A component which no facelet built is
+ * compared only when it has an id of its own, keyed by the tag above it. One left without an id of its own holds no
+ * stable client id, so it is not compared.
  */
 class Issue5970IT extends BaseIT {
 
@@ -47,6 +48,15 @@ class Issue5970IT extends BaseIT {
 
     @FindBy(id = "form:reports")
     private WebElement reports;
+
+    @FindBy(id = "form:increment")
+    private WebElement increment;
+
+    @FindBy(id = "form:decrement")
+    private WebElement decrement;
+
+    @FindBy(id = "form:in1")
+    private WebElement secondInput;
 
     @FindBy(id = "show")
     private WebElement plainShow;
@@ -119,5 +129,23 @@ class Issue5970IT extends BaseIT {
         assertEquals("[]", reports.getText(), reports.getText());
         guardAjax(ajaxSubmit::click);
         assertEquals("[]", reports.getText(), reports.getText());
+    }
+
+    /**
+     * An input which a <code>PostAddToViewEvent</code> listener added while the view was built, and no longer adds
+     * while the postback is restored, is named by the report. An action changes what the listener adds only after the
+     * view of that request was built, so the mismatch shows on the postback after.
+     */
+    @Test
+    void testComponentDroppedByAPostAddToViewListener() {
+        open("listener.xhtml");
+        guardHttp(increment::click);
+        guardHttp(submit::click);
+        assertEquals("[]", reports.getText(), "the rebuild reproduces the view the response was rendered from");
+        guardHttp(decrement::click);
+        assertEquals("[]", reports.getText(), "the rebuild reproduces the view the response was rendered from");
+        secondInput.sendKeys("test");
+        guardHttp(submit::click);
+        assertTrue(reports.getText().contains("form:in1"), reports.getText());
     }
 }
