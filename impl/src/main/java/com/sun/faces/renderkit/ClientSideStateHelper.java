@@ -23,6 +23,7 @@ import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.Clie
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.VIEW_STATE_PARAM;
 import static java.util.logging.Level.WARNING;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -225,7 +226,7 @@ public class ClientSideStateHelper extends StateHelper {
             bis = new ByteArrayInputStream(bytes);
 
             if (compressViewState) {
-                bis = new GZIPInputStream(bis);
+                bis = new BufferedInputStream(new GZIPInputStream(bis));
             }
 
             ois = serialProvider.createObjectInputStream(bis);

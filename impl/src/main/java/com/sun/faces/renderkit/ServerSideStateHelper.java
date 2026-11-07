@@ -29,9 +29,11 @@ import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINEST;
 import static java.util.logging.Level.WARNING;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -372,11 +374,20 @@ public class ServerSideStateHelper extends StateHelper {
         }
 
         try (ByteArrayInputStream bais = new ByteArrayInputStream((byte[]) state);
-            ObjectInputStream ois = serialProvider.createObjectInputStream(compressViewState ? new GZIPInputStream(bais, 1024) : bais);) {
+            ObjectInputStream ois = serialProvider.createObjectInputStream(inflated(bais));) {
             return ois.readObject();
         } catch (Exception e) {
             throw new FacesException(e);
         }
+    }
+
+    /**
+     * @param bais the serialized state as it was stored in the session
+     * @return the given stream, inflated through a buffer when the state is compressed
+     * @throws IOException if the compressed stream cannot be read
+     */
+    private InputStream inflated(ByteArrayInputStream bais) throws IOException {
+        return compressViewState ? new BufferedInputStream(new GZIPInputStream(bais, 1024)) : bais;
     }
 
     /**
