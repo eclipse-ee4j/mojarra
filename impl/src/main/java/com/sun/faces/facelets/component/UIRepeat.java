@@ -17,7 +17,8 @@
 package com.sun.faces.facelets.component;
 
 import static com.sun.faces.cdi.CdiUtils.createDataModel;
-import static com.sun.faces.util.Util.isNestedInIterator;
+import static com.sun.faces.component.NestedIterators.isAnyOnRow;
+import static com.sun.faces.component.NestedIterators.isIterator;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -33,6 +34,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.sun.faces.component.NestedIterators;
 import com.sun.faces.facelets.tag.IterationStatus;
 
 import jakarta.el.ValueExpression;
@@ -43,6 +45,7 @@ import jakarta.faces.component.ContextCallback;
 import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.NamingContainer;
+import jakarta.faces.component.UIData;
 import jakarta.faces.component.UIForm;
 import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.component.visit.VisitCallback;
@@ -173,7 +176,7 @@ public class UIRepeat extends UINamingContainer {
     }
 
     private void resetDataModel(FacesContext context) {
-        if (isNestedInIterator(context, this)) {
+        if (nestedIterators.isNested(context)) {
             this.setDataModel(null);
         }
     }
@@ -336,11 +339,20 @@ public class UIRepeat extends UINamingContainer {
      * ({@link #setIndex} to {@code -1}) so the next iteration re-evaluates the tree shape.
      * {@code iterationResetList} is every descendant -- all need their cached clientId reset each
      * row; {@code iterationStatefulList} is the {@link EditableValueHolder} subset carrying per-row
-     * state. {@code null} means not yet collected. Iterating these flat lists replaces the previous
+     * state; {@code iterationNestedList} is the outermost iterating descendants, which are taken off
+     * their row before the repeat leaves a row and put back after it enters that row again.
+     * {@code null} means not yet collected. Iterating these flat lists replaces the previous
      * per-row recursive tree walk; a read-only repeat has an empty stateful list, so save is a no-op.
      */
     private transient List<UIComponent> iterationResetList;
     private transient List<UIComponent> iterationStatefulList;
+    private transient List<UIComponent> iterationNestedList;
+
+    /**
+     * The relation of this repeat with the iterating components it is nested in and the iterating components nested in
+     * its rows.
+     */
+    private final NestedIterators nestedIterators = new NestedIterators(this);
 
     private Map<String, SavedState[]> getChildState() {
         if (childState == null) {
@@ -370,7 +382,8 @@ public class UIRepeat extends UINamingContainer {
      * Collects, once per iteration, the descendants the per-row save/restore walks act on, so those
      * walks become flat-list iterations instead of recursive tree traversals re-done every row.
      * {@code iterationResetList} is every descendant (each needs its cached clientId reset per row);
-     * {@code iterationStatefulList} is the {@link EditableValueHolder} subset. Cleared on
+     * {@code iterationStatefulList} is the {@link EditableValueHolder} subset;
+     * {@code iterationNestedList} is the outermost iterating descendants. Cleared on
      * {@code setIndex(-1)} so the next iteration re-evaluates the tree shape.
      */
     private void ensureIterationLists() {
@@ -379,16 +392,24 @@ public class UIRepeat extends UINamingContainer {
         }
         List<UIComponent> reset = new ArrayList<>();
         List<UIComponent> stateful = new ArrayList<>();
+        List<UIComponent> nested = new ArrayList<>();
         if (getChildCount() > 0) {
             for (UIComponent kid : getChildren()) {
-                collectIterationState(kid, reset, stateful);
+                collectIterationState(kid, reset, stateful, nested);
             }
         }
         iterationResetList = reset;
         iterationStatefulList = stateful;
+        iterationNestedList = nested;
     }
 
-    private void collectIterationState(UIComponent component, List<UIComponent> reset, List<UIComponent> stateful) {
+    /**
+     * Collects the given component and its descendants into the given per-iteration lists.
+     *
+     * @param nested collects the outermost nested iterating components; {@code null} below one of them, because the
+     * iterating components nested deeper are parked by that one.
+     */
+    private void collectIterationState(UIComponent component, List<UIComponent> reset, List<UIComponent> stateful, List<UIComponent> nested) {
         reset.add(component);
         if (component instanceof EditableValueHolder || component instanceof UIForm) {
             // UIForm carries per-row state too: with one form per row only the submitted one may
@@ -396,9 +417,14 @@ public class UIRepeat extends UINamingContainer {
             // than leaking whichever row was decoded last. Mirrors UIData#collectIterationState.
             stateful.add(component);
         }
+        List<UIComponent> nestedBelow = nested;
+        if (nested != null && isIterator(component)) {
+            nested.add(component);
+            nestedBelow = null;
+        }
         Iterator<UIComponent> itr = component.getFacetsAndChildren();
         while (itr.hasNext()) {
-            collectIterationState(itr.next(), reset, stateful);
+            collectIterationState(itr.next(), reset, stateful, nestedBelow);
         }
     }
 
@@ -485,7 +511,7 @@ public class UIRepeat extends UINamingContainer {
 
     private boolean keepSaved(FacesContext context) {
 
-        return hasErrorMessages(context) || isNestedInIterator(context, this);
+        return hasErrorMessages(context) || nestedIterators.isNested(context);
 
     }
 
@@ -512,6 +538,8 @@ public class UIRepeat extends UINamingContainer {
             return;
         }
 
+        parkNestedIterators(ctx);
+
         // save child state
         if (this.index != -1 && localModel.isRowAvailable()) {
             this.saveChildState(ctx);
@@ -533,13 +561,65 @@ public class UIRepeat extends UINamingContainer {
             this.restoreChildState(ctx);
         }
 
+        unparkNestedIterators(ctx);
+
         // Iteration ended: clear the per-iteration stateful-descendants cache so the next
         // iteration re-evaluates the tree shape (children can change between iterations).
         // Cleared after restoreChildState() so the in-iteration walks still hit the cache.
         if (this.index == -1) {
-            iterationResetList = null;
-            iterationStatefulList = null;
+            clearIterationLists();
         }
+    }
+
+    private void clearIterationLists() {
+        iterationResetList = null;
+        iterationStatefulList = null;
+        iterationNestedList = null;
+    }
+
+    private void parkNestedIterators(FacesContext ctx) {
+        if (index == -1) {
+            return;
+        }
+        ensureIterationLists();
+        if (isAnyOnRow(iterationNestedList)) {
+            nestedIterators.park(getRowStateKey(ctx), iterationNestedList);
+        }
+    }
+
+    private void unparkNestedIterators(FacesContext ctx) {
+        if (index != -1 && nestedIterators.hasParked()) {
+            nestedIterators.unpark(getRowStateKey(ctx));
+        }
+    }
+
+    /**
+     * Returns the zero relative index of the current row, or -1 if this repeat is not positioned on a row.
+     *
+     * @return the zero relative index of the current row, or -1.
+     */
+    public int getRowIndex() {
+        return index;
+    }
+
+    /**
+     * Sets the zero relative index of the current row, or -1 for no current row. The per-row state of the descendants is
+     * saved for the row being left and restored for the row being entered, as {@link UIData#setRowIndex(int)}
+     * does. When this repeat is nested in another iterating component, the data model is built again when entering a row,
+     * because the enclosing component may have been on another row since it was built.
+     *
+     * @param rowIndex the new row index, or -1 for no current row.
+     * @throws IllegalArgumentException if <code>rowIndex</code> is less than -1.
+     */
+    public void setRowIndex(int rowIndex) {
+        if (rowIndex < -1) {
+            throw new IllegalArgumentException("rowIndex is less than -1");
+        }
+        FacesContext context = getFacesContext();
+        if (rowIndex != -1) {
+            resetDataModel(context);
+        }
+        setIndex(context, rowIndex);
     }
 
     private void updateIterationStatus(FacesContext ctx, IterationStatus status) {

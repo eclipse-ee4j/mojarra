@@ -16,8 +16,9 @@
 
 package jakarta.faces.component;
 
+import static com.sun.faces.component.NestedIterators.isAnyOnRow;
+import static com.sun.faces.component.NestedIterators.isIterator;
 import static com.sun.faces.util.Util.extractFirstNumericSegment;
-import static com.sun.faces.util.Util.isNestedInIterator;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -32,6 +33,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import com.sun.faces.component.NestedIterators;
 
 import jakarta.el.ValueExpression;
 import jakarta.enterprise.inject.spi.Bean;
@@ -230,14 +233,15 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
 
     /**
      * <p>
-     * Flag indicating whether or not this UIData instance is nested within another UIData instance
+     * The relation of this UIData instance with the iterating components it is nested in and the iterating components
+     * nested in its rows.
      * </p>
      *
      * <p>
      * This is not part of the component state.
      * </p>
      */
-    private Boolean isNested = null;
+    private final NestedIterators nestedIterators = new NestedIterators(this);
 
     // Per-row transient state of the stateful descendants, keyed by this table's own clientId and then by row index.
     // A nested table is one component instance reused across the enclosing rows; its clientId carries the enclosing
@@ -257,12 +261,15 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * {@code iterationResetList} is every descendant under the table's {@link UIColumn} children --
      * all need their cached clientId reset each row; {@code iterationStatefulList} is the
      * {@link EditableValueHolder}/{@link UIForm} subset that actually carries per-row state.
+     * {@code iterationNestedList} is the outermost iterating descendants, which are taken off their row
+     * before the table leaves a row and put back after it enters that row again.
      * {@code null} means not yet collected for the current iteration. Iterating these flat lists
      * replaces the previous per-row recursive tree walk; a read-only table has an empty stateful
      * list, so save is a no-op.
      */
     private transient List<UIComponent> iterationResetList;
     private transient List<UIComponent> iterationStatefulList;
+    private transient List<UIComponent> iterationNestedList;
 
     // -------------------------------------------------------------- Properties
 
@@ -514,6 +521,8 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         // per-row save/restore below needs a context for the row state key either way.
         FacesContext context = getFacesContext();
 
+        parkNestedIterators(context);
+
         // Save current state for the previous row index
         saveDescendantState(context);
 
@@ -547,13 +556,14 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         // Reset current state information for the new row index
         restoreDescendantState(context);
 
+        unparkNestedIterators(context);
+
         // Iteration ended: clear the per-iteration stateful-descendants cache so the next
         // iteration re-evaluates the tree shape (children can change between iterations).
         // Cleared after restoreDescendantState() so the in-iteration walks still hit the
         // cache; this avoids a redundant re-scan on the iteration-end save+restore.
         if (rowIndex == -1) {
-            iterationResetList = null;
-            iterationStatefulList = null;
+            clearIterationLists();
         }
 
     }
@@ -568,6 +578,8 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         }
 
         FacesContext facesContext = getFacesContext();
+
+        parkNestedIterators(facesContext);
 
         if (_initialDescendantFullComponentState != null) {
             // Just save the row
@@ -629,6 +641,34 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                     restoreTransientDescendantComponentStates(facesContext, getChildren().iterator(), (Map<String, Object>) rowState, false);
                 }
             }
+        }
+
+        unparkNestedIterators(facesContext);
+
+        if (rowIndex == -1) {
+            clearIterationLists();
+        }
+    }
+
+    private void clearIterationLists() {
+        iterationResetList = null;
+        iterationStatefulList = null;
+        iterationNestedList = null;
+    }
+
+    private void parkNestedIterators(FacesContext context) {
+        if (getRowIndex() == -1) {
+            return;
+        }
+        ensureIterationLists();
+        if (isAnyOnRow(iterationNestedList)) {
+            nestedIterators.park(getContainerClientId(context), iterationNestedList);
+        }
+    }
+
+    private void unparkNestedIterators(FacesContext context) {
+        if (getRowIndex() != -1 && nestedIterators.hasParked()) {
+            nestedIterators.unpark(getContainerClientId(context));
         }
     }
 
@@ -843,7 +883,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         // - create an empty StringBuilder that will be used to build
         // this instance's ID
         if (baseClientId == null && clientIdBuilder == null) {
-            if (!isNestedWithinIterator(context)) {
+            if (!nestedIterators.isNested(context)) {
                 clientIdBuilder = new StringBuilder(super.getClientId(context));
                 baseClientId = clientIdBuilder.toString();
                 baseClientIdLength = baseClientId.length() + 1;
@@ -856,7 +896,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         int rowIndex = getRowIndex();
         if (rowIndex >= 0) {
             String cid;
-            if (!isNestedWithinIterator(context)) {
+            if (!nestedIterators.isNested(context)) {
                 // we're not nested, so the clientIdBuilder is already
                 // primed with clientID +
                 // UINamingContainer.getSeparatorChar(). Append the
@@ -874,7 +914,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             }
             return cid;
         } else {
-            if (!isNestedWithinIterator(context)) {
+            if (!nestedIterators.isNested(context)) {
                 // Not nested and no row available, so just return our baseClientId
                 return baseClientId;
             } else {
@@ -1046,7 +1086,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         FacesContext context = event.getFacesContext();
         // Set up the correct context and fire our wrapped event
         WrapperEvent revent = (WrapperEvent) event;
-        if (isNestedWithinIterator(context)) {
+        if (nestedIterators.isNested(context)) {
             setDataModel(null);
         }
         int currentRowIndex = getRowIndex();
@@ -1880,7 +1920,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     // initialization may be performed either during a normal validation
     // (ie. processValidators()) or during a tree visit (ie. visitTree()).
     private void preValidate(FacesContext context) {
-        if (isNestedWithinIterator(context)) {
+        if (nestedIterators.isNested(context)) {
             setDataModel(null);
         }
     }
@@ -1889,7 +1929,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     // initialization may be performed either during normal update
     // (ie. processUpdates()) or during a tree visit (ie. visitTree()).
     private void preUpdate(FacesContext context) {
-        if (isNestedWithinIterator(context)) {
+        if (nestedIterators.isNested(context)) {
             setDataModel(null);
         }
     }
@@ -2174,13 +2214,6 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         }
     }
 
-    private Boolean isNestedWithinIterator(FacesContext context) {
-        if (isNested == null) {
-            isNested = isNestedInIterator(context, this);
-        }
-        return isNested;
-    }
-
     private boolean contextHasErrorMessages(FacesContext context) {
 
         FacesMessage.Severity sev = context.getMaximumSeverity();
@@ -2307,7 +2340,8 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * walks become flat-list iterations instead of recursive tree traversals re-done every row.
      * {@code iterationResetList} is every descendant under the table's {@link UIColumn} children
      * (each needs its cached clientId reset per row); {@code iterationStatefulList} is the
-     * {@link EditableValueHolder}/{@link UIForm} subset carrying per-row state. Cleared on
+     * {@link EditableValueHolder}/{@link UIForm} subset carrying per-row state;
+     * {@code iterationNestedList} is the outermost iterating descendants. Cleared on
      * {@code setRowIndex(-1)} so the next iteration re-evaluates the tree shape.
      */
     private void ensureIterationLists() {
@@ -2316,30 +2350,45 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         }
         List<UIComponent> reset = new ArrayList<>();
         List<UIComponent> stateful = new ArrayList<>();
+        List<UIComponent> nested = new ArrayList<>();
         if (getChildCount() > 0) {
             for (UIComponent kid : getChildren()) {
                 if (kid instanceof UIColumn) {
-                    collectIterationState(kid, reset, stateful);
+                    collectIterationState(kid, reset, stateful, nested);
                 }
             }
         }
         iterationResetList = reset;
         iterationStatefulList = stateful;
+        iterationNestedList = nested;
     }
 
-    private void collectIterationState(UIComponent component, List<UIComponent> reset, List<UIComponent> stateful) {
+    /**
+     * Collects the given component and its descendants into the given per-iteration lists.
+     *
+     * @param nested collects the outermost nested iterating components; {@code null} below one of them, because the
+     * iterating components nested deeper are parked by that one, and in the facets of a {@link UIColumn}, because those
+     * are not processed per row.
+     */
+    private void collectIterationState(UIComponent component, List<UIComponent> reset, List<UIComponent> stateful, List<UIComponent> nested) {
         reset.add(component);
         if (component instanceof EditableValueHolder || component instanceof UIForm) {
             stateful.add(component);
         }
+        List<UIComponent> nestedBelow = nested;
+        if (nested != null && isIterator(component)) {
+            nested.add(component);
+            nestedBelow = null;
+        }
         if (component.getChildCount() > 0) {
             for (UIComponent kid : component.getChildren()) {
-                collectIterationState(kid, reset, stateful);
+                collectIterationState(kid, reset, stateful, nestedBelow);
             }
         }
         if (component.getFacetCount() > 0) {
+            List<UIComponent> nestedInFacets = component instanceof UIColumn ? null : nestedBelow;
             for (UIComponent facet : component.getFacets().values()) {
-                collectIterationState(facet, reset, stateful);
+                collectIterationState(facet, reset, stateful, nestedInFacets);
             }
         }
     }
