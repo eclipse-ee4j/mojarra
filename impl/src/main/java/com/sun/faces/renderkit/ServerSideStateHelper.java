@@ -40,6 +40,7 @@ import java.io.ObjectOutputStream;
 import java.security.SecureRandom;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
@@ -65,6 +66,8 @@ import jakarta.faces.context.ResponseWriter;
 public class ServerSideStateHelper extends StateHelper {
 
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
+
+    private static final int VIEW_ID_INDEX = 2;
 
     /**
      * Key to store the <code>AtomicInteger</code> used to generate unique state map keys.
@@ -183,14 +186,7 @@ public class ServerSideStateHelper extends StateHelper {
 
                     id = idInLogicalMap + ':' + idInActualMap;
 
-                    Object[] stateArray = actualMap.get(idInActualMap);
-                    // reuse the array if possible
-                    if (stateArray != null) {
-                        stateArray[0] = structure;
-                        stateArray[1] = savedState;
-                    } else {
-                        actualMap.put(idInActualMap, new Object[] { structure, savedState });
-                    }
+                    actualMap.put(idInActualMap, new Object[] { structure, savedState, viewRoot.getViewId() });
 
                     // always call put/setAttribute as we may be in a clustered environment.
                     sessionMap.put(LOGICAL_VIEW_MAP, logicalMap);
@@ -276,10 +272,10 @@ public class ServerSideStateHelper extends StateHelper {
                     RequestStateManager.set(ctx, RequestStateManager.LOGICAL_VIEW_MAP, idInLogicalMap);
 
                     Object[] state = (Object[]) actualMap.get(idInActualMap);
-                    if (state != null) {
+                    if (state != null && isSavedForView(state, viewId)) {
                         Object[] restoredState = { state[0], state[1] };
 
-                        if (state.length == 2 && state[1] != null) {
+                        if (state[1] != null) {
                             try {
                                 restoredState[1] = handleRestoreState(state[1]);
                             } catch (FacesException e) {
@@ -300,6 +296,15 @@ public class ServerSideStateHelper extends StateHelper {
 
         return null;
 
+    }
+
+    // --------------------------------------------------------- Private Methods
+
+    /**
+     * A state array without view ID is one of a version which did not store it, and cannot be attributed to a view.
+     */
+    private static boolean isSavedForView(Object[] state, String viewId) {
+        return state.length > VIEW_ID_INDEX && Objects.equals(state[VIEW_ID_INDEX], viewId);
     }
 
     // ------------------------------------------------------- Protected Methods
