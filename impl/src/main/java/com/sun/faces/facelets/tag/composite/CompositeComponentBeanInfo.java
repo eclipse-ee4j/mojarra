@@ -30,6 +30,8 @@ import java.util.List;
 
 import jakarta.faces.FacesException;
 
+import com.sun.faces.util.Util;
+
 public class CompositeComponentBeanInfo extends SimpleBeanInfo implements BeanInfo, Externalizable {
 
     private BeanDescriptor descriptor = null;
@@ -59,6 +61,32 @@ public class CompositeComponentBeanInfo extends SimpleBeanInfo implements BeanIn
             propertyDescriptors = new ArrayList<>();
         }
         return propertyDescriptors;
+    }
+
+    private volatile Boolean mayHoldMethodExpressions;
+
+    /**
+     * Whether an attribute of this composite component may hold a method expression to retarget: an attribute with a
+     * method signature and no type, or one whose name or target attribute name may be one of the special attribute
+     * names such as <code>action</code>. The result is computed on the first call and then cached, so call this only
+     * once all attributes are added, as <code>retargetMethodExpressions</code> does.
+     *
+     * @return true when an attribute of this composite component may hold a method expression to retarget.
+     */
+    public boolean mayHoldMethodExpressions() {
+        Boolean result = mayHoldMethodExpressions;
+        if (result == null) {
+            result = false;
+            for (PropertyDescriptor descriptor : getPropertyDescriptorsList()) {
+                if (Util.isSpecialAttributeName(descriptor.getName()) || descriptor.getValue("targetAttributeName") != null
+                        || descriptor.getValue("method-signature") != null && descriptor.getValue("type") == null) {
+                    result = true;
+                    break;
+                }
+            }
+            mayHoldMethodExpressions = result;
+        }
+        return result;
     }
 
     // ----------------------------------------------Methods From Externalizable

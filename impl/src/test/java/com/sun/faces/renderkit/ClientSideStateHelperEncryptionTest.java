@@ -60,6 +60,7 @@ class ClientSideStateHelperEncryptionTest extends JUnitFacesTestCaseBase {
     private static final String DISABLE_ENCRYPTION = "com.sun.faces.disableClientStateEncryption";
     private static final String COMPRESS = "com.sun.faces.compressViewState";
     private static final String PLAIN_STATE_MARKER = "plain-state-marker";
+    private static final String VIEW_ID = "/view.xhtml";
 
     @BeforeEach
     @Override
@@ -171,7 +172,7 @@ class ClientSideStateHelperEncryptionTest extends JUnitFacesTestCaseBase {
         postViewState(out.toString());
 
         assertEquals("stateless", out.toString());
-        assertEquals("stateless", helper.getState(facesContext, "/view.xhtml"));
+        assertEquals("stateless", helper.getState(facesContext, VIEW_ID));
     }
 
     /**
@@ -185,7 +186,7 @@ class ClientSideStateHelperEncryptionTest extends JUnitFacesTestCaseBase {
         RecordingSerializationProvider provider = new RecordingSerializationProvider(helper.serialProvider);
         helper.serialProvider = provider;
 
-        assertNotNull(helper.doGetState(facesContext, written), "state is read back");
+        assertNotNull(helper.doGetState(facesContext, written, VIEW_ID), "state is read back");
         assertEquals(1, provider.getSources().size(), "object input streams created");
         assertInstanceOf(BufferedInputStream.class, provider.getSources().get(0));
     }
@@ -196,7 +197,9 @@ class ClientSideStateHelperEncryptionTest extends JUnitFacesTestCaseBase {
         if (disableEncryption != null) {
             servletContext.addInitParameter(DISABLE_ENCRYPTION, disableEncryption);
         }
-        facesContext.setViewRoot(new UIViewRoot());
+        UIViewRoot root = new UIViewRoot();
+        root.setViewId(VIEW_ID);
+        facesContext.setViewRoot(root);
         StringBuilder out = new StringBuilder();
         new ClientSideStateHelper().writeState(facesContext, new Object[] { PLAIN_STATE_MARKER, "state" }, out);
         return out.toString();
@@ -204,7 +207,7 @@ class ClientSideStateHelperEncryptionTest extends JUnitFacesTestCaseBase {
 
     private void assertRoundTrip(String written) throws Exception {
         postViewState(written);
-        Object[] state = (Object[]) new ClientSideStateHelper().getState(FacesContext.getCurrentInstance(), "/view.xhtml");
+        Object[] state = (Object[]) new ClientSideStateHelper().getState(FacesContext.getCurrentInstance(), VIEW_ID);
 
         assertNotNull(state, "state is read back");
         assertArrayEquals(new Object[] { PLAIN_STATE_MARKER, "state" }, state);
@@ -225,6 +228,7 @@ class ClientSideStateHelperEncryptionTest extends JUnitFacesTestCaseBase {
     private static Object deserializeStructure(byte[] bytes, boolean compressed) throws Exception {
         ByteArrayInputStream in = new ByteArrayInputStream(bytes);
         try (ObjectInputStream ois = new ObjectInputStream(compressed ? new GZIPInputStream(in) : in)) {
+            ois.readInt();
             return ois.readObject();
         }
     }

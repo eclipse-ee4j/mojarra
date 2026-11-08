@@ -37,6 +37,7 @@ import java.io.OutputStream;
 import java.io.Writer;
 import java.util.Base64;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
@@ -194,7 +195,7 @@ public class ClientSideStateHelper extends StateHelper {
             return STATELESS;
         }
 
-        return doGetState(ctx, stateString);
+        return doGetState(ctx, stateString, viewId);
     }
 
     // ------------------------------------------------------- Protected Methods
@@ -203,9 +204,11 @@ public class ClientSideStateHelper extends StateHelper {
      * Rebuilds the view state from the Base64 included String included with the request.
      *
      * @param stateString the Base64 encoded view state
-     * @return the view state reconstructed from <code>stateString</code>
+     * @param viewId the view ID of the view to restore
+     * @return the view state reconstructed from <code>stateString</code>, or <code>null</code> when it was not saved for
+     * the given view
      */
-    protected Object doGetState(FacesContext ctx, String stateString) {
+    protected Object doGetState(FacesContext ctx, String stateString, String viewId) {
 
         if (STATELESS.equals(stateString)) {
             return null;
@@ -248,6 +251,9 @@ public class ClientSideStateHelper extends StateHelper {
                     return null;
                 }
             }
+            if (!isSavedForView(ois, viewId)) {
+                return null;
+            }
             Object structure = ois.readObject();
             Object state = ois.readObject();
             if (stateTime != 0 && hasStateExpired(stateTime)) {
@@ -288,6 +294,22 @@ public class ClientSideStateHelper extends StateHelper {
     }
 
     /**
+     * A state without the hash of a view ID is one of a version which did not write it, and cannot be attributed to a view.
+     *
+     * @param ois the stream positioned at the hash of the view ID the state was saved for
+     * @param viewId the view ID of the view to restore
+     * @return whether the state was saved for the given view
+     */
+    private static boolean isSavedForView(ObjectInputStream ois, String viewId) {
+        try {
+            return ois.readInt() == Objects.hashCode(viewId);
+        } catch (IOException e) {
+            LOGGER.log(Level.FINE, "Unable to read the view ID hash of the client state", e);
+            return false;
+        }
+    }
+
+    /**
      * Serializes and Base64 encodes the provided <code>state</code> to the provided <code>writer</code>/
      *
      * @param facesContext the Faces context.
@@ -320,6 +342,8 @@ public class ClientSideStateHelper extends StateHelper {
                 oos.writeLong(System.currentTimeMillis());
 
             }
+
+            oos.writeInt(Objects.hashCode(facesContext.getViewRoot().getViewId()));
 
             Object[] stateToWrite = (Object[]) state;
 
