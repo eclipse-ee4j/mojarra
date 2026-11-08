@@ -265,15 +265,11 @@ public abstract class UIComponentBase extends UIComponent {
     transient boolean restoredFullState;
 
     /**
-     * Encode-scoped cache of {@link #isRendered()}. Within a single component encode the renderer's
-     * {@code shouldEncode}, {@code encodeChildren} and {@code encodeEnd} all re-consult {@code isRendered()},
-     * each otherwise re-reading {@code rendered} from the StateHelper. {@link #encodeBegin} computes it once and
-     * holds it here for the {@code encodeBegin}..{@code encodeEnd} window (covering both the {@code encodeAll} and
-     * renderer {@code encodeRecursive} paths, which both flow through those methods); {@link #encodeEnd} clears it.
-     * {@code rendered} cannot change mid-encode, so the cached value is authoritative for that window. It is
-     * recomputed fresh on every {@code encodeBegin}, so an encode that aborts before {@code encodeEnd} cannot leave
-     * a stale value in effect. {@code null} means "not currently encoding" — reads fall through to the StateHelper.
-     * Transient: never part of view state.
+     * Encode-scoped cache of {@link #isRendered()}, filled by {@code encodeBegin} and cleared by {@code encodeEnd}.
+     * Within a single component encode the renderer's {@code shouldEncode}, {@code encodeChildren} and {@code encodeEnd}
+     * all re-consult {@code isRendered()}, each otherwise re-reading {@code rendered} from the StateHelper. An encode
+     * which aborts before {@code encodeEnd} leaves the value behind. {@code null} means "not currently encoding": reads
+     * fall through to the StateHelper. Transient: never part of view state.
      */
     private transient Boolean cachedIsRendered;
 
@@ -666,8 +662,9 @@ public abstract class UIComponentBase extends UIComponent {
         pushComponentToEL(context, null);
 
         // Memoize rendered for this component's encode pass: the renderer's shouldEncode, encodeChildren and
-        // encodeEnd re-consult isRendered() and would otherwise re-read the StateHelper each time. Recomputed fresh
-        // here (rather than relying on a prior clear) so an encode that aborted before encodeEnd leaves no stale value.
+        // encodeEnd re-consult isRendered() and would otherwise re-read the StateHelper each time.
+        // This evaluation cannot reuse the check in encodeAll(), which ran before pushComponentToEL: #{component} is the
+        // parent there and this component here, so both can answer differently.
         cachedIsRendered = isRendered();
         if (!cachedIsRendered) {
             return;
