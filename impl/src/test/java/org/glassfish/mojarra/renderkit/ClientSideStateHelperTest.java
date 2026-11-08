@@ -57,6 +57,7 @@ import org.junit.jupiter.params.provider.ValueSource;
  */
 class ClientSideStateHelperTest extends JUnitFacesTestCaseBase {
 
+    private static final String VIEW_ID = "/view.xhtml";
     private static final String PLAIN_STATE_MARKER = "plain-state-marker";
     private static final String STATE_TIMEOUT_DISABLED = "-1";
     private static final String STATE_TIMEOUT_ENABLED = "60";
@@ -117,7 +118,7 @@ class ClientSideStateHelperTest extends JUnitFacesTestCaseBase {
         postViewState(out.toString());
 
         assertEquals("stateless", out.toString());
-        assertEquals("stateless", helper.getState(facesContext, "/view.xhtml"));
+        assertEquals("stateless", helper.getState(facesContext, VIEW_ID));
     }
 
     /**
@@ -157,6 +158,7 @@ class ClientSideStateHelperTest extends JUnitFacesTestCaseBase {
             if (!STATE_TIMEOUT_DISABLED.equals(stateTimeout)) {
                 ois.readLong();
             }
+            ois.readInt();
             assertEquals(EMPTY_STATE, ois.readByte());
             assertEquals(-1, ois.read());
         }
@@ -179,7 +181,7 @@ class ClientSideStateHelperTest extends JUnitFacesTestCaseBase {
 
         postViewState(Base64.getEncoder().encodeToString(untagged));
 
-        assertNull(new ClientSideStateHelper().getState(facesContext, "/view.xhtml"));
+        assertNull(new ClientSideStateHelper().getState(facesContext, VIEW_ID));
     }
 
     /**
@@ -196,7 +198,7 @@ class ClientSideStateHelperTest extends JUnitFacesTestCaseBase {
 
         postViewState(Base64.getEncoder().encodeToString(timestamped));
 
-        assertNull(new ClientSideStateHelper().getState(facesContext, "/view.xhtml"));
+        assertNull(new ClientSideStateHelper().getState(facesContext, VIEW_ID));
     }
 
     /**
@@ -210,7 +212,7 @@ class ClientSideStateHelperTest extends JUnitFacesTestCaseBase {
 
         postViewState(Base64.getEncoder().encodeToString(untimestamped));
 
-        assertNull(new ClientSideStateHelper().getState(facesContext, "/view.xhtml"));
+        assertNull(new ClientSideStateHelper().getState(facesContext, VIEW_ID));
     }
 
     private static void writeTagged(ObjectOutputStream oos, byte tag) throws IOException {
@@ -228,14 +230,14 @@ class ClientSideStateHelperTest extends JUnitFacesTestCaseBase {
         servletContext.addInitParameter(MojarraContextParam.ENABLE_CLIENT_STATE_DEBUGGING.getName(), String.valueOf(plain));
         servletContext.addInitParameter(MojarraContextParam.COMPRESS_VIEW_STATE.getName(), String.valueOf(!plain));
         servletContext.addInitParameter(MojarraContextParam.CLIENT_STATE_TIMEOUT.getName(), stateTimeout);
-        facesContext.setViewRoot(new UIViewRoot());
+        facesContext.setViewRoot(viewRoot());
     }
 
     private Object roundTrip(Map<String, Object> state) throws IOException {
         StringBuilder out = new StringBuilder();
         new ClientSideStateHelper().writeState(facesContext, state, out);
         postViewState(out.toString());
-        return new ClientSideStateHelper().getState(facesContext, "/view.xhtml");
+        return new ClientSideStateHelper().getState(facesContext, VIEW_ID);
     }
 
     private static byte[] serialize(SerializationStep step) throws IOException {
@@ -264,7 +266,7 @@ class ClientSideStateHelperTest extends JUnitFacesTestCaseBase {
         RecordingSerializationProvider provider = new RecordingSerializationProvider(helper.serialProvider);
         helper.serialProvider = provider;
 
-        assertNotNull(helper.doGetState(facesContext, written), "state is read back");
+        assertNotNull(helper.doGetState(facesContext, written, VIEW_ID), "state is read back");
         assertEquals(1, provider.getSources().size(), "object input streams created");
         assertInstanceOf(BufferedInputStream.class, provider.getSources().get(0));
     }
@@ -275,7 +277,7 @@ class ClientSideStateHelperTest extends JUnitFacesTestCaseBase {
         if (clientStateDebugging != null) {
             servletContext.addInitParameter(MojarraContextParam.ENABLE_CLIENT_STATE_DEBUGGING.getName(), clientStateDebugging);
         }
-        facesContext.setViewRoot(new UIViewRoot());
+        facesContext.setViewRoot(viewRoot());
         StringBuilder out = new StringBuilder();
         new ClientSideStateHelper().writeState(facesContext, Map.of(PLAIN_STATE_MARKER, "state"), out);
         return out.toString();
@@ -283,10 +285,16 @@ class ClientSideStateHelperTest extends JUnitFacesTestCaseBase {
 
     private void assertRoundTrip(String written) throws Exception {
         postViewState(written);
-        Object state = new ClientSideStateHelper().getState(FacesContext.getCurrentInstance(), "/view.xhtml");
+        Object state = new ClientSideStateHelper().getState(FacesContext.getCurrentInstance(), VIEW_ID);
 
         assertNotNull(state, "state is read back");
         assertEquals(Map.of(PLAIN_STATE_MARKER, "state"), state);
+    }
+
+    private static UIViewRoot viewRoot() {
+        UIViewRoot root = new UIViewRoot();
+        root.setViewId(VIEW_ID);
+        return root;
     }
 
     private void postViewState(String value) {
@@ -305,6 +313,7 @@ class ClientSideStateHelperTest extends JUnitFacesTestCaseBase {
     private static Map<?, ?> deserializeState(byte[] bytes, boolean compressed) throws Exception {
         ByteArrayInputStream in = new ByteArrayInputStream(bytes);
         try (ObjectInputStream ois = new ObjectInputStream(compressed ? new GZIPInputStream(in) : in)) {
+            ois.readInt();
             if (ois.readByte() != COMPONENT_STATE) {
                 return Map.of();
             }

@@ -138,8 +138,8 @@ public class TestServerSideStateHelper {
     }
 
     /**
-     * An empty component state keeps the session entry of its view as <code>null</code>, so it is read back as an empty state, and not as a missing state which
-     * would expire the view, whether or not the server state is serialized.
+     * An empty component state is saved as <code>null</code> in the session entry of its view, so it is read back as an empty state, and not as a missing state
+     * which would expire the view, whether or not the server state is serialized.
      */
     @ParameterizedTest
     @ValueSource(booleans = { false, true })
@@ -150,7 +150,7 @@ public class TestServerSideStateHelper {
         Map<String, Object> viewStates = viewStates(id);
 
         assertTrue(viewStates.containsKey(viewStateId(id)));
-        assertNull(viewStates.get(viewStateId(id)));
+        assertNull(((Object[]) viewStates.get(viewStateId(id)))[1]);
 
         prepareViewStateParam(id);
 
@@ -181,8 +181,8 @@ public class TestServerSideStateHelper {
         ServletContext servletContext = (ServletContext) mockedExternalContext.getContext();
         when(servletContext.getInitParameter(MojarraContextParam.COMPRESS_VIEW_STATE.getName())).thenReturn("false");
         String id = write(new HashMap<>(Map.of("form", new Versioned())));
-        byte[] entry = (byte[]) viewStates(id).get(viewStateId(id));
-        replaceEntry(id, withSerialVersionUID(entry, Versioned.class.getName(), Versioned.serialVersionUID + 1));
+        Object[] entry = (Object[]) viewStates(id).get(viewStateId(id));
+        replaceEntry(id, new Object[] { entry[0], withSerialVersionUID((byte[]) entry[1], Versioned.class.getName(), Versioned.serialVersionUID + 1) });
 
         prepareViewStateParam(id);
 

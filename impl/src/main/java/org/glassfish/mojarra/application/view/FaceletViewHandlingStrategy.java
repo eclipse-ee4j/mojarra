@@ -562,7 +562,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     public BeanInfo getComponentMetadata(FacesContext context, Resource ccResource) {
         DefaultFaceletFactory factory = RequestStateManager.get(context, FACELET_FACTORY);
 
-        if (factory.needsToBeRefreshed(ccResource.getURL())) {
+        if (factory.canRefresh() && factory.needsToBeRefreshed(ccResource.getURL())) {
             metadataCache.remove(ccResource);
         }
 
@@ -674,6 +674,10 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         BeanInfo componentBeanInfo = (BeanInfo) topLevelComponent.getAttributes().get(BEANINFO_KEY);
         // PENDING(edburns): log error message if componentBeanInfo is null;
         if (componentBeanInfo == null) {
+            return;
+        }
+
+        if (componentBeanInfo instanceof CompositeComponentBeanInfo && !((CompositeComponentBeanInfo) componentBeanInfo).mayHoldMethodExpressions()) {
             return;
         }
 
@@ -1312,7 +1316,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             String targetAttributeName = ve != null ? (String) ve.getValue(context.getELContext()) : EMPTY_STRING;
 
             boolean isSpecialAttributeName = Util.isSpecialAttributeName(name) || Util.isSpecialAttributeName(targetAttributeName);
-            result = !isSpecialAttributeName && (pd.getValue("type") != null || pd.getValue("method-signature") == null);
+            result = !isSpecialAttributeName && (pd.getValue("method-signature") == null || pd.getValue("type") != null);
 
             return result;
         }

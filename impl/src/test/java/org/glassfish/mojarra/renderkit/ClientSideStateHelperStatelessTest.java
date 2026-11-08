@@ -120,7 +120,7 @@ class ClientSideStateHelperStatelessTest extends JUnitFacesTestCaseBase {
         private int decodeCount;
 
         @Override
-        protected Object doGetState(FacesContext ctx, String stateString) {
+        protected Object doGetState(FacesContext ctx, String stateString, String viewId) {
             decodeCount++;
             return DECODED_STATE;
         }

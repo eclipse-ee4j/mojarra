@@ -36,6 +36,8 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -408,6 +410,34 @@ public class DefaultFaceletFactory {
 
     public Facelet getMetadataFacelet(FacesContext context, URL url) throws IOException {
         return getCache(context).getViewMetadataFacelet(url);
+    }
+
+    /**
+     * @return false when every facelet cache in use is the default one with refreshing disabled. Then a compiled facelet is never replaced.
+     */
+    public boolean canRefresh() {
+        return canRefresh(cache, cachePerContract == null ? Collections.emptyList() : cachePerContract.values());
+    }
+
+    /**
+     * @param cache the facelet cache of the application.
+     * @param contractCaches the facelet caches of the resource library contracts in use.
+     * @return true unless every given cache is the default one with refreshing disabled.
+     */
+    static boolean canRefresh(FaceletCache<DefaultFacelet> cache, Collection<FaceletCache<DefaultFacelet>> contractCaches) {
+        if (!neverExpires(cache)) {
+            return true;
+        }
+        for (FaceletCache<DefaultFacelet> contractCache : contractCaches) {
+            if (!neverExpires(contractCache)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean neverExpires(FaceletCache<DefaultFacelet> faceletCache) {
+        return faceletCache instanceof DefaultFaceletCache && ((DefaultFaceletCache) faceletCache).neverExpires();
     }
 
     public boolean needsToBeRefreshed(URL url) {

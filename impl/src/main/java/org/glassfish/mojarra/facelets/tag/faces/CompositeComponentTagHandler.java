@@ -36,7 +36,6 @@ import jakarta.el.ELException;
 import jakarta.el.ValueExpression;
 import jakarta.el.VariableMapper;
 import jakarta.faces.FacesException;
-import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.Resource;
 import jakarta.faces.component.ActionSource;
@@ -51,7 +50,6 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.AttachedObjectHandler;
 import jakarta.faces.view.Location;
 import jakarta.faces.view.ViewDeclarationLanguage;
-import jakarta.faces.view.ViewDeclarationLanguageFactory;
 import jakarta.faces.view.facelets.ComponentConfig;
 import jakarta.faces.view.facelets.ComponentHandler;
 import jakarta.faces.view.facelets.FaceletContext;
@@ -158,15 +156,11 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
         if (ComponentHandler.isNew(c)) {
             FacesContext context = ctx.getFacesContext();
             String viewId = context.getViewRoot().getViewId();
-            // PENDING(rlubke): performance
-            ViewDeclarationLanguageFactory factory = (ViewDeclarationLanguageFactory) FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY);
-
-            ViewDeclarationLanguage vdl = factory.getViewDeclarationLanguage(viewId);
-            vdl.retargetAttachedObjects(context, c, getAttachedObjectHandlers(c, false));
+            ViewDeclarationLanguage vdl = context.getApplication().getViewHandler().getViewDeclarationLanguage(context, viewId);
+            List<AttachedObjectHandler> handlers = getAttachedObjectHandlers(c, false);
+            vdl.retargetAttachedObjects(context, c, handlers);
             vdl.retargetMethodExpressions(context, c);
-            getAttachedObjectHandlers(c).clear();
-
-            // getAttachedObjectHandlers(c, false).clear();
+            handlers.clear();
         }
 
     }

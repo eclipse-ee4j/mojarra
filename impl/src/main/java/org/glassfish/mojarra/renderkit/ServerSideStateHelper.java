@@ -34,6 +34,7 @@ import java.io.ObjectOutputStream;
 import java.security.SecureRandom;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
@@ -59,6 +60,9 @@ import org.glassfish.mojarra.util.Util;
 public class ServerSideStateHelper extends StateHelper {
 
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
+
+    private static final int VIEW_ID_INDEX = 0;
+    private static final int SAVED_STATE_INDEX = 1;
 
     /**
      * Key to store the <code>AtomicInteger</code> used to generate unique state map keys.
@@ -189,7 +193,7 @@ public class ServerSideStateHelper extends StateHelper {
 
                     id = idInPageMap + ':' + idInStateMap;
 
-                    stateMap.put(idInStateMap, savedState);
+                    stateMap.put(idInStateMap, new Object[] { viewRoot.getViewId(), savedState });
 
                     // always call put/setAttribute as we may be in a clustered environment.
                     sessionMap.put(STATEFUL_PAGE_MAP, pageMap);
@@ -274,8 +278,9 @@ public class ServerSideStateHelper extends StateHelper {
                 if (stateMap != null) {
                     RequestStateManager.set(ctx, RequestStateManager.STATEFUL_PAGE_MAP, idInPageMap);
 
-                    Object savedState = stateMap.get(idInStateMap);
-                    if (savedState != null || stateMap.containsKey(idInStateMap)) {
+                    Object[] entry = (Object[]) stateMap.get(idInStateMap);
+                    if (entry != null && Objects.equals(entry[VIEW_ID_INDEX], viewId)) {
+                        Object savedState = entry[SAVED_STATE_INDEX];
                         Object restoredState = savedState == null ? Collections.emptyMap() : restoreSavedState(savedState);
                         if (restoredState != null) {
                             RequestStateManager.set(ctx, RequestStateManager.VIEW_STATE_MAP, idInStateMap);

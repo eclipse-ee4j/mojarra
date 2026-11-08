@@ -16,19 +16,24 @@
 package org.glassfish.mojarra.application.view;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.component.visit.VisitCallback;
 import jakarta.faces.component.visit.VisitContext;
@@ -222,6 +227,51 @@ class FaceletViewHandlingStrategyTest {
     @Test
     void handlesAFlowDefinitionRegardlessOfConfiguration() throws Exception {
         assertTrue(handles("/foo-flow.xml", new String[] { ".xhtml" }, null));
+    }
+
+    // --- retargetable method attributes ---
+
+    private static boolean hasRetargetableMethodAttribute(PropertyDescriptor attribute) throws Exception {
+        Constructor<?> constructor = Class.forName(FaceletViewHandlingStrategy.class.getName() + "$MethodMetadataIterator")
+            .getDeclaredConstructor(FacesContext.class, PropertyDescriptor[].class);
+        constructor.setAccessible(true);
+        return ((Iterator<?>) constructor.newInstance(mock(FacesContext.class), new PropertyDescriptor[] { attribute })).hasNext();
+    }
+
+    /**
+     * Resolving the type of a composite component attribute loads its class, and fails on an invalid one. Only an attribute with a method signature needs its
+     * type to tell whether it holds a method expression.
+     */
+    @Test
+    void anAttributeWithoutMethodSignatureIsSkippedWithoutResolvingItsType() throws Exception {
+        PropertyDescriptor attribute = new PropertyDescriptor("value", null, null) {
+
+            @Override
+            public Object getValue(String attributeName) {
+                assertNotEquals("type", attributeName);
+                return super.getValue(attributeName);
+            }
+
+        };
+
+        assertFalse(hasRetargetableMethodAttribute(attribute));
+    }
+
+    @Test
+    void anAttributeWithAMethodSignatureAndNoTypeIsRetargetable() throws Exception {
+        PropertyDescriptor attribute = new PropertyDescriptor("listener", null, null);
+        attribute.setValue("method-signature", mock(ValueExpression.class));
+
+        assertTrue(hasRetargetableMethodAttribute(attribute));
+    }
+
+    @Test
+    void anAttributeWithAMethodSignatureAndATypeIsSkipped() throws Exception {
+        PropertyDescriptor attribute = new PropertyDescriptor("listener", null, null);
+        attribute.setValue("method-signature", mock(ValueExpression.class));
+        attribute.setValue("type", String.class);
+
+        assertFalse(hasRetargetableMethodAttribute(attribute));
     }
 
 }
