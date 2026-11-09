@@ -20,9 +20,13 @@ package com.sun.faces.cdi.clientwindow;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.NumberOfClientWindows;
 import static com.sun.faces.context.SessionMap.getMutex;
+import static com.sun.faces.util.Util.getCdiBeanManager;
 import static java.util.logging.Level.FINEST;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -34,6 +38,7 @@ import com.sun.faces.util.LRUMap;
 
 import jakarta.enterprise.context.spi.Contextual;
 import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.PassivationCapable;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
@@ -49,12 +54,28 @@ public class ClientWindowScopeContextManager {
 
     private static final String CLIENT_WINDOW_CONTEXTS = "com.sun.faces.cdi.clientwindow.clientWindowContexts";
 
+    private final BeanManager beanManager;
     private final boolean distributable;
+    private final int numberOfClientWindows;
 
     public ClientWindowScopeContextManager() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        distributable = WebConfiguration.getInstance(facesContext.getExternalContext())
-                                        .isOptionEnabled(EnableDistributable);
+        beanManager = getCdiBeanManager(facesContext);
+        WebConfiguration webConfiguration = WebConfiguration.getInstance(facesContext.getExternalContext());
+        distributable = webConfiguration.isOptionEnabled(EnableDistributable);
+        numberOfClientWindows = parseNumberOfClientWindows(webConfiguration);
+    }
+
+    private static int parseNumberOfClientWindows(WebConfiguration webConfiguration) {
+        try {
+            return Integer.parseInt(webConfiguration.getOptionValue(NumberOfClientWindows));
+        } catch (NumberFormatException nfe) {
+            if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.log(Level.WARNING, "Unable to set number of client windows.  Defaulting to {0}", NumberOfClientWindows.getDefaultValue());
+            }
+
+            return Integer.parseInt(NumberOfClientWindows.getDefaultValue());
+        }
     }
 
     /**
@@ -78,7 +99,7 @@ public class ClientWindowScopeContextManager {
         if (contextualInstance != null) {
             String passivationCapableId = ((PassivationCapable) contextual).getId();
 
-            getContextMap(facesContext).put(passivationCapableId, new ClientWindowScopeContextObject(passivationCapableId, contextualInstance));
+            getContextMap(facesContext).put(passivationCapableId, new ClientWindowScopeContextObject(passivationCapableId, contextualInstance, creational));
         }
 
         return contextualInstance;
@@ -144,28 +165,17 @@ public class ClientWindowScopeContextManager {
                 String clientWindowId = getCurrentClientWindowId(facesContext);
 
                 if (clientWindowScopeContexts == null && create) {
-                    Integer numberOfClientWindows = null;
-
-                    try {
-                        numberOfClientWindows = Integer.parseInt(WebConfiguration.getInstance(externalContext).getOptionValue(NumberOfClientWindows));
-                    } catch (NumberFormatException nfe) {
-                        if (LOGGER.isLoggable(Level.WARNING)) {
-                            LOGGER.log(Level.WARNING, "Unable to set number of client windows.  Defaulting to {0}", NumberOfClientWindows.getDefaultValue());
-                        }
-                    }
-
-                    if (numberOfClientWindows == null) {
-                        numberOfClientWindows = Integer.valueOf(NumberOfClientWindows.getDefaultValue());
-                    }
-
                     synchronized (getMutex(session)) {
                         sessionMap.put(CLIENT_WINDOW_CONTEXTS, Collections.synchronizedMap(new LRUMap<String, Object>(numberOfClientWindows)));
                     }
                 }
 
                 if (clientWindowScopeContexts != null && clientWindowId != null && create) {
+                    Map<String, ClientWindowScopeContextObject> evictedContextMap = null;
+
                     synchronized (clientWindowScopeContexts) {
                         if (!clientWindowScopeContexts.containsKey(clientWindowId)) {
+                            evictedContextMap = evictEldestContextMap(clientWindowScopeContexts);
                             clientWindowScopeContexts.put(clientWindowId,
                                     new ConcurrentHashMap<String, ClientWindowScopeContextObject>());
                             if (distributable) {
@@ -176,6 +186,10 @@ public class ClientWindowScopeContextManager {
                             }
                         }
                     }
+
+                    if (evictedContextMap != null) {
+                        destroyBeans(evictedContextMap);
+                    }
                 }
 
                 if (clientWindowScopeContexts != null && clientWindowId != null) {
@@ -185,6 +199,41 @@ public class ClientWindowScopeContextManager {
         }
 
         return result;
+    }
+
+    /**
+     * Remove the context map of the least recently used client window when there is no room for another one.
+     * The caller must hold the lock on the given map.
+     *
+     * @param clientWindowScopeContexts the access ordered context maps of all client windows of the session.
+     * @return the removed context map, or null when there is still room.
+     */
+    private Map<String, ClientWindowScopeContextObject> evictEldestContextMap(Map<Object, Map<String, ClientWindowScopeContextObject>> clientWindowScopeContexts) {
+        if (clientWindowScopeContexts.size() < numberOfClientWindows) {
+            return null;
+        }
+
+        Iterator<Map<String, ClientWindowScopeContextObject>> contextMaps = clientWindowScopeContexts.values().iterator();
+        Map<String, ClientWindowScopeContextObject> eldestContextMap = contextMaps.next();
+        contextMaps.remove();
+        return eldestContextMap;
+    }
+
+    /**
+     * Destroy the client window scoped beans of the given context map. A bean which cannot be destroyed is logged and skipped.
+     */
+    @SuppressWarnings("unchecked")
+    private void destroyBeans(Map<String, ClientWindowScopeContextObject> contextMap) {
+        for (ClientWindowScopeContextObject contextObject : contextMap.values()) {
+            try {
+                Contextual contextual = beanManager.getPassivationCapableBean(contextObject.getPassivationCapableId());
+                CreationalContext creationalContext = contextObject.getCreationalContext();
+                // Absent in a session which was serialized by a version which did not store it yet.
+                contextual.destroy(contextObject.getContextualInstance(), creationalContext != null ? creationalContext : beanManager.createCreationalContext(contextual));
+            } catch (RuntimeException e) {
+                LOGGER.log(Level.WARNING, "Cannot destroy the @ClientWindowScoped bean: " + contextObject.getPassivationCapableId(), e);
+            }
+        }
     }
 
     /**
@@ -203,7 +252,14 @@ public class ClientWindowScopeContextManager {
         Map<Object, Map<String, ClientWindowScopeContextObject>> clientWindowScopeContexts = (Map<Object, Map<String, ClientWindowScopeContextObject>>)
                 session.getAttribute(CLIENT_WINDOW_CONTEXTS);
         if (clientWindowScopeContexts != null) {
-            clientWindowScopeContexts.clear();
+            List<Map<String, ClientWindowScopeContextObject>> contextMaps;
+
+            synchronized (clientWindowScopeContexts) {
+                contextMaps = new ArrayList<>(clientWindowScopeContexts.values());
+                clientWindowScopeContexts.clear();
+            }
+
+            contextMaps.forEach(this::destroyBeans);
             session.removeAttribute(CLIENT_WINDOW_CONTEXTS);
         }
     }
