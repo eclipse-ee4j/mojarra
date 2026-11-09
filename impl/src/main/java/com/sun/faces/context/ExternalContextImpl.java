@@ -19,8 +19,6 @@ package com.sun.faces.context;
 
 import static com.sun.faces.RIConstants.PUSH_RESOURCE_URLS_KEY_NAME;
 import static com.sun.faces.context.ContextParam.SendPoweredByHeader;
-import static com.sun.faces.context.UrlBuilder.PROTOCOL_SEPARATOR;
-import static com.sun.faces.context.UrlBuilder.WEBSOCKET_PROTOCOL;
 import static com.sun.faces.util.Util.isEmpty;
 
 import java.io.BufferedWriter;
@@ -573,15 +571,9 @@ public class ExternalContextImpl extends ExternalContext {
                 port = requestURL.getPort();
             }
 
-            final String fixedPortRequestURL = new URL(requestURL.getProtocol(), requestURL.getHost(), port, url).toExternalForm();
+            final String websocketURL = new URL(requestURL.getProtocol(), requestURL.getHost(), port, url).toExternalForm();
 
-            // the index after http or https ...
-            int protocolEndIndex = fixedPortRequestURL.indexOf(PROTOCOL_SEPARATOR);
-
-            // ws://[...]
-            final String websocketURL = WEBSOCKET_PROTOCOL + fixedPortRequestURL.substring(protocolEndIndex);
-
-            return encodeResourceURL( websocketURL );
+            return encodeResourceURL(websocketURL.replaceFirst("http", "ws"));
         }
         catch (MalformedURLException e) {
             return url;
