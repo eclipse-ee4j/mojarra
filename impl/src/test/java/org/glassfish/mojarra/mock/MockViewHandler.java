@@ -19,6 +19,7 @@ package org.glassfish.mojarra.mock;
 
 import java.io.IOException;
 import java.util.Locale;
+import java.util.Map;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.application.StateManager;
@@ -26,6 +27,8 @@ import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.render.RenderKitFactory;
+
+import org.glassfish.mojarra.application.view.ViewScopeMap;
 
 public class MockViewHandler extends ViewHandler {
 
@@ -48,6 +51,11 @@ public class MockViewHandler extends ViewHandler {
         result.setViewId(viewId);
         result.setRenderKitId(calculateRenderKitId(context));
         return result;
+    }
+
+    @Override
+    public Map<String, Object> createViewMap(FacesContext context) {
+        return new ViewScopeMap();
     }
 
     @Override

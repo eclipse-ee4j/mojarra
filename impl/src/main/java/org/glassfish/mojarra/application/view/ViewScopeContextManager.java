@@ -21,7 +21,6 @@ package org.glassfish.mojarra.application.view;
 import static java.util.Locale.ROOT;
 import static java.util.logging.Level.FINEST;
 import static java.util.logging.Level.WARNING;
-import static org.glassfish.mojarra.application.view.ViewScopeManager.VIEW_MAP_ID;
 import static org.glassfish.mojarra.cdi.CdiUtils.getBeanReference;
 import static org.glassfish.mojarra.context.SessionMap.getMutex;
 import static org.glassfish.mojarra.util.Util.getCdiBeanManager;
@@ -246,7 +245,7 @@ public class ViewScopeContextManager {
             if (session != null) {
                 Map<Object, Map<String, ViewScopeContextObject>> activeViewScopeContexts = (Map<Object, Map<String, ViewScopeContextObject>>) sessionMap
                     .get(ACTIVE_VIEW_CONTEXTS);
-                String viewMapId = (String) facesContext.getViewRoot().getTransientStateHelper().getTransient(VIEW_MAP_ID);
+                String viewMapId = ViewScopeManager.getViewMapId(facesContext.getViewRoot());
 
                 if (activeViewScopeContexts == null && create) {
                     synchronized (getMutex(session)) {
