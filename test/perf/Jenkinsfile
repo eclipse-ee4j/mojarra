@@ -160,9 +160,8 @@ pipeline {
 </settings>'''
                 // The bench bundles this freshly installed jar into the WAR, so it must be installed
                 // before either arm runs. `clean` is mandatory: a packaged artifact is never built
-                // incrementally. test/pom.xml activates its glassfish profile by default, whose
-                // unpack-glassfish execution runs at pre-integration-test -- a phase `install` passes
-                // through -- so it is deactivated here: installing the IT base needs no server, and
+                // incrementally. test/pom.xml activates its glassfish-pool profile by default, whose
+                // pool-up execution boots a server at initialize, so it is deactivated here: installing the IT base needs no server, and
                 // the bench stages provision Tomcat themselves.
                 script {
                     if (LINE_CONFIG[params.RELEASE_LINE].apiSubmodule) {
@@ -173,10 +172,10 @@ pipeline {
                         // rather than from a reactor, so util's parent pom has to be installed as
                         // well: building util alongside it only reads that parent off disk.
                         sh "mvn ${env.MVN_EXTRA} -N -f faces/tck/pom.xml clean install ${env.SKIP_FLAGS}"
-                        sh "mvn ${env.MVN_EXTRA} -P '!glassfish' -f test/pom.xml -pl base -am clean install ${env.SKIP_FLAGS}"
+                        sh "mvn ${env.MVN_EXTRA} -P '!glassfish-pool' -f test/pom.xml -pl base -am clean install ${env.SKIP_FLAGS}"
                     }
                     else {
-                        sh "mvn ${env.MVN_EXTRA} -P '!glassfish' -pl impl,test/base -am clean install ${env.SKIP_FLAGS}"
+                        sh "mvn ${env.MVN_EXTRA} -P '!glassfish-pool' -pl impl,test/base -am clean install ${env.SKIP_FLAGS}"
                     }
                 }
                 // Both arms stash their dump here, outside the target/ that the next arm's `clean` wipes.
