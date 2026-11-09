@@ -22,9 +22,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BooleanSupplier;
 
@@ -44,7 +48,7 @@ import ee.jakarta.tck.faces.util.selenium.BaseITNG;
 class Issue5746IT extends BaseITNG {
 
     private static final String VIEW = "issue5746.xhtml";
-    private static final int HTTPS_PORT = 8181;
+    private static final int DEFAULT_HTTPS_PORT = 8181;
     private static final List<String> HEAD_RESOURCES = List.of("style1.css", "style2.css", "script1.js", "script2.js", "script3.js");
 
     /**
@@ -86,12 +90,12 @@ class Issue5746IT extends BaseITNG {
      * wire checks above.
      */
     @Test
-    void browserReceivesEarlyHints() {
+    void browserReceivesEarlyHints() throws IOException {
         DevTools devTools = ((ChromeDriver) getWebDriver().getDelegate()).getDevTools();
         List<ResponseReceivedEarlyHints> received = new CopyOnWriteArrayList<>();
         devTools.addListener(Network.responseReceivedEarlyHints(), hints -> received.add(hints));
 
-        getWebDriver().get("https://" + webUrl.getHost() + ":" + HTTPS_PORT + viewPath());
+        getWebDriver().get("https://" + webUrl.getHost() + ":" + httpsPort() + viewPath());
         waitUntil(() -> !received.isEmpty());
 
         assertFalse(received.isEmpty(), "The browser should have received a 103 Early Hints response");
@@ -99,6 +103,22 @@ class Issue5746IT extends BaseITNG {
             .flatMap(hints -> hints.getHeaders().entrySet().stream())
             .anyMatch(header -> "link".equalsIgnoreCase(header.getKey()) && String.valueOf(header.getValue()).contains("rel=preload"));
         assertTrue(preloadsResources, "The early hints received by the browser must contain Link rel=preload headers");
+    }
+
+    private static int httpsPort() throws IOException {
+        String slot = System.getProperty("gf.pool.slot");
+
+        if (slot == null) {
+            return DEFAULT_HTTPS_PORT;
+        }
+
+        Properties ports = new Properties();
+
+        try (InputStream input = Files.newInputStream(Path.of(System.getProperty("gf.pool.dir"), "slot-" + slot, "ports.properties"))) {
+            ports.load(input);
+        }
+
+        return Integer.parseInt(ports.getProperty("glassfish.httpsPort"));
     }
 
     private String viewPath() {

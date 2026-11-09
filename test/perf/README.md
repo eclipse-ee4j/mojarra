@@ -26,7 +26,7 @@ overlaid `jakarta.faces:jakarta.faces-api` jar and the `util` test helper
 Everything else runs from inside the module — `cd test/perf` first, then:
 
 ```
-mvn clean verify -Dperf=true             # GlassFish (default)
+mvn clean verify -Dperf=true -Pglassfish # GlassFish
 mvn clean verify -Dperf=true -Pwildfly   # WildFly
 mvn clean verify -Dperf=true -Ptomee     # TomEE Plume
 mvn clean verify -Dperf=true -Ppayara    # Payara
@@ -42,7 +42,7 @@ mvn clean verify -Dperf=true -Pliberty-myfaces     # OpenLiberty
 mvn clean verify -Dperf=true -Ptomcat-myfaces      # Tomcat (+ Weld + Hibernate Validator)
 
 # Tune iteration counts (warmup=50, runs=1000 by default):
-mvn clean verify -Dperf=true -Dperf.warmup=200 -Dperf.runs=2000
+mvn clean verify -Dperf=true -Dperf.warmup=200 -Dperf.runs=2000 -Pglassfish
 ```
 
 The IT is gated behind `-Dperf=true` (same convention as
@@ -56,7 +56,7 @@ per-phase table (count / total_us / avg_us / min_us / max_us) plus an aggregate
 
 ## Servers
 
-The server is selected with `-P`; GlassFish is the default profile. Each profile
+The server is selected with `-P`, and the bench requires one: the default profile is the shared `glassfish-pool`, which rejects `-Dperf=true`. Each profile
 provisions its own server under `target/` and supplies the chosen Mojarra jar —
 either overlaid into the server's modules (GlassFish, Payara, WildFly, TomEE) or,
 for the bare servlet containers that ship no Faces implementation, bundled into
@@ -64,7 +64,7 @@ the WAR's `WEB-INF/lib` (OpenLiberty, Tomcat).
 
 | profile         | server          | provisioned into                | version property                  |
 |-----------------|-----------------|----------------------------------|-----------------------------------|
-| *(default)*     | GlassFish       | `target/glassfish9`             | `-Dglassfish.version` (9.0.0-M3) |
+| `-Pglassfish`   | GlassFish       | `target/glassfish9`             | `-Dglassfish.version` (9.0.0-M3) |
 | `-Pwildfly`     | WildFly         | `target/wildfly`                | `-Dwildfly.version` (40.0.0.Final) |
 | `-Ptomee`       | TomEE Plume     | `target/apache-tomee-plume-*`   | `-Dtomee.version` (10.1.5)        |
 | `-Ppayara`      | Payara          | `target/payara7`                | `-Dpayara.version` (7.2026.5)     |

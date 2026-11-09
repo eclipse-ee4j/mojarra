@@ -19,6 +19,8 @@ package org.glassfish.mojarra.cdi.clientwindow;
 
 import java.io.Serializable;
 
+import jakarta.enterprise.context.spi.CreationalContext;
+
 /**
  * An object used by ClientWindowScopeContext to keep track of contextual and creational context.
  */
@@ -33,9 +35,15 @@ class ClientWindowScopeContextObject<T> implements Serializable {
      */
     private T contextualInstance;
 
-    public ClientWindowScopeContextObject(String passivationCapableId, T contextualInstance) {
+    /**
+     * The creational context which created the contextual instance. Only this one holds its dependent objects.
+     */
+    private CreationalContext<T> creationalContext;
+
+    public ClientWindowScopeContextObject(String passivationCapableId, T contextualInstance, CreationalContext<T> creationalContext) {
         this.passivationCapableId = passivationCapableId;
         this.contextualInstance = contextualInstance;
+        this.creationalContext = creationalContext;
     }
 
     public String getPassivationCapableId() {
@@ -52,6 +60,10 @@ class ClientWindowScopeContextObject<T> implements Serializable {
 
     public void setContextualInstance(T contextualInstance) {
         this.contextualInstance = contextualInstance;
+    }
+
+    public CreationalContext<T> getCreationalContext() {
+        return creationalContext;
     }
 
 }

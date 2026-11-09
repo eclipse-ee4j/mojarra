@@ -35,4 +35,6 @@ jobs:
           distribution: temurin
           cache: maven
       - name: Build with Maven
-        run: mvn -B -ntp clean install -Papi
+        run: mvn -B -ntp clean install -Papi -pl impl -am
+      - name: Run integration tests
+        run: mvn -B -ntp -f test/pom.xml -T2 clean install

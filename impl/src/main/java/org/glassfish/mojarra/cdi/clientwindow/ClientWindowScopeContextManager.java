@@ -20,14 +20,20 @@ package org.glassfish.mojarra.cdi.clientwindow;
 
 import static java.util.logging.Level.FINEST;
 import static org.glassfish.mojarra.context.SessionMap.getMutex;
+import static org.glassfish.mojarra.util.Util.getCdiBeanManager;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jakarta.enterprise.context.spi.Contextual;
 import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.PassivationCapable;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
@@ -48,11 +54,15 @@ public class ClientWindowScopeContextManager {
 
     private static final String CLIENT_WINDOW_CONTEXTS = "org.glassfish.mojarra.cdi.clientwindow.clientWindowContexts";
 
+    private final BeanManager beanManager;
     private final boolean distributable;
+    private final int numberOfClientWindows;
 
     public ClientWindowScopeContextManager() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
+        beanManager = getCdiBeanManager(facesContext);
         distributable = MojarraContextParam.ENABLE_DISTRIBUTABLE.isEnabled(facesContext);
+        numberOfClientWindows = FacesContextParam.NUMBER_OF_CLIENT_WINDOWS.getInt(facesContext);
     }
 
     /**
@@ -76,7 +86,7 @@ public class ClientWindowScopeContextManager {
         if (contextualInstance != null) {
             String passivationCapableId = ((PassivationCapable) contextual).getId();
 
-            getContextMap(facesContext).put(passivationCapableId, new ClientWindowScopeContextObject<>(passivationCapableId, contextualInstance));
+            getContextMap(facesContext).put(passivationCapableId, new ClientWindowScopeContextObject<>(passivationCapableId, contextualInstance, creational));
         }
 
         return contextualInstance;
@@ -142,20 +152,18 @@ public class ClientWindowScopeContextManager {
                 String clientWindowId = getCurrentClientWindowId(facesContext);
 
                 if (clientWindowScopeContexts == null && create) {
-                    int numberOfClientWindows = FacesContextParam.NUMBER_OF_CLIENT_WINDOWS.getInt(facesContext);
-
                     synchronized (getMutex(session)) {
                         sessionMap.put(CLIENT_WINDOW_CONTEXTS, Collections.synchronizedMap(new LRUMap<>(numberOfClientWindows)));
                     }
                 }
 
                 if (clientWindowScopeContexts != null && clientWindowId != null && create) {
+                    Map<String, ClientWindowScopeContextObject<?>> evictedContextMap = null;
+
                     synchronized (clientWindowScopeContexts) {
                         if (!clientWindowScopeContexts.containsKey(clientWindowId)) {
-                            clientWindowScopeContexts.put(
-                                clientWindowId,
-                                new ConcurrentHashMap<>()
-                            );
+                            evictedContextMap = evictEldestContextMap(clientWindowScopeContexts);
+                            clientWindowScopeContexts.put(clientWindowId, new ConcurrentHashMap<>());
                             if (distributable) {
                                 // If we are distributable, this will result in a dirtying of the
                                 // session data, forcing replication. If we are not distributable,
@@ -163,6 +171,10 @@ public class ClientWindowScopeContextManager {
                                 sessionMap.put(CLIENT_WINDOW_CONTEXTS, clientWindowScopeContexts);
                             }
                         }
+                    }
+
+                    if (evictedContextMap != null) {
+                        destroyBeans(evictedContextMap);
                     }
                 }
 
@@ -173,6 +185,49 @@ public class ClientWindowScopeContextManager {
         }
 
         return result;
+    }
+
+    /**
+     * Remove the context map of the least recently used client window when there is no room for another one. The caller must hold the lock on the given map.
+     *
+     * @param clientWindowScopeContexts the access ordered context maps of all client windows of the session.
+     * @return the removed context map, or null when there is still room.
+     */
+    private Map<String, ClientWindowScopeContextObject<?>> evictEldestContextMap(
+        Map<Object, Map<String, ClientWindowScopeContextObject<?>>> clientWindowScopeContexts
+    )
+    {
+        if (clientWindowScopeContexts.size() < numberOfClientWindows) {
+            return null;
+        }
+
+        Iterator<Map<String, ClientWindowScopeContextObject<?>>> contextMaps = clientWindowScopeContexts.values().iterator();
+        Map<String, ClientWindowScopeContextObject<?>> eldestContextMap = contextMaps.next();
+        contextMaps.remove();
+        return eldestContextMap;
+    }
+
+    /**
+     * Destroy the client window scoped beans of the given context map. A bean which cannot be destroyed is logged and skipped.
+     */
+    private void destroyBeans(Map<String, ClientWindowScopeContextObject<?>> contextMap) {
+        for (ClientWindowScopeContextObject<?> contextObject : contextMap.values()) {
+            try {
+                destroyBean(contextObject);
+            }
+            catch (RuntimeException e) {
+                LOGGER.log(Level.WARNING, "Cannot destroy the @ClientWindowScoped bean: " + contextObject.getPassivationCapableId(), e);
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> void destroyBean(ClientWindowScopeContextObject<T> contextObject) {
+        Contextual<T> contextual = (Contextual<T>) beanManager.getPassivationCapableBean(contextObject.getPassivationCapableId());
+        CreationalContext<T> creationalContext = contextObject.getCreationalContext();
+        // Absent in a session which was serialized by a version which did not store it yet.
+        contextual
+            .destroy(contextObject.getContextualInstance(), creationalContext != null ? creationalContext : beanManager.createCreationalContext(contextual));
     }
 
     /**
@@ -191,7 +246,14 @@ public class ClientWindowScopeContextManager {
         Map<Object, Map<String, ClientWindowScopeContextObject<?>>> clientWindowScopeContexts = (Map<Object, Map<String, ClientWindowScopeContextObject<?>>>) session
             .getAttribute(CLIENT_WINDOW_CONTEXTS);
         if (clientWindowScopeContexts != null) {
-            clientWindowScopeContexts.clear();
+            List<Map<String, ClientWindowScopeContextObject<?>>> contextMaps;
+
+            synchronized (clientWindowScopeContexts) {
+                contextMaps = new ArrayList<>(clientWindowScopeContexts.values());
+                clientWindowScopeContexts.clear();
+            }
+
+            contextMaps.forEach(this::destroyBeans);
             session.removeAttribute(CLIENT_WINDOW_CONTEXTS);
         }
     }

@@ -251,6 +251,10 @@ public final class ForEachHandler extends TagHandlerImpl {
 
         boolean replaying = replayCount != NO_REPLAY;
 
+        if (replaying && srcVE != null) {
+            IterationBaseCache.put(ctx.getFacesContext(), srcVE, src);
+        }
+
         Integer sO = begin != null ? s : null;
         Integer eO = end != null ? e : null;
         Integer mO = step != null ? m : null;
@@ -284,10 +288,7 @@ public final class ForEachHandler extends TagHandlerImpl {
         int decisionsBeforeBody = 0;
         int unreproducibleMarksBeforeBody = 0;
         if (indexable) {
-            recordDecisions(ctx, srcVE, src, s, e, m, t);
-            if (replaying) {
-                recordIterationCount(ctx, srcVE, s, e, m, replayCount);
-            }
+            recordDecisions(ctx, srcVE, src, s, e, m, t, replayCount);
             stateKey = ITERATION_STATE + System.identityHashCode(parent) + ':' + tag.getLocation();
             range = new int[] { s, e, m };
             if (facesContext.getCurrentPhaseId() == PhaseId.RESTORE_VIEW) {
@@ -570,9 +571,15 @@ public final class ForEachHandler extends TagHandlerImpl {
      * Records what this build iterated over, so the redundant render-time re-apply is skipped as long as it would iterate the same way and is performed when it
      * would not (see {@code refreshTransientBuild}). The item sequence takes a decision of its own, since it is a comparison over every element rather than a
      * single value; the body's own decisions stand beside it, each captured with this iteration's index-based var expression and therefore reading its own
-     * element live.
+     * element live. A replaying build iterates the saved count, which the items may no longer yield. The decision therefore also checks that the current items
+     * yield the saved count. If they do not, the render time re-apply runs. A begin/end range needs no such check: its count follows from the range, which is
+     * recorded already.
      */
-    private void recordDecisions(FaceletContext ctx, ValueExpression srcVE, Object src, int begin, int end, int step, boolean tranzient) {
+    private void recordDecisions(
+        FaceletContext ctx, ValueExpression srcVE, Object src, int begin, int end, int step, boolean tranzient,
+        int replayCount
+    )
+    {
         recordBuildTimeDecision(ctx, this.begin, Integer.class, begin);
         recordBuildTimeDecision(ctx, this.end, Integer.class, end);
         recordBuildTimeDecision(ctx, this.step, Integer.class, step);
@@ -583,20 +590,15 @@ public final class ForEachHandler extends TagHandlerImpl {
         if (srcVE != null) {
             ELContext elContext = ctx.getFacesContext().getELContext();
             List<Object> recordedItems = snapshotElements(src);
-            recordBuildTimeDecision(ctx, () -> sameItems(recordedItems, srcVE.getValue(elContext)), Boolean.TRUE);
+            recordBuildTimeDecision(ctx, () -> {
+                Object currentItems = srcVE.getValue(elContext);
+                return sameItems(recordedItems, currentItems) && reproducesCount(currentItems, begin, end, step, replayCount);
+            }, Boolean.TRUE);
         }
     }
 
-    /**
-     * Records that this build produced the iterations the build which rendered the view produced rather than the ones the items hold now, so that the render
-     * time re-apply which would produce another count is performed rather than skipped. A begin/end range needs none of this: its count follows from the range,
-     * which is recorded already.
-     */
-    private void recordIterationCount(FaceletContext ctx, ValueExpression srcVE, int begin, int end, int step, int count) {
-        if (srcVE != null) {
-            ELContext elContext = ctx.getFacesContext().getELContext();
-            recordBuildTimeDecision(ctx, () -> iterationCount(srcVE.getValue(elContext), begin, end, step), count);
-        }
+    private static boolean reproducesCount(Object items, int begin, int end, int step, int replayCount) {
+        return replayCount == NO_REPLAY || iterationCount(items, begin, end, step) == replayCount;
     }
 
     /**

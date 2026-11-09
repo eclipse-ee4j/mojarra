@@ -64,13 +64,7 @@ final class IterationBaseCache {
             return orig.getValue(elContext);
         }
 
-        Map<Object, Object> attributes = context.getAttributes();
-        IterationBaseCache cache = (IterationBaseCache) attributes.get(KEY);
-        if (cache == null || cache.phase != phase) {
-            cache = new IterationBaseCache(phase);
-            attributes.put(KEY, cache);
-        }
-
+        IterationBaseCache cache = forPhase(context, phase);
         Object base = cache.bases.get(orig);
         if (base == null) {
             base = orig.getValue(elContext);
@@ -78,6 +72,24 @@ final class IterationBaseCache {
             return base;
         }
         return base == NULL ? null : base;
+    }
+
+    /**
+     * Holds the value of {@code orig} which the caller has just resolved, for the rest of the current phase. Callers must only use this while restoring a view,
+     * where nothing can replace the items before the rows read them. A {@code preRenderView} listener can replace them between the build and the rendering.
+     */
+    static void put(FacesContext context, ValueExpression orig, Object base) {
+        forPhase(context, context.getCurrentPhaseId()).bases.put(orig, base == null ? NULL : base);
+    }
+
+    private static IterationBaseCache forPhase(FacesContext context, PhaseId phase) {
+        Map<Object, Object> attributes = context.getAttributes();
+        IterationBaseCache cache = (IterationBaseCache) attributes.get(KEY);
+        if (cache == null || cache.phase != phase) {
+            cache = new IterationBaseCache(phase);
+            attributes.put(KEY, cache);
+        }
+        return cache;
     }
 
 }

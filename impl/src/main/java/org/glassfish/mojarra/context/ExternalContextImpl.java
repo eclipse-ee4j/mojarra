@@ -18,8 +18,6 @@
 package org.glassfish.mojarra.context;
 
 import static org.glassfish.mojarra.RIConstants.EARLY_HINTS_RESOURCE_URLS_KEY_NAME;
-import static org.glassfish.mojarra.context.UrlBuilder.PROTOCOL_SEPARATOR;
-import static org.glassfish.mojarra.context.UrlBuilder.WEBSOCKET_PROTOCOL;
 import static org.glassfish.mojarra.util.Util.isEmpty;
 
 import java.io.BufferedWriter;
@@ -585,15 +583,9 @@ public class ExternalContextImpl extends ExternalContext {
                 port = requestURL.getPort();
             }
 
-            final String fixedPortRequestURL = new URL(requestURL.getProtocol(), requestURL.getHost(), port, url).toExternalForm();
+            final String websocketURL = new URL(requestURL.getProtocol(), requestURL.getHost(), port, url).toExternalForm();
 
-            // the index after http or https ...
-            int protocolEndIndex = fixedPortRequestURL.indexOf(PROTOCOL_SEPARATOR);
-
-            // ws://[...]
-            final String websocketURL = WEBSOCKET_PROTOCOL + fixedPortRequestURL.substring(protocolEndIndex);
-
-            return encodeResourceURL(websocketURL);
+            return encodeResourceURL(websocketURL.replaceFirst("http", "ws"));
         }
         catch (MalformedURLException e) {
             return url;
