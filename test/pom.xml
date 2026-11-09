@@ -189,7 +189,7 @@
 
     <profiles>
         <profile>
-            <id>glassfish</id>
+            <id>glassfish-pool</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
