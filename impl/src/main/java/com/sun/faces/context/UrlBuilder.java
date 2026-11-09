@@ -51,8 +51,6 @@ class UrlBuilder {
     public static final char PARAMETER_PAIR_SEPARATOR = '&';
     public static final char PARAMETER_NAME_VALUE_SEPARATOR = '=';
     public static final char FRAGMENT_SEPARATOR = '#';
-    public static final String WEBSOCKET_PROTOCOL = "ws";
-    public static final String PROTOCOL_SEPARATOR = "://";
 
     private final StringBuilder url;
     private String path;
