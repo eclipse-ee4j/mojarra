@@ -16,6 +16,7 @@
 
 package org.glassfish.mojarra.cdi;
 
+import static jakarta.faces.model.FacesDataModel.DATA_MODEL_CLASSES_MAP_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -255,7 +256,7 @@ public class CdiLookupCountTest {
         CountingBeanManager bm = new CountingBeanManager();
 
         for (int i = 0; i < 10; i++) {
-            CdiUtils.resolveBeanByName(bm, DataModelClassesMapProducer.DATA_MODEL_CLASSES_MAP_BEAN_NAME);
+            CdiUtils.resolveBeanByName(bm, DATA_MODEL_CLASSES_MAP_NAME);
         }
 
         // Name-based lookups use a different BeanManager API (getBeans(String) vs getBeans(Type, ...))

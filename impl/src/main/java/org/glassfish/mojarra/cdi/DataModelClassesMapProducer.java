@@ -17,12 +17,15 @@
 
 package org.glassfish.mojarra.cdi;
 
+import static jakarta.faces.model.FacesDataModel.DATA_MODEL_CLASSES_MAP_NAME;
+
 import java.util.Map;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.faces.model.DataModel;
+import jakarta.faces.model.FacesDataModel;
 
 /**
  * <p class="changed_added_2_3">
@@ -31,7 +34,7 @@ import jakarta.faces.model.DataModel;
  * </p>
  *
  * <p>
- * Components can obtain this Map by querying the bean manager for beans named {@link #DATA_MODEL_CLASSES_MAP_BEAN_NAME}.
+ * Components can obtain this Map by querying the bean manager for beans named {@link FacesDataModel#DATA_MODEL_CLASSES_MAP_NAME}.
  * </p>
  *
  * @since 2.3
@@ -40,18 +43,12 @@ import jakarta.faces.model.DataModel;
 public class DataModelClassesMapProducer extends CdiProducer<Map<Class<?>, Class<? extends DataModel<?>>>> {
 
     /**
-     * The CDI bean name under which this producer registers the map of {@code @FacesDataModel} classes to their {@code DataModel} implementations. Consumers
-     * (e.g. {@code UIData}) query the bean manager by this name.
-     */
-    public static final String DATA_MODEL_CLASSES_MAP_BEAN_NAME = "jakarta.faces.DATA_MODEL_CLASSES_MAP";
-
-    /**
      * Serialization version
      */
     private static final long serialVersionUID = 1L;
 
     public DataModelClassesMapProducer(BeanManager beanManager) {
-        super.name(DATA_MODEL_CLASSES_MAP_BEAN_NAME)
+        super.name(DATA_MODEL_CLASSES_MAP_NAME)
             .scope(ApplicationScoped.class)
             .qualifiers(new DataModelClassesAnnotationLiteral())
             .beanClass(beanManager, Map.class)
