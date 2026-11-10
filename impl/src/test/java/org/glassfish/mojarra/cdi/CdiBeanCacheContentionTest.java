@@ -75,9 +75,9 @@ public class CdiBeanCacheContentionTest {
             Runtime.getRuntime().availableProcessors() * READER_THREADS_PER_CORE
         );
 
-        CountingBeanManager beanManager = new CountingBeanManager();
-        CdiUtils.createBehavior(beanManager, BEHAVIOR_ID);
-        int lookupsWhenWarm = beanManager.getBeansByType.get();
+        BeanManagerLookupCounter counter = new BeanManagerLookupCounter();
+        CdiUtils.createBehavior(counter.beanManager, BEHAVIOR_ID);
+        int lookupsWhenWarm = counter.getBeansByType.get();
 
         CountDownLatch ready = new CountDownLatch(threads);
         CountDownLatch start = new CountDownLatch(1);
@@ -92,11 +92,11 @@ public class CdiBeanCacheContentionTest {
                 try {
                     application.makeCurrent(); // Every request thread serves this application.
                     threadIds[index] = Thread.currentThread().getId();
-                    CdiUtils.createBehavior(beanManager, BEHAVIOR_ID); // Link lambdas and load classes first.
+                    CdiUtils.createBehavior(counter.beanManager, BEHAVIOR_ID); // Link lambdas and load classes first.
                     ready.countDown();
                     start.await();
                     for (int i = 0; i < CACHE_HITS_PER_THREAD; i++) {
-                        CdiUtils.createBehavior(beanManager, BEHAVIOR_ID);
+                        CdiUtils.createBehavior(counter.beanManager, BEHAVIOR_ID);
                     }
                     looped.countDown();
                     measured.await(); // Stay alive and idle while the counters are read.
@@ -134,7 +134,7 @@ public class CdiBeanCacheContentionTest {
         }
 
         assertEquals(
-            lookupsWhenWarm, beanManager.getBeansByType.get(),
+            lookupsWhenWarm, counter.getBeansByType.get(),
             "the whole parallel run was cache hits -- no bean resolution took place"
         );
 

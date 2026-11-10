@@ -63,7 +63,7 @@ public class MockFacesContext extends FacesContext {
     public MockFacesContext() {
         super();
         setCurrentInstance(this);
-        getAttributes().put(RIConstants.CDI_BEAN_MANAGER, new MockBeanManager());
+        getAttributes().put(RIConstants.CDI_BEAN_MANAGER, MockCDI.newBeanManager());
     }
 
     public MockFacesContext(ExternalContext externalContext) {

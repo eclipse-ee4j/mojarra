@@ -17,19 +17,34 @@
 
 package org.glassfish.mojarra.mock;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.lang.annotation.Annotation;
 import java.util.Iterator;
 
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.CDI;
+import jakarta.enterprise.inject.spi.el.ELAwareBeanManager;
 import jakarta.enterprise.util.TypeLiteral;
 
 public class MockCDI<T> extends CDI<T> {
 
+    /**
+     * Returns a Mockito {@link ELAwareBeanManager} which finds no bean and contributes {@link MockELResolver} to the EL resolver chain.
+     *
+     * @return a new bean manager
+     */
+    public static ELAwareBeanManager newBeanManager() {
+        ELAwareBeanManager beanManager = mock(ELAwareBeanManager.class);
+        when(beanManager.getELResolver()).thenReturn(new MockELResolver());
+        return beanManager;
+    }
+
     @Override
     public BeanManager getBeanManager() {
-        return new MockBeanManager();
+        return newBeanManager();
     }
 
     @Override

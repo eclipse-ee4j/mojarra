@@ -18,18 +18,17 @@ package org.glassfish.mojarra.component.visit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.context.FacesContext;
 
-import org.glassfish.mojarra.mock.MockApplication;
-import org.glassfish.mojarra.mock.MockFacesContext;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -42,17 +41,9 @@ class PartialVisitContextDepthTest {
     private static final int SEPARATORS = 100_000;
     private static final int MAX_REGISTERED_DEPTH = 64;
 
-    @AfterEach
-    void tearDown() throws Exception {
-        Method setCurrentInstance = FacesContext.class.getDeclaredMethod("setCurrentInstance", FacesContext.class);
-        setCurrentInstance.setAccessible(true);
-        setCurrentInstance.invoke(null, new Object[] { null });
-    }
-
     private static FacesContext contextWithDefaultSeparator() {
-        MockFacesContext context = new MockFacesContext();
-        context.setApplication(new MockApplication());
-        context.getAttributes().put(UINamingContainer.SEPARATOR_CHAR_PARAM_NAME, UINamingContainer.SEPARATOR_CHAR);
+        FacesContext context = mock(FacesContext.class);
+        when(context.getAttributes()).thenReturn(new HashMap<>(Map.of(UINamingContainer.SEPARATOR_CHAR_PARAM_NAME, UINamingContainer.SEPARATOR_CHAR)));
         return context;
     }
 

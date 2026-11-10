@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -46,7 +47,6 @@ import jakarta.faces.convert.Converter;
 
 import org.glassfish.mojarra.application.ApplicationAssociate;
 import org.glassfish.mojarra.config.InitFacesContext;
-import org.glassfish.mojarra.mock.MockBeanManager;
 import org.glassfish.mojarra.mock.MockServletContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -121,7 +121,7 @@ public class CdiBeanCacheScopeTest {
      */
     @Test
     public void lookupDuringDeployment_survivesTheInitFacesContext() {
-        CountingBeanManager beanManager = new CountingBeanManager();
+        BeanManagerLookupCounter counter = new BeanManagerLookupCounter();
         ApplicationAssociate.setCurrentInstance(null);
         TestApplicationScope.clearCurrentFacesContext();
         MockServletContext servletContext = new MockServletContext();
@@ -132,7 +132,7 @@ public class CdiBeanCacheScopeTest {
                 FacesContext.getCurrentInstance() instanceof InitFacesContext,
                 "the InitFacesContext is the one this thread reaches"
             );
-            assertNull(CdiUtils.createBehavior(beanManager, BEHAVIOR_ID), "resolution works during deployment");
+            assertNull(CdiUtils.createBehavior(counter.beanManager, BEHAVIOR_ID), "resolution works during deployment");
         }
         finally {
             initFacesContext.release();
@@ -145,7 +145,7 @@ public class CdiBeanCacheScopeTest {
      */
     @Test
     public void lookupWithAReleasedContextCurrent_resolvesUncached() throws Exception {
-        CountingBeanManager beanManager = new CountingBeanManager();
+        BeanManagerLookupCounter counter = new BeanManagerLookupCounter();
         TestApplicationScope application = deployApplication();
         ApplicationAssociate.setCurrentInstance(null);
 
@@ -155,10 +155,10 @@ public class CdiBeanCacheScopeTest {
         released.setBoolean(facesContext, true);
 
         try {
-            assertNull(CdiUtils.createBehavior(beanManager, BEHAVIOR_ID), "resolution still works");
-            assertEquals(1, beanManager.getBeansByType.get(), "and it resolved for real, because nothing was cached");
+            assertNull(CdiUtils.createBehavior(counter.beanManager, BEHAVIOR_ID), "resolution still works");
+            assertEquals(1, counter.getBeansByType.get(), "and it resolved for real, because nothing was cached");
             assertNotNull(
-                CdiUtils.createConverter(new ResolvingBeanManager(), "someConverterId"),
+                CdiUtils.createConverter(new BeanManagerLookupCounter(new ConverterBean(), new StubConverter()).beanManager, "someConverterId"),
                 "including the paths that need the annotation manager, which is simply skipped"
             );
         }
@@ -174,20 +174,20 @@ public class CdiBeanCacheScopeTest {
      */
     @Test
     public void undeploy_leavesOtherApplicationsUntouched() {
-        CountingBeanManager beanManager = new CountingBeanManager();
+        BeanManagerLookupCounter counter = new BeanManagerLookupCounter();
 
         TestApplicationScope applicationOne = deployApplication();
-        CdiUtils.createBehavior(beanManager, BEHAVIOR_ID);
+        CdiUtils.createBehavior(counter.beanManager, BEHAVIOR_ID);
 
         TestApplicationScope applicationTwo = deployApplication();
-        CdiUtils.createBehavior(beanManager, BEHAVIOR_ID);
-        assertEquals(2, beanManager.getBeansByType.get(), "each application resolves once for itself");
+        CdiUtils.createBehavior(counter.beanManager, BEHAVIOR_ID);
+        assertEquals(2, counter.getBeansByType.get(), "each application resolves once for itself");
 
         applicationOne.undeploy();
 
         applicationTwo.makeCurrent();
-        CdiUtils.createBehavior(beanManager, BEHAVIOR_ID);
-        assertEquals(2, beanManager.getBeansByType.get(), "the surviving application keeps its warm cache");
+        CdiUtils.createBehavior(counter.beanManager, BEHAVIOR_ID);
+        assertEquals(2, counter.getBeansByType.get(), "the surviving application keeps its warm cache");
     }
 
     /**
@@ -196,21 +196,21 @@ public class CdiBeanCacheScopeTest {
      */
     @Test
     public void redeploy_startsFromAnEmptyCache() throws Exception {
-        CountingBeanManager beanManager = new CountingBeanManager();
+        BeanManagerLookupCounter counter = new BeanManagerLookupCounter();
 
         TestApplicationScope application = deployApplication();
-        CdiUtils.createBehavior(beanManager, BEHAVIOR_ID);
-        CdiUtils.createBehavior(beanManager, BEHAVIOR_ID);
-        assertEquals(1, beanManager.getBeansByType.get(), "warm");
-        CdiBeanCache cacheOfFirstDeployment = application.getAssociate().getCdiBeanCache(beanManager);
+        CdiUtils.createBehavior(counter.beanManager, BEHAVIOR_ID);
+        CdiUtils.createBehavior(counter.beanManager, BEHAVIOR_ID);
+        assertEquals(1, counter.getBeansByType.get(), "warm");
+        CdiBeanCache cacheOfFirstDeployment = application.getAssociate().getCdiBeanCache(counter.beanManager);
         application.undeploy();
 
         TestApplicationScope redeployment = deployApplication();
-        CdiUtils.createBehavior(beanManager, BEHAVIOR_ID);
+        CdiUtils.createBehavior(counter.beanManager, BEHAVIOR_ID);
 
-        assertEquals(2, beanManager.getBeansByType.get(), "the redeployed application resolves for itself");
+        assertEquals(2, counter.getBeansByType.get(), "the redeployed application resolves for itself");
         assertNotSame(
-            cacheOfFirstDeployment, redeployment.getAssociate().getCdiBeanCache(beanManager),
+            cacheOfFirstDeployment, redeployment.getAssociate().getCdiBeanCache(counter.beanManager),
             "the redeployed application caches into one of its own"
         );
         assertEquals(
@@ -225,21 +225,21 @@ public class CdiBeanCacheScopeTest {
      */
     @Test
     public void distinctBeanManagers_haveDistinctCaches() {
-        CountingBeanManager one = new CountingBeanManager();
-        CountingBeanManager other = new CountingBeanManager();
+        BeanManagerLookupCounter counter1 = new BeanManagerLookupCounter();
+        BeanManagerLookupCounter counter2 = new BeanManagerLookupCounter();
 
         TestApplicationScope application = deployApplication();
 
-        CdiUtils.createBehavior(one, BEHAVIOR_ID);
-        CdiUtils.createBehavior(other, BEHAVIOR_ID);
-        CdiUtils.createBehavior(one, BEHAVIOR_ID);
-        CdiUtils.createBehavior(other, BEHAVIOR_ID);
+        CdiUtils.createBehavior(counter1.beanManager, BEHAVIOR_ID);
+        CdiUtils.createBehavior(counter2.beanManager, BEHAVIOR_ID);
+        CdiUtils.createBehavior(counter1.beanManager, BEHAVIOR_ID);
+        CdiUtils.createBehavior(counter2.beanManager, BEHAVIOR_ID);
 
-        assertEquals(1, one.getBeansByType.get(), "each bean manager resolves once");
-        assertEquals(1, other.getBeansByType.get(), "each bean manager resolves once");
+        assertEquals(1, counter1.getBeansByType.get(), "each bean manager resolves once");
+        assertEquals(1, counter2.getBeansByType.get(), "each bean manager resolves once");
         assertNotSame(
-            application.getAssociate().getCdiBeanCache(one),
-            application.getAssociate().getCdiBeanCache(other)
+            application.getAssociate().getCdiBeanCache(counter1.beanManager),
+            application.getAssociate().getCdiBeanCache(counter2.beanManager)
         );
     }
 
@@ -248,7 +248,7 @@ public class CdiBeanCacheScopeTest {
      */
     @Test
     public void sameBeanManager_yieldsTheSameCache() {
-        BeanManager beanManager = new MockBeanManager();
+        BeanManager beanManager = mock(BeanManager.class);
         TestApplicationScope application = deployApplication();
 
         assertSame(
@@ -263,16 +263,16 @@ public class CdiBeanCacheScopeTest {
      */
     @Test
     public void callFromOutsideAnyApplication_resolvesUncached() throws Exception {
-        CountingBeanManager beanManager = new CountingBeanManager();
+        BeanManagerLookupCounter counter = new BeanManagerLookupCounter();
         AtomicReference<Throwable> failure = new AtomicReference<>();
 
         Thread background = new Thread(() -> {
             try {
                 for (int i = 0; i < UNCACHED_CALLS; i++) {
-                    assertNull(CdiUtils.createBehavior(beanManager, BEHAVIOR_ID), "resolution still works");
+                    assertNull(CdiUtils.createBehavior(counter.beanManager, BEHAVIOR_ID), "resolution still works");
                 }
                 assertEquals(
-                    UNCACHED_CALLS, beanManager.getBeansByType.get(),
+                    UNCACHED_CALLS, counter.getBeansByType.get(),
                     "every call resolved for real, nothing was cached"
                 );
             }
@@ -301,7 +301,7 @@ public class CdiBeanCacheScopeTest {
             try {
                 assertNull(ApplicationAssociate.getCurrentInstance(), "this thread serves no application");
                 assertNotNull(
-                    CdiUtils.createConverter(new ResolvingBeanManager(), "someConverterId"),
+                    CdiUtils.createConverter(new BeanManagerLookupCounter(new ConverterBean(), new StubConverter()).beanManager, "someConverterId"),
                     "the converter is returned, only its annotation pass is skipped"
                 );
             }
@@ -322,32 +322,6 @@ public class CdiBeanCacheScopeTest {
         Field field = ApplicationAssociate.class.getDeclaredField("cdiBeanCaches");
         field.setAccessible(true);
         return ((Map<?, ?>) field.get(associate)).size();
-    }
-
-    /**
-     * A {@link BeanManager} that resolves one {@link Converter} for any lookup.
-     */
-    private static final class ResolvingBeanManager extends MockBeanManager {
-
-        private final Bean<Converter<?>> bean = new ConverterBean();
-
-        @Override
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-        public Set<Bean<?>> getBeans(Type beanType, Annotation... qualifiers) {
-            return (Set) Collections.singleton(bean);
-        }
-
-        @Override
-        @SuppressWarnings("unchecked")
-        public <X> Bean<? extends X> resolve(Set<Bean<? extends X>> beans) {
-            return (Bean<? extends X>) bean;
-        }
-
-        @Override
-        public Object getReference(Bean<?> bean, Type beanType, CreationalContext<?> ctx) {
-            return new StubConverter();
-        }
-
     }
 
     private static final class ConverterBean implements Bean<Converter<?>> {
