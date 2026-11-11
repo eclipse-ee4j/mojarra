@@ -17,15 +17,28 @@
 package com.sun.faces.facelets.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLStreamHandler;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
+import com.sun.faces.application.resource.ResourceManager;
 import com.sun.faces.context.FacesFileNotFoundException;
 
 /**
@@ -50,8 +63,19 @@ class DefaultFaceletFactoryResolveURLTest {
     private static final String SPACED_WEBAPP = "file:/my apps/app (1)/";
     private static final String SPACED_LIBRARY = "jar:file:/app/WEB-INF/lib/my library (1).jar!/META-INF/resources/";
     private static final String BRACKETED_CONTRACT = "jar:file:/app/WEB-INF/lib/library.jar!/META-INF/contracts/[theme]/";
+    private static final String DIRECTORY_URL_ROOT = "jndi:/server/";
 
     private final DefaultFaceletFactory factory = factoryWithWebappRoot(WEBAPP);
+
+    @TempDir
+    Path tempDirectory;
+
+    private Path webappDirectory;
+
+    @BeforeEach
+    void createWebappDirectory() throws IOException {
+        webappDirectory = Files.createDirectory(tempDirectory.resolve("app"));
+    }
 
     @Test
     void aRelativePathResolvesWithinTheWebappRoot() throws Exception {
@@ -234,12 +258,96 @@ class DefaultFaceletFactoryResolveURLTest {
         assertRejected("jar:file:/app/WEB-INF/lib/library.jar!/other/page.xhtml", "../evil.xhtml");
     }
 
+    /**
+     * A container may return a url of another scheme for a directory than for a file within it, as GlassFish returns
+     * {@code jndi:} for the webapp root and {@code file:} for a Facelet in it. The real path of the webapp root then
+     * bounds a relative path, so it may reach any directory of the webapp and nothing outside it.
+     */
+    @Test
+    void aRelativePathResolvesWithinTheRealPathOfTheWebappRoot() throws Exception {
+        String webapp = webappDirectoryUrl();
+        DefaultFaceletFactory directoryUrlWebapp = factoryWithWebappRoot(DIRECTORY_URL_ROOT, webappDirectory.toString());
+
+        assertEquals(webapp + "dir1/included.xhtml", resolve(directoryUrlWebapp, webapp + "dir2/page.xhtml", "../dir1/included.xhtml"));
+        assertEquals(webapp + "included.xhtml", resolve(directoryUrlWebapp, webapp + "dir2/sub/page.xhtml", "../../included.xhtml"));
+        assertRejected(directoryUrlWebapp, webapp + "dir2/page.xhtml", "../../evil.xhtml");
+        assertRejected(directoryUrlWebapp, webapp + "page.xhtml", "../" + webappDirectory.getFileName() + "Evil/evil.xhtml");
+    }
+
+    /**
+     * A container serves a file out of the canonical webapp directory, while the real path it reports may run through a
+     * symbolic link, so the real path bounds a relative path once it is made canonical.
+     */
+    @Test
+    void theRealPathOfTheWebappRootIsMadeCanonical() throws Exception {
+        Path link = tempDirectory.resolve("link");
+        try {
+            Files.createSymbolicLink(link, webappDirectory);
+        } catch (IOException | UnsupportedOperationException e) {
+            assumeTrue(false, "Symbolic links are not supported here: " + e);
+        }
+
+        String webapp = webappDirectoryUrl();
+        DefaultFaceletFactory directoryUrlWebapp = factoryWithWebappRoot(DIRECTORY_URL_ROOT, link.toString());
+
+        assertEquals(webapp + "dir1/included.xhtml", resolve(directoryUrlWebapp, webapp + "dir2/page.xhtml", "../dir1/included.xhtml"));
+    }
+
+    /**
+     * A Facelet outside the contracts directory may not reach into it by a relative path, also when only the real path
+     * of the webapp root tells that the path lands in the webapp.
+     */
+    @Test
+    void aRelativePathIntoTheContractsDirectoryIsDeniedWithinTheRealPathOfTheWebappRoot() throws Exception {
+        String webapp = webappDirectoryUrl();
+        DefaultFaceletFactory directoryUrlWebapp = factoryWithWebappRoot(DIRECTORY_URL_ROOT, webappDirectory.toString());
+        ResourceManager manager = mock(ResourceManager.class);
+        when(manager.isContractsResource(anyString())).thenAnswer(invocation -> invocation.<String>getArgument(0).startsWith("contracts/"));
+        Field managerField = DefaultFaceletFactory.class.getDeclaredField("manager");
+        managerField.setAccessible(true);
+        managerField.set(directoryUrlWebapp, manager);
+
+        assertTrue(directoryUrlWebapp.isContractsResourceAccessDenied(url(webapp + "page.xhtml"), "contracts/theme/inner.xhtml"));
+        assertFalse(directoryUrlWebapp.isContractsResourceAccessDenied(url(webapp + "contracts/theme/page.xhtml"), "inner.xhtml"));
+    }
+
+    @Test
+    void aFaceletInTheRealPathOfTheWebappRootIsAliasedByItsWebappPath() throws Exception {
+        DefaultFaceletFactory directoryUrlWebapp = factoryWithWebappRoot(DIRECTORY_URL_ROOT, webappDirectory.toString());
+
+        assertEquals("/dir2/page.xhtml", directoryUrlWebapp.getAlias(url(webappDirectoryUrl() + "dir2/page.xhtml")));
+    }
+
+    @Test
+    void aFaceletInTheWebappRootIsAliasedByItsWebappPath() {
+        assertEquals("/dir2/page.xhtml", factory.getAlias(url(WEBAPP + "dir2/page.xhtml")));
+    }
+
+    /**
+     * A Facelet in neither webapp root, such as one a resource library contributes, is aliased by the path of its url.
+     */
+    @Test
+    void aFaceletOutsideTheWebappIsAliasedByItsUrlPath() throws Exception {
+        DefaultFaceletFactory directoryUrlWebapp = factoryWithWebappRoot(DIRECTORY_URL_ROOT, webappDirectory.toString());
+        URL library = url(ARCHIVED_LIBRARY + "archived/page.xhtml");
+
+        assertEquals('/' + library.getFile(), directoryUrlWebapp.getAlias(library));
+    }
+
+    private String webappDirectoryUrl() throws IOException {
+        return webappDirectory.toFile().getCanonicalFile().toURI().toURL().toExternalForm();
+    }
+
     private static DefaultFaceletFactory factoryWithWebappRoot(String webappRoot) {
+        return factoryWithWebappRoot(webappRoot, null);
+    }
+
+    private static DefaultFaceletFactory factoryWithWebappRoot(String webappRoot, String realPath) {
         DefaultResourceResolver resolver = mock(DefaultResourceResolver.class);
         when(resolver.resolveUrl("/")).thenReturn(url(webappRoot));
 
         DefaultFaceletFactory factory = new DefaultFaceletFactory();
-        factory.initResourceResolution(resolver, new String[] { ".xhtml" });
+        factory.initResourceResolution(resolver, new String[] { ".xhtml" }, realPath);
         return factory;
     }
 
@@ -261,10 +369,22 @@ class DefaultFaceletFactoryResolveURLTest {
 
     private static URL url(String spec) {
         try {
-            return new URL(spec);
+            return spec.startsWith(DIRECTORY_URL_ROOT) ? new URL(null, spec, new UnopenableUrlStreamHandler()) : new URL(spec);
         }
         catch (MalformedURLException e) {
             throw new IllegalArgumentException(spec, e);
+        }
+    }
+
+    /**
+     * Lets a url of a scheme the JDK has no handler for, such as {@code jndi:}, be parsed. Resolving a path never opens
+     * the url it resolved.
+     */
+    private static final class UnopenableUrlStreamHandler extends URLStreamHandler {
+
+        @Override
+        protected URLConnection openConnection(URL url) {
+            throw new UnsupportedOperationException(url.toExternalForm());
         }
     }
 }
