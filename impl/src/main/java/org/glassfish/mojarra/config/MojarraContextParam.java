@@ -85,6 +85,8 @@ public enum MojarraContextParam implements ContextParam {
     @Deprecated(since = "5.0", forRemoval = true)
     DISABLE_CLIENT_STATE_ENCRYPTION("disableClientStateEncryption", false, Deprecation.replacedBy("enableClientStateDebugging")),
 
+    DISABLE_EARLY_HINTS("disableEarlyHints", false),
+
     DISABLE_EL_RESOLVER_SHORTCUTS("disableELResolverShortcuts", false),
 
     /**

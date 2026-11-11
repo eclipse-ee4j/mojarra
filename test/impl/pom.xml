@@ -42,6 +42,7 @@
         <module>issue5970</module>
         <module>issue6076</module>
         <module>issue6078</module>
+        <module>disableEarlyHints</module>
         <module>enableStrictTagFileBodyClosure</module>
         <module>restoreBuildTimeDecisionsAfterEdit</module>
     </modules>

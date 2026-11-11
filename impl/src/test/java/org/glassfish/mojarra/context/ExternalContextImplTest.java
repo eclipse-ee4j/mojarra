@@ -17,6 +17,8 @@
 
 package org.glassfish.mojarra.context;
 
+import static org.glassfish.mojarra.RIConstants.EARLY_HINTS_RESOURCE_URLS_KEY_NAME;
+import static org.glassfish.mojarra.RIConstants.FACES_SERVLET_MAPPINGS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -24,9 +26,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -36,6 +42,7 @@ import java.io.Writer;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
@@ -46,9 +53,12 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.push.PushContext;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletMapping;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.MappingMatch;
 
+import org.glassfish.mojarra.config.MojarraContextParam;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -61,6 +71,7 @@ import org.mockito.Mockito;
 public class ExternalContextImplTest {
 
     private static final String WEBSOCKET_PATH = "/ctx/jakarta.faces.push/x";
+    private static final String LINK = "Link";
 
     /**
      * Test getRequestCookieMap method.
@@ -346,6 +357,124 @@ public class ExternalContextImplTest {
             facesContext.when(FacesContext::getCurrentInstance).thenReturn(context);
             return new ExternalContextImpl(servletContext, request, response).encodeWebsocketURL(url);
         }
+    }
+
+    /**
+     * Test that encodeResourceURL announces a stylesheet, script or font in a {@code Link} preload header with the {@code as} destination the browser needs to
+     * use the preload, whatever the FacesServlet mapping appends to the resource URL, and that it announces no other resource.
+     */
+    @ParameterizedTest
+    @CsvSource(
+        delimiter = '|', value = {
+            "/ctx/jakarta.faces.resource/css/style.css.xhtml?ln=lib&v=1             | EXTENSION | *.xhtml     | ;as=style",
+            "/ctx/faces/jakarta.faces.resource/js/script.js?ln=lib                  | PATH      | /faces/*    | ;as=script",
+            "/ctx/jakarta.faces.resource/css/style.css.jsf                          | EXACT     | /page.xhtml | ;as=style",
+            "/ctx/jakarta.faces.resource/fonts/font.woff2.xhtml                     | EXTENSION | *.xhtml     | ;as=font;crossorigin",
+            "/ctx/jakarta.faces.resource/fonts/font.ttf.xhtml                       | EXTENSION | *.xhtml     | ;as=font;crossorigin",
+            "/ctx/jakarta.faces.resource/css/STYLE.CSS.xhtml                        | EXTENSION | *.xhtml     | ;as=style",
+            "/ctx/jakarta.faces.resource/css/style.css.xhtml;jsessionid=abc?ln=lib  | EXTENSION | *.xhtml     | ;as=style",
+            "/ctx/jakarta.faces.resource/img/logo.png.xhtml                         | EXTENSION | *.xhtml     | ",
+            "/ctx/jakarta.faces.resource/js/script.xhtml                            | EXTENSION | *.xhtml     | ",
+            "/ctx/jakarta.faces.resource/css/style.css                              | EXTENSION | *.xhtml     | ;as=style",
+            "/ctx/jakarta.faces.resource/css/style.css                              |           |             | ;as=style",
+        }
+    )
+    public void testEncodeResourceURLAddsPreloadWithDestination(String url, MappingMatch mappingMatch, String pattern, String preloadParameters) {
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        Map<Object, Object> attributes = encodeResourceURL(url, mappingMatch, pattern, null, response);
+
+        if (preloadParameters != null) {
+            verify(response).addHeader(LINK, "<" + url + ">;rel=preload" + preloadParameters);
+        }
+        else {
+            verify(response, never()).addHeader(eq(LINK), anyString());
+        }
+
+        assertEquals(preloadParameters != null ? preloadParameters : "", earlyHintsPreloads(attributes).get(url));
+    }
+
+    /**
+     * Test that encodeResourceURL announces nothing when {@code org.glassfish.mojarra.disableEarlyHints} is set, so no 103 is sent either.
+     */
+    @Test
+    public void testEncodeResourceURLAddsNoPreloadWhenEarlyHintsDisabled() {
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        Map<Object, Object> attributes = encodeResourceURL(
+            "/ctx/jakarta.faces.resource/css/style.css.xhtml", MappingMatch.EXTENSION, "*.xhtml", "true", response
+        );
+
+        verify(response, never()).addHeader(eq(LINK), anyString());
+        assertTrue(earlyHintsPreloads(attributes).isEmpty());
+    }
+
+    /**
+     * Test that sendEarlyHints sends the 103 only over HTTP/2 or later, because an HTTP/1.x client or intermediary may take it for the final response.
+     */
+    @ParameterizedTest
+    @CsvSource({ "HTTP/1.0, false", "HTTP/1.1, false", "HTTP/2.0, true", "HTTP/3, true", "HTTP/, false", ", false" })
+    public void testSendEarlyHintsOnlyOverHttp2OrLater(String protocol, boolean expected) {
+        HttpServletResponse response = sendEarlyHints(protocol, Map.of("/ctx/jakarta.faces.resource/style.css", ";as=style"));
+
+        verify(response, times(expected ? 1 : 0)).sendEarlyHints();
+    }
+
+    /**
+     * Test that sendEarlyHints sends no 103 when none of the resource URLs encoded so far was worth a preload.
+     */
+    @Test
+    public void testSendEarlyHintsNotWithoutPreloads() {
+        HttpServletResponse response = sendEarlyHints("HTTP/2.0", Map.of("/ctx/jakarta.faces.resource/logo.png", ""));
+
+        verify(response, never()).sendEarlyHints();
+    }
+
+    private HttpServletResponse sendEarlyHints(String protocol, Map<String, String> preloads) {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        when(request.getProtocol()).thenReturn(protocol);
+        FacesContext context = mock(FacesContext.class, RETURNS_DEEP_STUBS);
+        when(context.getAttributes()).thenReturn(new HashMap<>(Map.of(EARLY_HINTS_RESOURCE_URLS_KEY_NAME, preloads)));
+        when(context.getExternalContext().getRequest()).thenReturn(request);
+        when(context.getExternalContext().getResponse()).thenReturn(response);
+
+        ExternalContextImpl.sendEarlyHints(context);
+
+        return response;
+    }
+
+    private Map<Object, Object> encodeResourceURL(
+        String url, MappingMatch mappingMatch, String pattern, String disableEarlyHints, HttpServletResponse response
+    )
+    {
+        ServletContext servletContext = mockServletContext();
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletMapping mapping = mappingMatch != null ? mock(HttpServletMapping.class) : null;
+        when(servletContext.getInitParameter(MojarraContextParam.DISABLE_EARLY_HINTS.getName())).thenReturn(disableEarlyHints);
+        when(request.getHttpServletMapping()).thenReturn(mapping);
+
+        if (mapping != null) {
+            when(servletContext.getAttribute(FACES_SERVLET_MAPPINGS)).thenReturn(List.of(pattern, "*.jsf"));
+            when(mapping.getMappingMatch()).thenReturn(mappingMatch);
+            when(mapping.getPattern()).thenReturn(pattern);
+        }
+        when(response.encodeURL(anyString())).thenAnswer(invocation -> invocation.getArgument(0));
+        Map<Object, Object> attributes = new HashMap<>();
+
+        try (MockedStatic<FacesContext> facesContext = mockStatic(FacesContext.class)) {
+            FacesContext context = mock(FacesContext.class, RETURNS_DEEP_STUBS);
+            when(context.getExternalContext().getContext()).thenReturn(servletContext);
+            when(context.getApplication().getResourceHandler().isResourceURL(anyString())).thenReturn(true);
+            when(context.getAttributes()).thenReturn(attributes);
+            facesContext.when(FacesContext::getCurrentInstance).thenReturn(context);
+            new ExternalContextImpl(servletContext, request, response).encodeResourceURL(url);
+        }
+
+        return attributes;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Map<String, String> earlyHintsPreloads(Map<Object, Object> attributes) {
+        return (Map<String, String>) attributes.getOrDefault(EARLY_HINTS_RESOURCE_URLS_KEY_NAME, Map.of());
     }
 
     private static class FlushRecordingWriter extends StringWriter {
