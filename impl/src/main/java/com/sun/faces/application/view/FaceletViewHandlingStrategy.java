@@ -108,12 +108,9 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.event.ActionEvent;
-import jakarta.faces.event.MethodExpressionActionListener;
-import jakarta.faces.event.MethodExpressionValueChangeListener;
 import jakarta.faces.event.PostAddToViewEvent;
 import jakarta.faces.event.ValueChangeEvent;
 import jakarta.faces.render.RenderKit;
-import jakarta.faces.validator.MethodExpressionValidator;
 import jakarta.faces.view.ActionSourceAttachedObjectHandler;
 import jakarta.faces.view.ActionSourceAttachedObjectTarget;
 import jakarta.faces.view.AttachedObjectHandler;
@@ -146,6 +143,9 @@ import com.sun.faces.facelets.impl.XMLFrontMatterSaver;
 import com.sun.faces.facelets.tag.SavedBuildTimeDecisions;
 import com.sun.faces.facelets.tag.composite.CompositeComponentBeanInfo;
 import com.sun.faces.facelets.tag.faces.CompositeComponentTagHandler;
+import com.sun.faces.facelets.tag.faces.PartialMethodExpressionActionListener;
+import com.sun.faces.facelets.tag.faces.PartialMethodExpressionValidator;
+import com.sun.faces.facelets.tag.faces.PartialMethodExpressionValueChangeListener;
 import com.sun.faces.facelets.tag.ui.UIDebug;
 import com.sun.faces.io.FastStringWriter;
 import com.sun.faces.renderkit.RenderKitUtils;
@@ -1524,7 +1524,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                 MethodExpression me = f.createMethodExpression(ctx.getELContext(), ve.getExpressionString(), Void.TYPE, ACTION_LISTENER_ARGS);
                 MethodExpression noArg = f.createMethodExpression(ctx.getELContext(), ve.getExpressionString(), Void.TYPE, NO_ARGS);
 
-                ((ActionSource) target).addActionListener(new MethodExpressionActionListener(new ContextualCompositeMethodExpression(ve, me),
+                ((ActionSource) target).addActionListener(new PartialMethodExpressionActionListener(new ContextualCompositeMethodExpression(ve, me),
                         new ContextualCompositeMethodExpression(ve, noArg)));
 
             }
@@ -1555,7 +1555,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                 ExpressionFactory f = ctx.getApplication().getExpressionFactory();
                 MethodExpression me = f.createMethodExpression(ctx.getELContext(), ve.getExpressionString(), Void.TYPE, VALIDATOR_ARGS);
 
-                ((EditableValueHolder) target).addValidator(new MethodExpressionValidator(new ContextualCompositeMethodExpression(ve, me)));
+                ((EditableValueHolder) target).addValidator(new PartialMethodExpressionValidator(new ContextualCompositeMethodExpression(ve, me)));
             }
 
             @Override
@@ -1586,8 +1586,9 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                 MethodExpression me = f.createMethodExpression(ctx.getELContext(), ve.getExpressionString(), Void.TYPE, VALUE_CHANGE_LISTENER_ARGS);
                 MethodExpression noArg = f.createMethodExpression(ctx.getELContext(), ve.getExpressionString(), Void.TYPE, NO_ARGS);
 
-                ((EditableValueHolder) target).addValueChangeListener(new MethodExpressionValueChangeListener(new ContextualCompositeMethodExpression(ve, me),
-                        new ContextualCompositeMethodExpression(ve, noArg)));
+                ((EditableValueHolder) target).addValueChangeListener(
+                        new PartialMethodExpressionValueChangeListener(new ContextualCompositeMethodExpression(ve, me),
+                                new ContextualCompositeMethodExpression(ve, noArg)));
 
             }
 
