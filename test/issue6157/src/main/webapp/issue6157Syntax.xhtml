@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<!--
+
+    Copyright (c) Contributors to Eclipse Foundation.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<html xmlns:h="jakarta.faces.html" xmlns:f="jakarta.faces.core" xmlns:c="jakarta.tags.core" xmlns:ui="jakarta.faces.facelets" xmlns:i="jakarta.faces.composite/issue6157" xmlns:t="issue6157">
+    <h:head>
+        <title>issue6157Syntax</title>
+    </h:head>
+    <h:body>
+        <h:form id="ajax">
+            <h:commandButton id="noArgParens" value="noArgParens"><f:ajax listener="#{issue6157.ajaxNoArg()}" render=":ajax:invoked" /></h:commandButton>
+            <h:commandButton id="bothParens" value="bothParens"><f:ajax listener="#{issue6157.ajaxBoth()}" render=":ajax:invoked" /></h:commandButton>
+            <h:commandButton id="component" value="component"><f:ajax listener="#{issue6157.withComponent(component)}" render=":ajax:invoked" /></h:commandButton>
+            <h:commandButton id="string" value="string"><f:ajax listener="#{issue6157.withString('x')}" render=":ajax:invoked" /></h:commandButton>
+            <h:commandButton id="bracket" value="bracket"><f:ajax listener="#{issue6157['ajaxNoArg']}" render=":ajax:invoked" /></h:commandButton>
+            <h:commandButton id="facesEvent" value="facesEvent"><f:ajax listener="#{issue6157.withFacesEvent}" render=":ajax:invoked" /></h:commandButton>
+            <h:commandButton id="object" value="object"><f:ajax listener="#{issue6157.withObject}" render=":ajax:invoked" /></h:commandButton>
+            <h:commandButton id="returnsString" value="returnsString"><f:ajax listener="#{issue6157.returnsString}" render=":ajax:invoked" /></h:commandButton>
+            <h:commandButton id="varargs" value="varargs"><f:ajax listener="#{issue6157.varargs}" render=":ajax:invoked" /></h:commandButton>
+            <ui:include src="/WEB-INF/includes/issue6157/listener.xhtml"><ui:param name="kind" value="ajax" /><ui:param name="bean" value="#{issue6157}" /></ui:include>
+            <t:listener kind="ajax" bean="#{issue6157}" method="noArg" />
+            <i:bean id="bean" kind="ajax" bean="#{issue6157}" />
+            <i:ajax id="compositeParens" listener="#{issue6157.ajaxNoArg()}" />
+            <i:ajax id="compositeBoth" listener="#{issue6157.ajaxBoth}" />
+            <c:forEach items="#{issue6157.items}" var="item" varStatus="loop"><h:commandButton id="forEach#{loop.index}" value="forEach#{loop.index}"><f:ajax listener="#{issue6157.withItem(item)}" render=":ajax:invoked" /></h:commandButton></c:forEach>
+            <ui:repeat id="repeat" value="#{issue6157.items}" var="item"><h:commandButton id="button" value="button"><f:ajax listener="#{issue6157.withItem(item)}" render=":ajax:invoked" /></h:commandButton></ui:repeat>
+            <h:dataTable id="table" value="#{issue6157.items}" var="item"><h:column><h:commandButton id="button" value="button"><f:ajax listener="#{issue6157.withItem(item)}" render=":ajax:invoked" /></h:commandButton></h:column></h:dataTable>
+            <f:ajax listener="#{issue6157.ajaxNoArg}" render=":ajax:invoked"><h:commandButton id="wrapped" value="wrapped" /></f:ajax>
+            <ui:repeat id="mixed" value="#{issue6157.mixedItems}" var="item"><h:commandButton id="button" value="button"><f:ajax listener="#{item.onAjax}" render=":ajax:invoked" /></h:commandButton></ui:repeat>
+            <i:behavior id="behavior"><f:ajax event="click" listener="#{issue6157.ajaxNoArg}" render=":ajax:invoked" /></i:behavior>
+            <h:outputText id="invoked" value="#{issue6157.invoked}" />
+        </h:form>
+        <h:form id="action">
+            <h:commandButton id="noArgParens" value="noArgParens" actionListener="#{issue6157.actionNoArg()}" />
+            <h:commandButton id="bothParens" value="bothParens" actionListener="#{issue6157.actionBoth()}" />
+            <h:commandButton id="component" value="component" actionListener="#{issue6157.withComponent(component)}" />
+            <h:commandButton id="string" value="string" actionListener="#{issue6157.withString('x')}" />
+            <h:commandButton id="bracket" value="bracket" actionListener="#{issue6157['actionNoArg']}" />
+            <h:commandButton id="facesEvent" value="facesEvent" actionListener="#{issue6157.withFacesEvent}" />
+            <h:commandButton id="object" value="object" actionListener="#{issue6157.withObject}" />
+            <h:commandButton id="returnsString" value="returnsString" actionListener="#{issue6157.returnsString}" />
+            <h:commandButton id="varargs" value="varargs" actionListener="#{issue6157.varargs}" />
+            <ui:include src="/WEB-INF/includes/issue6157/listener.xhtml"><ui:param name="kind" value="action" /><ui:param name="bean" value="#{issue6157}" /></ui:include>
+            <t:listener kind="action" bean="#{issue6157}" method="noArg" />
+            <i:bean id="bean" kind="action" bean="#{issue6157}" />
+            <i:action id="compositeParens" actionListener="#{issue6157.actionNoArg()}" />
+            <c:forEach items="#{issue6157.items}" var="item" varStatus="loop"><h:commandButton id="forEach#{loop.index}" value="forEach#{loop.index}" actionListener="#{issue6157.withItem(item)}" /></c:forEach>
+            <ui:repeat id="repeat" value="#{issue6157.items}" var="item"><h:commandButton id="button" value="button" actionListener="#{issue6157.withItem(item)}" /></ui:repeat>
+            <h:dataTable id="table" value="#{issue6157.items}" var="item"><h:column><h:commandButton id="button" value="button" actionListener="#{issue6157.withItem(item)}" /></h:column></h:dataTable>
+            <h:commandButton id="binding" value="binding"><f:actionListener binding="#{issue6157.binding()}" /></h:commandButton>
+            <ui:repeat id="mixed" value="#{issue6157.mixedItems}" var="item"><h:commandButton id="button" value="button" actionListener="#{item.onAction}" /></ui:repeat>
+            <h:outputText id="invoked" value="#{issue6157.invoked}" />
+        </h:form>
+        <h:form id="value_noArgParens">
+            <h:inputText id="input" value="#{issue6157.value}" valueChangeListener="#{issue6157.valueNoArg()}" />
+            <h:commandButton id="button" value="noArgParens" />
+            <h:outputText id="invoked" value="#{issue6157.invoked}" />
+        </h:form>
+        <h:form id="value_bothParens">
+            <h:inputText id="input" value="#{issue6157.value}" valueChangeListener="#{issue6157.valueBoth()}" />
+            <h:commandButton id="button" value="bothParens" />
+            <h:outputText id="invoked" value="#{issue6157.invoked}" />
+        </h:form>
+        <h:form id="value_component">
+            <h:inputText id="input" value="#{issue6157.value}" valueChangeListener="#{issue6157.withComponent(component)}" />
+            <h:commandButton id="button" value="component" />
+            <h:outputText id="invoked" value="#{issue6157.invoked}" />
+        </h:form>
+        <h:form id="value_string">
+            <h:inputText id="input" value="#{issue6157.value}" valueChangeListener="#{issue6157.withString('x')}" />
+            <h:commandButton id="button" value="string" />
+            <h:outputText id="invoked" value="#{issue6157.invoked}" />
+        </h:form>
+        <h:form id="value_bracket">
+            <h:inputText id="input" value="#{issue6157.value}" valueChangeListener="#{issue6157['valueNoArg']}" />
+            <h:commandButton id="button" value="bracket" />
+            <h:outputText id="invoked" value="#{issue6157.invoked}" />
+        </h:form>
+        <h:form id="value_facesEvent">
+            <h:inputText id="input" value="#{issue6157.value}" valueChangeListener="#{issue6157.withFacesEvent}" />
+            <h:commandButton id="button" value="facesEvent" />
+            <h:outputText id="invoked" value="#{issue6157.invoked}" />
+        </h:form>
+        <h:form id="value_object">
+            <h:inputText id="input" value="#{issue6157.value}" valueChangeListener="#{issue6157.withObject}" />
+            <h:commandButton id="button" value="object" />
+            <h:outputText id="invoked" value="#{issue6157.invoked}" />
+        </h:form>
+        <h:form id="value_returnsString">
+            <h:inputText id="input" value="#{issue6157.value}" valueChangeListener="#{issue6157.returnsString}" />
+            <h:commandButton id="button" value="returnsString" />
+            <h:outputText id="invoked" value="#{issue6157.invoked}" />
+        </h:form>
+        <h:form id="value_varargs">
+            <h:inputText id="input" value="#{issue6157.value}" valueChangeListener="#{issue6157.varargs}" />
+            <h:commandButton id="button" value="varargs" />
+            <h:outputText id="invoked" value="#{issue6157.invoked}" />
+        </h:form>
+        <h:form id="value_include">
+            <ui:include src="/WEB-INF/includes/issue6157/listener.xhtml"><ui:param name="kind" value="value" /><ui:param name="bean" value="#{issue6157}" /></ui:include>
+            <h:commandButton id="button" value="include" />
+            <h:outputText id="invoked" value="#{issue6157.invoked}" />
+        </h:form>
+        <h:form id="value_tag">
+            <t:listener kind="value" bean="#{issue6157}" method="noArg" />
+            <h:commandButton id="button" value="tag" />
+            <h:outputText id="invoked" value="#{issue6157.invoked}" />
+        </h:form>
+        <h:form id="value_bean">
+            <i:bean id="bean" kind="value" bean="#{issue6157}" />
+            <h:commandButton id="button" value="bean" />
+            <h:outputText id="invoked" value="#{issue6157.invoked}" />
+        </h:form>
+        <h:form id="value_compositeParens">
+            <i:value id="compositeParens" valueChangeListener="#{issue6157.valueNoArg()}" />
+            <h:commandButton id="button" value="compositeParens" />
+            <h:outputText id="invoked" value="#{issue6157.invoked}" />
+        </h:form>
+        <h:form id="value_forEach">
+            <c:forEach items="#{issue6157.items}" var="item" varStatus="loop"><h:inputText id="input#{loop.index}" value="#{issue6157.value}" valueChangeListener="#{issue6157.withItem(item)}" /></c:forEach>
+            <h:commandButton id="button" value="forEach" />
+            <h:outputText id="invoked" value="#{issue6157.invoked}" />
+        </h:form>
+        <h:form id="value_repeat">
+            <ui:repeat id="repeat" value="#{issue6157.items}" var="item"><h:inputText id="input" value="#{issue6157.value}" valueChangeListener="#{issue6157.withItem(item)}" /></ui:repeat>
+            <h:commandButton id="button" value="repeat" />
+            <h:outputText id="invoked" value="#{issue6157.invoked}" />
+        </h:form>
+        <h:form id="value_table">
+            <h:dataTable id="table" value="#{issue6157.items}" var="item"><h:column><h:inputText id="input" value="#{issue6157.value}" valueChangeListener="#{issue6157.withItem(item)}" /></h:column></h:dataTable>
+            <h:commandButton id="button" value="table" />
+            <h:outputText id="invoked" value="#{issue6157.invoked}" />
+        </h:form>
+        <h:form id="value_binding">
+            <h:inputText id="input" value="#{issue6157.value}"><f:valueChangeListener binding="#{issue6157.binding()}" /></h:inputText>
+            <h:commandButton id="button" value="binding" />
+            <h:outputText id="invoked" value="#{issue6157.invoked}" />
+        </h:form>
+        <h:form id="value_mixed">
+            <ui:repeat id="mixed" value="#{issue6157.mixedItems}" var="item"><h:inputText id="input" value="#{issue6157.value}" valueChangeListener="#{item.onValueChange}" /></ui:repeat>
+            <h:commandButton id="button" value="mixed" />
+            <h:outputText id="invoked" value="#{issue6157.invoked}" />
+        </h:form>
+    </h:body>
+</html>
