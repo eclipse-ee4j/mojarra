@@ -37,6 +37,17 @@ public class UiIncludeRceIT extends BaseIT {
         assertTrue(getPageSource().contains("nested content"));
     }
 
+    /**
+     * A relative path may climb out of the directory of the Facelet declaring it into any other directory of the
+     * webapp, whatever url scheme the container returns for the webapp root directory.
+     */
+    @Test
+    public void testSiblingDirectoryInclude() {
+        open("sub/sibling.jsf");
+        assertTrue(getPageSource().contains("sibling directory content"), "Sibling directory include must render, but was: "
+                + getPageSource().substring(0, Math.min(500, getPageSource().length())));
+    }
+
     @Test
     public void testHardcodedRemoteIncludeBlocked() {
         open("remote.jsf");
@@ -180,6 +191,26 @@ public class UiIncludeRceIT extends BaseIT {
         open("param.jsf?p=..%252Fsub%252Fnested.xhtml");
         assertTrue(getPageSource().contains("must be a relative path"), "Encoded path must be rejected before resolution, but was: "
                 + getPageSource().substring(0, Math.min(500, getPageSource().length())));
+    }
+
+    /**
+     * A Facelet outside the contracts directory may not reach into it, by a relative path as little as by an absolute
+     * one.
+     */
+    @Test
+    public void testRelativePathIntoContractBlocked() {
+        open("param.jsf?p=contracts/theme/inner.xhtml");
+        String source = getPageSource();
+        assertFalse(source.contains("contract content"), "Contract content must not be rendered");
+        assertBlocked(source);
+    }
+
+    @Test
+    public void testAbsolutePathIntoContractBlocked() {
+        open("param.jsf?p=/contracts/theme/inner.xhtml");
+        String source = getPageSource();
+        assertFalse(source.contains("contract content"), "Contract content must not be rendered");
+        assertBlocked(source);
     }
 
     // ── Absolute path disclosure ──
