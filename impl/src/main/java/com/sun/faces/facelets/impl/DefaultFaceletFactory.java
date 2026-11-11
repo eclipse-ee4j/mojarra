@@ -96,6 +96,7 @@ public class DefaultFaceletFactory {
     private ResourceManager manager;
     private URL baseUrl;
     private String baseUrlAsString;
+    private String realPathUrlAsString;
     private String[] faceletResourceSuffixes;
     private long refreshPeriodInMillis;
     private FaceletCache<DefaultFacelet> cache;
@@ -121,7 +122,7 @@ public class DefaultFaceletFactory {
         this.compiler = compiler;
         cachePerContract = new ConcurrentHashMap<>();
         this.manager = ApplicationAssociate.getInstance(externalContext).getResourceManager();
-        initResourceResolution(resolver, config.getFaceletResourceSuffixes());
+        initResourceResolution(resolver, config.getFaceletResourceSuffixes(), externalContext.getRealPath("/"));
         this.idMappers = config.isOptionEnabled(UseFaceletsID) ? null : new Cache<>(new IdMapperFactory());
         this.refreshPeriodInMillis = refreshPeriodInSeconds >= 0 ? refreshPeriodInSeconds * 1000 : -1;
         if (log.isLoggable(Level.FINE)) {
@@ -139,18 +140,39 @@ public class DefaultFaceletFactory {
      * Installs everything {@link #resolveURL(URL, String)} needs to resolve a path and to decide whether the result is
      * a Facelet of this application.
      *
+     * <p>
+     * The webapp root is known by two urls. The first is the one the resolver returns for {@code /}. The second is the
+     * file url of the real path of {@code /}, for a container that returns a url of another scheme for a directory than
+     * for a file within it, such as GlassFish returning {@code jndi:} for the former and {@code file:} for the latter.
+     *
      * @param resolver the resolver to look webapp relative paths up with.
      * @param faceletResourceSuffixes the suffixes a Facelet resource may have.
+     * @param realPath the real path of the webapp root, or null if the webapp is not exploded on disk.
      */
-    void initResourceResolution(DefaultResourceResolver resolver, String[] faceletResourceSuffixes) {
+    void initResourceResolution(DefaultResourceResolver resolver, String[] faceletResourceSuffixes, String realPath) {
         this.resolver = resolver;
         this.faceletResourceSuffixes = faceletResourceSuffixes;
         baseUrl = resolver.resolveUrl("/");
-        baseUrlAsString = baseUrl.toExternalForm();
+        baseUrlAsString = withTrailingSlash(baseUrl.toExternalForm());
+        realPathUrlAsString = realPath == null ? null : toDirectoryUrl(realPath);
+    }
 
-        if (!baseUrlAsString.endsWith("/")) {
-            baseUrlAsString += "/";
+    /**
+     * Returns the file url of the given directory in the form {@link File#toURI()} gives it, with the path made
+     * canonical, as a container serving a file out of that directory does. Returns null if the path cannot be made
+     * canonical, which leaves the resolver url the only webapp root.
+     */
+    private static String toDirectoryUrl(String realPath) {
+        try {
+            return withTrailingSlash(new File(realPath).getCanonicalFile().toURI().toURL().toExternalForm());
+        } catch (IOException e) {
+            log.log(Level.FINE, e, () -> "Cannot express real path " + realPath + " as a webapp root url");
+            return null;
         }
+    }
+
+    private static String withTrailingSlash(String url) {
+        return url.endsWith("/") ? url : url + '/';
     }
 
     public DefaultResourceResolver getResourceResolver() {
@@ -253,7 +275,7 @@ public class DefaultFaceletFactory {
     private void requireWithinApplicationRoot(URL source, URL url, String path) throws FacesFileNotFoundException {
         String urlAsString = url.toExternalForm();
 
-        if (!urlAsString.startsWith(baseUrlAsString) && !urlAsString.startsWith(getResourceRoot(source.toExternalForm()))) {
+        if (getWebappPath(urlAsString) == null && !urlAsString.startsWith(getResourceRoot(source.toExternalForm()))) {
             throw new FacesFileNotFoundException(path + " is not within the application root");
         }
     }
@@ -374,8 +396,16 @@ public class DefaultFaceletFactory {
      * @return the webapp relative path, or null.
      */
     private String getWebappPath(URL url) {
-        String urlAsString = url.toExternalForm();
-        return urlAsString.startsWith(baseUrlAsString) ? urlAsString.substring(baseUrlAsString.length()) : null;
+        return getWebappPath(url.toExternalForm());
+    }
+
+    private String getWebappPath(String urlAsString) {
+        String webappPath = stripRoot(urlAsString, baseUrlAsString);
+        return webappPath != null ? webappPath : stripRoot(urlAsString, realPathUrlAsString);
+    }
+
+    private static String stripRoot(String urlAsString, String root) {
+        return root != null && urlAsString.startsWith(root) ? urlAsString.substring(root.length()) : null;
     }
 
     /**
@@ -653,8 +683,9 @@ public class DefaultFaceletFactory {
         }
     }
 
-    private String getAlias(URL url) {
-        return '/' + url.getFile().replaceFirst(quote(baseUrl.getFile()), "");
+    String getAlias(URL url) {
+        String webappPath = getWebappPath(url);
+        return '/' + (webappPath != null ? webappPath : url.getFile().replaceFirst(quote(baseUrl.getFile()), ""));
     }
 
     private DefaultFacelet createMetadataFacelet(URL url) throws IOException {
