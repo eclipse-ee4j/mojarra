@@ -76,8 +76,8 @@ def JDK_VERSION_CHOICES = [''] + JDK_DISTRO_BY_VERSION.keySet().toList()
 //                     this many concurrent GlassFish + test JVM pairs.
 def BRANCH_CONFIG = [
     '4.0': [ implBranch: '4.0',  apiBranch: null,  apiVersion: '4.0.1', jdk: '11', tckJdk: '17', tckVersion: '4.0.4',          gfVersion: '7.1.1'   , seleniumEnabled: false, threadCount: 1 ],
-    '4.1': [ implBranch: 'main', apiBranch: null,  apiVersion: '4.1.0', jdk: '17', tckJdk: '21', tckVersion: '4.1.2',          gfVersion: '8.0.4'   , seleniumEnabled: true , threadCount: 1 ],
-    '5.0': [ implBranch: '5.0',  apiBranch: '5.0', apiVersion: null,    jdk: '17', tckJdk: '21', tckVersion: '5.0.0-SNAPSHOT', gfVersion: '9.0.0-M3', seleniumEnabled: true , threadCount: 2 ],
+    '4.1': [ implBranch: 'main', apiBranch: null,  apiVersion: '4.1.0', jdk: '17', tckJdk: '21', tckVersion: '4.1.2',          gfVersion: '8.0.5'   , seleniumEnabled: true , threadCount: 1 ],
+    '5.0': [ implBranch: '5.0',  apiBranch: '5.0', apiVersion: null,    jdk: '17', tckJdk: '21', tckVersion: '5.0.0-SNAPSHOT', gfVersion: '9.0.0-M4', seleniumEnabled: true , threadCount: 2 ],
 ]
 
 // Anonymous HTTPS remotes, read for their milestone/RC tags in Prepare (before any SSH agent).
@@ -574,6 +574,11 @@ spec:
                         // the released impl declares it. On the DRY_RUN submodule fallback (-Papi) the
                         // dep is left at its -SNAPSHOT to match the reactor-built api.
                         sh '''#!/bin/bash -ex
+                            # The root reactor includes test/, whose clean runs the gf-pool plugin, which
+                            # is compiled for Java 17; the 4.0 impl builds on JDK 11, so run this under
+                            # TCK_JAVA_HOME (>= 17 on every line).
+                            export JAVA_HOME="${TCK_JAVA_HOME}"
+                            export PATH="${JAVA_HOME}/bin:${PATH}"
                             mvn -U -B ${MVN_EXTRA} \\
                                 -DnewVersion="${RELEASE_VERSION}" -DgenerateBackupPoms=false \\
                                 clean ${VERSIONS_PLUGIN}:set
