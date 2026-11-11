@@ -17,7 +17,6 @@
 
 package org.glassfish.mojarra.facelets.tag.faces;
 
-import jakarta.el.ExpressionFactory;
 import jakarta.el.MethodExpression;
 import jakarta.faces.component.ActionSource;
 import jakarta.faces.event.ActionEvent;
@@ -37,7 +36,6 @@ final class ActionSourceRule extends MetaRule {
     public final static Class<?>[] ACTION_SIG = new Class<?>[0];
 
     public final static Class<?>[] ACTION_LISTENER_SIG = new Class<?>[] { ActionEvent.class };
-    public final static Class<?>[] ACTION_LISTENER_ZEROARG_SIG = new Class<?>[] {};
 
     final static class ActionMapper2 extends Metadata {
 
@@ -65,14 +63,8 @@ final class ActionSourceRule extends MetaRule {
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
 
-            ExpressionFactory expressionFactory = ctx.getExpressionFactory();
-
             MethodExpression methodExpressionOneArg = attr.getMethodExpression(ctx, null, ActionSourceRule.ACTION_LISTENER_SIG);
-
-            MethodExpression methodExpressionZeroArg = expressionFactory.createMethodExpression(
-                ctx, methodExpressionOneArg.getExpressionString(), Void.class,
-                ActionSourceRule.ACTION_LISTENER_ZEROARG_SIG
-            );
+            MethodExpression methodExpressionZeroArg = attr.getMethodExpression(ctx, null, ActionSourceRule.ACTION_SIG);
 
             ((ActionSource) instance).addActionListener(new MethodExpressionActionListener(methodExpressionOneArg, methodExpressionZeroArg));
 

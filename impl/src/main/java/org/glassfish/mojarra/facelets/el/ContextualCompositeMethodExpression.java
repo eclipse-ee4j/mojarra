@@ -25,6 +25,7 @@ import jakarta.el.ELException;
 import jakarta.el.MethodExpression;
 import jakarta.el.MethodInfo;
 import jakarta.el.MethodNotFoundException;
+import jakarta.el.PropertyNotFoundException;
 import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
@@ -94,6 +95,7 @@ public class ContextualCompositeMethodExpression extends MethodExpression {
 
     // Log instance for this class
     private static final Logger LOGGER = FacesLogger.FACELETS_EL.getLogger();
+    private static final String INVOKE_ERROR = "faces.facelets.el.method.expression.invoke.error: {0} {1}";
 
     private final MethodExpression delegate;
     private final ValueExpression source;
@@ -142,52 +144,67 @@ public class ContextualCompositeMethodExpression extends MethodExpression {
             }
         }
         catch (ELException ele) {
-            /*
-             * If we got a validator exception it is actually correct to immediately bubble it up.
-             */
-            if (ele.getCause() != null && ele.getCause() instanceof ValidatorException) {
-                throw (ValidatorException) ele.getCause();
-            }
+            rethrowValidatorException(ele);
 
             if (source != null && ele instanceof MethodNotFoundException) {
-                // special handling when an ELException handling. This is necessary
-                // when there are multiple levels of composite component nesting.
-                // When this happens, we need to evaluate the source expression
-                // to find and invoke the MethodExpression at the next highest
-                // nesting level. Is there a cleaner way to detect this case?
-                try {
-                    Object fallback = source.getValue(elContext);
-                    if (fallback != null && fallback instanceof MethodExpression) {
-                        return ((MethodExpression) fallback).invoke(elContext, objects);
-
-                    }
-
-                }
-                catch (ELException ex) {
-
-                    /*
-                     * If we got a validator exception it is actually correct to immediately bubble it up.
-                     */
-                    if (ex.getCause() != null && ex.getCause() instanceof ValidatorException) {
-                        throw (ValidatorException) ex.getCause();
-                    }
-
-                    if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.log(Level.WARNING, ele.toString());
-                        LOGGER.log(
-                            Level.WARNING, "faces.facelets.el.method.expression.invoke.error: {0} {1}",
-                            new Object[] { ex.toString(), source.getExpressionString() }
-                        );
-                    }
-
-                    if (!(ex instanceof MethodNotFoundException)) {
-                        throw ex;
-                    }
-                }
+                return invokeOuterCompositeMethodExpression(elContext, source, objects, (MethodNotFoundException) ele);
             }
+
             throw ele;
         }
 
+    }
+
+    /**
+     * Invokes the method expression which the source expression evaluates to. With nested composite components, that is the method expression at the next
+     * highest nesting level. When the source expression does not resolve, does not evaluate to a method expression, or when that method expression finds no
+     * method either, the given {@link MethodNotFoundException} is thrown, so that the caller can try another variant of the method. Any other exception of
+     * evaluating the source expression or of the invoked method propagates.
+     */
+    static Object invokeOuterCompositeMethodExpression(ELContext elContext, ValueExpression source, Object[] params, MethodNotFoundException notFound) {
+        Object outer;
+
+        try {
+            outer = source.getValue(elContext);
+        }
+        catch (PropertyNotFoundException e) {
+            logInvokeError(Level.FINE, notFound, e, source);
+            throw notFound;
+        }
+        catch (ELException e) {
+            rethrowValidatorException(e);
+            logInvokeError(Level.WARNING, notFound, e, source);
+            throw e;
+        }
+
+        if (!(outer instanceof MethodExpression)) {
+            throw notFound;
+        }
+
+        try {
+            return ((MethodExpression) outer).invoke(elContext, params);
+        }
+        catch (MethodNotFoundException e) {
+            throw notFound;
+        }
+        catch (ELException e) {
+            rethrowValidatorException(e);
+            logInvokeError(Level.WARNING, notFound, e, source);
+            throw e;
+        }
+    }
+
+    private static void logInvokeError(Level level, MethodNotFoundException notFound, ELException e, ValueExpression source) {
+        if (LOGGER.isLoggable(level)) {
+            LOGGER.log(level, notFound.toString());
+            LOGGER.log(level, INVOKE_ERROR, new Object[] { e.toString(), source.getExpressionString() });
+        }
+    }
+
+    private static void rethrowValidatorException(ELException e) {
+        if (e.getCause() instanceof ValidatorException) {
+            throw (ValidatorException) e.getCause();
+        }
     }
 
     // ------------------------------------------------- Methods from Expression

@@ -28,9 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
 
-import jakarta.el.ELContext;
 import jakarta.el.MethodExpression;
-import jakarta.el.MethodNotFoundException;
 import jakarta.el.ValueExpression;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ResourceHandler;
@@ -58,6 +56,7 @@ import org.glassfish.mojarra.facelets.tag.TagHandlerImpl;
 import org.glassfish.mojarra.facelets.tag.composite.BehaviorHolderWrapper;
 import org.glassfish.mojarra.facelets.tag.composite.RetargetedAjaxBehavior;
 import org.glassfish.mojarra.facelets.tag.faces.CompositeComponentTagHandler;
+import org.glassfish.mojarra.facelets.tag.faces.ListenerMethodInvoker;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 
 /**
@@ -319,7 +318,8 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
             behavior.addAjaxBehaviorListener(
                 new AjaxBehaviorListenerImpl(
                     listener.getMethodExpression(ctx, Object.class, new Class<?>[] { AjaxBehaviorEvent.class }),
-                    listener.getMethodExpression(ctx, Object.class, new Class<?>[] {})
+                    listener.getMethodExpression(ctx, Object.class, new Class<?>[] {}),
+                    listener.toString()
                 )
             );
         }
@@ -377,26 +377,21 @@ class AjaxBehaviorListenerImpl implements AjaxBehaviorListener, Serializable {
 
     private MethodExpression oneArgListener;
     private MethodExpression noArgListener;
+    private String listener;
 
     // Necessary for state saving
     public AjaxBehaviorListenerImpl() {
     }
 
-    public AjaxBehaviorListenerImpl(MethodExpression oneArg, MethodExpression noArg) {
+    public AjaxBehaviorListenerImpl(MethodExpression oneArg, MethodExpression noArg, String listener) {
         oneArgListener = oneArg;
         noArgListener = noArg;
+        this.listener = listener;
     }
 
     @Override
     public void processAjaxBehavior(AjaxBehaviorEvent event) throws AbortProcessingException {
-        final ELContext elContext = FacesContext.getCurrentInstance().getELContext();
-        try {
-            noArgListener.invoke(elContext, new Object[] {});
-        }
-        catch (MethodNotFoundException | IllegalArgumentException mnfe) {
-            // Attempt to call public void method(AjaxBehaviorEvent event)
-            oneArgListener.invoke(elContext, new Object[] { event });
-        }
+        ListenerMethodInvoker.invoke(FacesContext.getCurrentInstance(), listener, oneArgListener, noArgListener, event);
     }
 
 }

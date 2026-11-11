@@ -17,6 +17,7 @@
 
 package org.glassfish.mojarra.facelets.tag.faces;
 
+import jakarta.el.MethodExpression;
 import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
@@ -60,8 +61,9 @@ public final class EditableValueHolderRule extends MetaRule {
 
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((EditableValueHolder) instance)
-                .addValueChangeListener(new MethodExpressionValueChangeListener(attr.getMethodExpression(ctx, null, VALUECHANGE_SIG)));
+            MethodExpression methodExpressionOneArg = attr.getMethodExpression(ctx, null, VALUECHANGE_SIG);
+            MethodExpression methodExpressionZeroArg = attr.getMethodExpression(ctx, null, VALUECHANGE_ZEROARG_SIG);
+            ((EditableValueHolder) instance).addValueChangeListener(new MethodExpressionValueChangeListener(methodExpressionOneArg, methodExpressionZeroArg));
         }
 
     }
@@ -84,6 +86,8 @@ public final class EditableValueHolderRule extends MetaRule {
     private final static Class<?>[] VALIDATOR_SIG = new Class<?>[] { FacesContext.class, UIComponent.class, Object.class };
 
     private final static Class<?>[] VALUECHANGE_SIG = new Class<?>[] { ValueChangeEvent.class };
+
+    private final static Class<?>[] VALUECHANGE_ZEROARG_SIG = new Class<?>[] {};
 
     public final static EditableValueHolderRule Instance = new EditableValueHolderRule();
 
