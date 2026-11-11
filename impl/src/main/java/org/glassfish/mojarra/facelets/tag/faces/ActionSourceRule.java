@@ -20,7 +20,6 @@ package org.glassfish.mojarra.facelets.tag.faces;
 import jakarta.el.MethodExpression;
 import jakarta.faces.component.ActionSource;
 import jakarta.faces.event.ActionEvent;
-import jakarta.faces.event.MethodExpressionActionListener;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.MetaRule;
 import jakarta.faces.view.facelets.Metadata;
@@ -66,7 +65,7 @@ final class ActionSourceRule extends MetaRule {
             MethodExpression methodExpressionOneArg = attr.getMethodExpression(ctx, null, ActionSourceRule.ACTION_LISTENER_SIG);
             MethodExpression methodExpressionZeroArg = attr.getMethodExpression(ctx, null, ActionSourceRule.ACTION_SIG);
 
-            ((ActionSource) instance).addActionListener(new MethodExpressionActionListener(methodExpressionOneArg, methodExpressionZeroArg));
+            ((ActionSource) instance).addActionListener(new PartialMethodExpressionActionListener(methodExpressionOneArg, methodExpressionZeroArg));
 
         }
 

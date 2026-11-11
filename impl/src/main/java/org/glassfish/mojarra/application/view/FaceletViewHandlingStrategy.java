@@ -104,12 +104,9 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.event.ActionEvent;
-import jakarta.faces.event.MethodExpressionActionListener;
-import jakarta.faces.event.MethodExpressionValueChangeListener;
 import jakarta.faces.event.PostAddToViewEvent;
 import jakarta.faces.event.ValueChangeEvent;
 import jakarta.faces.render.RenderKit;
-import jakarta.faces.validator.MethodExpressionValidator;
 import jakarta.faces.view.ActionSourceAttachedObjectHandler;
 import jakarta.faces.view.ActionSourceAttachedObjectTarget;
 import jakarta.faces.view.AttachedObjectHandler;
@@ -141,6 +138,9 @@ import org.glassfish.mojarra.facelets.tag.BuildTimeDecisions;
 import org.glassfish.mojarra.facelets.tag.SavedBuildTimeDecisions;
 import org.glassfish.mojarra.facelets.tag.composite.CompositeComponentBeanInfo;
 import org.glassfish.mojarra.facelets.tag.faces.CompositeComponentTagHandler;
+import org.glassfish.mojarra.facelets.tag.faces.PartialMethodExpressionActionListener;
+import org.glassfish.mojarra.facelets.tag.faces.PartialMethodExpressionValidator;
+import org.glassfish.mojarra.facelets.tag.faces.PartialMethodExpressionValueChangeListener;
 import org.glassfish.mojarra.facelets.tag.ui.UIDebug;
 import org.glassfish.mojarra.io.FastStringWriter;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
@@ -1507,7 +1507,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                 MethodExpression noArg = f.createMethodExpression(ctx.getELContext(), ve.getExpressionString(), Void.TYPE, NO_ARGS);
 
                 ((ActionSource) target).addActionListener(
-                    new MethodExpressionActionListener(
+                    new PartialMethodExpressionActionListener(
                         new ContextualCompositeMethodExpression(ve, me),
                         new ContextualCompositeMethodExpression(ve, noArg)
                     )
@@ -1540,7 +1540,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                 ExpressionFactory f = ctx.getApplication().getExpressionFactory();
                 MethodExpression me = f.createMethodExpression(ctx.getELContext(), ve.getExpressionString(), Void.TYPE, VALIDATOR_ARGS);
 
-                ((EditableValueHolder) target).addValidator(new MethodExpressionValidator(new ContextualCompositeMethodExpression(ve, me)));
+                ((EditableValueHolder) target).addValidator(new PartialMethodExpressionValidator(new ContextualCompositeMethodExpression(ve, me)));
             }
 
             @Override
@@ -1571,7 +1571,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                 MethodExpression noArg = f.createMethodExpression(ctx.getELContext(), ve.getExpressionString(), Void.TYPE, NO_ARGS);
 
                 ((EditableValueHolder) target).addValueChangeListener(
-                    new MethodExpressionValueChangeListener(
+                    new PartialMethodExpressionValueChangeListener(
                         new ContextualCompositeMethodExpression(ve, me),
                         new ContextualCompositeMethodExpression(ve, noArg)
                     )
