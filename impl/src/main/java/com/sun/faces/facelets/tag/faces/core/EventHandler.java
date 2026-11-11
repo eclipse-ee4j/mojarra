@@ -20,10 +20,9 @@ import java.io.IOException;
 import java.io.Serializable;
 
 import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.facelets.tag.faces.ListenerMethodInvoker;
 
-import jakarta.el.ELContext;
 import jakarta.el.MethodExpression;
-import jakarta.el.MethodNotFoundException;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
@@ -66,7 +65,7 @@ public class EventHandler extends TagHandler {
             if (eventClass != null) {
                 parent.subscribeToEvent(eventClass,
                         new DeclarativeSystemEventListener(listener.getMethodExpression(ctx, Object.class, new Class<?>[] { ComponentSystemEvent.class }),
-                                listener.getMethodExpression(ctx, Object.class, new Class<?>[] {})));
+                                listener.getMethodExpression(ctx, Object.class, new Class<?>[] {}), listener.toString()));
             }
         }
     }
@@ -88,25 +87,21 @@ class DeclarativeSystemEventListener implements ComponentSystemEventListener, Se
 
     private MethodExpression oneArgListener;
     private MethodExpression noArgListener;
+    private String listener;
 
     // Necessary for state saving
     public DeclarativeSystemEventListener() {
     }
 
-    public DeclarativeSystemEventListener(MethodExpression oneArg, MethodExpression noArg) {
+    public DeclarativeSystemEventListener(MethodExpression oneArg, MethodExpression noArg, String listener) {
         oneArgListener = oneArg;
         noArgListener = noArg;
+        this.listener = listener;
     }
 
     @Override
     public void processEvent(ComponentSystemEvent event) throws AbortProcessingException {
-        final ELContext elContext = FacesContext.getCurrentInstance().getELContext();
-        try {
-            noArgListener.invoke(elContext, new Object[] {});
-        } catch (MethodNotFoundException | IllegalArgumentException mnfe) {
-            // Attempt to call public void method(ComponentSystemEvent event)
-            oneArgListener.invoke(elContext, new Object[] { event });
-        }
+        ListenerMethodInvoker.invoke(FacesContext.getCurrentInstance(), listener, oneArgListener, noArgListener, event);
     }
 
     @Override

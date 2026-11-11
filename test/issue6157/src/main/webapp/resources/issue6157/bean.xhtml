@@ -1,0 +1,37 @@
+<!--
+
+    Copyright (c) Contributors to Eclipse Foundation.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<ui:component xmlns:cc="jakarta.faces.composite" xmlns:c="jakarta.tags.core" xmlns:f="jakarta.faces.core" xmlns:h="jakarta.faces.html" xmlns:ui="jakarta.faces.facelets">
+    <cc:interface>
+        <cc:attribute name="kind" />
+        <cc:attribute name="bean" />
+    </cc:interface>
+    <cc:implementation>
+        <c:if test="#{cc.attrs.kind eq 'event'}">
+            <h:outputText value="button"><f:event type="preRenderComponent" listener="#{cc.attrs.bean.noArg}" /></h:outputText>
+        </c:if>
+        <c:if test="#{cc.attrs.kind eq 'ajax'}">
+            <h:commandButton id="button" value="button"><f:ajax listener="#{cc.attrs.bean.noArg}" render=":ajax:invoked" /></h:commandButton>
+        </c:if>
+        <c:if test="#{cc.attrs.kind eq 'action'}">
+            <h:commandButton id="button" value="button" actionListener="#{cc.attrs.bean.noArg}" />
+        </c:if>
+        <c:if test="#{cc.attrs.kind eq 'value'}">
+            <h:inputText id="input" value="#{issue6157.value}" valueChangeListener="#{cc.attrs.bean.noArg}" />
+        </c:if>
+    </cc:implementation>
+</ui:component>

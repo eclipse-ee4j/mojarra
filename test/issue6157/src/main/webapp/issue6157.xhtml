@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<!--
+
+    Copyright (c) Contributors to Eclipse Foundation.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<html xmlns:h="jakarta.faces.html" xmlns:f="jakarta.faces.core" xmlns:i="jakarta.faces.composite/issue6157">
+    <h:head>
+        <title>issue6157</title>
+    </h:head>
+    <h:body>
+        <h:form id="ajax">
+            <h:commandButton id="noArg" value="noArg"><f:ajax listener="#{issue6157.ajaxNoArg}" render="invoked" /></h:commandButton>
+            <h:commandButton id="oneArg" value="oneArg"><f:ajax listener="#{issue6157.ajaxOneArg}" render="invoked" /></h:commandButton>
+            <h:commandButton id="both" value="both"><f:ajax listener="#{issue6157.ajaxBoth}" render="invoked" /></h:commandButton>
+            <i:ajax id="composite" listener="#{issue6157.ajaxComposite}" />
+            <i:ajaxNoArg id="compositeNoArg" listener="#{issue6157.ajaxCompositeNoArg}" />
+            <h:outputText id="invoked" value="#{issue6157.invoked}" />
+        </h:form>
+        <h:form id="action_noArg">
+            <h:commandButton id="button" value="noArg" actionListener="#{issue6157.actionNoArg}" />
+            <h:outputText id="invoked" value="#{issue6157.invoked}" />
+        </h:form>
+        <h:form id="action_oneArg">
+            <h:commandButton id="button" value="oneArg" actionListener="#{issue6157.actionOneArg}" />
+            <h:outputText id="invoked" value="#{issue6157.invoked}" />
+        </h:form>
+        <h:form id="action_both">
+            <h:commandButton id="button" value="both" actionListener="#{issue6157.actionBoth}" />
+            <h:outputText id="invoked" value="#{issue6157.invoked}" />
+        </h:form>
+        <h:form id="action_composite_noArg">
+            <i:action id="composite" actionListener="#{issue6157.actionNoArg}" />
+            <h:outputText id="invoked" value="#{issue6157.invoked}" />
+        </h:form>
+        <h:form id="action_composite_oneArg">
+            <i:action id="composite" actionListener="#{issue6157.actionOneArg}" />
+            <h:outputText id="invoked" value="#{issue6157.invoked}" />
+        </h:form>
+        <h:form id="value_noArg">
+            <h:inputText id="input" value="#{issue6157.value}" valueChangeListener="#{issue6157.valueNoArg}" />
+            <h:commandButton id="button" value="noArg" />
+            <h:outputText id="invoked" value="#{issue6157.invoked}" />
+        </h:form>
+        <h:form id="value_both">
+            <h:inputText id="input" value="#{issue6157.value}" valueChangeListener="#{issue6157.valueBoth}" />
+            <h:commandButton id="button" value="both" />
+            <h:outputText id="invoked" value="#{issue6157.invoked}" />
+        </h:form>
+        <h:form id="value_composite_noArg">
+            <i:value id="composite" valueChangeListener="#{issue6157.valueNoArg}" />
+            <h:commandButton id="button" value="noArg" />
+            <h:outputText id="invoked" value="#{issue6157.invoked}" />
+        </h:form>
+        <h:form id="value_oneArg">
+            <h:inputText id="input" value="#{issue6157.value}" valueChangeListener="#{issue6157.valueOneArg}" />
+            <h:commandButton id="button" value="oneArg" />
+            <h:outputText id="invoked" value="#{issue6157.invoked}" />
+        </h:form>
+        <h:form id="value_composite_oneArg">
+            <i:value id="composite" valueChangeListener="#{issue6157.valueOneArg}" />
+            <h:commandButton id="button" value="oneArg" />
+            <h:outputText id="invoked" value="#{issue6157.invoked}" />
+        </h:form>
+    </h:body>
+</html>
