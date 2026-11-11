@@ -21,7 +21,6 @@ import jakarta.el.MethodExpression;
 import jakarta.faces.component.ActionSource;
 import jakarta.faces.component.ActionSource2;
 import jakarta.faces.event.ActionEvent;
-import jakarta.faces.event.MethodExpressionActionListener;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.MetaRule;
 import jakarta.faces.view.facelets.Metadata;
@@ -68,7 +67,7 @@ final class ActionSourceRule extends MetaRule {
             MethodExpression methodExpressionOneArg = attr.getMethodExpression(ctx, null, ActionSourceRule.ACTION_LISTENER_SIG);
             MethodExpression methodExpressionZeroArg = attr.getMethodExpression(ctx, null, ActionSourceRule.ACTION_SIG);
 
-            ((ActionSource2) instance).addActionListener(new MethodExpressionActionListener(methodExpressionOneArg, methodExpressionZeroArg));
+            ((ActionSource2) instance).addActionListener(new PartialMethodExpressionActionListener(methodExpressionOneArg, methodExpressionZeroArg));
 
         }
 
