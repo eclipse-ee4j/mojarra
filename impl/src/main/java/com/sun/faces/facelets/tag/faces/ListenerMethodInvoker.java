@@ -42,7 +42,8 @@ import jakarta.faces.event.MethodExpressionActionListener;
  * <p>
  * In {@link ProjectStage#Development}, it checks once per listener, on the first invocation of the variant taking the
  * event, whether the bean also has the method taking no arguments, and if so it logs a warning, because that method is
- * then never invoked.
+ * then never invoked. An expression which provides its own parameters, such as <code>#{bean.listen()}</code>, is not
+ * checked, because both variants then invoke the same method.
  */
 public final class ListenerMethodInvoker {
 
@@ -75,7 +76,7 @@ public final class ListenerMethodInvoker {
             return;
         }
 
-        if (context.isProjectStage(ProjectStage.Development)) {
+        if (context.isProjectStage(ProjectStage.Development) && !oneArgListener.isParametersProvided()) {
             String description = listener != null ? listener : oneArgListener.getExpressionString();
 
             if (CHECKED_LISTENERS.add(description)) {
