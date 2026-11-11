@@ -21,7 +21,9 @@ import jakarta.el.MethodExpression;
 import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.MethodExpressionValueChangeListener;
 import jakarta.faces.event.ValueChangeEvent;
+import jakarta.faces.validator.MethodExpressionValidator;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.MetaRule;
 import jakarta.faces.view.facelets.Metadata;
@@ -61,8 +63,7 @@ public final class EditableValueHolderRule extends MetaRule {
         public void applyMetadata(FaceletContext ctx, Object instance) {
             MethodExpression methodExpressionOneArg = attr.getMethodExpression(ctx, null, VALUECHANGE_SIG);
             MethodExpression methodExpressionZeroArg = attr.getMethodExpression(ctx, null, VALUECHANGE_ZEROARG_SIG);
-            ((EditableValueHolder) instance)
-                .addValueChangeListener(new PartialMethodExpressionValueChangeListener(methodExpressionOneArg, methodExpressionZeroArg));
+            ((EditableValueHolder) instance).addValueChangeListener(new MethodExpressionValueChangeListener(methodExpressionOneArg, methodExpressionZeroArg));
         }
 
     }
@@ -77,7 +78,7 @@ public final class EditableValueHolderRule extends MetaRule {
 
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((EditableValueHolder) instance).addValidator(new PartialMethodExpressionValidator(attr.getMethodExpression(ctx, null, VALIDATOR_SIG)));
+            ((EditableValueHolder) instance).addValidator(new MethodExpressionValidator(attr.getMethodExpression(ctx, null, VALIDATOR_SIG)));
         }
 
     }
