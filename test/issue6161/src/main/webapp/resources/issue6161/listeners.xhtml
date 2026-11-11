@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<!--
+
+    Copyright (c) Contributors to Eclipse Foundation.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<ui:component
+    xmlns:h="jakarta.faces.html"
+    xmlns:ui="jakarta.faces.facelets"
+    xmlns:cc="jakarta.faces.composite"
+>
+    <cc:interface>
+        <cc:attribute name="value" />
+        <cc:attribute name="valueChangeListener" targets="input" method-signature="void valueChangeListener(jakarta.faces.event.ValueChangeEvent)" />
+        <cc:attribute name="validator" targets="input" method-signature="void validator(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)" />
+        <cc:attribute name="actionListener" targets="button" method-signature="void actionListener(jakarta.faces.event.ActionEvent)" />
+    </cc:interface>
+    <cc:implementation>
+        <h:inputText id="input" value="#{cc.attrs.value}" />
+        <h:commandButton id="button" value="Submit" />
+    </cc:implementation>
+</ui:component>
