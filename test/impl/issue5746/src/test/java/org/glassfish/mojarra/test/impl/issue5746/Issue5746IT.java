@@ -41,35 +41,42 @@ import org.openqa.selenium.devtools.v139.network.model.ResponseReceivedEarlyHint
 import ee.jakarta.tck.faces.util.selenium.BaseITNG;
 
 /**
- * The head resources of a Facelets page must be announced as {@code Link: <url>;rel=preload} headers in a 103 interim response sent before the final 200
- * response. The specification does not mandate Early Hints: whether to send a 103 at all, which resources to advertise, and how, is left entirely to the
+ * The head resources of a Facelets page must be announced as {@code Link: <url>;rel=preload;as=<destination>} headers, so the browser can use the preload for
+ * the stylesheet or script request which follows. Over HTTP/2 they must be sent in a 103 interim response ahead of the final 200 response. Over HTTP/1.1 no 103
+ * must be sent, because an HTTP/1.1 client or intermediary may take it for the final response (RFC 8297, section 3), but the final response must still carry
+ * the headers. The specification does not mandate Early Hints: whether to send a 103 at all, which resources to advertise, and how, is left entirely to the
  * implementation.
  */
 class Issue5746IT extends BaseITNG {
 
     private static final String VIEW = "issue5746.xhtml";
     private static final int DEFAULT_HTTPS_PORT = 8181;
-    private static final List<String> HEAD_RESOURCES = List.of("style1.css", "style2.css", "script1.js", "script2.js", "script3.js");
+    private static final Map<String, String> HEAD_RESOURCES = Map.of(
+        "style1.css", "style",
+        "style2.css", "style",
+        "script1.js", "script",
+        "script2.js", "script",
+        "script3.js", "script"
+    );
 
     /**
-     * On a regular (non-conditional) request, the server must emit a 103 interim response that preloads every head resource, ahead of the final 200 response.
+     * Over HTTP/1.1 the server must not send a 103 interim response, but the final 200 response must still preload every head resource with its destination.
      * Asserted at the wire level because {@link java.net.http.HttpClient} silently discards 1xx interim responses.
      */
     @Test
-    void earlyHintsArePreloadedBeforeFinalResponse() throws IOException {
+    void noEarlyHintsOverHttp1ButFinalResponsePreloadsHeadResources() throws IOException {
         String response = rawHttpGet(Map.of());
 
-        int interimStatus = response.indexOf("HTTP/1.1 103");
-        int finalStatus = response.indexOf("HTTP/1.1 200");
-        assertTrue(interimStatus >= 0, () -> "Expected a '103 Early Hints' interim response, but got:\n" + response);
-        assertTrue(finalStatus > interimStatus, () -> "The '200' final response must come after the '103' interim response:\n" + response);
+        assertFalse(response.contains("HTTP/1.1 103"), () -> "No 103 expected over HTTP/1.1, but got:\n" + response);
+        assertTrue(response.startsWith("HTTP/1.1 200"), () -> "Expected a '200' final response, but got:\n" + response);
 
-        String interim = response.substring(interimStatus, finalStatus).toLowerCase(ROOT);
-        assertTrue(interim.contains("link:"), () -> "The 103 block must carry Link headers:\n" + response);
-        assertTrue(interim.contains("rel=preload"), () -> "The Link headers must use rel=preload:\n" + response);
-        for (String resource : HEAD_RESOURCES) {
-            assertTrue(interim.contains(resource), () -> "The 103 block must preload " + resource + ":\n" + response);
-        }
+        List<String> linkHeaders = linkHeaders(response);
+        HEAD_RESOURCES.forEach(
+            (resource, destination) -> assertTrue(
+                linkHeaders.stream().anyMatch(link -> link.contains(resource) && link.contains("rel=preload;as=" + destination)),
+                () -> "The final response must preload " + resource + " as " + destination + ":\n" + response
+            )
+        );
     }
 
     /**
@@ -81,16 +88,16 @@ class Issue5746IT extends BaseITNG {
     void earlyHintsAreSkippedOnConditionalRequest() throws IOException {
         String response = rawHttpGet(Map.of("If-Modified-Since", "Wed, 21 Oct 2099 07:28:00 GMT"));
 
-        assertFalse(response.contains("HTTP/1.1 103"), () -> "No 103 expected on a conditional request, but got:\n" + response);
+        assertTrue(linkHeaders(response).isEmpty(), () -> "No Link headers expected on a conditional request, but got:\n" + response);
     }
 
     /**
-     * Verifies that a real browser actually receives the 103 interim response, captured via the Chrome DevTools {@code Network.responseReceivedEarlyHints}
-     * event. Chrome only acts on Early Hints over HTTP/2, hence this navigates to the TLS (HTTP/2) listener instead of the plaintext HTTP/1.1 one used by the
-     * wire checks above.
+     * Over HTTP/2 a real browser must receive a 103 interim response which preloads every head resource with its destination, captured via the Chrome DevTools
+     * {@code Network.responseReceivedEarlyHints} event. Chrome only acts on Early Hints over HTTP/2, hence this navigates to the TLS (HTTP/2) listener instead
+     * of the plaintext HTTP/1.1 one used by the wire checks above.
      */
     @Test
-    void browserReceivesEarlyHints() throws IOException {
+    void browserReceivesEarlyHintsWithDestinations() throws IOException {
         DevTools devTools = ((ChromeDriver) getWebDriver().getDelegate()).getDevTools();
         List<ResponseReceivedEarlyHints> received = new CopyOnWriteArrayList<>();
         devTools.addListener(Network.responseReceivedEarlyHints(), hints -> received.add(hints));
@@ -99,10 +106,17 @@ class Issue5746IT extends BaseITNG {
         waitUntil(() -> !received.isEmpty());
 
         assertFalse(received.isEmpty(), "The browser should have received a 103 Early Hints response");
-        boolean preloadsResources = received.stream()
+        List<String> links = received.stream()
             .flatMap(hints -> hints.getHeaders().entrySet().stream())
-            .anyMatch(header -> "link".equalsIgnoreCase(header.getKey()) && String.valueOf(header.getValue()).contains("rel=preload"));
-        assertTrue(preloadsResources, "The early hints received by the browser must contain Link rel=preload headers");
+            .filter(header -> "link".equalsIgnoreCase(header.getKey()))
+            .flatMap(header -> String.valueOf(header.getValue()).lines())
+            .toList();
+        HEAD_RESOURCES.forEach(
+            (resource, destination) -> assertTrue(
+                links.stream().anyMatch(link -> link.contains(resource) && link.contains("rel=preload;as=" + destination)),
+                () -> "The 103 must preload " + resource + " as " + destination + ", but got: " + links
+            )
+        );
     }
 
     private static int httpsPort() throws IOException {
@@ -142,6 +156,15 @@ class Issue5746IT extends BaseITNG {
             socket.getOutputStream().flush();
             return new String(socket.getInputStream().readAllBytes(), ISO_8859_1);
         }
+    }
+
+    private static List<String> linkHeaders(String response) {
+        int headersEnd = response.indexOf("\r\n\r\n");
+        return response.substring(0, headersEnd == -1 ? response.length() : headersEnd)
+            .lines()
+            .map(line -> line.toLowerCase(ROOT))
+            .filter(line -> line.startsWith("link:"))
+            .toList();
     }
 
     private static void waitUntil(BooleanSupplier condition) {

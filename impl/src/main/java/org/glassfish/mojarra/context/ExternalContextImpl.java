@@ -17,6 +17,11 @@
 
 package org.glassfish.mojarra.context;
 
+import static jakarta.faces.application.ResourceHandler.RESOURCE_IDENTIFIER;
+import static jakarta.servlet.http.MappingMatch.EXACT;
+import static jakarta.servlet.http.MappingMatch.EXTENSION;
+import static java.util.Locale.ROOT;
+import static java.util.function.Predicate.not;
 import static org.glassfish.mojarra.RIConstants.EARLY_HINTS_RESOURCE_URLS_KEY_NAME;
 import static org.glassfish.mojarra.util.Util.isEmpty;
 
@@ -30,7 +35,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -55,6 +60,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletMapping;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -132,6 +138,21 @@ public class ExternalContextImpl extends ExternalContext {
         "css", StylesheetRenderer.DEFAULT_CONTENT_TYPE,
         "properties", "text/plain"
     );
+
+    private static final String NO_PRELOAD = "";
+    private static final String FONT_PRELOAD_PARAMETERS = ";as=font;crossorigin";
+
+    private static final Map<String, String> PRELOAD_PARAMETERS = Map.of(
+        "css", ";as=style",
+        "js", ";as=script",
+        "woff2", FONT_PRELOAD_PARAMETERS,
+        "woff", FONT_PRELOAD_PARAMETERS,
+        "ttf", FONT_PRELOAD_PARAMETERS,
+        "otf", FONT_PRELOAD_PARAMETERS
+    );
+
+    private static final String HTTP_PROTOCOL_PREFIX = "HTTP/";
+    private static final char HTTP_2_MAJOR_VERSION = '2';
 
     // ------------------------------------------------------------ Constructors
 
@@ -1064,11 +1085,15 @@ public class ExternalContextImpl extends ExternalContext {
         flash = null;
     }
 
+    /**
+     * Adds a {@code Link} preload header for the given resource URL, provided the resource has a preload destination as per
+     * {@link #getPreloadParameters(String)} and early hints are not disabled by {@link MojarraContextParam#DISABLE_EARLY_HINTS}.
+     */
     @SuppressWarnings("unchecked")
     private void addEarlyHintIfPossibleAndNecessary(String encodedURL) {
         FacesContext context = FacesContext.getCurrentInstance();
 
-        if (!context.getApplication().getResourceHandler().isResourceURL(encodedURL)) {
+        if (!context.getApplication().getResourceHandler().isResourceURL(encodedURL) || MojarraContextParam.DISABLE_EARLY_HINTS.isEnabled(servletContext)) {
             return;
         }
 
@@ -1078,28 +1103,83 @@ public class ExternalContextImpl extends ExternalContext {
         }
 
         if (response instanceof HttpServletResponse hres && !hres.isCommitted()) {
-            Set<String> resourceUrls = (Set<String>) context.getAttributes().computeIfAbsent(EARLY_HINTS_RESOURCE_URLS_KEY_NAME, k -> new HashSet<>());
+            Map<String, String> preloads = (Map<String, String>) context.getAttributes()
+                .computeIfAbsent(EARLY_HINTS_RESOURCE_URLS_KEY_NAME, k -> new HashMap<>());
 
-            if (resourceUrls.add(encodedURL)) {
-                hres.addHeader("Link", "<" + encodedURL + ">;rel=preload");
+            if (!preloads.containsKey(encodedURL)) {
+                String preloadParameters = getPreloadParameters(encodedURL);
+                preloads.put(encodedURL, preloadParameters != null ? preloadParameters : NO_PRELOAD);
+
+                if (preloadParameters != null) {
+                    hres.addHeader("Link", "<" + encodedURL + ">;rel=preload" + preloadParameters);
+                }
             }
         }
     }
 
     /**
+     * Returns the {@code Link} parameters which give a preload of the given resource URL its destination, or {@code null} when the resource is not worth a
+     * preload. A preload without a matching {@code as} destination is never used by the browser, and a font is always fetched in CORS mode, so its preload must
+     * be too.
+     */
+    private String getPreloadParameters(String resourceURL) {
+        String resourceName = Util.removeQueryString(resourceURL.substring(resourceURL.indexOf(RESOURCE_IDENTIFIER) + RESOURCE_IDENTIFIER.length()));
+        int pathParameters = resourceName.indexOf(';');
+
+        if (pathParameters != -1) {
+            resourceName = resourceName.substring(0, pathParameters);
+        }
+
+        String mappingSuffix = getResourceMappingSuffix();
+
+        if (mappingSuffix != null && resourceName.endsWith(mappingSuffix)) {
+            resourceName = resourceName.substring(0, resourceName.length() - mappingSuffix.length());
+        }
+
+        String extension = Util.fileExtension(resourceName);
+        return extension != null ? PRELOAD_PARAMETERS.get(extension.toLowerCase(ROOT)) : null;
+    }
+
+    /**
+     * Returns the suffix which the {@link jakarta.faces.webapp.FacesServlet} mapping appends to a resource URL, or {@code null} when it appends none. The
+     * mapping is selected the same way as {@link jakarta.faces.application.Resource#getRequestPath()} does.
+     */
+    private String getResourceMappingSuffix() {
+        HttpServletMapping mapping = ((HttpServletRequest) request).getHttpServletMapping();
+
+        if (mapping != null && mapping.getMappingMatch() == EXACT) {
+            mapping = Util.getFirstWildCardMappingToFacesServlet(this);
+        }
+
+        return mapping != null && mapping.getMappingMatch() == EXTENSION ? mapping.getPattern().substring(1) : null;
+    }
+
+    /**
      * Sends a single HTTP 103 (Early Hints) interim response with the {@code Link} preload headers collected so far, provided the response is not yet
      * committed. Invoked once, right after the head resources have been rendered, so the client can start fetching the render-blocking resources while the body
-     * is still being rendered.
+     * is still being rendered. It is only sent over HTTP/2 or later, because an HTTP/1.1 client or intermediary may take it for the final response, as warned
+     * in section 3 of RFC 8297. The {@code Link} headers stay on the final response regardless.
      */
     public static void sendEarlyHints(FacesContext context) {
-        Object resourceUrls = context.getAttributes().get(EARLY_HINTS_RESOURCE_URLS_KEY_NAME);
+        ExternalContext externalContext = context.getExternalContext();
+        Object preloads = context.getAttributes().get(EARLY_HINTS_RESOURCE_URLS_KEY_NAME);
 
         if (
-            resourceUrls instanceof Set<?> set && !set.isEmpty() && context.getExternalContext().getResponse() instanceof HttpServletResponse hres
+            preloads instanceof Map<?, ?> map && map.values().stream().anyMatch(not(NO_PRELOAD::equals))
+                && externalContext.getResponse() instanceof HttpServletResponse hres
                 && !hres.isCommitted()
+                && isHttp2OrLater(((HttpServletRequest) externalContext.getRequest()).getProtocol())
         ) {
             hres.sendEarlyHints();
         }
+    }
+
+    /**
+     * @return whether the protocol, formatted as {@code HTTP/major.minor} as per {@link ServletRequest#getProtocol()}, is HTTP/2 or later.
+     */
+    private static boolean isHttp2OrLater(String protocol) {
+        return protocol != null && protocol.startsWith(HTTP_PROTOCOL_PREFIX) && protocol.length() > HTTP_PROTOCOL_PREFIX.length()
+            && protocol.charAt(HTTP_PROTOCOL_PREFIX.length()) >= HTTP_2_MAJOR_VERSION;
     }
 
     private void doLastPhaseActions(FacesContext context, boolean outgoingResponseIsRedirect) {
@@ -1129,7 +1209,7 @@ public class ExternalContextImpl extends ExternalContext {
      * @param path Relative path to be normalized
      * @return normalized path
      */
-    public static String normalize(String path) {
+    private static String normalize(String path) {
         return normalize(path, true);
     }
 
