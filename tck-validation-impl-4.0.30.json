@@ -2,12 +2,12 @@
   "line":       "4.0",
   "apiVersion": "4.0.1",
   "facesSha":   "",
-  "mojarraSha": "b79ffa85c0e896399e24add3738e99dfab8c1a86",
-  "mojarraTree": "700bcc396f70a1353c681e28d306681fe3072ab7",
+  "mojarraSha": "dd6bbd0d6aadc09319248af00b247ea1c4166b8f",
+  "mojarraTree": "4d200d2bcbbd800ff8938725b1a1a0417599eb45",
   "dryRun":     true,
   "tckVersion": "4.0.4",
   "gfVersion":  "7.1.1",
   "passed":     5777,
-  "buildUrl":   "https://ci.eclipse.org/mojarra/job/mojarra-release/306/",
-  "timestamp":  "2026-11-08T22:25:15Z"
+  "buildUrl":   "https://ci.eclipse.org/mojarra/job/mojarra-release/309/",
+  "timestamp":  "2026-11-11T17:45:34Z"
 }
