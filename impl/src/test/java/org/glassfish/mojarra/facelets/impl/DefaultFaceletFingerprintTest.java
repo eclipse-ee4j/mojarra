@@ -67,7 +67,7 @@ class DefaultFaceletFingerprintTest {
         when(compiler.compile(any(URL.class), anyString())).thenReturn(root());
         DefaultResourceResolver resolver = mock(DefaultResourceResolver.class);
         when(resolver.resolveUrl("/")).thenReturn(new URL("file:/"));
-        factory.initResourceResolution(resolver, new String[0]);
+        factory.initResourceResolution(resolver, new String[0], null);
         Field compilerField = DefaultFaceletFactory.class.getDeclaredField("compiler");
         compilerField.setAccessible(true);
         compilerField.set(factory, compiler);
