@@ -18,16 +18,13 @@ package org.glassfish.mojarra.el;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.ListResourceBundle;
 import java.util.Set;
 
 import jakarta.el.ELContext;
 import jakarta.el.ELResolver;
-import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.ApplicationFactory;
@@ -41,7 +38,7 @@ import org.glassfish.mojarra.application.ApplicationResourceBundle;
 import org.glassfish.mojarra.context.ExternalContextImpl;
 import org.glassfish.mojarra.context.FacesContextImpl;
 import org.glassfish.mojarra.lifecycle.LifecycleImpl;
-import org.glassfish.mojarra.mock.MockBeanManager;
+import org.glassfish.mojarra.mock.MockCDI;
 import org.glassfish.mojarra.mock.MockCDIProvider;
 import org.glassfish.mojarra.mock.MockHttpServletRequest;
 import org.glassfish.mojarra.mock.MockHttpServletResponse;
@@ -154,19 +151,7 @@ public class ELUtilsTest {
     public void resourceBundleAddedAfterItsVarWasLookedUpIsResolved() {
         applicationAssociate.setExpressionFactory(new ExpressionFactoryImpl());
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        facesContext.getAttributes().put(RIConstants.CDI_BEAN_MANAGER, new MockBeanManager() {
-
-            @Override
-            public Set<Bean<?>> getBeans(Type beanType, Annotation... qualifiers) {
-                return Set.of();
-            }
-
-            @Override
-            public Set<Bean<?>> getBeans(String name) {
-                return Set.of();
-            }
-
-        });
+        facesContext.getAttributes().put(RIConstants.CDI_BEAN_MANAGER, MockCDI.newBeanManager());
         FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, ApplicationFactoryImpl.class.getName());
         ((ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY)).setApplication(applicationAssociate.getApplication());
         ELResolver elResolver = facesContext.getApplication().getELResolver();

@@ -15,18 +15,18 @@
  */
 package org.glassfish.mojarra.util;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.util.Locale;
 
-import jakarta.el.ELContext;
 import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
 
-import org.glassfish.mojarra.mock.MockApplication;
-import org.glassfish.mojarra.mock.MockFacesContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 public class FacesLoggerTest {
 
@@ -44,12 +44,7 @@ public class FacesLoggerTest {
 
     @Test
     public void unresolvedNavigationUS() {
-        MockFacesContext facesContext = new MockFacesContext();
-        facesContext.setApplication(new MockApplication());
-        facesContext.setELContext(Mockito.mock(ELContext.class));
-        UIViewRoot root = facesContext.getApplication().getViewHandler().createView(facesContext, null);
-        root.setLocale(Locale.US);
-        facesContext.setViewRoot(root);
+        FacesContext facesContext = facesContextWithViewLocale(Locale.US);
         final Object[] params = { "componentId1", "outcome.xhtml", "viewId.xhtml" };
         Locale.setDefault(new Locale("en", "US"));
         final String result = FacesLogger.RENDERKIT.interpolateMessage(facesContext, "faces.outcometarget.navigation.case.not.resolved", params);
@@ -58,16 +53,19 @@ public class FacesLoggerTest {
 
     @Test
     public void unresolvedNavigationGermany() {
-        MockFacesContext facesContext = new MockFacesContext();
-        facesContext.setApplication(new MockApplication());
-        facesContext.setELContext(Mockito.mock(ELContext.class));
-        UIViewRoot root = facesContext.getApplication().getViewHandler().createView(facesContext, null);
-        root.setLocale(Locale.GERMANY);
-        facesContext.setViewRoot(root);
+        FacesContext facesContext = facesContextWithViewLocale(Locale.GERMANY);
         final Object[] params = { "componentId1", "outcome.xhtml", "viewId.xhtml" };
         Locale.setDefault(new Locale("de", "DE"));
         final String result = FacesLogger.RENDERKIT.interpolateMessage(facesContext, "faces.outcometarget.navigation.case.not.resolved", params);
         Assertions.assertEquals("JSF1090: Navigations-Fall wurde für Komponente componentId1 nicht aufgelöst.", result);
+    }
+
+    private static FacesContext facesContextWithViewLocale(Locale locale) {
+        UIViewRoot root = mock(UIViewRoot.class);
+        when(root.getLocale()).thenReturn(locale);
+        FacesContext facesContext = mock(FacesContext.class);
+        when(facesContext.getViewRoot()).thenReturn(root);
+        return facesContext;
     }
 
 }
