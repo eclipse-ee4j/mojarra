@@ -142,8 +142,9 @@ public final class ForEachHandler extends TagHandlerImpl {
     // iteration it produced (range plus, for items, the element snapshot) and the child components it created. When
     // the same view is built a second time in the same request (render under partial state saving) with an unchanged
     // iteration, that subtree is still correct - the index-based var expressions render content changes live - so the
-    // redundant re-apply of the body is skipped and the retained children are un-marked from the parent refresh's
-    // pending deletion. Keyed additionally by parent identity + tag location.
+    // redundant re-apply of the body is skipped, the retained children are un-marked from the parent refresh's
+    // pending deletion and moved behind the siblings that refresh already passed. Keyed additionally by parent
+    // identity + tag location.
     private static final String ITERATION_STATE = "com.sun.faces.facelets.forEachIterationState:";
 
     // Indices into the range saved for an iteration: what it iterated over and how many iterations it produced.
@@ -300,13 +301,15 @@ public final class ForEachHandler extends TagHandlerImpl {
                 Object[] state = (Object[]) contextAttributes.get(stateKey);
                 if (state != null && sameIteration(state, range, srcVE == null ? null : src)) {
                     // Unchanged since the restore-time build: retain the existing subtree (undo the pending-deletion
-                    // marks the parent's refresh set on it) and skip re-applying the body.
+                    // marks the parent's refresh set on it, and move it where re-applying the body would have put it)
+                    // and skip re-applying the body.
                     @SuppressWarnings("unchecked")
                     List<UIComponent> retained = (List<UIComponent>) state[2];
                     if (areChildrenOf(retained, parent)) {
                         for (UIComponent child : retained) {
                             child.getAttributes().remove(ComponentSupport.MARK_DELETED);
                         }
+                        moveBehindPassedSiblings(facesContext, parent, retained);
                         return;
                     }
                 }
@@ -633,6 +636,67 @@ public final class ForEachHandler extends TagHandlerImpl {
     private static boolean areChildrenOf(List<UIComponent> retained, UIComponent parent) {
         for (UIComponent child : retained) {
             if (child.getParent() != parent) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Moves the retained children to the end of the children of the given parent, in the order they were created, as
+     * re-applying the body would have done. The refresh of a parent removes every component it finds and adds it back
+     * at the end, which is what puts its children in document order: retained children left where they were would end
+     * up before every sibling the refresh already passed, i.e. before whatever precedes the c:forEach in the facelet.
+     * Where the children of the parent were modified dynamically, its refresh leaves the components it finds where they
+     * are, and so are the retained children left.
+     */
+    private static void moveBehindPassedSiblings(FacesContext context, UIComponent parent, List<UIComponent> retained) {
+        if (parent.getAttributes().get(ComponentSupport.MARK_CHILDREN_MODIFIED) != null) {
+            return;
+        }
+
+        List<UIComponent> children = parent.getChildren();
+        int count = retained.size();
+        int index = children.indexOf(retained.get(0));
+        boolean contiguous = index >= 0 && index + count <= children.size() && isRunAt(children, index, retained);
+
+        if (contiguous && index + count == children.size()) {
+            // Already behind every sibling, as when the c:forEach is the only content of its parent.
+            return;
+        }
+
+        boolean suppressEvents = ComponentSupport.suppressViewModificationEvents(context);
+
+        if (suppressEvents) {
+            // Moving a component within its parent is no view modification, so it publishes no events, just as for
+            // every component the refresh moves.
+            context.setProcessingEvents(false);
+        }
+
+        try {
+            for (UIComponent child : retained) {
+                if (contiguous) {
+                    // Every move takes the next retained child to the index the moved one left.
+                    children.remove(index);
+                } else if (!children.remove(child)) {
+                    continue;
+                }
+
+                children.add(child);
+            }
+        } finally {
+            if (suppressEvents) {
+                context.setProcessingEvents(true);
+            }
+        }
+    }
+
+    /**
+     * Whether the given children hold the retained ones, in order and nothing in between, from the given index on.
+     */
+    private static boolean isRunAt(List<UIComponent> children, int index, List<UIComponent> retained) {
+        for (int i = 0; i < retained.size(); i++) {
+            if (children.get(index + i) != retained.get(i)) {
                 return false;
             }
         }
