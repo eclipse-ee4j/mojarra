@@ -45,6 +45,19 @@
                 <c:forEach items="#{['one', 'two']}" var="item">[#{item}]</c:forEach>
                 [after]
             </h:panelGroup>
+            <!-- A c:forEach as the only content of its parent. -->
+            <h:panelGroup id="only" layout="block">
+                <c:forEach items="#{['one', 'two']}" var="item">
+                    <h:outputText value="[#{item}]" />
+                </c:forEach>
+            </h:panelGroup>
+            <!-- A c:forEach as the first content of its parent. -->
+            <h:panelGroup id="first" layout="block">
+                <c:forEach items="#{['one', 'two']}" var="item">
+                    <h:outputText value="[#{item}]" />
+                </c:forEach>
+                <h:outputText value="[after]" />
+            </h:panelGroup>
             <h:commandButton id="ajaxSubmit" value="Ajax submit">
                 <f:ajax execute="@form" render="@form" />
             </h:commandButton>

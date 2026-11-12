@@ -301,8 +301,8 @@ public final class ForEachHandler extends TagHandlerImpl {
                 Object[] state = (Object[]) contextAttributes.get(stateKey);
                 if (state != null && sameIteration(state, range, srcVE == null ? null : src)) {
                     // Unchanged since the restore-time build: retain the existing subtree (undo the pending-deletion
-                    // marks the parent's refresh set on it, and move it where re-applying the body would have put it)
-                    // and skip re-applying the body.
+                    // marks the parent's refresh set on it, and move it behind the siblings that refresh already
+                    // passed) and skip re-applying the body.
                     @SuppressWarnings("unchecked")
                     List<UIComponent> retained = (List<UIComponent>) state[2];
                     if (areChildrenOf(retained, parent)) {
@@ -643,12 +643,12 @@ public final class ForEachHandler extends TagHandlerImpl {
     }
 
     /**
-     * Moves the retained children to the end of the children of the given parent, in the order they were created, as
-     * re-applying the body would have done. The refresh of a parent removes every component it finds and adds it back
-     * at the end, which is what puts its children in document order: retained children left where they were would end
-     * up before every sibling the refresh already passed, i.e. before whatever precedes the c:forEach in the facelet.
-     * Where the children of the parent were modified dynamically, its refresh leaves the components it finds where they
-     * are, and so are the retained children left.
+     * Moves the retained children to the end of the children of the given parent, in the order they were created. The
+     * refresh of a parent removes every component it finds and adds it back at the end, which puts its children in
+     * document order, so the retained children must follow every sibling the refresh already passed, i.e. whatever
+     * precedes the c:forEach in the facelet. Where the children of the parent were modified dynamically, its refresh
+     * leaves the components it finds in place, so the retained children stay in place too, retained template text
+     * included: moving only the text would split the output of the c:forEach.
      */
     private static void moveBehindPassedSiblings(FacesContext context, UIComponent parent, List<UIComponent> retained) {
         if (parent.getAttributes().get(ComponentSupport.MARK_CHILDREN_MODIFIED) != null) {
@@ -656,11 +656,8 @@ public final class ForEachHandler extends TagHandlerImpl {
         }
 
         List<UIComponent> children = parent.getChildren();
-        int count = retained.size();
-        int index = children.indexOf(retained.get(0));
-        boolean contiguous = index >= 0 && index + count <= children.size() && isRunAt(children, index, retained);
 
-        if (contiguous && index + count == children.size()) {
+        if (isRunAt(children, children.size() - retained.size(), retained)) {
             // Already behind every sibling, as when the c:forEach is the only content of its parent.
             return;
         }
@@ -668,20 +665,14 @@ public final class ForEachHandler extends TagHandlerImpl {
         boolean suppressEvents = ComponentSupport.suppressViewModificationEvents(context);
 
         if (suppressEvents) {
-            // Moving a component within its parent is no view modification, so it publishes no events, just as for
-            // every component the refresh moves.
+            // Moving a component within its parent is no view modification, so it publishes no events, composite
+            // components included: their subtree stays as built.
             context.setProcessingEvents(false);
         }
 
         try {
             for (UIComponent child : retained) {
-                if (contiguous) {
-                    // Every move takes the next retained child to the index the moved one left.
-                    children.remove(index);
-                } else if (!children.remove(child)) {
-                    continue;
-                }
-
+                children.remove(child);
                 children.add(child);
             }
         } finally {
