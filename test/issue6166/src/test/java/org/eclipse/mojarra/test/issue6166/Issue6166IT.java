@@ -1,17 +1,17 @@
 /*
- * Copyright (c) Contributors to the Eclipse Foundation.
+ * Copyright (c) Contributors to Eclipse Foundation.
  *
  * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0, or the Apache License, Version 2.0
- * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ * terms of the Eclipse Public License v. 2.0, which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
  *
  * This Source Code may also be made available under the following Secondary
- * Licenses when the conditions for such availability set forth in the Eclipse
- * Public License v. 2.0 are satisfied: GPL-2.0 with Classpath-exception-2.0 which
- * is available at https://openjdk.java.net/legal/gplv2+ce.html.
+ * Licenses when the conditions for such availability set forth in the
+ * Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+ * version 2 with the GNU Classpath Exception, which is available at
+ * https://www.gnu.org/software/classpath/license.html.
  *
- * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0 or Apache-2.0
+ * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 package org.eclipse.mojarra.test.issue6166;
 
@@ -34,11 +34,21 @@ class Issue6166IT extends BaseIT {
 
     private static final String TEXT = "[before][one][two][after]";
 
+    private static final String ONLY = "[one][two]";
+
+    private static final String FIRST = "[one][two][after]";
+
     @FindBy(id = "form:components")
     private WebElement components;
 
     @FindBy(id = "form:text")
     private WebElement text;
+
+    @FindBy(id = "form:only")
+    private WebElement only;
+
+    @FindBy(id = "form:first")
+    private WebElement first;
 
     @FindBy(id = "form:ajaxSubmit")
     private WebElement ajaxSubmit;
@@ -47,8 +57,8 @@ class Issue6166IT extends BaseIT {
     private WebElement nonAjaxSubmit;
 
     /**
-     * When a c:forEach over a list follows components or template text of the same parent, then an ajax postback must
-     * render its children after them, as the initial request did.
+     * When a c:forEach over a list shares its parent with components or template text, then an ajax postback must
+     * render them all in document order, as the initial request did.
      *
      * @see <a href="https://github.com/eclipse-ee4j/mojarra/issues/6166">issue 6166</a>
      */
@@ -65,8 +75,8 @@ class Issue6166IT extends BaseIT {
     }
 
     /**
-     * When a c:forEach over a list follows components or template text of the same parent, then a non-ajax postback
-     * must render its children after them, as the initial request did.
+     * When a c:forEach over a list shares its parent with components or template text, then a non-ajax postback must
+     * render them all in document order, as the initial request did.
      *
      * @see <a href="https://github.com/eclipse-ee4j/mojarra/issues/6166">issue 6166</a>
      */
@@ -85,6 +95,8 @@ class Issue6166IT extends BaseIT {
     private void assertDocumentOrder() {
         assertEquals(COMPONENTS, withoutWhitespace(components.getText()));
         assertEquals(TEXT, withoutWhitespace(text.getText()));
+        assertEquals(ONLY, withoutWhitespace(only.getText()));
+        assertEquals(FIRST, withoutWhitespace(first.getText()));
     }
 
     private static String withoutWhitespace(String string) {
