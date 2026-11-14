@@ -39,7 +39,7 @@ and API versions differ — e.g. an impl line iterating (impl `5.0.1`, `5.0.2`,
 `5.0.3`) against a stable API (`5.0.0`, then `5.0.1`). The two versions coincide
 only when a fresh API is cut alongside the impl.
 
-- **Written** by [Mojarra's release pipeline](https://github.com/eclipse-ee4j/mojarra/blob/master/Jenkinsfile)
+- **Written** by [Mojarra's release pipeline](https://github.com/eclipse-ee4j/mojarra/blob/5.0/Jenkinsfile)
   (TCK stage) on any release line, but only from a **full** green TCK run — a
   `SMOKE_TEST` or `SKIP_OLD_TCK` run drops TCK coverage and deliberately writes no
   record, so it can neither gate an API release nor enable a `SKIP_TCK` reuse.
