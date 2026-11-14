@@ -32,7 +32,7 @@ Milestone vs GA is orthogonal to this — it is just a `MILESTONE_TYPE` (`M` or 
 ### mojarra-release
 
 1. **Prepare** — checkout (incl. the `faces/` submodule, tracked to the API branch tip on 5.0+), JDK selection, version resolution, credential checks. Resolves the API version from `impl/pom.xml`'s `jakarta.faces-api` dep: a concrete version is used as-is; a `-SNAPSHOT` resolves to that dep's own base version (with this run's milestone suffix reapplied on a milestone run). On a real release that version must already be on Maven Central (else Prepare fails fast, pointing you at the API job). On a real `SKIP_TCK` release, Prepare gates on a matching green `tck-status` record instead (see [SKIP_TCK](#skipping-the-tck-on-a-real-release-skip_tck)).
-2. **Build & install** — one Maven reactor, `-pl impl -am`. On a **DRY_RUN** whose API dep is an unreleased `-SNAPSHOT`, adds `-Papi` to build the API from the `faces/` submodule into the reactor so the impl can still be validated; otherwise impl-only, API consumed from Maven Central. Tags locally; pushes happen later.
+2. **Build & install** — first `clean versions:set` the root reactor to the release version and commit it as `Prepare release <version>`; when the API comes from Central, also pin `impl/pom.xml`'s `jakarta.faces-api` dep to the resolved version. This step runs on the TCK JDK, because the root reactor's `clean` runs the gf-pool plugin, which needs Java 17. Then build one Maven reactor, `-pl impl -am`, on the build JDK. On a **DRY_RUN** whose API dep is an unreleased `-SNAPSHOT`, adds `-Papi` to build the API from the `faces/` submodule into the reactor so the impl can still be validated; otherwise impl-only, API consumed from Maven Central. Tags locally; pushes happen later.
 3. **TCK** *(skipped when `SKIP_TCK`)* — 4.x downloads the published TCK zip from `download.eclipse.org/jakartaee/faces/<line>/`; 5.0 builds the TCK from the `faces/tck` submodule (`tckVersion=5.0.0-SNAPSHOT`). Runs it against the locally-built impl, fails on any failure/error, renders `summary.txt`, and on a green full-TCK run (any line) writes `tck-validation.json` and pushes it to the `tck-status` branch as an impl reuse record (keyed by impl version) plus, for an unreleased 5.0+ API, an API gate record (keyed by API version). Archives `run.log`, `summary.txt`, `tck-validation.json`.
 4. **Deploy to Maven Central** *(skipped on `DRY_RUN`)* — `mvn -Poss-release -pl impl -am deploy`, auto-publishing the impl bundle. Impl-only; the API resolves from Central.
 5. **Bump to next snapshot** *(GA only)* — `versions:set` the impl reactor to the next `-SNAPSHOT` and commit.
@@ -84,7 +84,7 @@ When `impl/pom.xml` pins a concrete GA `jakarta.faces-api` already on Central (e
 
 ## Skipping the TCK on a real release (SKIP_TCK)
 
-`SKIP_TCK` skips the TCK stage. On a **DRY_RUN** it just skips. On a **real release** it is honoured only when the `tck-status` branch already carries a green record for this release version whose `line`, `mojarraTree` (impl source), `facesSha` (the exact `faces/` commit built, empty on 4.x) **and** `apiVersion` match this build — i.e. a prior DRY_RUN already ran the full TCK against identical bits. No matching record aborts the release in Prepare, before anything is built or published. Works on every line, so a 4.x release can dry-run the full ~3h TCK once and then reuse it. Because records come only from full TCK runs, a `SMOKE_TEST` or `SKIP_OLD_TCK` dry-run can't enable a real `SKIP_TCK` release. This is what makes step 3 above cheap without letting an unvalidated build reach Central.
+`SKIP_TCK` skips the TCK stage. On a **DRY_RUN** it just skips. On a **real release** it is honored only when the `tck-status` branch already carries a green record for this release version whose `line`, `mojarraTree` (impl source), `facesSha` (the exact `faces/` commit built, empty on 4.x) **and** `apiVersion` match this build — i.e. a prior DRY_RUN already ran the full TCK against identical bits. No matching record aborts the release in Prepare, before anything is built or published. Works on every line, so a 4.x release can dry-run the full ~3h TCK once and then reuse it. Because records come only from full TCK runs, a `SMOKE_TEST` or `SKIP_OLD_TCK` dry-run can't enable a real `SKIP_TCK` release. This is what makes step 3 above cheap without letting an unvalidated build reach Central.
 
 ## Parameters
 
@@ -101,7 +101,7 @@ Set only `RELEASE_LINE`; everything else auto-infers. Override when fine-tuning.
 - `DRY_RUN` *(default on)* — skip Maven Central deploy and GitHub push.
 - `SMOKE_TEST` — requires `DRY_RUN` and unset `SKIP_TCK`. Filters the TCK to a tiny subset (~10 min) for pipeline iteration; never publishable.
 - `SKIP_TCK` — skip the TCK stage. See [above](#skipping-the-tck-on-a-real-release-skip_tck).
-- `SKIP_OLD_TCK` — requires unset `SKIP_TCK`. 4.x only; drop the old-tck JavaTest modules (~3 h faster).
+- `SKIP_OLD_TCK` — requires `DRY_RUN` and unset `SKIP_TCK`. 4.x only; drop the old-tck JavaTest modules (~3 h faster). Writes no record, so it can never publish.
 - `SKIP_DEPLOY` — requires `DRY_RUN` off. Skip only the Central deploy (still tags/pushes/releases). For resuming after Central already published.
 - `SKIP_CRED_CHECK` — skip the Prepare credential probes. Pipeline-debug only.
 
@@ -124,8 +124,8 @@ Maintained in `BRANCH_CONFIG` at the top of each `Jenkinsfile`; adding a release
 | Release | Impl branch | API branch | Build JDK | TCK JDK | API version | TCK version | GF version | Selenium | Threads |
 | ------- | ----------- | ---------- | --------- | ------- | ----------- | ----------- | ---------- | -------- | ------- |
 | `4.0`   | `4.0`       | — (bundled) | 11 | 17 | 4.0.1 | 4.0.4 | 7.1.1 | off | 1 |
-| `4.1`   | `main`      | — (bundled) | 17 | 21 | 4.1.0 | 4.1.2 | 8.0.3 | on | 1 |
-| `5.0`   | `5.0`       | `5.0`       | 17 | 21 | resolved | 5.0.0-SNAPSHOT (from submodule) | 9.0.0-M2 | on | 2 |
+| `4.1`   | `main`      | — (bundled) | 17 | 21 | 4.1.0 | 4.1.2 | 8.0.5 | on | 1 |
+| `5.0`   | `5.0`       | `5.0`       | 17 | 21 | resolved | 5.0.0-SNAPSHOT (from submodule) | 9.0.0-M4 | on | 2 |
 
 - **Impl branch**: the mojarra git branch with the impl source; it matches the release line except for 4.1, which sits on `main`.
 - **API version**: 4.x bundles the spec into the impl jar, so this is a Central GA passed as `-Dfaces.version`. On 5.0 it is resolved from `impl/pom.xml` (a `-SNAPSHOT` resolves to the dep's own base version, milestone suffix reapplied).
