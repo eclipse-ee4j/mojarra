@@ -28,21 +28,22 @@ import jakarta.inject.Inject;
 
 /** CDI-managed validator looked up by id, exercising an @Inject chain.
  *  {@code @Dependent} is the bean-defining annotation that makes this class
- *  discoverable under the CDI 4.0 default {@code bean-discovery-mode=annotated}. */
+ *  discoverable under the CDI 4.0 default {@code bean-discovery-mode=annotated}.
+ *  A value which is not a string, such as the one of a checkbox, passes. */
 @FacesValidator(value = "prohibitedWordsValidator", managed = true)
 @Dependent
-public class ProhibitedWordsValidator implements Validator<String> {
+public class ProhibitedWordsValidator implements Validator<Object> {
 
     @Inject
     private AppConfig appConfig;
 
     @Override
-    public void validate(FacesContext context, UIComponent component, String value) {
-        if (value == null) {
+    public void validate(FacesContext context, UIComponent component, Object value) {
+        if (!(value instanceof String text)) {
             return;
         }
         appConfig.getAppName();
-        if (value.equalsIgnoreCase("forbidden")) {
+        if (text.equalsIgnoreCase("forbidden")) {
             throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Prohibited word", "This value is not allowed"));
         }

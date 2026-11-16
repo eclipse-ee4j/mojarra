@@ -1,0 +1,7 @@
+<f:view xmlns:f="jakarta.faces.core" xmlns:ui="jakarta.faces.facelets">
+    <f:event type="preRenderView" listener="#{allAttrsLate.putLate}"/>
+    <ui:include src="/WEB-INF/includes/allattrs.xhtml">
+        <ui:param name="title" value="flat-allattrs-late"/>
+        <ui:param name="ajax" value="false"/>
+    </ui:include>
+</f:view>
