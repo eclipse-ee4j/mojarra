@@ -507,6 +507,302 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
     }
 
     /**
+     * The delta of a non-property attribute put after the build carries the attribute map entry only: the restore
+     * records its name in the attributesThatAreSet list again, and the next delta does not carry the list either.
+     */
+    @Test
+    public void testNonPropertyAttributePutAfterBuildSavesNoAttributesThatAreSet() throws Exception {
+        UIOutput c = new UIOutput();
+        c.markInitialState();
+        c.getAttributes().put("foo", "bar");
+        assertEquals(Arrays.asList("foo"), c.getAttributes().get(UIComponentBase.ATTRIBUTES_THAT_ARE_SET));
+
+        Object[] delta = (Object[]) c.getStateHelper().saveState(facesContext);
+        assertFalse(Arrays.asList(delta).contains(UIComponent.PropertyKeysPrivate.attributesThatAreSet), Arrays.deepToString(delta));
+
+        UIOutput restored = new UIOutput();
+        restored.markInitialState();
+        restored.getStateHelper().restoreState(facesContext, delta);
+        assertEquals("bar", restored.getAttributes().get("foo"));
+        assertEquals(Arrays.asList("foo"), restored.getAttributes().get(UIComponentBase.ATTRIBUTES_THAT_ARE_SET));
+
+        Object[] nextDelta = (Object[]) restored.getStateHelper().saveState(facesContext);
+        assertFalse(Arrays.asList(nextDelta).contains(UIComponent.PropertyKeysPrivate.attributesThatAreSet), Arrays.deepToString(nextDelta));
+    }
+
+    /**
+     * Names put after the build in the attributes map are recorded in the attributesThatAreSet list again in the order in
+     * which they were put. Rendering emits the attributes in the order of the list, so the restored component must
+     * render them in the same order as before.
+     */
+    @Test
+    public void testNonPropertyAttributesPutAfterBuildAreRecordedInPutOrder() throws Exception {
+        UIOutput c = new UIOutput();
+        c.markInitialState();
+        c.getAttributes().put("zeta", "z");
+        c.getAttributes().put("alpha", "a");
+        c.getAttributes().put("mu", "m");
+
+        Object[] delta = (Object[]) c.getStateHelper().saveState(facesContext);
+        assertFalse(Arrays.asList(delta).contains(UIComponent.PropertyKeysPrivate.attributesThatAreSet), Arrays.deepToString(delta));
+
+        UIOutput restored = new UIOutput();
+        restored.markInitialState();
+        restored.getStateHelper().restoreState(facesContext, delta);
+        assertEquals(Arrays.asList("zeta", "alpha", "mu"), restored.getAttributes().get(UIComponentBase.ATTRIBUTES_THAT_ARE_SET));
+    }
+
+    /**
+     * A name bound after the build, which has no attribute map entry, is restored in the attributesThatAreSet list before
+     * a non-property attribute put after it.
+     */
+    @Test
+    public void testNameBoundBeforeNonPropertyAttributePutAfterBuildKeepsItsPlace() throws Exception {
+        request.setAttribute("foo", "bar");
+
+        UIOutput c = new UIOutput();
+        c.markInitialState();
+        c.setValueExpression("label", application.getExpressionFactory().createValueExpression(facesContext.getELContext(), "#{foo}", String.class));
+        c.getAttributes().put("foo", "bar");
+
+        Object[] delta = (Object[]) c.getStateHelper().saveState(facesContext);
+
+        UIOutput restored = new UIOutput();
+        restored.markInitialState();
+        restored.getStateHelper().restoreState(facesContext, delta);
+        assertEquals(Arrays.asList("label", "foo"), restored.getAttributes().get(UIComponentBase.ATTRIBUTES_THAT_ARE_SET));
+    }
+
+    /**
+     * A name bound after the build, which has no attribute map entry, is restored in the attributesThatAreSet list after
+     * a non-property attribute put before it. The restore records the attributes map keys after the names which the
+     * delta carries, so the delta carries the list whole.
+     */
+    @Test
+    public void testNameBoundAfterNonPropertyAttributePutAfterBuildKeepsItsPlace() throws Exception {
+        request.setAttribute("foo", "bar");
+
+        UIOutput c = new UIOutput();
+        c.markInitialState();
+        c.getAttributes().put("foo", "bar");
+        c.setValueExpression("label", application.getExpressionFactory().createValueExpression(facesContext.getELContext(), "#{foo}", String.class));
+
+        Object[] delta = (Object[]) c.getStateHelper().saveState(facesContext);
+
+        UIOutput restored = new UIOutput();
+        restored.markInitialState();
+        restored.getStateHelper().restoreState(facesContext, delta);
+        assertEquals(Arrays.asList("foo", "label"), restored.getAttributes().get(UIComponentBase.ATTRIBUTES_THAT_ARE_SET));
+    }
+
+    /**
+     * A non-property attribute which is removed and put again after the build moves to the end of the
+     * attributesThatAreSet list, and is restored there.
+     */
+    @Test
+    public void testNonPropertyAttributeRemovedAndPutAgainAfterBuildIsRestoredAtTheEnd() throws Exception {
+        UIOutput c = new UIOutput();
+        c.markInitialState();
+        c.getAttributes().put("a", "1");
+        c.getAttributes().put("b", "2");
+        c.getAttributes().remove("a");
+        c.getAttributes().put("a", "3");
+        assertEquals(Arrays.asList("b", "a"), c.getAttributes().get(UIComponentBase.ATTRIBUTES_THAT_ARE_SET));
+
+        UIOutput restored = restoreDelta(c, new UIOutput());
+        assertEquals(Arrays.asList("b", "a"), restored.getAttributes().get(UIComponentBase.ATTRIBUTES_THAT_ARE_SET));
+    }
+
+    /**
+     * A non-property attribute of the build which is put again after the build keeps its place in the
+     * attributesThatAreSet list, before a non-property attribute put after the build.
+     */
+    @Test
+    public void testNonPropertyAttributeOfBuildPutAgainAfterBuildKeepsItsPlace() throws Exception {
+        UIOutput c = new UIOutput();
+        c.getAttributes().put("foo", "1");
+        c.markInitialState();
+        c.getAttributes().put("foo", "2");
+        c.getAttributes().put("bar", "3");
+
+        UIOutput rebuilt = new UIOutput();
+        rebuilt.getAttributes().put("foo", "1");
+        UIOutput restored = restoreDelta(c, rebuilt);
+        assertEquals("2", restored.getAttributes().get("foo"));
+        assertEquals(Arrays.asList("foo", "bar"), restored.getAttributes().get(UIComponentBase.ATTRIBUTES_THAT_ARE_SET));
+    }
+
+    /**
+     * A non-property attribute whose name was removed from the attributesThatAreSet list by unbinding it, while its
+     * attribute map entry stayed, is not recorded in the list again on restore.
+     */
+    @Test
+    public void testNonPropertyAttributeUnboundAfterBuildIsNotRecordedAgain() throws Exception {
+        UIOutput c = new UIOutput();
+        c.markInitialState();
+        c.getAttributes().put("foo", "1");
+        c.getAttributes().put("bar", "2");
+        c.setValueExpression("foo", null);
+        assertEquals(Arrays.asList("bar"), c.getAttributes().get(UIComponentBase.ATTRIBUTES_THAT_ARE_SET));
+
+        UIOutput restored = restoreDelta(c, new UIOutput());
+        assertEquals(Arrays.asList("bar"), restored.getAttributes().get(UIComponentBase.ATTRIBUTES_THAT_ARE_SET));
+    }
+
+    /**
+     * The only non-property attribute put after the build, whose name was removed from the attributesThatAreSet list by
+     * unbinding it while its attribute map entry stayed, is not recorded in the list on restore.
+     */
+    @Test
+    public void testOnlyNonPropertyAttributeUnboundAfterBuildIsNotRecordedAgain() throws Exception {
+        UIOutput c = new UIOutput();
+        c.markInitialState();
+        c.getAttributes().put("foo", "1");
+        c.setValueExpression("foo", null);
+
+        UIOutput restored = restoreDelta(c, new UIOutput());
+        assertEquals("1", restored.getAttributes().get("foo"));
+        List<?> setAttributes = (List<?>) restored.getAttributes().get(UIComponentBase.ATTRIBUTES_THAT_ARE_SET);
+        assertTrue(setAttributes == null || setAttributes.isEmpty(), String.valueOf(setAttributes));
+    }
+
+    /**
+     * A name bound after the build keeps its place in the attributesThatAreSet list on restore, also when an attribute
+     * map entry is put for it after another non-property attribute was put.
+     */
+    @Test
+    public void testNameBoundBeforeItsNonPropertyAttributeIsPutAfterBuildKeepsItsPlace() throws Exception {
+        request.setAttribute("foo", "bar");
+
+        UIOutput c = new UIOutput();
+        c.markInitialState();
+        c.setValueExpression("foo", application.getExpressionFactory().createValueExpression(facesContext.getELContext(), "#{foo}", String.class));
+        c.getAttributes().put("bar", "1");
+        c.getAttributes().put("foo", "2");
+        assertEquals(Arrays.asList("foo", "bar"), c.getAttributes().get(UIComponentBase.ATTRIBUTES_THAT_ARE_SET));
+
+        UIOutput restored = restoreDelta(c, new UIOutput());
+        assertEquals(Arrays.asList("foo", "bar"), restored.getAttributes().get(UIComponentBase.ATTRIBUTES_THAT_ARE_SET));
+    }
+
+    /**
+     * A non-property attribute put after the build keeps its place in the attributesThatAreSet list on restore before a
+     * property set after it, whatever the iteration order of the saved delta.
+     */
+    @Test
+    public void testNonPropertyAttributePutBeforePropertyAfterBuildKeepsItsPlace() throws Exception {
+        HtmlOutputText c = new HtmlOutputText();
+        c.markInitialState();
+        c.getAttributes().put("aaa", "1");
+        c.setStyleClass("2");
+        assertEquals(Arrays.asList("aaa", "styleClass"), c.getAttributes().get(UIComponentBase.ATTRIBUTES_THAT_ARE_SET));
+
+        Object[] delta = (Object[]) c.getStateHelper().saveState(facesContext);
+        for (Object[] reordered : Arrays.asList(delta, reversed(delta))) {
+            HtmlOutputText restored = new HtmlOutputText();
+            restored.markInitialState();
+            restored.getStateHelper().restoreState(facesContext, reordered);
+            assertEquals(Arrays.asList("aaa", "styleClass"), restored.getAttributes().get(UIComponentBase.ATTRIBUTES_THAT_ARE_SET), Arrays.deepToString(reordered));
+        }
+    }
+
+    /**
+     * The delta of a non-property attribute put after the build, next to a property set after the build, carries the
+     * attributesThatAreSet list, as the restore records the property in natural order, which may differ from the order
+     * in which it was set.
+     */
+    @Test
+    public void testNonPropertyAttributePutNextToPropertyAfterBuildSavesAttributesThatAreSet() throws Exception {
+        HtmlOutputText c = new HtmlOutputText();
+        c.markInitialState();
+        c.getAttributes().put("aaa", "1");
+        c.getAttributes().put("styleClass", "2");
+
+        Object[] delta = (Object[]) c.getStateHelper().saveState(facesContext);
+        assertTrue(Arrays.asList(delta).contains(UIComponent.PropertyKeysPrivate.attributesThatAreSet), Arrays.deepToString(delta));
+    }
+
+    /**
+     * A name bound after a restore, which recorded a non-property attribute put after the build, is restored after that
+     * attribute on the next restore too.
+     */
+    @Test
+    public void testNameBoundAfterRestoreOfNonPropertyAttributeKeepsItsPlace() throws Exception {
+        request.setAttribute("foo", "bar");
+
+        UIOutput c = new UIOutput();
+        c.markInitialState();
+        c.getAttributes().put("foo", "bar");
+
+        UIOutput restored = restoreDelta(c, new UIOutput());
+        restored.setValueExpression("label", application.getExpressionFactory().createValueExpression(facesContext.getELContext(), "#{foo}", String.class));
+        assertEquals(Arrays.asList("foo", "label"), restored.getAttributes().get(UIComponentBase.ATTRIBUTES_THAT_ARE_SET));
+
+        UIOutput restoredAgain = restoreDelta(restored, new UIOutput());
+        assertEquals(Arrays.asList("foo", "label"), restoredAgain.getAttributes().get(UIComponentBase.ATTRIBUTES_THAT_ARE_SET));
+    }
+
+    /**
+     * A delta which carries the whole attributesThatAreSet list next to an attributes map saved as {@link HashMap}
+     * restores the list in its saved order, whatever the iteration order of the map.
+     */
+    @Test
+    public void testDeltaWithWholeAttributesThatAreSetAndHashMapAttributesRestoresListOrder() throws Exception {
+        List<String> names = Arrays.asList("zeta", "alpha", "mu");
+        Map<String, Object> attributes = new HashMap<>();
+        for (String name : names) {
+            attributes.put(name, name);
+        }
+        Object[] delta = {
+            UIComponent.PropertyKeysPrivate.attributesThatAreSet, UIComponentBase.saveAttachedState(facesContext, new ArrayList<>(names), ArrayList.class, false),
+            UIComponent.PropertyKeys.attributes, UIComponentBase.saveAttachedState(facesContext, attributes, HashMap.class, false),
+            null
+        };
+
+        UIOutput restored = new UIOutput();
+        restored.markInitialState();
+        restored.getStateHelper().restoreState(facesContext, delta);
+        assertEquals(names, restored.getAttributes().get(UIComponentBase.ATTRIBUTES_THAT_ARE_SET));
+    }
+
+    /**
+     * The delta of a non-property attribute put after the build of a non-standard component still carries its name in
+     * the attributesThatAreSet list, as only a standard component records it again on restore.
+     */
+    @Test
+    public void testNonPropertyAttributePutAfterBuildOfNonStandardComponentSavesAttributesThatAreSet() throws Exception {
+        UIRepeat c = new UIRepeat();
+        c.markInitialState();
+        c.getAttributes().put("foo", "bar");
+
+        Object[] delta = (Object[]) c.getStateHelper().saveState(facesContext);
+        assertTrue(Arrays.asList(delta).contains(UIComponent.PropertyKeysPrivate.attributesThatAreSet), Arrays.deepToString(delta));
+
+        UIRepeat restored = new UIRepeat();
+        restored.markInitialState();
+        restored.getStateHelper().restoreState(facesContext, delta);
+        assertEquals(Arrays.asList("foo"), restored.getAttributes().get(UIComponentBase.ATTRIBUTES_THAT_ARE_SET));
+    }
+
+    /**
+     * A delta which carries the name of a non-property attribute both as attributes map key and in the
+     * attributesThatAreSet list, as the delta of a non-standard component does, restores into a standard component with
+     * that name recorded once. A name recorded twice renders its HTML attribute twice.
+     */
+    @Test
+    public void testDeltaWithNonPropertyAttributeInAttributesThatAreSetRecordsItOnce() throws Exception {
+        UIRepeat saved = new UIRepeat();
+        saved.markInitialState();
+        saved.getAttributes().put("foo", "bar");
+        Object delta = saved.getStateHelper().saveState(facesContext);
+
+        UIOutput restored = new UIOutput();
+        restored.markInitialState();
+        restored.getStateHelper().restoreState(facesContext, delta);
+        assertEquals(Arrays.asList("foo"), restored.getAttributes().get(UIComponentBase.ATTRIBUTES_THAT_ARE_SET));
+    }
+
+    /**
      * An attribute bound after the build, following another one set after the build, is recorded once in the
      * attributesThatAreSet list, before and after a restore. A name recorded twice renders its HTML attribute twice.
      */
@@ -778,6 +1074,27 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         restored.restoreState(facesContext, state);
         restored.popComponentFromEL(facesContext);
         return restored;
+    }
+
+    /**
+     * The given saved state with its key/value pairs in reverse order, as another iteration order of the saved map gives.
+     */
+    private static Object[] reversed(Object[] savedState) {
+        int length = (savedState.length - 1) / 2;
+        Object[] reversed = new Object[savedState.length];
+        for (int i = 0; i < length; i++) {
+            reversed[i * 2] = savedState[(length - 1 - i) * 2];
+            reversed[i * 2 + 1] = savedState[(length - 1 - i) * 2 + 1];
+        }
+        reversed[savedState.length - 1] = savedState[savedState.length - 1];
+        return reversed;
+    }
+
+    private UIOutput restoreDelta(UIOutput saved, UIOutput rebuilt) {
+        Object delta = saved.getStateHelper().saveState(facesContext);
+        rebuilt.markInitialState();
+        rebuilt.getStateHelper().restoreState(facesContext, delta);
+        return rebuilt;
     }
 
     private static List<?> recordedAttributes(UIComponent component) {
