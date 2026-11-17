@@ -118,14 +118,6 @@
         <perf.jvmArguments>-Xmx${perf.heapSize}</perf.jvmArguments>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>jakarta-staging</id>
-            <snapshots />
-            <url>https://jakarta.oss.sonatype.org/content/repositories/staging</url>
-        </repository>
-    </repositories>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
