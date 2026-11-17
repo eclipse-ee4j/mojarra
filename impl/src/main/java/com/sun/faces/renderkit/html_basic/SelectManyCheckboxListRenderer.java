@@ -22,9 +22,13 @@ import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
 import java.io.IOException;
-import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UISelectItem;
+import jakarta.faces.component.UISelectItemGroups;
+import jakarta.faces.component.UISelectItems;
 import jakarta.faces.component.html.HtmlSelectManyCheckbox;
 import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.component.ValueHolder;
@@ -37,7 +41,9 @@ import jakarta.faces.model.SelectItemGroup;
 import com.sun.faces.renderkit.Attributes;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
+import com.sun.faces.renderkit.SelectItemsIterator;
 import com.sun.faces.util.RequestStateManager;
+import com.sun.faces.util.ScopedRunner;
 
 /**
  * <B>SelectManyCheckboxListRenderer</B> is a class that renders the current value of <code>UISelectMany</code> component
@@ -59,84 +65,28 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
             return;
         }
 
-        ResponseWriter writer = context.getResponseWriter();
-        assert writer != null;
-
-        String alignStr;
         Object borderObj;
-        Boolean newTableRow = false;
+        Boolean newTableRow = getNewTableRow(component);
         int border = 0;
 
-        alignStr = component instanceof HtmlSelectManyCheckbox ? ((HtmlSelectManyCheckbox) component).getLayout()
-                : (String) component.getAttributes().get("layout");
-        if (null != alignStr) {
-            if (alignStr.equalsIgnoreCase("list")) {
-                newTableRow = null;
-            }
-            else {
-                newTableRow = alignStr.equalsIgnoreCase("pageDirection");
-            }
-        }
         if (null != (borderObj = RenderKitUtils.getAttributeIfSet(component, "border"))) {
             border = (Integer) borderObj;
         }
 
-        Converter converter = null;
-        if (component instanceof ValueHolder) {
-            converter = ((ValueHolder) component).getConverter();
-        }
+        Converter<?> converter = component instanceof ValueHolder ? ((ValueHolder) component).getConverter() : null;
 
         renderBeginText(component, border, newTableRow, context, true);
 
-        Iterator<SelectItem> items = RenderKitUtils.getSelectItems(context, component);
+        SelectItemsIterator<SelectItem> items = RenderKitUtils.getSelectItems(context, component);
 
         Object currentSelections = getCurrentSelectedValues(component);
         Object[] submittedValues = getSubmittedSelectedValues(component);
         OptionComponentInfo optionInfo = new OptionComponentInfo(component);
-        int idx = -1;
-        while (items.hasNext()) {
-            SelectItem curItem = items.next();
-            idx++;
-            // If we come across a group of options, render them as a nested
-            // table.
-            if (curItem instanceof SelectItemGroup) {
-                // write out the label for the group.
-                if (curItem.getLabel() != null) {
-                    if (newTableRow == TRUE) {
-                        writer.startElement("tr", null);
-                    }
-                    writer.startElement(newTableRow != null ? "td" : "li", null);
-                    writer.writeText(curItem.getLabel(), component, "label");
-                    if (newTableRow != null) {
-                        writer.endElement("td");
-                        if (newTableRow) {
-                            writer.endElement("tr");
-                        }
-                    }
 
-                }
-                if (newTableRow != null) {
-                    if (newTableRow) {
-                        writer.startElement("tr", null);
-                    }
-                    writer.startElement("td", null);
-                }
-                writer.writeText("\n", component, null);
-                renderBeginText(component, 0, newTableRow, context, false);
-                // render options of this group.
-                SelectItem[] itemsArray = ((SelectItemGroup) curItem).getSelectItems();
-                for (SelectItem element : itemsArray) {
-                    renderOption(context, component, converter, element, currentSelections, submittedValues, newTableRow, idx++, optionInfo);
-                }
-                renderEndText(component, newTableRow, context);
-                writer.endElement(newTableRow != null ? "td" : "li");
-                if (newTableRow == TRUE) {
-                    writer.endElement("tr");
-                    writer.writeText("\n", component, null);
-                }
-            } else {
-                renderOption(context, component, converter, curItem, currentSelections, submittedValues, newTableRow, idx, optionInfo);
-            }
+        try {
+            renderItems(context, component, items, converter, currentSelections, submittedValues, newTableRow, optionInfo);
+        } finally {
+            RenderKitUtils.setCombinedPassThroughAttributes(component, null);
         }
 
         renderEndText(component, newTableRow, context);
@@ -144,6 +94,36 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
     }
 
     // ------------------------------------------------------- Protected Methods
+
+    /**
+     * Returns the component to start the inputs of the given item component with, so that each input carries the
+     * pass-through attributes of the given select component and those of the item component, which take precedence for
+     * the same name. When both have them, it is the select component, which then carries the combined attributes until
+     * the next call of this method for it, or until {@link RenderKitUtils#setCombinedPassThroughAttributes(UIComponent,
+     * Map)} removes them. An item component which is not a <code>UISelectItem</code> or <code>UISelectItems</code>
+     * contributes none, and neither does a <code>UISelectItemGroups</code>, whose pass-through attributes belong to the
+     * nested element of each group.
+     */
+    protected static UIComponent prepareInputComponent(UIComponent component, UIComponent itemComponent) {
+        boolean isItemComponent = itemComponent instanceof UISelectItem
+                || itemComponent instanceof UISelectItems && !(itemComponent instanceof UISelectItemGroups);
+        Map<String, Object> itemAttributes = isItemComponent ? itemComponent.getPassThroughAttributes(false) : null;
+        Map<String, Object> attributes = component.getPassThroughAttributes(false);
+        Map<String, Object> combinedAttributes = null;
+        UIComponent inputComponent = component;
+
+        if (itemAttributes != null && !itemAttributes.isEmpty()) {
+            if (attributes == null || attributes.isEmpty()) {
+                inputComponent = itemComponent;
+            } else {
+                combinedAttributes = new LinkedHashMap<>(attributes);
+                combinedAttributes.putAll(itemAttributes);
+            }
+        }
+
+        RenderKitUtils.setCombinedPassThroughAttributes(component, combinedAttributes);
+        return inputComponent;
+    }
 
     /**
      * We override isBehaviorSource since the ID of the activated check box will have been augmented with the option number.
@@ -168,12 +148,16 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
 
     }
 
+    /**
+     * Starts the table or list with the pass-through attributes of the given component: the select component for the
+     * outer element, or the component which produced the group for the nested element of a group.
+     */
     protected void renderBeginText(UIComponent component, int border, Boolean newTableRow, FacesContext context, boolean outerElement) throws IOException {
 
         ResponseWriter writer = context.getResponseWriter();
         assert writer != null;
 
-        writer.startElement(newTableRow != null ? "table" : "ul", outerElement ? component : null);
+        writer.startElement(newTableRow != null ? "table" : "ul", component);
         if (newTableRow != null && border != Integer.MIN_VALUE) {
             writer.writeAttribute("border", border, "border");
         }
@@ -212,8 +196,12 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
 
     }
 
-    protected void renderOption(FacesContext context, UIComponent component, Converter converter, SelectItem curItem, Object currentSelections,
-            Object[] submittedValues, Boolean newTableRow, int itemNumber, OptionComponentInfo optionInfo) throws IOException {
+    /**
+     * Renders the input and label of the given item. The input is started with the given input component, whose
+     * pass-through attributes it carries.
+     */
+    protected void renderOption(FacesContext context, UIComponent component, UIComponent inputComponent, Converter converter, SelectItem curItem,
+            Object currentSelections, Object[] submittedValues, Boolean newTableRow, int itemNumber, OptionComponentInfo optionInfo) throws IOException {
 
         String valueString = getFormattedValue(context, component, curItem.getValue(), converter);
 
@@ -245,7 +233,7 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
         writer.startElement(newTableRow != null ? "td" : "li", null);
         writer.writeText("\n", component, null);
 
-        writer.startElement("input", component);
+        writer.startElement("input", inputComponent);
         writer.writeAttribute("name", component.getClientId(context), "clientId");
         String idString = component.getClientId(context) + UINamingContainer.getSeparatorChar(context) + Integer.toString(itemNumber);
         writer.writeAttribute("id", idString, "id");
@@ -334,6 +322,123 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
 
         return "checked";
 
+    }
+
+    // --------------------------------------------------------- Private Methods
+
+    /**
+     * Returns <code>null</code> for the list layout, <code>true</code> for the page direction layout, else
+     * <code>false</code>.
+     */
+    private static Boolean getNewTableRow(UIComponent component) {
+        String layout = component instanceof HtmlSelectManyCheckbox ? ((HtmlSelectManyCheckbox) component).getLayout()
+                : (String) component.getAttributes().get("layout");
+
+        if (layout == null) {
+            return false;
+        }
+
+        return layout.equalsIgnoreCase("list") ? null : layout.equalsIgnoreCase("pageDirection");
+    }
+
+    /**
+     * Renders the input of each item, or the group with all items in it, with the <code>var</code> of the component
+     * which produced the item bound to its current element.
+     */
+    private void renderItems(FacesContext context, UIComponent component, SelectItemsIterator<SelectItem> items, Converter<?> converter,
+            Object currentSelections, Object[] submittedValues, Boolean newTableRow, OptionComponentInfo optionInfo) throws IOException {
+
+        UIComponent previousSelectComponent = null;
+        UIComponent inputComponent = component;
+        String var = null;
+        int idx = -1;
+        while (items.hasNext()) {
+            SelectItem curItem = items.next();
+            UIComponent selectComponent = items.currentSelectComponent();
+
+            if (selectComponent != previousSelectComponent) {
+                previousSelectComponent = selectComponent;
+                inputComponent = prepareInputComponent(component, selectComponent);
+                var = RenderKitUtils.getPassThroughVar(selectComponent);
+            }
+
+            int itemNumber = ++idx;
+            UIComponent itemInputComponent = inputComponent;
+
+            if (var != null) {
+                idx = new ScopedRunner(context).with(var, items.currentElement()).invokeThrowing(() -> renderItem(context, component, selectComponent,
+                        itemInputComponent, converter, curItem, currentSelections, submittedValues, newTableRow, itemNumber, optionInfo));
+            } else {
+                idx = renderItem(context, component, selectComponent, itemInputComponent, converter, curItem, currentSelections, submittedValues,
+                        newTableRow, itemNumber, optionInfo);
+            }
+        }
+    }
+
+    /**
+     * Renders the given item, or the group with all items in it, and returns the item number after which the next item
+     * is numbered.
+     */
+    private int renderItem(FacesContext context, UIComponent component, UIComponent selectComponent, UIComponent inputComponent, Converter<?> converter,
+            SelectItem curItem, Object currentSelections, Object[] submittedValues, Boolean newTableRow, int itemNumber, OptionComponentInfo optionInfo)
+            throws IOException {
+
+        if (curItem instanceof SelectItemGroup) {
+            return renderGroup(context, component, selectComponent, inputComponent, converter, (SelectItemGroup) curItem, currentSelections, submittedValues,
+                    newTableRow, itemNumber, optionInfo);
+        }
+
+        renderOption(context, component, inputComponent, converter, curItem, currentSelections, submittedValues, newTableRow, itemNumber, optionInfo);
+        return itemNumber;
+    }
+
+    /**
+     * Renders the label of the given group and a nested table or list with its items. The nested element carries the
+     * pass-through attributes of the given select component, which produced the group, and each input those of the
+     * given input component.
+     */
+    private int renderGroup(FacesContext context, UIComponent component, UIComponent selectComponent, UIComponent inputComponent, Converter<?> converter,
+            SelectItemGroup group, Object currentSelections, Object[] submittedValues, Boolean newTableRow, int itemNumber, OptionComponentInfo optionInfo)
+            throws IOException {
+
+        ResponseWriter writer = context.getResponseWriter();
+
+        if (group.getLabel() != null) {
+            if (newTableRow == TRUE) {
+                writer.startElement("tr", null);
+            }
+            writer.startElement(newTableRow != null ? "td" : "li", null);
+            writer.writeText(group.getLabel(), component, "label");
+            if (newTableRow != null) {
+                writer.endElement("td");
+                if (newTableRow) {
+                    writer.endElement("tr");
+                }
+            }
+        }
+        if (newTableRow != null) {
+            if (newTableRow) {
+                writer.startElement("tr", null);
+            }
+            writer.startElement("td", null);
+        }
+        writer.writeText("\n", component, null);
+        renderBeginText(selectComponent, 0, newTableRow, context, false);
+
+        int idx = itemNumber;
+
+        for (SelectItem item : group.getSelectItems()) {
+            renderOption(context, component, inputComponent, converter, item, currentSelections, submittedValues, newTableRow, idx++, optionInfo);
+        }
+
+        renderEndText(component, newTableRow, context);
+        writer.endElement(newTableRow != null ? "td" : "li");
+        if (newTableRow == TRUE) {
+            writer.endElement("tr");
+            writer.writeText("\n", component, null);
+        }
+
+        return idx;
     }
 
 } // end of class SelectManyCheckboxListRenderer

@@ -54,6 +54,7 @@ import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.renderkit.SelectItemsIterator;
 import com.sun.faces.util.RequestStateManager;
+import com.sun.faces.util.ScopedRunner;
 import com.sun.faces.util.Util;
 
 /**
@@ -172,7 +173,36 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
             return;
         }
 
-        SelectItem currentItem = RenderKitUtils.getSelectItems(context, radio).next();
+        SelectItemsIterator<SelectItem> items = RenderKitUtils.getSelectItems(context, radio);
+        SelectItem currentItem = items.next();
+        UIComponent itemComponent = items.currentSelectComponent();
+        Object element = items.currentElement();
+
+        if (itemComponent instanceof GroupSelectItem) {
+            GroupSelectItem groupSelectItem = (GroupSelectItem) itemComponent;
+            itemComponent = groupSelectItem.getSelectComponent();
+            element = groupSelectItem.getElement();
+        }
+
+        String var = RenderKitUtils.getPassThroughVar(itemComponent);
+        UIComponent inputComponent = prepareInputComponent(radio, itemComponent);
+
+        try {
+            if (var != null) {
+                new ScopedRunner(context).with(var, element).invokeThrowing(() -> {
+                    encodeGroupInput(context, radio, inputComponent, group, currentItem);
+                    return null;
+                });
+            } else {
+                encodeGroupInput(context, radio, inputComponent, group, currentItem);
+            }
+        } finally {
+            RenderKitUtils.setCombinedPassThroughAttributes(radio, null);
+        }
+    }
+
+    private void encodeGroupInput(FacesContext context, UISelectOne radio, UIComponent inputComponent, Group group, SelectItem currentItem)
+            throws IOException {
         String clientId = radio.getClientId(context);
         Object itemValue = currentItem.getValue();
         Converter<?> converter = radio.getConverter();
@@ -182,7 +212,7 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
         ResponseWriter writer = context.getResponseWriter();
         assert writer != null;
 
-        renderInput(context, writer, radio, clientId, itemValue, converter, checked, disabled, group);
+        renderInput(context, writer, radio, inputComponent, clientId, itemValue, converter, checked, disabled, group);
 
         if (currentItem.getLabel() != null) {
             renderLabel(writer, radio, clientId, currentItem, new OptionComponentInfo(radio));
@@ -235,8 +265,8 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
     }
 
     @Override
-    protected void renderOption(FacesContext context, UIComponent component, Converter converter, SelectItem curItem, Object currentSelections,
-            Object[] submittedValues, Boolean newTableRow, int itemNumber, OptionComponentInfo optionInfo) throws IOException {
+    protected void renderOption(FacesContext context, UIComponent component, UIComponent inputComponent, Converter converter, SelectItem curItem,
+            Object currentSelections, Object[] submittedValues, Boolean newTableRow, int itemNumber, OptionComponentInfo optionInfo) throws IOException {
 
         ResponseWriter writer = context.getResponseWriter();
         assert writer != null;
@@ -263,7 +293,7 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
         // Don't render the disabled attribute twice if the 'parent' component is already marked disabled.
         boolean disabled = !optionInfo.isDisabled() && curItem.isDisabled();
 
-        renderInput(context, writer, component, clientId, curValue, converter, checked, disabled, null);
+        renderInput(context, writer, component, inputComponent, clientId, curValue, converter, checked, disabled, null);
         renderLabel(writer, component, clientId, curItem, optionInfo);
 
         writer.endElement(newTableRow != null ? "td" : "li");
@@ -275,9 +305,12 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
         }
     }
 
-    protected void renderInput(FacesContext context, ResponseWriter writer, UIComponent component, String clientId, Object itemValue, Converter<?> converter,
-            boolean checked, boolean disabled, Group group) throws IOException {
-        writer.startElement("input", component);
+    /**
+     * Renders the radio input. It is started with the given input component, whose pass-through attributes it carries.
+     */
+    protected void renderInput(FacesContext context, ResponseWriter writer, UIComponent component, UIComponent inputComponent, String clientId,
+            Object itemValue, Converter<?> converter, boolean checked, boolean disabled, Group group) throws IOException {
+        writer.startElement("input", inputComponent);
         writer.writeAttribute("type", "radio", "type");
 
         if (checked) {
@@ -421,7 +454,13 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
     public static class GroupSelectItem extends UISelectItem {
 
         private SelectItem selectItem;
+        private UIComponent selectComponent;
+        private Object element;
 
+        /**
+         * Returns the select item of the first radio of the group at the position of this radio. It also keeps the
+         * component which produced that item and its <code>var</code> element, for the pass-through attributes.
+         */
         @SuppressWarnings("unchecked")
         private SelectItem getSelectItem() {
             if (selectItem == null) {
@@ -441,9 +480,21 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
                 }
 
                 selectItem = iterator.next();
+                selectComponent = iterator.currentSelectComponent();
+                element = iterator.currentElement();
             }
 
             return selectItem;
+        }
+
+        private UIComponent getSelectComponent() {
+            getSelectItem();
+            return selectComponent;
+        }
+
+        private Object getElement() {
+            getSelectItem();
+            return element;
         }
 
         @Override

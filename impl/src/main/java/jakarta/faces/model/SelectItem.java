@@ -41,7 +41,7 @@ public class SelectItem implements Serializable {
      */
     public SelectItem() {
 
-        super();
+        this(null);
 
     }
 
