@@ -126,7 +126,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
                     : table instanceof HtmlPanelGrid ? ((HtmlPanelGrid) table).getCaptionClass() : (String) table.getAttributes().get("captionClass");
             String captionStyle = table instanceof HtmlDataTable ? ((HtmlDataTable) table).getCaptionStyle()
                     : table instanceof HtmlPanelGrid ? ((HtmlPanelGrid) table).getCaptionStyle() : (String) table.getAttributes().get("captionStyle");
-            writer.startElement("caption", table);
+            writer.startElement("caption", null);
             if (captionClass != null) {
                 writer.writeAttribute("class", captionClass, "captionClass");
             }
@@ -150,7 +150,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
     @SuppressWarnings({ "UnusedDeclaration" })
     protected void renderTableBodyStart(FacesContext context, UIComponent table, ResponseWriter writer) throws IOException {
 
-        writer.startElement("tbody", table);
+        writer.startElement("tbody", null);
         writer.writeText("\n", table, null);
 
     }
@@ -182,7 +182,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
     protected void renderRowStart(FacesContext context, UIComponent table, ResponseWriter writer) throws IOException {
 
         TableMetaInfo info = getMetaInfo(context, table);
-        writer.startElement("tr", table);
+        writer.startElement("tr", null);
 
         final String tableRowClass = info.rowClasses.length > 0 ? info.getCurrentRowClass() : null;
         final String rowClass = table instanceof HtmlDataTable ? ((HtmlDataTable) table).getRowClass()

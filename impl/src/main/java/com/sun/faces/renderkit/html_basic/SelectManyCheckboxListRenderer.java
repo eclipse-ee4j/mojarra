@@ -103,9 +103,9 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
                 // write out the label for the group.
                 if (curItem.getLabel() != null) {
                     if (newTableRow == TRUE) {
-                        writer.startElement("tr", component);
+                        writer.startElement("tr", null);
                     }
-                    writer.startElement(newTableRow != null ? "td" : "li", component);
+                    writer.startElement(newTableRow != null ? "td" : "li", null);
                     writer.writeText(curItem.getLabel(), component, "label");
                     if (newTableRow != null) {
                         writer.endElement("td");
@@ -117,9 +117,9 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
                 }
                 if (newTableRow != null) {
                     if (newTableRow) {
-                        writer.startElement("tr", component);
+                        writer.startElement("tr", null);
                     }
-                    writer.startElement("td", component);
+                    writer.startElement("td", null);
                 }
                 writer.writeText("\n", component, null);
                 renderBeginText(component, 0, newTableRow, context, false);
@@ -173,7 +173,7 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
         ResponseWriter writer = context.getResponseWriter();
         assert writer != null;
 
-        writer.startElement(newTableRow != null ? "table" : "ul", component);
+        writer.startElement(newTableRow != null ? "table" : "ul", outerElement ? component : null);
         if (newTableRow != null && border != Integer.MIN_VALUE) {
             writer.writeAttribute("border", border, "border");
         }
@@ -192,7 +192,7 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
 
         if (newTableRow == FALSE) {
             writer.writeText("\t", component, null);
-            writer.startElement("tr", component);
+            writer.startElement("tr", null);
             writer.writeText("\n", component, null);
         }
 
@@ -239,10 +239,10 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
 
         if (newTableRow == TRUE) {
             writer.writeText("\t", component, null);
-            writer.startElement("tr", component);
+            writer.startElement("tr", null);
             writer.writeText("\n", component, null);
         }
-        writer.startElement(newTableRow != null ? "td" : "li", component);
+        writer.startElement(newTableRow != null ? "td" : "li", null);
         writer.writeText("\n", component, null);
 
         writer.startElement("input", component);
@@ -275,7 +275,7 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
 
         RenderKitUtils.flushPendingBehaviorEventListeners(context, component, idString);
 
-        writer.startElement("label", component);
+        writer.startElement("label", null);
         writer.writeAttribute("for", idString, "for");
 
         // Set up the label's class, if appropriate

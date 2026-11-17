@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<!--
+
+    Copyright (c) Contributors to Eclipse Foundation.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<html lang="en"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="jakarta.faces.core"
+    xmlns:h="jakarta.faces.html"
+    xmlns:p="jakarta.faces.passthrough"
+>
+    <f:metadata>
+        <f:viewAction action="#{issue6173.addMessages}" />
+    </f:metadata>
+    <h:head>
+        <title>Pass-through attributes on the outer-most element</title>
+    </h:head>
+    <h:body>
+        <h:form id="form">
+            <h:panelGrid id="grid" columns="2" p:data-grid="grid">
+                <f:facet name="caption"><h:outputText value="caption" /></f:facet>
+                <f:facet name="header"><h:outputText value="header" style="color: red" p:data-grid-header="header" /></f:facet>
+                <f:facet name="footer"><h:outputText value="footer" style="color: red" p:data-grid-footer="footer" /></f:facet>
+                <h:outputText value="a" />
+                <h:outputText value="b" />
+                <h:outputText value="c" />
+            </h:panelGrid>
+
+            <h:panelGrid id="emptyGrid" columns="2" p:data-empty-grid="emptyGrid" />
+
+            <h:dataTable id="table" value="#{issue6173.rows}" var="row" bodyrows="1" p:data-table="table">
+                <f:facet name="caption"><h:outputText value="caption" /></f:facet>
+                <f:facet name="header"><h:outputText value="header" style="color: red" p:data-table-header="header" /></f:facet>
+                <f:facet name="footer"><h:outputText value="footer" style="color: red" p:data-table-footer="footer" /></f:facet>
+                <h:column p:data-column="column">
+                    <f:facet name="header">column header</f:facet>
+                    <f:facet name="footer">column footer</f:facet>
+                    #{row}
+                </h:column>
+            </h:dataTable>
+
+            <h:dataTable id="emptyTable" value="#{[]}" var="row" p:data-empty-table="emptyTable">
+                <h:column>#{row}</h:column>
+            </h:dataTable>
+
+            <h:selectManyCheckbox id="checks" value="#{issue6173.checks}" p:data-checks="checks">
+                <f:passThroughAttribute name="data-checks-single" value="checksSingle" />
+                <f:selectItems value="#{issue6173.items}" />
+            </h:selectManyCheckbox>
+
+            <h:selectManyCheckbox id="checksList" value="#{issue6173.checks}" layout="list" p:data-checks-list="checksList">
+                <f:selectItems value="#{issue6173.items}" />
+            </h:selectManyCheckbox>
+
+            <h:selectManyCheckbox id="checksPage" value="#{issue6173.checks}" layout="pageDirection" p:data-checks-page="checksPage">
+                <f:selectItems value="#{issue6173.items}" />
+            </h:selectManyCheckbox>
+
+            <h:selectOneRadio id="radios" value="#{issue6173.radio}" layout="pageDirection" p:data-radios="radios">
+                <f:selectItems value="#{issue6173.items}" />
+            </h:selectOneRadio>
+
+            <h:selectOneRadio id="radiosList" value="#{issue6173.radio}" layout="list" p:data-radios-list="radiosList">
+                <f:selectItems value="#{issue6173.items}" />
+            </h:selectOneRadio>
+
+            <h:selectOneRadio id="radioOne" value="#{issue6173.grouped}" group="group" p:data-radio-one="radioOne">
+                <f:selectItem itemValue="1" itemLabel="one" />
+            </h:selectOneRadio>
+            <h:selectOneRadio id="radioTwo" value="#{issue6173.grouped}" group="group" p:data-radio-two="radioTwo">
+                <f:selectItem itemValue="2" itemLabel="two" />
+            </h:selectOneRadio>
+
+            <h:messages id="messages" p:data-messages="messages" />
+
+            <h:messages id="messagesTable" layout="table" tooltip="true" showDetail="true" p:data-messages-table="messagesTable" />
+        </h:form>
+    </h:body>
+</html>

@@ -157,9 +157,9 @@ public class MessagesRenderer extends HtmlBasicRenderer {
             // Done intializing local variables. Move on to rendering.
 
             if (wroteTable) {
-                writer.startElement("tr", component);
+                writer.startElement("tr", null);
             } else {
-                writer.startElement("li", component);
+                writer.startElement("li", null);
             }
 
             if (severityStyle != null) {
@@ -170,7 +170,7 @@ public class MessagesRenderer extends HtmlBasicRenderer {
             }
 
             if (wroteTable) {
-                writer.startElement("td", component);
+                writer.startElement("td", null);
             }
 
             boolean isTooltip = htmlMessages != null ? htmlMessages.isTooltip()
@@ -178,7 +178,7 @@ public class MessagesRenderer extends HtmlBasicRenderer {
 
             boolean wroteTooltip = false;
             if (isTooltip) {
-                writer.startElement("span", component);
+                writer.startElement("span", null);
                 String title = (String) RenderKitUtils.getAttributeIfSet(component, "title");
                 if (title == null || title.length() == 0) {
                     writer.writeAttribute("title", detail, "title");
