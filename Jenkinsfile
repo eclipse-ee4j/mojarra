@@ -679,7 +679,7 @@ spec:
                         ${SKIP_OLD_TCK_FLAG} -Dtest.selenium=${SELENIUM_ENABLED} \\
                         -Dgf.pool.size=${TCK_THREAD_COUNT} \\
                         -Dwdm.cachePath=/home/jenkins/agent/caches/selenium \\
-                        -DskipAssembly=true -Pstaging \\
+                        -DskipAssembly=true \\
                         -Dglassfish.version="${RESOLVED_GF_VERSION}" \\
                         -Dmojarra.version="${RELEASE_VERSION}" \\
                         -Dfaces.version="${IMPL_API_DEP_VERSION}" \\
