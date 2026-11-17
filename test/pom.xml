@@ -93,6 +93,7 @@
         <module>issue6161</module>
         <module>issue6166</module>
         <module>issue6173</module>
+        <module>issue6176</module>
     </modules>
 
     <properties>
