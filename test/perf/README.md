@@ -278,6 +278,17 @@ The `flat` family carries four further variants nothing else has, all GET:
 - **allattrs** — one of every tag the HTML taglib declares, each carrying every attribute declared for it, generated from `faces.html.taglib.xml` so it follows the branch rather than a hand-written list. It is the coverage instrument: it says whether a change to the attribute machinery touches paths the narrow scenarios never reach (behavior-holder events, resource-backed attributes, converters, the select and table families). It is not a slope instrument — a block holds ~30 different components, so a regression in it does not localize on its own.
 - **text** — the same component count as template text plus EL (`<span>#{…}</span>`) instead of component tags, so the build runs through the text/instruction handlers rather than `ComponentTagHandlerDelegateImpl`.
 
+Two pairs post the `allattrs` block back, through the shared `/WEB-INF/includes/allattrs.xhtml`.
+It is the `flat-allattrs` page with two attributes which are no property on every tag, and two pass-through attributes on most tags.
+Mojarra renders pass-through attributes also on the inner elements of `h:panelGrid`, `h:dataTable`, `h:column`, `h:selectManyCheckbox` and `h:selectOneRadio`, so these five tags get none, and both implementations render the same.
+`h:inputFile` is left out, as its decode needs a multipart request.
+A plain submit button ends the form, as the `h:commandButton` of the block renders as an image button:
+
+- **allattrs-post** / **allattrs-post-ajax** — full postback and its ajax twin.
+  Every component has an entry in its attribute map, which elsewhere only the composite family has, so the restore and the state saving see the whole attribute machinery.
+- **allattrs-late** / **allattrs-late-ajax** — the same, with a `preRenderView` listener that puts two more attributes on every component after the build, so that every partial state delta carries attribute map entries.
+  A view scoped bean saved in the view state takes this path on the view root; no other scenario reaches it.
+
 **`flat-table-facets` and `flat-table-nofacets` are a matched pair, and only useful read together.** Both post back the same 200-column `h:dataTable` over `WIDE_ROWS` (5) rows — few rows on purpose, since facet cost is fixed per column and every extra row only dilutes it — they differ in one thing, whether an otherwise identical `h:outputText` sits in a `header` facet or is an ordinary child. Same column count, same component count, same component types. So the RESTORE_VIEW difference between them is facet handling with everything else held constant, which is the only way the suite can see it: the ordinary `table-*` scenarios carry 7 facets, worth a few µs on a ~2000µs request, and a GET would bury the build inside RENDER_RESPONSE together with 1200 cells of encode. Postbacks put the build in RV; the control attributes it. Do not read either scenario's absolute number as a facet measurement — only their difference, divided by the 200 columns for a per-facet figure. Both implementations must render the pair identically before that difference means anything; verify it whenever either view changes.
 
 Scenarios outside the matrix:

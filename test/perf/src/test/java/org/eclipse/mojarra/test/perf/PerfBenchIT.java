@@ -152,7 +152,9 @@ class PerfBenchIT extends BaseIT {
             "foreach-build",
             "flat-build",
             "flat-table-facets",
-            "flat-table-nofacets"));
+            "flat-table-nofacets",
+            "flat-allattrs-post",
+            "flat-allattrs-late"));
 
     /** Ajax-partial postbacks. Same body fields as their non-ajax twin plus the
      *  {@code jakarta.faces.partial.*} markers and the {@code Faces-Request} header. */
@@ -168,7 +170,9 @@ class PerfBenchIT extends BaseIT {
             "composite-nested-ajax",
             "foreach-nested-ajax",
             "dynamic-form-ajax",
-            "dynamic-toggle-ajax"));
+            "dynamic-toggle-ajax",
+            "flat-allattrs-post-ajax",
+            "flat-allattrs-late-ajax"));
 
     private static final Pattern VIEW_STATE = Pattern.compile(
             "name=\"jakarta\\.faces\\.ViewState\"[^>]*value=\"([^\"]+)\"" +
