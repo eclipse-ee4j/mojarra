@@ -29,6 +29,7 @@ import java.util.NoSuchElementException;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UISelectItem;
+import jakarta.faces.component.UISelectItemGroups;
 import jakarta.faces.component.UISelectItems;
 import jakarta.faces.component.UISelectMany;
 import jakarta.faces.component.UISelectOne;
@@ -146,6 +147,19 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
     }
 
     /**
+     * Returns the element which produced the item last returned by {@link #next()}: the member of the collection or
+     * array of a <code>UISelectItems</code> value, the member of a <code>UISelectItemGroups</code> value which produced
+     * the group, or the <code>SelectItem</code> of a <code>UISelectItem</code> or of a single-valued
+     * <code>UISelectItems</code>. This is the value which the <code>var</code> attribute of <code>UISelectItems</code>
+     * exposes.
+     *
+     * @return the current element, or <code>null</code> for the entries of a <code>Map</code> value.
+     */
+    public Object currentElement() {
+        return items.currentElement();
+    }
+
+    /**
      * <p>
      * Throw UnsupportedOperationException.
      * </p>
@@ -250,6 +264,11 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
             return selectComponent;
         }
 
+        @Override
+        public Object currentElement() {
+            return item;
+        }
+
         // ----------------------------------------------- Methods from Iterator
 
         @Override
@@ -314,6 +333,11 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
             return parent;
         }
 
+        @Override
+        public Object currentElement() {
+            return null;
+        }
+
         // ----------------------------------------------- Methods from Iterator
 
         @Override
@@ -362,6 +386,11 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
          */
         protected transient UISelectItems sourceComponent;
 
+        /**
+         * The element of the collection or array which produced the item last returned by {@link #next()}.
+         */
+        private transient Object currentElement;
+
         // -------------------------------------------------------- Constructors
 
         protected GenericObjectSelectItemIterator(UISelectItems sourceComponent) {
@@ -377,9 +406,24 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
             return sourceComponent;
         }
 
+        /**
+         * {@link UISelectItemGroups#getValue()} keeps the member as the value of the group it produces, because a group
+         * has no value of its own.
+         */
+        @Override
+        public Object currentElement() {
+            return sourceComponent instanceof UISelectItemGroups ? ((SelectItem) currentElement).getValue() : currentElement;
+        }
+
         // --------------------------------------------------- Protected Methods
 
         protected SelectItem getSelectItemFor(FacesContext ctx, Object value) {
+
+            currentElement = value;
+
+            if (value instanceof SelectItem) {
+                return (SelectItem) value;
+            }
 
             if (genericObjectSI == null) {
                 genericObjectSI = new GenericObjectSelectItem(sourceComponent);
@@ -489,6 +533,8 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
 
     private interface ComponentAwareSelectItemIterator<E extends Object> extends Iterator<E> {
         UIComponent currentSelectComponent();
+
+        Object currentElement();
     }
 
     /**
@@ -531,12 +577,7 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
                 throw new NoSuchElementException();
             }
 
-            Object item = Array.get(array, index++);
-            if (item instanceof SelectItem) {
-                return (SelectItem) item;
-            } else {
-                return getSelectItemFor(ctx, item);
-            }
+            return getSelectItemFor(ctx, Array.get(array, index++));
 
         }
 
@@ -580,12 +621,7 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
         @Override
         public SelectItem next() {
 
-            Object item = iterator.next();
-            if (item instanceof SelectItem) {
-                return (SelectItem) item;
-            } else {
-                return getSelectItemFor(ctx, item);
-            }
+            return getSelectItemFor(ctx, iterator.next());
 
         }
 

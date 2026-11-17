@@ -55,12 +55,17 @@ public class SelectItemUtils {
     public static <S extends SelectItem> void createSelectItems(FacesContext context, UIComponent component, Object values, Supplier<S> supplier, Consumer<S> callback) {
         Map<String, Object> attributes = component.getAttributes();
         String var = coalesce((String) attributes.get("var"), "item");
-        stream(values).forEach(value -> new ScopedRunner(context).with(var, value).invoke(() -> callback.accept(createSelectItem(component, getItemValue(attributes, value), supplier))));
+        stream(values).forEach(value -> new ScopedRunner(context).with(var, value).invoke(() -> callback.accept(createSelectItem(component, value, supplier))));
     }
 
+    /**
+     * Creates a select item for the given member of the value of the given component. The value of a group which a
+     * {@link UISelectItemGroups} creates is always the member itself, so that its <code>var</code> can be exposed again
+     * while the group is rendered.
+     */
     public static <S extends SelectItem> S createSelectItem(UIComponent component, Object value, Supplier<S> supplier) {
         Map<String, Object> attributes = component.getAttributes();
-        Object itemValue = getItemValue(attributes, value);
+        Object itemValue = component instanceof UISelectItemGroups ? value : getItemValue(attributes, value);
         Object itemLabel = attributes.get("itemLabel");
         Object itemEscaped = coalesce(attributes.get("itemEscaped"), attributes.get("itemLabelEscaped")); // f:selectItem || f:selectItems -- TODO: this should be aligned in their APIs.
         Object itemDisabled = attributes.get("itemDisabled");

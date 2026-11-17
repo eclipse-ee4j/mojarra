@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -491,6 +492,50 @@ public class UISelectManyTestCase extends UIInputTestCase {
         si.setItemValue("foo");
         si.setItemLabel("foo label");
         input.getChildren().add(si);
+    }
+
+    /**
+     * The current element of the iterator is the member of the value of a UISelectItems which produced the item last
+     * returned: the member of an array or a collection, whether it is a SelectItem or not, the member of a
+     * UISelectItemGroups which produced the group, also when it has an itemValue, and the SelectItem of a single-valued UISelectItems or of a
+     * UISelectItem. The entries of a Map value have no member.
+     */
+    @Test
+    public void testSelectItemsIteratorCurrentElement() {
+        SelectItem selectItem = new SelectItem("one");
+        Object plain = Integer.valueOf(2);
+        SelectItem single = new SelectItem("three");
+        SelectItem child = new SelectItem("four");
+        Object groupMember = "six";
+
+        UISelectMany selectMany = new UISelectMany();
+        selectMany.getChildren().add(selectItems(new Object[] { selectItem, plain }));
+        selectMany.getChildren().add(selectItems(List.of(selectItem, plain)));
+        selectMany.getChildren().add(selectItems(single));
+        UISelectItem uiSelectItem = new UISelectItem();
+        uiSelectItem.setValue(child);
+        selectMany.getChildren().add(uiSelectItem);
+        selectMany.getChildren().add(selectItems(Map.of("five", "5")));
+        UISelectItemGroups uiSelectItemGroups = new UISelectItemGroups();
+        uiSelectItemGroups.setValue(List.of(groupMember));
+        uiSelectItemGroups.getAttributes().put("itemValue", "eight");
+        uiSelectItemGroups.getChildren().add(selectItems(List.of("seven")));
+        selectMany.getChildren().add(uiSelectItemGroups);
+
+        SelectItemsIterator<SelectItem> iter = new SelectItemsIterator<>(facesContext, selectMany);
+        List<Object> elements = new ArrayList<>();
+        while (iter.hasNext()) {
+            iter.next();
+            elements.add(iter.currentElement());
+        }
+
+        assertEquals(Arrays.asList(selectItem, plain, selectItem, plain, single, child, null, groupMember), elements);
+    }
+
+    private static UISelectItems selectItems(Object value) {
+        UISelectItems items = new UISelectItems();
+        items.setValue(value);
+        return items;
     }
 
     // Create an options list with nested groups
