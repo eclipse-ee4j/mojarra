@@ -251,11 +251,11 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
 
         if (newTableRow == TRUE) {
             writer.writeText("\t", component, null);
-            writer.startElement("tr", component);
+            writer.startElement("tr", null);
             writer.writeText("\n", component, null);
         }
 
-        writer.startElement(newTableRow != null ? "td" : "li", component);
+        writer.startElement(newTableRow != null ? "td" : "li", null);
         writer.writeText("\n", component, null);
 
         String clientId = component.getClientId(context) + UINamingContainer.getSeparatorChar(context) + Integer.toString(itemNumber);
@@ -322,7 +322,7 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
             labelClass = optionInfo.getEnabledClass();
         }
 
-        writer.startElement("label", component);
+        writer.startElement("label", null);
         writer.writeAttribute("for", forClientId, "for");
         // if enabledClass or disabledClass attributes are specified, apply
         // it on the label.
