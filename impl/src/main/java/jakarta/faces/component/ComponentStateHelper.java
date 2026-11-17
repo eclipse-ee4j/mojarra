@@ -357,21 +357,23 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
         }
 
         int length = (savedState.length - 1) / 2;
-        int attributesThatAreSetIndex = fullState ? indexOfAttributesThatAreSet(savedState, length) : -1;
+        int attributesThatAreSetIndex = indexOfAttributesThatAreSet(savedState, length);
+        boolean recordAttributesThatAreSet = initialState == null && attributesThatAreSetIndex < 0 && UIComponentBase.isStandardComponent(component);
         if (attributesThatAreSetIndex >= 0) {
-            restoreEntry(context, (Serializable) savedState[attributesThatAreSetIndex * 2], savedState[attributesThatAreSetIndex * 2 + 1]);
+            restoreEntry(context, (Serializable) savedState[attributesThatAreSetIndex * 2], savedState[attributesThatAreSetIndex * 2 + 1], false);
         }
         for (int i = 0; i < length; i++) {
             if (i != attributesThatAreSetIndex) {
-                restoreEntry(context, (Serializable) savedState[i * 2], savedState[i * 2 + 1]);
+                restoreEntry(context, (Serializable) savedState[i * 2], savedState[i * 2 + 1], recordAttributesThatAreSet);
             }
         }
     }
 
     /**
-     * The index of the attributesThatAreSet entry in the given full state, or -1 when it has none. The restore restores
-     * that entry before all others, so that each name keeps its saved position in the list, whatever the iteration order
-     * of the map which was saved.
+     * The index of the attributesThatAreSet entry in the given state, or -1 when it has none. The restore restores that
+     * entry before all others, so that each name keeps its saved position in the list, whatever the iteration order of
+     * the map which was saved. A delta of a standard component without that entry has it recorded from its attributes
+     * map, see {@link #attributesThatAreSetToSave}.
      */
     private static int indexOfAttributesThatAreSet(Object[] savedState, int length) {
         for (int i = 0; i < length; i++) {
@@ -395,7 +397,7 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
             return saveAttachedState(context, value, ArrayList.class, false);
         }
         if (value instanceof PutEntries) {
-            return saveAttachedState(context, value, HashMap.class, false);
+            return saveAttachedState(context, value, LinkedHashMap.class, false);
         }
         if (key == UIComponent.PropertyKeysPrivate.attributesThatAreSet) {
             return saveAttachedState(context, value);
@@ -431,7 +433,7 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
         return value instanceof EnumMap ? value.getClass() : LinkedHashMap.class;
     }
 
-    private void restoreEntry(FacesContext context, Serializable serializable, Object value) {
+    private void restoreEntry(FacesContext context, Serializable serializable, Object value, boolean recordAttributesThatAreSet) {
         if (value instanceof WholeValue) {
             put(serializable, restoreAttachedState(context, ((WholeValue) value).state));
             return;
@@ -448,22 +450,27 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
         }
 
         if (value instanceof Map) {
+            boolean recordNames = recordAttributesThatAreSet && serializable == UIComponent.PropertyKeys.attributes;
             for (Map.Entry<String, Object> entry : ((Map<String, Object>) value).entrySet()) {
                 put(serializable, entry.getKey(), entry.getValue());
+                if (recordNames) {
+                    addIfAbsent(UIComponent.PropertyKeysPrivate.attributesThatAreSet, entry.getKey());
+                }
             }
         } else if (value instanceof List) {
-            List<Object> current = (List<Object>) get(serializable);
             for (Object item : (List<?>) value) {
-                if (current == null || !current.contains(item)) {
-                    add(serializable, item);
-                    if (current == null) {
-                        current = (List<Object>) get(serializable);
-                    }
-                }
+                addIfAbsent(serializable, item);
             }
         } else {
             put(serializable, value);
             handleAttribute(serializable.toString(), value);
+        }
+    }
+
+    private void addIfAbsent(Serializable key, Object item) {
+        List<Object> items = (List<Object>) get(key);
+        if (items == null || !items.contains(item)) {
+            add(key, item);
         }
     }
 
@@ -541,9 +548,14 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
     private Object saveMap(FacesContext context, Map<Serializable, Object> map) {
 
         int size = map == null ? 0 : map.size();
-        boolean skipAttributesThatAreSet = size > 0 && isAttributesThatAreSetRebuiltOnRestore(context, map);
+        boolean hasAttributesThatAreSet = size > 0 && map.containsKey(UIComponent.PropertyKeysPrivate.attributesThatAreSet);
+        List<Object> savedAttributesThatAreSet = size > 0 ? attributesThatAreSetToSave(context, map) : null;
+        boolean skipAttributesThatAreSet = hasAttributesThatAreSet && savedAttributesThatAreSet == null;
+        boolean appendAttributesThatAreSet = !hasAttributesThatAreSet && savedAttributesThatAreSet != null;
         if (skipAttributesThatAreSet) {
             size--;
+        } else if (appendAttributesThatAreSet) {
+            size++;
         }
 
         if (size == 0) {
@@ -559,17 +571,7 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
         }
 
         Object[] savedState = new Object[size * 2 + 1];
-
-        int i = 0;
-
-        for (Map.Entry<Serializable, Object> entry : map.entrySet()) {
-            if (skipAttributesThatAreSet && entry.getKey() == UIComponent.PropertyKeysPrivate.attributesThatAreSet) {
-                continue;
-            }
-            savedState[i * 2] = entry.getKey();
-            savedState[i * 2 + 1] = saveValue(context, entry.getKey(), entry.getValue());
-            i++;
-        }
+        saveEntries(context, map, savedAttributesThatAreSet, appendAttributesThatAreSet, savedState);
 
         if (!component.initialStateMarked()) {
             savedState[savedState.length - 1] = component.initialStateMarked();
@@ -577,6 +579,99 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
 
         return savedState;
 
+    }
+
+    /**
+     * Save the entries of the given map into the given saved state, with the given attributesThatAreSet list in place of
+     * the one of the map, which is left out when the given list is {@code null}, or appended when the map has none.
+     */
+    private static void saveEntries(FacesContext context, Map<Serializable, Object> map, List<Object> attributesThatAreSet, boolean append, Object[] savedState) {
+        int i = 0;
+
+        for (Map.Entry<Serializable, Object> entry : map.entrySet()) {
+            Object value = entry.getValue();
+            if (entry.getKey() == UIComponent.PropertyKeysPrivate.attributesThatAreSet) {
+                if (attributesThatAreSet == null) {
+                    continue;
+                }
+                value = attributesThatAreSet;
+            }
+            savedState[i * 2] = entry.getKey();
+            savedState[i * 2 + 1] = saveValue(context, entry.getKey(), value);
+            i++;
+        }
+
+        if (append) {
+            savedState[i * 2] = UIComponent.PropertyKeysPrivate.attributesThatAreSet;
+            savedState[i * 2 + 1] = saveValue(context, UIComponent.PropertyKeysPrivate.attributesThatAreSet, attributesThatAreSet);
+        }
+    }
+
+    /**
+     * The attributesThatAreSet list which the given state must carry, or {@code null} when it need carry none. The restore
+     * of a delta of a standard component which carries no list records each key of the restored attributes map in the
+     * list, in the order in which it was put. So such a delta leaves out its list when that records the same list, and
+     * otherwise carries it, or an empty one when it has none. A delta which holds a property is never such a delta, as
+     * {@link #handleAttribute} records the property on restore in natural order, which may differ from the order in
+     * which it was set.
+     */
+    private List<Object> attributesThatAreSetToSave(FacesContext context, Map<Serializable, Object> map) {
+        List<Object> attributesThatAreSet = (List<Object>) map.get(UIComponent.PropertyKeysPrivate.attributesThatAreSet);
+        if (attributesThatAreSet != null && isAttributesThatAreSetRebuiltOnRestore(context, map)) {
+            return null;
+        }
+
+        Map<String, Object> attributes = (Map<String, Object>) map.get(UIComponent.PropertyKeys.attributes);
+        if (!component.initialStateMarked() || attributes == null || !UIComponentBase.isStandardComponent(component)) {
+            return attributesThatAreSet;
+        }
+
+        if (!hasProperty(map) && isAttributesThatAreSetRecordedOnRestore(attributesThatAreSet, attributes)) {
+            return null;
+        }
+        return attributesThatAreSet != null ? attributesThatAreSet : new AddedItems(0);
+    }
+
+    /**
+     * Whether the given state holds an entry which {@link #restoreEntry} records through {@link #handleAttribute}.
+     */
+    private static boolean hasProperty(Map<Serializable, Object> map) {
+        for (Object value : map.values()) {
+            if (isProperty(value)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean isProperty(Object value) {
+        return value != null && !(value instanceof Map) && !(value instanceof Collection);
+    }
+
+    /**
+     * Whether recording each key of the given attributes map of a delta, in the order in which it was put, gives the
+     * given attributesThatAreSet list of the delta, which may be {@code null}. A key which is not in the list of the
+     * delta must then be in the list of the build. The restore records each key in the delta, so that a key which is in
+     * the list of the component but not in the list of the delta is one of the build. A key which is in neither was
+     * removed from the list while its entry stayed, as {@link UIComponent#setValueExpression(String, ValueExpression)}
+     * with {@code null} does.
+     * <p>
+     * A name of the build which is removed and put again after the build is restored at its place of the build.
+     */
+    private boolean isAttributesThatAreSetRecordedOnRestore(List<Object> attributesThatAreSet, Map<String, Object> attributes) {
+        List<Object> setAttributes = (List<Object>) get(UIComponent.PropertyKeysPrivate.attributesThatAreSet);
+        int size = attributesThatAreSet == null ? 0 : attributesThatAreSet.size();
+        int index = 0;
+
+        for (String name : attributes.keySet()) {
+            if (index < size && name.equals(attributesThatAreSet.get(index))) {
+                index++;
+            } else if (setAttributes == null || !setAttributes.contains(name) || size > 0 && attributesThatAreSet.contains(name)) {
+                return false;
+            }
+        }
+
+        return index == size;
     }
 
     /**
@@ -607,7 +702,7 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
             if (value instanceof StateHolder && ((StateHolder) value).isTransient()) {
                 return false;
             }
-            if (value != null && !(value instanceof Map) && !(value instanceof Collection)) {
+            if (isProperty(value)) {
                 if (!recorded.contains(entry.getKey().toString())) {
                     return false;
                 }
@@ -756,9 +851,9 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
 
     /**
      * A map built by {@link #put(Serializable, String, Object)}. Its delta holds only the entries put after the initial
-     * state was marked, so the restore merges it into the map of the build.
+     * state was marked, so the restore merges it into the map of the build, in the order in which they were put.
      */
-    private static final class PutEntries extends HashMap<String, Object> {
+    private static final class PutEntries extends LinkedHashMap<String, Object> {
 
         private static final long serialVersionUID = 1L;
 
