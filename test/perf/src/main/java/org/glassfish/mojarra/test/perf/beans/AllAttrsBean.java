@@ -29,7 +29,8 @@ import jakarta.inject.Named;
  * a literal need a target here: a value of the type each component expects, and a method for each listener signature.
  * <p>
  * Application scoped and immutable, so reading any of it costs one CDI lookup and no state: what the scenario measures is the attribute machinery, not the
- * beans behind it.
+ * beans behind it. The setters ignore the submitted value, so that every postback of the {@code flat-allattrs-post} and {@code flat-allattrs-late} scenarios
+ * does the same work.
  */
 @Named("allAttrs")
 @ApplicationScoped
@@ -51,16 +52,28 @@ public class AllAttrsBean implements Serializable {
         return "text";
     }
 
+    public void setText(String text) {
+    }
+
     public boolean isFlag() {
         return true;
+    }
+
+    public void setFlag(boolean flag) {
     }
 
     public String getChoice() {
         return "alpha";
     }
 
+    public void setChoice(String choice) {
+    }
+
     public List<String> getChoices() {
         return ITEMS;
+    }
+
+    public void setChoices(List<String> choices) {
     }
 
     public List<String> getItems() {

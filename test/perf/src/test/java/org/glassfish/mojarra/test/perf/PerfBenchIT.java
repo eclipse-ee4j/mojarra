@@ -143,7 +143,9 @@ class PerfBenchIT extends BaseITNG {
             "foreach-build",
             "flat-build",
             "flat-table-facets",
-            "flat-table-nofacets"
+            "flat-table-nofacets",
+            "flat-allattrs-post",
+            "flat-allattrs-late"
         )
     );
 
@@ -163,7 +165,9 @@ class PerfBenchIT extends BaseITNG {
             "composite-nested-ajax",
             "foreach-nested-ajax",
             "dynamic-form-ajax",
-            "dynamic-toggle-ajax"
+            "dynamic-toggle-ajax",
+            "flat-allattrs-post-ajax",
+            "flat-allattrs-late-ajax"
         )
     );
 

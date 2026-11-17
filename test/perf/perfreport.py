@@ -45,7 +45,8 @@ SHORT = {"RESTORE_VIEW": "RV", "APPLY_REQUEST_VALUES": "ARV", "PROCESS_VALIDATIO
 # variant) rather than alphabetically, so the tables read like the WAR's navigation. Unknown
 # families/variants sort to the end.
 FAMILY_ORDER = ["form", "table", "repeat", "composite", "foreach", "flat", "dynamic", "viewparam"]
-VARIANT_ORDER = ["readonly", "build", "allattrs", "passthru", "nopassthru", "text",
+VARIANT_ORDER = ["readonly", "build", "allattrs", "allattrs-post", "allattrs-post-ajax",
+                 "allattrs-late", "allattrs-late-ajax", "passthru", "nopassthru", "text",
                  "table-facets", "table-nofacets",
                  "inputs", "inputs-ajax", "invalid", "invalid-ajax", "nested", "nested-ajax",
                  "form-ajax", "toggle-ajax", "get"]
