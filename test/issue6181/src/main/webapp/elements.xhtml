@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<!--
+
+    Copyright (c) Contributors to Eclipse Foundation.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<html lang="en"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:faces="jakarta.faces"
+    xmlns:h="jakarta.faces.html"
+>
+    <h:head>
+        <title>Pass-through elements without selector attribute</title>
+    </h:head>
+    <h:body>
+        <h:form id="form">
+            <a href="#" faces:id="link">link</a>
+            <a href="#" faces:rendered="#{true}" data-case="shownLink">shown link</a>
+            <a href="#" faces:rendered="#{false}" data-case="hiddenLink">hidden link</a>
+            <input faces:id="input" />
+            <input faces:rendered="#{true}" data-case="shownInput" />
+            <input faces:rendered="#{false}" data-case="hiddenInput" />
+        </h:form>
+    </h:body>
+</html>
