@@ -65,7 +65,6 @@ import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UISelectItemGroups;
-import jakarta.faces.component.UISelectItems;
 import jakarta.faces.component.UISelectMany;
 import jakarta.faces.component.UISelectOne;
 import jakarta.faces.component.ValueHolder;
@@ -624,7 +623,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
         while (items.hasNext()) {
             SelectItem item = items.next();
             UIComponent selectComponent = items.currentSelectComponent();
-            String var = getPassThroughVar(selectComponent);
+            String var = RenderKitUtils.getPassThroughVar(selectComponent);
 
             if (var != null) {
                 count += new ScopedRunner(context).with(var, items.currentElement())
@@ -635,18 +634,6 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
         }
 
         return count;
-    }
-
-    /**
-     * Returns the <code>var</code> of the given select component when it is a <code>UISelectItems</code> with
-     * pass-through attributes, else <code>null</code>.
-     */
-    private static String getPassThroughVar(UIComponent selectComponent) {
-        if (selectComponent instanceof UISelectItems && selectComponent.getPassThroughAttributes(false) != null) {
-            return (String) selectComponent.getAttributes().get("var");
-        }
-
-        return null;
     }
 
     private int renderItem(FacesContext context, UIComponent component, UIComponent selectComponent, Converter<?> converter, SelectItem item,
