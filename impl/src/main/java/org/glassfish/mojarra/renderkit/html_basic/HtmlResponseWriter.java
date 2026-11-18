@@ -586,7 +586,10 @@ public class HtmlResponseWriter extends ResponseWriter {
         if (null != componentForElement) {
             passThroughAttrs = componentForElement.getPassThroughAttributes(false);
             if (null != passThroughAttrs && !passThroughAttrs.isEmpty()) {
-                considerPassThroughAttributes(passThroughAttrs);
+                Map<String, Object> combinedPassThroughAttrs = kind == ElementKind.SCRIPT
+                    ? null
+                    : RenderKitUtils.getCombinedPassThroughAttributes(componentForElement);
+                considerPassThroughAttributes(combinedPassThroughAttrs != null ? combinedPassThroughAttrs : passThroughAttrs);
             }
         }
 

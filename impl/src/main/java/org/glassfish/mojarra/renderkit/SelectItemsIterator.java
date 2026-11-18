@@ -26,9 +26,11 @@ import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UISelectItem;
+import jakarta.faces.component.UISelectItemGroups;
 import jakarta.faces.component.UISelectItems;
 import jakarta.faces.component.UISelectMany;
 import jakarta.faces.component.UISelectOne;
@@ -149,6 +151,18 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
     }
 
     /**
+     * Returns the element which produced the item last returned by {@link #next()}: the member of the collection or array of a <code>UISelectItems</code>
+     * value, the member of a <code>UISelectItemGroups</code> value which produced the group, the <code>SelectItem</code> of a <code>UISelectItem</code> or of a
+     * single-valued <code>UISelectItems</code>, or the <code>Map.Entry</code> of a <code>Map</code> value. This is the value which the <code>var</code>
+     * attribute of <code>UISelectItems</code> exposes.
+     *
+     * @return the current element.
+     */
+    public Object currentElement() {
+        return items.currentElement();
+    }
+
+    /**
      * <p>
      * Throw UnsupportedOperationException.
      * </p>
@@ -186,7 +200,7 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
             Object value = ui.getValue();
             if (value != null) {
                 if (value instanceof SelectItem) {
-                    items = new ArrayIterator(ctx, (UISelectItems) kid, new Object[] { value });
+                    items = new ArrayIterator(ctx, ui, new Object[] { value });
                 }
                 else if (value.getClass().isArray()) {
                     items = new ArrayIterator(ctx, (UISelectItems) kid, value);
@@ -195,7 +209,7 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
                     items = new IterableItemIterator(ctx, (UISelectItems) kid, (Iterable<?>) value);
                 }
                 else if (value instanceof Map) {
-                    items = new MapIterator(ctx, (UISelectItems) kid, (Map<?, ?>) value);
+                    items = new MapIterator(ctx, ui, (Map<?, ?>) value);
                 }
                 else {
                     throw new IllegalArgumentException();
@@ -258,6 +272,11 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
             return selectComponent;
         }
 
+        @Override
+        public Object currentElement() {
+            return item;
+        }
+
         // ----------------------------------------------- Methods from Iterator
 
         @Override
@@ -303,17 +322,17 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
      */
     private static final class MapIterator extends GenericObjectSelectItemIterator {
 
-        private FacesContext ctx;
-        private Iterator<Map.Entry<?, ?>> iterator;
+        private final SelectItem item = new SelectItem();
+        private final FacesContext ctx;
+        private final Iterator<? extends Map.Entry<?, ?>> iterator;
 
         // -------------------------------------------------------- Constructors
 
-        @SuppressWarnings({ "rawtypes", "unchecked" })
-        private MapIterator(FacesContext ctx, UISelectItems sourceComponent, Map map) {
+        private MapIterator(FacesContext ctx, UISelectItems sourceComponent, Map<?, ?> map) {
 
             super(sourceComponent);
             this.ctx = ctx;
-            this.iterator = map.entrySet().iterator();
+            iterator = map.entrySet().iterator();
         }
 
         // ----------------------------------------------- Methods from Iterator
@@ -329,17 +348,11 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
         public SelectItem next() {
 
             Map.Entry<?, ?> entry = iterator.next();
-            if (!hasVar()) {
-                SelectItem item = new SelectItem();
-                Object key = entry.getKey();
-                Object value = entry.getValue();
-                item.setLabel(key != null ? key.toString() : value.toString());
-                item.setValue(value != null ? value : "");
-                return item;
-            }
-            else {
-                return getSelectItemFor(ctx, entry);
-            }
+            Object key = entry.getKey();
+            Object value = entry.getValue();
+            item.setLabel(key != null ? key.toString() : value.toString());
+            item.setValue(value != null ? value : "");
+            return getSelectItemFor(ctx, entry, item);
 
         }
 
@@ -354,7 +367,7 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
 
     /**
      * <p>
-     * Base class to support iterating over Collections or Arrays that may or may not contain <code>SelectItem</code> instances.
+     * Base class to support iterating over collections, arrays or maps that may or may not contain <code>SelectItem</code> instances.
      * </p>
      */
     private static abstract class GenericObjectSelectItemIterator implements ComponentAwareSelectItemIterator<SelectItem> {
@@ -369,19 +382,24 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
         /**
          * The source <code>UISelectItems</code>.
          */
-        protected final transient UISelectItems sourceComponent;
+        protected transient UISelectItems sourceComponent;
 
         /**
          * The request-scoped variable under which the current object will be exposed.
          */
-        protected final String varName;
+        private final String var;
+
+        /**
+         * The element which produced the item last returned by {@link #next()}, as {@link SelectItemsIterator#currentElement()} describes.
+         */
+        private transient Object currentElement;
 
         // -------------------------------------------------------- Constructors
 
         protected GenericObjectSelectItemIterator(UISelectItems sourceComponent) {
 
             this.sourceComponent = sourceComponent;
-            this.varName = (String) sourceComponent.getAttributes().get(VAR);
+            var = (String) sourceComponent.getAttributes().get(VAR);
 
         }
 
@@ -392,19 +410,40 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
             return sourceComponent;
         }
 
-        // --------------------------------------------------- Protected Methods
-
-        protected boolean hasVar() {
-            return varName != null;
+        /**
+         * {@link UISelectItemGroups#getValue()} keeps the member as the value of the group it produces, because a group has no value of its own.
+         */
+        @Override
+        public Object currentElement() {
+            return sourceComponent instanceof UISelectItemGroups ? ((SelectItem) currentElement).getValue() : currentElement;
         }
+
+        // --------------------------------------------------- Protected Methods
 
         protected SelectItem getSelectItemFor(FacesContext ctx, Object value) {
 
-            if (genericObjectSI == null) {
-                genericObjectSI = new GenericObjectSelectItem(sourceComponent, varName);
+            return getSelectItemFor(ctx, value, value instanceof SelectItem ? (SelectItem) value : null);
+
+        }
+
+        /**
+         * Returns the select item for the given element. Without <code>var</code>, and for a <code>SelectItemGroup</code>, it is the given item of the element.
+         * Otherwise it is created from the attributes of the source component, with the given item of the element supplying the value of each attribute which
+         * is not set.
+         */
+        protected SelectItem getSelectItemFor(FacesContext ctx, Object element, SelectItem elementItem) {
+
+            currentElement = element;
+
+            if (elementItem != null && (var == null || elementItem instanceof SelectItemGroup)) {
+                return elementItem;
             }
 
-            genericObjectSI.updateItem(ctx, value);
+            if (genericObjectSI == null) {
+                genericObjectSI = new GenericObjectSelectItem(sourceComponent, var);
+            }
+
+            genericObjectSI.updateItem(ctx, element, elementItem);
             return genericObjectSI;
 
         }
@@ -430,66 +469,70 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
             /**
              * The request-scoped variable under which the current object will be exposed.
              */
-            private final String varName;
+            private final String var;
 
             private UISelectItems sourceComponent;
 
             // -------------------------------------------------------- Constructors
 
-            private GenericObjectSelectItem(UISelectItems sourceComponent, String varName) {
+            private GenericObjectSelectItem(UISelectItems sourceComponent, String var) {
 
+                this.var = var;
                 this.sourceComponent = sourceComponent;
-                this.varName = varName;
 
             }
 
             // ----------------------------------------------------- Private Methods
 
             /**
-             * Updates the <code>SelectItem</code> properties based on the current value.
-             *
-             * @param ctx the {@link FacesContext} for the current request
-             * @param value the value to build the updated values from
+             * Updates this item from the attributes of the source component, evaluated with <code>var</code> exposing the given element. The given item of the
+             * element, if any, supplies the value of each attribute which is not set.
              */
-            private void updateItem(FacesContext ctx, Object value) {
+            private void updateItem(FacesContext ctx, Object value, SelectItem elementItem) {
 
                 Map<String, Object> reqMap = ctx.getExternalContext().getRequestMap();
                 Object oldVarValue = null;
-                if (varName != null) {
-                    oldVarValue = reqMap.put(varName, value);
+                if (var != null) {
+                    oldVarValue = reqMap.put(var, value);
                 }
                 try {
                     Map<String, Object> attrs = sourceComponent.getAttributes();
-                    Object itemValueResult = attrs.get(ITEM_VALUE);
-                    Object itemLabelResult = attrs.get(ITEM_LABEL);
-                    Object itemDescriptionResult = attrs.get(ITEM_DESCRIPTION);
-                    Object itemEscapedResult = attrs.get(ITEM_ESCAPED);
-                    Object itemDisabledResult = attrs.get(ITEM_DISABLED);
+                    updateItem(attrs, value, elementItem);
                     Object noSelectionValueResult = attrs.get(NO_SELECTION_VALUE);
                     Object noSelectionOptionResult = attrs.get(NO_SELECTION_OPTION);
-                    setValue(itemValueResult != null ? itemValueResult : value);
-                    setLabel(itemLabelResult != null ? itemLabelResult.toString() : value.toString());
-                    setDescription(itemDescriptionResult != null ? itemDescriptionResult.toString() : null);
-                    setEscape(Util.toBoolean(itemEscapedResult, true));
-                    setDisabled(Util.toBoolean(itemDisabledResult, false));
                     if (null != noSelectionOptionResult) {
                         setNoSelectionOption(Util.toBoolean(noSelectionOptionResult, false));
                     }
                     else if (null != noSelectionValueResult) {
-                        setNoSelectionOption(getValue().equals(noSelectionValueResult));
+                        setNoSelectionOption(Objects.equals(getValue(), noSelectionValueResult));
+                    }
+                    else {
+                        setNoSelectionOption(elementItem != null && elementItem.isNoSelectionOption());
                     }
                 }
                 finally {
-                    if (varName != null) {
+                    if (var != null) {
                         if (oldVarValue != null) {
-                            reqMap.put(varName, oldVarValue);
+                            reqMap.put(var, oldVarValue);
                         }
                         else {
-                            reqMap.remove(varName);
+                            reqMap.remove(var);
                         }
                     }
                 }
 
+            }
+
+            private void updateItem(Map<String, Object> attrs, Object value, SelectItem elementItem) {
+                Object itemValueResult = attrs.get(ITEM_VALUE);
+                Object itemLabelResult = attrs.get(ITEM_LABEL);
+                Object itemDescriptionResult = attrs.get(ITEM_DESCRIPTION);
+                boolean hasElementItem = elementItem != null;
+                setValue(itemValueResult != null ? itemValueResult : hasElementItem ? elementItem.getValue() : value);
+                setLabel(itemLabelResult != null ? itemLabelResult.toString() : hasElementItem ? elementItem.getLabel() : value.toString());
+                setDescription(itemDescriptionResult != null ? itemDescriptionResult.toString() : hasElementItem ? elementItem.getDescription() : null);
+                setEscape(Util.toBoolean(attrs.get(ITEM_ESCAPED), !hasElementItem || elementItem.isEscape()));
+                setDisabled(Util.toBoolean(attrs.get(ITEM_DISABLED), hasElementItem && elementItem.isDisabled()));
             }
 
             // --------------------------------------- Methods from Serializable
@@ -513,6 +556,8 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
     private interface ComponentAwareSelectItemIterator<E extends Object> extends Iterator<E> {
 
         UIComponent currentSelectComponent();
+
+        Object currentElement();
 
     }
 
@@ -555,13 +600,7 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
                 throw new NoSuchElementException();
             }
 
-            Object item = Array.get(array, index++);
-            if (item instanceof SelectItem && (item instanceof SelectItemGroup || !hasVar())) {
-                return (SelectItem) item;
-            }
-            else {
-                return getSelectItemFor(ctx, item);
-            }
+            return getSelectItemFor(ctx, Array.get(array, index++));
 
         }
 
@@ -604,13 +643,7 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
         @Override
         public SelectItem next() {
 
-            Object item = iterator.next();
-            if (item instanceof SelectItem && (item instanceof SelectItemGroup || !hasVar())) {
-                return (SelectItem) item;
-            }
-            else {
-                return getSelectItemFor(ctx, item);
-            }
+            return getSelectItemFor(ctx, iterator.next());
 
         }
 

@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -740,16 +741,6 @@ public final class ComponentSupport {
 
     }
 
-    public static boolean hasPassthroughAttributes(Tag t) {
-        for (String namespace : PassThroughAttributeLibrary.NAMESPACES) {
-            TagAttribute[] passthroughAttrs = t.getAttributes().getAll(namespace);
-            if (passthroughAttrs != null && passthroughAttrs.length > 0) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public static void copyPassthroughAttributes(FaceletContext ctx, UIComponent c, Tag t) {
 
         if (null == c || null == t) {
@@ -762,10 +753,29 @@ public final class ComponentSupport {
             return;
         }
 
-        Map<String, Object> componentPassthroughAttrs = c.getPassThroughAttributes(true);
+        putPassthroughAttributes(ctx, passthroughAttrs, c.getPassThroughAttributes(true));
+    }
+
+    /**
+     * Returns the pass-through attributes of the given tag by local name, each as its literal value or as its value expression, or an empty map when it has
+     * none.
+     */
+    public static Map<String, Object> getPassthroughAttributes(FaceletContext ctx, Tag t) {
+        TagAttribute[] passthroughAttrs = passthroughAttributes(t.getAttributes());
+
+        if (0 == passthroughAttrs.length) {
+            return Map.of();
+        }
+
+        Map<String, Object> attrs = new LinkedHashMap<>(passthroughAttrs.length);
+        putPassthroughAttributes(ctx, passthroughAttrs, attrs);
+        return attrs;
+    }
+
+    private static void putPassthroughAttributes(FaceletContext ctx, TagAttribute[] passthroughAttrs, Map<String, Object> target) {
         for (TagAttribute cur : passthroughAttrs) {
             Object attrValue = cur.isLiteral() ? cur.getValue(ctx) : cur.getValueExpression(ctx, Object.class);
-            componentPassthroughAttrs.put(cur.getLocalName(), attrValue);
+            target.put(cur.getLocalName(), attrValue);
         }
     }
 

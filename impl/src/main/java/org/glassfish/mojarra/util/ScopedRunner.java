@@ -74,13 +74,15 @@ public class ScopedRunner {
     /**
      * Invokes the callback within the scope of the variables being given in the constructor.
      *
+     * @param <T> The type of the result of the callback.
      * @param callback The callback which can throw IOException.
+     * @return The result of the callback.
      * @throws IOException when an I/O error occurs.
      */
-    public void invokeThrowing(ThrowingRunnable callback) throws IOException {
+    public <T> T invokeThrowing(ThrowingSupplier<T> callback) throws IOException {
         try {
             setNewScope();
-            callback.run();
+            return callback.get();
         }
         finally {
             restorePreviousScope();
@@ -88,9 +90,9 @@ public class ScopedRunner {
     }
 
     @FunctionalInterface
-    public interface ThrowingRunnable {
+    public interface ThrowingSupplier<T> {
 
-        void run() throws IOException;
+        T get() throws IOException;
 
     }
 

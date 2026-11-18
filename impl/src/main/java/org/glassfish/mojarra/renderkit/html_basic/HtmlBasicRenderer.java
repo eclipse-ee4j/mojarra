@@ -21,7 +21,7 @@ package org.glassfish.mojarra.renderkit.html_basic;
 
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.WARNING;
-import static org.glassfish.mojarra.facelets.tag.faces.core.FacetHandler.hasFacetPassThroughAttributes;
+import static org.glassfish.mojarra.facelets.tag.faces.core.FacetHandler.getFacetPassThroughAttributes;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.PredefinedPostbackParameter.BEHAVIOR_EVENT_PARAM;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.PredefinedPostbackParameter.BEHAVIOR_SOURCE_PARAM;
 import static org.glassfish.mojarra.util.MessageUtils.CANT_WRITE_ID_ATTRIBUTE_ERROR_MESSAGE_ID;
@@ -57,7 +57,9 @@ import jakarta.faces.component.search.SearchExpressionContext;
 import jakarta.faces.component.search.SearchExpressionHandler;
 import jakarta.faces.component.search.SearchExpressionHint;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.PartialResponseWriter;
 import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.context.ResponseWriterWrapper;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.ConverterException;
 import jakarta.faces.render.Renderer;
@@ -257,7 +259,8 @@ public abstract class HtmlBasicRenderer extends Renderer<UIComponent> {
      *
      * @param context FacesContext for the current request
      * @param component the component to recursively encode
-     * @param facet whether the component is a facet; in such case any passthrough attributes will be written to current (parent) component
+     * @param facet whether the component is a facet; in such case the pass-through attributes of its <code>f:facet</code> tag are written to the element
+     * currently started by the parent renderer
      *
      * @throws IOException if an error occurrs during the encode process
      */
@@ -269,8 +272,14 @@ public abstract class HtmlBasicRenderer extends Renderer<UIComponent> {
             return;
         }
 
-        if (facet && hasFacetPassThroughAttributes(component) && context.getResponseWriter() instanceof HtmlResponseWriter html) {
-            html.writePassthroughAttributes(component.getPassThroughAttributes());
+        Map<String, Object> facetPassThroughAttributes = facet ? getFacetPassThroughAttributes(component) : null;
+
+        if (facetPassThroughAttributes != null) {
+            HtmlResponseWriter html = getHtmlResponseWriter(context.getResponseWriter());
+
+            if (html != null) {
+                html.writePassthroughAttributes(facetPassThroughAttributes);
+            }
         }
 
         // Render this component and its children recursively
@@ -287,6 +296,20 @@ public abstract class HtmlBasicRenderer extends Renderer<UIComponent> {
         }
         component.encodeEnd(context);
 
+    }
+
+    /**
+     * Returns the {@link HtmlResponseWriter} at the end of the given chain of {@link ResponseWriterWrapper}s, such as the {@link PartialResponseWriter} of an
+     * ajax render, or <code>null</code> when the chain ends in another writer.
+     */
+    private static HtmlResponseWriter getHtmlResponseWriter(ResponseWriter writer) {
+        ResponseWriter current = writer;
+
+        while (current instanceof ResponseWriterWrapper wrapper) {
+            current = wrapper.getWrapped();
+        }
+
+        return current instanceof HtmlResponseWriter html ? html : null;
     }
 
     /**

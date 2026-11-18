@@ -55,10 +55,12 @@ import jakarta.faces.application.Resource;
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.component.ActionSource;
 import jakarta.faces.component.Doctype;
+import jakarta.faces.component.TransientStateHelper;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIComponentBase;
 import jakarta.faces.component.UIForm;
 import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UISelectItems;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.component.behavior.AjaxBehavior;
 import jakarta.faces.component.behavior.ClientBehavior;
@@ -196,6 +198,7 @@ public class RenderKitUtils {
      * the first element which can carry one is parsed.
      */
     private static final String BEHAVIOR_EVENT_BOOTSTRAP_RESOURCE_NAME = "behavior-event-bootstrap.js";
+    private static final String COMBINED_PASS_THROUGH_ATTRIBUTES = RenderKitUtils.class.getName() + ".combinedPassThroughAttributes";
 
     protected static final Logger LOGGER = FacesLogger.RENDERKIT.getLogger();
 
@@ -335,6 +338,48 @@ public class RenderKitUtils {
 
         return new SelectItemsIterator<>(context, component);
 
+    }
+
+    /**
+     * Returns the <code>var</code> of the given component when it is a <code>UISelectItems</code> with pass-through attributes, else <code>null</code>.
+     *
+     * @param component the component which produced the current select item.
+     * @return the <code>var</code> under which the pass-through attributes of the component refer to the current element of its value, or <code>null</code>.
+     */
+    public static String getPassThroughVar(UIComponent component) {
+        if (component instanceof UISelectItems && component.getPassThroughAttributes(false) != null) {
+            return (String) component.getAttributes().get("var");
+        }
+
+        return null;
+    }
+
+    /**
+     * Keeps the given pass-through attributes in the transient state of the given component, so that the elements started with the component carry them in
+     * place of its own, until this method is called with <code>null</code>.
+     *
+     * @param component the component whose elements carry the given pass-through attributes.
+     * @param passThroughAttributes the pass-through attributes, or <code>null</code> to remove them.
+     */
+    public static void setCombinedPassThroughAttributes(UIComponent component, Map<String, Object> passThroughAttributes) {
+        TransientStateHelper transientState = component.getTransientStateHelper(passThroughAttributes != null);
+
+        if (transientState != null) {
+            transientState.putTransient(COMBINED_PASS_THROUGH_ATTRIBUTES, passThroughAttributes);
+        }
+    }
+
+    /**
+     * Returns the pass-through attributes which the elements started with the given component carry in place of its own, as set by
+     * {@link #setCombinedPassThroughAttributes(UIComponent, Map)}.
+     *
+     * @param component the component whose elements are started.
+     * @return the combined pass-through attributes, or <code>null</code> when there are none.
+     */
+    @SuppressWarnings("unchecked")
+    public static Map<String, Object> getCombinedPassThroughAttributes(UIComponent component) {
+        TransientStateHelper transientState = component.getTransientStateHelper(false);
+        return transientState != null ? (Map<String, Object>) transientState.getTransient(COMBINED_PASS_THROUGH_ATTRIBUTES) : null;
     }
 
     /**

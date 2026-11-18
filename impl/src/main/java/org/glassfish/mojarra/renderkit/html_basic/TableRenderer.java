@@ -126,7 +126,7 @@ public class TableRenderer extends BaseTableRenderer {
                 if (wroteTableBody) {
                     writer.endElement("tbody");
                 }
-                writer.startElement("tbody", data);
+                writer.startElement("tbody", null);
                 wroteTableBody = true;
             }
 
@@ -218,10 +218,10 @@ public class TableRenderer extends BaseTableRenderer {
         String footerClass = table instanceof HtmlDataTable dataTable
             ? dataTable.getFooterClass()
             : (String) table.getAttributes().get("footerClass");
-        writer.startElement("tfoot", table);
+        writer.startElement("tfoot", null);
         writer.writeText("\n", table, null);
         if (info.hasFooterFacets) {
-            writer.startElement("tr", table);
+            writer.startElement("tr", null);
             writer.writeText("\n", table, null);
             for (UIColumn column : info.columns) {
                 String columnFooterClass = column instanceof HtmlColumn htmlColumn
@@ -244,8 +244,8 @@ public class TableRenderer extends BaseTableRenderer {
             renderRowEnd(context, table, writer);
         }
         if (footer != null) {
-            writer.startElement("tr", footer);
-            writer.startElement("td", footer);
+            writer.startElement("tr", null);
+            writer.startElement("td", null);
             if (footerClass != null) {
                 writer.writeAttribute("class", footerClass, "footerClass");
             }
@@ -273,11 +273,11 @@ public class TableRenderer extends BaseTableRenderer {
         String headerClass = table instanceof HtmlDataTable dataTable
             ? dataTable.getHeaderClass()
             : (String) table.getAttributes().get("headerClass");
-        writer.startElement("thead", table);
+        writer.startElement("thead", null);
         writer.writeText("\n", table, null);
         if (header != null) {
-            writer.startElement("tr", header);
-            writer.startElement("th", header);
+            writer.startElement("tr", null);
+            writer.startElement("th", null);
             if (headerClass != null) {
                 writer.writeAttribute("class", headerClass, "headerClass");
             }
@@ -290,7 +290,7 @@ public class TableRenderer extends BaseTableRenderer {
             renderRowEnd(context, table, writer);
         }
         if (info.hasHeaderFacets) {
-            writer.startElement("tr", table);
+            writer.startElement("tr", null);
             writer.writeText("\n", table, null);
             for (UIColumn column : info.columns) {
                 String columnHeaderClass = column instanceof HtmlColumn htmlColumn
@@ -378,7 +378,7 @@ public class TableRenderer extends BaseTableRenderer {
 
     private void renderEmptyTableBody(final ResponseWriter writer, final UIComponent component) throws IOException {
 
-        writer.startElement("tbody", component);
+        writer.startElement("tbody", null);
         renderEmptyTableRow(writer, component);
         writer.endElement("tbody");
 
@@ -386,11 +386,11 @@ public class TableRenderer extends BaseTableRenderer {
 
     private void renderEmptyTableRow(final ResponseWriter writer, final UIComponent component) throws IOException {
 
-        writer.startElement("tr", component);
+        writer.startElement("tr", null);
         List<UIColumn> columns = getColumns(component);
         for (UIColumn column : columns) {
             if (column.isRendered()) {
-                writer.startElement("td", component);
+                writer.startElement("td", null);
                 writer.endElement("td");
             }
         }
