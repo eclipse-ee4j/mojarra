@@ -30,6 +30,7 @@ import com.sun.faces.RIConstants;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter;
 import com.sun.faces.io.FastStringWriter;
+import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.HtmlUtils;
 import com.sun.faces.util.MessageUtils;
 
@@ -592,7 +593,9 @@ public class HtmlResponseWriter extends ResponseWriter {
         if (null != componentForElement) {
             Map<String, Object> passThroughAttrs = componentForElement.getPassThroughAttributes(false);
             if (null != passThroughAttrs && !passThroughAttrs.isEmpty()) {
-                considerPassThroughAttributes(passThroughAttrs);
+                Map<String, Object> combinedPassThroughAttrs = kind == ElementKind.SCRIPT ? null
+                        : RenderKitUtils.getCombinedPassThroughAttributes(componentForElement);
+                considerPassThroughAttributes(combinedPassThroughAttrs != null ? combinedPassThroughAttrs : passThroughAttrs);
             }
         }
 

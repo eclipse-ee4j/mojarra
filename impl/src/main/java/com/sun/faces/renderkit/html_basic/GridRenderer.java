@@ -102,7 +102,7 @@ public class GridRenderer extends BaseTableRenderer {
             renderRowEnd(context, component, writer);
         }
         if (!rowRendered) {
-            renderEmptyTableRow(writer, component);
+            renderEmptyTableRow(writer);
         }
         renderTableBodyEnd(context, component, writer);
     }
@@ -136,7 +136,7 @@ public class GridRenderer extends BaseTableRenderer {
     protected void renderRow(FacesContext context, UIComponent table, UIComponent child, ResponseWriter writer) throws IOException {
 
         TableMetaInfo info = getMetaInfo(context, table);
-        writer.startElement("td", table);
+        writer.startElement("td", null);
         String columnClass = info.getCurrentColumnClass();
         if (columnClass != null) {
             writer.writeAttribute("class", columnClass, "columns");
@@ -155,10 +155,10 @@ public class GridRenderer extends BaseTableRenderer {
         String headerClass = table instanceof HtmlPanelGrid grid ? grid.getHeaderClass()
                 : (String) table.getAttributes().get("headerClass");
         if (header != null) {
-            writer.startElement("thead", table);
+            writer.startElement("thead", null);
             writer.writeText("\n", table, null);
-            writer.startElement("tr", header);
-            writer.startElement("th", header);
+            writer.startElement("tr", null);
+            writer.startElement("th", null);
             if (headerClass != null) {
                 writer.writeAttribute("class", headerClass, "headerClass");
             }
@@ -182,10 +182,10 @@ public class GridRenderer extends BaseTableRenderer {
         String footerClass = table instanceof HtmlPanelGrid grid ? grid.getFooterClass()
                 : (String) table.getAttributes().get("footerClass");
         if (footer != null) {
-            writer.startElement("tfoot", table);
+            writer.startElement("tfoot", null);
             writer.writeText("\n", table, null);
-            writer.startElement("tr", footer);
-            writer.startElement("td", footer);
+            writer.startElement("tr", null);
+            writer.startElement("td", null);
             if (footerClass != null) {
                 writer.writeAttribute("class", footerClass, "footerClass");
             }
@@ -202,10 +202,10 @@ public class GridRenderer extends BaseTableRenderer {
 
     // ------------------------------------------------------- Private Methods
 
-    private void renderEmptyTableRow(final ResponseWriter writer, final UIComponent component) throws IOException {
+    private void renderEmptyTableRow(final ResponseWriter writer) throws IOException {
 
-        writer.startElement("tr", component);
-        writer.startElement("td", component);
+        writer.startElement("tr", null);
+        writer.startElement("td", null);
         writer.endElement("td");
         writer.endElement("tr");
 

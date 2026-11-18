@@ -64,7 +64,7 @@ import jakarta.el.ExpressionFactory;
 import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UISelectItems;
+import jakarta.faces.component.UISelectItemGroups;
 import jakarta.faces.component.UISelectMany;
 import jakarta.faces.component.UISelectOne;
 import jakarta.faces.component.ValueHolder;
@@ -88,7 +88,6 @@ import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.renderkit.SelectItemsIterator;
 import com.sun.faces.util.RequestStateManager;
 import com.sun.faces.util.ScopedRunner;
-import com.sun.faces.util.ScopedRunner.ThrowingRunnable;
 import com.sun.faces.util.Util;
 
 /**
@@ -409,6 +408,10 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
         return collection;
     }
 
+    /**
+     * Renders the <code>option</code> of the given item, with the pass-through attributes of the given select component,
+     * or with none when it is <code>null</code>. Returns <code>false</code> when the item is hidden.
+     */
     protected boolean renderOption(FacesContext context, UIComponent component, UIComponent selectComponent, Converter<?> converter, SelectItem curItem,
             Object currentSelections, Object[] submittedValues, OptionComponentInfo optionInfo) throws IOException {
 
@@ -438,7 +441,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
         ResponseWriter writer = context.getResponseWriter();
         assert writer != null;
         writer.writeText("\t", component, null);
-        writer.startElement("option", null != selectComponent ? selectComponent : component);
+        writer.startElement("option", selectComponent);
         writer.writeAttribute("value", valueString, "value");
 
         if (isSelected) {
@@ -463,26 +466,11 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
 
         final String label = curItem.isEscape() ? Optional.ofNullable(curItem.getLabel()).orElse(valueString) : curItem.getLabel();
 
-        ThrowingRunnable writeAction = () -> {
-            if (curItem.isEscape()) {
-                writer.writeText(label, component, "label");
-            }
-            else {
-                writer.write(label);
-            }
-        };
-
-        String varName = null;
-
-        if (selectComponent instanceof UISelectItems && selectComponent.getPassThroughAttributes(false) != null) {
-            varName = (String) ((UISelectItems) selectComponent).getAttributes().get("var");
-        }
-
-        if (varName != null) {
-            new ScopedRunner(context).with(varName, curItem.getValue()).invokeThrowing(writeAction);
+        if (curItem.isEscape()) {
+            writer.writeText(label, component, "label");
         }
         else {
-            writeAction.run();
+            writer.write(label);
         }
 
         writer.endElement("option");
@@ -619,13 +607,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
 
     protected int renderOptions(FacesContext context, UIComponent component, SelectItemsIterator<SelectItem> items) throws IOException {
 
-        ResponseWriter writer = context.getResponseWriter();
-
-        Converter<?> converter = null;
-        if (component instanceof ValueHolder) {
-            converter = ((ValueHolder) component).getConverter();
-        }
-
+        Converter<?> converter = component instanceof ValueHolder ? ((ValueHolder) component).getConverter() : null;
         int count = 0;
         Object currentSelections = getCurrentSelectedValues(component);
         Object[] submittedValues = getSubmittedSelectedValues(component);
@@ -635,33 +617,57 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
         while (items.hasNext()) {
             SelectItem item = items.next();
             UIComponent selectComponent = items.currentSelectComponent();
+            String var = RenderKitUtils.getPassThroughVar(selectComponent);
 
-            if (item instanceof SelectItemGroup) {
-                // render OPTGROUP
-                writer.startElement("optgroup", null != selectComponent ? selectComponent : component);
-                writer.writeAttribute("label", item.getLabel(), "label");
-
-                // if the component is disabled, "disabled" attribute would be rendered
-                // on "select" tag, so don't render "disabled" on every option.
-                if (!optionInfo.isDisabled() && item.isDisabled()) {
-                    writer.writeAttribute("disabled", true, "disabled");
-                }
-                count++;
-                // render options of this group.
-                SelectItem[] itemsArray = ((SelectItemGroup) item).getSelectItems();
-                for (SelectItem element : itemsArray) {
-                    if (renderOption(context, component, selectComponent, converter, element, currentSelections, submittedValues, optionInfo)) {
-                        count++;
-                    }
-                }
-                writer.endElement("optgroup");
+            if (var != null) {
+                count += new ScopedRunner(context).with(var, items.currentElement())
+                        .invokeThrowing(() -> renderItem(context, component, selectComponent, converter, item, currentSelections, submittedValues, optionInfo));
             } else {
-                if (renderOption(context, component, selectComponent, converter, item, currentSelections, submittedValues, optionInfo)) {
-                    count++;
-                }
+                count += renderItem(context, component, selectComponent, converter, item, currentSelections, submittedValues, optionInfo);
             }
         }
 
+        return count;
+    }
+
+    private int renderItem(FacesContext context, UIComponent component, UIComponent selectComponent, Converter<?> converter, SelectItem item,
+            Object currentSelections, Object[] submittedValues, OptionComponentInfo optionInfo) throws IOException {
+
+        if (item instanceof SelectItemGroup) {
+            return renderOptionGroup(context, component, selectComponent, converter, (SelectItemGroup) item, currentSelections, submittedValues, optionInfo);
+        }
+
+        return renderOption(context, component, selectComponent, converter, item, currentSelections, submittedValues, optionInfo) ? 1 : 0;
+    }
+
+    /**
+     * Renders the <code>optgroup</code> of the given group and the <code>option</code> of each of its items. The
+     * pass-through attributes of a <code>UISelectItemGroups</code> belong to its <code>optgroup</code> only, and those
+     * of a <code>UISelectItems</code> to each <code>optgroup</code> and <code>option</code> it produces.
+     */
+    private int renderOptionGroup(FacesContext context, UIComponent component, UIComponent selectComponent, Converter<?> converter, SelectItemGroup group,
+            Object currentSelections, Object[] submittedValues, OptionComponentInfo optionInfo) throws IOException {
+
+        ResponseWriter writer = context.getResponseWriter();
+        writer.startElement("optgroup", selectComponent);
+        writer.writeAttribute("label", group.getLabel(), "label");
+
+        // if the component is disabled, "disabled" attribute would be rendered
+        // on "select" tag, so don't render "disabled" on every option.
+        if (!optionInfo.isDisabled() && group.isDisabled()) {
+            writer.writeAttribute("disabled", true, "disabled");
+        }
+
+        int count = 1;
+        UIComponent optionComponent = selectComponent instanceof UISelectItemGroups ? null : selectComponent;
+
+        for (SelectItem item : group.getSelectItems()) {
+            if (renderOption(context, component, optionComponent, converter, item, currentSelections, submittedValues, optionInfo)) {
+                count++;
+            }
+        }
+
+        writer.endElement("optgroup");
         return count;
     }
 
