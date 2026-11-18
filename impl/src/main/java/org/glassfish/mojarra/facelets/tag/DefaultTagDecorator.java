@@ -137,7 +137,11 @@ class DefaultTagDecorator implements TagDecorator {
         }
         for (Mapper mapper : Mapper.values()) {
             if (tag.getLocalName().equals(mapper.name())) {
-                return mapper.elementConverter.decorate(tag);
+                Tag decorated = mapper.elementConverter.decorate(tag);
+                if (decorated != null) {
+                    return decorated;
+                }
+                break;
             }
         }
 
@@ -204,7 +208,7 @@ class DefaultTagDecorator implements TagDecorator {
 
             if (arbiterAttribute == null) {
                 // no arbiter
-                return null;// convertTag(tag, namespace, localName);
+                return null;
             }
 
             // PENDING
