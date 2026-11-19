@@ -65,6 +65,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.sun.faces.component.NestedIterators;
+
 import jakarta.el.ELException;
 import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
@@ -205,8 +207,8 @@ public abstract class UIComponentBase extends UIComponent {
 
     // Cached first NamingContainer ancestor, resolved lazily by getNamingContainerAncestor(). Depends only
     // on the parent chain, so it survives UIData/UIRepeat row iteration (which changes rowIndex and clientIds
-    // but not the tree) and lets the per-row clientId recompute skip the parent-chain walk. Invalidated only
-    // in setParent (the sole place this component's parent chain changes).
+    // but not the tree) and lets the per-row clientId recompute skip the parent-chain walk. Cleared by setParent of
+    // this component, and by an add or move of an ancestor which changes its parent chain.
     private UIComponent namingContainerAncestor;
 
     /**
@@ -215,6 +217,25 @@ public abstract class UIComponentBase extends UIComponent {
      * </p>
      */
     private UIComponent parent;
+
+    /**
+     * The parent this component was last removed from, while it has no parent. Descendants keep the client ids and
+     * naming container ancestors of that parent chain, and keep them after a re-add to the same parent with an unchanged
+     * parent chain. Set to this component itself once a naming container ancestor or client id within the parentless
+     * subtree is resolved through it, so that the next add clears the descendants. The old parent, and with it the old
+     * component tree, stays referenced until the next add.
+     */
+    private UIComponent detachedParent;
+
+    /**
+     * Incremented whenever the parent chain of this component changes.
+     */
+    private int parentChainVersion;
+
+    /**
+     * The {@link #parentChainVersion} of {@link #detachedParent} at the moment this component was removed from it.
+     */
+    private int detachedParentChainVersion;
 
     /**
      * Per-component cache of the resolved {@link Renderer} for this component's renderer type.
@@ -343,6 +364,9 @@ public abstract class UIComponentBase extends UIComponent {
         // If the clientId is not yet set
         if (clientId == null) {
             UIComponent namingContainerAncestor = getNamingContainerAncestor();
+            if (namingContainerAncestor == null) {
+                markResolvedThroughIfParentless(this);
+            }
 
             // Give the parent the opportunity to first grab a unique clientId
             String parentId = getParentId(context, namingContainerAncestor);
@@ -408,18 +432,25 @@ public abstract class UIComponentBase extends UIComponent {
         // The parent chain changed, so the cached NamingContainer ancestor is no longer valid.
         namingContainerAncestor = null;
         // The client id is derived from the parent chain, so a reparent invalidates it too.
-        clientId = null;
-        if (this.parent != null && this.parent != parent) {
-            clearCachedParentChainStateOfDescendants(this);
-        }
+        clearCachedClientId();
 
         if (parent == null) {
             if (this.parent != null) {
                 doPreRemoveProcessing(FacesContext.getCurrentInstance(), this);
+                detachedParent = this.parent;
+                if (detachedParent instanceof UIComponentBase) {
+                    detachedParentChainVersion = ((UIComponentBase) detachedParent).parentChainVersion;
+                }
                 this.parent = parent;
             }
             compositeParent = null;
         } else {
+            if (isParentChainChangedBy(parent)) {
+                parentChainVersion++;
+                clearParentChainDependentState();
+                clearCachedParentChainStateOfDescendants(this);
+            }
+            detachedParent = null;
             this.parent = parent;
             if (!added) {
 
@@ -1940,12 +1971,46 @@ public abstract class UIComponentBase extends UIComponent {
     private static void clearCachedParentChainState(UIComponent component) {
         if (component instanceof UIComponentBase) {
             UIComponentBase base = (UIComponentBase) component;
-            base.clientId = null;
+            base.parentChainVersion++;
+            base.clearParentChainDependentState();
+            base.clearCachedClientId();
             base.namingContainerAncestor = null;
         } else if (component.getId() != null) {
             component.setId(component.getId());
         }
         clearCachedParentChainStateOfDescendants(component);
+    }
+
+    /**
+     * Clear the cached client id of this component, which is derived from its parent chain.
+     */
+    void clearCachedClientId() {
+        clientId = null;
+    }
+
+    /**
+     * Clear the state of this component which depends on its parent chain, other than its cached client id and naming
+     * container ancestor. Called when this component is added after its parent chain changed, or when an ancestor is
+     * moved. Not called on a first add without anything resolved through its parent chain, so state computed while
+     * parentless must not be cached.
+     */
+    void clearParentChainDependentState() {
+        NestedIterators.clearNestedOf(this);
+    }
+
+    /**
+     * Whether adding this component to the given parent changes the parent chain its descendants have cached. A first
+     * add without any naming container ancestor or client id resolved through this component changes nothing cached.
+     */
+    private boolean isParentChainChangedBy(UIComponent parent) {
+        if (this.parent != null) {
+            return this.parent != parent;
+        }
+        if (detachedParent == null) {
+            return false;
+        }
+        return detachedParent != parent || !(parent instanceof UIComponentBase)
+                || ((UIComponentBase) parent).parentChainVersion != detachedParentChainVersion;
     }
 
     private void doPostAddProcessing(FacesContext context, UIComponent added) {
@@ -3852,25 +3917,43 @@ public abstract class UIComponentBase extends UIComponent {
             return namingContainerAncestor;
         }
 
-        // Resolve via the parent's (memoized) ancestor rather than walking the whole chain: each level is
-        // cached, so building/visiting the tree is O(n) instead of an O(depth) walk per component. The value
-        // is identical to the walk, with the same invalidation point (setParent clears the field).
+        // Each level memoizes its ancestor through the parent's, so resolving it for a whole tree is O(n).
         UIComponent parent = getParent();
+        if (parent == null) {
+            return null;
+        }
         if (parent instanceof NamingContainer) {
             return namingContainerAncestor = parent;
         }
+        markResolvedThroughIfParentless(parent);
         if (parent instanceof UIComponentBase) {
             return namingContainerAncestor = ((UIComponentBase) parent).getNamingContainerAncestor();
         }
 
         // Rare: a non-UIComponentBase parent has no memoized ancestor, so fall back to the chain walk.
+        UIComponent root = parent;
         for (UIComponent ancestor = parent; ancestor != null; ancestor = ancestor.getParent()) {
             if (ancestor instanceof NamingContainer) {
                 return namingContainerAncestor = ancestor;
             }
+            root = ancestor;
         }
+        markResolvedThroughIfParentless(root);
 
         return null;
+    }
+
+    /**
+     * Marks the given component, when it has no parent, as having a naming container ancestor or client id resolved
+     * through it, so that its next add clears the descendants.
+     */
+    static void markResolvedThroughIfParentless(UIComponent component) {
+        if (component instanceof UIComponentBase && component.getParent() == null) {
+            UIComponentBase base = (UIComponentBase) component;
+            if (base.detachedParent != base) {
+                base.detachedParent = base;
+            }
+        }
     }
 
     /**

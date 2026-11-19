@@ -354,6 +354,14 @@ public class UIRepeat extends UINamingContainer {
      */
     private final NestedIterators nestedIterators = new NestedIterators(this);
 
+    /**
+     * Forgets whether this repeat is nested in an iterating component, so that it is computed again. Called when the
+     * parent chain of this repeat changes.
+     */
+    public void clearNested() {
+        nestedIterators.clearNested();
+    }
+
     private Map<String, SavedState[]> getChildState() {
         if (childState == null) {
             childState = new HashMap<>();
