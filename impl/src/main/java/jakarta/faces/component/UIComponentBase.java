@@ -409,6 +409,9 @@ public abstract class UIComponentBase extends UIComponent {
         namingContainerAncestor = null;
         // The client id is derived from the parent chain, so a reparent invalidates it too.
         clientId = null;
+        if (this.parent != null && this.parent != parent) {
+            clearCachedParentChainStateOfDescendants(this);
+        }
 
         if (parent == null) {
             if (this.parent != null) {
@@ -1918,6 +1921,31 @@ public abstract class UIComponentBase extends UIComponent {
     private Object removeRestoredMarker(String key) {
         getStateHelper().remove(PropertyKeysPrivate.attributesThatAreSet, key);
         return getStateHelper().remove(PropertyKeys.attributes, key);
+    }
+
+    private static void clearCachedParentChainStateOfDescendants(UIComponent component) {
+        if (component.getChildCount() > 0) {
+            List<UIComponent> children = component.getChildren();
+            for (int i = 0, size = children.size(); i < size; i++) {
+                clearCachedParentChainState(children.get(i));
+            }
+        }
+        if (component.getFacetCount() > 0) {
+            for (UIComponent facet : component.getFacets().values()) {
+                clearCachedParentChainState(facet);
+            }
+        }
+    }
+
+    private static void clearCachedParentChainState(UIComponent component) {
+        if (component instanceof UIComponentBase) {
+            UIComponentBase base = (UIComponentBase) component;
+            base.clientId = null;
+            base.namingContainerAncestor = null;
+        } else if (component.getId() != null) {
+            component.setId(component.getId());
+        }
+        clearCachedParentChainStateOfDescendants(component);
     }
 
     private void doPostAddProcessing(FacesContext context, UIComponent added) {
