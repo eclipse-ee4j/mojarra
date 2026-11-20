@@ -20,7 +20,6 @@ package org.glassfish.mojarra.facelets.tag.faces.core;
 import java.io.IOException;
 import java.util.Map;
 
-import jakarta.faces.component.TransientStateHelper;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIPanel;
 import jakarta.faces.view.facelets.FaceletContext;
@@ -41,7 +40,6 @@ import org.glassfish.mojarra.facelets.tag.faces.ComponentSupport;
 public final class FacetHandler extends TagHandlerImpl implements jakarta.faces.view.facelets.FacetHandler {
 
     public static final String KEY = "facelets.FACET_NAME";
-    public static final String FACET_PASSTHROUGH_ATTRIBUTES = "facelets.FACET_PASSTHROUGH_ATTRIBUTES";
 
     protected final TagAttribute name;
 
@@ -78,7 +76,7 @@ public final class FacetHandler extends TagHandlerImpl implements jakarta.faces.
                     parent.getFacets().put(facetName, child);
                 }
 
-                child.getTransientStateHelper().putTransient(FACET_PASSTHROUGH_ATTRIBUTES, facetPassThroughAttributes);
+                child.getTransientStateHelper().putTransient(PASS_THROUGH_ATTRIBUTES_KEY, facetPassThroughAttributes);
             }
         }
         finally {
@@ -91,16 +89,6 @@ public final class FacetHandler extends TagHandlerImpl implements jakarta.faces.
     @Override
     public String getFacetName(FaceletContext ctxt) {
         return name.getValue(ctxt);
-    }
-
-    /**
-     * Returns the pass-through attributes of the <code>f:facet</code> tag which produced the given facet, or <code>null</code> when it has none. They belong on
-     * the element which the renderer starts around the facet, not on the markup of the facet itself.
-     */
-    @SuppressWarnings("unchecked")
-    public static Map<String, Object> getFacetPassThroughAttributes(UIComponent possibleFacet) {
-        TransientStateHelper helper = possibleFacet.getTransientStateHelper(false);
-        return helper != null ? (Map<String, Object>) helper.getTransient(FACET_PASSTHROUGH_ATTRIBUTES) : null;
     }
 
 }

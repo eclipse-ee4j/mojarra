@@ -21,7 +21,6 @@ package org.glassfish.mojarra.renderkit.html_basic;
 
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.WARNING;
-import static org.glassfish.mojarra.facelets.tag.faces.core.FacetHandler.getFacetPassThroughAttributes;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.PredefinedPostbackParameter.BEHAVIOR_EVENT_PARAM;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.PredefinedPostbackParameter.BEHAVIOR_SOURCE_PARAM;
 import static org.glassfish.mojarra.util.MessageUtils.CANT_WRITE_ID_ATTRIBUTE_ERROR_MESSAGE_ID;
@@ -63,6 +62,7 @@ import jakarta.faces.context.ResponseWriterWrapper;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.ConverterException;
 import jakarta.faces.render.Renderer;
+import jakarta.faces.view.facelets.FacetHandler;
 
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 import org.glassfish.mojarra.util.FacesLogger;
@@ -272,9 +272,9 @@ public abstract class HtmlBasicRenderer extends Renderer<UIComponent> {
             return;
         }
 
-        Map<String, Object> facetPassThroughAttributes = facet ? getFacetPassThroughAttributes(component) : null;
+        Map<String, Object> facetPassThroughAttributes = facet ? FacetHandler.getPassThroughAttributes(component) : Collections.emptyMap();
 
-        if (facetPassThroughAttributes != null) {
+        if (!facetPassThroughAttributes.isEmpty()) {
             HtmlResponseWriter html = getHtmlResponseWriter(context.getResponseWriter());
 
             if (html != null) {

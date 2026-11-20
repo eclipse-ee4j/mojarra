@@ -201,7 +201,7 @@ public class TableRenderer extends BaseTableRenderer {
 
         UIComponent colGroups = getFacet(table, "colgroups");
         if (colGroups != null) {
-            encodeRecursive(context, colGroups, true);
+            encodeRecursive(context, colGroups);
         }
 
     }
