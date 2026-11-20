@@ -30,7 +30,7 @@
 // (Adoptium "temurin" vs. the OpenJDK reference build) is a function of the major version, used
 // for both the build JDK and the TCK JDK.
 def JDK_DISTRO_BY_VERSION = [
-    '11': 'openjdk',
+    '11': 'temurin',
     '17': 'openjdk',
     '21': 'temurin',
     '25': 'temurin',
