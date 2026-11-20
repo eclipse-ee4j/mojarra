@@ -34,7 +34,7 @@ import org.openqa.selenium.support.ui.Select;
  * of f:selectItems exposing the current member. The Faces TCK requires the pass-through attributes of the select
  * component on each input as well, so each input carries both, those of the item component taking precedence for the
  * same name. The pass-through attributes of a component which produces a group go on the nested table or list of the
- * group.
+ * group, and not on its inputs.
  *
  * @see <a href="https://github.com/eclipse-ee4j/mojarra/issues/6177">issue 6177</a>
  */
@@ -71,9 +71,10 @@ class Issue6177IT extends BaseIT {
 
     /**
      * The pass-through attributes of f:selectItemGroups go on the nested table of each group, with its
-     * <code>var</code> exposing the member which produced the group, and not on the inputs. The nested components of
-     * f:selectItemGroups contribute none. Those of an f:selectItems whose member is a group go on the nested list of
-     * the group and on each input, next to those of the select component.
+     * <code>var</code> exposing the member which produced the group, and not on the inputs. Each input carries those of
+     * the nested f:selectItems which produced its item, next to those of the select component. Those of an
+     * f:selectItems whose member is a group go on the nested list of the group only, and its inputs carry those of the
+     * select component only.
      */
     @Test
     void testGroupsCarryPassThroughAttributesOfTheirComponent() {
@@ -83,13 +84,13 @@ class Issue6177IT extends BaseIT {
             assertEquals(List.of("x", "y"), valuesOf(id, "table", "data-group"), id);
             assertEquals(NONE, valuesOf(id, "input", "data-group"), id);
             assertEquals(SELECT, valuesOf(id, "input", "data-select"), id);
-            assertEquals(List.of(), tagsWith(id, "data-inner"), id);
+            assertEquals(List.of("input", "input", "input"), tagsWith(id, "data-inner"), id);
         }
 
-        assertEquals(List.of("input", "ul", "input", "input"), tagsWith("checksSelectItems", "data-group"));
-        assertEquals(List.of("one", "group", "group", "group"), valuesOf("checksSelectItems", "[data-group]", "data-group"));
+        assertEquals(List.of("input", "ul"), tagsWith("checksSelectItems", "data-group"));
+        assertEquals(List.of("one", "group"), valuesOf("checksSelectItems", "[data-group]", "data-group"));
         assertEquals(SELECT, valuesOf("checksSelectItems", "input", "data-select"));
-        assertEquals(List.of("item", "item", "item"), valuesOf("checksSelectItems", "input", "data-both"));
+        assertEquals(BOTH, valuesOf("checksSelectItems", "input", "data-both"));
     }
 
     /**

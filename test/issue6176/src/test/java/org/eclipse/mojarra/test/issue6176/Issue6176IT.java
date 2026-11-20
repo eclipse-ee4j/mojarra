@@ -28,8 +28,8 @@ import org.openqa.selenium.By;
 /**
  * The <code>var</code> of f:selectItems and of f:selectItemGroups exposes the current member of the collection
  * referenced by <code>value</code>, as the VDL documentation of their <code>var</code> attributes requires. This holds
- * too for their pass-through attributes. Those of f:selectItems go on every optgroup and option it produces, and those
- * of f:selectItemGroups on its optgroups only, as their outer-most elements.
+ * too for their pass-through attributes. Those of f:selectItems and of f:selectItemGroups go on every option and
+ * optgroup they produce, as their outer-most elements, and not on the options inside such an optgroup.
  *
  * @see <a href="https://github.com/eclipse-ee4j/mojarra/issues/6176">issue 6176</a>
  */
@@ -59,12 +59,13 @@ class Issue6176IT extends BaseIT {
 
     /**
      * When the member is a <code>SelectItem</code>, <code>var</code> is that <code>SelectItem</code>. When the member is
-     * a <code>SelectItemGroup</code>, <code>var</code> is that group for its optgroup and for each option of the group.
+     * a <code>SelectItemGroup</code>, <code>var</code> is that group for its optgroup, and the options of the group
+     * carry none of the pass-through attributes of f:selectItems.
      */
     @Test
     void testVarIsSelectItemMember() {
         open("selectItems.xhtml");
-        assertEquals(List.of("one", "group", "group", "group"), flagsOf("menuSelectItems"));
+        assertEquals(Arrays.asList("one", "group", null, null), flagsOf("menuSelectItems"));
     }
 
     /**
