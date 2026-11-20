@@ -27,6 +27,7 @@ import com.sun.faces.facelets.component.UIRepeat;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIData;
 import jakarta.faces.component.UINamingContainer;
+import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 
 /**
@@ -69,17 +70,22 @@ public final class NestedIterators {
         return component instanceof UIData || component instanceof UIRepeat;
     }
 
-    private static boolean isNestedInIterator(FacesContext context, UIComponent component) {
-        UIComponent parent = component.getParent();
+    /**
+     * Returns whether the given component is nested in an iterating component, or {@code null} when it is not and it is
+     * in a detached subtree.
+     */
+    private static Boolean isNestedInIterator(FacesContext context, UIComponent component) {
+        UIComponent root = component;
 
-        if (parent == null) {
-            return false;
-        }
-
-        for (UIComponent p = parent; p != null; p = p.getParent()) {
+        for (UIComponent p = component.getParent(); p != null; p = p.getParent()) {
             if (isIterator(p)) {
                 return true;
             }
+            root = p;
+        }
+
+        if (root == component) {
+            return null;
         }
 
         // https://github.com/eclipse-ee4j/mojarra/issues/4957
@@ -92,7 +98,11 @@ public final class NestedIterators {
             return Pattern.compile(".+" + separatorChar + "[0-9]+" + separatorChar + ".+");
         });
 
-        return clientIdNestedInIteratorPattern.matcher(parent.getClientId(context)).matches();
+        if (clientIdNestedInIteratorPattern.matcher(component.getParent().getClientId(context)).matches()) {
+            return true;
+        }
+
+        return root instanceof UIViewRoot ? false : null;
     }
 
     /**
@@ -112,16 +122,42 @@ public final class NestedIterators {
     }
 
     /**
-     * Returns whether the owner is nested in an iterating component. The result is computed once per owner.
+     * Returns whether the owner is nested in an iterating component. The result is computed once per owner, until
+     * {@link #clearNested()}. A negative result is only remembered when the owner is in a {@link UIViewRoot}: an owner
+     * in a detached subtree can still get an iterating ancestor when that subtree is added again.
      *
      * @param context the faces context.
      * @return whether the owner is nested in an iterating component.
      */
     public boolean isNested(FacesContext context) {
         if (nested == null) {
-            nested = isNestedInIterator(context, owner);
+            Boolean result = isNestedInIterator(context, owner);
+            if (result == null) {
+                return false;
+            }
+            nested = result;
         }
         return nested;
+    }
+
+    /**
+     * Forgets whether the owner is nested in an iterating component, so that the next {@link #isNested(FacesContext)}
+     * computes it again. Called when the parent chain of the owner changes.
+     */
+    public void clearNested() {
+        nested = null;
+    }
+
+    /**
+     * Forgets whether the given component is nested in an iterating component, when it is a {@link UIRepeat}. Called
+     * when the parent chain of the given component changes.
+     *
+     * @param component the component.
+     */
+    public static void clearNestedOf(UIComponent component) {
+        if (component instanceof UIRepeat) {
+            ((UIRepeat) component).clearNested();
+        }
     }
 
     /**
