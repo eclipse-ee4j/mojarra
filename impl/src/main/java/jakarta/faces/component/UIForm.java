@@ -309,14 +309,15 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
             return super.getContainerClientId(context);
         }
 
-        UIComponent parent = getParent();
-        while (parent != null) {
+        UIComponent root = this;
+        for (UIComponent parent = getParent(); parent != null; parent = parent.getParent()) {
             if (parent instanceof NamingContainer) {
                 return parent.getContainerClientId(context);
             }
-            parent = parent.getParent();
+            root = parent;
         }
 
+        markResolvedThroughIfParentless(root);
         return null;
     }
 
