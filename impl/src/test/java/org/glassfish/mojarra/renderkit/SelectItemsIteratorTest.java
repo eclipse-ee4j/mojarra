@@ -27,9 +27,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import jakarta.faces.component.UIParameter;
@@ -94,6 +98,48 @@ class SelectItemsIteratorTest {
     @Test
     void reusesOneSelectItemForDataModel() {
         assertFlyweightSelectItems(selectItems(new ListDataModel<>(VALUES)));
+    }
+
+    /**
+     * For a Map value, the label of each item is the key of its entry converted to a String, or an empty string when the key is <code>null</code>, and the
+     * value of each item is the value of its entry, also when that is <code>null</code>.
+     */
+    @Test
+    void labelsAndValuesOfMapEntries() {
+        assertLabelsAndValuesOfMapEntries(selectItems(mapWithNulls()));
+    }
+
+    /**
+     * The labels and values of the items of a Map value are the same when <code>var</code> is set without <code>itemLabel</code> and <code>itemValue</code>.
+     */
+    @Test
+    void labelsAndValuesOfMapEntriesWithVar() {
+        UISelectMany selectMany = selectItems(mapWithNulls());
+        selectMany.getChildren().get(0).getAttributes().put("var", "entry");
+        assertLabelsAndValuesOfMapEntries(selectMany);
+    }
+
+    private void assertLabelsAndValuesOfMapEntries(UISelectMany selectMany) {
+        Iterator<SelectItem> iterator = new SelectItemsIterator<>(facesContext, selectMany);
+        List<String> labels = new ArrayList<>();
+        List<Object> values = new ArrayList<>();
+
+        while (iterator.hasNext()) {
+            SelectItem item = iterator.next();
+            labels.add(item.getLabel());
+            values.add(item.getValue());
+        }
+
+        assertEquals(List.of("Apple", "", "Banana"), labels);
+        assertEquals(Arrays.asList("a", "n", null), values);
+    }
+
+    private static Map<String, String> mapWithNulls() {
+        Map<String, String> map = new LinkedHashMap<>();
+        map.put("Apple", "a");
+        map.put(null, "n");
+        map.put("Banana", null);
+        return map;
     }
 
     private void assertValues(UISelectMany selectMany, String... expectedValues) {

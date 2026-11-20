@@ -318,7 +318,8 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
 
     /**
      * Iterates over a <code>Map</code> of values exposing each entry as a SelectItem. Note that this will do so re-using the same SelectItem but changing the
-     * value and label as appropriate.
+     * value and label as appropriate. The label is the key of the entry converted to a String, or an empty string when the key is <code>null</code>, and the
+     * value is the value of the entry, also when that is <code>null</code>.
      */
     private static final class MapIterator extends GenericObjectSelectItemIterator {
 
@@ -350,8 +351,8 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
             Map.Entry<?, ?> entry = iterator.next();
             Object key = entry.getKey();
             Object value = entry.getValue();
-            item.setLabel(key != null ? key.toString() : value.toString());
-            item.setValue(value != null ? value : "");
+            item.setLabel(key != null ? key.toString() : "");
+            item.setValue(value);
             return getSelectItemFor(ctx, entry, item);
 
         }
