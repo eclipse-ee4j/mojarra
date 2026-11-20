@@ -128,7 +128,7 @@ public class AttributeManager {
                 attr("accesskey"), attr("alt"), attr("dir"), attr("lang"), attr("maxlength"), attr("onblur", "blur"), attr("onclick", "click"),
                 attr("ondblclick", "dblclick"), attr("onfocus", "focus"), attr("onkeydown", "keydown"), attr("onkeypress", "keypress"),
                 attr("onkeyup", "keyup"), attr("onmousedown", "mousedown"), attr("onmousemove", "mousemove"), attr("onmouseout", "mouseout"),
-                attr("onmouseover", "mouseover"), attr("onmouseup", "mouseup"), attr("onselect", "select"), attr("role"), attr("size"),
+                attr("onmouseover", "mouseover"), attr("onmouseup", "mouseup"), attr("onselect", "select"), attr("placeholder"), attr("role"), attr("size"),
                 attr("style"), attr("tabindex"), attr("title")
             )
         )
