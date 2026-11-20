@@ -647,9 +647,9 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
     }
 
     /**
-     * Renders the <code>optgroup</code> of the given group and the <code>option</code> of each of its items. The
-     * pass-through attributes of a <code>UISelectItemGroups</code> belong to its <code>optgroup</code> only, and those
-     * of a <code>UISelectItems</code> to each <code>optgroup</code> and <code>option</code> it produces.
+     * Renders the <code>optgroup</code> of the given group, with the pass-through attributes of the given select
+     * component which produced it, and the <code>option</code> of each of its items. See
+     * {@link #renderGroupItems(FacesContext, UIComponent, SelectItemGroup, GroupItemRenderer)}.
      */
     private int renderOptionGroup(FacesContext context, UIComponent component, UIComponent selectComponent, Converter<?> converter, SelectItemGroup group,
             Object currentSelections, Object[] submittedValues, OptionComponentInfo optionInfo) throws IOException {
@@ -664,17 +664,103 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
             writer.writeAttribute("disabled", true, "disabled");
         }
 
-        int count = 1;
-        UIComponent optionComponent = selectComponent instanceof UISelectItemGroups ? null : selectComponent;
+        int count = 1 + renderGroupItems(context, selectComponent, group, (item, itemComponent, index) -> renderOption(context, component, itemComponent,
+                converter, item, currentSelections, submittedValues, optionInfo));
 
-        for (SelectItem item : group.getSelectItems()) {
-            if (renderOption(context, component, optionComponent, converter, item, currentSelections, submittedValues, optionInfo)) {
+        writer.endElement("optgroup");
+        return count;
+    }
+
+    /**
+     * Renders each item of the given group with the given renderer, and returns how many items it rendered. When a
+     * <code>UISelectItemGroups</code> produced the group, each item is rendered with the nested <code>UISelectItem</code>
+     * or <code>UISelectItems</code> which produced it, with the <code>var</code> of that child bound to its current
+     * element, and the <code>var</code> of the group bound to the member which produced the group. The value of each
+     * such child must then be one which can be iterated again, as the renderer requires for any <code>UISelectItems</code>.
+     * Otherwise each item is rendered with <code>null</code>, so that the pass-through attributes of the component which
+     * produced the group go on the outer-most element of the group only.
+     */
+    int renderGroupItems(FacesContext context, UIComponent selectComponent, SelectItemGroup group, GroupItemRenderer renderer) throws IOException {
+        if (!hasChildWithPassThroughAttributes(selectComponent)) {
+            return renderItemsOfGroup(context, group, null, renderer);
+        }
+
+        SelectItemsIterator<SelectItem> itemComponents = new SelectItemsIterator<>(context, selectComponent);
+        String var = (String) selectComponent.getAttributes().get("var");
+
+        if (var == null) {
+            return renderItemsOfGroup(context, group, itemComponents, renderer);
+        }
+
+        return new ScopedRunner(context).with(var, group.getValue()).invokeThrowing(() -> renderItemsOfGroup(context, group, itemComponents, renderer));
+    }
+
+    private static int renderItemsOfGroup(FacesContext context, SelectItemGroup group, SelectItemsIterator<SelectItem> itemComponents,
+            GroupItemRenderer renderer) throws IOException {
+
+        SelectItem[] items = group.getSelectItems();
+        int count = 0;
+
+        for (int index = 0; index < items.length; index++) {
+            if (renderGroupItem(context, items[index], index, itemComponents, renderer)) {
                 count++;
             }
         }
 
-        writer.endElement("optgroup");
         return count;
+    }
+
+    private static boolean hasChildWithPassThroughAttributes(UIComponent selectComponent) {
+        if (!(selectComponent instanceof UISelectItemGroups)) {
+            return false;
+        }
+
+        for (UIComponent child : selectComponent.getChildren()) {
+            Map<String, Object> attributes = child.getPassThroughAttributes(false);
+
+            if (attributes != null && !attributes.isEmpty()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static boolean renderGroupItem(FacesContext context, SelectItem item, int index, SelectItemsIterator<SelectItem> itemComponents,
+            GroupItemRenderer renderer) throws IOException {
+
+        if (itemComponents == null || !itemComponents.hasNext()) {
+            return renderer.render(item, null, index);
+        }
+
+        itemComponents.next();
+        UIComponent itemComponent = itemComponents.currentSelectComponent();
+        String var = RenderKitUtils.getPassThroughVar(itemComponent);
+
+        if (var == null) {
+            return renderer.render(item, itemComponent, index);
+        }
+
+        return new ScopedRunner(context).with(var, itemComponents.currentElement()).invokeThrowing(() -> renderer.render(item, itemComponent, index));
+    }
+
+    /**
+     * Renders an item of a group.
+     */
+    @FunctionalInterface
+    interface GroupItemRenderer {
+
+        /**
+         * Renders the given item, at the given index in its group, with the pass-through attributes of the given item
+         * component, or with none when it is <code>null</code>. Returns <code>false</code> when the item is hidden.
+         *
+         * @param item the item to render.
+         * @param itemComponent the component to start the element of the item with, or <code>null</code>.
+         * @param index the index of the item in its group.
+         * @return <code>false</code> when the item is hidden.
+         * @throws IOException when an I/O error occurs.
+         */
+        boolean render(SelectItem item, UIComponent itemComponent, int index) throws IOException;
     }
 
     // Render the "select" portion..
