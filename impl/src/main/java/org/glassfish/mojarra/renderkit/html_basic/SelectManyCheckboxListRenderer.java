@@ -392,6 +392,10 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
                     newTableRow, itemNumber, optionInfo
                 );
             }
+
+            if (curItem instanceof SelectItemGroup) {
+                previousSelectComponent = null;
+            }
         }
     }
 
@@ -407,8 +411,8 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
 
         if (curItem instanceof SelectItemGroup) {
             return renderGroup(
-                context, component, selectComponent, inputComponent, converter, (SelectItemGroup) curItem, currentSelections, submittedValues,
-                newTableRow, itemNumber, optionInfo
+                context, component, selectComponent, converter, (SelectItemGroup) curItem, currentSelections, submittedValues, newTableRow,
+                itemNumber, optionInfo
             );
         }
 
@@ -418,13 +422,13 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
 
     /**
      * Renders the label of the given group and a nested table or list with its items. The nested element carries the pass-through attributes of the given
-     * select component, which produced the group, and each input those of the given input component.
+     * select component, which produced the group. Each input carries the pass-through attributes of the given component as well. See
+     * {@link #renderGroupItems(FacesContext, UIComponent, SelectItemGroup, GroupItemRenderer)}.
      */
     private int renderGroup(
-        FacesContext context, UIComponent component, UIComponent selectComponent, UIComponent inputComponent, Converter<?> converter,
-        SelectItemGroup group, Object currentSelections, Object[] submittedValues, Boolean newTableRow, int itemNumber, OptionComponentInfo optionInfo
-    )
-        throws IOException
+        FacesContext context, UIComponent component, UIComponent selectComponent, Converter<?> converter, SelectItemGroup group,
+        Object currentSelections, Object[] submittedValues, Boolean newTableRow, int itemNumber, OptionComponentInfo optionInfo
+    ) throws IOException
     {
 
         ResponseWriter writer = context.getResponseWriter();
@@ -451,11 +455,13 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
         writer.writeText("\n", component, null);
         renderBeginText(selectComponent, 0, newTableRow, context, false);
 
-        int idx = itemNumber;
-
-        for (SelectItem item : group.getSelectItems()) {
-            renderOption(context, component, inputComponent, converter, item, currentSelections, submittedValues, newTableRow, idx++, optionInfo);
-        }
+        renderGroupItems(context, selectComponent, group, (item, itemComponent, index) -> {
+            renderOption(
+                context, component, prepareInputComponent(component, itemComponent), converter, item, currentSelections, submittedValues,
+                newTableRow, itemNumber + index, optionInfo
+            );
+            return true;
+        });
 
         renderEndText(component, newTableRow, context);
         writer.endElement(newTableRow != null ? "td" : "li");
@@ -464,7 +470,7 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
             writer.writeText("\n", component, null);
         }
 
-        return idx;
+        return itemNumber + group.getSelectItems().length;
     }
 
 } // end of class SelectManyCheckboxListRenderer

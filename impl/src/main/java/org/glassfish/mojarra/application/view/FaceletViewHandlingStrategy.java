@@ -325,11 +325,11 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                 return;
             }
             Facelet facelet = faceletFactory.getFacelet(ctx, view.getViewId());
+            BuildTimeDecisions previousBuild = BuildTimeDecisions.begin(ctx, view);
             // Disable events from being intercepted by the StateContext by
             // virtue of re-applying the handlers.
             try {
                 stateCtx.setTrackViewModifications(false);
-                BuildTimeDecisions.reset(ctx);
                 stateCtx.syncIndexesOfDynamicChildren();
                 facelet.apply(ctx, view);
                 reapplyDynamicActions(ctx);
@@ -339,6 +339,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             }
             finally {
                 stateCtx.setTrackViewModifications(true);
+                BuildTimeDecisions.end(ctx, previousBuild);
             }
 
             return;
@@ -358,10 +359,10 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         Facelet facelet = faceletFactory.getFacelet(ctx, view.getViewId());
 
         // populate UIViewRoot
+        BuildTimeDecisions previousBuild = BuildTimeDecisions.begin(ctx, view);
         try {
             ctx.getAttributes().put(IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
             stateCtx.setTrackViewModifications(false);
-            BuildTimeDecisions.reset(ctx);
             facelet.apply(ctx, view);
 
             if (facelet instanceof XMLFrontMatterSaver) {
@@ -389,6 +390,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         }
         finally {
             ctx.getAttributes().remove(IS_BUILDING_INITIAL_STATE);
+            BuildTimeDecisions.end(ctx, previousBuild);
         }
         ctx.getApplication().publishEvent(ctx, PostAddToViewEvent.class, UIViewRoot.class, view);
         markInitialState(ctx, view);
@@ -407,7 +409,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         return !refreshTransientBuild
             && !view.isTransient()
             && isEmpty(stateCtx.getDynamicActions())
-            && BuildTimeDecisions.reproducesBuild(ctx);
+            && BuildTimeDecisions.reproducesBuild(ctx, view);
     }
 
     /**

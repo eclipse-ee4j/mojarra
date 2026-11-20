@@ -19,14 +19,18 @@ package org.glassfish.mojarra.facelets.tag;
 import static java.util.logging.Level.FINE;
 
 import java.util.ArrayList;
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.FacesContextWrapper;
 import jakarta.faces.view.facelets.BehaviorHandler;
 import jakarta.faces.view.facelets.ConverterHandler;
 import jakarta.faces.view.facelets.FaceletContext;
@@ -56,6 +60,10 @@ import org.glassfish.mojarra.util.FacesLogger;
  * A handler that produces something no decision can express marks the build unreproducible instead, which denies the skip for the whole build. So does a
  * decision that yields another value or fails to be evaluated at all, which is what an expression that only holds under the branch that guarded it does.
  *
+ * <p>
+ * The decisions belong to the view whose build recorded them. A request may build more than one view, such as one built programmatically to render a mail
+ * template, and builds may nest. Every handler records into the build in progress, and each view is checked against its own decisions only.
+ *
  * @see TagHandlerImpl#recordBuildTimeDecision(jakarta.faces.view.facelets.FaceletContext, ValueExpression, Object)
  */
 public final class BuildTimeDecisions {
@@ -63,6 +71,10 @@ public final class BuildTimeDecisions {
     private static final Logger LOGGER = FacesLogger.FACELETS_FACELET.getLogger();
 
     private static final String KEY = RIConstants.RI_PREFIX + "buildTimeDecisions";
+
+    private static final String VIEWS_KEY = RIConstants.RI_PREFIX + "buildTimeDecisionsPerView";
+
+    private static final int EXPECTED_VIEWS_PER_REQUEST = 2;
 
     /**
      * The package of {@code DelegatingMetaTagHandler} and its subclasses, which leave what they build to a delegate.
@@ -117,10 +129,12 @@ public final class BuildTimeDecisions {
 
     }
 
+    private final UIViewRoot view;
     private final List<Decision> decisions = new ArrayList<>();
     private int unreproducibleMarks;
 
-    private BuildTimeDecisions() {
+    private BuildTimeDecisions(UIViewRoot view) {
+        this.view = view;
     }
 
     /**
@@ -172,7 +186,7 @@ public final class BuildTimeDecisions {
     }
 
     private static BuildTimeDecisions of(FacesContext context) {
-        return (BuildTimeDecisions) context.getAttributes().computeIfAbsent(KEY, key -> new BuildTimeDecisions());
+        return (BuildTimeDecisions) context.getAttributes().computeIfAbsent(KEY, key -> new BuildTimeDecisions(null));
     }
 
     public static void record(FacesContext context, ValueExpression expression, Object value) {
@@ -193,12 +207,61 @@ public final class BuildTimeDecisions {
     }
 
     /**
-     * Discards the decisions of the previous build, to be called by whoever is about to apply a facelet.
+     * Starts recording the decisions of a build of the given view, discarding those of its previous build. To be called by whoever is about to apply a facelet,
+     * and to be followed by {@link #end(FacesContext, BuildTimeDecisions)} once the facelet is applied.
      *
      * @param context the {@link FacesContext} for the current request
+     * @param view the view about to be built
+     * @return the build in progress before this one, to be passed to {@link #end(FacesContext, BuildTimeDecisions)}
      */
-    public static void reset(FacesContext context) {
-        context.getAttributes().remove(KEY);
+    public static BuildTimeDecisions begin(FacesContext context, UIViewRoot view) {
+        BuildTimeDecisions instance = new BuildTimeDecisions(view);
+        perView(context).put(view, instance);
+        return (BuildTimeDecisions) context.getAttributes().put(KEY, instance);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Map<UIViewRoot, BuildTimeDecisions> perView(FacesContext context) {
+        return (Map<UIViewRoot, BuildTimeDecisions>) context.getAttributes()
+            .computeIfAbsent(VIEWS_KEY, key -> new IdentityHashMap<>(EXPECTED_VIEWS_PER_REQUEST));
+    }
+
+    /**
+     * Stops recording into the build started by {@link #begin(FacesContext, UIViewRoot)}, and resumes the build which was in progress before it.
+     *
+     * @param context the {@link FacesContext} for the current request
+     * @param previous what {@link #begin(FacesContext, UIViewRoot)} returned
+     */
+    public static void end(FacesContext context, BuildTimeDecisions previous) {
+        if (previous == null) {
+            context.getAttributes().remove(KEY);
+        }
+        else {
+            context.getAttributes().put(KEY, previous);
+        }
+    }
+
+    /**
+     * Whether the build in progress is of a view other than the {@link FacesContext#getViewRoot() view root}, such as one built programmatically to render a
+     * mail template. The state saved for the view root does not hold what such a build decided. The view root is the one of the innermost {@link FacesContext},
+     * since a {@link FacesContextWrapper} building another view may return that view as its view root.
+     *
+     * @param context the {@link FacesContext} for the current request
+     * @return whether the build in progress is of a view other than the view root
+     */
+    public static boolean isBuildingOtherView(FacesContext context) {
+        BuildTimeDecisions instance = (BuildTimeDecisions) context.getAttributes().get(KEY);
+        return instance != null && instance.view != null && instance.view != unwrap(context).getViewRoot();
+    }
+
+    private static FacesContext unwrap(FacesContext context) {
+        FacesContext unwrapped = context;
+
+        while (unwrapped instanceof FacesContextWrapper) {
+            unwrapped = ((FacesContextWrapper) unwrapped).getWrapped();
+        }
+
+        return unwrapped;
     }
 
     /**
@@ -224,20 +287,17 @@ public final class BuildTimeDecisions {
     }
 
     /**
-     * Whether re-applying the facelet would reproduce what the last build of this view produced, which is the case when nothing marked the build unreproducible
-     * and every decision it recorded still yields the value it had.
+     * Whether re-applying the facelet would reproduce what the last build of the given view produced, which is the case when that build was recorded, nothing
+     * marked it unreproducible and every decision it recorded still yields the value it had.
      *
      * @param context the {@link FacesContext} for the current request
-     * @return whether re-applying the facelet would reproduce what the last build of this view produced
+     * @param view the view whose last build to check
+     * @return whether re-applying the facelet would reproduce what the last build of the given view produced
      */
-    public static boolean reproducesBuild(FacesContext context) {
-        BuildTimeDecisions instance = (BuildTimeDecisions) context.getAttributes().get(KEY);
+    public static boolean reproducesBuild(FacesContext context, UIViewRoot view) {
+        BuildTimeDecisions instance = perView(context).get(view);
 
-        if (instance == null) {
-            return true;
-        }
-
-        if (instance.unreproducibleMarks > 0) {
+        if (instance == null || instance.unreproducibleMarks > 0) {
             return false;
         }
 

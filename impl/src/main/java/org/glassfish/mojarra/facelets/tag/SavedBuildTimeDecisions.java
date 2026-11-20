@@ -28,10 +28,10 @@ import org.glassfish.mojarra.config.MojarraContextParam;
  * What the build which rendered the view decided, carried in the saved state so that the build which restores the view reproduces the view that was submitted.
  *
  * <p>
- * A postback rebuilds its view from the markup, so a build time condition evaluating to another value than it did while the response was rendered produces
- * another view than the one that was submitted: the state saved for a component the rebuild does not produce is restored into nothing, and a value submitted
- * for it is decoded by nothing. Replaying the decision instead of evaluating it lets the restore reproduce the rendered view, and the re-apply of the facelet
- * which precedes rendering evaluates it again, so the response still follows the current state of the model - one phase later.
+ * A postback rebuilds its view from the markup, so a build time condition evaluating to another value than it did while the response was rendered produces a
+ * view other than the one that was submitted: the state saved for a component the rebuild does not produce is restored into nothing, and a value submitted for
+ * it is decoded by nothing. Replaying the decision instead of evaluating it lets the restore reproduce the rendered view, and the re-apply of the facelet which
+ * precedes rendering evaluates it again, so the response still follows the current state of the model - one phase later.
  *
  * <p>
  * A decision is keyed by the id its tag generates for the build, which is unique per tag and stable across the builds of one view as long as no facelet the
@@ -80,7 +80,8 @@ public final class SavedBuildTimeDecisions {
     }
 
     /**
-     * Whether the decisions of the build which rendered a view are saved with its state and replayed by the build which restores it.
+     * Whether the decisions of the build which rendered a view are saved with its state and replayed by the build which restores it. This is never the case
+     * while a view other than the view root is being built.
      *
      * @param context the {@link FacesContext} for the current request
      * @return whether build time decisions are saved and replayed
@@ -236,11 +237,12 @@ public final class SavedBuildTimeDecisions {
     }
 
     /**
-     * @return the instance for the current request, or {@code null} when the feature is off or the build in progress decides nothing.
+     * @return the instance for the current request, or {@code null} when the feature is off or the build in progress decides nothing, which is also the case
+     * for a build of a view other than the view root.
      */
     private static SavedBuildTimeDecisions active(FacesContext context) {
         SavedBuildTimeDecisions instance = of(context);
-        return instance == null || instance.suspended ? null : instance;
+        return instance == null || instance.suspended || BuildTimeDecisions.isBuildingOtherView(context) ? null : instance;
     }
 
     /**

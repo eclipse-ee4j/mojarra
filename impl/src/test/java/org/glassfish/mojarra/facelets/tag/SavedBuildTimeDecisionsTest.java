@@ -25,6 +25,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import java.util.HashMap;
 import java.util.Map;
 
+import jakarta.faces.component.UIViewRoot;
+
 import org.glassfish.mojarra.config.MojarraContextParam;
 import org.glassfish.mojarra.config.WebConfiguration;
 import org.glassfish.mojarra.junit.JUnitFacesTestCaseBase;
@@ -38,6 +40,7 @@ import org.junit.jupiter.api.Test;
 class SavedBuildTimeDecisionsTest extends JUnitFacesTestCaseBase {
 
     private static final String KEY = "1_decision";
+    private static final String OTHER_KEY = "2_decision";
     private static final String PAGE = sourceFingerprintKey("/page.xhtml");
     private static final String INCLUDE = sourceFingerprintKey("/include.xhtml");
     private static final int FINGERPRINT = 1;
@@ -142,6 +145,26 @@ class SavedBuildTimeDecisionsTest extends JUnitFacesTestCaseBase {
 
         assertEquals(Boolean.TRUE, SavedBuildTimeDecisions.replay(facesContext, KEY));
         assertFalse(save().containsKey(INCLUDE));
+    }
+
+    /**
+     * A build of a view other than the view root, such as one built programmatically to render a mail template, contributes nothing to the state of the view
+     * root, so it neither replays, stops the replay nor is saved.
+     */
+    @Test
+    void ignoresTheBuildOfAnotherView() {
+        startReplaying(Map.of(KEY, Boolean.TRUE, PAGE, FINGERPRINT));
+        facesContext.setViewRoot(new UIViewRoot());
+        BuildTimeDecisions previous = BuildTimeDecisions.begin(facesContext, new UIViewRoot());
+        SavedBuildTimeDecisions.applyFacelet(facesContext, INCLUDE, EDITED_FINGERPRINT);
+        assertNull(SavedBuildTimeDecisions.replay(facesContext, KEY));
+        SavedBuildTimeDecisions.record(facesContext, OTHER_KEY, Boolean.TRUE);
+        BuildTimeDecisions.end(facesContext, previous);
+        SavedBuildTimeDecisions.record(facesContext, KEY, Boolean.TRUE);
+
+        assertEquals(Boolean.TRUE, SavedBuildTimeDecisions.replay(facesContext, KEY));
+        assertFalse(save().containsKey(INCLUDE));
+        assertFalse(save().containsKey(OTHER_KEY));
     }
 
     private void startReplaying(Map<String, Object> decisions) {

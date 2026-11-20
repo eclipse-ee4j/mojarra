@@ -19,11 +19,13 @@ package org.glassfish.mojarra.facelets.tag;
 import static java.nio.file.Files.readString;
 import static java.nio.file.Files.walk;
 import static java.util.stream.Collectors.toCollection;
+import static org.glassfish.mojarra.facelets.tag.BuildTimeDecisions.begin;
+import static org.glassfish.mojarra.facelets.tag.BuildTimeDecisions.end;
+import static org.glassfish.mojarra.facelets.tag.BuildTimeDecisions.isBuildingOtherView;
 import static org.glassfish.mojarra.facelets.tag.BuildTimeDecisions.keepsBuildReproducible;
 import static org.glassfish.mojarra.facelets.tag.BuildTimeDecisions.markUnreproducible;
 import static org.glassfish.mojarra.facelets.tag.BuildTimeDecisions.record;
 import static org.glassfish.mojarra.facelets.tag.BuildTimeDecisions.reproducesBuild;
-import static org.glassfish.mojarra.facelets.tag.BuildTimeDecisions.reset;
 import static org.glassfish.mojarra.facelets.tag.BuildTimeDecisions.size;
 import static org.glassfish.mojarra.facelets.tag.BuildTimeDecisions.unreproducibleMarks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -44,7 +46,9 @@ import java.util.stream.Stream;
 import jakarta.el.ELContext;
 import jakarta.el.PropertyNotFoundException;
 import jakarta.el.ValueExpression;
+import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.FacesContextWrapper;
 import jakarta.faces.view.facelets.BehaviorHandler;
 import jakarta.faces.view.facelets.ConverterHandler;
 import jakarta.faces.view.facelets.FaceletHandler;
@@ -135,26 +139,30 @@ class BuildTimeDecisionsTest {
     @Test
     void aDecisionHoldsOnlyWhileItYieldsTheValueItWasRecordedWith() {
         FacesContext context = mockFacesContext();
-        assertTrue(reproducesBuild(context), "a build that recorded nothing");
+        UIViewRoot view = new UIViewRoot();
+        begin(context, view);
+        assertTrue(reproducesBuild(context, view), "a build that recorded nothing");
 
         ValueExpression expression = mock(ValueExpression.class);
         when(expression.getValue(any())).thenReturn("a");
         record(context, expression, "a");
-        assertTrue(reproducesBuild(context), "a decision still yielding its recorded value");
+        assertTrue(reproducesBuild(context, view), "a decision still yielding its recorded value");
 
         when(expression.getValue(any())).thenReturn("b");
-        assertFalse(reproducesBuild(context), "a decision yielding another value");
+        assertFalse(reproducesBuild(context, view), "a decision yielding another value");
 
         when(expression.getValue(any())).thenThrow(new PropertyNotFoundException());
-        assertFalse(reproducesBuild(context), "a decision that cannot be evaluated");
+        assertFalse(reproducesBuild(context, view), "a decision that cannot be evaluated");
     }
 
     /**
-     * A build marked unreproducible is not skipped however its decisions come out, and resetting discards both.
+     * A build marked unreproducible is not skipped however its decisions come out, and the next build of the view discards both.
      */
     @Test
     void markingTheBuildUnreproducibleOverridesItsDecisions() {
         FacesContext context = mockFacesContext();
+        UIViewRoot view = new UIViewRoot();
+        begin(context, view);
         ValueExpression expression = mock(ValueExpression.class);
         when(expression.getValue(any())).thenReturn("a");
 
@@ -162,15 +170,95 @@ class BuildTimeDecisionsTest {
         record(context, () -> "b", "b");
         assertEquals(2, size(context), "recorded decisions");
         assertEquals(0, unreproducibleMarks(context), "unreproducible marks");
-        assertTrue(reproducesBuild(context), "decisions all holding");
+        assertTrue(reproducesBuild(context, view), "decisions all holding");
 
         markUnreproducible(context);
         assertEquals(1, unreproducibleMarks(context), "unreproducible marks");
-        assertFalse(reproducesBuild(context), "a build marked unreproducible");
+        assertFalse(reproducesBuild(context, view), "a build marked unreproducible");
 
-        reset(context);
-        assertEquals(0, size(context), "recorded decisions after a reset");
-        assertTrue(reproducesBuild(context), "a build that recorded nothing after a reset");
+        begin(context, view);
+        assertEquals(0, size(context), "recorded decisions of the next build");
+        assertEquals(0, unreproducibleMarks(context), "unreproducible marks of the next build");
+        assertTrue(reproducesBuild(context, view), "a next build that recorded nothing");
+    }
+
+    /**
+     * A view is checked against the decisions of its own build only, also when another view is built after it within the same request, as one built
+     * programmatically to render a mail template.
+     */
+    @Test
+    void aViewIsCheckedAgainstTheDecisionsOfItsOwnBuildOnly() {
+        FacesContext context = mockFacesContext();
+        ValueExpression expression = mock(ValueExpression.class);
+        when(expression.getValue(any())).thenReturn("a");
+
+        UIViewRoot view = new UIViewRoot();
+        UIViewRoot otherView = new UIViewRoot();
+        BuildTimeDecisions previous = begin(context, view);
+        record(context, expression, "a");
+        end(context, previous);
+        end(context, begin(context, otherView));
+
+        when(expression.getValue(any())).thenReturn("b");
+        assertFalse(reproducesBuild(context, view), "a view whose decision yields another value");
+        assertTrue(reproducesBuild(context, otherView), "another view that recorded nothing");
+    }
+
+    /**
+     * A view whose build recorded no decisions at all is never taken to be reproduced, since nothing is known of what its build decided.
+     */
+    @Test
+    void aViewWhoseBuildWasNotRecordedIsNotReproduced() {
+        assertFalse(reproducesBuild(mockFacesContext(), new UIViewRoot()));
+    }
+
+    /**
+     * A build of a view nested in the build of another view records into its own view, and the build it interrupted records into its own view again once the
+     * nested build ends.
+     */
+    @Test
+    void aNestedBuildResumesTheBuildItInterrupted() {
+        FacesContext context = mockFacesContext();
+        UIViewRoot view = new UIViewRoot();
+        UIViewRoot otherView = new UIViewRoot();
+        when(context.getViewRoot()).thenReturn(view);
+
+        BuildTimeDecisions outer = begin(context, view);
+        assertFalse(isBuildingOtherView(context), "building the view root");
+
+        BuildTimeDecisions nested = begin(context, otherView);
+        assertTrue(isBuildingOtherView(context), "building another view");
+        end(context, nested);
+
+        assertFalse(isBuildingOtherView(context), "building the view root again");
+        markUnreproducible(context);
+        end(context, outer);
+
+        assertFalse(isBuildingOtherView(context), "building nothing");
+        assertFalse(reproducesBuild(context, view), "the view marked unreproducible after the nested build");
+        assertTrue(reproducesBuild(context, otherView), "the nested view");
+    }
+
+    /**
+     * A build of another view is recognized as such also through a {@link FacesContextWrapper} which returns that view as its view root.
+     */
+    @Test
+    void aBuildOfAnotherViewIsRecognizedThroughAWrapperReturningThatViewAsViewRoot() {
+        FacesContext context = mockFacesContext();
+        UIViewRoot view = new UIViewRoot();
+        UIViewRoot otherView = new UIViewRoot();
+        when(context.getViewRoot()).thenReturn(view);
+        FacesContext wrapper = new FacesContextWrapper(context) {
+
+            @Override
+            public UIViewRoot getViewRoot() {
+                return otherView;
+            }
+
+        };
+
+        begin(wrapper, otherView);
+        assertTrue(isBuildingOtherView(wrapper));
     }
 
     /**
