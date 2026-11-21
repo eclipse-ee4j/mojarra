@@ -35,7 +35,6 @@ import java.util.logging.Logger;
 
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.application.ProjectStage;
-import jakarta.faces.component.TransientStateHelper;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AbortProcessingException;
@@ -99,14 +98,18 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
     }
 
     /**
-     * Static method that locates the ID for a view map in the active view maps stored in the session. It just performs a == over the view map because it should
-     * be the same object.
+     * Static method that locates the ID for a view map in the active view maps stored in the session. A {@link ViewScopeMap} holds its own id. Any other view
+     * map is located by identity among the active view maps.
      *
      * @param facesContext The faces context
      * @param viewMap The view to locate
      * @return located ID
      */
     protected static String locateViewMapId(FacesContext facesContext, Map<String, Object> viewMap) {
+        if (viewMap instanceof ViewScopeMap viewScopeMap) {
+            return viewScopeMap.getViewMapId();
+        }
+
         Object session = facesContext.getExternalContext().getSession(true);
 
         if (session != null) {
@@ -275,8 +278,8 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
     }
 
     /**
-     * Register the given view map of the given view root among the active view maps of the current session, under a new view map id, and acquire it for the
-     * current request. The eldest active view map is evicted when the active view maps have meanwhile reached their maximum size.
+     * Register the data store of the given view map of the given view root among the active view maps of the current session, under a new view map id, and
+     * acquire it for the current request. The eldest active view map is evicted when the active view maps have meanwhile reached their maximum size.
      *
      * @param facesContext the Faces context.
      * @param viewRoot the view root owning the view map.
@@ -308,8 +311,8 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
                 evictEldestViewMap(facesContext, viewMaps);
             }
 
-            viewMaps.put(viewMapId, viewMap);
-            viewRoot.getTransientStateHelper().putTransient(VIEW_MAP_ID, viewMapId);
+            viewMaps.put(viewMapId, getDataStore(viewMap));
+            setViewMapId(viewRoot, viewMap, viewMapId);
             acquireViewMap(facesContext, viewMapId);
 
             if (distributable) {
@@ -335,7 +338,7 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
 
         UIViewRoot viewRoot = (UIViewRoot) se.getSource();
         Map<String, Object> viewMap = viewRoot.getViewMap(false);
-        String viewMapId = (String) viewRoot.getTransientStateHelper().getTransient(VIEW_MAP_ID);
+        String viewMapId = getViewMapId(viewRoot);
 
         if (viewMap != null && viewMapId != null && !viewMap.isEmpty()) {
             FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -414,9 +417,12 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
     }
 
     /**
-     * Registers that the current request is using the view map of the current view root, if any. This keeps its beans alive until the current request has
-     * finished, even when a concurrent request evicts the view map meanwhile. When it has meanwhile been evicted and destroyed by a concurrent request, then
-     * the view root still holds the very same, by now emptied, view map, which is therefore registered anew, under a new view map id.
+     * Registers that the current request is using the view map of the current view root, if any, and connects a {@link ViewScopeMap} to its data store. This
+     * keeps its beans alive until the current request has finished, even when a concurrent request evicts the view map meanwhile.
+     * <p>
+     * When the view map is gone, a {@link ViewScopeMap} which has not yet connected to a data store is detached, so that it is registered anew upon its first
+     * write. A view map which is already connected has meanwhile been evicted and destroyed by a concurrent request, so the view root still holds the very
+     * same, by now emptied, data store, which is therefore registered anew right away, under a new view map id.
      *
      * @param facesContext the Faces context.
      */
@@ -427,15 +433,28 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
             return;
         }
 
-        TransientStateHelper transientStateHelper = viewRoot.getTransientStateHelper();
-        String viewMapId = (String) transientStateHelper.getTransient(VIEW_MAP_ID);
+        String viewMapId = getViewMapId(viewRoot);
 
-        if (viewMapId == null || acquireViewMap(facesContext, viewMapId)) {
+        if (viewMapId == null) {
             return;
         }
 
-        transientStateHelper.putTransient(VIEW_MAP_ID, null);
         Map<String, Object> viewMap = viewRoot.getViewMap(false);
+
+        if (acquireViewMap(facesContext, viewMapId)) {
+            if (viewMap instanceof ViewScopeMap viewScopeMap) {
+                viewScopeMap.connect();
+            }
+
+            return;
+        }
+
+        if (viewMap instanceof ViewScopeMap viewScopeMap && !viewScopeMap.isConnected()) {
+            viewScopeMap.detach();
+            return;
+        }
+
+        setViewMapId(viewRoot, viewMap, null);
 
         if (viewMap != null) {
             getInstance(facesContext).registerViewMap(facesContext, viewRoot, viewMap);
@@ -528,6 +547,60 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
     }
 
     /**
+     * Get the id of the view map of the given view root, or null when it has not been registered among the active view maps.
+     *
+     * @param viewRoot the view root.
+     * @return the id of the view map of the given view root, or null.
+     */
+    static String getViewMapId(UIViewRoot viewRoot) {
+        if (viewRoot.getViewMap(false) instanceof ViewScopeMap viewScopeMap) {
+            return viewScopeMap.getViewMapId();
+        }
+
+        return (String) viewRoot.getTransientStateHelper().getTransient(VIEW_MAP_ID);
+    }
+
+    private static void setViewMapId(UIViewRoot viewRoot, Map<String, Object> viewMap, String viewMapId) {
+        if (viewMap instanceof ViewScopeMap viewScopeMap) {
+            viewScopeMap.setViewMapId(viewMapId);
+        }
+        else {
+            viewRoot.getTransientStateHelper().putTransient(VIEW_MAP_ID, viewMapId);
+        }
+    }
+
+    private static Map<String, Object> getDataStore(Map<String, Object> viewMap) {
+        return viewMap instanceof ViewScopeMap viewScopeMap ? viewScopeMap.getDataStore() : viewMap;
+    }
+
+    /**
+     * Get the view map which is still alive under the given id: an active view map, or an evicted view map which an unfinished request is still using.
+     *
+     * @param facesContext the Faces context.
+     * @param viewMapId the view map id.
+     * @return the view map which is still alive under the given id, or null when there is none.
+     */
+    @SuppressWarnings("unchecked")
+    static Map<String, Object> getLiveViewMap(FacesContext facesContext, String viewMapId) {
+        Map<String, Object> viewMaps = getActiveViewMaps(facesContext);
+
+        if (viewMaps == null) {
+            return null;
+        }
+
+        synchronized (viewMaps) {
+            Map<String, Object> viewMap = (Map<String, Object>) viewMaps.get(viewMapId);
+
+            if (viewMap == null) {
+                Map<String, Map<String, Object>> evictedViewMaps = getEvictedViewMaps(facesContext.getExternalContext().getSessionMap().get(VIEW_MAP_USAGES));
+                viewMap = evictedViewMaps != null ? evictedViewMaps.get(viewMapId) : null;
+            }
+
+            return viewMap;
+        }
+    }
+
+    /**
      * Get the active view maps of the current session, or null when there is no session or none have been registered.
      *
      * @param facesContext the Faces context.
@@ -560,8 +633,11 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
      * @return the view maps which have been evicted while still in use, or null.
      */
     static Map<String, Map<String, Object>> getEvictedViewMaps(HttpSession session) {
-        ViewMapUsages viewMapUsages = (ViewMapUsages) session.getAttribute(VIEW_MAP_USAGES);
-        return viewMapUsages != null ? viewMapUsages.evictedViewMaps : null;
+        return getEvictedViewMaps(session.getAttribute(VIEW_MAP_USAGES));
+    }
+
+    private static Map<String, Map<String, Object>> getEvictedViewMaps(Object viewMapUsages) {
+        return viewMapUsages != null ? ((ViewMapUsages) viewMapUsages).evictedViewMaps : null;
     }
 
     /**
