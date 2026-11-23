@@ -71,6 +71,30 @@ public abstract class FaceletContextImplBase extends FaceletContext {
     }
 
     /**
+     * Starts an iteration over the body of a tag, inside the current one if any. Until {@link #stopIteration()}, the
+     * unique ids which tags generate are counted per row which {@link #startIterationRow(int)} names, so that a tag
+     * generates the same id for the same row in every build of a view, whichever rows a build skips. Implementations
+     * that count per application only ignore this.
+     */
+    public void startIteration() {
+    }
+
+    /**
+     * Starts a row of the iteration {@link #startIteration()} started.
+     *
+     * @param row the zero based number of the row among those the iteration walks
+     */
+    public void startIterationRow(int row) {
+    }
+
+    /**
+     * Stops the iteration {@link #startIteration()} started, so that the tags an outermost iteration applied continue
+     * counting past all its rows.
+     */
+    public void stopIteration() {
+    }
+
+    /**
      * Returns the alias the {@link IdMapper} in effect for this build gives to the given id, or the id itself when no
      * mapper is in effect. The mapper is fixed for the duration of a build, so an implementation that resolves it once
      * answers this without the lookup in {@link jakarta.faces.context.FacesContext#getAttributes()} that this default
