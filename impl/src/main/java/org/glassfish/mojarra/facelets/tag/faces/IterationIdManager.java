@@ -24,6 +24,8 @@ import java.util.Set;
 
 import jakarta.faces.view.facelets.FaceletContext;
 
+import org.glassfish.mojarra.facelets.FaceletContextImplBase;
+
 public class IterationIdManager {
 
     /**
@@ -59,10 +61,37 @@ public class IterationIdManager {
         }
 
         stack.push(current);
+
+        FaceletContextImplBase context = rowCountingContext(ctx);
+        if (context != null) {
+            context.startIteration();
+        }
+    }
+
+    /**
+     * Starts a row of the iteration {@link #startIteration(FaceletContext)} started, so that the tags applied for it generate the unique ids of that row.
+     *
+     * @param ctx Facelets Context
+     * @param row the zero based number of the row among those the iteration walks
+     */
+    public static void startRow(FaceletContext ctx, int row) {
+        FaceletContextImplBase context = rowCountingContext(ctx);
+        if (context != null) {
+            context.startIterationRow(row);
+        }
     }
 
     public static void stopIteration(FaceletContext ctx) {
         _getStackOfTrackedIds(ctx).pop();
+
+        FaceletContextImplBase context = rowCountingContext(ctx);
+        if (context != null) {
+            context.stopIteration();
+        }
+    }
+
+    private static FaceletContextImplBase rowCountingContext(FaceletContext ctx) {
+        return ctx instanceof FaceletContextImplBase ? (FaceletContextImplBase) ctx : null;
     }
 
     public static void startNamingContainer(FaceletContext ctx) {

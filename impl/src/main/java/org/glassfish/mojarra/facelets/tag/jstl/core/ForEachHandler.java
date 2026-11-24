@@ -436,6 +436,7 @@ public final class ForEachHandler extends TagHandlerImpl {
                         }
 
                         // execute body
+                        IterationIdManager.startRow(ctx, count - 1);
                         nextHandler.apply(ctx, parent);
 
                         // increment steps

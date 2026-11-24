@@ -85,6 +85,10 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
      */
     private String[] localIds;
     private final Map<Integer, Integer> prefixes;
+    /**
+     * Counts, per row of an iteration, the ids of the tags it applies and the prefixes of the contexts it creates, shared across the whole context chain.
+     */
+    private final IterationIds iterationIds;
     private String prefix;
     private final StringBuilder uniqueIdBuilder = new StringBuilder(30);
     /**
@@ -102,12 +106,16 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
         ids = ctx.ids;
         idCounters = ctx.idCounters;
         prefixes = ctx.prefixes;
+        iterationIds = ctx.iterationIds;
         varMapper = ctx.varMapper;
         faceletHierarchy = new ArrayList<>(ctx.faceletHierarchy.size() + 1);
         faceletHierarchy.addAll(ctx.faceletHierarchy);
         faceletHierarchy.add(facelet);
         this.facelet = facelet;
         idMapper = ctx.idMapper;
+        if (iterationIds.isIterating()) {
+            prefix = iterationPrefix(hierarchyHash());
+        }
         faces.getAttributes().put(FaceletContext.FACELET_CONTEXT_KEY, this);
     }
 
@@ -116,6 +124,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
         ids = new HashMap<>();
         idCounters = new IdentityHashMap<>();
         prefixes = new HashMap<>();
+        iterationIds = new IterationIds(idCounters, ids, prefixes);
         clients = new ArrayList<>(5);
         this.faces = faces;
         faceletHierarchy = new ArrayList<>(1);
@@ -237,6 +246,11 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
 
         ensurePrefix();
 
+        if (iterationIds.isIterating()) {
+            int count = iterationIds.count(base);
+            return buildUniqueId(base, count, iterationIds.path(), iterationIds.repeat());
+        }
+
         Integer cnt = ids.get(base);
         if (cnt == null) {
             ids.put(base, 0);
@@ -281,12 +295,23 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
             counters = grow((DefaultFacelet) owner, counters);
         }
 
-        int count = counters[slot]++;
+        int count;
+        String path = "";
+        int repeat = 0;
+
+        if (iterationIds.isIterating()) {
+            count = iterationIds.count((DefaultFacelet) owner, counters, slot);
+            path = iterationIds.path();
+            repeat = iterationIds.repeat();
+        }
+        else {
+            count = counters[slot]++;
+        }
 
         // Only a tag's first id within a build is worth caching, and only for the Facelet this context applies, whose
         // ids this context holds on a field. Anything else is built.
-        if (count > 0 || !local) {
-            return buildUniqueId(base, count);
+        if (count > 0 || !path.isEmpty() || repeat > 0 || !local) {
+            return buildUniqueId(base, count, path, repeat);
         }
 
         return firstUniqueId(base, slot, prefix);
@@ -366,38 +391,86 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
      */
     private String ensurePrefix() {
         if (prefix == null) {
-            StringBuilder builder = new StringBuilder(faceletHierarchy.size() * 30);
-            for (int i = 0; i < faceletHierarchy.size(); i++) {
-                DefaultFacelet facelet = (DefaultFacelet) faceletHierarchy.get(i);
-                builder.append(facelet.getAlias());
-            }
-            Integer prefixInt = builder.toString().hashCode();
+            Integer prefixInt = hierarchyHash();
 
             Integer cnt = prefixes.get(prefixInt);
-            if (cnt == null) {
-                prefixes.put(prefixInt, 0);
-                prefix = prefixInt.toString();
-            }
-            else {
-                int i = cnt.intValue() + 1;
-                prefixes.put(prefixInt, i);
-                prefix = prefixInt + "_" + i;
-            }
+            int count = cnt == null ? 0 : cnt.intValue() + 1;
+            prefixes.put(prefixInt, count);
+            prefix = prefix(prefixInt, count, "", 0);
         }
 
         return prefix;
     }
 
+    @Override
+    public void startIteration() {
+        iterationIds.start();
+    }
+
+    @Override
+    public void startIterationRow(int row) {
+        iterationIds.row(row);
+    }
+
+    @Override
+    public void stopIteration() {
+        iterationIds.stop();
+    }
+
+    /**
+     * The hash of the aliases of the Facelets this context applies, which the prefix of its ids is counted by.
+     */
+    private Integer hierarchyHash() {
+        StringBuilder builder = new StringBuilder(faceletHierarchy.size() * 30);
+        for (int i = 0; i < faceletHierarchy.size(); i++) {
+            DefaultFacelet facelet = (DefaultFacelet) faceletHierarchy.get(i);
+            builder.append(facelet.getAlias());
+        }
+        return builder.toString().hashCode();
+    }
+
+    /**
+     * The prefix of a context created inside an iteration, counted per row of the iteration when the context is created, so that it does not depend on where in
+     * the applied Facelet the first id is generated.
+     */
+    private String iterationPrefix(Integer hash) {
+        int count = iterationIds.countPrefix(hash);
+        return prefix(hash, count, iterationIds.path(), iterationIds.repeat());
+    }
+
+    private static String prefix(Integer hash, int count, String path, int repeat) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(hash);
+        appendIterationSuffix(builder, count, path, repeat);
+        return builder.toString();
+    }
+
     private String buildUniqueId(String base, int count) {
+        return buildUniqueId(base, count, "", 0);
+    }
+
+    private String buildUniqueId(String base, int count, String path, int repeat) {
         uniqueIdBuilder.delete(0, uniqueIdBuilder.length());
         uniqueIdBuilder.append(prefix);
         uniqueIdBuilder.append("_");
         uniqueIdBuilder.append(base);
-        if (count > 0) {
-            uniqueIdBuilder.append("_");
-            uniqueIdBuilder.append(count);
-        }
+        appendIterationSuffix(uniqueIdBuilder, count, path, repeat);
         return uniqueIdBuilder.toString();
+    }
+
+    /**
+     * Appends {@code [_count][path][-repeat]}, the part of an id or prefix which tells its applications apart.
+     */
+    private static void appendIterationSuffix(StringBuilder builder, int count, String path, int repeat) {
+        if (count > 0) {
+            builder.append('_');
+            builder.append(count);
+        }
+        builder.append(path);
+        if (repeat > 0) {
+            builder.append('-');
+            builder.append(repeat);
+        }
     }
 
     /*
