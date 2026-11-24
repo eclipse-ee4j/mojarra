@@ -42,7 +42,6 @@
             ]]></description>
             <name>var</name>
             <required>false</required>
-            <type>java.lang.String</type>
         </attribute>
     </tag>
     <tag>
@@ -79,7 +78,6 @@
             ]]></description>
             <name>var</name>
             <required>false</required>
-            <type>java.lang.String</type>
         </attribute>
         <attribute>
             <description><![CDATA[
@@ -87,7 +85,6 @@
             ]]></description>
             <name>scope</name>
             <required>false</required>
-            <type>java.lang.String</type>
         </attribute>
     </tag>
     <tag>
@@ -151,7 +148,6 @@
             ]]></description>
             <name>var</name>
             <required>false</required>
-            <type>java.lang.String</type>
         </attribute>
         <attribute>
             <description><![CDATA[
@@ -163,7 +159,6 @@
             ]]></description>
             <name>varStatus</name>
             <required>false</required>
-            <type>java.lang.String</type>
         </attribute>
     </tag>
     <tag>
@@ -212,7 +207,6 @@
             ]]></description>
             <name>var</name>
             <required>false</required>
-            <type>java.lang.String</type>
         </attribute>
         <attribute>
             <description><![CDATA[
@@ -246,7 +240,6 @@
             ]]></description>
             <name>scope</name>
             <required>false</required>
-            <type>java.lang.String</type>
         </attribute>
     </tag>
     <tag>

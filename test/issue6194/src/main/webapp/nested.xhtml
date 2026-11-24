@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<!--
+
+    Copyright (c) Contributors to Eclipse Foundation.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<html lang="en"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:c="jakarta.tags.core"
+    xmlns:f="jakarta.faces.core"
+    xmlns:h="jakarta.faces.html"
+>
+    <h:head>
+        <title>Groups admitted by a c:if around a nested c:forEach</title>
+    </h:head>
+    <h:body>
+        <h:form id="form">
+            <h:selectBooleanCheckbox id="skipFirstGroup" value="#{issue6194.skipFirstGroup}">
+                <f:ajax render="rows" />
+            </h:selectBooleanCheckbox>
+            <h:panelGroup id="rows" layout="block">
+                <c:forEach items="#{issue6194.groups}" var="group" varStatus="loop">
+                    <c:if test="#{not issue6194.skipFirstGroup or not loop.first}">
+                        <c:forEach items="#{group}" var="item">
+                            <h:outputText value="[#{item}]" />
+                        </c:forEach>
+                    </c:if>
+                </c:forEach>
+            </h:panelGroup>
+        </h:form>
+    </h:body>
+</html>

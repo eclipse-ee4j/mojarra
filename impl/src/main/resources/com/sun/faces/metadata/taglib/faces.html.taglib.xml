@@ -1204,6 +1204,16 @@
         </attribute>
         <attribute>
             <description>
+                Flag indicating whether or not this component should be rendered
+                (during Render Response Phase), or processed on any subsequent
+                form submit. The default value for this property is true.
+            </description>
+            <name>rendered</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description>
                 <![CDATA[Direction indication for text that does not inherit directionality.
               Valid values are "LTR" (left-to-right) and "RTL" (right-to-left).]]>
             </description>
@@ -1305,6 +1315,16 @@
             <name>id</name>
             <required>false</required>
             <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>
+                Flag indicating whether or not this component should be rendered
+                (during Render Response Phase), or processed on any subsequent
+                form submit. The default value for this property is true.
+            </description>
+            <name>rendered</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
         </attribute>
         <attribute>
             <description>
@@ -11385,6 +11405,18 @@
         </attribute>
         <attribute>
             <description>
+                <![CDATA[<span class="changed_added_2_3">
+                    Space-separated list of CSS style class(es) to be applied when
+                    this element is rendered. This value must be passed through
+                    as the "class" attribute on generated markup.
+                </span>]]>
+            </description>
+            <name>styleClass</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>
                 Space-separated list of CSS style class(es) that will be
                 applied to any column footer generated for this table.
             </description>
@@ -11915,29 +11947,23 @@
         </component>
         <attribute>
             <description>
-                <![CDATA[Converter instance registered with this component.]]>
-            </description>
-            <name>converter</name>
-            <required>false</required>
-            <type>jakarta.faces.convert.Converter</type>
-        </attribute>
-        <attribute>
-            <description>
                 <![CDATA[The component identifier for this component.  This value must be
                 unique within the closest parent component that is a naming
                 container.]]>
             </description>
             <name>id</name>
             <required>false</required>
-            <type>java.lang.Boolean</type>
+            <type>java.lang.String</type>
         </attribute>
         <attribute>
             <description>
-                <![CDATA[The current value of this component.]]>
+                Flag indicating whether or not this component should be rendered
+                (during Render Response Phase), or processed on any subsequent
+                form submit. The default value for this property is true.
             </description>
-            <name>value</name>
+            <name>rendered</name>
             <required>false</required>
-            <type>java.lang.Object</type>
+            <type>java.lang.Boolean</type>
         </attribute>
         <attribute>
             <description>
@@ -11956,7 +11982,7 @@
                 </div>]]>
             </description>
             <name>rootElement</name>
-            <required>false</required>
+            <required>true</required>
             <type>java.lang.String</type>
         </attribute>
         <attribute>
