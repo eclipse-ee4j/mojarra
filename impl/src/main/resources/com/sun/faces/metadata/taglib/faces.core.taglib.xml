@@ -861,7 +861,6 @@ for <code>@NamedEvent</code>.</p>
             ]]></description>
             <name>var</name>
             <required>true</required>
-            <type>java.lang.String</type>
         </attribute>
     </tag>
     <tag>
@@ -2710,7 +2709,7 @@ public class BackingBean implements PasswordHolder, Cloneable {
             evaluates to <code>false</code> the component has no
             effect.</p>
             ]]></description>
-            <name>rendered</name>
+            <name>if</name>
             <required>false</required>
             <type>java.lang.Boolean</type>
         </attribute>

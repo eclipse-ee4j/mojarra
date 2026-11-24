@@ -505,6 +505,34 @@ starting with "/".</span>
         </attribute>
         <attribute>
             <description><![CDATA[
+                <p>
+                The identifier of the component that Faces inserts into the
+                component tree. If an identifier is
+                not explicitly specified by the page author, Faces will assign an
+                identifier based on the algorithm
+                that it uses for all components.
+                </p>
+            ]]></description>
+            <name>id</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Binds the component to a backing bean property, as specified
+                in section 3.1.5 "Component Bindings" of the Jakarta Faces Specification Document.
+                The Java language type of this property must be a class that extends
+                <code>jakarta.faces.component.UIComponent</code>. The scope of
+                the bean on which this property resides must be no wider than
+                request scope. If either of these conditions are not met, the
+                results are undefined.</p>
+            ]]></description>
+            <name>binding</name>
+            <required>false</required>
+            <type>jakarta.faces.component.UIComponent</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
 
 
                 <div class="changed_added_2_0">
@@ -805,7 +833,6 @@ attribute must be an absolute path starting with "/".</span>
             ]]></description>
             <name>name</name>
             <required>true</required>
-            <type>java.lang.String</type>
         </attribute>
         <attribute>
             <description><![CDATA[
@@ -933,7 +960,7 @@ attribute must be an absolute path starting with "/".</span>
 
             ]]></description>
             <name>value</name>
-            <required>true</required>
+            <required>false</required>
             <type>java.lang.Object</type>
         </attribute>
         <attribute>
@@ -948,8 +975,7 @@ attribute must be an absolute path starting with "/".</span>
                 ]]>
             </description>
             <name>var</name>
-            <required>true</required>
-            <type>java.lang.String</type>
+            <required>false</required>
         </attribute>
         <attribute>
             <description>
@@ -974,7 +1000,34 @@ attribute must be an absolute path starting with "/".</span>
             </description>
             <name>varStatus</name>
             <required>false</required>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>
+                The identifier of the component that Faces inserts into the
+                component tree. If an identifier is
+                not explicitly specified by the page author, Faces will assign an
+                identifier based on the algorithm
+                that it uses for all components.
+                </p>
+            ]]></description>
+            <name>id</name>
+            <required>false</required>
             <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Binds the component to a backing bean property, as specified
+                in section 3.1.5 "Component Bindings" of the Jakarta Faces Specification Document.
+                The Java language type of this property must be a class that extends
+                <code>jakarta.faces.component.UIComponent</code>. The scope of
+                the bean on which this property resides must be no wider than
+                request scope. If either of these conditions are not met, the
+                results are undefined.</p>
+            ]]></description>
+            <name>binding</name>
+            <required>false</required>
+            <type>jakarta.faces.component.UIComponent</type>
         </attribute>
         <attribute>
             <description>
